@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="dungeon">
+		<xs:complexType>
+			<xs:all>
+				<xs:element ref="intro" minOccurs='1' maxOccurs='1'/>
+				<xs:element ref="room" minOccurs='1' maxOccurs='1'/>
+				<xs:element ref="people" minOccurs='1' maxOccurs='1'/>
+			</xs:all>
+				<xs:attribute name="dgnname" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="intro" type="xs:string"/>
+
+	<xs:element name="room">
+		<xs:complexType mixed="true">
+				<xs:attribute name="name" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="people">
+		<xs:complexType>
+		   <xs:sequence>
+		     <xs:element ref="innkeeper" minOccurs='1' maxOccurs='1'/>
+		     <xs:element ref="patron" minOccurs='1' maxOccurs="unbounded"/>
+		   </xs:sequence>
+		</xs:complexType>
+	  </xs:element>
+	  
+	<xs:element name="patron">
+		<xs:complexType>
+		   <xs:sequence>
+	 		 <xs:element ref="comment" minOccurs='0' maxOccurs="unbounded"/>
+			 <xs:element ref="description" minOccurs='2' maxOccurs="unbounded"/>
+		     <xs:element ref="message" minOccurs='6' maxOccurs="unbounded"/>
+		   </xs:sequence>
+			<xs:attribute name="name" type="xs:string"/>
+			<xs:attribute name="affinity" type="xs:integer" />
+		</xs:complexType>
+	</xs:element>	
+	
+	<xs:element name="innkeeper">
+		<xs:complexType>
+		   <xs:sequence>
+	 		 <xs:element ref="comment" minOccurs='0' maxOccurs="unbounded"/>
+			 <xs:element ref="description" minOccurs='2' maxOccurs="unbounded"/>
+		     <xs:element ref="message" minOccurs='6' maxOccurs="unbounded"/>
+		   </xs:sequence>
+			<xs:attribute name="name" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>	
+
+	<xs:element name="message">
+		<xs:complexType mixed="true">
+			<xs:attribute name="type" default="positive">
+				<xs:simpleType>
+			    	<xs:restriction base = "xs:string">
+					    <xs:enumeration value="positive"/>
+						<xs:enumeration value="negative"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="description">
+		<xs:complexType mixed="true">
+			<xs:attribute name="type" default="far">
+				<xs:simpleType>
+			    	<xs:restriction base = "xs:string">
+					    <xs:enumeration value="far"/>
+						<xs:enumeration value="near"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="comment">
+		<xs:complexType mixed="true">
+			<xs:sequence>
+				<xs:any minOccurs='0' maxOccurs="unbounded" processContents="skip"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
+
+
+
+
+
+<!-- This is in case I need to replace message schema 
+	<xs:element name="message">
+		<xs:complexType mixed="true">
+			<xs:attribute name="type" default="positive">
+				<xs:simpleType>
+			    	<xs:restriction base = "xs:string">
+					    <xs:enumeration value="positive"/>
+						<xs:enumeration value="negative"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="rank" type="xs:integer"/>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="rumor" type="xs:string"/>
+	<xs:element name="retort" type="xs:string"/>
+
+-->

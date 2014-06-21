@@ -1,0 +1,70 @@
+<?xml version="1.0"?> 
+<help_groups maxEntries='7' >
+	<helptext helpID="MenuHelp">
+	|CookieJar Help Window| Processing Help the first time....one moment, please.
+	~~
+	All options are available, given the correct program state, through the File and Help menus,
+	even if they are not always available by the buttons.
+	~~File->Add: Add your own fortune to the CookieJar for later retrieval. 
+	~~File->Edit: Revise the text of an existing fortune.
+	~~File->Delete: Permanently remove a fortune from the CookieJar
+	~~File->Save: Save an edited or new fortune into the CookieJar.
+	~~File->Exit: Quit the program. This is the same as clicking on the end-program icon in the
+	top left corner of the window. 
+	~~Help->Help: Get generic help about this program. If you hit the F1 key, specific help
+	is displayed about the field or button currently in focus.
+	~~Help->About: Displays the copyright, version, and credits for this program.
+	</helptext>
+	<helptext helpID="DgnName">
+	|Dungeon Name| Enter the name of the dungeon. Hit the Enter key in this text field to copy
+	the name to the window title. The name of the dungeon will be the default file name into
+	which the data will be saved.  
+	~~
+	In the Player version of the game: The full name of the dungeon will become the window 
+	title. 
+	</helptext>
+	<helptext helpID="Desc">
+	|Dungeon Description| Enter a short description or summary statement about the dungeon.
+	The text will scroll as needed. 
+	~~
+	In the Player version of the game: The description will be displayed as is. 
+	</helptext>
+	<helptext helpID="Story">
+	|Background Story| Enter a background story about the dungeon. How did it come to exist?
+	Why is there an opportunity for the Hero (player) to achieve fame or glory or treasure? 
+	This is the story that 	motivates the player to enter the dungeon and play the game.
+	~~
+	In the Player version of the game: The background story is displayed automatically once 
+	when the game starts up, and then only by request thereafter. 
+	</helptext>
+	<helptext helpID="SaveAs">
+	|Save As Button| Trigger this button to save the dungeon to a new file name. 
+	This button is active only 	when a New dungeon is being created. After the dungeon is 
+	saved once to a file, it changes to a Save button from a SaveAs button. The Save As feature
+	is still available from the File menu if the author wants to make a copy of an existing dungeon.
+	~~
+	In the Player version of the game: The filename is required to start the game, and updates 
+	are saved to that file as the Player explores the dungeon.
+	</helptext>
+	<helptext helpID="Save">
+	|Save Button| Trigger this button to save dungeon updates to its original file. 
+	This button is active only if changes have been made to the dungeon attributes. 
+	The Save feature is always available from the File menu.
+	~~
+	In the Player version of the game: The filename is required to start the game, and updates 
+	are saved to it as the Player explores the dungeon.
+	</helptext>
+	<helptext helpID="Image">
+	|Get Image Button| Trigger this button to read an image file and display it. 
+	The image is best displayed, and in the quickest amount of time, if it is already about the
+	same size of the image panel on the right side of the screen. 
+	The aspect ratio should be 0.8 for best viewing because the image will be stretched to fit
+	the panel. 
+	Currently, only JPG images files are supported.
+	~~
+	In the Player version of the game: The image will be displayed when the game starts up,
+	and will stay visible until the Player enter the dungeon's first room, or the Rumor Mill. 
+	</helptext>
+</help_groups>
+
+

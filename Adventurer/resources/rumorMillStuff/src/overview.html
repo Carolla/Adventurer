@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<!--
+	@(#) package.html  	1.0 2008/06/15
+
+	Copyright (c) 2007, Carolla Development, Inc.  
+	3190 Needham Dr., Dublin, OH, 43017, U.S.A.	All Rights Reserved.
+	
+	Permission to make digital or hard copies of all or parts of this work for
+	commercial use is prohibited. To republish, post on servers, to reuse,
+	or to redistribute to lists, requires prior specific permission and/or a
+	fee. Request permission to use from Carolla Development, Inc. 
+	by email: acline@carolla.com.  
+-->
+</head>
+
+<body bgcolor="white">
+
+The Rumor Mill is a game that asks the user to question various friendly and unfriendly
+patrons in an Inn using a classic adventure-game style command dialog.
+
+<h2>Application Description</h2>
+The Rumor Mill application is a breadboard-style prototype to allow the author to experiment
+with various Java, JavaDoc, and design concepts. It is built rigorously to demonstrate strict 
+object-theory implementation.
+<p>
+The architecture of the Rumor Mill application is segmented into four components: 
+<ul>
+	<li>Data Management Component (DMC) provides all back-end activities for SAX validation
+	parsing. </li>
+	<li>Human Management Component (HIC) provides all front-end activities for user 
+	interaction.</li>
+	<li> Problem Domain Component (PDC) provides the algorithms and work engine to
+	execute the application logic. It contains the domain classes that are strongly decoupled
+	from the design-centered logic of the DMC and HIC. 
+	<li> System Interface Component (SIC) although not used here yet, connects to external
+	systems, such as other servers. It is likely that an SIC will be built in the future to interface
+	with the <i>FileMaker Pro</i> database system.  
+</ul>
+Each component talks to each other through connection classes. For example, the command
+window pushes user command strings to the <code>CommandParser</code>,
+and the <code>Scheduler></code> object polls it to retrieve those resulting Commands.
+
+
+<h2>Related Documentation</h2>
+For the class diagram and sequence diagrams for the major use cases,
+see the URL .....
+
+</body>
+</html>

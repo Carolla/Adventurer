@@ -1,0 +1,167 @@
+<?xml version="1.0"?>
+<dungeon dgnname="The Rumor Mill">
+	<intro>
+		You step inside the door beneath the old weather-beaten sign: The Rumor Mill,
+        and find yourself in the interior of a darkened and smokey room.
+        As your eyes adjust to the dimness,  you see serving women preparing food. 
+        The burly Innkeeper is filling mugs from behind a solid oak bar along the north wall.
+    </intro>
+	<room name="Main Room">
+		The common room of this Inn is heated by the large fireplace 
+	    near the center of the room. Rough wooden tables are scattered 
+	    about the main floor. A couple of booths can be seen along the 
+	    east wall. The aroma of roasted meats and ale fills the air, 
+	    and the smokey smell of the fireplace thinly covers it all. 
+	</room>
+	
+	<people>
+		<innkeeper name="Bork">
+			<description type="far">
+				The Innkeeper intently polishes glasses, but he notices every move in the Inn.	
+			</description>
+			<description type="near">
+				The Innkeeper is a burly man with a thick beard. His apron is stained with food and 
+				wine. The faint smell of fireplace smoke drifts to you as he gets closer.
+		    	"See anything you like?", he asks in a semi-toothless smile.
+			</description>
+			<message type="positive"> 
+				My name is Bork, and I own this fine establishment </message>
+			<message type="positive"> My Inn has great food, beer, wine, and a place to rest
+				your feet after a weary day. Then he winks and says, "It also has some very 
+				interesting characters here, if you know what I mean." 	</message>
+			<message type="positive">Buying drinks for folks will help loosen their tongues.</message>
+			<message type="positive">Don't insult someone before asking for a favor.</message>
+			<message type="positive">Make sure to have plenty of torches before going underground.</message>
+			<message type="positive">I need to clean up now for the night. I'll talk with you tomorrow.</message>
+			<message type="negative"> I'm the Innkeeper here. Wha'cha want?" </message>
+			<message type="negative"> What! </message>
+			<message type="negative">People who buy nothing make poor customers.</message>
+			<message type="negative">Are you going to buy something or just stand around looking pretty?</message>
+			<message type="negative">I'm busy right now. Talk to me in the morning.</message>
+			<message type="negative">You have to leave now. I need to close up.</message>
+		</innkeeper>
+
+		<patron name="Sal" affinity="-1">
+			<description type="far">
+				A tiny man, wearing stained clothes, carries a huge burlap sack bulging with "something".
+			</description>
+			<description type="near">
+				This tiny man is perpetually hunched over from his large sack of shoes. 
+				Looking at your feet, he shakes his head and smiles at you pathetically.
+			</description>
+			<message type="positive">"Sal's the name, cobbling is the game!"</message>
+			<message type="positive">"Looks like you could use some good shoe leather."</message>
+			<message type="positive">"Rats make for lousy shoes."</message>
+			<message type="negative">"I peddle shoes not prattle! Beat it!"</message>
+			<message type="negative">"No shoes, no service!"</message>
+			<message type="negative">"Not all the heels of this world are on shoes."</message>
+		</patron>
+
+		<patron name="Scruffy" affinity="0">
+			<description type="far">
+				A scruffy-looking old man with a grizzled chin looks around warily.
+			</description>
+			<description type="near">
+				Close up, this old geezer is a mess. His hair is uncombed, his beard is gnarled,
+				several teeth are missing, and he smells as if he hasn't had a bath since spring.	
+			</description>
+			<message type="positive">"Sit down and talk a spell."</message>
+			<message type="positive">"You must be thirsty with all that curiosity built up, eh?"</message>
+			<message type="positive">"The mad hermit is alive and roams the northern forest."</message>
+			<message type="negative">"Go bother someone else."</message>
+			<message type="negative">"I don't know nuttin', and I don't want to talk about it."</message>
+			<message type="negative">"Innkeeper! Can't a guy enjoy a little peace and quiet!"</message>
+		</patron>
+
+		<patron name="Boren" affinity="1">
+			<description type="far">
+				A large man sits astride his bench, sipping deeply on a stein of ale.
+			</description>
+			<description type="near">
+				Although his face is ruddy and clean, his leather overalls are covered with soot 
+				and coaldust. His forearms are as large as your thighs.
+			</description>
+			<message type="positive">He exhales alcoholic fumes in satisfaction.
+				"Well stranger, sit down and whet your whistle."</message>
+			<message type="positive">"I'm too thirsty to do much talking. You buying?"</message>
+			<message type="positive">RUMOR</message>
+			<message type="negative">He stares at you silently.</message>
+			<message type="negative">He furls his brow. "Hey buddy! I just came for a cool one, 
+				not a conversation."</message>
+			<message type="negative">RETORT</message>
+		</patron>
+
+		<patron name="Meladriel" affinity="3">
+			<description type="far">
+				A beautiful young lady, in a low-cut purple dress, eyes you expectantly and smiles.  
+			</description>
+			<description type="near">
+				The young lady stares alluringly into your eyes. "See anything you like?"
+			</description>
+			<message type="positive">"Hello," she says in a cool voice, "My name is Meladriel."</message>
+			<message type="positive">I'm sure there is something I can do for you."</message>
+			<message type="positive">RUMOR</message>
+			<message type="negative">"You don't look like my type." </message>
+			<message type="negative">She puts on her cloak and covers her face.</message>
+			<message type="negative">RETORT</message>
+		</patron>
+ 
+		<patron name="Aragon" affinity="-3">
+			<description type="far">
+				Obviously well-to-do, a gentleman in chainmail armor is busy eating a large dinner. 
+			</description>
+			<description type="near">
+				As you approach, you see a barrel-chested man eating dinner. He shakes his head
+				and smiles grimly to himself, as if to say, "Here comes another one."
+			</description>
+			<message type="positive">He smiles slightly and extends his hand, 
+				offering a seat at his table.</message>
+			<message type="positive"> "I'm always up for a good adventure myself."</message>
+			<message type="positive">RUMOR</message>
+			<message type="negative">He looks sideways at you and says, "Begone!"</message>
+			<message type="negative">He puts his hand silently on the hilt of his sword, 
+				and slowly rises.</message>
+			<message type="negative">RETORT</message>
+		</patron>
+
+		<patron name="Matilda" affinity="0">
+			<description type="far">
+				A plump woman in dusty traveling clothes eats noisily and alone at a table.
+			</description>
+			<description type="near">
+				She continues to look at you and tears into a cooked chicken noisily, spattering little bits of food 
+				on the table.
+			</description>
+			<message type="positive">Have a seat, and grab a leg if you want.</message>
+			<message type="positive"> "I like a man with a healthy appetite."</message>
+			<message type="positive">RUMOR</message>
+			<message type="negative"> She continues to look at you and chews noisily, 
+				spattering little bits of what looks like chicken on the table.</message>
+			<message type="negative"> "Don't know nothing, and I'm busy."
+				She pushes more food into her face so that she can't talk.</message>
+			<message type="negative">RETORT</message>
+		</patron>
+
+		<patron name="Perrin" affinity="2">
+			<description type="far">
+				A barrel-chested man, with a bow and quiver at his side, chews slowly and eyes you 
+				from a distance. 
+			</description>
+			<description type="near">
+				This man seems to have traveled many miles, but his worn pack, placed carefully 
+				on the floor, is well-kept. He has an attitude of competence.
+				He looks down at his food as you approach. 
+			</description>
+			<message type="positive"> "Perrin's the name. I'm the village fletcher. He extends a calloused hand." </message>
+			<message type="positive">"If you've a need of anything, my shop is down the street. Can't miss it. I'll give you a good price." </message>
+			<message type="positive">RUMOR</message>
+			<message type="negative">He turns his back and continues eating.</message>
+			<message type="negative">"We don't cotton to strangers in this town. 
+				It's a peaceful town, and we like it that way." </message>
+			<message type="negative">RETORT</message>
+		</patron>
+
+	</people>
+</dungeon>
+
+

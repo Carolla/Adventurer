@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="Person">
+		<xs:complexType>
+			<xs:all>
+				<xs:element ref="Gender" minOccurs='1' maxOccurs='1' />
+				<xs:element ref="Description" minOccurs='1' maxOccurs='1' />
+				<xs:element ref="Occupation" minOccurs='1' maxOccurs='1' />
+				<xs:element ref="Race" minOccurs='1' maxOccurs='1' />
+			</xs:all>
+			<xs:attribute name="name" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="description" type="xs:string" />
+
+	<xs:element name="occupation" type="xs:string" />
+
+	<xs:element name="Race" type="xs:string" />
+
+	<xs:element name="comment">
+		<xs:complexType mixed="true">
+			<xs:sequence>
+				<xs:any minOccurs='0' maxOccurs="unbounded" processContents="skip" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" 
+            "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<!--
+	@(#) package.html  	1.0 2008/06/15
+
+	Copyright (c) 2008, Carolla Development, Inc.  
+	3190 Needham Dr., Dublin, OH, 43017, U.S.A.	All Rights Reserved.
+	
+	Permission to make digital or hard copies of all or parts of this work for
+	commercial use is prohibited. To republish, post on servers, to reuse,
+	or to redistribute to lists, requires prior specific permission and/or a
+	fee. Request permission to use from Carolla Development, Inc. 
+	by email: acline@carolla.com.  
+-->
+</head>
+
+<body bgcolor="white">
+
+The <code>Chronos Gaming Framework</code> is comprised of two programs: 
+an adventure authoring kit and editor, <i>Quest Master</i>, and 
+a corresponding player module, <i>Adventurer</i>. 
+ 
+<h2><code>Chronos</code> Description</h2>
+<i>Quest Master</i> enables a user to build a multiplayer game, or an interactive
+novel, that is a role-playing adventure game. 
+<i>Adventurer</i> allows users to play the game that the author built.
+
+The <i>Quest Master</i> author defines items, situations, obstacles, interactive characters ("avatar"), 
+and non-player characters to provide support or conflict which the <i>Adventurer</i> player must 
+overcome. The author also defines the traits and kinds of creatures or characters that the player's 
+avatar meets in the environment, generically referred to as "the playing arena."
+The playing arena can contain several types of geographic locales such as a town, a castle, a region,
+ a forest, etc.  A town is generally located on the outskirts of the unknown region to be explored.  
+ For example, a town would be near the entrance to a castle or a dungeon.
+<P>
+The initial <code>Chronos</code> programs come with a set of default monsters, non-player
+characters, the player's avator skills, items, and other basics to allow a game to be played "out of the
+box" using a medeval fantasy genre.
+<P> 
+<i>Adventurer</i> users do not require <i>Quest Master</i> to be installed; and although <i>Quest 
+Master</i> does not require the installation of <i>Adventurer</i>, it is recommended that authors 
+install and use it so that they can experience first-hand what their game players will experience.
+<i>Adventurer</i> (playing) has the following modes, which are supported by <i>Quest Master</i>
+(authoring) and have the following corresponding modes. 
+ <UL>
+    <LI><i>In Town</i>: Create an avatar (called a Hero), buy and sell inventory, and join Guilds to
+      get promoted to higher levels of ability. A player's Hero starts in earnest after gaining some
+      initial experience questing and then becoming a member of a Guild. The Hero can also arrange
+      for loans and make wills at the Bank. </LI> 
+    <LI><i>Exploring</i>: Navigate through the playing arena to accomplish a Quest, 
+        which includes purging it of monsters, finding treasure, and solving puzzles. The Hero can 
+        search for secret doors, set and defuse traps, and avoid bands of patrolling monsters. </LI> 
+    <LI><i>Negotations</i>: Collect rumors about the playing arena from patrons in the Inn and
+        Guilds in town. When exploring the arena, transact with friendly non-playing characters (NPCs), 
+        and negotiate with hostile NPCs (monsters) to avoid having to fight them.</LI> 
+    <LI><i>Battle</i>: Fight against monsters in the arena: use weaponless fighting 
+        (overbearing, grappling, pummeling), missile weapons (e.g. bows and 
+        arrows, thrown daggers), and melee (close contact) weapons (e.g. swords, flails, 
+        hand-held daggers). The Hero can even throw furniture and other items at enemies! </LI>
+</UL>
+<i>Quest Master</i> defines, and <i>Adventurer</i> executes, the various 
+locales and situations of the <code>Chronos</code> world (regardless of genre). 
+The avatar can pursue the following activities. 
+ <UL>
+    <LI>Town Square: Register a new Character and get a team together for play. </LI>
+    <LI>Inn: Collect information about the arena to be explored from local patrons, either by 
+      friendliness or bribery; bar brawls can also be found here. 
+      The player can form a mutli-avatar team at the Inn, and rent a room for the night. </LI>
+    <LI>General Store: Sell items the Hero (player's avatar) no longer wants or needs, and buy
+        items that he or she does need. Sometimes the Hero can make a profit by selling items found 
+        in the arena.</LI>
+    <LI>Guilds: Join a particular profession and get an enhanced Character. (A Hero cannot join a
+        Guild until they have some initial experience in the arena.) Heroes can be promoted to 
+        higher levels of ability, and obtain Quests from their Guildmaster. </LI>
+    <LI>Playing Arena: The exploration realm to achieve a quest. Explore, battle 
+        monsters, find treasure, solve puzzles, and gain experience to rise to the
+        next level of ability. The Quest Master author may name these locales as he or she wishes. 
+        See the <i>Adventurer</i> description for an example of the default arenas  
+        provided with <code>Chronos</code>.  </LI> 
+</UL>
+The game is never actually "won"; there is always one more adventure. After the Hero 
+reaches Level 10, the highest possible level, there is little to interest him or her. It is encouraged that 
+the Adventurer player create a new Hero of differenct Race and join a different Guild to try other
+arenas (or the same one) from a different perspective. 
+<P>
+Games authored in <i>Quest Master</i>: 
+The game can represent any genre: dungeon & dragons, western, science fiction, 
+romance, business, education, or something else. Other genres can have other names, but the 
+function of the locales are about the same. For example, in a modern 
+neighborhood genre, a player can create a new Character at the Welcome 
+Center of the Visitor's Bureau; rumors and information can be had at the local 
+bar; the Guild can be the Hero's workplace, a corporate office building or high
+school teacher's classroom; the General Store can be a department store, and 
+the arena can be the work environment or where the Hero must achieve a
+Quest. For example a modern neighberborhood Quest might be to set up the 
+High School Prom, and the high school building can be the arena.
+
+<h3><i>Quest Master</i> Description</h3>
+The author defines the responses to actions taken by the player's avatar, information 
+provided by the Inn patrons about the arena, the map for the arena,
+its treasure and monsters, and the quests from the Guilds.   
+<P>
+Within <i>Quest Master</i>,  the author can define certain information at certain places.
+ <UL>
+    <LI>Town Square. Define the possible races and professions of new Characters,
+        avatar descriptions, and starting status. </LI>
+    <LI>Inn. Provide information about the arena expressed as dialogue between
+        the avatar and the patrons. Rumors about the arena depends on the patron
+        from which it originates, and may be true or false. </LI>
+    <LI>General Store. Define quantity, prices, and properties of items available: 
+        weapons, tools, rations, and other things. Provide rules on how the storekeeper
+        prices items that are being sold to the Hero. Some items have secret compartment
+        or uses, and those must be defined as well. </LI>
+    <LI>Bank. Provide loans to reputable Heros (usually a Guild member), and provide wills in case 
+        the Hero dies, so the Hero's material wealth can be passed on to another Hero. There are fees,
+        of course. </LI>
+    <LI>Guilds: Define Quests associated with the arena, and make available specialty
+        items that are not available at the General Store, such as magic weapons. </LI>
+    <LI>Arena: If the arena is a building, define the map (floor plan) and description for each room, 
+        what items or monsters are contained in each room, and how the rooms are related for 
+        navigation. Define which rooms have treasure, monsters, traps, clues, or a combination of all or 
+        neither,and how much each is worth in terms of experience points. <p>
+        If the room is outdoors area, define the sections of landscape or waterscape, and its denizens, 
+        similarly; e.g., paths in a forest, or pirate caverns at the seashore.</LI>
+</UL>
+
+  
+<h3> <i>Adventurer</i> Description</h3>
+<i>Adventurer</i> is for the general user and should be as easy to play as 
+possible, using the author's plots, arenas, and playing tools.
+The initial <i>Adventurer</i> player program comes with two default arenas: 
+one with a focus on how to navigate and play, and another with a focus on traps
+and more arcane features. This feature also allows the player program to be played 
+"right out of the box" for a diverse level of difficulty.
+<P>
+ <i>Adventurer</i> has built-in commands the player gives to his or her avatar--
+ the player's Hero--to explore, search, cast spells, get and drop items, and 
+ gain ability. The Hero moves about in a semi-text, semi-graphic
+ environment; <i>Adventurer</i> displays the descriptions and reactions to the
+ players' commands.
+ <P>
+For example, in the default medeval fantasy world, 
+<UL>
+    <LI>The Town is named "Biljur'Baz", and a player must Register as a visitor to the town (create a 
+    new Hero) with Bartleby the Scrivener, the town's Scrooge-like and alcoholic registrar.</LI>
+    <LI>The Inn is called "The Ugly Ogre Inn", run by Bork the Innkeeper. Patrons
+    randomly move in and out of the tavern during the evening. </LI>
+    <LI>The General Store is called "The Rat's Pack", and run by the opportunistic
+    merchant Dewey Howe. </LI>
+    <LI>The Bank is called "The Bank", and is run by the frugal and stringent Mr. Pennypacker. </LI>
+    <LI>Four Guilds are provided in the standard Chronos world: the Fighters' Guild 
+        ("Stadium"), MagicUsers' Guild ("Arcaneum"), Clerics' Guild ("Monastery"), or Thieves' 
+        Guild ("Rogues' Den"). </LI>
+    <LI>The training arena is a "hotel-type" dungeon called "Quasqueton" and based on a popular
+        D&D dungeon. It has numerous, easily mapped rooms with a little bit of everything 
+        <code>Chronos</code> has to offer. Quasqueton was once owned by Salazar the
+        Mage and Zelligar the Warlord.</LI> 
+     <LI>The other arena, "The Temple of Pomarj" is intended for a more experienced 
+        player and has many intricate traps, and a few puzzles. It is of the variety in which a
+        segmented "key" must be assembled to achieve the final goal.</LI>                        
+</UL>
+<P>
+As an example of play: the Hero Falsoon is a member of the Fighter's Guild, and gets the 
+Quest from Aragon the Guildmaster to "find and retrieve Salazar's magic purple spear,"
+known to be secreted away in Quasqueton.  
+Falsoon buys supplies and rations from the "The Rat's Pack" using a few of his gold coins. He grabs 
+some dinner at "The Ugly Ogre Inn" and talks with a few of the patrons
+there, obtaining (some questionable) information. He then enters Quasqueton at
+dusk to achieve his quest. During his adventure, he garners clues, solves puzzles, fights
+monsters, avoids patrols of evil marauders, and obtains secret treasure, all getting him 
+closer to his goal. Eventually, Falsoon finds the spear and returns it to the guild, richer in
+experience and gold. He gains more power and abilities as a result of his experience.
+
+<h3>General Design Layout</h3> 
+Both <i>Quest Master</i> and <i>Adventurer</i> have a similar design.
+ The computer screen is split in two: the left side for text dialog, the right side for graphics.
+The basic unit of the dungeon is the <i>Room</i>, a playing area that is shown graphically on the 
+right side of the screen. Rooms can represent one or more indoor physical rooms, or 
+outdoor areas of roughly the same scale. The map is a 2-D view from above, and 
+includes architectural structures like doors, stairs, and exits (for buildings), or plains, trees, rivers, 
+and swamps for outdoor adventurers.  The author builds maps using drag-and-drop actions from 
+palettes of doors, furniture, monsters, and other items commonly found in the medieval buildings.
+Authors can invent new items, icons, or monsters to add to the palettes for futher customization.
+ <P>
+The left side of the screen is a text area that allows the player to view room
+descriptions, doors, and exits. The player engages in dialogues with NPCs on this half
+of the screen, and also uses it to send commands to his avatar. Authors can invent new furniture
+types, structures, and icons to add to the palettes for futher customization.
+<P>
+
+<H3>Architecture and Implementation</H3>
+<b>Software Architecture Driving Principles</b><br>
+The application is driven by three critical design principles.
+<OL>
+<LI><i>Model-Driven Architecture (MDA) and Separation of Concerns</i>. 
+    The application is broken into four components: 
+    a Problem Domain Component (PDC) that contains the core program (business) logic; 
+    a Data Management Component (DMC) for data persistence and management 
+    implementation; a Human Interface Component (HIC) for user interaction and GUI display;
+    and a System Interface Component (SIC) for communicating to external systems,
+    across a network, through files, or by other means.
+    Each component is further decomposed into responsibility-based objects.
+    For more details, see each of the Javadoc descriptions for the respective component packages.
+    </LI><P>
+ <LI><i>Test-First Development (TFD), JUnit automated testing, and the Component Integration 
+    Validatior (CIV)</i>.  
+    JUnit does not test GUI code well, so automated GUI testing is bypassed; JUnit tests simulate the
+    GUI by hooking into an interface boundary called a CIV. 
+    By placing no logic in the HIC, only about 15% of code (the cosmetics) cannot be tested with JUnit
+    automation, but is easily tested by manual GUI inspection. 
+    The CIV provides a place to start and end JUnit integration tests. 
+    JUnit test flows start at an input CIV immediately behind an HIC's input GUI widget, and verify 
+    results collected from an output CIV immediately behind an HIC's output GUI widget. 
+     For more details, see the descriptions for the CIV package. </LI><P>
+ <LI><i>Field Shuttle and Data Shuttle Transport</i>. 
+    Each component talks with each other through a minimal communication "pipe", or data
+    transport protocol. 
+    Each component's knowledge of each other is minimized to decrease coupling, 
+    enable quicker maintenance, and allow user interfaces to be treated as "plug-ins". 
+    (This is especially important as <i>Adventurer</i> moves to a Kinect and Internet interface.) 
+    The DMC and HIC are prohibited from talking to each other directly, but must go through
+    the PDC. Importing an HIC class in the PDC or DMC is forbidden, and vice versa. 
+    In order to pass PDC independent data to
+     and from the HIC, which knows nothing about PDC type information, the GUI widget field
+     data (always Strings) are placed into a <i>field shuttle</i> to the CIV.  
+     The CIV validates the field data and converts the <i>field shuttle</i> to a <i>data shuttle</i>,
+     containing the internal format used by the PDC object.  
+     This <i>DataShuttle</i> approach means that getter and setter methods, which expose private 
+     variables to public scope, are avoided.
+     The HIC's <i>field shuttle</i>  and PDC's <i>DataShuttle</i> are the same key-value pair object, 
+     except that the shuttle's data keys are for HIC or PDC objects respectively, and the 
+     <i>field shuttle</i> contains only Strings. 
+</OL>
+
+<H3>Future Versions</H3>
+Currently, <code>Chronos</code> is a single-player game that allows the user to control
+up to four avatars in the same game from the same workstation. 
+The avatars start out by taking turns, but as different actions take different amounts of
+time to complete, and monsters and events pre-empt or interleave their actions, the game
+has a real-time "feel" to it, and each avatar takes its action as it can in sequence. 
+<P>
+Future versions willl support the Kinect NUI (natural user interface, or gesture-oriented interface)
+and will support multiple players controlling their avatars on their own computers across the Internet.  
+
+<h3>Related Documentation</h3>
+See the class diagram and sequence diagrams for the major use cases. <br>
+See also the documentation for <i>Quest Master</i> and <i>Adventurer</i>.
+<P>
+
+</body>
+</html>

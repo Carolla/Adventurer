@@ -1,0 +1,45 @@
+		Rule of thumb for ordering class elements
+public static final (constants)
+public static
+public
+private
+private singleton reference go near the constructor(s).
+
+		Rule of thumb for ordering methods elements
+		(Headers shown below are in order of frequency, for easy copy-n-paste.)
+Constructors and related methods
+public static
+public
+private
+private static --are these needed? 
+
+
+/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++  
+ * 								CONSTRUCTOR(S) AND RELATED METHODS
+ * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ */  
+	
+	
+/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++  
+ * 								PUBLIC METHODS
+ * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ */  
+
+
+/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++  
+ * 								PRIVATE METHODS
+ * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ */  
+	
+	
+/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++  
+ * 								PUBLIC STATIC METHODS
+ * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ */  
+
+
+/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++  
+ * 								ABSTRACT METHODS
+ * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ */  
+
+
+/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++  
+ * 								INNER CLASSES
+ * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ */  
+	
