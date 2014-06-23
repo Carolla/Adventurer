@@ -1,20 +1,20 @@
 /**
  * AdvRegistryFactory.java Copyright (c) 2014, Carolla Development, Inc. All Rights Reserved
  * 
- * Permission to make digital or hard copies of all or parts of this work for commercial use is prohibited. To
- * republish, to post on servers, to reuse, or to redistribute to lists, requires prior specific permission and/or a
- * fee. Request permission to use from Carolla Development, Inc. by email: acline@carolla.com
+ * Permission to make digital or hard copies of all or parts of this work for commercial use is
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
+ * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
+ * by email: acline@carolla.com
  */
 
 
 package pdc.registry;
 
+import mylib.pdc.Registry;
 import chronos.pdc.registry.RegistryFactory;
 
-import mylib.pdc.Registry;
-
 /**
- * <Class Description>
+ * Create the registry that contains all the adventures for Adventurer. 
  * 
  * @author Alan Cline
  * @version Feb 16, 2014 // original
@@ -28,8 +28,7 @@ public class AdvRegistryFactory extends RegistryFactory
   /**
    * Constructor(s) and Related Methods
    */
-
-  protected AdvRegistryFactory()
+  public AdvRegistryFactory()
   {}
 
 
@@ -47,31 +46,6 @@ public class AdvRegistryFactory extends RegistryFactory
   }
 
 
-//  protected Registry createRegistry(RegKey regtype)
-//  {
-//    Registry reg = null;
-//    // String regName = "pdc.registry." + regtype + "Registry";
-//    String regName = "chronos.pdc.registry." + regtype + "Registry";
-//    try {
-//      reg = (Registry) Class.forName(regName).newInstance();
-//      _regMap.put(regtype, reg);
-//
-//    } catch (ClassNotFoundException ex) {
-//      // Recovery: checking chronos registries
-//      reg = RegistryFactory.getRegistry(regtype);
-//
-//    } catch (IllegalAccessException ex) {
-//      System.err.println(" createRegistry(): cannot access specified method: " + ex.getMessage());
-//    } catch (IllegalArgumentException ex) {
-//      System.err.println(" createRegistry(): found unexpected argument: " + ex.getMessage());
-//    } catch (NullPointerException ex) {
-//      System.err.println(" createRegistry(): null pointer exception thrown: " + ex.getMessage());
-//    } catch (Exception ex) {
-//      System.err.println(" createRegistry(): unexpected exception thrown: " + ex.getMessage());
-//    }
-//    return reg;
-//  }
-
   // ============================================================
   // Public Methods
   // ============================================================
@@ -80,5 +54,6 @@ public class AdvRegistryFactory extends RegistryFactory
   // ============================================================
   // Private Methods
   // ============================================================
+
 }
 // end of AdvHelpRegistryFactory class

@@ -62,7 +62,8 @@ public class Adventurer
             public void windowClosing(WindowEvent e)
             {
               for (RegKey key : RegKey.values()) {
-                Registry reg = AdvRegistryFactory.getRegistry(key);
+                Registry reg = AdvRegistryFactory
+                    .getRegistry(key);
                 reg.closeRegistry();
               }
               super.windowClosing(e);
@@ -74,10 +75,8 @@ public class Adventurer
         }
       }
     });
-    
+
   } // end of static main()
-
-
 
   /**
    * Open all database Registries (singletons) for convenience and performance
@@ -90,7 +89,6 @@ public class Adventurer
       AdvRegistryFactory.getRegistry(key);
     }
   }
-
 
 } // end of Launcher class
 

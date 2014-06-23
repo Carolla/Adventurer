@@ -13,13 +13,9 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import net.miginfocom.swing.MigLayout;
-
-import mylib.Constants;
 import chronos.Chronos;
 
 /**
@@ -40,10 +36,9 @@ import chronos.Chronos;
 @SuppressWarnings("serial")
 public class ImagePanel extends JPanel {
 
-  /* Private Constants */
-  private static final String IMAGE_PATH = Chronos.WORKSPACE + Constants.FILE_SEPARATOR
-      + "Adventurer" + Constants.FILE_SEPARATOR + "resources" + Constants.FILE_SEPARATOR + "images"
-      + Constants.FILE_SEPARATOR;
+//  /* Private Constants */
+//  private static final String IMAGE_PATH = Chronos.RESOURCES_PATH + Constants.FILE_SEPARATOR + "images" 
+//      + Constants.FILE_SEPARATOR;
 
   /**
    * Gets the JLabel with the resized Image and adds it to the passed in panel.
@@ -60,8 +55,7 @@ public class ImagePanel extends JPanel {
   }
 
   /**
-   * Generates a JLabel with an Image that has been resized to the dimensions of the passed in
-   * panel.
+   * Generates a JLabel with an Image that has been resized to the dimensions of the passed in panel.
    * 
    * @param imageName name of the Image as a String
    * @param panelSize size for the image to be scaled to
@@ -69,7 +63,7 @@ public class ImagePanel extends JPanel {
    */
   private JLabel makeImageLabel(String imageName, Dimension panelSize) {
     // Make ImageIcon
-    ImageIcon imgIcon = makeImageIcon(IMAGE_PATH + imageName);
+    ImageIcon imgIcon = makeImageIcon(Chronos.ADV_IMAGE_PATH + imageName);
 
     // Resize the Image
     Image scaledImage = getScaledImage(imgIcon.getImage(), panelSize);

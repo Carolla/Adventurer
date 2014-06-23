@@ -92,7 +92,7 @@ public class TestPersonReadWriter extends TestCase {
 		String pers2 = "TestBob";
 
 		// Ensure that testBob file doesn't exist
-		String fileStr = Chronos.RESOURCES + pers2 + ".chr";
+		String fileStr = Chronos.RESOURCES_PATH + pers2 + ".chr";
 		File toDel = new File(fileStr);
 		if (toDel.exists()) {
 			assertTrue(toDel.delete());
@@ -123,7 +123,7 @@ public class TestPersonReadWriter extends TestCase {
 		assertTrue((q == r) && (r != p));
 
 		// Debugging
-		fileStr = Chronos.RESOURCES + pers2 + ".chr";
+		fileStr = Chronos.RESOURCES_PATH + pers2 + ".chr";
 		toDel = new File(fileStr);
 		assertTrue(toDel.delete());
 		assertNull(_persRW.load(pers2));

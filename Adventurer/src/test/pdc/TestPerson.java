@@ -11,19 +11,16 @@
 
 package test.pdc;
 
-import pdc.character.Person;
-import pdc.character.Person.MockPerson;
-
-import chronos.Chronos;
-import chronos.pdc.Race;
-
-import mylib.Constants;
-import mylib.MsgCtrl;
-
 import java.io.File;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
+import mylib.Constants;
+import mylib.MsgCtrl;
+import pdc.character.Person;
+import pdc.character.Person.MockPerson;
+import chronos.Chronos;
+import chronos.pdc.Race;
 
 /**
  * Tests the abstract Person's unit methods, which apply to a combination of
@@ -51,7 +48,7 @@ public class TestPerson extends TestCase {
 	// Base path for all files in this project
 	// final String RESOURCE_DIR =
 	// "/Projects/workspace/Adventurer/src/resources/";
-	final String RESOURCE_DIR = Chronos.RESOURCES;
+	final String RESOURCE_DIR = Chronos.RESOURCES_PATH;
 
 	// These attributes are bare minumum to allow access into the object methods
 	private final String _hisName = "Falsoon";

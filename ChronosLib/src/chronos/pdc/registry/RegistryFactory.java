@@ -12,11 +12,10 @@
 
 package chronos.pdc.registry;
 
-import chronos.Chronos;
+import java.util.HashMap;
 
 import mylib.pdc.Registry;
-
-import java.util.HashMap;
+import chronos.Chronos;
 
 /**
  *    Creates singleton registries of various kinds
@@ -74,15 +73,19 @@ public class RegistryFactory
         return _rf;
     }
 
+    /** Return the requested regsistry, or null if the registry is null or closed
+     * @param regtype one of the canonical immutable Registries
+     */
     protected Registry findRegistry(RegKey regtype)
     {
         Registry reg = _regMap.get(regtype);
-        if (isValidRegistry(reg))  {
-            return reg;
-        }
-        else {
-            return createRegistry(regtype);
-        }
+        return reg;
+//        if (isValidRegistry(reg))  {
+//            return reg;
+//        }
+//        else {
+//            return createRegistry(regtype);
+//        }
     }
 
     public boolean isValidRegistry(Registry reg) 
@@ -99,10 +102,9 @@ public class RegistryFactory
     //      Private Methods
     // ============================================================
     
-    protected Registry createRegistry(RegKey regtype)
+    private Registry createRegistry(RegKey regtype)
     {
         Registry reg = null;
-//        String regName = "Users.alancline.workspace.ChronosLib.resources.registries.BuildingRegistry";
         String regName = Chronos.REGISTRY_CLASSPKG + regtype + "Registry";    
         try {
             reg = (Registry) Class.forName(regName).newInstance();
@@ -122,5 +124,4 @@ public class RegistryFactory
         return reg;
     }
 
-    
 }           // end of RegistryFactory class

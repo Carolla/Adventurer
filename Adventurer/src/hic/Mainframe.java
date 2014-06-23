@@ -32,7 +32,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.border.EmptyBorder;
 
-import mylib.Constants;
 import mylib.hic.ShuttleList;
 import net.miginfocom.swing.MigLayout;
 import pdc.registry.AdvRegistryFactory;
@@ -56,10 +55,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
   private static final long serialVersionUID = -7749950528568777710L;
 
-  public static final String IMAGE_PATH = Chronos.WORKSPACE + Constants.FILE_SEPARATOR
-      + "Adventurer" + Constants.FILE_SEPARATOR + "resources" + Constants.FILE_SEPARATOR
-      + "images"
-      + Constants.FILE_SEPARATOR;
 
   private static final String REGISTRAR_IMAGE = "icn_Register.JPG";
   private static final String PORTAL_IMAGE = "ChronosLogo.JPG";
@@ -145,7 +140,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   {
     JButton button = new JButton(buttonText);
     button.setFont(new Font("Tahoma", Font.PLAIN, 24));
-    button.setIcon(new ImageIcon(IMAGE_PATH + imageFilePath));
+    button.setIcon(new ImageIcon(Chronos.ADV_IMAGE_PATH + imageFilePath));
     button.setIconTextGap(40);
     return button;
   }

@@ -12,7 +12,6 @@ package test.civ;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.awt.Point;
 import java.util.List;
@@ -67,7 +66,7 @@ public class TestMainFrameCiv
         _prw = mother.getMockPersonRW();
         _areg = mother.getMockAdventureRegistry();
         _breg = mother.getMockBuildingRegistry();
-        AdvRegistryFactory.addRegistry(RegKey.BLDG, _breg);
+//        AdvRegistryFactory.addRegistry(RegKey.BLDG, _breg);
         _mainciv = new MainframeCiv(_mf, _prw, _areg);
     }
 

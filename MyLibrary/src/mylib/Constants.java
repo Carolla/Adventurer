@@ -1,22 +1,22 @@
 /**
  * Constants.java Copyright (c) 2010, Carolla Development, Inc. All Rights Reserved
  * 
- * Permission to make digital or hard copies of all or parts of this work for commercial use is prohibited. To
- * republish, to post on servers, to reuse, or to redistribute to lists, requires prior specific permission and/or a
- * fee. Request permission to use from Carolla Development, Inc. by email: acline@carolla.com
+ * Permission to make digital or hard copies of all or parts of this work for commercial use is
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
+ * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
+ * by email: acline@carolla.com
  */
 
 package mylib;
 
-import java.io.File;
 
 /**
  * Contains the global constants and methods that all objects require.
  * 
  * @author Alan Cline
  * @version <DL>
- *          <DT>Build 1.0 5 Aug 2012 // original, most taken from Chronos.java
- *          <DD>
+ *          <DT>Build 1.0 Aug 5, 2012 // original, most taken from Chronos.java
+ *          <DT>Build 2.0 June 21, 2014 // ABC: Added env var CHRONOS_ROOT install dir location <DD>
  *          </DL>
  */
 public class Constants
@@ -33,8 +33,9 @@ public class Constants
   public static boolean IN_TEST = false;
 
   /**
-   * Current working directory of the user; assumes program is running here. Contains source files in workspace so that
-   * all other files can be found relatively. During installation, this root directory is assigned by the user.
+   * Current working directory of the user; assumes program is running here. Contains source files
+   * in workspace so that all other files can be found relatively. During installation, this root
+   * directory is assigned by the user.
    */
   public static final String ROOT_DIR = System.getProperty("user.dir");
   public static final String HOME_DIR = System.getProperty("user.home");
@@ -43,9 +44,8 @@ public class Constants
   public static final String FILE_SEPARATOR = System.getProperty("file.separator");
   /** Platform-dependent line separator */
   public static final String NEWLINE = System.getProperty("line.separator");
-//  public static final String WORKSPACE = new File(ROOT_DIR).getParent();
+  // public static final String WORKSPACE = new File(ROOT_DIR).getParent();
   public static final String WORKSPACE = HOME_DIR; // + FILE_SEPARATOR + USER_NAME;
-
 
   /**
    * Absolute root path to all resources, containing images, characters, and other non-source files
@@ -55,8 +55,8 @@ public class Constants
   public static final String USER_RESOURCES = RESOURCES + "user" + FILE_SEPARATOR;
 
   /**
-   * Default package name for class files. Package names differ from the directories in that they have a dot (.)
-   * separator instead of a slash (/) separator
+   * Default package name for class files. Package names differ from the directories in that they
+   * have a dot (.) separator instead of a slash (/) separator
    */
   public static String DEFAULT_PKG = "pdc.";
 

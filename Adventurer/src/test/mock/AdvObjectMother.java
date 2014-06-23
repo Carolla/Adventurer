@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mylib.MsgCtrl;
-import mylib.pdc.Registry;
 import chronos.pdc.Adventure;
 import chronos.pdc.NPC;
 import chronos.pdc.NullNPC;
@@ -187,10 +186,9 @@ public class AdvObjectMother
 //            _isClosed = false;
 //        }
 
-        @Override
-        public List<Adventure> getAdventureList()
+        public ArrayList<Adventure> getAdventureList()
         {
-            List<Adventure> list = new ArrayList<Adventure>();
+            ArrayList<Adventure> list = new ArrayList<Adventure>();
             list.add(new MockAdventure());
             return list;
         }

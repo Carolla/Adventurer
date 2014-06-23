@@ -71,8 +71,7 @@ public class DbReadWriter
     /** Error code for db4o possibilities */
     static public enum DB_ERROR 
     {
-        OK, FILE_LOCKED, CLOSED , RO_DB, NULL_PREDICATE, NULL_OBJECT, 
-                FILENAME, DB4OIO, FILE_FORMAT, OLD_FORMAT
+        OK, FILE_LOCKED, CLOSED , RO_DB, NULL_PREDICATE, NULL_OBJECT, FILENAME, DB4OIO, FILE_FORMAT, OLD_FORMAT
     }
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
@@ -240,7 +239,7 @@ public class DbReadWriter
                                 Db4oEmbedded.newConfiguration(), _regPath);
             }
         } catch (Db4oIOException ex) {
-            System.err.println("DbReadWriter ctor: " + DBERR_DB4OIO);
+            System.err.println("DbReadWriter ctor: " + ex.getMessage());
             return DB_ERROR.DB4OIO;
         } catch (DatabaseFileLockedException ex) {
             System.err.print("DbReadWriter ctor: " + DBERR_FILE_LOCKED + ": " + _regPath);

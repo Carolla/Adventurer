@@ -242,7 +242,7 @@ public class PersonReadWriter {
         // db4o code inserted here
         // accessDb4o
         ObjectContainer db = Db4oEmbedded.openFile(
-                Db4oEmbedded.newConfiguration(), Chronos.REGISTRIES
+                Db4oEmbedded.newConfiguration(), Chronos.REGISTRY_PATH
                         + Chronos.PersonRegPath);
         try {
             this.delete(p);
@@ -263,7 +263,7 @@ public class PersonReadWriter {
         }
 
         ObjectContainer db = Db4oEmbedded.openFile(
-                Db4oEmbedded.newConfiguration(), Chronos.REGISTRIES
+                Db4oEmbedded.newConfiguration(), Chronos.REGISTRY_PATH
                         + Chronos.PersonRegPath);
         try {
             String pName = p.getName();

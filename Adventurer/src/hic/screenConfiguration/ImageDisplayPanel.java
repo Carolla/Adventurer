@@ -23,9 +23,7 @@ import chronos.Chronos;
 public class ImageDisplayPanel extends JPanel {
 
   // Private Constants
-  private static final String IMAGE_PATH = Chronos.WORKSPACE + Constants.FILE_SEPARATOR
-      + "Adventurer" + Constants.FILE_SEPARATOR + "resources" + Constants.FILE_SEPARATOR + "images"
-      + Constants.FILE_SEPARATOR;
+  private static final String IMAGE_PATH = Chronos.RESOURCES_PATH + "images" + Constants.FILE_SEPARATOR;
   private static JFrame _frame;
 
   /**
