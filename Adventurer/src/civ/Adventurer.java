@@ -54,7 +54,6 @@ public class Adventurer
       public void run()
       {
         try {
-          initRegistries();
           final Mainframe frame = Mainframe.getInstance();
           frame.setVisible(true);
           frame.addWindowListener(new WindowAdapter() {
@@ -62,8 +61,7 @@ public class Adventurer
             public void windowClosing(WindowEvent e)
             {
               for (RegKey key : RegKey.values()) {
-                Registry reg = AdvRegistryFactory
-                    .getRegistry(key);
+                Registry reg = AdvRegistryFactory.getRegistry(key);
                 reg.closeRegistry();
               }
               super.windowClosing(e);

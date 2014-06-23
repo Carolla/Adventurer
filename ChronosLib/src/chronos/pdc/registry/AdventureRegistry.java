@@ -29,6 +29,8 @@ import com.db4o.query.Predicate;
  */
 public class AdventureRegistry extends Registry
 {
+  private static AdventureRegistry _thisReg = null;
+  
   /** Default Adventure */
   private final String DEF_ADVENTURE = "The Quest for Rogahn and Zelligar";
   /** Default Town to start AdventureRegistry with */
@@ -39,8 +41,7 @@ public class AdventureRegistry extends Registry
   private final String DEF_OVERVIEW =
       "This is the domain of Rogahn the mighty warrior, and Zelligar the powerful mage. "
           + "Together they ovethrew evil and made this frontier land safe for its humble and grateful "
-          + " inhabitants. \n\n"
-          + "About a year ago, Rogahn and Zelligar no longer frequented the town. "
+          + " inhabitants. \n\n" + "About a year ago, Rogahn and Zelligar no longer frequented the town. "
           + "At first the good people of Biljur'Baz, the local community, thought R & Z were on one of "
           + "their many quests that they undertook from time to time.\n\n "
           + "Recently, trade caravans have been attacked, villages looted, and merchants disappearing. "
@@ -50,8 +51,7 @@ public class AdventureRegistry extends Registry
           + "The local sheriff investigated two months ago, but has never returned from his visit to the Q. "
           + "The local guilds are offering rewards and fame to adventurers who are brave enough to "
           + "investigate and pull back the veil of this mystery.\n\n "
-          + "Of course, any loot that can be found or taken is always subject to the Common Law of "
-          + "Salvage: "
+          + "Of course, any loot that can be found or taken is always subject to the Common Law of " + "Salvage: "
           + "\n\n\tWhat can be carried away, can be kept.\n"
           + "\nWhether a Guild member or a peasant, an adventurous soul, well equipped with "
           + "bravery, determination, a stout heart, and the right weapons, can make a name for him "
@@ -60,7 +60,7 @@ public class AdventureRegistry extends Registry
 
 
   /*
-   * CONSTRUCTOR(S) AND RELATED METHODS 
+   * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
   protected AdventureRegistry()
@@ -69,11 +69,11 @@ public class AdventureRegistry extends Registry
   }
 
 
-  // protected AdventureRegistry getInstance()
-  // {
-  // AdventureRegistry reg = (AdventureRegistry) new AdventureRegistry();
-  // return reg;
-  // }
+//  protected AdventureRegistry getInstance()
+//  {
+//    AdventureRegistry reg = (AdventureRegistry) new AdventureRegistry();
+//    return reg;
+//  }
 
 
   /**
@@ -81,13 +81,13 @@ public class AdventureRegistry extends Registry
    * 
    * @return a AdventureRegistry singleton
    */
-  // static private AdventureRegistry getInstance()
-  // {
-  // if (_thisReg == null) {
-  // _thisReg = new AdventureRegistry();
-  // }
-  // return _thisReg;
-  // }
+  static private AdventureRegistry getInstance()
+  {
+    if (_thisReg == null) {
+      _thisReg = new AdventureRegistry();
+    }
+    return _thisReg;
+  }
 
   /**
    * Create the default Adventure Registry, containing only a single Adventure it is called by the
@@ -105,8 +105,7 @@ public class AdventureRegistry extends Registry
 
 
   /**
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PUBLIC METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * PUBLIC METHODS 
    */
 
   // /** Close db, destroy the dbReadWriter and set this registry to null

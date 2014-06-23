@@ -37,6 +37,7 @@ public class AdvRegistryFactory extends RegistryFactory
     return AdvRegistryFactory.getInstance().findRegistry(regtype);
   }
 
+  
   static public AdvRegistryFactory getInstance()
   {
     if (_arf == null) {
