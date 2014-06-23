@@ -73,7 +73,6 @@ public abstract class Registry
   {
     // Creates registry file and reloads it (new registry will be empty)
     if (filename != null) {
-      System.out.println("Registry ctor: Trying to create DBReadWriter at " + filename);
       _regRW = new DbReadWriter(filename);
       _isClosed = false;
       // Set the persistence number of elements in the Registry
