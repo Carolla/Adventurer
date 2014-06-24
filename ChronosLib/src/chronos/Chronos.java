@@ -64,12 +64,12 @@ public class Chronos
   /** Chared images are in the ChronosLib resources directory */
   public static final String IMAGE_PATH = RESOURCES_PATH + FS + "images" + FS;
 
-//  static {
-//    System.out.println("RESOURCES_PATH = " + RESOURCES_PATH);
-//    System.out.println("IMAGE_PATH = " + IMAGE_PATH);
-//    System.out.println("ADV_RESOURCES_PATH = " + ADV_RESOURCES_PATH);
-//    System.out.println("ADV_IMAGE_PATH = " + ADV_IMAGE_PATH);
-//  }
+  static {
+    System.out.println("RESOURCES_PATH = " + RESOURCES_PATH);
+    System.out.println("IMAGE_PATH = " + IMAGE_PATH);
+    System.out.println("ADV_RESOURCES_PATH = " + ADV_RESOURCES_PATH);
+    System.out.println("ADV_IMAGE_PATH = " + ADV_IMAGE_PATH);
+  }
 
   /** Location of AdventureRegistry */
   public static String AdventureRegPath = REGISTRY_PATH + "Adventures.reg";
@@ -92,7 +92,7 @@ public class Chronos
   public static String FakeRegPath = REGISTRY_PATH + "FakeStuff.reg";
 
   /** Location of HelpRegistry */
-  public static String AdventureHelpRegPath = RESOURCES_PATH + FS + "help" + FS + "AdventureHelp.reg";
+  public static String AdventureHelpRegPath = ADV_RESOURCES_PATH + FS + "help" + FS + "AdventureHelp.reg";
 
   /** Location of Arenas (dungeons), one each in their own db file */
   public static final String ArenaPath = RESOURCES_PATH + "data" + FS;

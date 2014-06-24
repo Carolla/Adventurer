@@ -4,8 +4,8 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/MyLibrary"/>
-	<classpathentry kind="lib" path="/Users/alancline/git/eChronos/MyLibrary/src/mylib/libResources/db4o-8.0.249.16098-core-java5.jar"/>
-	<classpathentry kind="lib" path="/Users/alancline/git/eChronos/MyLibrary/src/mylib/libResources/hamcrest-all-1.3.jar"/>
-	<classpathentry kind="lib" path="/Users/alancline/git/eChronos/MyLibrary/src/mylib/libResources/miglayout-3.7.3.1-swing.jar"/>
+	<classpathentry kind="lib" path="C:/Users/OG/git/eChronos/MyLibrary/src/mylib/libResources/db4o-8.0.249.16098-core-java5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/OG/git/eChronos/MyLibrary/src/mylib/libResources/hamcrest-all-1.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/OG/git/eChronos/MyLibrary/src/mylib/libResources/miglayout-3.7.3.1-swing.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
