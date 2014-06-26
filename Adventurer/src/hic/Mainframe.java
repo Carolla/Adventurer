@@ -41,6 +41,19 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.MainframeCiv;
 import dmc.PersonReadWriter;
 
+/** Singleton frame to hold the menu bar and two panels: 
+ * Before an Adventure is selected: 
+ * 
+ * Shows the button panel on the left, and the Chronos logo on the right.
+ * 
+ * After an Adventure is selected:
+ * 
+ * Shows an output panel for the scrolling text (initially the selected Town description), 
+ * and the input command line text area on the left;
+ * and an image display panel on the right (initially showing the Town image with clickable buildings).   
+ * 
+ * @author Al Cline
+ */
 public class Mainframe extends JFrame implements MouseListener, MouseMotionListener
 {
   /** Reference to this singleton */
