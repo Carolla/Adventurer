@@ -7,6 +7,7 @@
  */
 
 package mylib.pdc;
+//Tim Armstrong
 
 import java.io.File;
 import java.util.ArrayList;
