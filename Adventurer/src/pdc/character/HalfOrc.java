@@ -11,21 +11,19 @@
 
 package pdc.character;
 
-import pdc.registry.AdvRegistryFactory;
-
-import chronos.Chronos.ATTRIBUTE;
-import chronos.pdc.AttributeList;
-import chronos.pdc.Race;
-import chronos.pdc.Skill;
-import chronos.pdc.registry.RegistryFactory.RegKey;
-import chronos.pdc.registry.SkillRegistry;
+import java.io.Serializable;
+import java.util.ArrayList;
 
 import mylib.ApplicationException;
 import mylib.MsgCtrl;
 import mylib.pdc.MetaDie;
-
-import java.io.Serializable;
-import java.util.ArrayList;
+import chronos.Chronos.ATTRIBUTE;
+import chronos.pdc.AttributeList;
+import chronos.pdc.Race;
+import chronos.pdc.Skill;
+import chronos.pdc.registry.RegistryFactory;
+import chronos.pdc.registry.RegistryFactory.RegKey;
+import chronos.pdc.registry.SkillRegistry;
 
 /**
  * The <code>Half-Orc</code> is a mixed breed of human and orc (ugh!). Half-Orcs
@@ -101,7 +99,7 @@ public class HalfOrc extends Race implements Serializable {
     /** Assign the skills that the Half-Orc has */
     public ArrayList<Skill> assignSkills(ArrayList<Skill> inSkills) {
         Skill skill = new Skill();
-        SkillRegistry skreg = (SkillRegistry) AdvRegistryFactory.getRegistry(RegKey.SKILL);
+        SkillRegistry skreg = (SkillRegistry) RegistryFactory.getRegistry(RegKey.SKILL);
         for (int i = 0; i < _horcSkills.length; i++) {
             String skillName = _horcSkills[i];
             skill = skreg.getSkill(skillName);

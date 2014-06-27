@@ -17,24 +17,22 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import pdc.registry.AdvHelpRegistry;
-import pdc.registry.AdvHelpRegistry.MockAdvHelpRegistry;
-import pdc.registry.AdvRegistryFactory;
-
-import civ.HelpTextObject;
-
-import chronos.Chronos;
-import chronos.pdc.registry.RegistryFactory.RegKey;
+import java.io.File;
 
 import mylib.MsgCtrl;
-
-import java.io.File;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import pdc.registry.AdvHelpRegistry;
+import pdc.registry.AdvHelpRegistry.MockAdvHelpRegistry;
+import chronos.Chronos;
+import chronos.pdc.registry.RegistryFactory;
+import chronos.pdc.registry.RegistryFactory.RegKey;
+import civ.HelpTextObject;
 
 
 /**
@@ -78,7 +76,7 @@ public class TestAdvHelpRegistry
     public void setUp() throws Exception
     {
         MsgCtrl.errorMsgsOn(true);
-        _reg = (AdvHelpRegistry) AdvRegistryFactory.getRegistry(RegKey.HELP);
+        _reg = (AdvHelpRegistry) RegistryFactory.getRegistry(RegKey.HELP);
         _mock = _reg.new MockAdvHelpRegistry();
     }
 
@@ -118,7 +116,7 @@ public class TestAdvHelpRegistry
 //        assertNull(_mock.getInternalReference());
 
         // Reopen registries so that the tearDown() method doesn't bomb
-        _reg = (AdvHelpRegistry) AdvRegistryFactory.getRegistry(RegKey.HELP);
+        _reg = (AdvHelpRegistry) RegistryFactory.getRegistry(RegKey.HELP);
 
     }
 
@@ -142,7 +140,7 @@ public class TestAdvHelpRegistry
         assertFalse(file.exists());
 
         // Reopen registries so that the tearDown() method doesn't bomb
-        _reg = (AdvHelpRegistry) AdvRegistryFactory.getRegistry(RegKey.HELP);
+        _reg = (AdvHelpRegistry) RegistryFactory.getRegistry(RegKey.HELP);
 
     }
 

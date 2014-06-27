@@ -3,14 +3,6 @@ package test.other;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import pdc.registry.AdvRegistryFactory;
-
-import chronos.pdc.Occupation;
-import chronos.pdc.Skill;
-import chronos.pdc.registry.OccupationRegistry;
-import chronos.pdc.registry.RegistryFactory.RegKey;
-import chronos.pdc.registry.SkillRegistry;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -18,6 +10,13 @@ import java.util.PriorityQueue;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import chronos.pdc.Occupation;
+import chronos.pdc.Skill;
+import chronos.pdc.registry.OccupationRegistry;
+import chronos.pdc.registry.RegistryFactory;
+import chronos.pdc.registry.RegistryFactory.RegKey;
+import chronos.pdc.registry.SkillRegistry;
 
 /**
  * Display the Skills and Items from the SkillRegistry and ItemRegistry as a
@@ -33,8 +32,8 @@ public class RegistryReadingTest {
 
     @Before
     public void setUp() throws Exception {
-        sr = (SkillRegistry) AdvRegistryFactory.getRegistry(RegKey.SKILL);
-        or = (OccupationRegistry) AdvRegistryFactory.getRegistry(RegKey.OCP);
+        sr = (SkillRegistry) RegistryFactory.getRegistry(RegKey.SKILL);
+        or = (OccupationRegistry) RegistryFactory.getRegistry(RegKey.OCP);
         assertTrue(sr != null);
         assertNotNull(or);
 

@@ -22,13 +22,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import pdc.registry.AdvRegistryFactory;
 import test.mock.AdvObjectMother;
 import test.mock.AdvObjectMother.MockAdventureRegistry;
 import test.mock.AdvObjectMother.MockBuildingRegistry;
 import test.mock.AdvObjectMother.MockMainframe;
 import test.mock.AdvObjectMother.MockPersonRW;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.MainframeCiv;
 
 /**

@@ -19,29 +19,29 @@ import chronos.pdc.registry.RegistryFactory;
  * @author Alan Cline
  * @version Feb 16, 2014 // original
  */
-public class AdvRegistryFactory extends RegistryFactory
+public class _AdvRegistryFactory extends RegistryFactory
 {
 
-  static private AdvRegistryFactory _arf = null;
+  static private _AdvRegistryFactory _arf = null;
 
 
   /**
    * Constructor(s) and Related Methods
    */
-  public AdvRegistryFactory()
+  public _AdvRegistryFactory()
   {}
 
 
   static public Registry getRegistry(RegKey regtype)
   {
-    return AdvRegistryFactory.getInstance().findRegistry(regtype);
+    return RegistryFactory.getInstance().findRegistry(regtype);
   }
 
   
-  static public AdvRegistryFactory getInstance()
+  static public RegistryFactory getInstance()
   {
     if (_arf == null) {
-      _arf = new AdvRegistryFactory();
+      _arf = new _AdvRegistryFactory();
     }
     return _arf;
   }

@@ -11,20 +11,18 @@
 
 package pdc.character;
 
-import pdc.registry.AdvRegistryFactory;
+import java.io.Serializable;
+import java.util.ArrayList;
 
+import mylib.ApplicationException;
+import mylib.MsgCtrl;
 import chronos.Chronos.ATTRIBUTE;
 import chronos.pdc.AttributeList;
 import chronos.pdc.Race;
 import chronos.pdc.Skill;
+import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import chronos.pdc.registry.SkillRegistry;
-
-import mylib.ApplicationException;
-import mylib.MsgCtrl;
-
-import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
  * The <code>Elf</code> is a lithe and free-spirited Hero. Elf tends to make
@@ -109,7 +107,7 @@ public class Elf extends Race implements Serializable {
     /** Assign the skills that the Elf has */
     public ArrayList<Skill> assignSkills(ArrayList<Skill> inSkills) {
         Skill skill = new Skill();
-        SkillRegistry skreg = (SkillRegistry) AdvRegistryFactory.getRegistry(RegKey.SKILL);
+        SkillRegistry skreg = (SkillRegistry) RegistryFactory.getRegistry(RegKey.SKILL);
         // skreg.load();
         for (int i = 0; i < _elfSkills.length; i++) {
             String skillName = _elfSkills[i];

@@ -19,7 +19,6 @@ import mylib.civ.DataShuttle.ErrorType;
 import mylib.dmc.IRegistryElement;
 import pdc.Inventory;
 import pdc.Klass;
-import pdc.registry.AdvRegistryFactory;
 import chronos.Chronos;
 import chronos.Chronos.ATTRIBUTE;
 import chronos.civ.MiscKeys;
@@ -33,6 +32,7 @@ import chronos.pdc.Occupation;
 import chronos.pdc.Race;
 import chronos.pdc.Skill;
 import chronos.pdc.registry.OccupationRegistry;
+import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import chronos.pdc.registry.SkillRegistry;
 import civ.HeroDisplayCiv;
@@ -409,7 +409,7 @@ public class Person implements Serializable, IRegistryElement
         }
 
         // Create the Occupation object from its name
-        _Occupation = ((OccupationRegistry) AdvRegistryFactory.getRegistry(RegKey.OCP)).getOccupation(occup);
+        _Occupation = ((OccupationRegistry) RegistryFactory.getRegistry(RegKey.OCP)).getOccupation(occup);
         // Verify that good objects were created
         if (_Occupation == null) {
             throw new InstantiationException(String.format(
@@ -1829,7 +1829,7 @@ public class Person implements Serializable, IRegistryElement
         // Get the skill associated with the person's occupation
         String occSkillName = _Occupation.getSkillName();
         Skill s = null;
-        s = ((SkillRegistry) AdvRegistryFactory.getRegistry(RegKey.SKILL)).getSkill(occSkillName);
+        s = ((SkillRegistry) RegistryFactory.getRegistry(RegKey.SKILL)).getSkill(occSkillName);
         _skills.add(s);
         // Append the skills associated with the person's Race and return
         _skills = _Race.assignSkills(_skills);

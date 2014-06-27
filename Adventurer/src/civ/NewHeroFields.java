@@ -11,19 +11,17 @@
 
 package civ;
 
-import pdc.registry.AdvRegistryFactory;
-
-import chronos.pdc.Occupation;
-import chronos.pdc.Race;
-import chronos.pdc.registry.OccupationRegistry;
-import chronos.pdc.registry.RegistryFactory.RegKey;
-
-import mylib.civ.DataShuttle;
-import mylib.civ.DataShuttle.ErrorType;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import mylib.civ.DataShuttle;
+import mylib.civ.DataShuttle.ErrorType;
+import chronos.pdc.Occupation;
+import chronos.pdc.Race;
+import chronos.pdc.registry.OccupationRegistry;
+import chronos.pdc.registry.RegistryFactory;
+import chronos.pdc.registry.RegistryFactory.RegKey;
 
 /**
  * Contains the widget keys to the display fields for the new Hero widget, and
@@ -159,7 +157,7 @@ public enum NewHeroFields {
         public ArrayList<String> getDefault()
         {
             _list = new ArrayList<String>();
-            for (Occupation o : ((OccupationRegistry) AdvRegistryFactory.getRegistry(RegKey.OCP))
+            for (Occupation o : ((OccupationRegistry) RegistryFactory.getRegistry(RegKey.OCP))
                     .getOccupationList()) {
                 _list.add(o.getName());
             }

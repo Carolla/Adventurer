@@ -17,7 +17,7 @@ import java.awt.event.WindowEvent;
 
 import mylib.ApplicationException;
 import mylib.pdc.Registry;
-import pdc.registry.AdvRegistryFactory;
+import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 
 /**
@@ -61,7 +61,7 @@ public class Adventurer
             public void windowClosing(WindowEvent e)
             {
               for (RegKey key : RegKey.values()) {
-                Registry reg = AdvRegistryFactory.getRegistry(key);
+                Registry reg = RegistryFactory.getRegistry(key);
                 reg.closeRegistry();
               }
               super.windowClosing(e);
@@ -84,7 +84,7 @@ public class Adventurer
   private static void initRegistries()
   {
     for (RegKey key : RegKey.values()) {
-      AdvRegistryFactory.getRegistry(key);
+      RegistryFactory.getRegistry(key);
     }
   }
 

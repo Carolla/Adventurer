@@ -22,9 +22,9 @@ import mylib.MsgCtrl;
 import mylib.civ.BaseCiv;
 import mylib.civ.DataShuttle;
 import mylib.civ.DataShuttle.ErrorType;
-import pdc.registry.AdvRegistryFactory;
 import chronos.civ.SkillKeys;
 import chronos.pdc.Skill;
+import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import chronos.pdc.registry.SkillRegistry;
 
@@ -81,8 +81,7 @@ public class SkillDisplayCiv extends BaseCiv<SkillKeys, SkillKeys> implements
     // private DataShuttle<SkillKeys> _ws = null;
 
     /*
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND
-     * RELATED METHODS ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     * CONSTRUCTOR(S) AND RELATED METHODS 
      */
 
     /** Default constructor */
@@ -90,7 +89,7 @@ public class SkillDisplayCiv extends BaseCiv<SkillKeys, SkillKeys> implements
         _ds = new DataShuttle<SkillKeys>(SkillKeys.class);
         _ws = new DataShuttle<SkillKeys>(SkillKeys.class);
         // This should be _model
-        _skreg = (SkillRegistry) AdvRegistryFactory.getRegistry(RegKey.SKILL);
+        _skreg = (SkillRegistry) RegistryFactory.getRegistry(RegKey.SKILL);
         // _skreg.load(); //TODO: Fix this line.
         // _skreg.addObserver(this);
     }

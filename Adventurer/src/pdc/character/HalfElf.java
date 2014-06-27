@@ -11,19 +11,17 @@
 
 package pdc.character;
 
-import pdc.registry.AdvRegistryFactory;
-
-import chronos.pdc.AttributeList;
-import chronos.pdc.Race;
-import chronos.pdc.Skill;
-import chronos.pdc.registry.RegistryFactory.RegKey;
-import chronos.pdc.registry.SkillRegistry;
+import java.io.Serializable;
+import java.util.ArrayList;
 
 import mylib.ApplicationException;
 import mylib.pdc.MetaDie;
-
-import java.io.Serializable;
-import java.util.ArrayList;
+import chronos.pdc.AttributeList;
+import chronos.pdc.Race;
+import chronos.pdc.Skill;
+import chronos.pdc.registry.RegistryFactory;
+import chronos.pdc.registry.RegistryFactory.RegKey;
+import chronos.pdc.registry.SkillRegistry;
 
 /**
  * The <code>Half-Elf</code> is a mixed breed of human and elf. Half-Elves have
@@ -103,7 +101,7 @@ public class HalfElf extends Race implements Serializable {
     /** Assign the skills that the Half-Elf has */
     public ArrayList<Skill> assignSkills(ArrayList<Skill> inSkills) {
         Skill skill = new Skill();
-        SkillRegistry skreg = (SkillRegistry) AdvRegistryFactory.getRegistry(RegKey.SKILL);
+        SkillRegistry skreg = (SkillRegistry) RegistryFactory.getRegistry(RegKey.SKILL);
         for (int i = 0; i < _helfSkills.length; i++) {
             String skillName = _helfSkills[i];
             skill = skreg.getSkill(skillName);

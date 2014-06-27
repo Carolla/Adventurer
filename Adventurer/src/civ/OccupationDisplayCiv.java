@@ -22,11 +22,11 @@ import mylib.MsgCtrl;
 import mylib.civ.BaseCiv;
 import mylib.civ.DataShuttle;
 import mylib.civ.DataShuttle.ErrorType;
-import pdc.registry.AdvRegistryFactory;
 import chronos.civ.OccupationKeys;
 import chronos.pdc.Occupation;
 import chronos.pdc.Skill;
 import chronos.pdc.registry.OccupationRegistry;
+import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import chronos.pdc.registry.SkillRegistry;
 
@@ -70,8 +70,8 @@ public class OccupationDisplayCiv extends
     public OccupationDisplayCiv() {
         _ds = new DataShuttle<OccupationKeys>(OccupationKeys.class);
         _ws = new DataShuttle<OccupationKeys>(OccupationKeys.class);
-        _occreg = (OccupationRegistry) AdvRegistryFactory.getRegistry(RegKey.OCP); // This should be _model
-        _skreg = (SkillRegistry) AdvRegistryFactory.getRegistry(RegKey.SKILL); // This should be _model
+        _occreg = (OccupationRegistry) RegistryFactory.getRegistry(RegKey.OCP); // This should be _model
+        _skreg = (SkillRegistry) RegistryFactory.getRegistry(RegKey.SKILL); // This should be _model
     }
 
     /**

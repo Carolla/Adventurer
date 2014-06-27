@@ -34,9 +34,9 @@ import javax.swing.border.EmptyBorder;
 
 import mylib.hic.ShuttleList;
 import net.miginfocom.swing.MigLayout;
-import pdc.registry.AdvRegistryFactory;
 import chronos.Chronos;
 import chronos.pdc.registry.AdventureRegistry;
+import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.MainframeCiv;
 import dmc.PersonReadWriter;
@@ -84,7 +84,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private JTextPane _heroList;
   private JPanel _buttonPanel;
   private JPanel _leftPanel;
-  private MainframeCiv _advCiv;
+  private MainframeCiv _mfCiv;
   private InputPanel _cmdLine;
   private List<String> _partyHeros = new ArrayList<String>();
   private List<String> _summonableHeroes;
@@ -120,7 +120,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     button.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e)
       {
-        List<String> adventures = _advCiv.getAdventures();
+        List<String> adventures = _mfCiv.getAdventures();
         Object[] adventuresArr = adventures.toArray();
         Object selectedValue =
             JOptionPane.showInputDialog(Mainframe.this, "Select an Adventure",
@@ -130,7 +130,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
         if (selectedValue != null) {
           System.out.println("Adventure selected was " + selectedValue);
-          _advCiv.loadAdventure(selectedValue.toString());
+          _mfCiv.loadAdventure(selectedValue.toString());
         }
       }
     });
@@ -162,9 +162,12 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
   protected void createCivs()
   {
-    _advCiv =
-        new MainframeCiv(this, new PersonReadWriter(),
-            (AdventureRegistry) AdvRegistryFactory.getRegistry(RegKey.ADV));
+    AdventureRegistry advreg = (AdventureRegistry) RegistryFactory.getRegistry(RegKey.ADV);
+    _mfCiv =
+        new MainframeCiv(this, new PersonReadWriter(), advreg);
+//    _mfCiv =
+//        new MainframeCiv(this, new PersonReadWriter(),
+//            (AdventureRegistry) AdvRegistryFactory.getRegistry(RegKey.ADV));
   }
 
   
@@ -195,7 +198,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
    */
   private void createCommandLine()
   {
-    _cmdLine = new InputPanel(_advCiv.getCmdParser());
+    _cmdLine = new InputPanel(_mfCiv.getCmdParser());
   }
 
   
@@ -256,7 +259,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
       public void actionPerformed(ActionEvent e)
       {
         if (_partyHeros.size() == 0) {
-          _summonableHeroes = _advCiv.openDormitory();
+          _summonableHeroes = _mfCiv.openDormitory();
           showPartyPickerWhenPartyEmpty();
         } else {
           showPartyPickerWhenMembersAlreadySelected();
@@ -438,7 +441,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
   public void mouseClicked(MouseEvent e)
   {
-    _advCiv.handleClick(e.getPoint());
+    _mfCiv.handleClick(e.getPoint());
   }
 
 
@@ -459,13 +462,13 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
   public void mouseDragged(MouseEvent e)
   {
-    _advCiv.handleMouseMovement(e.getPoint());
+    _mfCiv.handleMouseMovement(e.getPoint());
   }
 
 
   public void mouseMoved(MouseEvent e)
   {
-    _advCiv.handleMouseMovement(e.getPoint());
+    _mfCiv.handleMouseMovement(e.getPoint());
   }
 
   public Dimension getImagePanelSize()

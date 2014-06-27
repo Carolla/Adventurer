@@ -11,20 +11,18 @@
 
 package pdc;
 
-import pdc.registry.AdvRegistryFactory;
-
-import chronos.civ.MiscKeys.ItemCategory;
-import chronos.pdc.Item;
-import chronos.pdc.registry.ItemRegistry;
-import chronos.pdc.registry.RegistryFactory.RegKey;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.EnumMap;
 
 import mylib.ApplicationException;
 import mylib.Constants;
 import mylib.MsgCtrl;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.EnumMap;
+import chronos.civ.MiscKeys.ItemCategory;
+import chronos.pdc.Item;
+import chronos.pdc.registry.ItemRegistry;
+import chronos.pdc.registry.RegistryFactory;
+import chronos.pdc.registry.RegistryFactory.RegKey;
 
 /**
  * Contains the Person's collection of Items. All weights are in ounces; the client object
@@ -418,7 +416,7 @@ public class Inventory implements Serializable
      */
     public ArrayList<Item> initStartingInventory()
     {
-        ItemRegistry ireg = (ItemRegistry) AdvRegistryFactory.getRegistry(RegKey.ITEM);
+        ItemRegistry ireg = (ItemRegistry) RegistryFactory.getRegistry(RegKey.ITEM);
 
         for (int i = 0; i < _startList.length; i++) {
             Item it = null;

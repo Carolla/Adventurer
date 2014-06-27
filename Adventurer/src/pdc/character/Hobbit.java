@@ -11,20 +11,18 @@
 
 package pdc.character;
 
-import pdc.registry.AdvRegistryFactory;
+import java.io.Serializable;
+import java.util.ArrayList;
 
+import mylib.ApplicationException;
+import mylib.MsgCtrl;
 import chronos.Chronos.ATTRIBUTE;
 import chronos.pdc.AttributeList;
 import chronos.pdc.Race;
 import chronos.pdc.Skill;
+import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import chronos.pdc.registry.SkillRegistry;
-
-import mylib.ApplicationException;
-import mylib.MsgCtrl;
-
-import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
  * The <code>Hobbit</code> is a stout and loyal friend. Hobbit tends to make
@@ -95,7 +93,7 @@ public class Hobbit extends Race implements Serializable {
     /** Assign the skills that the Hobbit has */
     public ArrayList<Skill> assignSkills(ArrayList<Skill> inSkills) {
         Skill skill = new Skill();
-        SkillRegistry skreg = (SkillRegistry) AdvRegistryFactory.getRegistry(RegKey.SKILL);
+        SkillRegistry skreg = (SkillRegistry) RegistryFactory.getRegistry(RegKey.SKILL);
         // skreg.load();
         for (int i = 0; i < _hobbitSkills.length; i++) {
             String skillName = _hobbitSkills[i];

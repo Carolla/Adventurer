@@ -21,10 +21,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import pdc.registry.AdvRegistryFactory;
 import chronos.pdc.Adventure;
 import chronos.pdc.registry.AdventureRegistry;
 import chronos.pdc.registry.BuildingRegistry;
+import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import dmc.PersonReadWriter;
 
@@ -96,7 +96,8 @@ public class MainframeCiv
     _frame = frame;
     _personRW = personRW;
     _advReg = advReg;
-    _bdCiv = new BuildingDisplayCiv(_frame, (BuildingRegistry) AdvRegistryFactory.getRegistry(RegKey.BLDG));
+    _bdCiv = new BuildingDisplayCiv(_frame, (BuildingRegistry) RegistryFactory.getRegistry(RegKey.BLDG));
+//    _bdCiv = new BuildingDisplayCiv(_frame, (BuildingRegistry) AdvRegistryFactory.getRegistry(RegKey.BLDG));
     // initRegistries();
     createBuildingBoxes();
     _cp = new CommandParser(this);

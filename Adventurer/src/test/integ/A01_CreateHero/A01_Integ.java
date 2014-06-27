@@ -4,9 +4,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import pdc.character.Person;
-import pdc.registry.AdvRegistryFactory;
+import java.util.List;
 
+import org.junit.Assert;
+import org.junit.Test;
+
+import pdc.character.Person;
 import chronos.Chronos.ATTRIBUTE;
 import chronos.civ.MiscKeys.Literacy;
 import chronos.pdc.AttributeList;
@@ -14,13 +17,9 @@ import chronos.pdc.Occupation;
 import chronos.pdc.Race;
 import chronos.pdc.Skill;
 import chronos.pdc.registry.OccupationRegistry;
+import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import chronos.pdc.registry.SkillRegistry;
-
-import java.util.List;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 public class A01_Integ
 {
@@ -309,7 +308,8 @@ public class A01_Integ
     @Test
     public void itAddsTheOccupationalSkill()
     {
-        Occupation occ = ((OccupationRegistry) AdvRegistryFactory.getRegistry(RegKey.OCP)).getOccupation("Fisher");
+      Occupation occ = ((OccupationRegistry) RegistryFactory.getRegistry(RegKey.OCP)).getOccupation("Fisher");
+//      Occupation occ = ((OccupationRegistry) AdvRegistryFactory.getRegistry(RegKey.OCP)).getOccupation("Fisher");
         Person p = PersonMaker.makePerson(occ);
         assertTrue(p.getSkills().contains(occ));
     }
@@ -333,7 +333,8 @@ public class A01_Integ
         "Resistance to Charm", "Archery", "Tingling", "Move Silently"};
         List<Skill> skills = p.getSkills();
         for (String s : elfSkills) {
-            Skill skl = ((SkillRegistry) AdvRegistryFactory.getRegistry(RegKey.SKILL)).getSkill(s);
+          Skill skl = ((SkillRegistry) RegistryFactory.getRegistry(RegKey.SKILL)).getSkill(s);
+//          Skill skl = ((SkillRegistry) AdvRegistryFactory.getRegistry(RegKey.SKILL)).getSkill(s);
             assertTrue(skills.contains(skl));
         }
         // TODO Auto-generated method stub

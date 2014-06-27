@@ -13,20 +13,6 @@
 package test.pdc.registry;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-
-import pdc.registry.AdvHelpRegistry;
-import pdc.registry.AdvRegistryFactory;
-
-import chronos.pdc.registry.AdventureRegistry;
-import chronos.pdc.registry.BuildingRegistry;
-import chronos.pdc.registry.ItemRegistry;
-import chronos.pdc.registry.NPCRegistry;
-import chronos.pdc.registry.OccupationRegistry;
-import chronos.pdc.registry.RegistryFactory.RegKey;
-import chronos.pdc.registry.SkillRegistry;
-import chronos.pdc.registry.TownRegistry;
-
 import mylib.MsgCtrl;
 import mylib.pdc.Registry;
 
@@ -35,6 +21,17 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import pdc.registry.AdvHelpRegistry;
+import chronos.pdc.registry.AdventureRegistry;
+import chronos.pdc.registry.BuildingRegistry;
+import chronos.pdc.registry.ItemRegistry;
+import chronos.pdc.registry.NPCRegistry;
+import chronos.pdc.registry.OccupationRegistry;
+import chronos.pdc.registry.RegistryFactory;
+import chronos.pdc.registry.RegistryFactory.RegKey;
+import chronos.pdc.registry.SkillRegistry;
+import chronos.pdc.registry.TownRegistry;
 
 /**
  *    <Class Description>
@@ -96,39 +93,39 @@ public class TestAdvRegistry
     @Test
     public void testRegistryList()
     {        
-        AdventureRegistry areg = (AdventureRegistry) AdvRegistryFactory.getRegistry(RegKey.ADV);
+        AdventureRegistry areg = (AdventureRegistry) RegistryFactory.getRegistry(RegKey.ADV);
         assertNotNull(areg);
         areg.closeRegistry();
         
-        BuildingRegistry breg = (BuildingRegistry) AdvRegistryFactory.getRegistry(RegKey.BLDG);
+        BuildingRegistry breg = (BuildingRegistry) RegistryFactory.getRegistry(RegKey.BLDG);
         assertNotNull(breg);
         breg.closeRegistry();
         
-        ItemRegistry ireg = (ItemRegistry) AdvRegistryFactory.getRegistry(RegKey.ITEM);
+        ItemRegistry ireg = (ItemRegistry) RegistryFactory.getRegistry(RegKey.ITEM);
         assertNotNull(ireg);
         ireg.closeRegistry();
         
-        NPCRegistry nreg = (NPCRegistry) AdvRegistryFactory.getRegistry(RegKey.NPC);
+        NPCRegistry nreg = (NPCRegistry) RegistryFactory.getRegistry(RegKey.NPC);
         assertNotNull(nreg);
         nreg.closeRegistry();
         
-        OccupationRegistry oreg = (OccupationRegistry) AdvRegistryFactory.getRegistry(RegKey.OCP);
+        OccupationRegistry oreg = (OccupationRegistry) RegistryFactory.getRegistry(RegKey.OCP);
         assertNotNull(oreg);
         oreg.closeRegistry();
         
-        SkillRegistry sreg = (SkillRegistry) AdvRegistryFactory.getRegistry(RegKey.SKILL);
+        SkillRegistry sreg = (SkillRegistry) RegistryFactory.getRegistry(RegKey.SKILL);
         assertNotNull(sreg);
         sreg.closeRegistry();
 
-        TownRegistry treg = (TownRegistry) AdvRegistryFactory.getRegistry(RegKey.TOWN);
+        TownRegistry treg = (TownRegistry) RegistryFactory.getRegistry(RegKey.TOWN);
         assertNotNull(treg);
         treg.closeRegistry();
         // Close secondary registry
-        breg = (BuildingRegistry) AdvRegistryFactory.getRegistry(RegKey.BLDG);
+        breg = (BuildingRegistry) RegistryFactory.getRegistry(RegKey.BLDG);
         breg.closeRegistry();
 
 
-        AdvHelpRegistry hreg = (AdvHelpRegistry) AdvRegistryFactory.getRegistry(RegKey.HELP);
+        AdvHelpRegistry hreg = (AdvHelpRegistry) RegistryFactory.getRegistry(RegKey.HELP);
         assertNotNull(hreg);
         hreg.closeRegistry();
      }
@@ -166,7 +163,7 @@ public class TestAdvRegistry
         
         int count = 0;
         for (RegKey key : RegKey.values()) {
-            Registry reg = AdvRegistryFactory.getRegistry(key);
+            Registry reg = RegistryFactory.getRegistry(key);
             MsgCtrl.msgln("Closing registry " + key);
             reg.closeRegistry();
             count++;
