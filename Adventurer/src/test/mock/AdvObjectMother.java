@@ -52,16 +52,16 @@ public class AdvObjectMother
         public String _lastDesc;
 
         @Override
-        protected void forceDrawOfObjects()
+        protected void createLayout()
         {}
 
         @Override
         protected void createCivs()
         {}
 
-        @Override
-        protected void createDisplayObjects()
-        {}
+//        @Override
+//        protected void createDisplayObjects()
+//        {}
 
         @Override
         public Dimension getImagePanelSize()

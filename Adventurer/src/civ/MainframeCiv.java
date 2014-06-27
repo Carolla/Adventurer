@@ -88,6 +88,8 @@ public class MainframeCiv
    * Create the Civ associated with the mainframe
    * 
    * @param frame owner of the widget for which this civ applies
+   * @param personRW  -- not sure why this is here??
+   * @param advReg  registry that holds the adventures for selection
    */
   public MainframeCiv(Mainframe frame, PersonReadWriter personRW, AdventureRegistry advReg)
   {
