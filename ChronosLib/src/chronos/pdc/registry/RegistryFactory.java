@@ -85,7 +85,6 @@ public class RegistryFactory
   protected Registry findRegistry(RegKey regtype)
   {
     Registry reg = _regMap.get(regtype);
-    // return reg;
     if (isValidRegistry(reg)) {
       return reg;
     } else {
