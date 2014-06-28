@@ -50,11 +50,11 @@ public class MainframeCiv
 
   /** Default Buildings to initialize registry with */
   public static final String[][] DEFAULT_BUILDINGS = { {"Ugly Ogre Inn", "Bork"},
-      {"Rat's Pack General Store", "Dewey N. Howe"}, {"The Bank", "Ogden Moneypenny"},
+      {"Rat's Pack", "Dewey N. Howe"}, {"The Bank", "Ogden Moneypenny"},
       {"Stadium", "Aragon"}, {"Arcaneum", "Pendergast"}, {"Monastery", "Balthazar"},
       {"Rogues' Den", "Ripper"}, {"Jail", "The Sheriff"}};
 
-  private Map<String, BuildingRectangle> buildingList = new TreeMap<String, BuildingRectangle>();
+  private Map<String, BuildingRectangle> _buildingList = new TreeMap<String, BuildingRectangle>();
 
   private float[][] buildingLayouts = new float[][] { {0.3f, 0.7f, 0.09f, 0.09f}, // Ugly Ogre Inn
       {0.4f, 0.7f, 0.09f, 0.09f}, // Rat's Pack General Store
@@ -110,7 +110,7 @@ public class MainframeCiv
       BuildingRectangle r =
           new BuildingRectangle(bName, colorArray[i], _frame.getImagePanelSize(),
               buildingLayouts[i]);
-      buildingList.put(bName, r);
+      _buildingList.put(bName, r);
     }
   }
 
@@ -150,7 +150,7 @@ public class MainframeCiv
 
   private void handleClickIfOnBuilding(Point p)
   {
-    for (Entry<String, BuildingRectangle> entry : buildingList.entrySet()) {
+    for (Entry<String, BuildingRectangle> entry : _buildingList.entrySet()) {
       BuildingRectangle rect = entry.getValue();
       if (rect.contains(p)) {
         enterBuilding(entry.getKey());
@@ -170,7 +170,7 @@ public class MainframeCiv
   public void handleMouseMovement(Point p)
   {
     if (_onTown) {
-      for (BuildingRectangle rect : buildingList.values()) {
+      for (BuildingRectangle rect : _buildingList.values()) {
         if (rect.contains(p)) {
           _frame.drawBuilding(rect);
           break;
