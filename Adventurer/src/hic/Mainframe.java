@@ -6,6 +6,7 @@
  * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
  * by email: acline@carolla.com
  */
+
 package hic;
 
 import hic.screenConfiguration.ImagePanel;
@@ -41,19 +42,21 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.MainframeCiv;
 import dmc.PersonReadWriter;
 
-/** Singleton frame to hold the menu bar and two panels: 
- * Before an Adventure is selected: 
+/**
+ * Singleton frame to hold the menu bar and two panels: Before an Adventure is selected:
  * 
  * Shows the button panel on the left, and the Chronos logo on the right.
  * 
  * After an Adventure is selected:
  * 
- * Shows an output panel for the scrolling text (initially the selected Town description), 
- * and the input command line text area on the left;
- * and an image display panel on the right (initially showing the Town image with clickable buildings).   
+ * Shows an output panel for the scrolling text (initially the selected Town description), and the
+ * input command line text area on the left; and an image display panel on the right (initially
+ * showing the Town image with clickable buildings).
  * 
  * @author Al Cline
  */
+// Mainframe serialization unnecessary
+@SuppressWarnings("serial")
 public class Mainframe extends JFrame implements MouseListener, MouseMotionListener
 {
   /** Reference to this singleton */
@@ -66,8 +69,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   public static final int PAD = 10;
   private static final String HEROLIST_TEXT = "Heroes going on your quest: \n";
 
-  private static final long serialVersionUID = -7749950528568777710L;
-
 
   private static final String REGISTRAR_IMAGE = "icn_Register.JPG";
   private static final String PORTAL_IMAGE = "ChronosLogo.JPG";
@@ -79,7 +80,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   public static final int FRAME_PADDING = 90;
 
   private JPanel _contentPane;
-
 
   private JTextPane _heroList;
   private JPanel _buttonPanel;
@@ -103,13 +103,12 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   }
 
   /**
-   * Create the frame.
+   * Create the frame layout, civs, left and right display panels, and the command line.
    */
   protected Mainframe()
   {
-    createLayout();
-    createCivs();
-//    createDisplayObjects();
+    createFrameLayout();
+    createMFCiv();
     createPanelsLayout();
     createCommandLine();
   }
@@ -123,13 +122,11 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
         List<String> adventures = _mfCiv.getAdventures();
         Object[] adventuresArr = adventures.toArray();
         Object selectedValue =
-            JOptionPane.showInputDialog(Mainframe.this, "Select an Adventure",
-                "Adventures",
-                JOptionPane.INFORMATION_MESSAGE, null, adventuresArr,
-                adventuresArr[0]);
+            JOptionPane.showInputDialog(Mainframe.this, "Select an Adventure", "Adventures",
+                JOptionPane.INFORMATION_MESSAGE, null, adventuresArr, adventuresArr[0]);
 
         if (selectedValue != null) {
-          System.out.println("Adventure selected was " + selectedValue);
+          System.out.println("Adventure selected was: " + selectedValue);
           _mfCiv.loadAdventure(selectedValue.toString());
         }
       }
@@ -160,19 +157,16 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     return button;
   }
 
-  protected void createCivs()
+  /** Create the mainframe civ, PersonReadWriter for Heroes, and the AdventureRegistry */
+  protected void createMFCiv()
   {
     AdventureRegistry advreg = (AdventureRegistry) RegistryFactory.getRegistry(RegKey.ADV);
-    _mfCiv =
-        new MainframeCiv(this, new PersonReadWriter(), advreg);
-//    _mfCiv =
-//        new MainframeCiv(this, new PersonReadWriter(),
-//            (AdventureRegistry) AdvRegistryFactory.getRegistry(RegKey.ADV));
+    _mfCiv = new MainframeCiv(this, new PersonReadWriter(), advreg);
   }
 
-  
-  /** 
-   *  Create menu, mouse options, right panel image
+
+  /**
+   * Create menu, mouse options, right panel image
    */
   private void createPanelsLayout()
   {
@@ -183,7 +177,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
     _rightHolder.addMouseListener(this);
     _rightHolder.addMouseMotionListener(this);
-    
+
     _buttonPanel = setupLeftPanel();
     _leftPanel = _buttonPanel;
 
@@ -192,37 +186,37 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     _leftHolder.add(_buttonPanel);
   }
 
-  
-  /** 
-   * Create the CommandLine input area 
+
+  /**
+   * Create the CommandLine input area
    */
   private void createCommandLine()
   {
     _cmdLine = new InputPanel(_mfCiv.getCmdParser());
   }
 
-  
-//  /** 
-//   *  Create menu, mouse options, right panel image
-//   */
-//  protected void createDisplayObjects()
-//  {
-//    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//    setJMenuBar(new Menubar());
-//
-//    setImageToBeDisplayed(PORTAL_IMAGE);
-//
-//    _rightHolder.addMouseListener(this);
-//    _rightHolder.addMouseMotionListener(this);
-//
-//    _buttonPanel = setupLeftPanel();
-//    _inputPanel = new InputPanel(_advCiv.getCmdParser());
-//    _leftPanel = _buttonPanel;
-//
-//    createButtons();
-//
-//    _leftHolder.add(_buttonPanel);
-//  }
+
+  // /**
+  // * Create menu, mouse options, right panel image
+  // */
+  // protected void createDisplayObjects()
+  // {
+  // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+  // setJMenuBar(new Menubar());
+  //
+  // setImageToBeDisplayed(PORTAL_IMAGE);
+  //
+  // _rightHolder.addMouseListener(this);
+  // _rightHolder.addMouseMotionListener(this);
+  //
+  // _buttonPanel = setupLeftPanel();
+  // _inputPanel = new InputPanel(_advCiv.getCmdParser());
+  // _leftPanel = _buttonPanel;
+  //
+  // createButtons();
+  //
+  // _leftHolder.add(_buttonPanel);
+  // }
 
   private JButton createHeroCreationButton()
   {
@@ -312,10 +306,10 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     return button;
   }
 
-  /** Creates and displays left-side panel for input/output text,
-   * and right-side panel for images.
+  /**
+   * Creates and displays left-side panel for input/output text, and right-side panel for images.
    */
-  protected void createLayout()
+  protected void createFrameLayout()
   {
     setupSizeAndBoundaries();
     setupContentPane();
@@ -364,9 +358,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private JPanel setupRightPanel()
   {
     JPanel panel = new JPanel(new MigLayout("", "[grow,fill]", "[grow,fill]"));
-    panel.setPreferredSize(new Dimension((int) (USERWIN_WIDTH - FRAME_PADDING) / 2,
-        USERWIN_HEIGHT
-            - FRAME_PADDING));
+    panel.setPreferredSize(new Dimension((int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT
+        - FRAME_PADDING));
     return panel;
   }
 

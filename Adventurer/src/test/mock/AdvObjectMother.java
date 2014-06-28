@@ -52,11 +52,11 @@ public class AdvObjectMother
         public String _lastDesc;
 
         @Override
-        protected void createLayout()
+        protected void createFrameLayout()
         {}
 
         @Override
-        protected void createCivs()
+        protected void createMFCiv()
         {}
 
 //        @Override

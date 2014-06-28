@@ -50,8 +50,9 @@ public class MainframeCiv
 
   /** Default Buildings to initialize registry with */
   public static final String[][] DEFAULT_BUILDINGS = { {"Ugly Ogre Inn", "Bork"},
-      {"Rat's Pack General Store", "Dewey N. Howe"}, {"The Bank", "Ogden Moneypenny"}, {"Stadium", "Aragon"},
-      {"Arcaneum", "Pendergast"}, {"Monastery", "Balthazar"}, {"Rogues' Den", "Ripper"}, {"Jail", "The Sheriff"}};
+      {"Rat's Pack General Store", "Dewey N. Howe"}, {"The Bank", "Ogden Moneypenny"},
+      {"Stadium", "Aragon"}, {"Arcaneum", "Pendergast"}, {"Monastery", "Balthazar"},
+      {"Rogues' Den", "Ripper"}, {"Jail", "The Sheriff"}};
 
   private Map<String, BuildingRectangle> buildingList = new TreeMap<String, BuildingRectangle>();
 
@@ -88,26 +89,27 @@ public class MainframeCiv
    * Create the Civ associated with the mainframe
    * 
    * @param frame owner of the widget for which this civ applies
-   * @param personRW  -- not sure why this is here??
-   * @param advReg  registry that holds the adventures for selection
+   * @param personRW supports the Summon Hero and Create Hero buttons
+   * @param advReg registry to support the Adventures button
    */
   public MainframeCiv(Mainframe frame, PersonReadWriter personRW, AdventureRegistry advReg)
   {
     _frame = frame;
     _personRW = personRW;
     _advReg = advReg;
-    _bdCiv = new BuildingDisplayCiv(_frame, (BuildingRegistry) RegistryFactory.getRegistry(RegKey.BLDG));
-//    _bdCiv = new BuildingDisplayCiv(_frame, (BuildingRegistry) AdvRegistryFactory.getRegistry(RegKey.BLDG));
-    // initRegistries();
-    createBuildingBoxes();
     _cp = new CommandParser(this);
+    _bdCiv =
+        new BuildingDisplayCiv(_frame, (BuildingRegistry) RegistryFactory.getRegistry(RegKey.BLDG));
+    createBuildingBoxes();
   }
 
   private void createBuildingBoxes()
   {
     for (int i = 0; i < DEFAULT_BUILDINGS.length; i++) {
       String bName = DEFAULT_BUILDINGS[i][0];
-      BuildingRectangle r = new BuildingRectangle(bName, colorArray[i], _frame.getImagePanelSize(), buildingLayouts[i]);
+      BuildingRectangle r =
+          new BuildingRectangle(bName, colorArray[i], _frame.getImagePanelSize(),
+              buildingLayouts[i]);
       buildingList.put(bName, r);
     }
   }
