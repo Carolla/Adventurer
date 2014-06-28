@@ -13,7 +13,6 @@
 package chronos.pdc.buildings;
 
 import mylib.ApplicationException;
-import mylib.dmc.IRegistryElement;
 
 /**
  *    Rogues' Guild for lock picking, skill practicing, and other tricks-of-the-sleeve

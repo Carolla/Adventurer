@@ -122,8 +122,7 @@ public abstract class Building extends RegistryElement
   }
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PUBLIC METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * PUBLIC METHODS 
    */
 
   /**
