@@ -1,12 +1,11 @@
 /*
  * Scheduler.java
- *
+ * 
  * Copyright (c) 2008, Carolla Development, Inc. All Rights Reserved
- *
- * Permission to make digital or hard copies of all or parts of this work for
- * commercial use is prohibited. To republish, to post on servers, to reuse,
- * or to redistribute to lists, requires prior specific permission and/or a
- * fee. Request permission to use from Carolla Development, Inc. 
+ * 
+ * Permission to make digital or hard copies of all or parts of this work for commercial use is
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
+ * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
  * by email: acline@carolla.com
  */
 
@@ -20,227 +19,227 @@ import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 
- /**
-  * This <code>Scheduler</code> singleton is implemented with <code>DeltaCmdList</code>, 
-  * a delta priority queue with <code>GameClock</code>. The <code>Scheduler</code> 
-  * pops a command only from the front of the queue, which increments the game clock
-  * by the duration of the <code>Command</code>.    
-  * This class implements <code>Runnable</code> because it runs in its own thread to give 
-  * time to the windowing system.
-  * 
-  * @author Alan Cline
-  * @version <DL>
-  * <DT>1.0	Aug 29 2006		// Original creation <DD>
-  * <DT>2.0 	Jan 27 2007		// Command Parser decoupled from Scheduler creation <DD>
-  * <DT>3.0	Oct 26 2007		// Revised for merged DgnRunner and DgnBuild version of program <DD>
-  * <DT>4.0	Apr 11 2008		// Move this class into a Runnable thread to run concurrently with the windowing system <DD>
-  * <DT>412	 Jul 3 2008			// Final commenting for Javadoc compliance<DD>
-  * </DL>
-  * @see pdc.command.DeltaCmdList
-  * @see GameClock
-  * @see hic.CommandParser
-  * 
-  */
+/**
+ * This <code>Scheduler</code> singleton is implemented with <code>DeltaCmdList</code>, a delta
+ * priority queue with <code>GameClock</code>. The <code>Scheduler</code> pops a command only from
+ * the front of the queue, which increments the game clock by the duration of the
+ * <code>Command</code>. This class implements <code>Runnable</code> because it runs in its own
+ * thread to give time to the windowing system.
+ * 
+ * @author Alan Cline
+ * @version <DL>
+ *          <DT>1.0 Aug 29 2006 // Original creation
+ *          <DD>
+ *          <DT>2.0 Jan 27 2007 // Command Parser decoupled from Scheduler creation
+ *          <DD>
+ *          <DT>3.0 Oct 26 2007 // Revised for merged DgnRunner and DgnBuild version of program
+ *          <DD>
+ *          <DT>4.0 Apr 11 2008 // Move this class into a Runnable thread to run concurrently with
+ *          the windowing system
+ *          <DD>
+ *          <DT>412 Jul 3 2008 // Final commenting for Javadoc compliance
+ *          <DD>
+ *          </DL>
+ * @see pdc.command.DeltaCmdList
+ * @see GameClock
+ * @see hic.CommandParser
+ * 
+ */
 public class Scheduler implements Runnable
 {
-    /** Internal command token used on the DQ when one command is over and another 
-     * one is needed. */
-    private final String CMDEND = "intCmdEnd";
+  /**
+   * Internal command token used on the DQ when one command is over and another one is needed.
+   */
+  private final String CMDEND = "intCmdEnd";
 
-    /** Internal references: command events are queued here */ 
-    private DeltaCmdList _dq = null;
-    /** Internal references: list for command parms to be passed */ 
-    private ArrayList<String> _parms = null;
-    /** Internal references: get next user commands */ 
-    private CommandParser _cp = null;		// needed to get next User Command
+  /** Internal references: command events are queued here */
+  private DeltaCmdList _dq = null;
+  /** Internal references: list for command parms to be passed */
+  private ArrayList<String> _parms = null;
+  /** Internal references: get next user commands */
+  private CommandParser _cp = null; // needed to get next User Command
 
 
-/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++  
- * 								CONSTRUCTOR(S) AND RELATED METHODS
- * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ */  
+  /*
+   * CONSTRUCTOR(S) AND RELATED METHODS
+   */
 
-    /** Internal reference to ensure singleton */
-    private static Scheduler _sched = null;
-        	
+  /** Internal reference to ensure singleton */
+  private static Scheduler _sched = null;
 
-    /** Creates its component delta list and an ArrayList of Strings to handle command
-     * parameters.
-     */
-    private Scheduler() 
-    {
-    	_dq = new DeltaCmdList();
-    	_parms = new ArrayList<String>();
+
+  /**
+   * Creates its component delta list and an ArrayList of Strings to handle command parameters.
+   */
+  private Scheduler()
+  {
+    _dq = new DeltaCmdList();
+    _parms = new ArrayList<String>();
+  }
+
+
+  /**
+   * Creates the <code>Scheduler</code> and its components. However, if a <code>Scheduler</code>
+   * does not exist, it cannot be created without a <code>CommandParser</code> (parm), so null is
+   * returned.
+   * 
+   * @param parser bidirectional association for callbacks to get a user <code>Command</code> object
+   *        for scheduling.
+   * @return Scheduler singleton with link to the <code>CommandParser</code>.
+   */
+  public static synchronized Scheduler createInstance(CommandParser parser)
+  {
+    if (_sched == null) {
+      _sched = new Scheduler();
+      _sched._cp = parser;
     }
+    return _sched;
+  }
 
-    
-    /**  
-     * Creates the <code>Scheduler</code> and its components. However, if a 
-     * <code>Scheduler</code> does not exist, it cannot be created without a 
-     * <code>CommandParser</code> (parm), so null is returned. 
-     * 
-     * @param parser	bidirectional association for callbacks to get a user 
-     * 					<code>Command</code> object for scheduling.
-     * @return	Scheduler singleton with link to the <code>CommandParser</code>.
-     */
-    public static synchronized Scheduler createInstance(CommandParser parser)
-    {
-        if (_sched == null) {
-            _sched = new Scheduler();
-            _sched._cp = parser;
+
+  /**
+   * Gets an existing <code>Scheduler</code> reference, which will be used to schedule commands
+   * triggered by other commands. If the <code>Scheduler</code> doesn't exist, an error message is
+   * displayed.
+   * 
+   * @return Scheduler reference to singleton object
+   */
+  public static synchronized Scheduler getInstance()
+  {
+    if (_sched == null) {
+      System.err.println("The Scheduler object does not yet exist.");
+    }
+    return _sched;
+  }
+
+
+  /*
+   * PUBLIC METHODS 
+   */
+
+  /**
+   * This is the main loop to pop the next command and execute it, and required for the
+   * <code>Runnable</code> interface. The <code>Scheduler</code> is initialized with an
+   * <code>intEndCmd</code> to start off the loop. When <code>intEndCmd</code> is found, the
+   * <code>CommandParser</code> is called to get the next user command. When a user command is
+   * found, the <code>Scheduler</code> calls its <code>Command.exec()</code> method, which actually
+   * triggers the subcommand's <code>exec()</code> because <code>Command</code> is abstract.
+   */
+  public void run()
+  {
+    // Put on a 0-delay command to trigger collecing user commands
+    sched(makeCmdEnd(0));
+
+    // Unless the system interrrupts this thread for some reason, it continues until the Quit
+    // command
+    try {
+      doCommands();
+
+      // If the thread is interrupted for some reason, we want to return and exit
+    } catch (InterruptedException e) {
+      System.err.println("Interrupted exception thrown while trying to doCommands "
+          + e.getMessage());
+    }
+  }
+
+
+  /**
+   * Wrap the <code>Command</code> in an Event wrapper and put it on the <code>DeltaQueue</code>.
+   * <code>Command</code> and <code>intCmdEnd</code> both are pushed onto the DQ.
+   * 
+   * @param cmd the user-given <code>Command</code>
+   */
+  public void sched(Command cmd)
+  {
+    _dq.insert(cmd);
+  }
+
+
+  /**
+   * Make a <code>CmdQuit</code> to end the game and schedule it for the <code>DeltaQueue</code>.
+   */
+  public void schedEndGame()
+  {
+    // Create CmdQuit to signal to end the game
+    Command cmdQuit = new CmdQuit();
+    _parms.clear(); // refresh the parm list
+    // Send no-parms arg list to Quit command
+    cmdQuit.init(_parms, null);
+    sched(cmdQuit);
+  }
+
+
+  /*
+   * PRIVATE METHODS 
+   */
+
+  /**
+   * Process a single loop of Scheduler and Command parsing activity, sleeping between each cycle.
+   * Generally, loop through the deltaQ, retrieving commands and calling each
+   * <code>Command.exec()</code> method.
+   */
+  private void doCommands() throws InterruptedException
+  {
+    // Loop through the deltaQ, retrieving commands and calling their exec() method.
+    while (true) {
+      Command cmdToDo = null;
+      try {
+        // Retrieve next Command in queue
+        cmdToDo = _dq.getNextCmd();
+        if (cmdToDo == null) {
+          System.err.println("Scheduler: DeltaCmdList is unexpectedly empty");
+          break;
         }
-        return _sched;
-    }
-
-    
-    /**
-     * Gets an existing <code>Scheduler</code> reference, which will be used to schedule 
-     * commands triggered by other commands. If the <code>Scheduler</code> doesn't exist,
-     * an error message is displayed.
-     * 
-     *  @return Scheduler reference to singleton object
-     */
-    public static synchronized Scheduler getInstance()
-    {
-        if (_sched == null) {
-            System.err.println("The Scheduler object does not yet exist.");
+        // If CmdEnd, then return to CommandParser to get another User command;
+        // then add a CmdEnd to trigger a new user command after newCmd is executed
+        if (cmdToDo.getName().equalsIgnoreCase(CMDEND) == true) {
+          Command newUserCmd = _sched._cp.getUserCommand();
+          // Wait and cycle again if nothing has been input
+          if (newUserCmd == null) {
+            Thread.sleep(500);
+            sched(makeCmdEnd(0));
+            continue;
+          }
+          sched(newUserCmd);
+          sched(makeCmdEnd(newUserCmd.getDuration() + newUserCmd.getDelay()));
+          // dump();
+        } else {
+          cmdToDo.exec();
         }
-        return _sched;
-    }
-
-    
-/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++  
- * 								PUBLIC METHODS
- * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ */  
-
-    /**
-     * This is the main loop to pop the next command and execute it, and required for the 
-     * <code>Runnable</code> interface. 	The <code>Scheduler</code> is initialized with an
-     * <code>intEndCmd</code> to start off the loop. When <code>intEndCmd</code> is 
-     * found, the <code>CommandParser</code> is called to get the next user command.
-	 *	When a user command is found, the <code>Scheduler</code> calls its 
-	 * <code>Command.exec()</code> method, which actually triggers the subcommand's 
-	 * <code>exec()</code> because <code>Command</code> is abstract.
-     */
-    public void run()
-    {
-    	// Put on a 0-delay command to trigger collecing user commands
-    	sched(makeCmdEnd(0));
-
-        // Unless the system interrrupts this thread for some reason, it continues until the Quit command
-    	try {
- 				doCommands();
-
-	   	// If the thread is interrupted for some reason, we want to return and exit
-    	} catch (InterruptedException e) {
-            System.err.println("Interrupted exception thrown while trying to doCommands " 
-                            + e.getMessage());
-        }
-    }
-
-    
-    /**
-     * Wrap the <code>Command</code> in an Event wrapper and put it on the 
-     * <code>DeltaQueue</code>. <code>Command</code> and <code>intCmdEnd</code> 
-     * both are pushed onto the DQ.
-     * 
-     * @param 	cmd	the user-given <code>Command</code>
-     */
-    public void sched(Command cmd)
-    {
-        _dq.insert(cmd);
-    }
-
-    
-	/**
-	 * Make a <code>CmdQuit</code> to end the game and schedule it for the 
-	 * <code>DeltaQueue</code>. 
-	 */
-	public void schedEndGame()
-	{
-	    // Create CmdQuit to signal to end the game
-	    Command cmdQuit = new CmdQuit();
-	    _parms.clear();			// refresh the parm list
-	    // Send no-parms arg list to Quit command
-	    cmdQuit.init(_parms, null);    
-	    sched(cmdQuit);
-	}
-    
-
-/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++  
- * 								PRIVATE METHODS
- * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ */  
-
-	/** 
-     * Process a single loop of Scheduler and Command parsing activity, 
-     * sleeping between each cycle. Generally, loop through the deltaQ, retrieving commands 
-     * and calling each <code>Command.exec()</code> method.
-     */
-    private void doCommands() throws InterruptedException
-    {
- 		// Loop through the deltaQ, retrieving commands and calling their exec() method.
-    	while (true) { 
-            Command cmdToDo = null;
-	        try {
-	            // Retrieve next Command in queue
-	            cmdToDo = _dq.getNextCmd();
-	            if (cmdToDo == null) {
-	                System.err.println("Scheduler: DeltaCmdList is unexpectedly empty");
-	                break;
-	            }
-	            // If CmdEnd, then return to CommandParser to get another User command;    
-            	// then add a CmdEnd to trigger a new user command after newCmd is executed
-	            if (cmdToDo.getName().equalsIgnoreCase(CMDEND) == true) {
-	            	Command newUserCmd = _sched._cp.getUserCommand();
-	            	// Wait and cycle again if nothing has been input
-	            	if (newUserCmd == null) {
-	            	    Thread.sleep(500);
-	                    sched(makeCmdEnd(0));     
-	            	    continue;
-	            	}
-	            	sched(newUserCmd);
-	            	sched(makeCmdEnd(newUserCmd.getDuration()+ newUserCmd.getDelay()));		
-//	            	dump();
-	            }
-	            else {
-	            	cmdToDo.exec();
-	            }
-	        }
-	        catch (NoSuchElementException e) {
-	            System.err.println(e.getMessage());
-	            break;
-	        }
-        }; 
-    }    
-
-    
-	/**
-	 * Make an <code>intCmdEnd</code> to trigger a new user command. 
-	 * <code>intCmdEnd</code>s are used as Events to end a <code>Command</code>. 
-	 * They have a delay equal to the previous Command's duration, and no duration
-	 * of their own. 
-	 * 
-	 * @param	delay		this <code>intCmdEnd</code>'s delay  
-	 * @return <code>intCmdEnd</code> to trigger getting a new user command
-	 */
-	private Command makeCmdEnd(int delay)
-	{
-	    // Create endCmd to signal to get another user command
-	    Command endCmd = new intCmdEnd(delay);
-	    _parms.clear();			// refresh the parm list
-	    endCmd.init(_parms, null);    
-	    return endCmd;
-	}
+      } catch (NoSuchElementException e) {
+        System.err.println(e.getMessage());
+        break;
+      }
+    };
+  }
 
 
-	  /**
-	  * Dump the delta list for debugging purposes.
-	  */
-	 public void dump()
-	 {
-		 System.err.println("\nScheduler DQ snapshot: ");
-	 	_dq.dump();
-	 }
+  /**
+   * Make an <code>intCmdEnd</code> to trigger a new user command. <code>intCmdEnd</code>s are used
+   * as Events to end a <code>Command</code>. They have a delay equal to the previous Command's
+   * duration, and no duration of their own.
+   * 
+   * @param delay this <code>intCmdEnd</code>'s delay
+   * @return <code>intCmdEnd</code> to trigger getting a new user command
+   */
+  private Command makeCmdEnd(int delay)
+  {
+    // Create endCmd to signal to get another user command
+    Command endCmd = new intCmdEnd(delay);
+    _parms.clear(); // refresh the parm list
+    endCmd.init(_parms, null);
+    return endCmd;
+  }
 
 
-}		// end Scheduler class
-    
+  /**
+   * Dump the delta list for debugging purposes.
+   */
+  public void dump()
+  {
+    System.err.println("\nScheduler DQ snapshot: ");
+    _dq.dump();
+  }
+
+
+} // end Scheduler class

@@ -102,6 +102,10 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     return _mainframe;
   }
 
+  // TODO Remove protected qualifer: make private
+  /* TODO Decompose: Mainframe -> LeftPanel and RightPanel; LeftPanel -> OutputArea and Command 
+   * Line; RightPanel -> Image Panel; PersonRW should be created by MainframeCiv, not MF
+   */
   /**
    * Create the frame layout, civs, left and right display panels, and the command line.
    */
@@ -157,6 +161,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     return button;
   }
 
+  // TODO Remove protected qualifer: make private
   /** Create the mainframe civ, PersonReadWriter for Heroes, and the AdventureRegistry */
   protected void createMFCiv()
   {
@@ -306,6 +311,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     return button;
   }
 
+  // TODO Remove protected qualifer: make private
   /**
    * Creates and displays left-side panel for input/output text, and right-side panel for images.
    */

@@ -62,9 +62,6 @@ public class CommandParser
     private CommandFactory _cmf = null;
 
     private String _userInput = null;       // buffer to hold user input string 
-//    private Command _cmd = null;         // Command to pass to Scheduler
-//    private String _cmdToken = null;     // name of the command from the command table
-//    private String _cmdString = null;        // contains the name of the command as first token
 
     // Special cases
     /** Error message if command cannot be found. */

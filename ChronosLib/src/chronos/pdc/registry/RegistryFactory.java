@@ -23,7 +23,8 @@ import chronos.Chronos;
  */
 public class RegistryFactory
 {
-  static protected RegistryFactory _rf = null;
+//  static protected RegistryFactory _rf = null;
+  static private RegistryFactory _rf = null;
 
   protected HashMap<RegKey, Registry> _regMap = null;
 
@@ -31,8 +32,8 @@ public class RegistryFactory
   // Public list of all possible registries subclasses
   // ============================================================
   public enum RegKey {
-    ADV("Adventure"), BLDG("Building"), ITEM("Item"), NPC("NPC"), OCP("Occupation"), SKILL("Skill"), TOWN("Town"), HELP(
-        "AdvHelp");
+    ADV("Adventure"), BLDG("Building"), ITEM("Item"), NPC("NPC"), OCP("Occupation"), 
+      SKILL("Skill"), TOWN("Town"), HELP("AdvHelp");
 
     private RegKey(String nm)
     {
@@ -53,7 +54,8 @@ public class RegistryFactory
   // Constructor(s) and Related Methods
   // ============================================================
 
-  protected RegistryFactory()
+//  protected RegistryFactory()
+  private RegistryFactory()
   {
     _regMap = new HashMap<RegKey, Registry>();
   }
@@ -82,7 +84,8 @@ public class RegistryFactory
    * 
    * @param regtype one of the canonical immutable Registries
    */
-  protected Registry findRegistry(RegKey regtype)
+//  protected Registry findRegistry(RegKey regtype)
+  private Registry findRegistry(RegKey regtype)
   {
     Registry reg = _regMap.get(regtype);
     if (isValidRegistry(reg)) {
