@@ -12,9 +12,10 @@
 
 package civ;
 
-import pdc.registry.AdvHelpRegistry;
+import java.util.ArrayList;
 
 import mylib.hic.HelpDialog;
+import pdc.registry.AdvHelpRegistry;
 
 /**
  *   Displays the HelpDialog window with text retrieved from the HelpRegistry
@@ -38,8 +39,7 @@ public class AdvHelpCiv
     private final String NON_MSG = "Called for Help...\n\t...but help text not found!";
     /** Display this title for the not found help message */
     private final String MSG_NOTFOUND = "Help Text Not Found";
-    
-    
+
     // _____________________________________________________________________
     //
     //      CONSTRUCTOR(S) AND RELATED METHODS

@@ -12,9 +12,6 @@ package test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import test.civ.TestBuildingDisplayCiv;
-import test.civ.TestMainFrameCiv;
-
 
 /**
  * Regression test suite for all the <code>JUnit</code> test cases for the source code packages of
@@ -87,8 +84,8 @@ import test.civ.TestMainFrameCiv;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         // CIV test files
-    TestBuildingDisplayCiv.class,
-    TestMainFrameCiv.class,
+//    TestBuildingDisplayCiv.class,
+//    TestMainFrameCiv.class,
 // TestHeroDisplayCiv.class,
 // TestNewHeroCiv.class,
 // TestNewHeroFields.class,

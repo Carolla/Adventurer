@@ -70,6 +70,9 @@ public class CommandParser
     private final String CMD_EMPTY = "";
 
     private MainframeCiv _advCiv;
+    
+    private final ArrayList<String> _names;
+    
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++  
      * 								CONSTRUCTOR(S) AND RELATED METHODS
@@ -93,6 +96,9 @@ public class CommandParser
      */
     public CommandParser(MainframeCiv mfc)
     {
+    	_names = new ArrayList<String>(20);
+    	_names.add("Test");
+    	
         _advCiv = mfc;
         _parms = new ArrayList<String>();
         _cmf = new CommandFactory();

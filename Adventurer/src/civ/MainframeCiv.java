@@ -33,12 +33,8 @@ import dmc.PersonReadWriter;
  * 
  * @author Alan Cline
  * @author Tim Armstrong
- * @version <DL>
- *          <DT>Build 1.0 Nov 2, 2013 // moved from CIV component
- *          <DD>
- *          <DT>Build 1.1 Mar 19 2014 // added current Building for ENTER command
- *          <DD>
- *          </DL>
+ * @version 1.0 Nov 2, 2013 // moved from CIV component
+ * @version 1.1 Mar 19 2014 // added current Building for ENTER command
  */
 public class MainframeCiv
 {
@@ -92,11 +88,12 @@ public class MainframeCiv
    * @param personRW supports the Summon Hero and Create Hero buttons
    * @param advReg registry to support the Adventures button
    */
-  public MainframeCiv(Mainframe frame, PersonReadWriter personRW, AdventureRegistry advReg)
+//  public MainframeCiv(Mainframe frame, PersonReadWriter personRW, AdventureRegistry advReg)
+  public MainframeCiv(Mainframe frame)
   {
     _frame = frame;
-    _personRW = personRW;
-    _advReg = advReg;
+    _personRW = new PersonReadWriter();
+    _advReg = (AdventureRegistry) RegistryFactory.getRegistry(RegKey.ADV);
     _cp = new CommandParser(this);
     _bdCiv =
         new BuildingDisplayCiv(_frame, (BuildingRegistry) RegistryFactory.getRegistry(RegKey.BLDG));
@@ -130,6 +127,10 @@ public class MainframeCiv
     }
   }
 
+  /** Retrieves the Adventures for selection from the Adventure Registry
+   * 
+   * @return the list of Adventures
+   */
   public List<String> getAdventures()
   {
     List<String> results = new ArrayList<String>();

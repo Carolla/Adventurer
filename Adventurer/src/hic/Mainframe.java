@@ -11,7 +11,6 @@ package hic;
 
 import hic.screenConfiguration.ImagePanel;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
@@ -30,30 +29,23 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextPane;
 import javax.swing.border.EmptyBorder;
 
 import mylib.hic.ShuttleList;
 import net.miginfocom.swing.MigLayout;
 import chronos.Chronos;
-import chronos.pdc.registry.AdventureRegistry;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.MainframeCiv;
-import dmc.PersonReadWriter;
 
 /**
- * Singleton frame to hold the menu bar and two panels: Before an Adventure is selected:
- * 
- * Shows the button panel on the left, and the Chronos logo on the right.
- * 
- * After an Adventure is selected:
- * 
- * Shows an output panel for the scrolling text (initially the selected Town description), and the
- * input command line text area on the left; and an image display panel on the right (initially
- * showing the Town image with clickable buildings).
+ * Singleton frame to hold the menu bar and two panels in one of two states: <br>
+ * State 1: Before an Adventure is selected, left panel shows the button panel on the left, and the
+ * Chronos logo on the right. <br>
+ * State 2: After an Adventure is selected, left panel shows an output scrolling-text panel
+ * (initially the selected Town description), and the input command line; and on the right, an image
+ * display panel (initially showing the Town image with clickable buildings).
  * 
  * @author Al Cline
+ * @version 2.0 // rebuilt to comply with architectural model (lost history)
  */
 // Mainframe serialization unnecessary
 @SuppressWarnings("serial")
@@ -63,37 +55,41 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   static private Mainframe _mainframe = null;
 
   /** Reference to GUI Help text */
-  static private String HELP_KEY = "INSTRUCTIONS";
+  static private final String HELP_KEY = "INSTRUCTIONS";
 
   /** Number of pixels on empty border spacing */
   public static final int PAD = 10;
-  private static final String HEROLIST_TEXT = "Heroes going on your quest: \n";
+  // private static final String HEROLIST_TEXT = "Heroes going on your quest: \n";
 
-
+  /** Icons for the left-side buttons */
   private static final String REGISTRAR_IMAGE = "icn_Register.JPG";
-  private static final String PORTAL_IMAGE = "ChronosLogo.JPG";
   private static final String HALL_IMAGE = "icn_HallOfHeroes.JPG";
   private static final String ADV_IMAGE = "icn_Town.JPG";
+  /** Initial right-side image: Chronos logo */
+  private static final String INITIAL_IMAGE = "ChronosLogo.JPG";
 
   public static int USERWIN_WIDTH;
   public static int USERWIN_HEIGHT;
   public static final int FRAME_PADDING = 90;
 
+  /** Common content pane for the Mainframe */
   private JPanel _contentPane;
+  /** Empty left-side panel holder for initial and standard panels. */
+  private JPanel _leftHolder;
+  /** Empty right-side panel holder for initial standard panels. */
+  private JPanel _rightHolder;
 
-  private JTextPane _heroList;
-  private JPanel _buttonPanel;
-  private JPanel _leftPanel;
+  // private JTextPane _heroList;
+  // private JPanel _buttonPanel;
+  // private JPanel _leftPanel;
   private MainframeCiv _mfCiv;
   private InputPanel _cmdLine;
   private List<String> _partyHeros = new ArrayList<String>();
   private List<String> _summonableHeroes;
 
-  private JPanel _leftHolder;
-  private JPanel _rightHolder;
-
-
-  /** Create Mainframe as singleton so other mainframes are not created concurrently.* */
+  /**
+   * Create Mainframe as singleton so other mainframes are not created concurrently.*
+   */
   static public Mainframe getInstance()
   {
     if (_mainframe == null) {
@@ -102,21 +98,106 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     return _mainframe;
   }
 
-  // TODO Remove protected qualifer: make private
-  /* TODO Decompose: Mainframe -> LeftPanel and RightPanel; LeftPanel -> OutputArea and Command 
-   * Line; RightPanel -> Image Panel; PersonRW should be created by MainframeCiv, not MF
-   */
   /**
-   * Create the frame layout, civs, left and right display panels, and the command line.
+   * Creates the initial frame layout: left and right panel holders with buttons, and image panel
+   * showing chronos logo on right.
    */
-  protected Mainframe()
+  private Mainframe()
   {
     createFrameLayout();
-    createMFCiv();
-    createPanelsLayout();
-    createCommandLine();
+    addInitialLeftPanel();
+    addImagePanel();
+    displayImage(INITIAL_IMAGE);
+
+    // Create the Civ
+    _mfCiv = new MainframeCiv(this);
+
+    // TODO CommandLine is not part of initial layout
+    // Create the command line widget, part of the left panel
+    // createCommandLine();
   }
 
+  /**
+   * Creates mainframe layout, menu, and adds left and right panel holders
+   */
+  private void createFrameLayout()
+  {
+    setupSizeAndBoundaries();
+    setupContentPane();
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+    // Add menu
+    setJMenuBar(new Menubar());
+
+    // Add left and right holders
+    _leftHolder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
+    _rightHolder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
+    _contentPane.add(_leftHolder, "cell 0 0, wmax 50%, grow");
+    _contentPane.add(_rightHolder, "cell 1 0, wmax 50%, hmax 97%, grow");
+    setVisible(true);
+  }
+
+
+  /** Define the mainframe layout characteristics */
+  private void setupSizeAndBoundaries()
+  {
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    USERWIN_WIDTH = screenSize.width;
+    USERWIN_HEIGHT = screenSize.height;
+    setSize(USERWIN_WIDTH, USERWIN_HEIGHT);
+    setLocationByPlatform(true); // Operating System specific windowing
+    setExtendedState(Frame.MAXIMIZED_BOTH);
+    setResizable(false);
+  }
+
+  /** Apply the layout manager to the content pane */
+  private void setupContentPane()
+  {
+    _contentPane = (JPanel) getContentPane();
+    _contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+    setContentPane(_contentPane);
+    _contentPane.setLayout(new MigLayout("", "[grow, fill]10[grow]", "[grow]"));
+  }
+
+
+  /**
+   * Create initial left panel with buttons and add it to the left holder
+   */
+  private void addInitialLeftPanel()
+  {
+    JPanel buttonPanel = createButtons();
+    _leftHolder.add(buttonPanel);
+  }
+
+
+  /**
+   * Create the Adventure, Heroes, and Create-Hero buttons, and button panel for them
+   * 
+   * @return buttonpanel containing the initial buttons
+   */
+  private JPanel createButtons()
+  {
+    JButton adventureButton = createAdventureButton();
+    JButton summonButton = createSummonHeroesButton();
+    JButton creationButton = createHeroCreationButton();
+
+    JPanel buttonPanel = new JPanel();
+    // Align all buttons in a single column
+    buttonPanel.setLayout(new MigLayout("wrap 1"));
+    buttonPanel.setPreferredSize(new Dimension(
+        (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
+
+    /** Buttons are at 25% to allow space for Command Line later */
+    buttonPanel.add(adventureButton, "hmax 25%, grow");
+    buttonPanel.add(summonButton, "hmax 25%, grow");
+    buttonPanel.add(creationButton, "hmax 25%, grow");
+    return buttonPanel;
+  }
+
+  /** Create the behavior for selecting an adventure, which drives the frame update
+   * 
+   * @return the button created
+   */
   private JButton createAdventureButton()
   {
     JButton button = createButtonWithTextAndIcon(ADV_IMAGE, "Choose your Adventure");
@@ -125,10 +206,9 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
       {
         List<String> adventures = _mfCiv.getAdventures();
         Object[] adventuresArr = adventures.toArray();
-        Object selectedValue =
-            JOptionPane.showInputDialog(Mainframe.this, "Select an Adventure", "Adventures",
-                JOptionPane.INFORMATION_MESSAGE, null, adventuresArr, adventuresArr[0]);
-
+        Object selectedValue = JOptionPane.showInputDialog(
+            Mainframe.this, "Select an Adventure", "Adventures",
+            JOptionPane.INFORMATION_MESSAGE, null, adventuresArr, adventuresArr[0]);
         if (selectedValue != null) {
           System.out.println("Adventure selected was: " + selectedValue);
           _mfCiv.loadAdventure(selectedValue.toString());
@@ -138,19 +218,106 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     return button;
   }
 
-  private void createButtons()
-  {
-    JButton summonButton = createSummonHeroesButton();
-    JButton adventureButton = createAdventureButton();
-    JButton creationButton = createHeroCreationButton();
-    _heroList = createHeroListTextArea();
 
-    _buttonPanel.add(adventureButton, "cell 0 0, hmax 25%,grow");
-    _buttonPanel.add(summonButton, "cell 0 1, hmax 25%,grow");
-    _buttonPanel.add(creationButton, "cell 0 2, hmax 25%, grow");
-    _buttonPanel.add(_heroList, "cell 0 3,grow");
+  /**
+   * Layout the image panel on the right
+   * 
+   * @return the image panel with no image
+   */
+  private JPanel addImagePanel()
+  {
+    JPanel panel = new JPanel(new MigLayout("", "[grow,fill]", "[grow,fill]"));
+    panel.setPreferredSize(new Dimension(
+        (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
+    _rightHolder.addMouseListener(this);
+    _rightHolder.addMouseMotionListener(this);
+    return panel;
   }
 
+  /**
+   * Display the image on the right side
+   * 
+   * @param imagePath what to display
+   */
+  private void displayImage(String imagePath)
+  {
+    _rightHolder.removeAll();
+    new ImagePanel(_rightHolder, imagePath);
+  }
+
+
+
+  // /**
+  // * Create the right Panel to contain the Images
+  // *
+  // * @return the right side panel
+  // */
+  // private JPanel createDisplayPanelr()
+  // {
+  // JPanel rightHolder = new JPanel();
+  // rightHolder.addMouseListener(this);
+  // rightHolder.addMouseMotionListener(this);
+  // setImageToBeDisplayed(PORTAL_IMAGE);
+  // return rightHolder;
+  // }
+
+
+
+  private JButton createSummonHeroesButton()
+  {
+    JButton button = createButtonWithTextAndIcon(HALL_IMAGE, "Summon Heroes");
+    button.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e)
+      {
+        if (_partyHeros.size() == 0) {
+          _summonableHeroes = _mfCiv.openDormitory();
+          showPartyPickerWhenPartyEmpty();
+        } else {
+          showPartyPickerWhenMembersAlreadySelected();
+        }
+      }
+
+      private void showPartyPickerWhenPartyEmpty()
+      {
+        padHeroes(_summonableHeroes);
+        final ShuttleList slist = new ShuttleList(_summonableHeroes);
+        setPropsForShuttleList(slist);
+      }
+
+      private void showPartyPickerWhenMembersAlreadySelected()
+      {
+        final ShuttleList slist = new ShuttleList(_summonableHeroes, _partyHeros);
+        setPropsForShuttleList(slist);
+      }
+
+      private void setPropsForShuttleList(final ShuttleList slist)
+      {
+        slist.setTitle("Choose your Adventurers!");
+        slist.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent arg0)
+          {
+            List<String> list = new ArrayList<String>();
+            for (Object s : slist.getSelectedItems()) {
+              list.add(s.toString());
+            }
+            setHeroList(list);
+            slist.dispose();
+          }
+        });
+        slist.setVisible(true);
+      }
+
+      private void padHeroes(List<String> list)
+      {
+        if (list.size() < 3) {
+          list.add("Gronkhar the Smelly");
+          list.add("Siobhan the Obsiquious");
+          list.add("Sir Will-not-be-appearing-in-this-movie");
+        }
+      }
+    });
+    return button;
+  }
 
   private JButton createButtonWithTextAndIcon(String imageFilePath, String buttonText)
   {
@@ -161,35 +328,36 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     return button;
   }
 
-  // TODO Remove protected qualifer: make private
-  /** Create the mainframe civ, PersonReadWriter for Heroes, and the AdventureRegistry */
-  protected void createMFCiv()
-  {
-    AdventureRegistry advreg = (AdventureRegistry) RegistryFactory.getRegistry(RegKey.ADV);
-    _mfCiv = new MainframeCiv(this, new PersonReadWriter(), advreg);
-  }
-
-
   /**
-   * Create menu, mouse options, right panel image
+   * ======================================================================================
+   * SECONDARY CODE BELOW THIS LINE
+   * ======================================================================================
    */
-  private void createPanelsLayout()
-  {
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    setJMenuBar(new Menubar());
+  protected void CODE_DIVIDER()
+  {}
 
-    setImageToBeDisplayed(PORTAL_IMAGE);
 
-    _rightHolder.addMouseListener(this);
-    _rightHolder.addMouseMotionListener(this);
 
-    _buttonPanel = setupLeftPanel();
-    _leftPanel = _buttonPanel;
-
-    createButtons();
-
-    _leftHolder.add(_buttonPanel);
-  }
+  // /**
+  // * Create menu, mouse options, right panel image
+  // */
+  // private void createPanelsLayout()
+  // {
+  // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+  // setJMenuBar(new Menubar());
+  //
+  // setImageToBeDisplayed(PORTAL_IMAGE);
+  //
+  // _rightHolder.addMouseListener(this);
+  // _rightHolder.addMouseMotionListener(this);
+  //
+  // _buttonPanel = setupLeftPanel();
+  // _leftPanel = _buttonPanel;
+  //
+  // createButtons();
+  //
+  // _leftHolder.add(_buttonPanel);
+  // }
 
 
   /**
@@ -199,6 +367,54 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   {
     _cmdLine = new InputPanel(_mfCiv.getCmdParser());
   }
+
+
+
+  // /**
+  // * Create menu, mouse options, right panel image
+  // */
+  // protected void createDisplayObjects()
+  // {
+  // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+  // setJMenuBar(new Menubar());
+  //
+  // setImageToBeDisplayed(PORTAL_IMAGE);
+  //
+  // _rightHolder.addMouseListener(this);
+  // _rightHolder.addMouseMotionListener(this);
+  //
+  // _buttonPanel = setupLeftPanel();
+  // _inputPanel = new InputPanel(_advCiv.getCmdParser());
+  // _leftPanel = _buttonPanel;
+  //
+  // createButtons();
+  //
+  // _leftHolder.add(_buttonPanel);
+  // }
+
+
+
+  // /**
+  // * Create menu, mouse options, right panel image
+  // */
+  // private void createPanelsLayout()
+  // {
+  // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+  // setJMenuBar(new Menubar());
+  //
+  // setImageToBeDisplayed(PORTAL_IMAGE);
+  //
+  // _rightHolder.addMouseListener(this);
+  // _rightHolder.addMouseMotionListener(this);
+  //
+  // _buttonPanel = setupLeftPanel();
+  // _leftPanel = _buttonPanel;
+  //
+  // createButtons();
+  //
+  // _leftHolder.add(_buttonPanel);
+  // }
+
 
 
   // /**
@@ -225,7 +441,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
   private JButton createHeroCreationButton()
   {
-    JButton button = createButtonWithTextAndIcon(REGISTRAR_IMAGE, "Create New Heroes");
+    JButton button = createButtonWithTextAndIcon(REGISTRAR_IMAGE,
+        "Create New Heroes");
     button.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0)
       {
@@ -236,158 +453,170 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
           e.printStackTrace();
           System.exit(0);
         }
-        changeToLeftPanel(nhd);
+        // TODO Hold for later
+        // changeToLeftPanel(nhd);
       }
     });
     return button;
   }
 
-  private JTextPane createHeroListTextArea()
-  {
-    JTextPane pane = new JTextPane();
-    pane.setText(HEROLIST_TEXT);
-    pane.setFont(new Font("Serif", Font.PLAIN, 24));
-    pane.setBackground(Color.WHITE);
-    return pane;
-  }
-
-  private JButton createSummonHeroesButton()
-  {
-    JButton button = createButtonWithTextAndIcon(HALL_IMAGE, "Summon Heroes");
-    button.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e)
-      {
-        if (_partyHeros.size() == 0) {
-          _summonableHeroes = _mfCiv.openDormitory();
-          showPartyPickerWhenPartyEmpty();
-        } else {
-          showPartyPickerWhenMembersAlreadySelected();
-        }
-      }
+  // /**
+  // * Create menu, mouse options, right panel image
+  // */
+  // private void createPanelsLayout()
+  // {
+  // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+  // setJMenuBar(new Menubar());
+  //
+  // setImageToBeDisplayed(PORTAL_IMAGE);
+  //
+  // _rightHolder.addMouseListener(this);
+  // _rightHolder.addMouseMotionListener(this);
+  //
+  // _buttonPanel = setupLeftPanel();
+  // _leftPanel = _buttonPanel;
+  //
+  // createButtons();
+  //
+  // _leftHolder.add(_buttonPanel);
+  // }
 
 
-      private void showPartyPickerWhenPartyEmpty()
-      {
-        padHeroes(_summonableHeroes);
-        final ShuttleList slist = new ShuttleList(_summonableHeroes);
-        setPropsForShuttleList(slist);
-      }
+
+  // /**
+  // * Create menu, mouse options, right panel image
+  // */
+  // protected void createDisplayObjects()
+  // {
+  // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+  // setJMenuBar(new Menubar());
+  //
+  // setImageToBeDisplayed(PORTAL_IMAGE);
+  //
+  // _rightHolder.addMouseListener(this);
+  // _rightHolder.addMouseMotionListener(this);
+  //
+  // _buttonPanel = setupLeftPanel();
+  // _inputPanel = new InputPanel(_advCiv.getCmdParser());
+  // _leftPanel = _buttonPanel;
+  //
+  // createButtons();
+  //
+  // _leftHolder.add(_buttonPanel);
+  // }
+
+  // private JTextPane createHeroListTextArea()
+  // {
+  // JTextPane pane = new JTextPane();
+  // pane.setText(HEROLIST_TEXT);
+  // pane.setFont(new Font("Serif", Font.PLAIN, 24));
+  // pane.setBackground(Color.WHITE);
+  // return pane;
+  // }
+
+  // private void setHeroPartyText()
+  // {
+  // StringBuilder sb = new StringBuilder(HEROLIST_TEXT);
+  // for (String s : _partyHeros) {
+  // sb.append(s + ", ");
+  // }
+  // sb.deleteCharAt(sb.length() - 1);
+  // sb.append("\n");
+  // // _heroList.setText(sb.toString());
+  // }
+
+  // /**
+  // * Create the Left Holder to contain the buttons, output panel, and command line
+  // *
+  // * @return the leftside panel
+  // */
+  // private JPanel createLeftPanel()
+  // {
+  // _leftHolder = new JPanel();
+  // _buttonPanel = setupEmptyLeftPanel();
+  // createButtons();
+  // leftHolder.add(_buttonPanel);
+  // return leftHolder;
+
+  // JPanel leftHolder = new JPanel();
+  // _buttonPanel = setupEmptyLeftPanel();
+  // createButtons();
+  // leftHolder.add(_buttonPanel);
+  // return leftHolder;
+  // }
 
 
-      private void showPartyPickerWhenMembersAlreadySelected()
-      {
-        final ShuttleList slist = new ShuttleList(_summonableHeroes, _partyHeros);
-        setPropsForShuttleList(slist);
-      }
+  // /**
+  // * Create menu, mouse options, right panel image
+  // */
+  // private void createPanelsLayout()
+  // {
+  // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+  // setJMenuBar(new Menubar());
+  //
+  // setImageToBeDisplayed(PORTAL_IMAGE);
+  //
+  // _rightHolder.addMouseListener(this);
+  // _rightHolder.addMouseMotionListener(this);
+  //
+  // _buttonPanel = setupLeftPanel();
+  // _leftPanel = _buttonPanel;
+  //
+  // createButtons();
+  //
+  // _leftHolder.add(_buttonPanel);
+  // }
 
 
-      private void setPropsForShuttleList(final ShuttleList slist)
-      {
-        slist.setTitle("Choose your Adventurers!");
-        slist.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent arg0)
-          {
-            List<String> list = new ArrayList<String>();
-            for (Object s : slist.getSelectedItems()) {
-              list.add(s.toString());
-            }
-            setHeroList(list);
-            slist.dispose();
-          }
-        });
-        slist.setVisible(true);
-      }
 
-
-      private void padHeroes(List<String> list)
-      {
-        if (list.size() < 3) {
-          list.add("Gronkhar the Smelly");
-          list.add("Siobhan the Obsiquious");
-          list.add("Sir Will-not-be-appearing-in-this-movie");
-        }
-      }
-    });
-    return button;
-  }
-
-  // TODO Remove protected qualifer: make private
   /**
-   * Creates and displays left-side panel for input/output text, and right-side panel for images.
+   * Create the mainframe civ, PersonReadWriter for Heroes, and the AdventureRegistry
    */
-  protected void createFrameLayout()
+  private void createMFCiv()
   {
-    setupSizeAndBoundaries();
-    setupContentPane();
-
-    _leftHolder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
-    _rightHolder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
-    _contentPane.add(_leftHolder, "cell 0 0, wmax 50%, grow");
-    _contentPane.add(_rightHolder, "cell 1 0, wmax 50%, hmax 97%, grow");
-    setVisible(true);
+//    AdventureRegistry advreg = (AdventureRegistry) RegistryFactory.getRegistry(RegKey.ADV);
+//    _mfCiv = new MainframeCiv(this, new PersonReadWriter(), advreg);
   }
 
-  private void setHeroPartyText()
-  {
-    StringBuilder sb = new StringBuilder(HEROLIST_TEXT);
-    for (String s : _partyHeros) {
-      sb.append(s + ", ");
-    }
-    sb.deleteCharAt(sb.length() - 1);
-    sb.append("\n");
-    _heroList.setText(sb.toString());
-  }
-
-  private void setImageToBeDisplayed(String imagePath)
-  {
-    _rightHolder.removeAll();
-    new ImagePanel(_rightHolder, imagePath);
-  }
-
-  private void setupContentPane()
-  {
-    _contentPane = (JPanel) getContentPane();
-    _contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-    setContentPane(_contentPane);
-    _contentPane.setLayout(new MigLayout("", "[grow, fill]10[grow]", "[grow]"));
-  }
+  // /**
+  // * Create the right Panel to contain the Images
+  // *
+  // * @return the right side panel
+  // */
+  // private JPanel createDisplayPanelr()
+  // {
+  // JPanel rightHolder = new JPanel();
+  // rightHolder.addMouseListener(this);
+  // rightHolder.addMouseMotionListener(this);
+  // setImageToBeDisplayed(PORTAL_IMAGE);
+  // return rightHolder;
+  // }
 
 
-  private JPanel setupLeftPanel()
-  {
-    JPanel panel = setupRightPanel();
-    panel.setLayout(new MigLayout("", "[grow,fill]",
-        "[0:0,grow 25,fill]10[0:0,grow 25,fill]10[0:0,grow 25,fill]10[0:0,grow 25,fill]"));
-    return panel;
-  }
 
-  private JPanel setupRightPanel()
-  {
-    JPanel panel = new JPanel(new MigLayout("", "[grow,fill]", "[grow,fill]"));
-    panel.setPreferredSize(new Dimension((int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT
-        - FRAME_PADDING));
-    return panel;
-  }
+  // private JPanel setupLeftPanel()
+  // {
+  // JPanel panel = setupRightPanel();
+  // panel.setLayout(new MigLayout("", "[grow,fill]",
+  // "[0:0,grow 25,fill]10[0:0,grow 25,fill]10[0:0,grow 25,fill]10[0:0,grow 25,fill]"));
+  // return panel;
+  // }
 
 
-  private void setupSizeAndBoundaries()
-  {
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    USERWIN_WIDTH = screenSize.width;
-    USERWIN_HEIGHT = screenSize.height;
-    setSize(USERWIN_WIDTH, USERWIN_HEIGHT);
-    setLocationByPlatform(true); // Operating System specific windowing
-    setExtendedState(Frame.MAXIMIZED_BOTH);
-    setResizable(false);
-  }
 
   public void changeToLeftPanel(JPanel panel)
   {
-    _leftHolder.remove(_leftPanel);
-    _leftHolder.add(panel, "");
-    _leftPanel = panel;
-    redraw();
+    // TODO Hold for later 21040704
+    // _leftHolder.remove(_leftPanel);
+    // _leftHolder.add(panel, "");
+    // _leftPanel = panel;
+    // redraw();
   }
+
+
+  /************************************************************************************
+   * PUBLIC METHODS
+   ************************************************************************************/
 
   /**
    * Called by the AdvMainframeCiv to display appropriate building information
@@ -397,9 +626,10 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
    */
   public void displayTextAndImage(String description, String imagePath)
   {
-    setImageToBeDisplayed(imagePath);
-
-    changeToLeftPanel(_cmdLine);
+    // TODO Hold for later 21040704
+//    setImageToBeDisplayed(imagePath);
+    displayImage(imagePath);
+     changeToLeftPanel(_cmdLine);
     _cmdLine.setDescription(description);
   }
 
@@ -407,7 +637,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   {
     _cmdLine.appendText(msg);
   }
-
 
   public void drawBuilding(BuildingRectangle rect)
   {
@@ -428,14 +657,15 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
   public void resetPanels()
   {
-    changeToLeftPanel(_buttonPanel);
-    setImageToBeDisplayed(PORTAL_IMAGE);
+    // TODO Hold for later 21040704
+    // changeToLeftPanel(_buttonPanel);
+    // setImageToBeDisplayed(PORTAL_IMAGE);
   }
 
   public void setHeroList(List<String> list)
   {
     _partyHeros = list;
-    setHeroPartyText();
+    // setHeroPartyText();
   }
 
   public void mouseClicked(MouseEvent e)
@@ -443,18 +673,14 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     _mfCiv.handleClick(e.getPoint());
   }
 
-
   public void mouseEntered(MouseEvent e)
   {}
-
 
   public void mouseExited(MouseEvent e)
   {}
 
-
   public void mousePressed(MouseEvent e)
   {}
-
 
   public void mouseReleased(MouseEvent e)
   {}
@@ -463,7 +689,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   {
     _mfCiv.handleMouseMovement(e.getPoint());
   }
-
 
   public void mouseMoved(MouseEvent e)
   {
@@ -474,4 +699,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   {
     return _rightHolder.getSize();
   }
-}
+
+
+} // end of Mainframe outer class

@@ -67,7 +67,7 @@ public class TA00_Initialize
         verifyNoRegFilesExist();     
         
         // DO: Create a new AdventureCiv, which creates all Registries
-        _advCiv = new MainframeCiv(null, null, null);
+        _advCiv = new MainframeCiv(null);
 
         // VERIFY: 
         verifyAllRegFilesExist();
