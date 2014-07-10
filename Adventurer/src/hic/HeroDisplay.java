@@ -11,18 +11,6 @@
 
 package hic;
 
-import civ.HeroDisplayCiv;
-import civ.MiscKeys.ItemCategory;
-import civ.NewHeroCiv;
-import civ.PersonKeys;
-
-import chronos.Chronos;
-
-import mylib.MsgCtrl;
-import mylib.civ.DataShuttle;
-
-import net.miginfocom.swing.MigLayout;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -49,6 +37,15 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+
+import mylib.MsgCtrl;
+import mylib.civ.DataShuttle;
+import net.miginfocom.swing.MigLayout;
+import chronos.Chronos;
+import civ.HeroDisplayCiv;
+import civ.MiscKeys.ItemCategory;
+import civ.NewHeroCiv;
+import civ.PersonKeys;
 
 /** TODO: [4] Add Help for Attribute page */
 
@@ -370,7 +367,7 @@ public class HeroDisplay extends JPanel
         add(_buttonPanel, "span, center, gapbottom 5");
         
         Mainframe frame = Mainframe.getInstance();
-        frame.changeToLeftPanel(this);
+//        frame.changeToLeftPanel(this);
         // revalidate();
         // repaint();
         return true;

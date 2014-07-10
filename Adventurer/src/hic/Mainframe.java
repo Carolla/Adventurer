@@ -83,7 +83,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   // private JPanel _buttonPanel;
   // private JPanel _leftPanel;
   private MainframeCiv _mfCiv;
-  private InputPanel _cmdLine;
+  private OutputPanel _cmdLine;
   private List<String> _partyHeros = new ArrayList<String>();
   private List<String> _summonableHeroes;
 
@@ -105,17 +105,12 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private Mainframe()
   {
     createFrameLayout();
-    addInitialLeftPanel();
-    addImagePanel();
-    displayImage(INITIAL_IMAGE);
+    add(new InitialLayout());
 
     // Create the Civ
     _mfCiv = new MainframeCiv(this);
-
-    // TODO CommandLine is not part of initial layout
-    // Create the command line widget, part of the left panel
-    // createCommandLine();
   }
+
 
   /**
    * Creates mainframe layout, menu, and adds left and right panel holders
@@ -159,14 +154,19 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     _contentPane.setLayout(new MigLayout("", "[grow, fill]10[grow]", "[grow]"));
   }
 
-
   /**
-   * Create initial left panel with buttons and add it to the left holder
+   * Layout the image panel on the right
+   * 
+   * @return the image panel with no image
    */
-  private void addInitialLeftPanel()
+  private JPanel addImagePanel()
   {
-    JPanel buttonPanel = createButtons();
-    _leftHolder.add(buttonPanel);
+    JPanel panel = new JPanel(new MigLayout("", "[grow,fill]", "[grow,fill]"));
+    panel.setPreferredSize(new Dimension(
+        (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
+    _rightHolder.addMouseListener(Mainframe.this);
+    _rightHolder.addMouseMotionListener(Mainframe.this);
+    return panel;
   }
 
 
@@ -194,7 +194,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     return buttonPanel;
   }
 
-  /** Create the behavior for selecting an adventure, which drives the frame update
+  /**
+   * Create the behavior for selecting an adventure, which drives the frame update
    * 
    * @return the button created
    */
@@ -211,7 +212,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
             JOptionPane.INFORMATION_MESSAGE, null, adventuresArr, adventuresArr[0]);
         if (selectedValue != null) {
           System.out.println("Adventure selected was: " + selectedValue);
-          _mfCiv.loadAdventure(selectedValue.toString());
+          add(new StandardLayout());
+          _mfCiv.loadSelectedAdventure(selectedValue.toString());
         }
       }
     });
@@ -219,20 +221,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   }
 
 
-  /**
-   * Layout the image panel on the right
-   * 
-   * @return the image panel with no image
-   */
-  private JPanel addImagePanel()
-  {
-    JPanel panel = new JPanel(new MigLayout("", "[grow,fill]", "[grow,fill]"));
-    panel.setPreferredSize(new Dimension(
-        (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
-    _rightHolder.addMouseListener(this);
-    _rightHolder.addMouseMotionListener(this);
-    return panel;
-  }
 
   /**
    * Display the image on the right side
@@ -328,70 +316,22 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     return button;
   }
 
-  /**
-   * ======================================================================================
-   * SECONDARY CODE BELOW THIS LINE
-   * ======================================================================================
-   */
+  /*------------------------------------------------------------------------
+   * Temporary SECONDARY CODE BELOW THIS LINE while refactoring
+   *------------------------------------------------------------------------*/
+
+  /** Temporary marker because there are too many methods to read clearly otherwise */
   protected void CODE_DIVIDER()
   {}
 
 
-
   // /**
-  // * Create menu, mouse options, right panel image
+  // * Create the CommandLine input area
   // */
-  // private void createPanelsLayout()
+  // private void createCommandLine()
   // {
-  // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-  // setJMenuBar(new Menubar());
-  //
-  // setImageToBeDisplayed(PORTAL_IMAGE);
-  //
-  // _rightHolder.addMouseListener(this);
-  // _rightHolder.addMouseMotionListener(this);
-  //
-  // _buttonPanel = setupLeftPanel();
-  // _leftPanel = _buttonPanel;
-  //
-  // createButtons();
-  //
-  // _leftHolder.add(_buttonPanel);
+  // _cmdLine = new InputPanel(_mfCiv.getCmdParser());
   // }
-
-
-  /**
-   * Create the CommandLine input area
-   */
-  private void createCommandLine()
-  {
-    _cmdLine = new InputPanel(_mfCiv.getCmdParser());
-  }
-
-
-
-  // /**
-  // * Create menu, mouse options, right panel image
-  // */
-  // protected void createDisplayObjects()
-  // {
-  // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-  // setJMenuBar(new Menubar());
-  //
-  // setImageToBeDisplayed(PORTAL_IMAGE);
-  //
-  // _rightHolder.addMouseListener(this);
-  // _rightHolder.addMouseMotionListener(this);
-  //
-  // _buttonPanel = setupLeftPanel();
-  // _inputPanel = new InputPanel(_advCiv.getCmdParser());
-  // _leftPanel = _buttonPanel;
-  //
-  // createButtons();
-  //
-  // _leftHolder.add(_buttonPanel);
-  // }
-
 
 
   // /**
@@ -415,29 +355,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   // _leftHolder.add(_buttonPanel);
   // }
 
-
-
-  // /**
-  // * Create menu, mouse options, right panel image
-  // */
-  // protected void createDisplayObjects()
-  // {
-  // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-  // setJMenuBar(new Menubar());
-  //
-  // setImageToBeDisplayed(PORTAL_IMAGE);
-  //
-  // _rightHolder.addMouseListener(this);
-  // _rightHolder.addMouseMotionListener(this);
-  //
-  // _buttonPanel = setupLeftPanel();
-  // _inputPanel = new InputPanel(_advCiv.getCmdParser());
-  // _leftPanel = _buttonPanel;
-  //
-  // createButtons();
-  //
-  // _leftHolder.add(_buttonPanel);
-  // }
 
   private JButton createHeroCreationButton()
   {
@@ -453,57 +370,12 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
           e.printStackTrace();
           System.exit(0);
         }
-        // TODO Hold for later
         // changeToLeftPanel(nhd);
       }
     });
     return button;
   }
 
-  // /**
-  // * Create menu, mouse options, right panel image
-  // */
-  // private void createPanelsLayout()
-  // {
-  // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-  // setJMenuBar(new Menubar());
-  //
-  // setImageToBeDisplayed(PORTAL_IMAGE);
-  //
-  // _rightHolder.addMouseListener(this);
-  // _rightHolder.addMouseMotionListener(this);
-  //
-  // _buttonPanel = setupLeftPanel();
-  // _leftPanel = _buttonPanel;
-  //
-  // createButtons();
-  //
-  // _leftHolder.add(_buttonPanel);
-  // }
-
-
-
-  // /**
-  // * Create menu, mouse options, right panel image
-  // */
-  // protected void createDisplayObjects()
-  // {
-  // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-  // setJMenuBar(new Menubar());
-  //
-  // setImageToBeDisplayed(PORTAL_IMAGE);
-  //
-  // _rightHolder.addMouseListener(this);
-  // _rightHolder.addMouseMotionListener(this);
-  //
-  // _buttonPanel = setupLeftPanel();
-  // _inputPanel = new InputPanel(_advCiv.getCmdParser());
-  // _leftPanel = _buttonPanel;
-  //
-  // createButtons();
-  //
-  // _leftHolder.add(_buttonPanel);
-  // }
 
   // private JTextPane createHeroListTextArea()
   // {
@@ -525,6 +397,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   // // _heroList.setText(sb.toString());
   // }
 
+  
   // /**
   // * Create the Left Holder to contain the buttons, output panel, and command line
   // *
@@ -545,38 +418,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   // return leftHolder;
   // }
 
-
-  // /**
-  // * Create menu, mouse options, right panel image
-  // */
-  // private void createPanelsLayout()
-  // {
-  // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-  // setJMenuBar(new Menubar());
-  //
-  // setImageToBeDisplayed(PORTAL_IMAGE);
-  //
-  // _rightHolder.addMouseListener(this);
-  // _rightHolder.addMouseMotionListener(this);
-  //
-  // _buttonPanel = setupLeftPanel();
-  // _leftPanel = _buttonPanel;
-  //
-  // createButtons();
-  //
-  // _leftHolder.add(_buttonPanel);
-  // }
-
-
-
-  /**
-   * Create the mainframe civ, PersonReadWriter for Heroes, and the AdventureRegistry
-   */
-  private void createMFCiv()
-  {
-//    AdventureRegistry advreg = (AdventureRegistry) RegistryFactory.getRegistry(RegKey.ADV);
-//    _mfCiv = new MainframeCiv(this, new PersonReadWriter(), advreg);
-  }
 
   // /**
   // * Create the right Panel to contain the Images
@@ -604,32 +445,28 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
 
 
-  public void changeToLeftPanel(JPanel panel)
-  {
-    // TODO Hold for later 21040704
-    // _leftHolder.remove(_leftPanel);
-    // _leftHolder.add(panel, "");
-    // _leftPanel = panel;
-    // redraw();
-  }
-
-
   /************************************************************************************
    * PUBLIC METHODS
    ************************************************************************************/
 
+  // public void changeToLeftPanel(JPanel panel)
+  // {
+  // _leftHolder.remove(_leftPanel);
+  // _leftHolder.add(panel, "");
+  // _leftPanel = panel;
+  // redraw();
+  // }
+
   /**
-   * Called by the AdvMainframeCiv to display appropriate building information
+   * Called by the MainframeCiv to display appropriate building information
    * 
-   * @param description - the description to display in the input panel
-   * @param icon - the image to display in the right panel
+   * @param description - the description to display in the output panel
+   * @param icon - the image to display in the right-side image panel
    */
   public void displayTextAndImage(String description, String imagePath)
   {
-    // TODO Hold for later 21040704
-//    setImageToBeDisplayed(imagePath);
     displayImage(imagePath);
-     changeToLeftPanel(_cmdLine);
+//     changeToLeftPanel(_cmdLine);
     _cmdLine.setDescription(description);
   }
 
@@ -699,6 +536,71 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   {
     return _rightHolder.getSize();
   }
+
+
+  /*-------------------------------------------------
+   * INNER CLASS: InitialLayout 
+   *-------------------------------------------------*/
+
+  /**
+   * Inner class to hold the initial mainframe widgets before an Adventure is selected: the buttons
+   * on the left side, and the chronos logo on the right.
+   */
+  public class InitialLayout extends JPanel
+  {
+    // Create the layout for the mainframe at start up time
+    public InitialLayout()
+    {
+      addInitialLeftPanel();
+      addImagePanel();
+      displayImage(INITIAL_IMAGE);
+    }
+
+    /**
+     * Create initial left panel with buttons and add it to the left holder
+     */
+    private void addInitialLeftPanel()
+    {
+      JPanel buttonPanel = createButtons();
+      _leftHolder.add(buttonPanel);
+    }
+
+
+  } // end of InitialLayout inner class
+
+  
+  /*-------------------------------------------------
+   * INNER CLASS: StandardLayout 
+   *-------------------------------------------------*/
+
+  /**
+   * Inner class to hold the secondary mainframe widgets after an Adventure is selected: output
+   * description panel and command line widget on the left; town or building image on the right.
+   * Replace the buttons with the output descriptive pane and the command line; replace the image
+   * panel with a picture of the Town
+   */
+  public class StandardLayout extends JPanel
+  {
+    public StandardLayout()
+    {
+      changeToLeftStandardPanel();
+      addImagePanel();
+      // The adventure displays town and building images
+      // displayImage(INITIAL_IMAGE); 
+    }
+
+    /** Replace left side panel buttons with OutputPanel, which includes the command line */
+    public void changeToLeftStandardPanel()
+    {
+      OutputPanel output = new OutputPanel();
+      _leftHolder.removeAll();
+      _leftHolder.add(output);
+      redraw();
+    }
+
+
+  } // end of StandardLayout inner class
+
 
 
 } // end of Mainframe outer class

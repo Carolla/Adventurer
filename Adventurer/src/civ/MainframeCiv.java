@@ -181,7 +181,7 @@ public class MainframeCiv
     _frame.redraw();
   }
 
-  public void loadAdventure(String adventureName)
+  public void loadSelectedAdventure(String adventureName)
   {
     _adv = _advReg.getAdventure(adventureName);
     openTown();
