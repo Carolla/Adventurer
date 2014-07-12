@@ -83,7 +83,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   // private JPanel _buttonPanel;
   // private JPanel _leftPanel;
   private MainframeCiv _mfCiv;
-  private OutputPanel _cmdLine;
+  private IOPanel _iop;
   private List<String> _partyHeros = new ArrayList<String>();
   private List<String> _summonableHeroes;
 
@@ -128,7 +128,17 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     _leftHolder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
     _rightHolder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
     _contentPane.add(_leftHolder, "cell 0 0, wmax 50%, grow");
-    _contentPane.add(_rightHolder, "cell 1 0, wmax 50%, hmax 97%, grow");
+    _contentPane.add(_rightHolder, "cell 1 0, wmax 50%, hmax 90%, grow");
+    setVisible(true);
+  }
+
+  /**
+   * Creates the standard layout for displaying town an building images and descriptions
+   */
+  public void createStandardLayout()
+  {
+    _leftHolder.removeAll();
+    add(new StandardLayout());
     setVisible(true);
   }
 
@@ -212,7 +222,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
             JOptionPane.INFORMATION_MESSAGE, null, adventuresArr, adventuresArr[0]);
         if (selectedValue != null) {
           System.out.println("Adventure selected was: " + selectedValue);
-          add(new StandardLayout());
           _mfCiv.loadSelectedAdventure(selectedValue.toString());
         }
       }
@@ -397,7 +406,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   // // _heroList.setText(sb.toString());
   // }
 
-  
+
   // /**
   // * Create the Left Holder to contain the buttons, output panel, and command line
   // *
@@ -458,22 +467,29 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   // }
 
   /**
-   * Called by the MainframeCiv to display appropriate building information
+   * Display the image and text of a Building or the Town
    * 
    * @param description - the description to display in the output panel
-   * @param icon - the image to display in the right-side image panel
+   * @param image - the image to display in the right-side image panel
    */
-  public void displayTextAndImage(String description, String imagePath)
+  public void displayTextAndImage(String description, String image)
   {
-    displayImage(imagePath);
-//     changeToLeftPanel(_cmdLine);
-    _cmdLine.setDescription(description);
+    displayText(description);
+    displayImage(image);
+    // changeToLeftPanel(_cmdLine);
+    // _cmdLine.setDescription(description);
   }
 
+  /**
+   * Display text onto the scrolling output panel
+   * 
+   * @param msg text to append to existing text in panel
+   */
   public void displayText(String msg)
   {
-    _cmdLine.appendText(msg);
+    _iop.appendText(msg);
   }
+
 
   public void drawBuilding(BuildingRectangle rect)
   {
@@ -565,10 +581,9 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
       _leftHolder.add(buttonPanel);
     }
 
-
   } // end of InitialLayout inner class
 
-  
+
   /*-------------------------------------------------
    * INNER CLASS: StandardLayout 
    *-------------------------------------------------*/
@@ -583,24 +598,14 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   {
     public StandardLayout()
     {
-      changeToLeftStandardPanel();
+      Mainframe.this._iop = new IOPanel();
+      _leftHolder.add(_iop);
       addImagePanel();
-      // The adventure displays town and building images
-      // displayImage(INITIAL_IMAGE); 
-    }
-
-    /** Replace left side panel buttons with OutputPanel, which includes the command line */
-    public void changeToLeftStandardPanel()
-    {
-      OutputPanel output = new OutputPanel();
-      _leftHolder.removeAll();
-      _leftHolder.add(output);
       redraw();
     }
 
 
   } // end of StandardLayout inner class
-
 
 
 } // end of Mainframe outer class

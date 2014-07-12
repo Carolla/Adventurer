@@ -1,5 +1,5 @@
 /**
- * OutputPanel.java Copyright (c) 2013, Carolla Development, Inc. All Rights Reserved
+ * IOPanel.java Copyright (c) 2013, Carolla Development, Inc. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
@@ -40,7 +40,7 @@ import civ.CommandParser;
  * @version 1.1 Jul 9, 2014 ABC refactored for clearer output panel and command line input
  */
 @SuppressWarnings("serial")
-public class OutputPanel extends JPanel
+public class IOPanel extends JPanel
 {
   private static final float FONT_HT = 14f;
   /** Number of rows in the user's output window */
@@ -59,7 +59,7 @@ public class OutputPanel extends JPanel
    * Creates 2-paned panel to represent Input and Output
    */
   // public OutputPanel(CommandParser parser)
-  public OutputPanel()
+  public IOPanel()
   {
     // _cp = new CommandParser();
     setLayout(new MigLayout("", "[grow]", "[][]"));

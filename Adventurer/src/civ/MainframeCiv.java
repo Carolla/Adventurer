@@ -23,7 +23,6 @@ import java.util.TreeMap;
 
 import chronos.pdc.Adventure;
 import chronos.pdc.registry.AdventureRegistry;
-import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import dmc.PersonReadWriter;
@@ -88,16 +87,16 @@ public class MainframeCiv
    * @param personRW supports the Summon Hero and Create Hero buttons
    * @param advReg registry to support the Adventures button
    */
-//  public MainframeCiv(Mainframe frame, PersonReadWriter personRW, AdventureRegistry advReg)
+  // public MainframeCiv(Mainframe frame, PersonReadWriter personRW, AdventureRegistry advReg)
   public MainframeCiv(Mainframe frame)
   {
     _frame = frame;
-    _personRW = new PersonReadWriter();
-    _advReg = (AdventureRegistry) RegistryFactory.getRegistry(RegKey.ADV);
-    _cp = new CommandParser(this);
-    _bdCiv =
-        new BuildingDisplayCiv(_frame, (BuildingRegistry) RegistryFactory.getRegistry(RegKey.BLDG));
-    createBuildingBoxes();
+    // _personRW = new PersonReadWriter();
+    // _advReg = (AdventureRegistry) RegistryFactory.getRegistry(RegKey.ADV);
+    // _cp = new CommandParser(this);
+    // _bdCiv =
+    // new BuildingDisplayCiv(_frame, (BuildingRegistry) RegistryFactory.getRegistry(RegKey.BLDG));
+    // createBuildingBoxes();
   }
 
   private void createBuildingBoxes()
@@ -127,14 +126,16 @@ public class MainframeCiv
     }
   }
 
-  /** Retrieves the Adventures for selection from the Adventure Registry
+  /**
+   * Retrieves the Adventures for selection from the Adventure Registry
    * 
    * @return the list of Adventures
    */
   public List<String> getAdventures()
   {
-    List<String> results = new ArrayList<String>();
+     _advReg = (AdventureRegistry) RegistryFactory.getRegistry(RegKey.ADV);
     List<Adventure> adventures = _advReg.getAdventureList();
+    List<String> results = new ArrayList<String>();
     for (Adventure a : adventures) {
       results.add(a.getKey());
     }
@@ -181,6 +182,11 @@ public class MainframeCiv
     _frame.redraw();
   }
 
+  
+  /** Load the selected adventure from the Adventure registry
+   * 
+   * @param adventureName selected from the Adventure by the user
+   */
   public void loadSelectedAdventure(String adventureName)
   {
     _adv = _advReg.getAdventure(adventureName);
@@ -198,10 +204,12 @@ public class MainframeCiv
     return heroes;
   }
 
+  /** Creates the standard layout to display the town image and description */
   public void openTown()
   {
     _onTown = true;
-    _bdCiv.exitBuilding();
+//    _bdCiv.exitBuilding();
+    _frame.createStandardLayout();
     _frame.displayTextAndImage(_adv.getOverview(), TOWN_IMAGE);
   }
 
