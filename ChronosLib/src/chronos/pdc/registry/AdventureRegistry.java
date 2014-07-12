@@ -26,12 +26,8 @@ import com.db4o.query.Predicate;
  * class.
  * 
  * @author Alan Cline
- * @version <DL>
- *          <DT>Jan 1 2010 // original
- *          <DD>
- *          <DT>Jun 28 2014 // make available only through Class reflection call; some cleanup
- *          <DD>
- *          </DL>
+ * @version Jan 1 2010 // original
+ * @version Jun 28 2014 // make available only through Class reflection call; some cleanup
  */
 public class AdventureRegistry extends Registry
 {
@@ -43,26 +39,39 @@ public class AdventureRegistry extends Registry
   private final String DEF_ARENA = "Quasqueton";
   /** Overview for Quasqueton Adventure */
   private final String DEF_OVERVIEW =
-      "This is the domain of Rogahn the mighty warrior, and Zelligar the powerful mage. "
-          + "Together they ovethrew evil and made this frontier land safe for its humble and grateful "
-          + " inhabitants. \n\n"
-          + "About a year ago, Rogahn and Zelligar no longer frequented the town. "
-          + "At first the good people of Biljur'Baz, the local community, thought R & Z were on one of "
-          + "their many quests that they undertook from time to time.\n\n "
-          + "Recently, trade caravans have been attacked, villages looted, and merchants disappearing. "
-          + "Evil has taken up residence in castle Quasqueton, Rogahn and Zelligar's home "
-          + "and fortress. What once was the home of safety and protection is now headquarters for "
-          + "evil people and dark creatures.\n\n"
-          + "The local sheriff investigated two months ago, but has never returned from his visit to the Q. "
-          + "The local guilds are offering rewards and fame to adventurers who are brave enough to "
-          + "investigate and pull back the veil of this mystery.\n\n "
+      "Welcome to BilJur'Baz, a small village nestled in the shadow of the great castle and fortress "
+      + "Quasqueton, the domain of Rogahn the mighty warrior, and Zelligar the powerful mage. "
+          + "Together they ovethrew evil and made this frontier land safe for its "
+          + "humble and grateful inhabitants. \n\n"
+          + "About a year ago, Rogahn and Zelligar no longer frequented this quiet little town. "
+          + "No longer did the comforting presence of Rogahn laugh at the Inn, no longer did the "
+          + "mysterious Zelligar patrol the streets. "
+          + "At first the good people of Biljur'Baz thought R & Z were continuing construction on "
+          + "their castle, but then as time went on, the people thought that their great protectors "
+          + "were on quest, which they undertook from time to time.\n\n"
+          + "Recently, trade caravans have been attacked, villages looted, and merchants have "
+          + "disappeared. Evil has taken up residence in castle Quasqueton. What once was the home "
+          + "of safety and protection is now headquarters for dark creatures and evil people.\n\n"
+          + "The local sheriff investigated two months ago, but has never returned from his visit to "
+          + "the Q. The local Guilds are offering rewards and fame to adventurers who are brave "
+          + "enough to investigate and pull back this veil of mystery.\n\n"
           + "Of course, any loot that can be found or taken is always subject to the Common Law of "
-          + "Salvage: "
-          + "\n\n\tWhat can be carried away, can be kept.\n"
-          + "\nWhether a Guild member or a peasant, an adventurous soul, well equipped with "
-          + "bravery, determination, a stout heart, and the right weapons, can make a name for him "
-          + "or herself, achieve fame and glory and wealth, and once again allow safety and "
-          + "goodness to prevail in this land.\n";
+          + "Salvage:\n\n"
+          + "      What can be carried away, can be kept.\n\n"
+          + "Any adventurous soul, well equipped with bravery, determination, a stout heart, and the "
+          + "right weapons, can make a name for him or herself, achieve fame and glory and wealth, "
+          + "and once again allow safety and goodness to prevail in this land.\n\n"
+          + "If you think you are up to the challenge, you can enter and explore the great castle "
+          + "Quasqueton and drive out the villains.\n\n"
+          + "But first! Visit the buildings in this town, and prepare yourself: \n"
+          + "Collect information from the people at the Inn, purchase equipment and weapons from the "
+          + "General Store, perhaps even borrow money or make a will from the Bank, but don't get in "
+          + "trouble, we also have a Jail.\n\n"
+          + "Count your assets before beginning your great quest. You should find more here than a "
+          + "holocaust cloak.\n\n";
+          
+          
+          ;
 
 
   /*
