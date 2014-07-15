@@ -125,9 +125,9 @@ public class TestAdvRegistry
         breg.closeRegistry();
 
 
-        AdvHelpRegistry hreg = (AdvHelpRegistry) RegistryFactory.getRegistry(RegKey.HELP);
-        assertNotNull(hreg);
-        hreg.closeRegistry();
+//        AdvHelpRegistry hreg = (AdvHelpRegistry) RegistryFactory.getRegistry(RegKey.HELP);
+//        assertNotNull(hreg);
+//        hreg.closeRegistry();
      }
 
     

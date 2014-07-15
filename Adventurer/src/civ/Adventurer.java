@@ -15,7 +15,6 @@ import java.awt.EventQueue;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import mylib.ApplicationException;
 import mylib.pdc.Registry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
@@ -41,10 +40,11 @@ public class Adventurer
    * states: "For now, you should simply consider it a magic incantation that is used to start a
    * Swing program."</LI>
    * <LI>
-   * The Event <code>Scheduler</code> runs a second thread concurrently to polls the
+   * The Event <code>Scheduler</code> runs a second thread concurrently to poll the
    * <code>CommandParser</code> for user command inputs.</LI>
    * <LI>
-   * Initializes the system by creating necessary singletons and data files.</LI>
+   * Initializes the system by creating necessary singletons, registries, and data files; on exit,
+   * closes all registries.</LI>
    * </UL>
    * 
    * @param args unused command line arguments
@@ -55,17 +55,16 @@ public class Adventurer
     EventQueue.invokeLater(new Runnable() {
       public void run()
       {
+        // Create all registries to catch possible errors as soon as possible
         try {
+          initRegistries();
           final Mainframe frame = Mainframe.getInstance();
           frame.setVisible(true);
           frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e)
             {
-              for (RegKey key : RegKey.values()) {
-                Registry reg = RegistryFactory.getRegistry(key);
-                reg.closeRegistry();
-              }
+              closeRegistries();
               super.windowClosing(e);
             }
           });
@@ -78,16 +77,28 @@ public class Adventurer
 
   } // end of static main()
 
+
+
   /**
    * Open all database Registries (singletons) for convenience and performance
-   * 
-   * @throws ApplicationException if a registry cannot be opened
    */
   private static void initRegistries()
   {
     for (RegKey key : RegKey.values()) {
       RegistryFactory.getRegistry(key);
     }
+  }
+
+  /**
+   * Close all database Registries (singletons) 
+   */
+  private static void closeRegistries()
+  {
+    for (RegKey key : RegKey.values()) {
+      Registry reg = RegistryFactory.getRegistry(key);
+      reg.closeRegistry();
+    }
+
   }
 
 } // end of Launcher class
