@@ -23,7 +23,6 @@ import chronos.Chronos;
  */
 public class RegistryFactory
 {
-//  static protected RegistryFactory _rf = null;
   static private RegistryFactory _rf = null;
 
   protected HashMap<RegKey, Registry> _regMap = null;
@@ -32,8 +31,8 @@ public class RegistryFactory
   // Public list of all possible registries subclasses
   // ============================================================
   public enum RegKey {
-    ADV("Adventure"), BLDG("Building"), ITEM("Item"), NPC("NPC"), OCP("Occupation"), 
-      SKILL("Skill"), TOWN("Town"), HELP("AdvHelp");
+      ADV("Adventure"), BLDG("Building"), ITEM("Item"), NPC("NPC"), OCP("Occupation"), 
+      SKILL("Skill"), TOWN("Town"); // HELP("AdvHelp");
 
     private RegKey(String nm)
     {
@@ -54,21 +53,9 @@ public class RegistryFactory
   // Constructor(s) and Related Methods
   // ============================================================
 
-//  protected RegistryFactory()
   private RegistryFactory()
   {
     _regMap = new HashMap<RegKey, Registry>();
-  }
-
-
-  // ============================================================
-  // Public Methods
-  // ============================================================
-
-  static public Registry getRegistry(RegKey regtype)
-  {
-    RegistryFactory factory = RegistryFactory.getInstance();
-    return factory.findRegistry(regtype);
   }
 
   static private RegistryFactory getInstance()
@@ -79,32 +66,23 @@ public class RegistryFactory
     return _rf;
   }
 
+  
+  // ============================================================
+  // Public Methods
+  // ============================================================
+
   /**
    * Return the requested regsistry, or null if the registry is null or closed
    * 
-   * @param regtype one of the canonical immutable Registries
+   * @param regtype one of the canonical immutable Registries defined in <code>enum RegKey</code>
    */
-//  protected Registry findRegistry(RegKey regtype)
-  private Registry findRegistry(RegKey regtype)
+  static public Registry getRegistry(RegKey regtype)
   {
-    Registry reg = _regMap.get(regtype);
-    if (isValidRegistry(reg)) {
-      return reg;
-    } else {
-      return createRegistry(regtype);
-    }
+    RegistryFactory factory = RegistryFactory.getInstance();
+    return factory.findRegistry(regtype);
   }
 
-  public boolean isValidRegistry(Registry reg)
-  {
-    if ((reg == null) || (reg.isClosed())) {
-      _regMap.remove(reg);
-      return false;
-    }
-    return true;
-  }
-
-
+  
   // ============================================================
   // Private Methods
   // ============================================================
@@ -116,7 +94,7 @@ public class RegistryFactory
     try {
       reg = (Registry) Class.forName(regName).newInstance();
       _regMap.put(regtype, reg);
-
+  
     } catch (ClassNotFoundException ex) {
       System.err.println("createRegistry(): cannot find specified registry: " + ex.getMessage());
     } catch (IllegalAccessException ex) {
@@ -131,4 +109,26 @@ public class RegistryFactory
     return reg;
   }
 
+
+  private Registry findRegistry(RegKey regtype)
+  {
+    Registry reg = _regMap.get(regtype);
+    if (isValidRegistry(reg)) {
+      return reg;
+    } else {
+      return createRegistry(regtype);
+    }
+  }
+
+
+  private boolean isValidRegistry(Registry reg)
+  {
+    if ((reg == null) || (reg.isClosed())) {
+      _regMap.remove(reg);
+      return false;
+    }
+    return true;
+  }
+
+  
 } // end of RegistryFactory class

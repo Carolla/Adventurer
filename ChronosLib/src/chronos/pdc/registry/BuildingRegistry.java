@@ -29,96 +29,95 @@ import chronos.pdc.buildings.Store;
 import chronos.pdc.buildings.WizardsGuild;
 
 /**
- * All Town Buildings are collected here. The initlal (default) Registry
- * contains 8 buildings.
+ * All Town Buildings are collected here. The initlal (default) Registry contains 8 buildings.
  * 
  * @author Alan Cline
- * @version <DL>
- *          <DT>Build 1.0 April 20, 2013 // original
- *          <DD>
- *          </DL>
+ * @version 1.0 April 20, 2013 // original <br>
  */
-public class BuildingRegistry extends Registry {
-	/*
-	 * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
-	 * CONSTRUCTOR(S) AND RELATED METHODS 
-	 * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	 */
+public class BuildingRegistry extends Registry
+{
+  /*
+   * CONSTRUCTOR(S) AND RELATED METHODS 
+   */
 
-	/** Called by RegistryFactory class */
-	protected BuildingRegistry() {
-		super(Chronos.BuildingRegPath);
-	}
+  /** Called by RegistryFactory class */
+  protected BuildingRegistry()
+  {
+    super(Chronos.BuildingRegPath);
+  }
 
-	/** Called in testing */
-	public BuildingRegistry(String testMode) {
-		super();
-	}
+  /** Called in testing */
+  public BuildingRegistry(String testMode)
+  {
+    super();
+  }
 
-	/**
-	 * Creates the Building Registry with the default buildings and saves it
-	 */
-	@Override
-	public void initialize() {
-		// Create each of the default buildings and save to registry
-		// The constructors load the default data
-		try {
-			super.add(new WizardsGuild()); // Arcaneum
-			super.add(new Jail()); // Jail
-			super.add(new ClericsGuild()); // Monastery
-			super.add(new Store()); // Rat's Pack
-			super.add(new RoguesGuild()); // Rogues' Den
-			super.add(new FightersGuild()); // Stadium
-			super.add(new Bank()); // The Bank
-			super.add(new Inn()); // Ugly Ogre Inn
-		} catch (ApplicationException ex) {
-			MsgCtrl.errMsgln(this, ex.getMessage());
-		}
-	}
+  /**
+   * Creates the Building Registry with the default buildings and saves it
+   */
+  @Override
+  public void initialize()
+  {
+    // Create each of the default buildings and save to registry
+    // The constructors load the default data
+    try {
+      super.add(new WizardsGuild()); // Arcaneum
+      super.add(new Jail()); // Jail
+      super.add(new ClericsGuild()); // Monastery
+      super.add(new Store()); // Rat's Pack
+      super.add(new RoguesGuild()); // Rogues' Den
+      super.add(new FightersGuild()); // Stadium
+      super.add(new Bank()); // The Bank
+      super.add(new Inn()); // Ugly Ogre Inn
+    } catch (ApplicationException ex) {
+      MsgCtrl.errMsgln(this, ex.getMessage());
+    }
+  }
 
-	/**
-	 * Get all the Buildings of the registry, which will also include NPCs
-	 * unfortunately as an element
-	 */
-	@Override
-	public int getNbrElements() {
-		return getBuildingList().size();
-	}
+  /**
+   * Get all the Buildings of the registry, which will also include NPCs unfortunately as an element
+   */
+  @Override
+  public int getNbrElements()
+  {
+    return getBuildingList().size();
+  }
 
-	/**
-	 * Retrieve a building by name from the building registry
-	 * 
-	 * @param name
-	 *            name of the building desired
-	 * @return the building; else null if not found
-	 */
-	public Building getBuilding(String name) {
-		List<IRegistryElement> buildingList = super.get(name);
-		if (buildingList.size() == 0) {
-			return null;
-		}
-		Building aBuilding = (Building) buildingList.get(0);
-		return aBuilding;
-	}
+  /**
+   * Retrieve a building by name from the building registry
+   * 
+   * @param name name of the building desired
+   * @return the building; else null if not found
+   */
+  public Building getBuilding(String name)
+  {
+    List<IRegistryElement> buildingList = super.get(name);
+    if (buildingList.size() == 0) {
+      return null;
+    }
+    Building aBuilding = (Building) buildingList.get(0);
+    return aBuilding;
+  }
 
-	/**
-	 * Retrieve only the Building objects from the Building Registry, which will
-	 * contain both Building and BuildingMaster (NPC) objects
-	 * 
-	 * @return the list of Buildings only
-	 */
-	public ArrayList<Building> getBuildingList() {
-		// Run the query to retrieve all buildings from the registry
-		List<IRegistryElement> result = super.getAll();
-		ArrayList<Building> bldgList = new ArrayList<Building>(result.size());
-		for (int k = 0; k < result.size(); k++) {
-			// Check against all building subtypes
-			IRegistryElement elem = result.get(k);
-			if (elem.getClass().equals(NPC.class) == false) {
-				bldgList.add((Building) elem);
-			}
-		}
-		return bldgList;
-	}
+  /**
+   * Retrieve only the Building objects from the Building Registry, which will contain both Building
+   * and BuildingMaster (NPC) objects
+   * 
+   * @return the list of Buildings only
+   */
+  public ArrayList<Building> getBuildingList()
+  {
+    // Run the query to retrieve all buildings from the registry
+    List<IRegistryElement> result = super.getAll();
+    ArrayList<Building> bldgList = new ArrayList<Building>(result.size());
+    for (int k = 0; k < result.size(); k++) {
+      // Check against all building subtypes
+      IRegistryElement elem = result.get(k);
+      if (elem.getClass().equals(NPC.class) == false) {
+        bldgList.add((Building) elem);
+      }
+    }
+    return bldgList;
+  }
 
 } // end of BuildingRegistry class
