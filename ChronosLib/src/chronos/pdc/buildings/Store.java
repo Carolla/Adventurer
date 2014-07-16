@@ -36,7 +36,7 @@ public class Store extends Building
       + "A fresh coat of paint on the lettering spells out: \'General Store, " + OWNER
       + ", Proprietor. Est. 1066\', but all the townspeople still know this shop as the "
       + STORE_NAME + ".";
-  
+
   /** What one sees when looking around the inside of the Inn when few patrons are here. */
   static private final String INTERIOR =
       "The store is crowded with crates of different sizes, shelves "
@@ -55,7 +55,7 @@ public class Store extends Building
 
 
   /*
-   * CONSTRUCTOR(S) AND RELATED METHODS 
+   * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
   /**
@@ -88,8 +88,7 @@ public class Store extends Building
 
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PUBLIC METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * PUBLIC METHODS
    */
 
   /*
