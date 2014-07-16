@@ -41,7 +41,8 @@ public class MainframeCiv
   private BuildingDisplayCiv _bdCiv = null;
   private CommandParser _cp = null;
 
-  private static final String TOWN_IMAGE = "ext_Quasqueton.JPG";
+//  private static final String TOWN_IMAGE = "ext_Quasqueton.JPG";
+  private static final String TOWN_IMAGE = "ext_BiljurBaz.JPG";
 
   /** Default Buildings to initialize registry with */
   public static final String[][] DEFAULT_BUILDINGS = { {"Ugly Ogre Inn", "Bork"},
