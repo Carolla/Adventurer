@@ -26,6 +26,8 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
  * @author Tim Armstrong
  * @version 1.0 April 16, 2012 TAA // original <br>
  *          1.1 May 13, 2012 TAA // added new refresh flag <br>
+ *          1.2 July 15, 2014 ABC // Enabled Exit menu option to call static exit() method and
+ *          work similar to windowClosing event <br>
  */
 public class Adventurer
 {
@@ -82,8 +84,8 @@ public class Adventurer
     closeRegistries();
     System.exit(1);
   }
-  
-  
+
+
   /**
    * Open all database Registries (singletons) for convenience and performance
    */
@@ -94,8 +96,9 @@ public class Adventurer
     }
   }
 
+  
   /**
-   * Close all database Registries (singletons) 
+   * Close all database Registries (singletons)
    */
   private static void closeRegistries()
   {
