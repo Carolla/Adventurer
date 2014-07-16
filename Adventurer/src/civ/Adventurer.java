@@ -29,7 +29,6 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
  */
 public class Adventurer
 {
-
   /**
    * Creates the main frame and passes control to it.
    * <UL>
@@ -55,7 +54,6 @@ public class Adventurer
     EventQueue.invokeLater(new Runnable() {
       public void run()
       {
-        // Create all registries to catch possible errors as soon as possible
         try {
           initRegistries();
           final Mainframe frame = Mainframe.getInstance();
@@ -78,7 +76,14 @@ public class Adventurer
   } // end of static main()
 
 
-
+  /** Close all registries and shutdown the system */
+  public static void exit()
+  {
+    closeRegistries();
+    System.exit(1);
+  }
+  
+  
   /**
    * Open all database Registries (singletons) for convenience and performance
    */
@@ -98,7 +103,6 @@ public class Adventurer
       Registry reg = RegistryFactory.getRegistry(key);
       reg.closeRegistry();
     }
-
   }
 
 } // end of Launcher class
