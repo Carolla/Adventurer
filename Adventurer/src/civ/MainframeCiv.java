@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import mylib.pdc.Registry;
 import chronos.pdc.Adventure;
 import chronos.pdc.registry.AdventureRegistry;
 import chronos.pdc.registry.RegistryFactory;
@@ -100,6 +101,7 @@ public class MainframeCiv
     // createBuildingBoxes();
   }
 
+  
   private void createBuildingBoxes()
   {
     for (int i = 0; i < DEFAULT_BUILDINGS.length; i++) {
