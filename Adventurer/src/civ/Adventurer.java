@@ -31,6 +31,9 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
  */
 public class Adventurer
 {
+  /** Launcher class does not require a constructor--it has the <code>main</code> method.*/
+  private Adventurer() { }
+  
   /**
    * Creates the main frame and passes control to it.
    * <UL>

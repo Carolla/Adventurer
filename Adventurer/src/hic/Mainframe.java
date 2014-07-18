@@ -68,8 +68,11 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   /** Initial right-side image: Chronos logo */
   private static final String INITIAL_IMAGE = "ChronosLogo.JPG";
 
+  /** Width of the platform user's window frame */
   public static int USERWIN_WIDTH;
+  /** Height of the platform user's window frame */
   public static int USERWIN_HEIGHT;
+  /** Amount of space in pixels around the frame and image of aesthetics */
   public static final int FRAME_PADDING = 90;
 
   /** Common content pane for the Mainframe */
@@ -88,7 +91,9 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private List<String> _summonableHeroes;
 
   /**
-   * Create Mainframe as singleton so other mainframes are not created concurrently.*
+   * Create Mainframe as singleton so other mainframes are not created concurrently.
+   * 
+   * @return Mainframe instance
    */
   static public Mainframe getInstance()
   {
@@ -564,7 +569,9 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
    */
   public class InitialLayout extends JPanel
   {
-    // Create the layout for the mainframe at start up time
+    /**
+     * Create the layout for the mainframe at start up time
+     */
     public InitialLayout()
     {
       addInitialLeftPanel();
