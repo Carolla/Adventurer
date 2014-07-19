@@ -19,20 +19,21 @@ import chronos.Chronos;
  * Creates singleton registries of various kinds
  * 
  * @author Alan Cline
- * @version Jan 1, 2014 // original
+ * @version Jan 1, 2014 // ABC original <br>
+ *          July 19, 2014 // ABC added method to return already created Registry <br>
  */
 public class RegistryFactory
 {
   static private RegistryFactory _rf = null;
 
-  protected HashMap<RegKey, Registry> _regMap = null;
+  static protected HashMap<RegKey, Registry> _regMap = null;
 
   // ============================================================
   // Public list of all possible registries subclasses
   // ============================================================
   public enum RegKey {
-      ADV("Adventure"), BLDG("Building"), ITEM("Item"), NPC("NPC"), OCP("Occupation"), 
-      SKILL("Skill"), TOWN("Town"); // HELP("AdvHelp");
+    ADV("Adventure"), BLDG("Building"), ITEM("Item"), NPC("NPC"), OCP("Occupation"),
+    SKILL("Skill"), TOWN("Town"); // HELP("AdvHelp");
 
     private RegKey(String nm)
     {
@@ -58,6 +59,7 @@ public class RegistryFactory
     _regMap = new HashMap<RegKey, Registry>();
   }
 
+
   static private RegistryFactory getInstance()
   {
     if (_rf == null) {
@@ -66,7 +68,7 @@ public class RegistryFactory
     return _rf;
   }
 
-  
+
   // ============================================================
   // Public Methods
   // ============================================================
@@ -82,7 +84,24 @@ public class RegistryFactory
     return factory.findRegistry(regtype);
   }
 
-  
+  /**
+   * Get an existing Registry, else return null; do not create it
+   * 
+   * @param regtype one of the Registries defined in <code>enum RegKey</code>
+   * @return the registry of the specified type, else null if not found
+   */
+  static public Registry getExisting(RegKey regtype)
+  {
+    RegistryFactory.getInstance();
+    return _regMap.get(regtype);
+  }
+
+  /** @return the number of Registries currently created by the {@code RegistryFactory} */
+  static public int getNumberOfRegistries()
+  {
+    return _regMap.size();
+  }
+
   // ============================================================
   // Private Methods
   // ============================================================
@@ -94,7 +113,7 @@ public class RegistryFactory
     try {
       reg = (Registry) Class.forName(regName).newInstance();
       _regMap.put(regtype, reg);
-  
+
     } catch (ClassNotFoundException ex) {
       System.err.println("createRegistry(): cannot find specified registry: " + ex.getMessage());
     } catch (IllegalAccessException ex) {
@@ -130,5 +149,5 @@ public class RegistryFactory
     return true;
   }
 
-  
+
 } // end of RegistryFactory class

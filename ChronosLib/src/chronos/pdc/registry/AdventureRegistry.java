@@ -40,7 +40,7 @@ public class AdventureRegistry extends Registry
   /** Overview for Quasqueton Adventure */
   private final String DEF_OVERVIEW =
       "Welcome to BilJur'Baz, a small village nestled in the shadow of the great castle and fortress "
-      + "Quasqueton, the domain of Rogahn the mighty warrior, and Zelligar the powerful mage. "
+          + "Quasqueton, the domain of Rogahn the mighty warrior, and Zelligar the powerful mage. "
           + "Together they ovethrew evil and made this frontier land safe for its "
           + "humble and grateful inhabitants. \n\n"
           + "About a year ago, Rogahn and Zelligar no longer frequented this quiet little town. "
@@ -69,9 +69,6 @@ public class AdventureRegistry extends Registry
           + "trouble, we also have a Jail.\n\n"
           + "Count your assets before beginning your great quest. You should find more here than a "
           + "holocaust cloak.\n\n";
-          
-          
-          ;
 
 
   /*

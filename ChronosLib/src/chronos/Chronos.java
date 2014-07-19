@@ -16,22 +16,14 @@ import mylib.Constants;
  * Contains the global constants and methods that all objects require for the Chronos applications..
  * 
  * @author Alan Cline
- * @version <DL>
- *          <DT>Build 1.0 Jun 12, 2010 // original
- *          <DD>
- *          <DT>Build 1.1 May 16, 2011 // TAA: added Skill Registry keys
- *          <DD>
- *          <DT>Build 1.2 Jun 13, 2011 // TAA: added Occupation Registry keys
- *          <DD>
- *          <DT>Build 2.0 Aug 5, 2012 // ABC: Moved universal constants to MyLibrary.Constants
- *          <DD>
- *          <DT>Build 2.1 April 20, 2013 // ABC: Reorganized registry path locations
- *          <DD>
- *          <DT>Build 2.2 May 3, 2013 // ABC: Added Arena locations, one per db file
- *          <DD>
- *          <DT>Build 3.0 June 21, 2014 // ABC: Used CHRONOS_ROOT and added syntactic synonyms
- *          <DD>
- *          </DL>
+ * @version Jun 12, 2010 // original <br>
+ *          May 16, 2011 // TAA: added Skill Registry keys <br>
+ *          Jun 13, 2011 // TAA: added Occupation Registry keys <br>
+ *          Aug 5, 2012 // ABC: Moved universal constants to MyLibrary.Constants <br>
+ *          April 20, 2013 // ABC: Reorganized registry path locations <br>
+ *          May 3, 2013 // ABC: Added Arena locations, one per db file <br>
+ *          June 21, 2014 // ABC: Used CHRONOS_ROOT and added syntactic synonyms <br>
+ *          July 19, 2014 // ABC: Refactored after architectural changes to source <br>
  */
 public class Chronos
 {
@@ -45,14 +37,15 @@ public class Chronos
   /**
    * Chronos install directory environment variable for resource root between Quest Master and
    * Adventurer. This is mutable so that an Installer can change its value. <br>
-   * Implementation Note: Due to our EGit environment, the project source files and the data files (resources) 
-   * are in the actual git repository folder, even though Eclipse shows them in the workspace. 
+   * Implementation Note: Due to our EGit environment, the project source files and the data files
+   * (resources) are in the actual git repository folder, even though Eclipse shows them in the
+   * workspace.
    */
   public static String CHRONOS_ROOT = System.getenv("CHRONOS_ROOT");
   /** Environment variable for shared file resources path */
-  public static String RESOURCES_PATH = System.getenv("RESOURCE_ROOT");
+  public static String RESOURCES_PATH = System.getenv("RESOURCES_PATH");
   /** Environment variable for Adventure-specific file resources path */
-  public static String ADV_RESOURCES_PATH = System.getenv("ADV_RESOURCE_ROOT");
+  public static String ADV_RESOURCES_PATH = System.getenv("ADV_RESOURCES_PATH");
   /** All registry Classes are located in the same shared source package (ChronosLib) */
   public static final String REGISTRY_CLASSPKG = "chronos.pdc.registry.";
 
@@ -64,12 +57,13 @@ public class Chronos
   /** Chared images are in the ChronosLib resources directory */
   public static final String IMAGE_PATH = RESOURCES_PATH + FS + "images" + FS;
 
-//  static {
-//    System.out.println("RESOURCES_PATH = " + RESOURCES_PATH);
-//    System.out.println("IMAGE_PATH = " + IMAGE_PATH);
-//    System.out.println("ADV_RESOURCES_PATH = " + ADV_RESOURCES_PATH);
-//    System.out.println("ADV_IMAGE_PATH = " + ADV_IMAGE_PATH);
-//  }
+  // LOG FOR TESTING
+  static {
+    System.out.println("RESOURCES_PATH = " + RESOURCES_PATH);
+    System.out.println("IMAGE_PATH = " + IMAGE_PATH);
+    System.out.println("ADV_RESOURCES_PATH = " + ADV_RESOURCES_PATH);
+    System.out.println("ADV_IMAGE_PATH = " + ADV_IMAGE_PATH);
+  }
 
   /** Location of AdventureRegistry */
   public static String AdventureRegPath = REGISTRY_PATH + "Adventures.reg";
@@ -87,12 +81,25 @@ public class Chronos
   public static String SkillRegPath = REGISTRY_PATH + "Skills.reg";
   /** Town Registry location. This location can change for test purposes. */
   public static String TownRegPath = REGISTRY_PATH + "Towns.reg";
-  
+
+  // LOG FOR TESTING
+//  static {
+//    System.out.println("AdventureRegPath = " +  AdventureRegPath);
+//    System.out.println("BuildingRegPath = " +   BuildingRegPath);
+//    System.out.println("ItemRegPath = " +       ItemRegPath);
+//    System.out.println("NPCRegPath = " +        NPCRegPath);
+//    System.out.println("OcpRegPath = " +        OcpRegPath);
+//    System.out.println("PersonRegPath = " +     PersonRegPath);
+//    System.out.println("SkillRegPath = " +      SkillRegPath);
+//    System.out.println("TownRegPath = " +       TownRegPath);
+//  }
+
   /** Fake Registry location for testing purposes. */
   public static String FakeRegPath = REGISTRY_PATH + "FakeStuff.reg";
 
   /** Location of HelpRegistry */
-  public static String AdventureHelpRegPath = ADV_RESOURCES_PATH + FS + "help" + FS + "AdventureHelp.reg";
+  public static String AdventureHelpRegPath = ADV_RESOURCES_PATH + FS + "help" + FS
+      + "AdventureHelp.reg";
 
   /** Location of Arenas (dungeons), one each in their own db file */
   public static final String ArenaPath = RESOURCES_PATH + "data" + FS;
@@ -115,11 +122,13 @@ public class Chronos
       + Constants.FILE_SEPARATOR + "RUNE_A.ttf";
 
   /** Location of font file used for English-runic display */
-  static public final String RUNIC_ENGLISH_FONT_FILE = RESOURCES_PATH + Constants.FILE_SEPARATOR + "fonts"
+  static public final String RUNIC_ENGLISH_FONT_FILE = RESOURCES_PATH + Constants.FILE_SEPARATOR
+      + "fonts"
       + Constants.FILE_SEPARATOR + "RUNENG1.ttf";
 
   /** Location of font file used for English-runic, mixed-case display */
-  static public final String RUNIC_ENGLISH2_FONT_FILE = RESOURCES_PATH + Constants.FILE_SEPARATOR + "fonts"
+  static public final String RUNIC_ENGLISH2_FONT_FILE = RESOURCES_PATH + Constants.FILE_SEPARATOR
+      + "fonts"
       + Constants.FILE_SEPARATOR + "RUNENG2.ttf";
 
   /** Define half standard deviation range boundary for normal distribution */
