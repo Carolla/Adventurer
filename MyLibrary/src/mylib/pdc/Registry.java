@@ -1,9 +1,10 @@
 /**
  * Registry.java Copyright (c) 2012, Carolla Development, Inc. All Rights Reserved
  * 
- * Permission to make digital or hard copies of all or parts of this work for commercial use is prohibited. To
- * republish, to post on servers, to reuse, or to redistribute to lists, requires prior specific permission and/or a
- * fee. Request permission to use from Carolla Development, Inc. by email: acline@carolla.com
+ * Permission to make digital or hard copies of all or parts of this work for commercial use is
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
+ * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
+ * by email: acline@carolla.com
  */
 
 package mylib.pdc;
@@ -19,16 +20,17 @@ import mylib.dmc.IRegistryElement;
 import com.db4o.query.Predicate;
 
 /**
- * The base class for all Registries, and contains a component to <code>DbReadWriter</code> All derived registries wll
- * become persistent singleton containers for unique homogeneous objects. The singleton will reload the file when
- * created, or intialize from static tables if the file doesn't exist.
+ * The base class for all Registries, and contains a component to <code>DbReadWriter</code> All
+ * derived registries wll become persistent singleton containers for unique homogeneous objects. The
+ * singleton will reload the file when created, or intialize from static tables if the file doesn't
+ * exist.
  * <p>
  * All concrete classes derived from this abstact class works with a data management component class
  * <code>DbReadWriter</code> to handle the actual database read and write operations.
  * <p>
- * All Registry elements must implement the interface <code>IRegistryElement</code>. Do not use the default
- * <code>boolean Object.equals()</code> method because it compares objects independent of the field data within (an
- * instantiation level compare) and will not work as expected with db4o.
+ * All Registry elements must implement the interface <code>IRegistryElement</code>. Do not use the
+ * default <code>boolean Object.equals()</code> method because it compares objects independent of
+ * the field data within (an instantiation level compare) and will not work as expected with db4o.
  * 
  * @author Alan Cline
  * @version Aug 6, 2012 // original
@@ -36,17 +38,20 @@ import com.db4o.query.Predicate;
 public abstract class Registry
 {
 
+  // TODO Remove the need for this flag
   /** Flag to indicate when the db is closed or not */
   protected boolean _isClosed = true;
 
   /**
-   * Initialize registry with beginning data from static tables, called when the registry file does not exist. Method
-   * abstract because each derived registry has its own type-specific init data table.
+   * Initialize registry with beginning data from static tables, called when the registry file does
+   * not exist. Method abstract because each derived registry has its own type-specific init data
+   * table.
    */
   protected abstract void initialize();
 
   /**
-   * The DMC registry class for handling persistence. Each derived-class Registry has its own ReadWriter
+   * The DMC registry class for handling persistence. Each derived-class Registry has its own
+   * ReadWriter
    */
   protected DbReadWriter _regRW = null;
 
@@ -63,9 +68,10 @@ public abstract class Registry
    */
 
   /**
-   * Creates a Registry (read-write) and its DbReadWriter component. If the Registry exists, its database is reloaded
-   * from the db file. if the Registry is created new, initializes the database with starting hard-coded data in the
-   * sublcass. A new Registry can only be created and initialized if the initFlag is true
+   * Creates a Registry (read-write) and its DbReadWriter component. If the Registry exists, its
+   * database is reloaded from the db file. if the Registry is created new, initializes the database
+   * with starting hard-coded data in the sublcass. A new Registry can only be created and
+   * initialized if the initFlag is true
    * 
    * @param filename relative path filename going to the db
    */
@@ -84,8 +90,8 @@ public abstract class Registry
   }
 
   /**
-   * Cannot be called by any class other than Registry subclass, allows for testing without touching the database
-   * directly.
+   * Cannot be called by any class other than Registry subclass, allows for testing without touching
+   * the database directly.
    */
   protected Registry()
   {}
@@ -203,8 +209,8 @@ public abstract class Registry
   }
 
   /**
-   * Gets the requested object from the database using the predicate from the same element type as that being searched
-   * for.
+   * Gets the requested object from the database using the predicate from the same element type as
+   * that being searched for.
    * 
    * @param pred object containing the element's match() method for comparison
    * @return one or more registry elements that match the Predicate, else returns null.
@@ -289,7 +295,8 @@ public abstract class Registry
   }
 
   /**
-   * Verifes if the string (key) is unique to the Registry Calls getUnique() to return a boolean instead of an object
+   * Verifes if the string (key) is unique to the Registry Calls getUnique() to return a boolean
+   * instead of an object
    * 
    * @name to check for uniqueness
    * @returns true if name is unique in the registry, else false
@@ -326,9 +333,9 @@ public abstract class Registry
   }
 
   /**
-   * Update an existing object in the registry. The existing object must already be in the database, and will be
-   * replaced with the first one it finds that matches it. The element's getKey() method will be called, so the key
-   * field cannot be changed (updated). <br>
+   * Update an existing object in the registry. The existing object must already be in the database,
+   * and will be replaced with the first one it finds that matches it. The element's getKey() method
+   * will be called, so the key field cannot be changed (updated). <br>
    * Note: db4o provides a field-replacedment based update, but this is a delete-add method.
    * 
    * @param target replacement for modified object
