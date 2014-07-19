@@ -62,11 +62,11 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   // private static final String HEROLIST_TEXT = "Heroes going on your quest: \n";
 
   /** Icons for the left-side buttons */
-  private static final String REGISTRAR_IMAGE = "icn_Register.JPG";
-  private static final String HALL_IMAGE = "icn_HallOfHeroes.JPG";
-  private static final String ADV_IMAGE = "icn_Town.JPG";
+  private static final String REGISTRAR_IMAGE = "icn_Register.jpg";
+  private static final String HALL_IMAGE = "icn_HallOfHeroes.jpg";
+  private static final String ADV_IMAGE = "icn_Town.jpg";
   /** Initial right-side image: Chronos logo */
-  private static final String INITIAL_IMAGE = "ChronosLogo.JPG";
+  private static final String INITIAL_IMAGE = "ChronosLogo.jpg";
 
   /** Width of the platform user's window frame */
   public static int USERWIN_WIDTH;
@@ -614,5 +614,22 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
   } // end of StandardLayout inner class
 
+  
+// ============================================================
+// Inner Mock for Testing
+// ============================================================
+public class MockMF
+{
+  public MockMF() { }
+  
+  public boolean hasCiv()
+  {
+    return (_mfCiv != null) ? true : false; 
+  }
+  
+} // end of MockMF inner class
+  
+  
+  
 
 } // end of Mainframe outer class

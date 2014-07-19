@@ -33,8 +33,8 @@ import dmc.PersonReadWriter;
  * 
  * @author Alan Cline
  * @author Tim Armstrong
- * @version 1.0 Nov 2, 2013 // moved from CIV component
- * @version 1.1 Mar 19 2014 // added current Building for ENTER command
+ * @version 1.0 Nov 2, 2013 // moved from CIV component <br>
+ *          1.1 Mar 19 2014 // added current Building for ENTER command
  */
 public class MainframeCiv
 {
@@ -42,7 +42,7 @@ public class MainframeCiv
   private BuildingDisplayCiv _bdCiv = null;
   private CommandParser _cp = null;
 
-//  private static final String TOWN_IMAGE = "ext_Quasqueton.JPG";
+  // private static final String TOWN_IMAGE = "ext_Quasqueton.JPG";
   private static final String TOWN_IMAGE = "ext_BiljurBaz.JPG";
 
   /** Default Buildings to initialize registry with */
@@ -101,7 +101,7 @@ public class MainframeCiv
     // createBuildingBoxes();
   }
 
-  
+
   private void createBuildingBoxes()
   {
     for (int i = 0; i < DEFAULT_BUILDINGS.length; i++) {
@@ -136,7 +136,7 @@ public class MainframeCiv
    */
   public List<String> getAdventures()
   {
-     _advReg = (AdventureRegistry) RegistryFactory.getRegistry(RegKey.ADV);
+    _advReg = (AdventureRegistry) RegistryFactory.getRegistry(RegKey.ADV);
     List<Adventure> adventures = _advReg.getAdventureList();
     List<String> results = new ArrayList<String>();
     for (Adventure a : adventures) {
@@ -185,8 +185,9 @@ public class MainframeCiv
     _frame.redraw();
   }
 
-  
-  /** Load the selected adventure from the Adventure registry
+
+  /**
+   * Load the selected adventure from the Adventure registry
    * 
    * @param adventureName selected from the Adventure by the user
    */
@@ -211,7 +212,7 @@ public class MainframeCiv
   public void openTown()
   {
     _onTown = true;
-//    _bdCiv.exitBuilding();
+    // _bdCiv.exitBuilding();
     _frame.createStandardLayout();
     _frame.displayTextAndImage(_adv.getOverview(), TOWN_IMAGE);
   }

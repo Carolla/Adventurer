@@ -26,14 +26,15 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
  * @author Tim Armstrong
  * @version 1.0 April 16, 2012 TAA // original <br>
  *          1.1 May 13, 2012 TAA // added new refresh flag <br>
- *          1.2 July 15, 2014 ABC // Enabled Exit menu option to call static exit() method and
- *          work similar to windowClosing event <br>
+ *          1.2 July 15, 2014 ABC // Enabled Exit menu option to call static exit() method and work
+ *          similar to windowClosing event <br>
  */
 public class Adventurer
 {
-  /** Launcher class does not require a constructor--it has the <code>main</code> method.*/
-  private Adventurer() { }
-  
+  /** Launcher class does not require a constructor--it has the <code>main</code> method. */
+  private Adventurer()
+  {}
+
   /**
    * Creates the main frame and passes control to it.
    * <UL>
@@ -99,7 +100,7 @@ public class Adventurer
     }
   }
 
-  
+
   /**
    * Close all database Registries (singletons)
    */
@@ -110,6 +111,24 @@ public class Adventurer
       reg.closeRegistry();
     }
   }
+
+
+  // ============================================================
+  // Inner class for testing
+  // ============================================================
+
+//  public class MockLauncher
+//  {
+//    public MockLauncher()
+//    {}
+//
+//    public static void initRegistries()
+//    {
+//      Adventurer.this.initRegistries();
+//    }
+//
+//  }
+
 
 } // end of Launcher class
 
