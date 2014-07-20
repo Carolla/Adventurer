@@ -117,17 +117,17 @@ public class Adventurer
   // Inner class for testing
   // ============================================================
 
-//  public class MockLauncher
-//  {
-//    public MockLauncher()
-//    {}
-//
-//    public static void initRegistries()
-//    {
-//      Adventurer.this.initRegistries();
-//    }
-//
-//  }
+  // public class MockLauncher
+  // {
+  // public MockLauncher()
+  // {}
+  //
+  // public static void initRegistries()
+  // {
+  // Adventurer.this.initRegistries();
+  // }
+  //
+  // }
 
 
 } // end of Launcher class
