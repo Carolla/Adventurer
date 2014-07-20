@@ -58,12 +58,12 @@ public class Chronos
   public static final String IMAGE_PATH = RESOURCES_PATH + FS + "images" + FS;
 
   // LOG FOR TESTING
-  static {
-    System.out.println("RESOURCES_PATH = " + RESOURCES_PATH);
-    System.out.println("IMAGE_PATH = " + IMAGE_PATH);
-    System.out.println("ADV_RESOURCES_PATH = " + ADV_RESOURCES_PATH);
-    System.out.println("ADV_IMAGE_PATH = " + ADV_IMAGE_PATH);
-  }
+//  static {
+//    System.out.println("RESOURCES_PATH = " + RESOURCES_PATH);
+//    System.out.println("IMAGE_PATH = " + IMAGE_PATH);
+//    System.out.println("ADV_RESOURCES_PATH = " + ADV_RESOURCES_PATH);
+//    System.out.println("ADV_IMAGE_PATH = " + ADV_IMAGE_PATH);
+//  }
 
   /** Location of AdventureRegistry */
   public static String AdventureRegPath = REGISTRY_PATH + "Adventures.reg";
