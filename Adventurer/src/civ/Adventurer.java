@@ -20,14 +20,16 @@ import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 
 /**
- * This Launcher class detects command line arguments, takes appropriate loading action, and
- * launches the mainframe when all requests are completed
+ * This Launcher class detects command line arguments, takes appropriate loading action, initializes
+ * all singleton Registries, and turns control over the Mainframe GUI singleton.
  * 
  * @author Tim Armstrong
  * @version 1.0 April 16, 2012 TAA // original <br>
  *          1.1 May 13, 2012 TAA // added new refresh flag <br>
  *          1.2 July 15, 2014 ABC // Enabled Exit menu option to call static exit() method and work
  *          similar to windowClosing event <br>
+ *          1.3 July 21, 2014 ABC // removed environment variables, based everything off user's home
+ *          directory <br>
  */
 public class Adventurer
 {
