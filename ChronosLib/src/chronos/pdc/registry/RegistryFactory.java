@@ -26,7 +26,7 @@ public class RegistryFactory
 {
   static private RegistryFactory _rf = null;
 
-  static protected HashMap<RegKey, Registry> _regMap = null;
+  static private HashMap<RegKey, Registry> _regMap = null;
 
   // ============================================================
   // Public list of all possible registries subclasses
