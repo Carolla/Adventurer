@@ -49,11 +49,6 @@ public class Chronos
   /** Relative path location of Adventurer-specific resources */
   public static String ADV_RESOURCES_PATH = CHRONOS_ROOT + "/Adventurer/resources";
 
-//  public static String CHRONOS_ROOT = System.getenv("CHRONOS_ROOT");
-//  /** Environment variable for shared file resources path */
-//  public static String RESOURCES_PATH = System.getenv("RESOURCES_PATH");
-//  /** Environment variable for Adventure-specific file resources path */
-//  public static String ADV_RESOURCES_PATH = System.getenv("ADV_RESOURCES_PATH");
   /** All registry Classes are located in the same shared source package (ChronosLib) */
   public static final String REGISTRY_CLASSPKG = "chronos.pdc.registry.";
 
@@ -66,12 +61,12 @@ public class Chronos
   public static final String IMAGE_PATH = RESOURCES_PATH + FS + "images" + FS;
 
   // LOG FOR TESTING
-  static {
-    System.out.println("RESOURCES_PATH = " + RESOURCES_PATH);
-    System.out.println("IMAGE_PATH = " + IMAGE_PATH);
-    System.out.println("ADV_RESOURCES_PATH = " + ADV_RESOURCES_PATH);
-    System.out.println("ADV_IMAGE_PATH = " + ADV_IMAGE_PATH);
-  }
+//  static {
+//    System.out.println("RESOURCES_PATH = " + RESOURCES_PATH);
+//    System.out.println("IMAGE_PATH = " + IMAGE_PATH);
+//    System.out.println("ADV_RESOURCES_PATH = " + ADV_RESOURCES_PATH);
+//    System.out.println("ADV_IMAGE_PATH = " + ADV_IMAGE_PATH);
+//  }
 
   /** Location of AdventureRegistry */
   public static String AdventureRegPath = REGISTRY_PATH + "Adventures.reg";
@@ -91,16 +86,16 @@ public class Chronos
   public static String TownRegPath = REGISTRY_PATH + "Towns.reg";
 
   // LOG FOR TESTING
-  static {
-    System.out.println("AdventureRegPath = " +  AdventureRegPath);
-    System.out.println("BuildingRegPath = " +   BuildingRegPath);
-    System.out.println("ItemRegPath = " +       ItemRegPath);
-    System.out.println("NPCRegPath = " +        NPCRegPath);
-    System.out.println("OcpRegPath = " +        OcpRegPath);
-    System.out.println("PersonRegPath = " +     PersonRegPath);
-    System.out.println("SkillRegPath = " +      SkillRegPath);
-    System.out.println("TownRegPath = " +       TownRegPath);
-  }
+//  static {
+//    System.out.println("AdventureRegPath = " +  AdventureRegPath);
+//    System.out.println("BuildingRegPath = " +   BuildingRegPath);
+//    System.out.println("ItemRegPath = " +       ItemRegPath);
+//    System.out.println("NPCRegPath = " +        NPCRegPath);
+//    System.out.println("OcpRegPath = " +        OcpRegPath);
+//    System.out.println("PersonRegPath = " +     PersonRegPath);
+//    System.out.println("SkillRegPath = " +      SkillRegPath);
+//    System.out.println("TownRegPath = " +       TownRegPath);
+//  }
 
   /** Fake Registry location for testing purposes. */
   public static String FakeRegPath = REGISTRY_PATH + "FakeStuff.reg";

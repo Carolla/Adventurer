@@ -78,8 +78,13 @@ public class RegistryFactory
    * 
    * @param regtype one of the canonical immutable Registries defined in <code>enum RegKey</code>
    */
-  static public Registry getRegistry(RegKey regtype)
+  static public Registry getRegistry(RegKey regtype) 
   {
+    // Guard
+    if (regtype == null) {
+      return null;
+    }
+    
     RegistryFactory factory = RegistryFactory.getInstance();
     return factory.findRegistry(regtype);
   }
@@ -99,6 +104,7 @@ public class RegistryFactory
   /** @return the number of Registries currently created by the {@code RegistryFactory} */
   static public int getNumberOfRegistries()
   {
+    RegistryFactory.getInstance();
     return _regMap.size();
   }
 

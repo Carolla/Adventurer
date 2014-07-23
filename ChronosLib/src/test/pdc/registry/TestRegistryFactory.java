@@ -11,6 +11,7 @@ package test.pdc.registry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -41,32 +42,20 @@ public class TestRegistryFactory
   // Fixtures
   // ============================================================
 
-  /**
-   * @throws java.lang.Exception
-   */
   @BeforeClass
   public static void setUpBeforeClass() throws Exception
   {}
 
-  /**
-   * @throws java.lang.Exception
-   */
   @AfterClass
   public static void tearDownAfterClass() throws Exception
   {}
 
-  /**
-   * @throws java.lang.Exception
-   */
   @Before
   public void setUp() throws Exception
   {
     // each test turns on its own messaging when needed
   }
 
-  /**
-   * @throws java.lang.Exception
-   */
   @After
   public void tearDown() throws Exception
   {
@@ -79,20 +68,17 @@ public class TestRegistryFactory
   // ============================================================
   // Tests
   // ============================================================
-
+  
   /**
    * Get a Registry, and if it doesn't exist, create it and add the entry to the factory's map
    * 
    * @Normal Get a registry that does not yet exist
-   * @Normal Get a registry that already exists
-   * @Null request a null registry
-   * @Error Get a registry that does is illegal
    */
   @Test
-  public void testGetRegistry()
+  public void testGetRegistry_Uncreated()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.msgln(this, ": testGetRegistry()");
 
     // SETUP: ensure that registry to be created does not yet exist
@@ -109,9 +95,61 @@ public class TestRegistryFactory
 
     // TEARDOWN: close all registries opened
     testreg.closeRegistry();
-
   }
 
+  
+  /**
+   * Get a Registry, and if it doesn't exist, create it and add the entry to the factory's map
+   * 
+   * @Normal Get a registry that already exists
+   */
+  @Test
+  public void testGetRegistry_Exists()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.msgln(this, ": testGetRegistry()");
+
+    // SETUP: ensure that registry to be created already exists
+    assertEquals(RegistryFactory.getNumberOfRegistries(), 0);
+    Registry testreg = RegistryFactory.getRegistry(RegKey.ADV);
+    File regfile = new File(Chronos.AdventureRegPath);
+    assertTrue(regfile.exists());
+    assertEquals(RegistryFactory.getNumberOfRegistries(), 1);
+
+    // DO:
+    Registry testreg2 = RegistryFactory.getRegistry(RegKey.ADV);
+
+    // VERIFY: factory has same registry file exists
+    assertTrue(regfile.exists());
+    assertEquals(RegistryFactory.getNumberOfRegistries(), 1);
+    assertEquals(testreg, testreg2);
+    
+    // TEARDOWN: close all registries opened
+    testreg.closeRegistry();
+    testreg2.closeRegistry();
+  }
+
+
+  /**
+   * Get a Registry, and if it doesn't exist, create it and add the entry to the factory's map
+   * 
+   * @Null use null to request a null registry returns null
+   */
+  @Test
+  public void testGetRegistry_Errors()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.msgln(this, ": testGetRegistry()");
+
+    // DO: Null request
+    assertEquals(RegistryFactory.getNumberOfRegistries(), 0);
+    Registry testreg = RegistryFactory.getRegistry(null);
+    assertNull(testreg);
+    assertEquals(RegistryFactory.getNumberOfRegistries(), 0);
+    
+  }
 
   // ============================================================
   // Helper Methods
