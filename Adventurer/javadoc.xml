@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="javadoc">
-    <target name="javadoc">
-        <javadoc access="private" author="true" classpath="../MyLibrary/src/mylib/libResources/miglayout-3.7.3.1-swing.jar:../MyLibrary/src/mylib/libResources/hamcrest-all-1.3.jar:/Applications/EclipseKepler/plugins/org.junit_4.11.0.v201303080030/junit.jar:../ChronosLib/bin:../MyLibrary/src/mylib/libResources/db4o-8.0.249.16098-core-java5.jar:../MyLibrary/bin:/Applications/EclipseKepler/plugins/org.hamcrest.core_1.3.0.v201303031735.jar" destdir="doc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="mylib.test.pdc,hic.screenConfiguration,mylib.civ,test.pdc,dmc,test.integ,chronos.civ,test.pdc.buildings,mylib.test,mylib.test.dmc,pdc.command,test,test.integ.A01_CreateHero.old,civ,test.pdc.registry,mylib.test.civ,hic,pdc.character,pdc.registry,test.integ.A00_Init,mylib.hic,mylib.pdc,pdc,chronos.pdc.buildings,chronos.pdc,test.civ,test.integ.A01_CreateHero,test.dmc,mylib.dmc,test.other,mylib,chronos,chronos.pdc.registry" source="1.7" sourcepath="../MyLibrary/src:../ChronosLib/src:src" splitindex="true" use="true" version="true"/>
-    </target>
-</project>
