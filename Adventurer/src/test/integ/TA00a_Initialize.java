@@ -60,6 +60,9 @@ public class TA00a_Initialize
   @BeforeClass
   public static void setUpBeforeClass() throws Exception
   {
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.msg("Integration test: Adventurer.TA00a_Initialize");
+
     assertTrue(Chronos.CHRONOS_ROOT != null);
     assertTrue(Chronos.ADV_RESOURCES_PATH != null);
     assertTrue(Chronos.RESOURCES_PATH != null);
@@ -94,7 +97,6 @@ public class TA00a_Initialize
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-
   }
 
 
@@ -102,13 +104,12 @@ public class TA00a_Initialize
   // Integration Test
   // ============================================================
 
-
   /** Run the main to create the registries, the mainframe and mainframe civ */
   @Test
   public void testMain()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.msgln(this,  ": testMain()");
 
     // SETUP: Ensure that there are as many regfiles as they are reg keys
@@ -141,7 +142,6 @@ public class TA00a_Initialize
   // ============================================================
   // Helper Methods
   // ============================================================
-
 
   /** Check that all Registry files exist */
   private boolean RegistryFilesExist()

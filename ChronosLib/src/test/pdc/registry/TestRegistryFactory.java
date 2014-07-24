@@ -44,7 +44,10 @@ public class TestRegistryFactory
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception
-  {}
+  {
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.msg("\t Unit test: ChronosLib.TestRegistryFactory()");
+  }
 
   @AfterClass
   public static void tearDownAfterClass() throws Exception
@@ -68,7 +71,7 @@ public class TestRegistryFactory
   // ============================================================
   // Tests
   // ============================================================
-  
+
   /**
    * Get a Registry, and if it doesn't exist, create it and add the entry to the factory's map
    * 
@@ -97,7 +100,7 @@ public class TestRegistryFactory
     testreg.closeRegistry();
   }
 
-  
+
   /**
    * Get a Registry, and if it doesn't exist, create it and add the entry to the factory's map
    * 
@@ -124,7 +127,7 @@ public class TestRegistryFactory
     assertTrue(regfile.exists());
     assertEquals(RegistryFactory.getNumberOfRegistries(), 1);
     assertEquals(testreg, testreg2);
-    
+
     // TEARDOWN: close all registries opened
     testreg.closeRegistry();
     testreg2.closeRegistry();
@@ -148,7 +151,7 @@ public class TestRegistryFactory
     Registry testreg = RegistryFactory.getRegistry(null);
     assertNull(testreg);
     assertEquals(RegistryFactory.getNumberOfRegistries(), 0);
-    
+
   }
 
   // ============================================================

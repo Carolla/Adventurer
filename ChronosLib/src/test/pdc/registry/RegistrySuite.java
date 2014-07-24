@@ -23,6 +23,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
 {
+    // PDC test files:
+    TestRegistryFactory.class,
 
 })
 /** Compilation of all unit tests for regression and integration testing. */
