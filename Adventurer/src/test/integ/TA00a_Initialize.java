@@ -31,7 +31,7 @@ import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 
 /**
- * Test the Adventurer (Launcher) class: ensure that all Registries are created, and that the 
+ * Test the Adventurer (Launcher) class: ensure that all Registries are created, and that the
  * Mainframe is backed by the MainframeCiv
  * 
  * @author alancline
@@ -47,7 +47,7 @@ public class TA00a_Initialize
 
   private final String[] paths = {Chronos.AdventureRegPath, Chronos.BuildingRegPath,
       Chronos.ItemRegPath, Chronos.NPCRegPath, Chronos.OcpRegPath, Chronos.SkillRegPath,
-      Chronos.TownRegPath};
+      Chronos.TownRegPath, Chronos.AdvHelpRegPath};
 
 
   // ============================================================
@@ -66,6 +66,7 @@ public class TA00a_Initialize
     assertTrue(Chronos.CHRONOS_ROOT != null);
     assertTrue(Chronos.ADV_RESOURCES_PATH != null);
     assertTrue(Chronos.RESOURCES_PATH != null);
+    assertTrue(Chronos.IMAGE_PATH != null);
   }
 
   /**
@@ -86,8 +87,7 @@ public class TA00a_Initialize
    */
   @Before
   public void setUp() throws Exception
-  {
-  }
+  {}
 
   /**
    * @throws java.lang.Exception
@@ -108,9 +108,9 @@ public class TA00a_Initialize
   @Test
   public void testMain()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this,  ": testMain()");
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.msgln(this, ": testMain()");
 
     // SETUP: Ensure that there are as many regfiles as they are reg keys
     int keynum = RegKey.values().length;
@@ -131,14 +131,14 @@ public class TA00a_Initialize
 
     // VERIFY all registries exist: get number objects in RegistryFactory map
     assertTrue(keynum == RegistryFactory.getNumberOfRegistries());
-    
+
     // VERIFY MainframeCiv exists
     Mainframe mf = Mainframe.getInstance();
     MockMF mmf = mf.new MockMF();
     assertTrue(mmf.hasCiv());
   }
 
-  
+
   // ============================================================
   // Helper Methods
   // ============================================================

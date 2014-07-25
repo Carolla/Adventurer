@@ -49,8 +49,10 @@ public class Chronos
   /** Relative path location of Adventurer-specific resources */
   public static String ADV_RESOURCES_PATH = CHRONOS_ROOT + "/Adventurer/resources";
 
-  /** All registry Classes are located in the same shared source package (ChronosLib) */
+  /** Most registry Classes are located in the ChronosLib shared source package (ChronosLib) */
   public static final String REGISTRY_CLASSPKG = "chronos.pdc.registry.";
+  /** Adventurer-specific registry Classes are located in the an alternate location */
+  public static final String ALT_REGISTRY_CLASSPKG = "adventurer.pdc.registry.";
 
   /** Path for all data Registries */
   public static final String REGISTRY_PATH = RESOURCES_PATH + FS + "registries" + FS;
@@ -84,9 +86,11 @@ public class Chronos
   public static String SkillRegPath = REGISTRY_PATH + "Skills.reg";
   /** Town Registry location. This location can change for test purposes. */
   public static String TownRegPath = REGISTRY_PATH + "Towns.reg";
+  /** Adventure Help Registry location. This location can change for test purposes. */
+  public static String AdvHelpRegPath = ADV_RESOURCES_PATH + FS +"help" + FS + "AdvHelpRegistry.reg";
 
   // LOG FOR TESTING
-//  static {
+  static {
 //    System.out.println("AdventureRegPath = " +  AdventureRegPath);
 //    System.out.println("BuildingRegPath = " +   BuildingRegPath);
 //    System.out.println("ItemRegPath = " +       ItemRegPath);
@@ -95,7 +99,8 @@ public class Chronos
 //    System.out.println("PersonRegPath = " +     PersonRegPath);
 //    System.out.println("SkillRegPath = " +      SkillRegPath);
 //    System.out.println("TownRegPath = " +       TownRegPath);
-//  }
+//    System.out.println("AdvHelpRegPath = " +    AdvHelpRegPath);
+  }
 
   /** Fake Registry location for testing purposes. */
   public static String FakeRegPath = REGISTRY_PATH + "FakeStuff.reg";

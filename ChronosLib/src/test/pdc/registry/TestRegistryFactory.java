@@ -30,10 +30,12 @@ import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 
 /**
- * {@code RegistryFactory} is an non-instantable static class. This will be a challenge.
+ * {@code RegistryFactory} is an non-instantable static class comprised <i>mostly</i> of static
+ * methods.
  * 
  * @author alancline
  * @version Jul 19, 2014 // original <br>
+ *          Jul 24, 2014 // refactored to allow for registries not residing in the common location <br>
  */
 public class TestRegistryFactory
 {
@@ -80,8 +82,8 @@ public class TestRegistryFactory
   @Test
   public void testGetRegistry_Uncreated()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
     MsgCtrl.msgln(this, ": testGetRegistry()");
 
     // SETUP: ensure that registry to be created does not yet exist
@@ -109,8 +111,8 @@ public class TestRegistryFactory
   @Test
   public void testGetRegistry_Exists()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
     MsgCtrl.msgln(this, ": testGetRegistry()");
 
     // SETUP: ensure that registry to be created already exists
@@ -142,8 +144,8 @@ public class TestRegistryFactory
   @Test
   public void testGetRegistry_Errors()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
     MsgCtrl.msgln(this, ": testGetRegistry()");
 
     // DO: Null request

@@ -77,51 +77,54 @@ public class RegistryFactory
    * Return the requested regsistry, or null if the registry is null or closed
    * 
    * @param regtype one of the canonical immutable Registries defined in <code>enum RegKey</code>
+   * @return an existing registry of the requested type, or null if it doesn't exist or can't be found
    */
-  static public Registry getRegistry(RegKey regtype) 
+  static public Registry getRegistry(RegKey regtype)
   {
-    // Guard
-    if (regtype == null) {
-      return null;
-    }
-    
     RegistryFactory factory = RegistryFactory.getInstance();
     return factory.findRegistry(regtype);
   }
 
-  /**
-   * Get an existing Registry, else return null; do not create it
-   * 
-   * @param regtype one of the Registries defined in <code>enum RegKey</code>
-   * @return the registry of the specified type, else null if not found
-   */
-  static public Registry getExisting(RegKey regtype)
-  {
-    RegistryFactory.getInstance();
-    return _regMap.get(regtype);
-  }
+//  /**
+//   * Get an existing Registry, else return null; do not create it
+//   * 
+//   * @param regtype one of the Registries defined in <code>enum RegKey</code>
+//   * @return the registry of the specified type, else null if not found
+//   */
+//  static public Registry getExisting(RegKey regtype)
+//  {
+//    RegistryFactory.getInstance();
+//    return _regMap.get(regtype);
+//  }
 
   /** @return the number of Registries currently created by the {@code RegistryFactory} */
   static public int getNumberOfRegistries()
   {
-    RegistryFactory.getInstance();
+    RegistryFactory factory = RegistryFactory.getInstance();
     return _regMap.size();
   }
 
-  // ============================================================
-  // Private Methods
-  // ============================================================
-
-  private Registry createRegistry(RegKey regtype)
+  
+  /**
+   * Creates a registry of the given type. Registry location defaults to ChronosLib resources. If
+   * registry is not found, e.g., AdvHelpRegistry, tries to create it in the Adventurer resources.
+   * 
+   * @param regpath location of registry file
+   * @param regtype defined in {@code RegistryFactory.RegKey enum}
+   * @return the requested Registry
+   */
+  public Registry createRegistry(String regpath, RegKey regtype)
   {
     Registry reg = null;
-    String regName = Chronos.REGISTRY_CLASSPKG + regtype + "Registry";
+    // String regName = Chronos.REGISTRY_CLASSPKG + regtype + "Registry";
+    String regName = regpath + regtype + "Registry";
     try {
       reg = (Registry) Class.forName(regName).newInstance();
       _regMap.put(regtype, reg);
 
     } catch (ClassNotFoundException ex) {
-      System.err.println("createRegistry(): cannot find specified registry: " + ex.getMessage());
+      System.err.println("createRegistry(): cannot find specified registry in common location:"
+          + ex.getMessage());
     } catch (IllegalAccessException ex) {
       System.err.println("createRegistry(): cannot access specified method: " + ex.getMessage());
     } catch (IllegalArgumentException ex) {
@@ -135,14 +138,22 @@ public class RegistryFactory
   }
 
 
+  // ============================================================
+  // Private Methods
+  // ============================================================
+
   private Registry findRegistry(RegKey regtype)
   {
     Registry reg = _regMap.get(regtype);
     if (isValidRegistry(reg)) {
       return reg;
     } else {
-      return createRegistry(regtype);
+      reg = createRegistry(Chronos.REGISTRY_CLASSPKG, regtype);
+      if (!isValidRegistry(reg)) {
+        reg = createRegistry(Chronos.ALT_REGISTRY_CLASSPKG, regtype);
+      }
     }
+    return reg;
   }
 
 
