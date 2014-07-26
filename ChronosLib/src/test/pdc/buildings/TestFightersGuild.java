@@ -78,7 +78,7 @@ public class TestFightersGuild
     @AfterClass
     public static void cleanUp() 
     {
-        ((NPCRegistry) RegistryFactory.getRegistry(RegKey.NPC)).closeRegistry();
+        ((NPCRegistry) RegistryFactory.getInstance().getRegistry(RegKey.NPC)).closeRegistry();
     }
     
 

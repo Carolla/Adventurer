@@ -157,7 +157,7 @@ public enum NewHeroFields {
         public ArrayList<String> getDefault()
         {
             _list = new ArrayList<String>();
-            for (Occupation o : ((OccupationRegistry) RegistryFactory.getRegistry(RegKey.OCP))
+            for (Occupation o : ((OccupationRegistry) RegistryFactory.getInstance().getRegistry(RegKey.OCP))
                     .getOccupationList()) {
                 _list.add(o.getName());
             }

@@ -163,7 +163,7 @@ public class Adventure extends RegistryElement
      */
     public Town getTown()
     {
-        TownRegistry townReg = (TownRegistry) RegistryFactory.getRegistry(RegKey.TOWN);
+        TownRegistry townReg = (TownRegistry) RegistryFactory.getInstance().getRegistry(RegKey.TOWN);
         return (_townName == null) ? null : (Town) townReg.getUnique(_townName);
     }
   

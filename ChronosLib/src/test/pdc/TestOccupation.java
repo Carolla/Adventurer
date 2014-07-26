@@ -67,7 +67,7 @@ public class TestOccupation
     public static void runOnce()
     {
         // Create a Registry object, which will be initialized if new
-        assertNotNull((SkillRegistry) RegistryFactory.getRegistry(RegKey.SKILL));
+        assertNotNull((SkillRegistry) RegistryFactory.getInstance().getRegistry(RegKey.SKILL));
     }
     
     /** Close down all the secondary registries needed */
@@ -75,7 +75,7 @@ public class TestOccupation
     public static void cleanUp() 
     {
         // Close the secondary Registry but do not delete the file
-        ((SkillRegistry) RegistryFactory.getRegistry(RegKey.SKILL)).closeRegistry();
+        ((SkillRegistry) RegistryFactory.getInstance().getRegistry(RegKey.SKILL)).closeRegistry();
     }
 
     

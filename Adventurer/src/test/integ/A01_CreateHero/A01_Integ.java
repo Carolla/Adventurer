@@ -308,8 +308,9 @@ public class A01_Integ
     @Test
     public void itAddsTheOccupationalSkill()
     {
-      Occupation occ = ((OccupationRegistry) RegistryFactory.getRegistry(RegKey.OCP)).getOccupation("Fisher");
-//      Occupation occ = ((OccupationRegistry) AdvRegistryFactory.getRegistry(RegKey.OCP)).getOccupation("Fisher");
+      RegistryFactory rf = RegistryFactory.getInstance();
+      Occupation occ = ((OccupationRegistry) rf.getRegistry(RegKey.OCP)).getOccupation("Fisher");
+//      Occupation occ = ((OccupationRegistry) AdvRegistryFactory.getInstance().getRegistry(RegKey.OCP)).getOccupation("Fisher");
         Person p = PersonMaker.makePerson(occ);
         assertTrue(p.getSkills().contains(occ));
     }
@@ -332,9 +333,10 @@ public class A01_Integ
         String[] elfSkills = { "Infravision", "Resistance to Sleep",
         "Resistance to Charm", "Archery", "Tingling", "Move Silently"};
         List<Skill> skills = p.getSkills();
+        RegistryFactory rf = RegistryFactory.getInstance();
         for (String s : elfSkills) {
-          Skill skl = ((SkillRegistry) RegistryFactory.getRegistry(RegKey.SKILL)).getSkill(s);
-//          Skill skl = ((SkillRegistry) AdvRegistryFactory.getRegistry(RegKey.SKILL)).getSkill(s);
+          Skill skl = ((SkillRegistry) rf.getRegistry(RegKey.SKILL)).getSkill(s);
+//          Skill skl = ((SkillRegistry) AdvRegistryFactory.getInstance().getRegistry(RegKey.SKILL)).getSkill(s);
             assertTrue(skills.contains(skl));
         }
         // TODO Auto-generated method stub

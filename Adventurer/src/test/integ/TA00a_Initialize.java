@@ -40,6 +40,7 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
  */
 public class TA00a_Initialize
 {
+  static private RegistryFactory _rf = null;
   /**
    * Keys used by RegistryFactory public enum RegKey { ADV("Adventure"), BLDG("Building"),
    * ITEM("Item"), NPC("NPC"), OCP("Occupation"), SKILL("Skill"), TOWN("Town"); // HELP("AdvHelp");
@@ -75,19 +76,20 @@ public class TA00a_Initialize
   @AfterClass
   public static void tearDownAfterClass() throws Exception
   {
-    for (RegKey key : RegKey.values()) {
-      Registry reg = RegistryFactory.getRegistry(key);
-      reg.closeRegistry();
+//    for (RegKey key : RegKey.values()) {
+//      Registry reg = RegistryFactory.getInstance().getRegistry(key);
+//      reg.closeRegistry();
     }
-
-  }
 
   /**
    * @throws java.lang.Exception
    */
   @Before
   public void setUp() throws Exception
-  {}
+  {
+    _rf = RegistryFactory.getInstance();
+  }
+  
 
   /**
    * @throws java.lang.Exception
@@ -97,6 +99,7 @@ public class TA00a_Initialize
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
+    _rf = null;
   }
 
 
@@ -123,14 +126,14 @@ public class TA00a_Initialize
 
     // DO create the registries
     for (RegKey key : RegKey.values()) {
-      RegistryFactory.getRegistry(key);
+      _rf.getRegistry(key);
     }
 
     // VERIFY all registry files created
     assertTrue(RegistryFilesExist());
 
     // VERIFY all registries exist: get number objects in RegistryFactory map
-    assertTrue(keynum == RegistryFactory.getNumberOfRegistries());
+    assertTrue(keynum == _rf.getNumberOfRegistries());
 
     // VERIFY MainframeCiv exists
     Mainframe mf = Mainframe.getInstance();

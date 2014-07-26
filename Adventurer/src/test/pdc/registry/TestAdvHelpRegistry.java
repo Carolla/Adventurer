@@ -72,7 +72,7 @@ public class TestAdvHelpRegistry
   public void setUp() throws Exception
   {
     MsgCtrl.errorMsgsOn(true);
-    _reg = (AdvHelpRegistry) RegistryFactory.getRegistry(RegKey.HELP);
+    _reg = (AdvHelpRegistry) RegistryFactory.getInstance().getRegistry(RegKey.HELP);
     _mock = _reg.new MockAdvHelpRegistry();
   }
 
@@ -112,7 +112,7 @@ public class TestAdvHelpRegistry
     // assertNull(_mock.getInternalReference());
 
     // Reopen registries so that the tearDown() method doesn't bomb
-    _reg = (AdvHelpRegistry) RegistryFactory.getRegistry(RegKey.HELP);
+    _reg = (AdvHelpRegistry) RegistryFactory.getInstance().getRegistry(RegKey.HELP);
 
   }
 
@@ -136,7 +136,7 @@ public class TestAdvHelpRegistry
     assertFalse(file.exists());
 
     // Reopen registries so that the tearDown() method doesn't bomb
-    _reg = (AdvHelpRegistry) RegistryFactory.getRegistry(RegKey.HELP);
+    _reg = (AdvHelpRegistry) RegistryFactory.getInstance().getRegistry(RegKey.HELP);
 
   }
 

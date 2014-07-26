@@ -122,7 +122,7 @@ public class TestTown
     public void tearDown() throws Exception
     {
         _town = null;
-        BuildingRegistry bReg = (BuildingRegistry) RegistryFactory.getRegistry(RegKey.BLDG);
+        BuildingRegistry bReg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
         bReg.closeRegistry();
         MsgCtrl.auditMsgsOn(false);
         MsgCtrl.errorMsgsOn(false);

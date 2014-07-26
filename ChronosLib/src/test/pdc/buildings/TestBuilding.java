@@ -76,7 +76,7 @@ public class TestBuilding
     public static void runOnce()
     {
         // Create a Registry object, which will be initialized if new
-        assertNotNull((NPCRegistry) RegistryFactory.getRegistry(RegKey.NPC));
+        assertNotNull((NPCRegistry) RegistryFactory.getInstance().getRegistry(RegKey.NPC));
     }
     
     /** Close down all the secondary registries needed for the Inn */
@@ -84,7 +84,7 @@ public class TestBuilding
     public static void cleanUp() 
     {
         // Close down the secondary, but don't delete the registry file
-        ((NPCRegistry) RegistryFactory.getRegistry(RegKey.NPC)).closeRegistry();
+        ((NPCRegistry) RegistryFactory.getInstance().getRegistry(RegKey.NPC)).closeRegistry();
     }
     
     /**

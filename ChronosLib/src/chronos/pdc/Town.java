@@ -131,7 +131,7 @@ public class Town extends RegistryElement
      */
     public void addBuildings(String[] bldgList) throws ApplicationException
     {
-        BuildingRegistry bReg = (BuildingRegistry) RegistryFactory.getRegistry(RegKey.BLDG);
+        BuildingRegistry bReg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
         for (String bName : bldgList) {
             Building b = bReg.getBuilding(bName);
             if (b == null) {
@@ -152,7 +152,7 @@ public class Town extends RegistryElement
      */
     public boolean buildingRegContainsName(String bldgName) 
     {
-        BuildingRegistry bReg = (BuildingRegistry) RegistryFactory.getRegistry(RegKey.BLDG);
+        BuildingRegistry bReg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
         Building b = bReg.getBuilding(bldgName);
         return b != null;
     }
@@ -177,7 +177,7 @@ public class Town extends RegistryElement
     /** Get a Building object from the Building Registry*/
     public Building getBuilding(String name)
     {
-        BuildingRegistry bldgReg = (BuildingRegistry) RegistryFactory.getRegistry(RegKey.BLDG);
+        BuildingRegistry bldgReg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
         Building bldg = (Building) bldgReg.getUnique(name);
         return bldg;
     }

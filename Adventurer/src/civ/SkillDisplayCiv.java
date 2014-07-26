@@ -89,7 +89,7 @@ public class SkillDisplayCiv extends BaseCiv<SkillKeys, SkillKeys> implements
         _ds = new DataShuttle<SkillKeys>(SkillKeys.class);
         _ws = new DataShuttle<SkillKeys>(SkillKeys.class);
         // This should be _model
-        _skreg = (SkillRegistry) RegistryFactory.getRegistry(RegKey.SKILL);
+        _skreg = (SkillRegistry) RegistryFactory.getInstance().getRegistry(RegKey.SKILL);
         // _skreg.load(); //TODO: Fix this line.
         // _skreg.addObserver(this);
     }

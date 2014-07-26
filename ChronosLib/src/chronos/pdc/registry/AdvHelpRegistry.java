@@ -8,29 +8,23 @@
  */
 
 
-package pdc.registry;
-
-import civ.HelpTextObject;
-
-import chronos.Chronos;
+package chronos.pdc.registry;
 
 import mylib.pdc.Registry;
+import chronos.Chronos;
 
 /**
  * All Help text for Adventurer contained here.
  * 
  * @author Alan Cline
- * @version <DL>
- *          <DT>Build 1.0 Nov 14, 2013 // original
- *          <DD>
- *          <DT>Build 1.1 Nov 23, 2013 // abc: added generic help and hooked it in
- *          <DD>
- *          </DL>
+ * @version Nov 14, 2013 // original <br>
+ *          Nov 23, 2013 // abc: added generic help and hooked it in <br>
+ *          July 25, 2014 // abc: Moved this Registry into ChronosLib <br>
  */
 public class AdvHelpRegistry extends Registry
 {
   /** Internal reference to this registry for singleton purposes */
-  // static private AdvHelpRegistry _thisReg = null;
+   static private AdvHelpRegistry _thisReg = null;
 
   /** Generic help ID for the mainframe help window */
   static public final String GENERIC_ID = "INSTRUCTIONS";
@@ -87,7 +81,7 @@ public class AdvHelpRegistry extends Registry
    */
   protected AdvHelpRegistry()
   {
-    super(Chronos.AdventureHelpRegPath);
+    super(Chronos.AdvHelpRegPath);
   }
 
 

@@ -349,7 +349,7 @@ public abstract class Race implements Serializable
         }
 
         // Get the collection of all skills for lookup
-        SkillRegistry skReg = (SkillRegistry) RegistryFactory.getRegistry(RegKey.SKILL);
+        SkillRegistry skReg = (SkillRegistry) RegistryFactory.getInstance().getRegistry(RegKey.SKILL);
         for (int k = 0; k < racialList.length; k++) {
             Skill skill = skReg.getSkill(racialList[k]);
             if (skill != null) {

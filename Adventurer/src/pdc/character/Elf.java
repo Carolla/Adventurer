@@ -107,7 +107,7 @@ public class Elf extends Race implements Serializable {
     /** Assign the skills that the Elf has */
     public ArrayList<Skill> assignSkills(ArrayList<Skill> inSkills) {
         Skill skill = new Skill();
-        SkillRegistry skreg = (SkillRegistry) RegistryFactory.getRegistry(RegKey.SKILL);
+        SkillRegistry skreg = (SkillRegistry) RegistryFactory.getInstance().getRegistry(RegKey.SKILL);
         // skreg.load();
         for (int i = 0; i < _elfSkills.length; i++) {
             String skillName = _elfSkills[i];

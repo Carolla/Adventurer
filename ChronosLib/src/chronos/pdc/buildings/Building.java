@@ -113,7 +113,7 @@ public abstract class Building extends RegistryElement
 
   protected NPC findBuildingMaster(String masterName)
   {
-    NPCRegistry npcReg = (NPCRegistry) RegistryFactory.getRegistry(RegKey.NPC);
+    NPCRegistry npcReg = (NPCRegistry) RegistryFactory.getInstance().getRegistry(RegKey.NPC);
     NPC master = npcReg.getNPC(masterName);
     if (master == null) {
       throw new ApplicationException(masterName + " does not exist in the NPC Registry.");

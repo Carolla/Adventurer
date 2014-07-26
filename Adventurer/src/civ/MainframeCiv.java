@@ -94,10 +94,10 @@ public class MainframeCiv
   {
     _frame = frame;
     // _personRW = new PersonReadWriter();
-    // _advReg = (AdventureRegistry) RegistryFactory.getRegistry(RegKey.ADV);
+    // _advReg = (AdventureRegistry) RegistryFactory.getInstance().getRegistry(RegKey.ADV);
     // _cp = new CommandParser(this);
     // _bdCiv =
-    // new BuildingDisplayCiv(_frame, (BuildingRegistry) RegistryFactory.getRegistry(RegKey.BLDG));
+    // new BuildingDisplayCiv(_frame, (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG));
     // createBuildingBoxes();
   }
 
@@ -136,7 +136,7 @@ public class MainframeCiv
    */
   public List<String> getAdventures()
   {
-    _advReg = (AdventureRegistry) RegistryFactory.getRegistry(RegKey.ADV);
+    _advReg = (AdventureRegistry) RegistryFactory.getInstance().getRegistry(RegKey.ADV);
     List<Adventure> adventures = _advReg.getAdventureList();
     List<String> results = new ArrayList<String>();
     for (Adventure a : adventures) {

@@ -103,7 +103,7 @@ public class Occupation extends RegistryElement
         // End Guards
 
         // Verify that the skill name given exists in the Skill Registry
-        SkillRegistry skReg = (SkillRegistry) RegistryFactory.getRegistry(RegKey.SKILL);
+        SkillRegistry skReg = (SkillRegistry) RegistryFactory.getInstance().getRegistry(RegKey.SKILL);
         Skill s = skReg.getSkill(skillname);
         if (s != null) {
             _name = name;

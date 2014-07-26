@@ -22,7 +22,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import pdc.registry.AdvHelpRegistry;
 import chronos.pdc.registry.AdventureRegistry;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.ItemRegistry;
@@ -82,9 +81,9 @@ public class TestAdvRegistry
 //    @Test
 //    public void testCloseRegistry()
 //    {        
-//        BuildingRegistry breg = (BuildingRegistry) AdvRegistryFactory.getRegistry(RegKey.BLDG);
+//        BuildingRegistry breg = (BuildingRegistry) AdvRegistryFactory.getInstance().getRegistry(RegKey.BLDG);
 //        breg.closeRegistry();
-//        BuildingRegistry breg2 = (BuildingRegistry) AdvRegistryFactory.getRegistry(RegKey.BLDG);
+//        BuildingRegistry breg2 = (BuildingRegistry) AdvRegistryFactory.getInstance().getRegistry(RegKey.BLDG);
 //        assertNotSame(breg, breg2);
 //        breg2.closeRegistry();
 //    }
@@ -93,39 +92,39 @@ public class TestAdvRegistry
     @Test
     public void testRegistryList()
     {        
-        AdventureRegistry areg = (AdventureRegistry) RegistryFactory.getRegistry(RegKey.ADV);
+        AdventureRegistry areg = (AdventureRegistry) RegistryFactory.getInstance().getRegistry(RegKey.ADV);
         assertNotNull(areg);
         areg.closeRegistry();
         
-        BuildingRegistry breg = (BuildingRegistry) RegistryFactory.getRegistry(RegKey.BLDG);
+        BuildingRegistry breg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
         assertNotNull(breg);
         breg.closeRegistry();
         
-        ItemRegistry ireg = (ItemRegistry) RegistryFactory.getRegistry(RegKey.ITEM);
+        ItemRegistry ireg = (ItemRegistry) RegistryFactory.getInstance().getRegistry(RegKey.ITEM);
         assertNotNull(ireg);
         ireg.closeRegistry();
         
-        NPCRegistry nreg = (NPCRegistry) RegistryFactory.getRegistry(RegKey.NPC);
+        NPCRegistry nreg = (NPCRegistry) RegistryFactory.getInstance().getRegistry(RegKey.NPC);
         assertNotNull(nreg);
         nreg.closeRegistry();
         
-        OccupationRegistry oreg = (OccupationRegistry) RegistryFactory.getRegistry(RegKey.OCP);
+        OccupationRegistry oreg = (OccupationRegistry) RegistryFactory.getInstance().getRegistry(RegKey.OCP);
         assertNotNull(oreg);
         oreg.closeRegistry();
         
-        SkillRegistry sreg = (SkillRegistry) RegistryFactory.getRegistry(RegKey.SKILL);
+        SkillRegistry sreg = (SkillRegistry) RegistryFactory.getInstance().getRegistry(RegKey.SKILL);
         assertNotNull(sreg);
         sreg.closeRegistry();
 
-        TownRegistry treg = (TownRegistry) RegistryFactory.getRegistry(RegKey.TOWN);
+        TownRegistry treg = (TownRegistry) RegistryFactory.getInstance().getRegistry(RegKey.TOWN);
         assertNotNull(treg);
         treg.closeRegistry();
         // Close secondary registry
-        breg = (BuildingRegistry) RegistryFactory.getRegistry(RegKey.BLDG);
+        breg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
         breg.closeRegistry();
 
 
-//        AdvHelpRegistry hreg = (AdvHelpRegistry) RegistryFactory.getRegistry(RegKey.HELP);
+//        AdvHelpRegistry hreg = (AdvHelpRegistry) RegistryFactory.getInstance().getRegistry(RegKey.HELP);
 //        assertNotNull(hreg);
 //        hreg.closeRegistry();
      }
@@ -139,7 +138,7 @@ public class TestAdvRegistry
 //        // Create all registries by traversing the enum key list
 //        for (RegKey key : RegKey.values()) {
 //            MsgCtrl.msgln(key.toString());
-//            Registry reg =   AdvRegistryFactory.getRegistry(key);
+//            Registry reg =   AdvRegistryFactory.getInstance().getRegistry(key);
 //            assertNotNull(reg);
 //            reg.closeRegistry();
 //        }
@@ -151,7 +150,7 @@ public class TestAdvRegistry
 //    {
 //        // Get a local adv help registry
 //        AdvHelpRegistry advReg = (AdvHelpRegistry) 
-//                        AdvRegistryFactory.getRegistry(null);
+//                        AdvRegistryFactory.getInstance().getRegistry(null);
 //        assertNull(advReg);
 //    }
 
@@ -163,7 +162,7 @@ public class TestAdvRegistry
         
         int count = 0;
         for (RegKey key : RegKey.values()) {
-            Registry reg = RegistryFactory.getRegistry(key);
+            Registry reg = RegistryFactory.getInstance().getRegistry(key);
             MsgCtrl.msgln("Closing registry " + key);
             reg.closeRegistry();
             count++;

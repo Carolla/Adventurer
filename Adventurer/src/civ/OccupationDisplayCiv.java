@@ -70,8 +70,8 @@ public class OccupationDisplayCiv extends
     public OccupationDisplayCiv() {
         _ds = new DataShuttle<OccupationKeys>(OccupationKeys.class);
         _ws = new DataShuttle<OccupationKeys>(OccupationKeys.class);
-        _occreg = (OccupationRegistry) RegistryFactory.getRegistry(RegKey.OCP); // This should be _model
-        _skreg = (SkillRegistry) RegistryFactory.getRegistry(RegKey.SKILL); // This should be _model
+        _occreg = (OccupationRegistry) RegistryFactory.getInstance().getRegistry(RegKey.OCP); // This should be _model
+        _skreg = (SkillRegistry) RegistryFactory.getInstance().getRegistry(RegKey.SKILL); // This should be _model
     }
 
     /**

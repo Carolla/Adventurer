@@ -24,6 +24,7 @@ import mylib.Constants;
  *          May 3, 2013 // ABC: Added Arena locations, one per db file <br>
  *          June 21, 2014 // ABC: Used CHRONOS_ROOT and added syntactic synonyms <br>
  *          July 19, 2014 // ABC: Refactored after architectural changes to source <br>
+ *          July 25, 2014 // ABC: Moved AdvHelpRegistry from Adventurer to shared registry area<br>
  */
 public class Chronos
 {
@@ -41,7 +42,7 @@ public class Chronos
    * (resources) are in the actual git repository folder, even though Eclipse shows them in the
    * workspace.
    */
-  
+
   /** Base environment variable for shared file resources path */
   public static String CHRONOS_ROOT = System.getProperty("user.home") + "/git/eChronos";
   /** Relative path location of all shared resources */
@@ -51,8 +52,8 @@ public class Chronos
 
   /** Most registry Classes are located in the ChronosLib shared source package (ChronosLib) */
   public static final String REGISTRY_CLASSPKG = "chronos.pdc.registry.";
-  /** Adventurer-specific registry Classes are located in the an alternate location */
-  public static final String ALT_REGISTRY_CLASSPKG = "adventurer.pdc.registry.";
+  // /** Adventurer-specific registry Classes are located in the an alternate location */
+  // public static final String ALT_REGISTRY_CLASSPKG = "adventurer.pdc.registry.";
 
   /** Path for all data Registries */
   public static final String REGISTRY_PATH = RESOURCES_PATH + FS + "registries" + FS;
@@ -63,12 +64,13 @@ public class Chronos
   public static final String IMAGE_PATH = RESOURCES_PATH + FS + "images" + FS;
 
   // LOG FOR TESTING
-//  static {
-//    System.out.println("RESOURCES_PATH = " + RESOURCES_PATH);
-//    System.out.println("IMAGE_PATH = " + IMAGE_PATH);
-//    System.out.println("ADV_RESOURCES_PATH = " + ADV_RESOURCES_PATH);
-//    System.out.println("ADV_IMAGE_PATH = " + ADV_IMAGE_PATH);
-//  }
+  // static {
+  // System.out.println("Chronos Log: ");
+  // System.out.println("RESOURCES_PATH = " + RESOURCES_PATH);
+  // System.out.println("IMAGE_PATH = " + IMAGE_PATH);
+  // System.out.println("ADV_RESOURCES_PATH = " + ADV_RESOURCES_PATH);
+  // System.out.println("ADV_IMAGE_PATH = " + ADV_IMAGE_PATH);
+  // }
 
   /** Location of AdventureRegistry */
   public static String AdventureRegPath = REGISTRY_PATH + "Adventures.reg";
@@ -87,27 +89,24 @@ public class Chronos
   /** Town Registry location. This location can change for test purposes. */
   public static String TownRegPath = REGISTRY_PATH + "Towns.reg";
   /** Adventure Help Registry location. This location can change for test purposes. */
-  public static String AdvHelpRegPath = ADV_RESOURCES_PATH + FS +"help" + FS + "AdvHelpRegistry.reg";
+  public static String AdvHelpRegPath = REGISTRY_PATH + "AdvHelpRegistry.reg";
 
   // LOG FOR TESTING
   static {
-//    System.out.println("AdventureRegPath = " +  AdventureRegPath);
-//    System.out.println("BuildingRegPath = " +   BuildingRegPath);
-//    System.out.println("ItemRegPath = " +       ItemRegPath);
-//    System.out.println("NPCRegPath = " +        NPCRegPath);
-//    System.out.println("OcpRegPath = " +        OcpRegPath);
-//    System.out.println("PersonRegPath = " +     PersonRegPath);
-//    System.out.println("SkillRegPath = " +      SkillRegPath);
-//    System.out.println("TownRegPath = " +       TownRegPath);
-//    System.out.println("AdvHelpRegPath = " +    AdvHelpRegPath);
+    // System.out.println("Chronos Log: ");
+    // System.out.println("AdventureRegPath = " + AdventureRegPath);
+    // System.out.println("BuildingRegPath = " + BuildingRegPath);
+    // System.out.println("ItemRegPath = " + ItemRegPath);
+    // System.out.println("NPCRegPath = " + NPCRegPath);
+    // System.out.println("OcpRegPath = " + OcpRegPath);
+    // System.out.println("PersonRegPath = " + PersonRegPath);
+    // System.out.println("SkillRegPath = " + SkillRegPath);
+    // System.out.println("TownRegPath = " + TownRegPath);
+    // System.out.println("AdvHelpRegPath = " + AdvHelpRegPath);
   }
 
   /** Fake Registry location for testing purposes. */
   public static String FakeRegPath = REGISTRY_PATH + "FakeStuff.reg";
-
-  /** Location of HelpRegistry */
-  public static String AdventureHelpRegPath = ADV_RESOURCES_PATH + FS + "help" + FS
-      + "AdventureHelp.reg";
 
   /** Location of Arenas (dungeons), one each in their own db file */
   public static final String ArenaPath = RESOURCES_PATH + "data" + FS;

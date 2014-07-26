@@ -416,7 +416,7 @@ public class Inventory implements Serializable
      */
     public ArrayList<Item> initStartingInventory()
     {
-        ItemRegistry ireg = (ItemRegistry) RegistryFactory.getRegistry(RegKey.ITEM);
+        ItemRegistry ireg = (ItemRegistry) RegistryFactory.getInstance().getRegistry(RegKey.ITEM);
 
         for (int i = 0; i < _startList.length; i++) {
             Item it = null;

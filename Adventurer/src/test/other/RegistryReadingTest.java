@@ -32,8 +32,8 @@ public class RegistryReadingTest {
 
     @Before
     public void setUp() throws Exception {
-        sr = (SkillRegistry) RegistryFactory.getRegistry(RegKey.SKILL);
-        or = (OccupationRegistry) RegistryFactory.getRegistry(RegKey.OCP);
+        sr = (SkillRegistry) RegistryFactory.getInstance().getRegistry(RegKey.SKILL);
+        or = (OccupationRegistry) RegistryFactory.getInstance().getRegistry(RegKey.OCP);
         assertTrue(sr != null);
         assertNotNull(or);
 

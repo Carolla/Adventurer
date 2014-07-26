@@ -149,7 +149,7 @@ public class OccupationRegistry extends Registry
     @Override
     public void initialize()
     {
-        RegistryFactory.getRegistry(RegKey.SKILL);
+        RegistryFactory.getInstance().getRegistry(RegKey.SKILL);
 
         // Create new Occupations and save to registry
         try {
@@ -180,7 +180,7 @@ public class OccupationRegistry extends Registry
             throw new ApplicationException("add(): Received illegal null Occupation");
         }
         // Open Skill Registry for verification purposes
-        SkillRegistry skillReg = (SkillRegistry) RegistryFactory.getRegistry(RegKey.SKILL);
+        SkillRegistry skillReg = (SkillRegistry) RegistryFactory.getInstance().getRegistry(RegKey.SKILL);
 
         // Create new Occupations and save to registry
         if (verifySkill(skillReg, occup.getSkillName()) == true) {

@@ -12,10 +12,9 @@
 
 package civ;
 
-import java.util.ArrayList;
-
 import mylib.hic.HelpDialog;
-import pdc.registry.AdvHelpRegistry;
+import chronos.pdc.registry.AdvHelpRegistry;
+import chronos.pdc.registry.HelpTextObject;
 
 /**
  *   Displays the HelpDialog window with text retrieved from the HelpRegistry
@@ -48,7 +47,7 @@ public class AdvHelpCiv
     /** Retrieve the HelpRegistry. */
     private AdvHelpCiv() 
     {
-//        _helpReg = (AdvHelpRegistry) AdvRegistryFactory.getRegistry(RegKey.HELP);
+//        _helpReg = (AdvHelpRegistry) AdvRegistryFactory.getInstance().getRegistry(RegKey.HELP);
 //        _helpDialog = HelpDialog.getInstance(Mainframe.getInstance());
     }
 

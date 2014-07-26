@@ -371,7 +371,7 @@ public class TestPerson extends TestCase {
 		// fail();
 		// }
 		// // Get the special NoSkill skill to work with
-		// SkillRegistry skreg = (SkillRegistry) AdvRegistryFactory.getRegistry(RegKey.SKILL);
+		// SkillRegistry skreg = (SkillRegistry) AdvRegistryFactory.getInstance().getRegistry(RegKey.SKILL);
 		// Skill s0 = skreg.findSkill(OccupTable.NO_SKL);
 		//
 		// // NORMAL Human with Skills; confirm skills match occupation,

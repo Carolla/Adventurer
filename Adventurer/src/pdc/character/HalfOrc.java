@@ -99,7 +99,7 @@ public class HalfOrc extends Race implements Serializable {
     /** Assign the skills that the Half-Orc has */
     public ArrayList<Skill> assignSkills(ArrayList<Skill> inSkills) {
         Skill skill = new Skill();
-        SkillRegistry skreg = (SkillRegistry) RegistryFactory.getRegistry(RegKey.SKILL);
+        SkillRegistry skreg = (SkillRegistry) RegistryFactory.getInstance().getRegistry(RegKey.SKILL);
         for (int i = 0; i < _horcSkills.length; i++) {
             String skillName = _horcSkills[i];
             skill = skreg.getSkill(skillName);

@@ -91,7 +91,7 @@ public class Gnome extends Race implements Serializable {
     /** Assign the skills that the Gnome has */
     public ArrayList<Skill> assignSkills(ArrayList<Skill> inSkills) {
         Skill skill = new Skill();
-        SkillRegistry skreg = (SkillRegistry) RegistryFactory.getRegistry(RegKey.SKILL);
+        SkillRegistry skreg = (SkillRegistry) RegistryFactory.getInstance().getRegistry(RegKey.SKILL);
         // skreg.load();
         for (int i = 0; i < _gnomeSkills.length; i++) {
             String skillName = _gnomeSkills[i];

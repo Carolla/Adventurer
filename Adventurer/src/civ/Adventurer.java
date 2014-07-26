@@ -98,7 +98,7 @@ public class Adventurer
   private static void initRegistries()
   {
     for (RegKey key : RegKey.values()) {
-      RegistryFactory.getRegistry(key);
+      RegistryFactory.getInstance().getRegistry(key);
     }
   }
 
@@ -109,7 +109,7 @@ public class Adventurer
   private static void closeRegistries()
   {
     for (RegKey key : RegKey.values()) {
-      Registry reg = RegistryFactory.getRegistry(key);
+      Registry reg = RegistryFactory.getInstance().getRegistry(key);
       reg.closeRegistry();
     }
   }

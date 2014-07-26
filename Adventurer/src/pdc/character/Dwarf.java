@@ -111,7 +111,7 @@ public class Dwarf extends Race implements Serializable {
     /** Assign the skills that the Dwarf has */
     public ArrayList<Skill> assignSkills(ArrayList<Skill> inSkills) {
         Skill skill = new Skill();
-        SkillRegistry skreg = (SkillRegistry) RegistryFactory.getRegistry(RegKey.SKILL);
+        SkillRegistry skreg = (SkillRegistry) RegistryFactory.getInstance().getRegistry(RegKey.SKILL);
         // skreg.load();
         for (int i = 0; i < dwarfSkills.length; i++) {
             String skillName = dwarfSkills[i];

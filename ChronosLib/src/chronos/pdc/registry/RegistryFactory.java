@@ -16,24 +16,25 @@ import mylib.pdc.Registry;
 import chronos.Chronos;
 
 /**
- * Creates singleton registries of various kinds
+ * Creates singleton registries of various kinds and keeps count of existing registries
  * 
  * @author Alan Cline
  * @version Jan 1, 2014 // ABC original <br>
  *          July 19, 2014 // ABC added method to return already created Registry <br>
+ *          July 25, 2014 // ABC added collection funtionality <br>
  */
 public class RegistryFactory
 {
   static private RegistryFactory _rf = null;
 
-  static private HashMap<RegKey, Registry> _regMap = null;
+  private HashMap<RegKey, Registry> _regMap = null;
 
   // ============================================================
   // Public list of all possible registries subclasses
   // ============================================================
   public enum RegKey {
     ADV("Adventure"), BLDG("Building"), ITEM("Item"), NPC("NPC"), OCP("Occupation"),
-    SKILL("Skill"), TOWN("Town"); // HELP("AdvHelp");
+    SKILL("Skill"), TOWN("Town"), HELP("AdvHelp");
 
     private RegKey(String nm)
     {
@@ -59,8 +60,8 @@ public class RegistryFactory
     _regMap = new HashMap<RegKey, Registry>();
   }
 
-
-  static private RegistryFactory getInstance()
+  /** Retrieve or create the factory class, a collection of all Registries */
+  static public RegistryFactory getInstance()
   {
     if (_rf == null) {
       _rf = new RegistryFactory();
@@ -74,50 +75,30 @@ public class RegistryFactory
   // ============================================================
 
   /**
-   * Return the requested regsistry, or null if the registry is null or closed
-   * 
-   * @param regtype one of the canonical immutable Registries defined in <code>enum RegKey</code>
-   * @return an existing registry of the requested type, or null if it doesn't exist or can't be found
+   * Close a registry and remove it from the factory collection
+   * @param regtype one of the specified registry types 
    */
-  static public Registry getRegistry(RegKey regtype)
+  public void closeRegistry(RegKey regtype)
   {
-    RegistryFactory factory = RegistryFactory.getInstance();
-    return factory.findRegistry(regtype);
+    Registry reg = _regMap.get(regtype);
+    if (reg != null) {
+      reg.closeRegistry();
+      _regMap.remove(regtype);
+    }
   }
 
-//  /**
-//   * Get an existing Registry, else return null; do not create it
-//   * 
-//   * @param regtype one of the Registries defined in <code>enum RegKey</code>
-//   * @return the registry of the specified type, else null if not found
-//   */
-//  static public Registry getExisting(RegKey regtype)
-//  {
-//    RegistryFactory.getInstance();
-//    return _regMap.get(regtype);
-//  }
 
-  /** @return the number of Registries currently created by the {@code RegistryFactory} */
-  static public int getNumberOfRegistries()
-  {
-    RegistryFactory factory = RegistryFactory.getInstance();
-    return _regMap.size();
-  }
-
-  
   /**
-   * Creates a registry of the given type. Registry location defaults to ChronosLib resources. If
-   * registry is not found, e.g., AdvHelpRegistry, tries to create it in the Adventurer resources.
+   * Creates a registry of the given type. Registry location defaults to ChronosLib resources.
+   * Registry is stored for quick access in this factory
    * 
-   * @param regpath location of registry file
    * @param regtype defined in {@code RegistryFactory.RegKey enum}
    * @return the requested Registry
    */
-  public Registry createRegistry(String regpath, RegKey regtype)
+  public Registry createRegistry(RegKey regtype)
   {
     Registry reg = null;
-    // String regName = Chronos.REGISTRY_CLASSPKG + regtype + "Registry";
-    String regName = regpath + regtype + "Registry";
+    String regName = Chronos.REGISTRY_CLASSPKG + regtype + "Registry";
     try {
       reg = (Registry) Class.forName(regName).newInstance();
       _regMap.put(regtype, reg);
@@ -138,33 +119,69 @@ public class RegistryFactory
   }
 
 
-  // ============================================================
-  // Private Methods
-  // ============================================================
-
-  private Registry findRegistry(RegKey regtype)
+  /**
+   * Get the number of registries created by this {@code RegistryFactory}
+   * 
+   * @return the number of current Registries
+   */
+  public int getNumberOfRegistries()
   {
-    Registry reg = _regMap.get(regtype);
-    if (isValidRegistry(reg)) {
-      return reg;
-    } else {
-      reg = createRegistry(Chronos.REGISTRY_CLASSPKG, regtype);
-      if (!isValidRegistry(reg)) {
-        reg = createRegistry(Chronos.ALT_REGISTRY_CLASSPKG, regtype);
-      }
+    return _regMap.size();
+  }
+
+
+  /**
+   * Return the requested regsistry, or null if the registry is null or closed
+   * 
+   * @param regtype one of the canonical immutable Registries defined in <code>enum RegKey</code>
+   * @return an existing registry of the requested type, or null if it doesn't exist or can't be
+   *         found
+   */
+  public Registry getRegistry(RegKey regtype)
+  {
+    Registry reg = getExisting(regtype);
+    if (reg == null) {
+      reg = createRegistry(regtype);
     }
     return reg;
   }
 
 
-  private boolean isValidRegistry(Registry reg)
+  // ============================================================
+  // Private Methods
+  // ============================================================
+
+  /**
+   * Get an existing Registry, else return null; do not create it
+   * 
+   * @param regtype one of the Registries defined in <code>enum RegKey</code>
+   * @return the registry of the specified type, else null if not found
+   */
+  private Registry getExisting(RegKey regtype)
   {
-    if ((reg == null) || (reg.isClosed())) {
-      _regMap.remove(reg);
-      return false;
-    }
-    return true;
+    return _regMap.get(regtype);
   }
+
+
+  // private Registry findRegistry(RegKey regtype)
+  // {
+  // Registry reg = _regMap.get(regtype);
+  // if (isValidRegistry(reg)) {
+  // return reg;
+  // } else {
+  // return createRegistry(regtype);
+  // }
+  // }
+
+
+  // private boolean isValidRegistry(Registry reg)
+  // {
+  // if ((reg == null) || (reg.isClosed())) {
+  // _regMap.remove(reg);
+  // return false;
+  // }
+  // return true;
+  // }
 
 
 } // end of RegistryFactory class
