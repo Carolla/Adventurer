@@ -65,7 +65,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   public static final int PAD = 10;
 
   /** Icons for the left-side buttons */
-  private static final String REGISTRAR_IMAGE = "icn_Register.jpg";
+//  private static final String REGISTRAR_IMAGE = "icn_Register.jpg";
+  private static final String REGISTRAR_IMAGE = "raw_Register.jpg";
   private static final String HALL_IMAGE = "icn_HallOfHeroes.jpg";
   private static final String ADV_IMAGE = "icn_Town.jpg";
   /** Initial right-side image: Chronos logo */
@@ -95,7 +96,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   /** Help Text for the mainframe */
   static final String _helpText =
       "Greetings Adventurer! \n"
-          + "To get started, create a new Hero and select an Adventure to explore. "
+          + "To get started, click on the large button on the left to create a new Hero. "
+          + "Then select an Adventure to explore. "
           + "Kill monsters, solve puzzles, and find treasure in the Adventure's Arena to gain "
           + "experience points. The more points you have, the more power and fame you get. "
           + "When you get enough experience, join one of the many Guilds in town. |"
@@ -104,7 +106,11 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
           + "You can get important info from patrons at the Inn, buy supplies from the General "
           + "Store, or get a loan from the Bank. "
           + "Don't get in trouble with the townspeople. We also have a jail.\n\n"
+          + "If you leave your Hero in town when you exit the game, he or she will be waiting "
+          + "in the same building when you return. If you Save your Hero, he or she can be summoned "
+          + "from the Hall of Heroes next time.\n\n"
           + "Hit F1 key for context help at any time.\n";
+
 
   // ============================================================
   // Constructors and constructor helpers
@@ -302,35 +308,25 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     return button;
   }
 
-
-
-  /**
-   * Display the image on the right side
-   * 
-   * @param imagePath what to display
-   */
-  private void displayImage(String imagePath)
+  
+  private JButton createHeroCreationButton()
   {
-    _rightHolder.removeAll();
-    new ImagePanel(_rightHolder, imagePath);
+    JButton button = createButtonWithTextAndIcon(REGISTRAR_IMAGE, "Create New Heroes");
+    button.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent arg0)
+      {
+        NewHeroDisplay nhd = null;
+        try {
+          nhd = new NewHeroDisplay();
+        } catch (InstantiationException e) {
+          e.printStackTrace();
+          System.exit(0);
+        }
+        // changeToLeftPanel(nhd);
+      }
+    });
+    return button;
   }
-
-
-
-  // /**
-  // * Create the right Panel to contain the Images
-  // *
-  // * @return the right side panel
-  // */
-  // private JPanel createDisplayPanelr()
-  // {
-  // JPanel rightHolder = new JPanel();
-  // rightHolder.addMouseListener(this);
-  // rightHolder.addMouseMotionListener(this);
-  // setImageToBeDisplayed(PORTAL_IMAGE);
-  // return rightHolder;
-  // }
-
 
 
   private JButton createSummonHeroesButton()
@@ -402,6 +398,18 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
    * Temporary SECONDARY CODE BELOW THIS LINE while refactoring
    *------------------------------------------------------------------------*/
 
+  /**
+   * Display the image on the right side
+   * 
+   * @param imagePath what to display
+   */
+  private void displayImage(String imagePath)
+  {
+    _rightHolder.removeAll();
+    new ImagePanel(_rightHolder, imagePath);
+  }
+
+
   /** Temporary marker because there are too many methods to read clearly otherwise */
   protected void CODE_DIVIDER()
   {}
@@ -438,25 +446,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   // }
 
 
-  private JButton createHeroCreationButton()
-  {
-    JButton button = createButtonWithTextAndIcon(REGISTRAR_IMAGE,
-        "Create New Heroes");
-    button.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent arg0)
-      {
-        NewHeroDisplay nhd = null;
-        try {
-          nhd = new NewHeroDisplay();
-        } catch (InstantiationException e) {
-          e.printStackTrace();
-          System.exit(0);
-        }
-        // changeToLeftPanel(nhd);
-      }
-    });
-    return button;
-  }
+  
 
 
   // private JTextPane createHeroListTextArea()

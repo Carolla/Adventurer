@@ -168,7 +168,6 @@ public class IOPanel extends JPanel
     return scrollPane;
   }
 
-
   private Font makeRunicFont()
   {
     Font font = null;
