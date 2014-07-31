@@ -181,8 +181,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
       public void keyReleased(KeyEvent e)
       {
         if (e.getKeyCode() == KeyEvent.VK_F1) {
-          // _helpdlg.setVisible(true);
-          // _helpdlg.showHelp(_helpTitle, _helpText);
           showHelp();
         }
       }
