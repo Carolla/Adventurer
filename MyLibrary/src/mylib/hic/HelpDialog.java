@@ -12,10 +12,12 @@ package mylib.hic;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -24,6 +26,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
+
+import mylib.MsgCtrl;
 
 
 /**
@@ -56,6 +60,7 @@ import javax.swing.ScrollPaneConstants;
  *          Nov 23 2013 // converted from XML input files to Registry database <br>
  *          Jul 30 2014 // replaced registry with IHelpText interface <br>
  */
+@SuppressWarnings("serial")
 public class HelpDialog extends JDialog
 {
   /** Internal reference of this singleton for clients' use. Must be static for constructor. */
@@ -155,7 +160,7 @@ public class HelpDialog extends JDialog
 
   } // end of HelpDialog constructor
 
-
+  
   /**
    * Return the globally-available static Help Dialog reference
    * 
