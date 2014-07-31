@@ -12,8 +12,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import mylib.MsgCtrl;
-import mylib.hic.NotImplementedAction;
-import civ.AdvHelpCiv;
 import civ.Adventurer;
 
 /**
@@ -21,19 +19,17 @@ import civ.Adventurer;
  * Civ.
  * 
  * @author Alan Cline
- * @version <DL>
- *          <DT>Build 1.0 Dec 8, 2013 // original
- *          <DD>
- *          </DL>
+ * @version Dec 8, 2013 // original <br>
+ *          Jul 31 2014 // connected Help option to HelpDialog; disabled unimplemented options <br>
  */
 @SuppressWarnings("serial")
 public class Menubar extends JMenuBar
 {
   public Menubar()
   {
-    this.setBackground(Color.LIGHT_GRAY);
+    setBackground(Color.LIGHT_GRAY);
     populateAdventureMenu();
-    populateHeroMenu();
+//    populateHeroMenu();
     populateEnterMenu();
     populateHelpMenu();
   }
@@ -41,7 +37,6 @@ public class Menubar extends JMenuBar
 
   private JMenuItem createMenuItemWithAction(String string, ActionListener exitAction)
   {
-    // return new JMenuItem();
     JMenuItem item = new JMenuItem(string);
     item.addActionListener(exitAction);
     return item;
@@ -49,7 +44,7 @@ public class Menubar extends JMenuBar
 
 
   /**
-   * Create a menu item that calls the Not Implemented action listener
+   * Create a menu item that is disabled--until it is implemented
    * 
    * @param string the name of the menu item
    * @return a menu item
@@ -57,7 +52,7 @@ public class Menubar extends JMenuBar
   private JMenuItem createMenuItemWithNoAction(String string)
   {
     JMenuItem item = new JMenuItem(string);
-    item.addActionListener(new NotImplementedAction(string));
+    item.setEnabled(false);
     return item;
   }
 
@@ -87,10 +82,14 @@ public class Menubar extends JMenuBar
     // Populate the Enter menu
     JMenu mnEnter = new JMenu("Enter");
     this.add(mnEnter);
-    mnEnter.add(createMenuItemWithNoAction("Registrar"));
+//    mnEnter.add(createMenuItemWithNoAction("Registrar"));
+    mnEnter.add(createMenuItemWithNoAction("Arena"));
+    mnEnter.add(new JMenuItem("---"));
     mnEnter.add(createMenuItemWithNoAction("Inn"));
     mnEnter.add(createMenuItemWithNoAction("Store"));
-    mnEnter.add(createMenuItemWithNoAction("Arena"));
+    mnEnter.add(createMenuItemWithNoAction("Bank"));
+    mnEnter.add(createMenuItemWithNoAction("Jail"));
+    mnEnter.add(createMenuItemWithNoAction("Guild"));
   }
 
 
@@ -100,22 +99,18 @@ public class Menubar extends JMenuBar
     // Populate the Help menu with menu Options
     JMenu mnHelp = new JMenu("Help");
     add(mnHelp);
-  
+
     // Setup About Help action
     JMenuItem mntmHelp = new JMenuItem("Help");
     mntmHelp.addActionListener(new ActionListener()
     {
       public void actionPerformed(ActionEvent evt)
       {
-        // Create the civ that displays the help text
-        AdvHelpCiv helpCiv = AdvHelpCiv.getInstance();
-        helpCiv.showHelp("INSTRUCTIONS");
-        // HelpDialog helpDlg = HelpDialog.getInstance();
-        // helpDlg.showHelp("Mainframe");
+        Mainframe.getInstance().showHelp();
       }
     });
     mnHelp.add(mntmHelp);
-  
+
     // Setup About Item action
     JMenuItem mntmAbout = new JMenuItem("About...");
     mntmAbout.addActionListener(new ActionListener()
@@ -133,12 +128,13 @@ public class Menubar extends JMenuBar
   }
 
 
-  private void populateHeroMenu()
-  {
-    // Populate the Hero menu
-    JMenu mnHeroes = new JMenu("Heroes");
-    this.add(mnHeroes);
-    mnHeroes.add(createMenuItemWithNoAction("Summon Hero"));
-    mnHeroes.add(createMenuItemWithNoAction("Save Hero"));
-  }
-}
+//  private void populateHeroMenu()
+//  {
+//    // Populate the Hero menu
+//    JMenu mnHeroes = new JMenu("Heroes");
+//    this.add(mnHeroes);
+//    mnHeroes.add(createMenuItemWithNoAction("Summon Hero"));
+//    mnHeroes.add(createMenuItemWithNoAction("Save Hero"));
+//  }
+
+}   // end of Menubar class

@@ -60,8 +60,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
   /** Singleton Help Dialog for all help text */
   private HelpDialog _helpdlg;
-//  /** Reference to GUI Help text */
-//  private final String HELP_KEY = "INSTRUCTIONS";
 
   /** Number of pixels on empty border spacing */
   public static final int PAD = 10;
@@ -91,53 +89,27 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private IOPanel _iop;
   private List<String> _partyHeros = new ArrayList<String>();
   private List<String> _summonableHeroes;
-  
+
+  /** Help Title for the mainframe */
+  static final String _helpTitle = "GREETINGS ADVENTURER!";
   /** Help Text for the mainframe */
-  static final String _helpText = "Create a new Hero and summon an existing one from the Dormitory.\n "
-      + "Select and Adventure to explore and visit Buildings to prepare before questing.\n"
-      + "Gain experience points (XP) to get more power and fame. \n"
-      + "Kill monsters, solve puzzles, and find treasure to gain more XP.\n";
+  static final String _helpText =
+      "Greetings Adventurer! \n"
+          + "To get started, create a new Hero and select an Adventure to explore. "
+          + "Kill monsters, solve puzzles, and find treasure in the Adventure's Arena to gain "
+          + "experience points. The more points you have, the more power and fame you get. "
+          + "When you get enough experience, join one of the many Guilds in town. |"
+          + "Guilds are important to your Adventuring career.\n\n"
+          + "Before entering the Arena, have your Hero visit Buildings to prepare for questing. "
+          + "You can get important info from patrons at the Inn, buy supplies from the General "
+          + "Store, or get a loan from the Bank. "
+          + "Don't get in trouble with the townspeople. We also have a jail.\n\n"
+          + "Hit F1 key for context help at any time.\n";
 
   // ============================================================
   // Constructors and constructor helpers
   // ============================================================
 
-  /**
-   * Creates the initial frame layout: left and right panel holders with buttons, and image panel
-   * showing chronos logo on right.
-   */
-  private Mainframe()
-  {
-    createFrameLayout();
-    add(new InitialLayout());
-
-    // Create the Civ
-    _mfCiv = new MainframeCiv(this);
-    
-    // Create the one time help dialog
-    prepareHelpDialog();
-  }
-
-  
-  private void prepareHelpDialog()
-  {
-    _helpdlg = HelpDialog.getInstance(this);
-    // for testing
-    _contentPane.addKeyListener(new KeyListener() {
-      public void keyReleased(KeyEvent e)
-      {
-        if (e.getKeyCode() == KeyEvent.VK_F1) {
-          _helpdlg.setVisible(true);
-          showHelpText();
-        }
-      }
-      // Empty methods required to be overridden
-      public void keyPressed(KeyEvent e) {}
-      public void keyTyped(KeyEvent e) {}
-    });
-  }
-
-  
   /**
    * Create Mainframe as singleton so other mainframes are not created concurrently.
    * 
@@ -152,19 +124,22 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   }
 
 
-  // ============================================================
-  // Public Methods
-  // ============================================================
-
   /**
-   * Creates the standard layout for displaying town an building images and descriptions
+   * Creates the initial frame layout: left and right panel holders with buttons, and image panel
+   * showing chronos logo on right.
    */
-  public void createStandardLayout()
+  private Mainframe()
   {
-    _leftHolder.removeAll();
-    add(new StandardLayout());
-    setVisible(true);
+    createFrameLayout();
+    add(new InitialLayout());
+
+    // Create the Civ
+    _mfCiv = new MainframeCiv(this);
+
+    // Create the one time help dialog
+    prepareHelpDialog();
   }
+
 
   // ============================================================
   // Private Methods
@@ -191,6 +166,55 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     setVisible(true);
   }
 
+
+  private void prepareHelpDialog()
+  {
+    _helpdlg = HelpDialog.getInstance(this);
+    // for testing
+    _contentPane.addKeyListener(new KeyListener() {
+      public void keyReleased(KeyEvent e)
+      {
+        if (e.getKeyCode() == KeyEvent.VK_F1) {
+          // _helpdlg.setVisible(true);
+          // _helpdlg.showHelp(_helpTitle, _helpText);
+          showHelp();
+        }
+      }
+
+      // Empty methods required to be overridden
+      public void keyPressed(KeyEvent e)
+      {}
+
+      public void keyTyped(KeyEvent e)
+      {}
+    });
+  }
+
+
+  // ============================================================
+  // Public Methods
+  // ============================================================
+
+
+  /**
+   * Display the help text for this mainframe
+   */
+  public void showHelp()
+  {
+    _helpdlg.setVisible(true);
+    _helpdlg.showHelp(_helpTitle, _helpText);
+  }
+
+
+  /**
+   * Creates the standard layout for displaying town an building images and descriptions
+   */
+  public void createStandardLayout()
+  {
+    _leftHolder.removeAll();
+    add(new StandardLayout());
+    setVisible(true);
+  }
 
   /** Define the mainframe layout characteristics */
   private void setupSizeAndBoundaries()
@@ -541,17 +565,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     rect.drawBuildingBox(g);
   }
 
-//  public String getHelpID()
-//  {
-//    return HELP_KEY;
-//  }
 
-  public void showHelpText()
-  {
-    _helpdlg.showHelp(_helpText);
-  }
-  
-  
   public void redraw()
   {
     validate();
