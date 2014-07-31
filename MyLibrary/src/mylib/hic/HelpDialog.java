@@ -54,14 +54,12 @@ import javax.swing.ScrollPaneConstants;
  *          July 9 2009 // refactored to make more application-independent <br>
  *          Aug 18 2009 // minor revisions to accommodate other class changes <br>
  *          Nov 23 2013 // converted from XML input files to Registry database <br>
+ *          Jul 30 2014 // replaced registry with IHelpText interface <br>
  */
 public class HelpDialog extends JDialog
 {
   /** Internal reference of this singleton for clients' use. Must be static for constructor. */
   static private HelpDialog _helpDlg = null;
-
-  /** Reference to the PDC liaison */
-  // private HelpCiv _helpCiv = null;
 
   /** Position this window this number of pixels down from the top of the frame */
   private final int DOWN_FROM_TOP = 110;
@@ -89,7 +87,6 @@ public class HelpDialog extends JDialog
    * @param owner the main menu frame that supports this dialog.
    * @param helpciv the civ that supports the help function that displays to ths dialog
    */
-  // public static HelpDialog createInstance(JFrame owner, String appHelpRegPath)
   public static HelpDialog getInstance(JFrame owner)
   {
     if (_helpDlg == null) {
@@ -108,8 +105,6 @@ public class HelpDialog extends JDialog
   {
     // Call the base class with no title
     super(owner, null, true);
-    // Create the civ to connect to the HelpRegistry
-    // _helpCiv = helpciv;
 
     Container contentPane = getContentPane();
     // Set main frame size and properties. All components go onto this frame.
@@ -189,33 +184,25 @@ public class HelpDialog extends JDialog
    * @param helpText text that is inserted into HelpDialog for display
    * @param title widget or panel for which the helpText applies
    */
-  public void showHelp(String helpText)
-  // public void showHelp(String helpText, String title)
+  public void showHelp(String title, String helpText)
   {
-     // Don't show help text if window is not open
-     if (isVisible() == false) {
-     return;
-     }
-    // Get the help from the registry
-    // String title = helpID;
-    // Retrieve the title and text from the help entry
-    // String helptext = _helpCiv.getHelpText(helpID);
-    // Clear out any existing messages before adding in the new help text
-    clear();
-    _helpArea.setRows(1);
+    // Don't show help text if window is not open
+    if (isVisible() == false) {
+      return;
+    }
     if (helpText == null) {
       append("Called for Help...\n");
       append("...but help text not found!");
     }
+    clear();
+    _helpArea.setRows(1);
     // Visually show end of text since help can scroll
     insert("\n");
     insert(helpText);
     append(EOT);
     // Show the window title for which this help applies
-//    setTitle(title);
+    setTitle(title);
     setVisible(true);
-    // // Get the focus so the arrow keys will work
-     requestFocusInWindow();
   }
 
 
