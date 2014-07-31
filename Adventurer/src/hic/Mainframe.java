@@ -18,6 +18,8 @@ import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -31,6 +33,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import mylib.hic.HelpDialog;
 import mylib.hic.ShuttleList;
 import net.miginfocom.swing.MigLayout;
 import chronos.Chronos;
@@ -45,7 +48,8 @@ import civ.MainframeCiv;
  * display panel (initially showing the Town image with clickable buildings).
  * 
  * @author Al Cline
- * @version 2.0 // rebuilt to comply with architectural model (lost history)
+ * @version Jul 21, 2014 // rebuilt to comply with architectural model (lost history) <br>
+ *          Jul 28, 2014 // added HelpKeyListener for Help functionality
  */
 // Mainframe serialization unnecessary
 @SuppressWarnings("serial")
@@ -54,12 +58,13 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   /** Reference to this singleton */
   static private Mainframe _mainframe = null;
 
-  /** Reference to GUI Help text */
-  static private final String HELP_KEY = "INSTRUCTIONS";
+  /** Singleton Help Dialog for all help text */
+  private HelpDialog _helpdlg;
+//  /** Reference to GUI Help text */
+//  private final String HELP_KEY = "INSTRUCTIONS";
 
   /** Number of pixels on empty border spacing */
   public static final int PAD = 10;
-  // private static final String HEROLIST_TEXT = "Heroes going on your quest: \n";
 
   /** Icons for the left-side buttons */
   private static final String REGISTRAR_IMAGE = "icn_Register.jpg";
@@ -82,14 +87,57 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   /** Empty right-side panel holder for initial standard panels. */
   private JPanel _rightHolder;
 
-  // private JTextPane _heroList;
-  // private JPanel _buttonPanel;
-  // private JPanel _leftPanel;
   private MainframeCiv _mfCiv;
   private IOPanel _iop;
   private List<String> _partyHeros = new ArrayList<String>();
   private List<String> _summonableHeroes;
+  
+  /** Help Text for the mainframe */
+  static final String _helpText = "Create a new Hero and summon an existing one from the Dormitory.\n "
+      + "Select and Adventure to explore and visit Buildings to prepare before questing.\n"
+      + "Gain experience points (XP) to get more power and fame. \n"
+      + "Kill monsters, solve puzzles, and find treasure to gain more XP.\n";
 
+  // ============================================================
+  // Constructors and constructor helpers
+  // ============================================================
+
+  /**
+   * Creates the initial frame layout: left and right panel holders with buttons, and image panel
+   * showing chronos logo on right.
+   */
+  private Mainframe()
+  {
+    createFrameLayout();
+    add(new InitialLayout());
+
+    // Create the Civ
+    _mfCiv = new MainframeCiv(this);
+    
+    // Create the one time help dialog
+    prepareHelpDialog();
+  }
+
+  
+  private void prepareHelpDialog()
+  {
+    _helpdlg = HelpDialog.getInstance(this);
+    // for testing
+    _contentPane.addKeyListener(new KeyListener() {
+      public void keyReleased(KeyEvent e)
+      {
+        if (e.getKeyCode() == KeyEvent.VK_F1) {
+          _helpdlg.setVisible(true);
+          showHelpText();
+        }
+      }
+      // Empty methods required to be overridden
+      public void keyPressed(KeyEvent e) {}
+      public void keyTyped(KeyEvent e) {}
+    });
+  }
+
+  
   /**
    * Create Mainframe as singleton so other mainframes are not created concurrently.
    * 
@@ -103,19 +151,24 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     return _mainframe;
   }
 
-  /**
-   * Creates the initial frame layout: left and right panel holders with buttons, and image panel
-   * showing chronos logo on right.
-   */
-  private Mainframe()
-  {
-    createFrameLayout();
-    add(new InitialLayout());
 
-    // Create the Civ
-    _mfCiv = new MainframeCiv(this);
+  // ============================================================
+  // Public Methods
+  // ============================================================
+
+  /**
+   * Creates the standard layout for displaying town an building images and descriptions
+   */
+  public void createStandardLayout()
+  {
+    _leftHolder.removeAll();
+    add(new StandardLayout());
+    setVisible(true);
   }
 
+  // ============================================================
+  // Private Methods
+  // ============================================================
 
   /**
    * Creates mainframe layout, menu, and adds left and right panel holders
@@ -134,16 +187,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     _rightHolder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
     _contentPane.add(_leftHolder, "cell 0 0, wmax 50%, grow");
     _contentPane.add(_rightHolder, "cell 1 0, wmax 50%, hmax 90%, grow");
-    setVisible(true);
-  }
-
-  /**
-   * Creates the standard layout for displaying town an building images and descriptions
-   */
-  public void createStandardLayout()
-  {
-    _leftHolder.removeAll();
-    add(new StandardLayout());
+    _contentPane.setFocusable(true);
     setVisible(true);
   }
 
@@ -458,11 +502,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   // }
 
 
-
-  /************************************************************************************
-   * PUBLIC METHODS
-   ************************************************************************************/
-
   // public void changeToLeftPanel(JPanel panel)
   // {
   // _leftHolder.remove(_leftPanel);
@@ -502,11 +541,17 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     rect.drawBuildingBox(g);
   }
 
-  public String getHelpID()
-  {
-    return HELP_KEY;
-  }
+//  public String getHelpID()
+//  {
+//    return HELP_KEY;
+//  }
 
+  public void showHelpText()
+  {
+    _helpdlg.showHelp(_helpText);
+  }
+  
+  
   public void redraw()
   {
     validate();
@@ -525,6 +570,38 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     _partyHeros = list;
     // setHeroPartyText();
   }
+
+
+  // /**
+  // * Checks for Help Key to display Help text
+  // *
+  // * @param e any key released
+  // */
+  // public void keyReleased(KeyEvent e)
+  // {
+  // System.out.println("keyReleased(): Extended key code received = " + e.getExtendedKeyCode());
+  // if (e.getKeyCode() == KeyEvent.VK_F1) {
+  // System.out.println("F1 Help key pressed");
+  // }
+  // }
+  //
+  // /** Required implementation for KeyListener, does nothing */
+  // public void keyPressed(KeyEvent e)
+  // {
+  // System.out.println("keyPressed(): Extended key code received = " + e.getExtendedKeyCode());
+  // if (e.getKeyCode() == KeyEvent.VK_F1) {
+  // System.out.println("F1 Help key pressed");
+  // }
+  // }
+  //
+  // /** Required implementation for KeyListener, does nothing */
+  // public void keyTyped(KeyEvent e)
+  // {
+  // System.out.println("keyTyped(): Extended key code received = " + e.getExtendedKeyCode());
+  // if (e.getKeyCode() == KeyEvent.VK_F1) {
+  // System.out.println("F1 Help key pressed");
+  // }
+  // }
 
   public void mouseClicked(MouseEvent e)
   {
@@ -614,22 +691,22 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
   } // end of StandardLayout inner class
 
-  
-// ============================================================
-// Inner Mock for Testing
-// ============================================================
-public class MockMF
-{
-  public MockMF() { }
-  
-  public boolean hasCiv()
+
+  // ============================================================
+  // Inner Mock for Testing
+  // ============================================================
+  public class MockMF
   {
-    return (_mfCiv != null) ? true : false; 
-  }
-  
-} // end of MockMF inner class
-  
-  
-  
+    public MockMF()
+    {}
+
+    public boolean hasCiv()
+    {
+      return (_mfCiv != null) ? true : false;
+    }
+
+  } // end of MockMF inner class
+
+
 
 } // end of Mainframe outer class

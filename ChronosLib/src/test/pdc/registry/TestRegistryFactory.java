@@ -86,13 +86,13 @@ public class TestRegistryFactory
     MsgCtrl.msgln(this, ": testCloseRegistry()");
 
     // SETUP: ensure that registry already exists and is open
-    _rf.getRegistry(RegKey.HELP);
+    _rf.getRegistry(RegKey.ITEM);
     int regnum = _rf.getNumberOfRegistries();
-    File regfile = new File(Chronos.AdvHelpRegPath);
+    File regfile = new File(Chronos.ItemRegPath);
     assertTrue(regfile.exists());
 
     // DO
-    _rf.closeRegistry(RegKey.HELP);
+    _rf.closeRegistry(RegKey.ITEM);
 
     // VERIFY
     assertEquals(_rf.getNumberOfRegistries(), regnum - 1);
@@ -117,13 +117,13 @@ public class TestRegistryFactory
     MsgCtrl.msgln(this, ": testCloseRegistry()_Empty");
 
     // SETUP: ensure that registry is exists and is closed
-    _rf.getRegistry(RegKey.HELP);
+    _rf.getRegistry(RegKey.ITEM);
     int regnum = _rf.getNumberOfRegistries();
-    _rf.closeRegistry(RegKey.HELP);
+    _rf.closeRegistry(RegKey.ITEM);
     assertEquals(_rf.getNumberOfRegistries(), regnum - 1);
 
     // DO: try closing it again
-    _rf.closeRegistry(RegKey.HELP);
+    _rf.closeRegistry(RegKey.ITEM);
 
     // VERIFY: size does not decrease; no runtime error; nothing else happens
     assertEquals(_rf.getNumberOfRegistries(), regnum - 1);
@@ -148,19 +148,19 @@ public class TestRegistryFactory
 
     // SETUP: ensure that registry doesn't already exist
     int regnum = _rf.getNumberOfRegistries();
-    File regfile = new File(Chronos.AdvHelpRegPath);
+    File regfile = new File(Chronos.ItemRegPath);
     regfile.delete();
     assertFalse(regfile.exists());
 
     // DO
-    _rf.createRegistry(RegKey.HELP);
+    _rf.createRegistry(RegKey.ITEM);
 
     // VERIFY
     assertEquals(_rf.getNumberOfRegistries(), regnum + 1);
     assertTrue(regfile.exists());
 
     // TEARDOWN
-    _rf.closeRegistry(RegKey.HELP);
+    _rf.closeRegistry(RegKey.ITEM);
 
   }
 
@@ -179,8 +179,8 @@ public class TestRegistryFactory
     removeAllRegistries(false);
 
     // DO: create two registries
-    _rf.getRegistry(RegKey.HELP);
     _rf.getRegistry(RegKey.ITEM);
+    _rf.getRegistry(RegKey.SKILL);
     // VERIFY: Ensure that only two registries exist
     assertEquals(_rf.getNumberOfRegistries(), 2);
 
@@ -190,8 +190,8 @@ public class TestRegistryFactory
     assertEquals(_rf.getNumberOfRegistries(), 3);
 
     // DO: remove two registries
+    _rf.closeRegistry(RegKey.SKILL);
     _rf.closeRegistry(RegKey.ITEM);
-    _rf.closeRegistry(RegKey.HELP);
 
     // VERIFY: Ensure that only one registry exists
     assertEquals(_rf.getNumberOfRegistries(), 1);

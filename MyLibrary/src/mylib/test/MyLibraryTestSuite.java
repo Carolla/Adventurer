@@ -1,11 +1,9 @@
 /**
- * MyLibraryTestSuite.java
- * Copyright (c) 2009, Carolla Development, Inc. All Rights Reserved
- *
- * Permission to make digital or hard copies of all or parts of this work for
- * commercial use is prohibited. To republish, to post on servers, to reuse,
- * or to redistribute to lists, requires prior specific permission and/or a
- * fee. Request permission to use from Carolla Development, Inc. 
+ * MyLibraryTestSuite.java Copyright (c) 2009, Carolla Development, Inc. All Rights Reserved
+ * 
+ * Permission to make digital or hard copies of all or parts of this work for commercial use is
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
+ * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
  * by email: acline@carolla.com
  */
 
@@ -20,65 +18,68 @@ import mylib.test.pdc.TestUtilities;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-/** @author Alan Cline
-* @version <DL>
-* <DT> Build 1.0		Jun 4  2009   // original <DD>
-* <DT> Build 1.1     Jan 18 2010   // add Occupation and Skill class testing <DD>
-* <DT> Build 1.2     Jul 11 2010   // updated for tests with CIV support <DD>
-* </DL>
-*/
+/**
+ * @author Alan Cline
+ * @version Jun 4 2009 // original <br>
+ * Jan 18 2010 // add Occupation and Skill class testing  <br>
+ * Jul 11 2010 // updated for tests with CIV support  <br>
+ * Jul 26 2014 // {@code UC00a. Initialization} classes added: {@code Registry}
+
+ */
 @RunWith(Suite.class)
-@Suite.SuiteClasses( 
+@Suite.SuiteClasses(
 {
     // PDC Test files
-     TestMetaDie.class,
-     TestRegistry.class,
-     TestUtilities.class,
-     
-     // CIV Test files
-     TestDataShuttle.class,
-     
-     // DMC Test files
-     TestDbReadWriter.class,
-//     TestHelpReader.class
-     
+    TestMetaDie.class,
+    TestRegistry.class,
+    TestUtilities.class,
+
+    // CIV Test files
+//    TestDataShuttle.class,
+
+    // DMC Test files
+    TestDbReadWriter.class,
+// TestHelpReader.class
+
 })
 /** Compilation of all unit tests for regression and integration testing. */
-public class MyLibraryTestSuite { } 
+public class MyLibraryTestSuite
+{
+}
 
-//          end of MyLibraryTestSuite class
+// end of MyLibraryTestSuite class
 
 
-//public class MyLibraryTestSuite{ 
-//{
-//    /** Compilation of all unit tests for regression and integration testing.  */
-//    public MyLibraryTestSuite() {}
+// public class MyLibraryTestSuite{
+// {
+// /** Compilation of all unit tests for regression and integration testing. */
+// public MyLibraryTestSuite() {}
 //
-//    public static Test suite()
-//    {
-//        String caption = "Test Suite for MyLibrary";
-//        TestSuite suite = new TestSuite(caption);
+// public static Test suite()
+// {
+// String caption = "Test Suite for MyLibrary";
+// TestSuite suite = new TestSuite(caption);
 //
-//        //$JUnit-BEGIN$		
+// //$JUnit-BEGIN$
 //
-//        // PDC test files: 
-////              suite.addTestSuite(TestHelpEngine.class);       // not yet written
-//              suite.addTestSuite(TestMetaDie.class);
-//        //      suite.addTestSuite(TestObservableModel.class);  // not yet written
-//              suite.addTestSuite(TestRegistry.class);
-//              suite.addTestSuite(TestUtilities.class);
+// // PDC test files:
+// // suite.addTestSuite(TestHelpEngine.class); // not yet written
+// suite.addTestSuite(TestMetaDie.class);
+// // suite.addTestSuite(TestObservableModel.class); // not yet written
+// suite.addTestSuite(TestRegistry.class);
+// suite.addTestSuite(TestUtilities.class);
 //
-//        // CIV test files
-////              suite.addTestSuite(TestBaseCiv.class);              // not yet written     
-//              suite.addTestSuite(TestDataShuttle.class);
+// // CIV test files
+// // suite.addTestSuite(TestBaseCiv.class); // not yet written
+// suite.addTestSuite(TestDataShuttle.class);
 //
-//        // DMC test files
-//              suite.addTestSuite(TestDbReadWriter.class);
-//        //      suite.addTestSuite(TestHelpContentHandler.class);   // not yet written
-//              // TODO doesn't pass yet
-//        //      suite.addTestSuite(TestHelpReader.class);                 
-//              
-//        //$JUnit-END$
-//        return suite;
-//    }
+// // DMC test files
+// suite.addTestSuite(TestDbReadWriter.class);
+// // suite.addTestSuite(TestHelpContentHandler.class); // not yet written
+// // TODO doesn't pass yet
+// // suite.addTestSuite(TestHelpReader.class);
+//
+// //$JUnit-END$
+// return suite;
+// }
 

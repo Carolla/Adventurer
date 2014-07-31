@@ -9,13 +9,10 @@
 
 package test;
 
-import mylib.test.MyLibraryTestSuite;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import test.pdc.buildings.BuildingsSuite;
-import test.pdc.registry.RegistrySuite;
+import test.pdc.registry.TestRegistryFactory;
 
 /**
  * Regression test suite for all the <code>JUnit</code> test cases for the source code packages of
@@ -67,21 +64,25 @@ import test.pdc.registry.RegistrySuite;
  *          Jan 14 2013 // updated for db4o database changes <br>
  *          Jan 26 2013 // ensure all integration testing works for complete suite <br>
  *          Apr 14, 2013 // converted all tests to JUnit 4 <br>
- *          July 23, 2014 // refactored file with new unit and integration tests
+ *          July 23, 2014 // refactored file with new unit and integration tests <br>
+ *          July 26, 2014 // {@code UC00a. Initialization} classes added: {@code RegistryFactory}
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
 {
-    // MyLibrary test suit
-    MyLibraryTestSuite.class,
-
+/**
+ *     // MyLibrary test suit
+    // MyLibraryTestSuite.class,
+*/
+  
     // Chronos PDC Building test suit
-    BuildingsSuite.class,
+    // BuildingsSuite.class,
 
     // Chronos PDC Registry test suit
-    RegistrySuite.class,
+    // RegistrySuite.class,
 
-// PDC test files:
+    // PDC test files:
+    TestRegistryFactory.class
 // TestAge.class,
 // TestArena.class,
 // TestAttributeList.class,

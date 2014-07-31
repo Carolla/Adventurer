@@ -74,14 +74,14 @@ public class AdvHelpCiv
      */
     public void showHelp(String helpID)
     {
-        HelpTextObject helpObj = (HelpTextObject) _helpReg.getUnique(helpID);
-        if (helpObj == null) {
-            _helpDialog.showHelp(NON_MSG,  MSG_NOTFOUND);
-        }
-        else {
-            String helptext = helpObj.extractText();
-            _helpDialog.showHelp(helptext, helpID);
-        }
+//        HelpTextObject helpObj = (HelpTextObject) _helpReg.getUnique(helpID);
+//        if (helpObj == null) {
+//            _helpDialog.showHelp(NON_MSG,  MSG_NOTFOUND);
+//        }
+//        else {
+//            String helptext = helpObj.extractText();
+//            _helpDialog.showHelp(helptext, helpID);
+//        }
     }
    
     

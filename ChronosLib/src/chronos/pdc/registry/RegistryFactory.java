@@ -34,7 +34,7 @@ public class RegistryFactory
   // ============================================================
   public enum RegKey {
     ADV("Adventure"), BLDG("Building"), ITEM("Item"), NPC("NPC"), OCP("Occupation"),
-    SKILL("Skill"), TOWN("Town"), HELP("AdvHelp");
+    SKILL("Skill"), TOWN("Town");   // HELP("AdvHelp");
 
     private RegKey(String nm)
     {

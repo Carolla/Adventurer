@@ -18,7 +18,6 @@ import hic.Mainframe.MockMF;
 import java.io.File;
 
 import mylib.MsgCtrl;
-import mylib.pdc.Registry;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -42,13 +41,13 @@ public class TA00a_Initialize
 {
   static private RegistryFactory _rf = null;
   /**
-   * Keys used by RegistryFactory public enum RegKey { ADV("Adventure"), BLDG("Building"),
-   * ITEM("Item"), NPC("NPC"), OCP("Occupation"), SKILL("Skill"), TOWN("Town"); // HELP("AdvHelp");
+   * INFO ONLY: Keys used by RegistryFactory public enum RegKey { ADV("Adventure"),
+   * BLDG("Building"), ITEM("Item"), NPC("NPC"), OCP("Occupation"), SKILL("Skill"), TOWN("Town");
    */
 
   private final String[] paths = {Chronos.AdventureRegPath, Chronos.BuildingRegPath,
       Chronos.ItemRegPath, Chronos.NPCRegPath, Chronos.OcpRegPath, Chronos.SkillRegPath,
-      Chronos.TownRegPath, Chronos.AdvHelpRegPath};
+      Chronos.TownRegPath};
 
 
   // ============================================================
@@ -61,9 +60,6 @@ public class TA00a_Initialize
   @BeforeClass
   public static void setUpBeforeClass() throws Exception
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.msg("Integration test: Adventurer.TA00a_Initialize");
-
     assertTrue(Chronos.CHRONOS_ROOT != null);
     assertTrue(Chronos.ADV_RESOURCES_PATH != null);
     assertTrue(Chronos.RESOURCES_PATH != null);
@@ -76,10 +72,10 @@ public class TA00a_Initialize
   @AfterClass
   public static void tearDownAfterClass() throws Exception
   {
-//    for (RegKey key : RegKey.values()) {
-//      Registry reg = RegistryFactory.getInstance().getRegistry(key);
-//      reg.closeRegistry();
-    }
+    // for (RegKey key : RegKey.values()) {
+    // Registry reg = RegistryFactory.getInstance().getRegistry(key);
+    // reg.closeRegistry();
+  }
 
   /**
    * @throws java.lang.Exception
@@ -89,7 +85,7 @@ public class TA00a_Initialize
   {
     _rf = RegistryFactory.getInstance();
   }
-  
+
 
   /**
    * @throws java.lang.Exception
@@ -111,9 +107,9 @@ public class TA00a_Initialize
   @Test
   public void testMain()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
-    MsgCtrl.msgln(this, ": testMain()");
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.msgln("Integration test: Adventurer.TA00a_Initialize");
 
     // SETUP: Ensure that there are as many regfiles as they are reg keys
     int keynum = RegKey.values().length;
@@ -139,6 +135,12 @@ public class TA00a_Initialize
     Mainframe mf = Mainframe.getInstance();
     MockMF mmf = mf.new MockMF();
     assertTrue(mmf.hasCiv());
+
+    // TEARDOWN: close all registries
+    for (RegKey key : RegKey.values()) {
+      _rf.closeRegistry(key);
+    }
+
   }
 
 
