@@ -17,7 +17,6 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -26,8 +25,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
-
-import mylib.MsgCtrl;
 
 
 /**
@@ -128,7 +125,7 @@ public class HelpDialog extends JDialog
     _helpArea.setLineWrap(true); // wrap text within window, and...
     _helpArea.setWrapStyleWord(true); // ...wrap on word boundaries
     _helpArea.setMargin(new Insets(5, 5, 5, 5)); // set margin space around text
-
+    
     // Create a vertical-only scrolling text area to collect the dungeon description
     final JScrollPane helpSP = new JScrollPane(_helpArea);
     helpSP.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -161,6 +158,18 @@ public class HelpDialog extends JDialog
   } // end of HelpDialog constructor
 
   
+  /** Set the font to the client's request. Do not confuse this with {@code Component.setFont()}
+   * which will cause a Font reset. 
+   * @param f client font to use for the next message
+   */
+  public void setMyFont(Font f)
+  {
+    System.out.println("HelpDialog.setFont: font intended to be set = " + f);
+    _helpArea.setFont(f);
+    System.out.println("HelpDialog.setFont: font after setFont() = " + _helpArea.getFont());
+
+  }
+
   /**
    * Return the globally-available static Help Dialog reference
    * 
@@ -177,17 +186,14 @@ public class HelpDialog extends JDialog
   // ==========================================================================================
 
   /**
-   * Retrieves and displays help text from the Help file for the given key associated with the
-   * widget for which the Help was requested, either by the F1 key or the Help MenuItem. The
-   * {@code HelpDialog} window is non-modal and the text within is replaced with the appropriate
-   * text for the widget under focus. <br>
+   * Displays help text associated with the widget for which the Help was requested, either by the
+   * F1 key or the Help MenuItem. The {@code HelpDialog} window is non-modal and the text within is
+   * replaced with the appropriate text for the widget under focus. <br>
    * If there is no associated widget, the help window is displayed for the owner (frame or panel),
    * and should contain general information.
    * 
-   * @param helpID the key associated with the widget or panel that called the Help, and indicates
-   *        which msg to display from the Help file
+   * @param title text that goes on top of the dialog frame
    * @param helpText text that is inserted into HelpDialog for display
-   * @param title widget or panel for which the helpText applies
    */
   public void showHelp(String title, String helpText)
   {
@@ -199,7 +205,9 @@ public class HelpDialog extends JDialog
       append("Called for Help...\n");
       append("...but help text not found!");
     }
+    System.out.println("HelpDialog.showHelp: font before clear() = " + _helpArea.getFont());
     clear();
+    System.out.println("HelpDialog.showHelp:  font after clear() = " + _helpArea.getFont());
     _helpArea.setRows(1);
     // Visually show end of text since help can scroll
     insert("\n");

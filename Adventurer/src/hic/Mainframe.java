@@ -23,6 +23,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +34,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import mylib.MsgCtrl;
 import mylib.hic.HelpDialog;
 import mylib.hic.ShuttleList;
 import net.miginfocom.swing.MigLayout;
@@ -65,7 +67,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   public static final int PAD = 10;
 
   /** Icons for the left-side buttons */
-//  private static final String REGISTRAR_IMAGE = "icn_Register.jpg";
+  // private static final String REGISTRAR_IMAGE = "icn_Register.jpg";
   private static final String REGISTRAR_IMAGE = "raw_Register.jpg";
   private static final String HALL_IMAGE = "icn_HallOfHeroes.jpg";
   private static final String ADV_IMAGE = "icn_Town.jpg";
@@ -173,10 +175,25 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   }
 
 
+  private Font makeRunicFont()
+  {
+    float FONT_HT = 14f;
+    Font font = null;
+    try {
+      Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(
+          Chronos.RUNIC_ENGLISH2_FONT_FILE));
+      font = newFont.deriveFont(FONT_HT);
+    } catch (Exception e) {
+      MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
+    }
+    return font;
+  }
+
+
   private void prepareHelpDialog()
   {
     _helpdlg = HelpDialog.getInstance(this);
-    // for testing
+    _helpdlg.setMyFont(makeRunicFont());
     _contentPane.addKeyListener(new KeyListener() {
       public void keyReleased(KeyEvent e)
       {
@@ -206,6 +223,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   public void showHelp()
   {
     _helpdlg.setVisible(true);
+    System.out.println("Mainframe.showHelp: font just before calling _helpdlg.showHelp() = " + getFont());
     _helpdlg.showHelp(_helpTitle, _helpText);
   }
 
@@ -306,7 +324,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     return button;
   }
 
-  
+
   private JButton createHeroCreationButton()
   {
     JButton button = createButtonWithTextAndIcon(REGISTRAR_IMAGE, "Create New Heroes");
@@ -443,8 +461,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   // _leftHolder.add(_buttonPanel);
   // }
 
-
-  
 
 
   // private JTextPane createHeroListTextArea()
