@@ -193,7 +193,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private void prepareHelpDialog()
   {
     _helpdlg = HelpDialog.getInstance(this);
-    _helpdlg.setMyFont(makeRunicFont());
+    // _helpdlg.setMyFont(makeRunicFont());
+    _helpdlg.setMyFont(new Font("Tahoma", Font.PLAIN, 14));
     _contentPane.addKeyListener(new KeyListener() {
       public void keyReleased(KeyEvent e)
       {
@@ -223,7 +224,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   public void showHelp()
   {
     _helpdlg.setVisible(true);
-    System.out.println("Mainframe.showHelp: font just before calling _helpdlg.showHelp() = " + getFont());
     _helpdlg.showHelp(_helpTitle, _helpText);
   }
 
@@ -292,10 +292,10 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     buttonPanel.setPreferredSize(new Dimension(
         (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
 
-    /** Buttons are at 25% to allow space for Command Line later */
+    /** Buttons are at 25% vertical to allow space for Command Line later */
     buttonPanel.add(adventureButton, "hmax 25%, grow");
-    buttonPanel.add(summonButton, "hmax 25%, grow");
     buttonPanel.add(creationButton, "hmax 25%, grow");
+    buttonPanel.add(summonButton, "hmax 25%, grow");
     return buttonPanel;
   }
 
@@ -306,7 +306,11 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
    */
   private JButton createAdventureButton()
   {
-    JButton button = createButtonWithTextAndIcon(ADV_IMAGE, "Choose your Adventure");
+    // Known bug in MigLayout: The font sizes are in floats, so that roundup error internal
+    // to MigLayout will cause the truncation feature. "Choose your Adventure" is too long,
+    // but "Select your Adventure" is ok, even though they have the same number of characters.
+    // JButton button = createButtonWithTextAndIcon(ADV_IMAGE, "Choose your Adventure ");
+    JButton button = createButtonWithTextAndIcon(ADV_IMAGE, "Select your Adventure ");
     button.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e)
       {
@@ -327,7 +331,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
   private JButton createHeroCreationButton()
   {
-    JButton button = createButtonWithTextAndIcon(REGISTRAR_IMAGE, "Create New Heroes");
+    JButton button = createButtonWithTextAndIcon(REGISTRAR_IMAGE, "       Create New Heroes");
     button.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0)
       {
@@ -404,9 +408,19 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private JButton createButtonWithTextAndIcon(String imageFilePath, String buttonText)
   {
     JButton button = new JButton(buttonText);
-    button.setFont(new Font("Tahoma", Font.PLAIN, 24));
-    button.setIcon(new ImageIcon(Chronos.ADV_IMAGE_PATH + imageFilePath));
-    button.setIconTextGap(40);
+    button.setFont(makeRunicFont());
+    ImageIcon icon = new ImageIcon(Chronos.ADV_IMAGE_PATH + imageFilePath);
+    button.setIcon(icon);
+    // Can we calculate the gap so that the icon is left-adjusted, and the text is right-adjusted?
+    // Dimension buttonDim = button.getMinimumSize();
+    // int buttonWidth = buttonDim.width;
+    // int iconWidth = icon.getIconWidth();
+    // int textWidth = buttonText.length();
+    // int gap = buttonWidth - (iconWidth + textWidth);
+    // Probably better to use SwingConstants to align the icon and text separately, if that will
+    // work
+    button.setIconTextGap(40); // space between icon and text
+
     return button;
   }
 
@@ -589,37 +603,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     // setHeroPartyText();
   }
 
-
-  // /**
-  // * Checks for Help Key to display Help text
-  // *
-  // * @param e any key released
-  // */
-  // public void keyReleased(KeyEvent e)
-  // {
-  // System.out.println("keyReleased(): Extended key code received = " + e.getExtendedKeyCode());
-  // if (e.getKeyCode() == KeyEvent.VK_F1) {
-  // System.out.println("F1 Help key pressed");
-  // }
-  // }
-  //
-  // /** Required implementation for KeyListener, does nothing */
-  // public void keyPressed(KeyEvent e)
-  // {
-  // System.out.println("keyPressed(): Extended key code received = " + e.getExtendedKeyCode());
-  // if (e.getKeyCode() == KeyEvent.VK_F1) {
-  // System.out.println("F1 Help key pressed");
-  // }
-  // }
-  //
-  // /** Required implementation for KeyListener, does nothing */
-  // public void keyTyped(KeyEvent e)
-  // {
-  // System.out.println("keyTyped(): Extended key code received = " + e.getExtendedKeyCode());
-  // if (e.getKeyCode() == KeyEvent.VK_F1) {
-  // System.out.println("F1 Help key pressed");
-  // }
-  // }
 
   public void mouseClicked(MouseEvent e)
   {

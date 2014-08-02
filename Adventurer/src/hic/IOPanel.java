@@ -146,10 +146,8 @@ public class IOPanel extends JPanel
     output.setWrapStyleWord(true);
     output.setFocusable(false);
     output.setFont(makeRunicFont());
-    output.setBackground(Color.LIGHT_GRAY); // just for fun, make the
-    // background non-white
-    output.setForeground(Color.BLACK); // text is colored with the
-    // setForeground statement
+    output.setBackground(Color.LIGHT_GRAY); // just for fun, make the background non-white
+    output.setForeground(Color.BLACK); // text is colored with the setForeground statement
 
     // TODO Is this necessary now?
     // Redirect the System stdout and stderr to the user output window
@@ -172,8 +170,8 @@ public class IOPanel extends JPanel
   {
     Font font = null;
     try {
-      Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(
-          Chronos.RUNIC_ENGLISH2_FONT_FILE));
+      Font newFont =
+          Font.createFont(Font.TRUETYPE_FONT, new File(Chronos.RUNIC_ENGLISH2_FONT_FILE));
       font = newFont.deriveFont(FONT_HT);
     } catch (Exception e) {
       MsgCtrl.errMsgln("Could not create font: " + e.getMessage());

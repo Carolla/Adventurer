@@ -10,6 +10,7 @@
 package mylib.hic;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -164,9 +165,7 @@ public class HelpDialog extends JDialog
    */
   public void setMyFont(Font f)
   {
-    System.out.println("HelpDialog.setFont: font intended to be set = " + f);
     _helpArea.setFont(f);
-    System.out.println("HelpDialog.setFont: font after setFont() = " + _helpArea.getFont());
 
   }
 
@@ -205,9 +204,7 @@ public class HelpDialog extends JDialog
       append("Called for Help...\n");
       append("...but help text not found!");
     }
-    System.out.println("HelpDialog.showHelp: font before clear() = " + _helpArea.getFont());
     clear();
-    System.out.println("HelpDialog.showHelp:  font after clear() = " + _helpArea.getFont());
     _helpArea.setRows(1);
     // Visually show end of text since help can scroll
     insert("\n");
