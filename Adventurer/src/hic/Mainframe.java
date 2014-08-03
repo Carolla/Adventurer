@@ -36,6 +36,7 @@ import javax.swing.border.EmptyBorder;
 
 import mylib.MsgCtrl;
 import mylib.hic.HelpDialog;
+import mylib.hic.IHelpText;
 import mylib.hic.ShuttleList;
 import net.miginfocom.swing.MigLayout;
 import chronos.Chronos;
@@ -51,7 +52,9 @@ import civ.MainframeCiv;
  * 
  * @author Al Cline
  * @version Jul 21, 2014 // rebuilt to comply with architectural model (lost history) <br>
- *          Jul 28, 2014 // added HelpKeyListener for Help functionality
+ *          Jul 28, 2014 // added HelpKeyListener for Help functionality Aug 3, 2014 // added
+ *          {@code getWindowSize} to replace public variables <br>
+ *          Aug 3, 2014 // added Runic font to the buttons <br>
  */
 // Mainframe serialization unnecessary
 @SuppressWarnings("serial")
@@ -62,6 +65,16 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
   /** Singleton Help Dialog for all help text */
   private HelpDialog _helpdlg;
+
+  /** Context switch between initial and standard layout pages */
+  public enum HELP_CONTEXT {
+    INITIAL, STANDARD;
+  }
+
+  /** Flag for which help page to call */
+  private HELP_CONTEXT _contextSwitch;
+  /** Current page being displayed */
+  private JPanel _currentPage;
 
   /** Number of pixels on empty border spacing */
   public static final int PAD = 10;
@@ -75,9 +88,9 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private static final String INITIAL_IMAGE = "ChronosLogo.jpg";
 
   /** Width of the platform user's window frame */
-  public static int USERWIN_WIDTH;
+  private static int USERWIN_WIDTH;
   /** Height of the platform user's window frame */
-  public static int USERWIN_HEIGHT;
+  private static int USERWIN_HEIGHT;
   /** Amount of space in pixels around the frame and image of aesthetics */
   public static final int FRAME_PADDING = 90;
 
@@ -92,27 +105,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private IOPanel _iop;
   private List<String> _partyHeros = new ArrayList<String>();
   private List<String> _summonableHeroes;
-
-  /** Help Title for the mainframe */
-  static final String _helpTitle = "GREETINGS ADVENTURER!";
-  /** Help Text for the mainframe */
-  static final String _helpText =
-      "Greetings Adventurer! \n"
-          + "To get started, click on the large button on the left to create a new Hero. "
-          + "Then select an Adventure to explore. "
-          + "Kill monsters, solve puzzles, and find treasure in the Adventure's Arena to gain "
-          + "experience points. The more points you have, the more power and fame you get. "
-          + "When you get enough experience, join one of the many Guilds in town. |"
-          + "Guilds are important to your Adventuring career.\n\n"
-          + "Before entering the Arena, have your Hero visit Buildings to prepare for questing. "
-          + "You can get important info from patrons at the Inn, buy supplies from the General "
-          + "Store, or get a loan from the Bank. "
-          + "Don't get in trouble with the townspeople. We also have a jail.\n\n"
-          + "If you leave your Hero in town when you exit the game, he or she will be waiting "
-          + "in the same building when you return. If you Save your Hero, he or she can be summoned "
-          + "from the Hall of Heroes next time.\n\n"
-          + "Hit F1 key for context help at any time.\n";
-
 
   // ============================================================
   // Constructors and constructor helpers
@@ -193,8 +185,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private void prepareHelpDialog()
   {
     _helpdlg = HelpDialog.getInstance(this);
-    // _helpdlg.setMyFont(makeRunicFont());
-    _helpdlg.setMyFont(new Font("Tahoma", Font.PLAIN, 14));
+    _helpdlg.setMyFont(makeRunicFont());
     _contentPane.addKeyListener(new KeyListener() {
       public void keyReleased(KeyEvent e)
       {
@@ -212,20 +203,33 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     });
   }
 
-
   // ============================================================
   // Public Methods
   // ============================================================
 
-
   /**
-   * Display the help text for this mainframe
+   * Get the size of the window being displayed, which is used as a standard for laying out
+   * subcomponents and panels.
+   * 
+   * @return {@code Dimension} object; retrieve int values with {@code Dimension.width} and
+   *         {@code Dimension.height}
    */
-  public void showHelp()
+  static public Dimension getWindowSize()
   {
-    _helpdlg.setVisible(true);
-    _helpdlg.showHelp(_helpTitle, _helpText);
+    return new Dimension(USERWIN_WIDTH, USERWIN_HEIGHT);
   }
+
+
+  // /**
+  // * Display the help text for this mainframe
+  // */
+  // public void showHelp()
+  // {
+  // _helpdlg.setVisible(true);
+  // System.out.println("Mainframe.showHelp: font just before calling _helpdlg.showHelp() = " +
+  // getFont());
+  // _helpdlg.showHelp(_helpTitle, _helpText);
+  // }
 
 
   /**
@@ -292,10 +296,10 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     buttonPanel.setPreferredSize(new Dimension(
         (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
 
-    /** Buttons are at 25% vertical to allow space for Command Line later */
+    /** Buttons are at 25% to allow space for Command Line later */
     buttonPanel.add(adventureButton, "hmax 25%, grow");
-    buttonPanel.add(creationButton, "hmax 25%, grow");
     buttonPanel.add(summonButton, "hmax 25%, grow");
+    buttonPanel.add(creationButton, "hmax 25%, grow");
     return buttonPanel;
   }
 
@@ -306,11 +310,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
    */
   private JButton createAdventureButton()
   {
-    // Known bug in MigLayout: The font sizes are in floats, so that roundup error internal
-    // to MigLayout will cause the truncation feature. "Choose your Adventure" is too long,
-    // but "Select your Adventure" is ok, even though they have the same number of characters.
-    // JButton button = createButtonWithTextAndIcon(ADV_IMAGE, "Choose your Adventure ");
-    JButton button = createButtonWithTextAndIcon(ADV_IMAGE, "Select your Adventure ");
+    JButton button = createButtonWithTextAndIcon(ADV_IMAGE, "Choose your Adventure");
     button.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e)
       {
@@ -331,7 +331,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
   private JButton createHeroCreationButton()
   {
-    JButton button = createButtonWithTextAndIcon(REGISTRAR_IMAGE, "       Create New Heroes");
+    JButton button = createButtonWithTextAndIcon(REGISTRAR_IMAGE, "Create New Heroes");
     button.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0)
       {
@@ -408,19 +408,9 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private JButton createButtonWithTextAndIcon(String imageFilePath, String buttonText)
   {
     JButton button = new JButton(buttonText);
-    button.setFont(makeRunicFont());
-    ImageIcon icon = new ImageIcon(Chronos.ADV_IMAGE_PATH + imageFilePath);
-    button.setIcon(icon);
-    // Can we calculate the gap so that the icon is left-adjusted, and the text is right-adjusted?
-    // Dimension buttonDim = button.getMinimumSize();
-    // int buttonWidth = buttonDim.width;
-    // int iconWidth = icon.getIconWidth();
-    // int textWidth = buttonText.length();
-    // int gap = buttonWidth - (iconWidth + textWidth);
-    // Probably better to use SwingConstants to align the icon and text separately, if that will
-    // work
-    button.setIconTextGap(40); // space between icon and text
-
+    button.setFont(new Font("Tahoma", Font.PLAIN, 24));
+    button.setIcon(new ImageIcon(Chronos.ADV_IMAGE_PATH + imageFilePath));
+    button.setIconTextGap(40);
     return button;
   }
 
@@ -604,6 +594,53 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   }
 
 
+  /**
+   * Get the context-sensitive help and display the proper help page. Called by HELP_KEY and from
+   * the Menu
+   */
+  public void showHelp()
+  {
+    if (_contextSwitch == HELP_CONTEXT.INITIAL) {
+      ((InitialLayout) _currentPage).showHelp();
+    }
+    else if (_contextSwitch == HELP_CONTEXT.STANDARD) {
+      ((StandardLayout) _currentPage).showHelp();
+    }
+  }
+
+
+
+  // /**
+  // * Checks for Help Key to display Help text
+  // *
+  // * @param e any key released
+  // */
+  // public void keyReleased(KeyEvent e)
+  // {
+  // System.out.println("keyReleased(): Extended key code received = " + e.getExtendedKeyCode());
+  // if (e.getKeyCode() == KeyEvent.VK_F1) {
+  // System.out.println("F1 Help key pressed");
+  // }
+  // }
+  //
+  // /** Required implementation for KeyListener, does nothing */
+  // public void keyPressed(KeyEvent e)
+  // {
+  // System.out.println("keyPressed(): Extended key code received = " + e.getExtendedKeyCode());
+  // if (e.getKeyCode() == KeyEvent.VK_F1) {
+  // System.out.println("F1 Help key pressed");
+  // }
+  // }
+  //
+  // /** Required implementation for KeyListener, does nothing */
+  // public void keyTyped(KeyEvent e)
+  // {
+  // System.out.println("keyTyped(): Extended key code received = " + e.getExtendedKeyCode());
+  // if (e.getKeyCode() == KeyEvent.VK_F1) {
+  // System.out.println("F1 Help key pressed");
+  // }
+  // }
+
   public void mouseClicked(MouseEvent e)
   {
     _mfCiv.handleClick(e.getPoint());
@@ -645,8 +682,27 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
    * Inner class to hold the initial mainframe widgets before an Adventure is selected: the buttons
    * on the left side, and the chronos logo on the right.
    */
-  public class InitialLayout extends JPanel
+  public class InitialLayout extends JPanel implements IHelpText
   {
+    /** Help Title for the mainframe */
+    static final String _helpTitle = "GREETINGS ADVENTURER!";
+    /** Help Text for the mainframe */
+    static final String _helpText =
+        "Greetings Adventurer! \n"
+            + "To get started, click on the large button on the left to create a new Hero. "
+            + "Then select an Adventure to explore. "
+            + "Kill monsters, solve puzzles, and find treasure in the Adventure's Arena to gain "
+            + "experience points. The more points you have, the more power and fame you get. "
+            + "When you get enough experience, join one of the many Guilds in town. |"
+            + "Guilds are important to your Adventuring career.\n\n"
+            + "Before entering the Arena, have your Hero visit Buildings to prepare for questing. "
+            + "You can get important info from patrons at the Inn, buy supplies from the General "
+            + "Store, or get a loan from the Bank. "
+            + "Don't get in trouble with the townspeople. We also have a jail.\n\n"
+            + "If you leave your Hero in town when you exit the game, he or she will be waiting "
+            + "in the same building when you return. If you Save your Hero, he or she can be summoned "
+            + "from the Hall of Heroes next time. ";
+
     /**
      * Create the layout for the mainframe at start up time
      */
@@ -655,6 +711,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
       addInitialLeftPanel();
       addImagePanel();
       displayImage(INITIAL_IMAGE);
+      _contextSwitch = HELP_CONTEXT.INITIAL;
+      _currentPage = this;
     }
 
     /**
@@ -664,6 +722,15 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     {
       JPanel buttonPanel = createButtons();
       _leftHolder.add(buttonPanel);
+    }
+
+    /**
+     * Display the help text for this mainframe
+     */
+    public void showHelp()
+    {
+      _helpdlg.setVisible(true);
+      _helpdlg.showHelp(_helpTitle, _helpText);
     }
 
   } // end of InitialLayout inner class
@@ -679,16 +746,32 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
    * Replace the buttons with the output descriptive pane and the command line; replace the image
    * panel with a picture of the Town
    */
-  public class StandardLayout extends JPanel
+  public class StandardLayout extends JPanel implements IHelpText
   {
+    /** Help Title for the mainframe */
+    static final String _helpTitle = "Standard Layout Help";
+    /** Help Text for the mainframe */
+    static final String _helpText =
+        "This is a text block to test out the Standard Layout context switching for Help. ";
+
     public StandardLayout()
     {
       Mainframe.this._iop = new IOPanel();
       _leftHolder.add(_iop);
       addImagePanel();
       redraw();
+      _contextSwitch = HELP_CONTEXT.STANDARD;
+      _currentPage = this;
     }
 
+    /**
+     * Display the help text for this mainframe
+     */
+    public void showHelp()
+    {
+      _helpdlg.setVisible(true);
+      _helpdlg.showHelp(_helpTitle, _helpText);
+    }
 
   } // end of StandardLayout inner class
 

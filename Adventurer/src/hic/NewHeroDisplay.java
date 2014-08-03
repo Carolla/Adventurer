@@ -9,18 +9,6 @@
 
 package hic;
 
-import civ.NewHeroCiv;
-import civ.NewHeroFields;
-
-import chronos.Chronos;
-
-import mylib.MsgCtrl;
-import mylib.civ.DataShuttle;
-import mylib.civ.DataShuttle.ErrorType;
-import mylib.hic.HelpKeyListener;
-
-import net.miginfocom.swing.MigLayout;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -48,6 +36,15 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
+
+import mylib.MsgCtrl;
+import mylib.civ.DataShuttle;
+import mylib.civ.DataShuttle.ErrorType;
+import mylib.hic.HelpKeyListener;
+import net.miginfocom.swing.MigLayout;
+import chronos.Chronos;
+import civ.NewHeroCiv;
+import civ.NewHeroFields;
 
 
 /** TODO: [3] Add HelpDialog and widget-specific helpListeners to this panel */
@@ -193,8 +190,8 @@ public class NewHeroDisplay extends JPanel
 
     // GENERAL SETUP
     // Set the preferred and max size, adjusting for panel border thickness
-    int width = Mainframe.USERWIN_WIDTH;// +MainFrame.PANEL_SHIFT;
-    int height = Mainframe.USERWIN_HEIGHT;
+    int width = Mainframe.getWindowSize().width;// +MainFrame.PANEL_SHIFT;
+    int height = Mainframe.getWindowSize().height;
     setPreferredSize(new Dimension(width, height));
 
     int pad = Mainframe.PAD;

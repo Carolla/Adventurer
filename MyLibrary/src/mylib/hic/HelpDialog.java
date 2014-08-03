@@ -10,7 +10,6 @@
 package mylib.hic;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -67,7 +66,8 @@ public class HelpDialog extends JDialog
   /** Position this window this number of pixels down from the top of the frame */
   private final int DOWN_FROM_TOP = 110;
   /** End of text msg since text can scroll in the help window */
-  private final String EOT = "\n\n--- end of Help\n";
+  private final String EOT =  "\n\nHit F1 key for context help at any time.\n\n"
+      + "--- end of Help\n";
 
   /**
    * Allow (false) or disallow (true) text to be written to the window; defaults to {@code true} to
@@ -78,25 +78,22 @@ public class HelpDialog extends JDialog
   /** Common text area for writing */
   private JTextArea _helpArea = null;
 
+//  /** Jpanel that contains the help implementation */
+//  private JPanel _helpContext = null;
 
   // ==========================================================================================
   // CONSTRUCTOR(S) AND RELATED METHODS
   // ==========================================================================================
 
-  /**
-   * Create the singleton HelpDialog if it doesn't already exist; pass the parms on to the private
-   * constructor. HelpEngine expects a Registry to hold the help text
-   * 
-   * @param owner the main menu frame that supports this dialog.
-   * @param helpciv the civ that supports the help function that displays to ths dialog
-   */
-  public static HelpDialog getInstance(JFrame owner)
-  {
-    if (_helpDlg == null) {
-      _helpDlg = new HelpDialog(owner);
-    }
-    return _helpDlg;
-  }
+  // /**
+  // * Return the globally-available static Help Dialog reference
+  // *
+  // * @return HelpDialog reference
+  // */
+  // static public HelpDialog getInstance()
+  // {
+  // return HelpDialog._helpDlg;
+  // }
 
 
   /**
@@ -126,7 +123,7 @@ public class HelpDialog extends JDialog
     _helpArea.setLineWrap(true); // wrap text within window, and...
     _helpArea.setWrapStyleWord(true); // ...wrap on word boundaries
     _helpArea.setMargin(new Insets(5, 5, 5, 5)); // set margin space around text
-    
+
     // Create a vertical-only scrolling text area to collect the dungeon description
     final JScrollPane helpSP = new JScrollPane(_helpArea);
     helpSP.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -158,31 +155,59 @@ public class HelpDialog extends JDialog
 
   } // end of HelpDialog constructor
 
-  
-  /** Set the font to the client's request. Do not confuse this with {@code Component.setFont()}
-   * which will cause a Font reset. 
+
+  /**
+   * Create the singleton HelpDialog if it doesn't already exist; pass the parms on to the private
+   * constructor. HelpEngine expects a Registry to hold the help text
+   * 
+   * @param owner the main menu frame that supports this dialog.
+   * @param helpciv the civ that supports the help function that displays to ths dialog
+   */
+  public static HelpDialog getInstance(JFrame owner)
+  {
+    if (_helpDlg == null) {
+      _helpDlg = new HelpDialog(owner);
+    }
+    return _helpDlg;
+  }
+
+  // ==========================================================================================
+  // PUBLIC METHODS
+  // ==========================================================================================
+
+  /**
+   * Set the font to the client's request. Do not confuse this with {@code Component.setFont()}
+   * which will cause a Font reset.
+   * 
    * @param f client font to use for the next message
    */
   public void setMyFont(Font f)
   {
     _helpArea.setFont(f);
-
-  }
-
-  /**
-   * Return the globally-available static Help Dialog reference
-   * 
-   * @return HelpDialog reference
-   */
-  static public HelpDialog getInstance()
-  {
-    return HelpDialog._helpDlg;
   }
 
 
-  // ==========================================================================================
-  // PUBLIC METHODS
-  // ==========================================================================================
+//  /**
+//   * Get the help context so that the implementation class-specific help can be displayed
+//   * 
+//   * @return a JPanel subclass that has implemented {@code IHelpText}
+//   */
+//  public JPanel getContext()
+//  {
+//    return _helpContext;
+//  }
+//
+//  
+//  /**
+//   * Set the help context, that is, the panel to which the context help applies.
+//   * 
+//   * @param panel containing the help text implementation data
+//   */
+//  public void setContext(JPanel panel)
+//  {
+//    _helpContext = panel;
+//  }
+
 
   /**
    * Displays help text associated with the widget for which the Help was requested, either by the

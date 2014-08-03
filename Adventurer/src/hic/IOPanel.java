@@ -32,23 +32,19 @@ import chronos.Chronos;
 import civ.CommandParser;
 
 /**
- * This class serves as the text output and command line input after and aventure is selected
+ * This class serves as the text output and command line input after and Adventure is selected
  * 
  * @author Alan Cline
- * @version 1.0 Feb 18, 2013 TAA Initial object
- *          <P>
- * @version 1.1 Jul 9, 2014 ABC refactored for clearer output panel and command line input
+ * @version Feb 18, 2013 // TAA Initial object <br>
+ *          Jul 9, 2014 // ABC refactored for clearer output panel and command line input <br>
+ *          Aug 2, 2014 // ABC replaced frame sizing with call to {@code Mainframe.getWindowSize()}
  */
 @SuppressWarnings("serial")
 public class IOPanel extends JPanel
 {
   private static final float FONT_HT = 14f;
-  /** Number of rows in the user's output window */
-  private final int winHeight = Mainframe.USERWIN_HEIGHT;
-  /** Number of rows in the user's output window */
-  private final int winWidth = winHeight;
-  private final JTextArea output;
-  private boolean redirectIO;
+  private final JTextArea _output;
+  private boolean _redirectIO;
 
   // Command window requires the Command Parser to send commands
   private CommandParser _cp = null;
@@ -63,8 +59,8 @@ public class IOPanel extends JPanel
   {
     // _cp = new CommandParser();
     setLayout(new MigLayout("", "[grow]", "[][]"));
-    output = new JTextArea();
-    output.setAlignmentY(JTextArea.BOTTOM_ALIGNMENT);
+    _output = new JTextArea();
+    _output.setAlignmentY(JTextArea.BOTTOM_ALIGNMENT);
 
     final JScrollPane outputPanel = createOutputPanel();
     this.add(outputPanel, "cell 0 1");
@@ -84,7 +80,9 @@ public class IOPanel extends JPanel
    */
   public void setDescription(String text)
   {
-    output.setText(text + "\n");
+    _output.setText(text + "\n");
+    // Set cursor to top of description on first display
+    _output.setCaretPosition(0);
     _cmdWin.setFocusable(true);
     _cmdWin.requestFocusInWindow();
   }
@@ -125,7 +123,7 @@ public class IOPanel extends JPanel
         // Save the user's input to be retrieved by the command parser
         _cp.receiveCommand(_cmdWin.getText());
         // Echo the text and clear the command line
-        output.append(_cmdWin.getText() + "\n");
+        _output.append(_cmdWin.getText() + "\n");
         _cmdWin.setText("");
         _cmdWin.setFocusable(true);
       }
@@ -141,27 +139,28 @@ public class IOPanel extends JPanel
    */
   private JScrollPane createOutputPanel()
   {
-    output.setEditable(false);
-    output.setLineWrap(true);
-    output.setWrapStyleWord(true);
-    output.setFocusable(false);
-    output.setFont(makeRunicFont());
-    output.setBackground(Color.LIGHT_GRAY); // just for fun, make the background non-white
-    output.setForeground(Color.BLACK); // text is colored with the setForeground statement
+    _output.setEditable(false);
+    _output.setLineWrap(true);
+    _output.setWrapStyleWord(true);
+    _output.setFocusable(false);
+    _output.setFont(makeRunicFont());
+    _output.setBackground(Color.LIGHT_GRAY); // just for fun, make the background non-white
+    _output.setForeground(Color.BLACK); // text is colored with the setForeground statement
 
     // TODO Is this necessary now?
     // Redirect the System stdout and stderr to the user output window
-    if (redirectIO) {
+    if (_redirectIO) {
       System.setOut(redirectIO());
     }
 
     // Make text output scrollable-savvy
     JPanel panel = new JPanel();
-    panel.add(output, BorderLayout.SOUTH);
+    panel.add(_output, BorderLayout.SOUTH);
     JScrollPane scrollPane = new JScrollPane(panel);
     scrollPane.setAlignmentY(BOTTOM_ALIGNMENT);
-    scrollPane.setPreferredSize(new Dimension(winHeight, winWidth));
-    scrollPane.setViewportView(output);
+    Dimension frame = Mainframe.getWindowSize();
+    scrollPane.setPreferredSize(new Dimension(frame.height, frame.width));
+    scrollPane.setViewportView(_output);
 
     return scrollPane;
   }
@@ -196,9 +195,9 @@ public class IOPanel extends JPanel
 
       public void write(byte[] b, int off, int len)
       {
-        output.append(new String(b, off, len));
+        _output.append(new String(b, off, len));
         // Ensure that the text scrolls as new text is appended
-        // output.setCaretPosition(output.getDocument().getLength());
+        // _output.setCaretPosition(_output.getDocument().getLength());
         _cmdWin.setFocusable(true);
         _cmdWin.requestFocusInWindow();
         _cmdWin.setCaretPosition(0);
@@ -215,7 +214,7 @@ public class IOPanel extends JPanel
    */
   public void appendText(String msg)
   {
-    output.append(msg);
+    _output.append(msg);
   }
 
 } // end OutputPanel class

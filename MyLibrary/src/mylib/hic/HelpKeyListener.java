@@ -29,7 +29,7 @@ public class HelpKeyListener extends KeyAdapter
 {
   /** Contains help window reference to avoid collecting it during the {@code keyPressed()} method */
   private HelpDialog _helpDialog = null;
-  /** Unique identifier used to retrieve the text from the help.xml file */
+  /** Unique identifier used to retrieve the text */
   private String _helpID = null;
 
   /**
@@ -41,7 +41,7 @@ public class HelpKeyListener extends KeyAdapter
   public HelpKeyListener(String helpTag)
   {
     super();
-    _helpDialog = HelpDialog.getInstance();
+    _helpDialog = HelpDialog.getInstance(null);
     if (_helpDialog == null) {
       MsgCtrl.errMsgln("HelpKeyListener ctor: Can't see instance of Help Dialog");
       return;
@@ -67,7 +67,7 @@ public class HelpKeyListener extends KeyAdapter
       if (key.getKeyCode() == KeyEvent.VK_F1) {
         MsgCtrl.msgln("Help ID = " + _helpID);
         _helpDialog.setVisible(true);
-        // _helpDialog .help(_helpID);
+//        _helpDialog.help(_helpID);
       }
     } catch (NullPointerException ex) {
       MsgCtrl.errMsgln("HelpKeyListener.keyPressed(): " + ex.getMessage());

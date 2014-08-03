@@ -65,9 +65,9 @@ public class AdventureRegistry extends Registry
           + "Quasqueton and drive out the villains.\n\n"
           + "But first! Visit the buildings in this town, and prepare yourself: \n"
           + "Collect information from the people at the Inn, purchase equipment and weapons from the "
-          + "General Store, perhaps even borrow money or make a will from the Bank, but don't get in "
-          + "trouble, we also have a Jail.\n\n"
-          + "Count your assets before beginning your great quest. You should find more here than a "
+          + "General Store, perhaps even borrow money or make a will from the Bank. "
+          + "Don't get in trouble, we also have a Jail.\n\n"
+          + "Count your assets before beginning your Quest. You should find more here than a "
           + "holocaust cloak.\n\n";
 
 
