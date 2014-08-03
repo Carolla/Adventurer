@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import mylib.pdc.Registry;
 import chronos.pdc.Adventure;
 import chronos.pdc.registry.AdventureRegistry;
 import chronos.pdc.registry.RegistryFactory;
@@ -82,6 +81,10 @@ public class MainframeCiv
   /** Current Building being displayed, and can be entered */
   private final Rectangle _townReturn = new Rectangle(0, 0, 100, 100);
 
+  // ============================================================
+  // Constructors and constructor helpers
+  // ============================================================
+
   /**
    * Create the Civ associated with the mainframe
    * 
@@ -97,7 +100,8 @@ public class MainframeCiv
     // _advReg = (AdventureRegistry) RegistryFactory.getInstance().getRegistry(RegKey.ADV);
     // _cp = new CommandParser(this);
     // _bdCiv =
-    // new BuildingDisplayCiv(_frame, (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG));
+    // new BuildingDisplayCiv(_frame, (BuildingRegistry)
+    // RegistryFactory.getInstance().getRegistry(RegKey.BLDG));
     // createBuildingBoxes();
   }
 
@@ -113,21 +117,10 @@ public class MainframeCiv
     }
   }
 
-  /**
-   * Try to open the building passed in
-   * 
-   * @param bldName the name of the building to open
-   */
-  public void enterBuilding(String bldName)
-  {
-    if (_onTown) {
-      if (_bdCiv.approachBuilding(bldName)) {
-        _onTown = false;
-      }
-    } else {
-      _bdCiv.enterBuilding();
-    }
-  }
+
+  // ============================================================
+  // Public methods
+  // ============================================================
 
   /**
    * Retrieves the Adventures for selection from the Adventure Registry
@@ -145,6 +138,33 @@ public class MainframeCiv
     return results;
   }
 
+  public CommandParser getCmdParser()
+  {
+    return _cp;
+  }
+
+
+  // ============================================================
+  // Public methods
+  // ============================================================
+
+  /**
+   * Try to open the building passed in
+   * 
+   * @param bldName the name of the building to open
+   */
+  public void enterBuilding(String bldName)
+  {
+    if (_onTown) {
+      if (_bdCiv.approachBuilding(bldName)) {
+        _onTown = false;
+      }
+    } else {
+      _bdCiv.enterBuilding();
+    }
+  }
+
+
   public void handleClick(Point p)
   {
     handleClickIfOnTownReturn(p);
@@ -153,24 +173,12 @@ public class MainframeCiv
     }
   }
 
-  private void handleClickIfOnBuilding(Point p)
+  public void handleError(String string)
   {
-    for (Entry<String, BuildingRectangle> entry : _buildingList.entrySet()) {
-      BuildingRectangle rect = entry.getValue();
-      if (rect.contains(p)) {
-        enterBuilding(entry.getKey());
-        return;
-      }
-    }
+    _frame.displayText(string);
+
   }
 
-  private void handleClickIfOnTownReturn(Point p)
-  {
-    if (_townReturn.contains(p)) {
-      openTown();
-    }
-    _frame.redraw();
-  }
 
   public void handleMouseMovement(Point p)
   {
@@ -196,6 +204,14 @@ public class MainframeCiv
     _adv = _advReg.getAdventure(adventureName);
     openTown();
   }
+  
+  /** Get the town name
+   * @return the name of the town
+   */
+  public String getTownName()
+  {
+    return _adv.getTownName();
+  }
 
   /**
    * Find a list of heroes that can be summoned
@@ -217,15 +233,29 @@ public class MainframeCiv
     _frame.displayTextAndImage(_adv.getOverview(), TOWN_IMAGE);
   }
 
-  public CommandParser getCmdParser()
+
+  // ============================================================
+  // Private methods
+  // ============================================================
+
+  private void handleClickIfOnBuilding(Point p)
   {
-    return _cp;
+    for (Entry<String, BuildingRectangle> entry : _buildingList.entrySet()) {
+      BuildingRectangle rect = entry.getValue();
+      if (rect.contains(p)) {
+        enterBuilding(entry.getKey());
+        return;
+      }
+    }
   }
 
-  public void handleError(String string)
-  {
-    _frame.displayText(string);
 
+  private void handleClickIfOnTownReturn(Point p)
+  {
+    if (_townReturn.contains(p)) {
+      openTown();
+    }
+    _frame.redraw();
   }
 
 } // end of AdvMainframeCiv outer class

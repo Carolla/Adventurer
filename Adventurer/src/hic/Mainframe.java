@@ -285,9 +285,9 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
   /**
    * Create the behavior for selecting an adventure, which drives the frame update. <br>
-   * Warning: Known bug with MigLayout in that {@code float} font sizes can cause overruns on round-up.
-   * "Choose your Adventure" overruns the button length, but "Select your Adventure" does not,
-   * despite being the same number of characters!
+   * Warning: Known bug with MigLayout in that {@code float} font sizes can cause overruns on
+   * round-up. "Choose your Adventure" overruns the button length, but "Select your Adventure" does
+   * not, despite being the same number of characters!
    * 
    * @return the button created
    */
@@ -391,7 +391,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private JButton createButtonWithTextAndIcon(String imageFilePath, String buttonText)
   {
     JButton button = new JButton(buttonText);
-//    button.setFont(new Font("Tahoma", Font.PLAIN, 24));
+    // button.setFont(new Font("Tahoma", Font.PLAIN, 24));
     button.setFont(Util.makeRunicFont(14f));
     button.setIcon(new ImageIcon(Chronos.ADV_IMAGE_PATH + imageFilePath));
     button.setIconTextGap(40);
@@ -669,9 +669,9 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   public class InitialLayout extends JPanel implements IHelpText
   {
     /** Help Title for the mainframe */
-    static final String _helpTitle = "GREETINGS ADVENTURER!";
+    private static final String _helpTitle = "GREETINGS ADVENTURER!";
     /** Help Text for the mainframe */
-    static final String _helpText =
+    private static final String _helpText =
         "Greetings Adventurer! \n"
             + "To get started, click on the large button on the left to create a new Hero. "
             + "Then select an Adventure to explore. "
@@ -733,9 +733,9 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   public class StandardLayout extends JPanel implements IHelpText
   {
     /** Help Title for the mainframe */
-    static final String _helpTitle = "Standard Layout Help";
+    private String _helpTitle = "Welcome to ";
     /** Help Text for the mainframe */
-    static final String _helpText =
+    private final String _helpText =
         "This is a text block to test out the Standard Layout context switching for Help. ";
 
     public StandardLayout()
@@ -754,6 +754,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     public void showHelp()
     {
       _helpdlg.setVisible(true);
+      _helpTitle = _helpTitle + _mfCiv.getTownName();
       _helpdlg.showHelp(_helpTitle, _helpText);
     }
 
