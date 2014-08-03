@@ -13,10 +13,8 @@ package hic;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
@@ -26,9 +24,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import mylib.MsgCtrl;
 import net.miginfocom.swing.MigLayout;
-import chronos.Chronos;
+import pdc.Util;
 import civ.CommandParser;
 
 /**
@@ -143,7 +140,7 @@ public class IOPanel extends JPanel
     _output.setLineWrap(true);
     _output.setWrapStyleWord(true);
     _output.setFocusable(false);
-    _output.setFont(makeRunicFont());
+    _output.setFont(Util.makeRunicFont(14f));
     _output.setBackground(Color.LIGHT_GRAY); // just for fun, make the background non-white
     _output.setForeground(Color.BLACK); // text is colored with the setForeground statement
 
@@ -165,18 +162,18 @@ public class IOPanel extends JPanel
     return scrollPane;
   }
 
-  private Font makeRunicFont()
-  {
-    Font font = null;
-    try {
-      Font newFont =
-          Font.createFont(Font.TRUETYPE_FONT, new File(Chronos.RUNIC_ENGLISH2_FONT_FILE));
-      font = newFont.deriveFont(FONT_HT);
-    } catch (Exception e) {
-      MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
-    }
-    return font;
-  }
+//  private Font makeRunicFont()
+//  {
+//    Font font = null;
+//    try {
+//      Font newFont =
+//          Font.createFont(Font.TRUETYPE_FONT, new File(Chronos.RUNIC_ENGLISH2_FONT_FILE));
+//      font = newFont.deriveFont(FONT_HT);
+//    } catch (Exception e) {
+//      MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
+//    }
+//    return font;
+//  }
 
 
   /**

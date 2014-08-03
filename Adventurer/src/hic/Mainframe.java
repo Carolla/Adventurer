@@ -12,7 +12,6 @@ package hic;
 import hic.screenConfiguration.ImagePanel;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
@@ -23,7 +22,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,26 +32,23 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import mylib.MsgCtrl;
 import mylib.hic.HelpDialog;
 import mylib.hic.IHelpText;
 import mylib.hic.ShuttleList;
 import net.miginfocom.swing.MigLayout;
+import pdc.Util;
 import chronos.Chronos;
 import civ.MainframeCiv;
 
 /**
- * Singleton frame to hold the menu bar and two panels in one of two states: <br>
- * State 1: Before an Adventure is selected, left panel shows the button panel on the left, and the
- * Chronos logo on the right. <br>
- * State 2: After an Adventure is selected, left panel shows an output scrolling-text panel
- * (initially the selected Town description), and the input command line; and on the right, an image
- * display panel (initially showing the Town image with clickable buildings).
+ * Initial frame displays three buttons and Chronos logo.<br>
+ * Standard frame displays input/output panel and town image (or building images) <br>
+ * Each has their own context help text. <br>
  * 
  * @author Al Cline
  * @version Jul 21, 2014 // rebuilt to comply with architectural model (lost history) <br>
- *          Jul 28, 2014 // added HelpKeyListener for Help functionality Aug 3, 2014 // added
- *          {@code getWindowSize} to replace public variables <br>
+ *          Jul 28, 2014 // added {@code HelpKeyListener} interface for Help functionality <br>
+ *          Aug 3, 2014 // added {@code getWindowSize} to replace public variables <br>
  *          Aug 3, 2014 // added Runic font to the buttons <br>
  */
 // Mainframe serialization unnecessary
@@ -167,25 +162,10 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   }
 
 
-  private Font makeRunicFont()
-  {
-    float FONT_HT = 14f;
-    Font font = null;
-    try {
-      Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(
-          Chronos.RUNIC_ENGLISH2_FONT_FILE));
-      font = newFont.deriveFont(FONT_HT);
-    } catch (Exception e) {
-      MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
-    }
-    return font;
-  }
-
-
   private void prepareHelpDialog()
   {
     _helpdlg = HelpDialog.getInstance(this);
-    _helpdlg.setMyFont(makeRunicFont());
+    _helpdlg.setMyFont(Util.makeRunicFont(14f));
     _contentPane.addKeyListener(new KeyListener() {
       public void keyReleased(KeyEvent e)
       {
@@ -304,13 +284,16 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   }
 
   /**
-   * Create the behavior for selecting an adventure, which drives the frame update
+   * Create the behavior for selecting an adventure, which drives the frame update. <br>
+   * Warning: Known bug with MigLayout in that {@code float} font sizes can cause overruns on round-up.
+   * "Choose your Adventure" overruns the button length, but "Select your Adventure" does not,
+   * despite being the same number of characters!
    * 
    * @return the button created
    */
   private JButton createAdventureButton()
   {
-    JButton button = createButtonWithTextAndIcon(ADV_IMAGE, "Choose your Adventure");
+    JButton button = createButtonWithTextAndIcon(ADV_IMAGE, "Select your Adventure ");
     button.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e)
       {
@@ -408,7 +391,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private JButton createButtonWithTextAndIcon(String imageFilePath, String buttonText)
   {
     JButton button = new JButton(buttonText);
-    button.setFont(new Font("Tahoma", Font.PLAIN, 24));
+//    button.setFont(new Font("Tahoma", Font.PLAIN, 24));
+    button.setFont(Util.makeRunicFont(14f));
     button.setIcon(new ImageIcon(Chronos.ADV_IMAGE_PATH + imageFilePath));
     button.setIconTextGap(40);
     return button;
@@ -674,9 +658,9 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   }
 
 
-  /*-------------------------------------------------
-   * INNER CLASS: InitialLayout 
-   *-------------------------------------------------*/
+  // ============================================================
+  // INNER CLASS: InitialLayout
+  // ============================================================
 
   /**
    * Inner class to hold the initial mainframe widgets before an Adventure is selected: the buttons
@@ -693,7 +677,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
             + "Then select an Adventure to explore. "
             + "Kill monsters, solve puzzles, and find treasure in the Adventure's Arena to gain "
             + "experience points. The more points you have, the more power and fame you get. "
-            + "When you get enough experience, join one of the many Guilds in town. |"
+            + "When you get enough experience, join one of the many Guilds in town. "
             + "Guilds are important to your Adventuring career.\n\n"
             + "Before entering the Arena, have your Hero visit Buildings to prepare for questing. "
             + "You can get important info from patrons at the Inn, buy supplies from the General "
@@ -736,9 +720,9 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   } // end of InitialLayout inner class
 
 
-  /*-------------------------------------------------
-   * INNER CLASS: StandardLayout 
-   *-------------------------------------------------*/
+  // ============================================================
+  // INNER CLASS: StandardLayout
+  // ============================================================
 
   /**
    * Inner class to hold the secondary mainframe widgets after an Adventure is selected: output
@@ -779,6 +763,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   // ============================================================
   // Inner Mock for Testing
   // ============================================================
+
+  /** Inner class for testing */
   public class MockMF
   {
     public MockMF()
@@ -790,7 +776,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     }
 
   } // end of MockMF inner class
-
 
 
 } // end of Mainframe outer class
