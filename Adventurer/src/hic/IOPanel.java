@@ -13,6 +13,7 @@ package hic;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.OutputStream;
@@ -23,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JViewport;
 
 import net.miginfocom.swing.MigLayout;
 import pdc.Util;
@@ -34,41 +36,65 @@ import civ.CommandParser;
  * @author Alan Cline
  * @version Feb 18, 2013 // TAA Initial object <br>
  *          Jul 9, 2014 // ABC refactored for clearer output panel and command line input <br>
- *          Aug 2, 2014 // ABC replaced frame sizing with call to {@code Mainframe.getWindowSize()}
+ *          Aug 2, 2014 // ABC replaced frame sizing with call to {@code Mainframe.getWindowSize()}<br>
+ *          Aug 6, 2014 // ABC Merged {@code Mainframe.StandardLayout} inner class with this class <br>
  */
 @SuppressWarnings("serial")
 public class IOPanel extends JPanel
 {
-  private static final float FONT_HT = 14f;
   private final JTextArea _output;
+  private final JScrollPane _scrollpane;
   private boolean _redirectIO;
 
   // Command window requires the Command Parser to send commands
   private CommandParser _cp = null;
   private JTextField _cmdWin = null;
 
+  /**
+   * Color class does not have brown, so I have to make it. Color constuctor args = red, green, blue
+   * for values 0-255, kicked up one notch of brightness
+   */
+  private final Color _myBrown = new Color(130, 100, 90).brighter();
+
+
+  // ============================================================
+  // Constructors and constructor helpers
+  // ============================================================
+
 
   /**
-   * Creates 2-paned panel to represent Input and Output
+   * Creates 2-paned panel to represent CommandLine Input and Description Output
    */
-  // public OutputPanel(CommandParser parser)
   public IOPanel()
   {
-    // _cp = new CommandParser();
     setLayout(new MigLayout("", "[grow]", "[][]"));
     _output = new JTextArea();
     _output.setAlignmentY(JTextArea.BOTTOM_ALIGNMENT);
 
-    final JScrollPane outputPanel = createOutputPanel();
-    this.add(outputPanel, "cell 0 1");
+//    final JScrollPane outputPanel = createOutputPanel();
+    _scrollpane = createOutputPanel();
+    this.add(_scrollpane, "cell 0 1");
 
+    _cp = new CommandParser();
     final JPanel inputPanel = createCmdLinePanel();
     this.add(inputPanel, "cell 0 2");
   }
 
-  /*
-   * PUBLIC METHODS
+
+  /**
+   * Adds the string onto the existing text
+   * 
+   * @param msg the string to append
    */
+  public void appendText(String msg)
+  {
+    _output.append(msg);
+  }
+
+
+  // ============================================================
+  // Public Methods
+  // ============================================================
 
   /**
    * Set the text into the output pane, then return focus to the command line
@@ -80,14 +106,15 @@ public class IOPanel extends JPanel
     _output.setText(text + "\n");
     // Set cursor to top of description on first display
     _output.setCaretPosition(0);
-    _cmdWin.setFocusable(true);
+//    JViewport jv = _output.getViewport();  
+//    jv.setViewPosition(new Point(0,0)); 
     _cmdWin.requestFocusInWindow();
   }
 
 
-  /*
-   * PRIVATE METHODS
-   */
+  // ============================================================
+  // Private Methods
+  // ============================================================
 
   /**
    * Create the south panel input window. It must provide data to the backend command parser
@@ -102,7 +129,7 @@ public class IOPanel extends JPanel
 
     // Create the text field to collect the user's command
     _cmdWin = new JTextField(100);
-    _cmdWin.setFocusable(true); // set the focus to this field when starting up
+    _cmdWin.setFocusable(true); 
     _cmdWin.setCaretPosition(0);
     _cmdWin.requestFocusInWindow();
 
@@ -118,11 +145,13 @@ public class IOPanel extends JPanel
       public void actionPerformed(ActionEvent event)
       {
         // Save the user's input to be retrieved by the command parser
-        _cp.receiveCommand(_cmdWin.getText());
+        String in = _cmdWin.getText();
+        _cp.receiveCommand(in);
         // Echo the text and clear the command line
-        _output.append(_cmdWin.getText() + "\n");
+        _output.append(in + "\n");
         _cmdWin.setText("");
-        _cmdWin.setFocusable(true);
+        _cmdWin.requestFocusInWindow();
+//        _cmdWin.setFocusable(true);
       }
     });
     return southPanel;
@@ -141,7 +170,8 @@ public class IOPanel extends JPanel
     _output.setWrapStyleWord(true);
     _output.setFocusable(false);
     _output.setFont(Util.makeRunicFont(14f));
-    _output.setBackground(Color.LIGHT_GRAY); // just for fun, make the background non-white
+    // _output.setBackground(Color.LIGHT_GRAY); // just for fun, make the background non-white
+    _output.setBackground(_myBrown); // make the background my version of a nice warm brown
     _output.setForeground(Color.BLACK); // text is colored with the setForeground statement
 
     // TODO Is this necessary now?
@@ -158,22 +188,8 @@ public class IOPanel extends JPanel
     Dimension frame = Mainframe.getWindowSize();
     scrollPane.setPreferredSize(new Dimension(frame.height, frame.width));
     scrollPane.setViewportView(_output);
-
     return scrollPane;
   }
-
-//  private Font makeRunicFont()
-//  {
-//    Font font = null;
-//    try {
-//      Font newFont =
-//          Font.createFont(Font.TRUETYPE_FONT, new File(Chronos.RUNIC_ENGLISH2_FONT_FILE));
-//      font = newFont.deriveFont(FONT_HT);
-//    } catch (Exception e) {
-//      MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
-//    }
-//    return font;
-//  }
 
 
   /**
@@ -202,16 +218,6 @@ public class IOPanel extends JPanel
     });
 
     return op;
-  }
-
-  /**
-   * Adds the string onto the existing text
-   * 
-   * @param msg the string to append
-   */
-  public void appendText(String msg)
-  {
-    _output.append(msg);
   }
 
 } // end OutputPanel class

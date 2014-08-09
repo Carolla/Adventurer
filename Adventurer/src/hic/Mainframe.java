@@ -11,6 +11,7 @@ package hic;
 
 import hic.screenConfiguration.ImagePanel;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Graphics2D;
@@ -50,26 +51,17 @@ import civ.MainframeCiv;
  *          Jul 28, 2014 // added {@code HelpKeyListener} interface for Help functionality <br>
  *          Aug 3, 2014 // added {@code getWindowSize} to replace public variables <br>
  *          Aug 3, 2014 // added Runic font to the buttons <br>
+ *          Aug 6, 2014 // removed innner classes and merged StandardLayout with IOPanel <br>
  */
 // Mainframe serialization unnecessary
 @SuppressWarnings("serial")
-public class Mainframe extends JFrame implements MouseListener, MouseMotionListener
+public class Mainframe extends JFrame implements MouseListener, MouseMotionListener, IHelpText
 {
   /** Reference to this singleton */
   static private Mainframe _mainframe = null;
 
   /** Singleton Help Dialog for all help text */
   private HelpDialog _helpdlg;
-
-  /** Context switch between initial and standard layout pages */
-  public enum HELP_CONTEXT {
-    INITIAL, STANDARD;
-  }
-
-  /** Flag for which help page to call */
-  private HELP_CONTEXT _contextSwitch;
-  /** Current page being displayed */
-  private JPanel _currentPage;
 
   /** Number of pixels on empty border spacing */
   public static final int PAD = 10;
@@ -95,11 +87,33 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private JPanel _leftHolder;
   /** Empty right-side panel holder for initial standard panels. */
   private JPanel _rightHolder;
+  /** JPanel to hold various images; this panel resides in the _rightHolder */
+  private JPanel _imagePanel;
 
   private MainframeCiv _mfCiv;
   private IOPanel _iop;
   private List<String> _partyHeros = new ArrayList<String>();
   private List<String> _summonableHeroes;
+
+  /** Help Title for the mainframe */
+  private static final String _helpTitle = "GREETINGS ADVENTURER!";
+  /** Help Text for the mainframe */
+  private static final String _helpText =
+      "Greetings Adventurer! \n"
+          + "To get started, click on the large button on the left to create a new Hero. "
+          + "Then select an Adventure to explore. "
+          + "Kill monsters, solve puzzles, and find treasure in the Adventure's Arena to gain "
+          + "experience points. The more points you have, the more power and fame you get. "
+          + "When you get enough experience, join one of the many Guilds in town. "
+          + "Guilds are important to your Adventuring career.\n\n"
+          + "Before entering the Arena, have your Hero visit Buildings to prepare for questing. "
+          + "You can get important info from patrons at the Inn, buy supplies from the General "
+          + "Store, or get a loan from the Bank. "
+          + "Don't get in trouble with the townspeople. We also have a jail.\n\n"
+          + "If you leave your Hero in town when you exit the game, he or she will be waiting "
+          + "in the same building when you return. If you Save your Hero, he or she can be summoned "
+          + "from the Hall of Heroes next time. ";
+
 
   // ============================================================
   // Constructors and constructor helpers
@@ -125,25 +139,25 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
    */
   private Mainframe()
   {
-    createFrameLayout();
-    add(new InitialLayout());
+    createFrameAndMenubar(); // contains left and right panel holders
+    addImagePanel(); // add image panel on right and display image
+    // createButtons(); // creates three action buttons on panel
+    displayImage(INITIAL_IMAGE);
+    redraw();
+    setVisible(true);
+
+    // Create the one time help dialog
+    // prepareHelpDialog();
 
     // Create the Civ
     _mfCiv = new MainframeCiv(this);
-
-    // Create the one time help dialog
-    prepareHelpDialog();
   }
 
 
-  // ============================================================
-  // Private Methods
-  // ============================================================
-
   /**
-   * Creates mainframe layout, menu, and adds left and right panel holders
+   * Create mainframe layout and menubar; and add left and right panel holders
    */
-  private void createFrameLayout()
+  private void createFrameAndMenubar()
   {
     setupSizeAndBoundaries();
     setupContentPane();
@@ -154,14 +168,71 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
     // Add left and right holders
     _leftHolder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
+    _leftHolder.setBackground(Color.cyan);
     _rightHolder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
+    _rightHolder.setBackground(Color.YELLOW);
     _contentPane.add(_leftHolder, "cell 0 0, wmax 50%, grow");
     _contentPane.add(_rightHolder, "cell 1 0, wmax 50%, hmax 90%, grow");
     _contentPane.setFocusable(true);
-    setVisible(true);
   }
 
 
+  /** Define the mainframe layout characteristics */
+  private void setupSizeAndBoundaries()
+  {
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    USERWIN_WIDTH = screenSize.width;
+    USERWIN_HEIGHT = screenSize.height;
+    setSize(USERWIN_WIDTH, USERWIN_HEIGHT);
+    setLocationByPlatform(true); // Operating System specific windowing
+    setExtendedState(Frame.MAXIMIZED_BOTH);
+    setResizable(false);
+  }
+
+
+  /** Apply the layout manager to the content pane */
+  private void setupContentPane()
+  {
+    _contentPane = (JPanel) getContentPane();
+    _contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+    setContentPane(_contentPane);
+    _contentPane.setLayout(new MigLayout("", "[grow, fill]10[grow]", "[grow]"));
+  }
+
+
+  /**
+   * Layout the image panel on the right side of the frame
+   */
+  private void addImagePanel()
+  {
+    _imagePanel = new JPanel(new MigLayout("", "[grow,fill]", "[grow,fill]"));
+    _imagePanel.setPreferredSize(new Dimension(
+        (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
+    // System.out.println("Mainframe.addImagePanel(): ");
+    // System.out.println("imagePanel height = \t" + _imagePanel.getPreferredSize().height);
+    // System.out.println("imagePanel width = \t" + _imagePanel.getPreferredSize().width);
+
+    _rightHolder.addMouseListener(Mainframe.this);
+    _rightHolder.addMouseMotionListener(Mainframe.this);
+//    _rightHolder.add(_imagePanel);
+  }
+
+  /**
+   * Clear the right side and add the image on an image panel
+   * 
+   * @param imagePath {@code jpg} to display
+   */
+  private void displayImage(String imagePath)
+  {
+    _rightHolder.removeAll();
+    ImagePanel ipp = new ImagePanel(_imagePanel, imagePath);
+    ipp.setBackground(Color.blue);
+    _rightHolder.add(ipp);
+  }
+
+  /**
+   * Prepare the HelpDialog and HelpKey event responder
+   */
   private void prepareHelpDialog()
   {
     _helpdlg = HelpDialog.getInstance(this);
@@ -183,6 +254,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     });
   }
 
+
   // ============================================================
   // Public Methods
   // ============================================================
@@ -200,62 +272,33 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   }
 
 
-  // /**
-  // * Display the help text for this mainframe
-  // */
-  // public void showHelp()
-  // {
-  // _helpdlg.setVisible(true);
-  // System.out.println("Mainframe.showHelp: font just before calling _helpdlg.showHelp() = " +
-  // getFont());
-  // _helpdlg.showHelp(_helpTitle, _helpText);
-  // }
+  // ============================================================
+  // Private Methods
+  // ============================================================
 
 
+  // TODO This method is called after an Adventure is opened, so should be in MainframeCiv.
   /**
-   * Creates the standard layout for displaying town an building images and descriptions
-   */
-  public void createStandardLayout()
-  {
-    _leftHolder.removeAll();
-    add(new StandardLayout());
-    setVisible(true);
-  }
-
-  /** Define the mainframe layout characteristics */
-  private void setupSizeAndBoundaries()
-  {
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    USERWIN_WIDTH = screenSize.width;
-    USERWIN_HEIGHT = screenSize.height;
-    setSize(USERWIN_WIDTH, USERWIN_HEIGHT);
-    setLocationByPlatform(true); // Operating System specific windowing
-    setExtendedState(Frame.MAXIMIZED_BOTH);
-    setResizable(false);
-  }
-
-  /** Apply the layout manager to the content pane */
-  private void setupContentPane()
-  {
-    _contentPane = (JPanel) getContentPane();
-    _contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-    setContentPane(_contentPane);
-    _contentPane.setLayout(new MigLayout("", "[grow, fill]10[grow]", "[grow]"));
-  }
-
-  /**
-   * Layout the image panel on the right
+   * Layout the IOPanel on the left: scrolling text window and working Comandline input area
    * 
    * @return the image panel with no image
    */
-  private JPanel addImagePanel()
+  private JPanel createIOPanel()
   {
-    JPanel panel = new JPanel(new MigLayout("", "[grow,fill]", "[grow,fill]"));
-    panel.setPreferredSize(new Dimension(
-        (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
-    _rightHolder.addMouseListener(Mainframe.this);
-    _rightHolder.addMouseMotionListener(Mainframe.this);
-    return panel;
+    _iop = new IOPanel();
+    _leftHolder.removeAll();
+    add(_iop);
+    return _iop;
+  }
+
+  /**
+   * Display the help text for this mainframe; implements {@code IHelpText}
+   */
+  public void showHelp()
+  {
+    System.out.println("Help Dialog set visible in showHelp");
+    _helpdlg.setVisible(true);
+    _helpdlg.showHelp(_helpTitle, _helpText);
   }
 
 
@@ -325,7 +368,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
           e.printStackTrace();
           System.exit(0);
         }
-        // changeToLeftPanel(nhd);
+        // changeToLeftPanel(nhd); // This my still be needed
       }
     });
     return button;
@@ -388,6 +431,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     return button;
   }
 
+
   private JButton createButtonWithTextAndIcon(String imageFilePath, String buttonText)
   {
     JButton button = new JButton(buttonText);
@@ -398,25 +442,10 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     return button;
   }
 
+
   /*------------------------------------------------------------------------
    * Temporary SECONDARY CODE BELOW THIS LINE while refactoring
    *------------------------------------------------------------------------*/
-
-  /**
-   * Display the image on the right side
-   * 
-   * @param imagePath what to display
-   */
-  private void displayImage(String imagePath)
-  {
-    _rightHolder.removeAll();
-    new ImagePanel(_rightHolder, imagePath);
-  }
-
-
-  /** Temporary marker because there are too many methods to read clearly otherwise */
-  protected void CODE_DIVIDER()
-  {}
 
 
   // /**
@@ -508,24 +537,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   // }
 
 
-
-  // private JPanel setupLeftPanel()
-  // {
-  // JPanel panel = setupRightPanel();
-  // panel.setLayout(new MigLayout("", "[grow,fill]",
-  // "[0:0,grow 25,fill]10[0:0,grow 25,fill]10[0:0,grow 25,fill]10[0:0,grow 25,fill]"));
-  // return panel;
-  // }
-
-
-  // public void changeToLeftPanel(JPanel panel)
-  // {
-  // _leftHolder.remove(_leftPanel);
-  // _leftHolder.add(panel, "");
-  // _leftPanel = panel;
-  // redraw();
-  // }
-
   /**
    * Display the image and text of a Building or the Town
    * 
@@ -536,7 +547,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   {
     displayText(description);
     displayImage(image);
-    // changeToLeftPanel(_cmdLine);
     // _cmdLine.setDescription(description);
   }
 
@@ -564,32 +574,11 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     repaint();
   }
 
-  public void resetPanels()
-  {
-    // TODO Hold for later 21040704
-    // changeToLeftPanel(_buttonPanel);
-    // setImageToBeDisplayed(PORTAL_IMAGE);
-  }
 
   public void setHeroList(List<String> list)
   {
     _partyHeros = list;
     // setHeroPartyText();
-  }
-
-
-  /**
-   * Get the context-sensitive help and display the proper help page. Called by HELP_KEY and from
-   * the Menu
-   */
-  public void showHelp()
-  {
-    if (_contextSwitch == HELP_CONTEXT.INITIAL) {
-      ((InitialLayout) _currentPage).showHelp();
-    }
-    else if (_contextSwitch == HELP_CONTEXT.STANDARD) {
-      ((StandardLayout) _currentPage).showHelp();
-    }
   }
 
 
@@ -658,107 +647,65 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   }
 
 
-  // ============================================================
-  // INNER CLASS: InitialLayout
-  // ============================================================
-
-  /**
-   * Inner class to hold the initial mainframe widgets before an Adventure is selected: the buttons
-   * on the left side, and the chronos logo on the right.
-   */
-  public class InitialLayout extends JPanel implements IHelpText
-  {
-    /** Help Title for the mainframe */
-    private static final String _helpTitle = "GREETINGS ADVENTURER!";
-    /** Help Text for the mainframe */
-    private static final String _helpText =
-        "Greetings Adventurer! \n"
-            + "To get started, click on the large button on the left to create a new Hero. "
-            + "Then select an Adventure to explore. "
-            + "Kill monsters, solve puzzles, and find treasure in the Adventure's Arena to gain "
-            + "experience points. The more points you have, the more power and fame you get. "
-            + "When you get enough experience, join one of the many Guilds in town. "
-            + "Guilds are important to your Adventuring career.\n\n"
-            + "Before entering the Arena, have your Hero visit Buildings to prepare for questing. "
-            + "You can get important info from patrons at the Inn, buy supplies from the General "
-            + "Store, or get a loan from the Bank. "
-            + "Don't get in trouble with the townspeople. We also have a jail.\n\n"
-            + "If you leave your Hero in town when you exit the game, he or she will be waiting "
-            + "in the same building when you return. If you Save your Hero, he or she can be summoned "
-            + "from the Hall of Heroes next time. ";
-
-    /**
-     * Create the layout for the mainframe at start up time
-     */
-    public InitialLayout()
-    {
-      addInitialLeftPanel();
-      addImagePanel();
-      displayImage(INITIAL_IMAGE);
-      _contextSwitch = HELP_CONTEXT.INITIAL;
-      _currentPage = this;
-    }
-
-    /**
-     * Create initial left panel with buttons and add it to the left holder
-     */
-    private void addInitialLeftPanel()
-    {
-      JPanel buttonPanel = createButtons();
-      _leftHolder.add(buttonPanel);
-    }
-
-    /**
-     * Display the help text for this mainframe
-     */
-    public void showHelp()
-    {
-      _helpdlg.setVisible(true);
-      _helpdlg.showHelp(_helpTitle, _helpText);
-    }
-
-  } // end of InitialLayout inner class
-
-
-  // ============================================================
-  // INNER CLASS: StandardLayout
-  // ============================================================
-
-  /**
-   * Inner class to hold the secondary mainframe widgets after an Adventure is selected: output
-   * description panel and command line widget on the left; town or building image on the right.
-   * Replace the buttons with the output descriptive pane and the command line; replace the image
-   * panel with a picture of the Town
-   */
-  public class StandardLayout extends JPanel implements IHelpText
-  {
-    /** Help Title for the mainframe */
-    private String _helpTitle = "Welcome to ";
-    /** Help Text for the mainframe */
-    private final String _helpText =
-        "This is a text block to test out the Standard Layout context switching for Help. ";
-
-    public StandardLayout()
-    {
-      Mainframe.this._iop = new IOPanel();
-      _leftHolder.add(_iop);
-      addImagePanel();
-      redraw();
-      _contextSwitch = HELP_CONTEXT.STANDARD;
-      _currentPage = this;
-    }
-
-    /**
-     * Display the help text for this mainframe
-     */
-    public void showHelp()
-    {
-      _helpdlg.setVisible(true);
-      _helpTitle = _helpTitle + _mfCiv.getTownName();
-      _helpdlg.showHelp(_helpTitle, _helpText);
-    }
-
-  } // end of StandardLayout inner class
+  // // ============================================================
+  // // INNER CLASS: InitialLayout
+  // // ============================================================
+  //
+  // /**
+  // * Inner class to hold the initial mainframe widgets before an Adventure is selected: the
+  // buttons
+  // * on the left side, and the chronos logo on the right.
+  // */
+  // public class InitialLayout extends JPanel implements IHelpText
+  // {
+  // /** Help Title for the mainframe */
+  // private static final String _helpTitle = "GREETINGS ADVENTURER!";
+  // /** Help Text for the mainframe */
+  // private static final String _helpText =
+  // "Greetings Adventurer! \n"
+  // + "To get started, click on the large button on the left to create a new Hero. "
+  // + "Then select an Adventure to explore. "
+  // + "Kill monsters, solve puzzles, and find treasure in the Adventure's Arena to gain "
+  // + "experience points. The more points you have, the more power and fame you get. "
+  // + "When you get enough experience, join one of the many Guilds in town. "
+  // + "Guilds are important to your Adventuring career.\n\n"
+  // + "Before entering the Arena, have your Hero visit Buildings to prepare for questing. "
+  // + "You can get important info from patrons at the Inn, buy supplies from the General "
+  // + "Store, or get a loan from the Bank. "
+  // + "Don't get in trouble with the townspeople. We also have a jail.\n\n"
+  // + "If you leave your Hero in town when you exit the game, he or she will be waiting "
+  // + "in the same building when you return. If you Save your Hero, he or she can be summoned "
+  // + "from the Hall of Heroes next time. ";
+  //
+  // /**
+  // * Create the layout for the mainframe at start up time
+  // */
+  // public InitialLayout()
+  // {
+  // addInitialLeftPanel();
+  // addImagePanel();
+  // displayImage(INITIAL_IMAGE);
+  // }
+  //
+  // /**
+  // * Create initial left panel with buttons and add it to the left holder
+  // */
+  // private void addInitialLeftPanel()
+  // {
+  // JPanel buttonPanel = createButtons();
+  // _leftHolder.add(buttonPanel);
+  // }
+  //
+  // /**
+  // * Display the help text for this mainframe
+  // */
+  // public void showHelp()
+  // {
+  // _helpdlg.setVisible(true);
+  // _helpdlg.showHelp(_helpTitle, _helpText);
+  // }
+  //
+  // } // end of InitialLayout inner class
 
 
   // ============================================================

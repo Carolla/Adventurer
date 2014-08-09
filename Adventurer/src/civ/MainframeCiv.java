@@ -10,6 +10,7 @@
 package civ;
 
 import hic.BuildingRectangle;
+import hic.IOPanel;
 import hic.Mainframe;
 
 import java.awt.Color;
@@ -204,8 +205,10 @@ public class MainframeCiv
     _adv = _advReg.getAdventure(adventureName);
     openTown();
   }
-  
-  /** Get the town name
+
+  /**
+   * Get the town name
+   * 
    * @return the name of the town
    */
   public String getTownName()
@@ -229,7 +232,7 @@ public class MainframeCiv
   {
     _onTown = true;
     // _bdCiv.exitBuilding();
-    _frame.createStandardLayout();
+    _frame.add(new IOPanel());
     _frame.displayTextAndImage(_adv.getOverview(), TOWN_IMAGE);
   }
 

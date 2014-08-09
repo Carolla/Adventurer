@@ -307,7 +307,7 @@ public class NewHeroDisplay extends JPanel
         setEditFlag(false);
         // Remove this panel and ignore any changes
         Mainframe frame = Mainframe.getInstance();
-        frame.resetPanels();
+//        frame.resetPanels();
         setVisible(false);
       }
     });

@@ -738,7 +738,7 @@ public class HeroDisplay extends JPanel
         // Mainframe.getInstance().
         setVisible(false);
         Mainframe frame = Mainframe.getInstance();
-        frame.resetPanels();
+//        frame.resetPanels();
       }
     });
 
@@ -770,7 +770,7 @@ public class HeroDisplay extends JPanel
         // MenuBar.getInstance().resetMenus();
         // Remove this panel
         Mainframe frame = Mainframe.getInstance();
-        frame.resetPanels();
+//        frame.resetPanels();
         hd.setVisible(false);
       }
 
@@ -790,7 +790,7 @@ public class HeroDisplay extends JPanel
         // Collect all the attributes and save to a new Hero file
         setVisible(false);
         Mainframe frame = Mainframe.getInstance();
-        frame.resetPanels();
+//        frame.resetPanels();
         // int response = mf.confirmQuit();
         // if (response == Mainframe.NOSAVE) {
         // Mainframe.getInstance().setEditFlag(false);
