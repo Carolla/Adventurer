@@ -55,7 +55,7 @@ public class PretendAdventurerFrame extends JFrame {
     _appPanel.add(imageBackPanel, "cell 1 0, grow");
     printJPanelInfo("Image Back Panel", imageBackPanel);
     
-    JPanel myImgPanel = new ImagePanel(imageBackPanel, TOWN_IMAGE);
+//    JPanel myImgPanel = new ImagePanel(imageBackPanel, TOWN_IMAGE);
 
     // Make stand-in Panel for Button Area
     makeButtonPanel();

@@ -13,7 +13,6 @@ package hic;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.OutputStream;
@@ -24,7 +23,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.JViewport;
 
 import net.miginfocom.swing.MigLayout;
 import pdc.Util;
@@ -54,7 +52,7 @@ public class IOPanel extends JPanel
    * Color class does not have brown, so I have to make it. Color constuctor args = red, green, blue
    * for values 0-255, kicked up one notch of brightness
    */
-  private final Color _myBrown = new Color(130, 100, 90).brighter();
+  private final Color MY_LIGHT_BROWN = new Color(130, 100, 90).brighter();
 
 
   // ============================================================
@@ -71,7 +69,7 @@ public class IOPanel extends JPanel
     _output = new JTextArea();
     _output.setAlignmentY(JTextArea.BOTTOM_ALIGNMENT);
 
-//    final JScrollPane outputPanel = createOutputPanel();
+    // final JScrollPane outputPanel = createOutputPanel();
     _scrollpane = createOutputPanel();
     this.add(_scrollpane, "cell 0 1");
 
@@ -106,8 +104,8 @@ public class IOPanel extends JPanel
     _output.setText(text + "\n");
     // Set cursor to top of description on first display
     _output.setCaretPosition(0);
-//    JViewport jv = _output.getViewport();  
-//    jv.setViewPosition(new Point(0,0)); 
+    // JViewport jv = _output.getViewport();
+    // jv.setViewPosition(new Point(0,0));
     _cmdWin.requestFocusInWindow();
   }
 
@@ -129,7 +127,7 @@ public class IOPanel extends JPanel
 
     // Create the text field to collect the user's command
     _cmdWin = new JTextField(100);
-    _cmdWin.setFocusable(true); 
+    _cmdWin.setFocusable(true);
     _cmdWin.setCaretPosition(0);
     _cmdWin.requestFocusInWindow();
 
@@ -151,7 +149,7 @@ public class IOPanel extends JPanel
         _output.append(in + "\n");
         _cmdWin.setText("");
         _cmdWin.requestFocusInWindow();
-//        _cmdWin.setFocusable(true);
+        // _cmdWin.setFocusable(true);
       }
     });
     return southPanel;
@@ -171,7 +169,7 @@ public class IOPanel extends JPanel
     _output.setFocusable(false);
     _output.setFont(Util.makeRunicFont(14f));
     // _output.setBackground(Color.LIGHT_GRAY); // just for fun, make the background non-white
-    _output.setBackground(_myBrown); // make the background my version of a nice warm brown
+    _output.setBackground(MY_LIGHT_BROWN); // make the background my version of a nice warm brown
     _output.setForeground(Color.BLACK); // text is colored with the setForeground statement
 
     // TODO Is this necessary now?

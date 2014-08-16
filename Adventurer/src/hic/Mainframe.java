@@ -26,12 +26,15 @@ import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 
 import mylib.hic.HelpDialog;
 import mylib.hic.IHelpText;
@@ -88,12 +91,15 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   /** Empty right-side panel holder for initial standard panels. */
   private JPanel _rightHolder;
   /** JPanel to hold various images; this panel resides in the _rightHolder */
-  private JPanel _imagePanel;
+  private ImagePanel _imagePanel;
 
   private MainframeCiv _mfCiv;
   private IOPanel _iop;
   private List<String> _partyHeros = new ArrayList<String>();
   private List<String> _summonableHeroes;
+
+  // My own special version of Brown since there is not one for Color
+  private final Color MY_BROWN = new Color(130, 100, 90);
 
   /** Help Title for the mainframe */
   private static final String _helpTitle = "GREETINGS ADVENTURER!";
@@ -120,6 +126,19 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   // ============================================================
 
   /**
+   * Get the size of the main window being displayed, which is used as a standard for laying out
+   * subcomponents and panels.
+   * 
+   * @return {@code Dimension} object; retrieve int values with {@code Dimension.width} and
+   *         {@code Dimension.height}
+   */
+  static public Dimension getWindowSize()
+  {
+    return new Dimension(USERWIN_WIDTH, USERWIN_HEIGHT);
+  }
+
+
+  /**
    * Create Mainframe as singleton so other mainframes are not created concurrently.
    * 
    * @return Mainframe instance
@@ -136,18 +155,23 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   /**
    * Creates the initial frame layout: left and right panel holders with buttons, and image panel
    * showing chronos logo on right.
+   * <P>
+   * Creates the {@code HelpDialog} singleton, ready to receive context-senstitive help text when
+   * requested.
+   * <P>
+   * Creates the {@code MainframeCiv} which takes control after an adventure is selected.
    */
   private Mainframe()
   {
     createFrameAndMenubar(); // contains left and right panel holders
-    addImagePanel(); // add image panel on right and display image
-    // createButtons(); // creates three action buttons on panel
+    addImagePanel(); // add image panel on right and display image    redraw();
     displayImage(INITIAL_IMAGE);
+    createButtons(); // creates three action buttons on panel
     redraw();
     setVisible(true);
 
     // Create the one time help dialog
-    // prepareHelpDialog();
+    prepareHelpDialog();
 
     // Create the Civ
     _mfCiv = new MainframeCiv(this);
@@ -164,16 +188,41 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     // Add menu
-    setJMenuBar(new Menubar());
+     setJMenuBar(new Menubar());
 
-    // Add left and right holders
-    _leftHolder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
-    _leftHolder.setBackground(Color.cyan);
-    _rightHolder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
-    _rightHolder.setBackground(Color.YELLOW);
+    _leftHolder = makePanelHolder(MY_BROWN, " Actions ", Color.WHITE);
+    _rightHolder = makePanelHolder(MY_BROWN, " Chronos Logo ", Color.WHITE);
+
     _contentPane.add(_leftHolder, "cell 0 0, wmax 50%, grow");
-    _contentPane.add(_rightHolder, "cell 1 0, wmax 50%, hmax 90%, grow");
+    _contentPane.add(_rightHolder, "cell 1 0, wmax 50%, grow");
     _contentPane.setFocusable(true);
+  }
+
+  
+  /**
+   * Create a holder for the left or right side of the frame, with all cosmetics. Holders will have
+   * same layout manager, size, border type, and runic font title is a title is supplied.
+   * 
+   * @param borderColor background Color for the border
+   * @param title to be positioned top center in Runic font
+   * @param backColor background Color for the panel
+   * 
+   * @return the JPanel that is assigned to the left or the right
+   */
+  private JPanel makePanelHolder(Color borderColor, String title, Color backColor)
+  {
+    JPanel holder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
+    Dimension holderSize = new Dimension(USERWIN_WIDTH, USERWIN_HEIGHT);
+    holder.setPreferredSize(holderSize);
+    holder.setBackground(borderColor);
+
+    Border matte = BorderFactory.createMatteBorder(5, 5, 5, 5, borderColor);
+    Border titled = BorderFactory.createTitledBorder(matte, title,
+        TitledBorder.CENTER, TitledBorder.TOP, Util.makeRunicFont(14f), Color.BLACK);
+    holder.setBorder(titled);
+    holder.setBackground(backColor);
+
+    return holder;
   }
 
 
@@ -205,30 +254,48 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
    */
   private void addImagePanel()
   {
-    _imagePanel = new JPanel(new MigLayout("", "[grow,fill]", "[grow,fill]"));
-    _imagePanel.setPreferredSize(new Dimension(
-        (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
-    // System.out.println("Mainframe.addImagePanel(): ");
-    // System.out.println("imagePanel height = \t" + _imagePanel.getPreferredSize().height);
-    // System.out.println("imagePanel width = \t" + _imagePanel.getPreferredSize().width);
+//    picPanel.setSize(new Dimension(
+//        (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
+//    picPanel.setBackground(Color.WHITE);
+    _imagePanel = ImagePanel.getInstance();
 
     _rightHolder.addMouseListener(Mainframe.this);
     _rightHolder.addMouseMotionListener(Mainframe.this);
-//    _rightHolder.add(_imagePanel);
+    _rightHolder.add(_imagePanel);
   }
 
+//  /**
+//   * Layout the image panel on the right side of the frame
+//   */
+//  private void addImagePanel()
+//  {
+//    JPanel picPanel = new JPanel(new MigLayout("", "[grow,fill]", "[grow,fill]"));
+////    picPanel.setPreferredSize(new Dimension(
+////        (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
+//    picPanel.setSize(new Dimension(
+//        (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
+//    picPanel.setBackground(Color.WHITE);
+//    _imagePanel = new ImagePanel(picPanel, INITIAL_IMAGE);
+//
+//    _rightHolder.addMouseListener(Mainframe.this);
+//    _rightHolder.addMouseMotionListener(Mainframe.this);
+//    _rightHolder.add(_imagePanel);
+//  }
+
+
   /**
-   * Clear the right side and add the image on an image panel
+   * Clear the right side and add the new image on the image panel
    * 
    * @param imagePath {@code jpg} to display
    */
   private void displayImage(String imagePath)
   {
-    _rightHolder.removeAll();
-    ImagePanel ipp = new ImagePanel(_imagePanel, imagePath);
-    ipp.setBackground(Color.blue);
-    _rightHolder.add(ipp);
+//    _rightHolder.removeAll();
+    _imagePanel.removeAll();
+    _imagePanel.displayImage(imagePath);
+//    _rightHolder.add(_imagePanel);
   }
+
 
   /**
    * Prepare the HelpDialog and HelpKey event responder
@@ -259,17 +326,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   // Public Methods
   // ============================================================
 
-  /**
-   * Get the size of the window being displayed, which is used as a standard for laying out
-   * subcomponents and panels.
-   * 
-   * @return {@code Dimension} object; retrieve int values with {@code Dimension.width} and
-   *         {@code Dimension.height}
-   */
-  static public Dimension getWindowSize()
-  {
-    return new Dimension(USERWIN_WIDTH, USERWIN_HEIGHT);
-  }
 
 
   // ============================================================
@@ -304,10 +360,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
   /**
    * Create the Adventure, Heroes, and Create-Hero buttons, and button panel for them
-   * 
-   * @return buttonpanel containing the initial buttons
    */
-  private JPanel createButtons()
+  private void createButtons()
   {
     JButton adventureButton = createAdventureButton();
     JButton summonButton = createSummonHeroesButton();
@@ -318,12 +372,14 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     buttonPanel.setLayout(new MigLayout("wrap 1"));
     buttonPanel.setPreferredSize(new Dimension(
         (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
+    buttonPanel.setBackground(MY_BROWN.brighter());
 
     /** Buttons are at 25% to allow space for Command Line later */
     buttonPanel.add(adventureButton, "hmax 25%, grow");
     buttonPanel.add(summonButton, "hmax 25%, grow");
     buttonPanel.add(creationButton, "hmax 25%, grow");
-    return buttonPanel;
+
+    _leftHolder.add(buttonPanel);
   }
 
   /**
@@ -435,6 +491,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private JButton createButtonWithTextAndIcon(String imageFilePath, String buttonText)
   {
     JButton button = new JButton(buttonText);
+    button.setBackground(MY_BROWN.brighter().brighter());
+
     // button.setFont(new Font("Tahoma", Font.PLAIN, 24));
     button.setFont(Util.makeRunicFont(14f));
     button.setIcon(new ImageIcon(Chronos.ADV_IMAGE_PATH + imageFilePath));
