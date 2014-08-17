@@ -21,8 +21,8 @@ import javax.swing.JComponent;
 import chronos.Chronos;
 
 /**
- * The {@code ImagePanel} class extends {@Code JComponent} class so that it is easy to draw
- * onto. It is a singleton because it is created once and different images are displayed on it for
+ * The {@code ImagePanel} class extends {@code JComponent} so that it is easy to draw
+ * onto. It is a singleton because it is created once and different images are displayed on it for 
  * the duration of the program.
  * 
  * @author Al Cline
@@ -90,10 +90,9 @@ public class ImagePanel extends JComponent
     // Find top-left corner to image panel to overlay image onto
     int pWidth = _imagePanel.getWidth();
     int pHeight = _imagePanel.getHeight();
-    
+
     // Draw the image at the top-left corner of the ImagePanel when JComponent gets its turn
     g.drawImage(_image, 0, 0, pWidth, pHeight, _imagePanel);
-
   }
 
 

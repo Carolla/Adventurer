@@ -16,12 +16,17 @@ import hic.Mainframe;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import javax.imageio.ImageIO;
+
+import chronos.Chronos;
 import chronos.pdc.Adventure;
 import chronos.pdc.registry.AdventureRegistry;
 import chronos.pdc.registry.RegistryFactory;
@@ -76,7 +81,6 @@ public class MainframeCiv
   private Mainframe _frame;
   private Adventure _adv;
   private PersonReadWriter _personRW;
-
   private boolean _onTown;
 
   /** Current Building being displayed, and can be entered */
@@ -122,7 +126,7 @@ public class MainframeCiv
   // ============================================================
   // Public methods
   // ============================================================
-
+  
   /**
    * Retrieves the Adventures for selection from the Adventure Registry
    * 
