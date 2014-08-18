@@ -212,7 +212,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private JPanel makePanelHolder(Color borderColor, String title, Color backColor)
   {
     JPanel holder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
-    Dimension holderSize = new Dimension(USERWIN_WIDTH, USERWIN_HEIGHT);
+    Dimension holderSize = new Dimension(USERWIN_WIDTH/2, USERWIN_HEIGHT);
     holder.setPreferredSize(holderSize);
     holder.setBackground(borderColor);
 
@@ -232,7 +232,9 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     USERWIN_WIDTH = screenSize.width;
     USERWIN_HEIGHT = screenSize.height;
+    System.out.println("screensize width x height = " + USERWIN_WIDTH + "\t" + USERWIN_HEIGHT);
     setSize(USERWIN_WIDTH, USERWIN_HEIGHT);
+    System.out.println("screensize width x height = " + this.getWidth() + "\t" + this.getHeight());
     setLocationByPlatform(true); // Operating System specific windowing
     setExtendedState(Frame.MAXIMIZED_BOTH);
     setResizable(false);
@@ -246,6 +248,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     _contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
     setContentPane(_contentPane);
     _contentPane.setLayout(new MigLayout("", "[grow, fill]10[grow]", "[grow]"));
+    System.out.println("contentPane width x height = " + _contentPane.getWidth() 
+        + "\t" + _contentPane.getHeight());
   }
 
 
