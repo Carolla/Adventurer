@@ -352,8 +352,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   /**
    * Create the behavior for selecting an adventure, which drives the frame update. <br>
    * Warning: Known bug with MigLayout in that {@code float} font sizes can cause overruns on
-   * round-up. "Choose your Adventure" overruns the button length, but "Select your Adventure" does
-   * not, despite being the same number of characters!
+   * round-up calculations. "Choose your Adventure" overruns the button length, but 
+   * "Select your Adventure" does not, despite being the same number of characters!
    * 
    * @return the button created
    */
