@@ -12,13 +12,8 @@ package hic.screenConfiguration;
 
 import java.awt.Graphics;
 import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.JComponent;
-
-import chronos.Chronos;
 
 /**
  * The {@code ImagePanel} class extends {@code JComponent} so that it is easy to draw onto. It is a
@@ -34,7 +29,7 @@ public class ImagePanel extends JComponent
   /** Reference to singleton ImagePanel */
   static private ImagePanel _imagePanel;
   /** The actual image to be displayed */
-  private Image _image;
+  static private Image _image;
 
 
   // ============================================================
@@ -65,19 +60,13 @@ public class ImagePanel extends JComponent
   // ============================================================
 
   /**
-   * Get the image from its filename, and then let {@code paintComponent} override take over
+   * Set the image into the panel and let {@code paintComponent} take over
    * 
-   * @param imageName the name of the image to display on the {@code ImagePanel}
+   * @param image the picture to display, or {@code image} type
    */
-  public void displayImage(String imageName)
+  static public void setDisplay(Image image)
   {
-    try {
-      _image = ImageIO.read(new File(Chronos.ADV_IMAGE_PATH + imageName));
-    } catch (IllegalArgumentException iaex) {
-      System.err.println("IMagePanel: null image path given");
-    } catch (IOException ioex) {
-      System.err.println("IMagePanel: problems reading the image file");
-    }
+    _image = image;
   }
 
 

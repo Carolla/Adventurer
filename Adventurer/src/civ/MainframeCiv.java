@@ -12,8 +12,10 @@ package civ;
 import hic.BuildingRectangle;
 import hic.IOPanel;
 import hic.Mainframe;
+import hic.screenConfiguration.ImagePanel;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.File;
@@ -38,8 +40,9 @@ import dmc.PersonReadWriter;
  * 
  * @author Alan Cline
  * @author Tim Armstrong
- * @version 1.0 Nov 2, 2013 // moved from CIV component <br>
- *          1.1 Mar 19 2014 // added current Building for ENTER command
+ * @version Nov 2, 2013 // moved from CIV component <br>
+ *          Mar 19 2014 // added current Building for ENTER command <br>
+ *          Aug 18 2014 // added displayImage() to show Chronos logo on portal page <br>
  */
 public class MainframeCiv
 {
@@ -85,6 +88,10 @@ public class MainframeCiv
 
   /** Current Building being displayed, and can be entered */
   private final Rectangle _townReturn = new Rectangle(0, 0, 100, 100);
+  
+  /** Initial right-side image: Chronos logo */
+  private static final String INITIAL_IMAGE = "ChronosLogo.jpg";
+
 
   // ============================================================
   // Constructors and constructor helpers
@@ -101,6 +108,7 @@ public class MainframeCiv
   public MainframeCiv(Mainframe frame)
   {
     _frame = frame;
+    displayImage(INITIAL_IMAGE);
     // _personRW = new PersonReadWriter();
     // _advReg = (AdventureRegistry) RegistryFactory.getInstance().getRegistry(RegKey.ADV);
     // _cp = new CommandParser(this);
@@ -126,7 +134,26 @@ public class MainframeCiv
   // ============================================================
   // Public methods
   // ============================================================
-  
+
+  /**
+   * Get the image from its filename, and then let {@code paintComponent} override take over
+   * 
+   * @param imageName the name of the image to display on the {@code ImagePanel}
+   */
+  private void displayImage(String imageName)
+  {
+    try {
+      Image myImage = ImageIO.read(new File(Chronos.ADV_IMAGE_PATH + imageName));
+      ImagePanel.setDisplay(myImage);
+    } catch (IllegalArgumentException iaex) {
+      System.err.println("IMagePanel: null image path given");
+    } catch (IOException ioex) {
+      System.err.println("IMagePanel: problems reading the image file");
+    }
+  }
+
+
+
   /**
    * Retrieves the Adventures for selection from the Adventure Registry
    * 

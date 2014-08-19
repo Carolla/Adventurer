@@ -55,6 +55,7 @@ import civ.MainframeCiv;
  *          Aug 3, 2014 // added {@code getWindowSize} to replace public variables <br>
  *          Aug 3, 2014 // added Runic font to the buttons <br>
  *          Aug 6, 2014 // removed innner classes and merged StandardLayout with IOPanel <br>
+ *          Aug 18, 2014  // moved {@code ImagePanel} backend methods to {@code MainframeCiv} <br>
  */
 // Mainframe serialization unnecessary
 @SuppressWarnings("serial")
@@ -74,8 +75,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private static final String REGISTRAR_IMAGE = "raw_Register.jpg";
   private static final String HALL_IMAGE = "icn_HallOfHeroes.jpg";
   private static final String ADV_IMAGE = "icn_Town.jpg";
-  /** Initial right-side image: Chronos logo */
-  private static final String INITIAL_IMAGE = "ChronosLogo.jpg";
+//  /** Initial right-side image: Chronos logo */
+//  private static final String INITIAL_IMAGE = "ChronosLogo.jpg";
 
   /** Width of the platform user's window frame */
   private static int USERWIN_WIDTH;
@@ -164,8 +165,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private Mainframe()
   {
     createFrameAndMenubar(); // contains left and right panel holders
-    addImagePanel(); // add image panel on right and display image    redraw();
-    displayImage(INITIAL_IMAGE);
+    addImagePanel(); // add image panel on right for adding images later
     createButtons(); // creates three action buttons on panel
     redraw();
     setVisible(true);
@@ -188,7 +188,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     // Add menu
-     setJMenuBar(new Menubar());
+    setJMenuBar(new Menubar());
 
     _leftHolder = makePanelHolder(MY_BROWN, " Actions ", Color.WHITE);
     _rightHolder = makePanelHolder(MY_BROWN, " Chronos Logo ", Color.WHITE);
@@ -198,7 +198,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     _contentPane.setFocusable(true);
   }
 
-  
+
   /**
    * Create a holder for the left or right side of the frame, with all cosmetics. Holders will have
    * same layout manager, size, border type, and runic font title is a title is supplied.
@@ -212,7 +212,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private JPanel makePanelHolder(Color borderColor, String title, Color backColor)
   {
     JPanel holder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
-    Dimension holderSize = new Dimension(USERWIN_WIDTH/2, USERWIN_HEIGHT);
+    Dimension holderSize = new Dimension(USERWIN_WIDTH / 2, USERWIN_HEIGHT);
     holder.setPreferredSize(holderSize);
     holder.setBackground(borderColor);
 
@@ -232,9 +232,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     USERWIN_WIDTH = screenSize.width;
     USERWIN_HEIGHT = screenSize.height;
-    System.out.println("screensize width x height = " + USERWIN_WIDTH + "\t" + USERWIN_HEIGHT);
     setSize(USERWIN_WIDTH, USERWIN_HEIGHT);
-    System.out.println("screensize width x height = " + this.getWidth() + "\t" + this.getHeight());
     setLocationByPlatform(true); // Operating System specific windowing
     setExtendedState(Frame.MAXIMIZED_BOTH);
     setResizable(false);
@@ -248,56 +246,19 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     _contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
     setContentPane(_contentPane);
     _contentPane.setLayout(new MigLayout("", "[grow, fill]10[grow]", "[grow]"));
-    System.out.println("contentPane width x height = " + _contentPane.getWidth() 
-        + "\t" + _contentPane.getHeight());
   }
 
 
   /**
-   * Layout the image panel on the right side of the frame
+   * Layout the image panel on the right side of the frame, with mouse listeners.
    */
   private void addImagePanel()
   {
-//    picPanel.setSize(new Dimension(
-//        (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
-//    picPanel.setBackground(Color.WHITE);
     _imagePanel = ImagePanel.getInstance();
 
     _rightHolder.addMouseListener(Mainframe.this);
     _rightHolder.addMouseMotionListener(Mainframe.this);
     _rightHolder.add(_imagePanel);
-  }
-
-//  /**
-//   * Layout the image panel on the right side of the frame
-//   */
-//  private void addImagePanel()
-//  {
-//    JPanel picPanel = new JPanel(new MigLayout("", "[grow,fill]", "[grow,fill]"));
-////    picPanel.setPreferredSize(new Dimension(
-////        (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
-//    picPanel.setSize(new Dimension(
-//        (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
-//    picPanel.setBackground(Color.WHITE);
-//    _imagePanel = new ImagePanel(picPanel, INITIAL_IMAGE);
-//
-//    _rightHolder.addMouseListener(Mainframe.this);
-//    _rightHolder.addMouseMotionListener(Mainframe.this);
-//    _rightHolder.add(_imagePanel);
-//  }
-
-
-  /**
-   * Clear the right side and add the new image on the image panel
-   * 
-   * @param imagePath {@code jpg} to display
-   */
-  private void displayImage(String imagePath)
-  {
-//    _rightHolder.removeAll();
-    _imagePanel.removeAll();
-    _imagePanel.displayImage(imagePath);
-//    _rightHolder.add(_imagePanel);
   }
 
 
@@ -326,9 +287,20 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   }
 
 
+
   // ============================================================
   // Public Methods
   // ============================================================
+
+  /**
+   * Display the help text for this mainframe; implements {@code IHelpText}
+   */
+  public void showHelp()
+  {
+    System.out.println("Help Dialog set visible in showHelp");
+    _helpdlg.setVisible(true);
+    _helpdlg.showHelp(_helpTitle, _helpText);
+  }
 
 
 
@@ -351,15 +323,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     return _iop;
   }
 
-  /**
-   * Display the help text for this mainframe; implements {@code IHelpText}
-   */
-  public void showHelp()
-  {
-    System.out.println("Help Dialog set visible in showHelp");
-    _helpdlg.setVisible(true);
-    _helpdlg.showHelp(_helpTitle, _helpText);
-  }
 
 
   /**
@@ -505,10 +468,9 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   }
 
 
-  /*------------------------------------------------------------------------
-   * Temporary SECONDARY CODE BELOW THIS LINE while refactoring
-   *------------------------------------------------------------------------*/
-
+  // ============================================================
+  // Deprecated Methods Temporarily
+  // ============================================================
 
   // /**
   // * Create the CommandLine input area
@@ -608,8 +570,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   public void displayTextAndImage(String description, String image)
   {
     displayText(description);
-    displayImage(image);
-    // _cmdLine.setDescription(description);
+//    _mfCiv.displayImage(image);
   }
 
   /**
@@ -645,37 +606,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
 
 
-  // /**
-  // * Checks for Help Key to display Help text
-  // *
-  // * @param e any key released
-  // */
-  // public void keyReleased(KeyEvent e)
-  // {
-  // System.out.println("keyReleased(): Extended key code received = " + e.getExtendedKeyCode());
-  // if (e.getKeyCode() == KeyEvent.VK_F1) {
-  // System.out.println("F1 Help key pressed");
-  // }
-  // }
-  //
-  // /** Required implementation for KeyListener, does nothing */
-  // public void keyPressed(KeyEvent e)
-  // {
-  // System.out.println("keyPressed(): Extended key code received = " + e.getExtendedKeyCode());
-  // if (e.getKeyCode() == KeyEvent.VK_F1) {
-  // System.out.println("F1 Help key pressed");
-  // }
-  // }
-  //
-  // /** Required implementation for KeyListener, does nothing */
-  // public void keyTyped(KeyEvent e)
-  // {
-  // System.out.println("keyTyped(): Extended key code received = " + e.getExtendedKeyCode());
-  // if (e.getKeyCode() == KeyEvent.VK_F1) {
-  // System.out.println("F1 Help key pressed");
-  // }
-  // }
-
   public void mouseClicked(MouseEvent e)
   {
     _mfCiv.handleClick(e.getPoint());
@@ -709,65 +639,69 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   }
 
 
-  // // ============================================================
-  // // INNER CLASS: InitialLayout
-  // // ============================================================
-  //
   // /**
-  // * Inner class to hold the initial mainframe widgets before an Adventure is selected: the
-  // buttons
-  // * on the left side, and the chronos logo on the right.
+  // * Checks for Help Key to display Help text
+  // *
+  // * @param e any key released
   // */
-  // public class InitialLayout extends JPanel implements IHelpText
+  // public void keyReleased(KeyEvent e)
   // {
-  // /** Help Title for the mainframe */
-  // private static final String _helpTitle = "GREETINGS ADVENTURER!";
-  // /** Help Text for the mainframe */
-  // private static final String _helpText =
-  // "Greetings Adventurer! \n"
-  // + "To get started, click on the large button on the left to create a new Hero. "
-  // + "Then select an Adventure to explore. "
-  // + "Kill monsters, solve puzzles, and find treasure in the Adventure's Arena to gain "
-  // + "experience points. The more points you have, the more power and fame you get. "
-  // + "When you get enough experience, join one of the many Guilds in town. "
-  // + "Guilds are important to your Adventuring career.\n\n"
-  // + "Before entering the Arena, have your Hero visit Buildings to prepare for questing. "
-  // + "You can get important info from patrons at the Inn, buy supplies from the General "
-  // + "Store, or get a loan from the Bank. "
-  // + "Don't get in trouble with the townspeople. We also have a jail.\n\n"
-  // + "If you leave your Hero in town when you exit the game, he or she will be waiting "
-  // + "in the same building when you return. If you Save your Hero, he or she can be summoned "
-  // + "from the Hall of Heroes next time. ";
-  //
-  // /**
-  // * Create the layout for the mainframe at start up time
-  // */
-  // public InitialLayout()
-  // {
-  // addInitialLeftPanel();
-  // addImagePanel();
-  // displayImage(INITIAL_IMAGE);
+  // System.out.println("keyReleased(): Extended key code received = " + e.getExtendedKeyCode());
+  // if (e.getKeyCode() == KeyEvent.VK_F1) {
+  // System.out.println("F1 Help key pressed");
+  // }
   // }
   //
-  // /**
-  // * Create initial left panel with buttons and add it to the left holder
-  // */
-  // private void addInitialLeftPanel()
+  // /** Required implementation for KeyListener, does nothing */
+  // public void keyPressed(KeyEvent e)
   // {
-  // JPanel buttonPanel = createButtons();
-  // _leftHolder.add(buttonPanel);
+  // System.out.println("keyPressed(): Extended key code received = " + e.getExtendedKeyCode());
+  // if (e.getKeyCode() == KeyEvent.VK_F1) {
+  // System.out.println("F1 Help key pressed");
+  // }
   // }
   //
-  // /**
-  // * Display the help text for this mainframe
-  // */
-  // public void showHelp()
+  // /** Required implementation for KeyListener, does nothing */
+  // public void keyTyped(KeyEvent e)
   // {
-  // _helpdlg.setVisible(true);
-  // _helpdlg.showHelp(_helpTitle, _helpText);
+  // System.out.println("keyTyped(): Extended key code received = " + e.getExtendedKeyCode());
+  // if (e.getKeyCode() == KeyEvent.VK_F1) {
+  // System.out.println("F1 Help key pressed");
   // }
+  // }
+
+
+  // /**
+  // * Layout the image panel on the right side of the frame
+  // */
+  // private void addImagePanel()
+  // {
+  // JPanel picPanel = new JPanel(new MigLayout("", "[grow,fill]", "[grow,fill]"));
+  // // picPanel.setPreferredSize(new Dimension(
+  // // (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
+  // picPanel.setSize(new Dimension(
+  // (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
+  // picPanel.setBackground(Color.WHITE);
+  // _imagePanel = new ImagePanel(picPanel, INITIAL_IMAGE);
   //
-  // } // end of InitialLayout inner class
+  // _rightHolder.addMouseListener(Mainframe.this);
+  // _rightHolder.addMouseMotionListener(Mainframe.this);
+  // _rightHolder.add(_imagePanel);
+  // }
+
+
+  // /**
+  // * Clear the right side and add the new image on the image panel
+  // *
+  // * @param imagePath {@code jpg} to display
+  // */
+  // private void displayImage(String imagePath)
+  // {
+  // // _rightHolder.removeAll();
+  // _imagePanel.removeAll();
+  // _imagePanel.displayImage(imagePath);
+  // // _rightHolder.add(_imagePanel);
+  // }
 
 
   // ============================================================
