@@ -55,7 +55,7 @@ import civ.MainframeCiv;
  *          Aug 3, 2014 // added {@code getWindowSize} to replace public variables <br>
  *          Aug 3, 2014 // added Runic font to the buttons <br>
  *          Aug 6, 2014 // removed innner classes and merged StandardLayout with IOPanel <br>
- *          Aug 18, 2014  // moved {@code ImagePanel} backend methods to {@code MainframeCiv} <br>
+ *          Aug 18, 2014 // moved {@code ImagePanel} backend methods to {@code MainframeCiv} <br>
  */
 // Mainframe serialization unnecessary
 @SuppressWarnings("serial")
@@ -75,8 +75,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private static final String REGISTRAR_IMAGE = "raw_Register.jpg";
   private static final String HALL_IMAGE = "icn_HallOfHeroes.jpg";
   private static final String ADV_IMAGE = "icn_Town.jpg";
-//  /** Initial right-side image: Chronos logo */
-//  private static final String INITIAL_IMAGE = "ChronosLogo.jpg";
+  // /** Initial right-side image: Chronos logo */
+  // private static final String INITIAL_IMAGE = "ChronosLogo.jpg";
 
   /** Width of the platform user's window frame */
   private static int USERWIN_WIDTH;
@@ -352,7 +352,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   /**
    * Create the behavior for selecting an adventure, which drives the frame update. <br>
    * Warning: Known bug with MigLayout in that {@code float} font sizes can cause overruns on
-   * round-up calculations. "Choose your Adventure" overruns the button length, but 
+   * round-up calculations. "Choose your Adventure" overruns the button length, but
    * "Select your Adventure" does not, despite being the same number of characters!
    * 
    * @return the button created
@@ -570,7 +570,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   public void displayTextAndImage(String description, String image)
   {
     displayText(description);
-//    _mfCiv.displayImage(image);
+    // _mfCiv.displayImage(image);
   }
 
   /**
