@@ -26,16 +26,14 @@ import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
 
+import mylib.Constants;
 import mylib.hic.HelpDialog;
 import mylib.hic.IHelpText;
 import mylib.hic.ShuttleList;
@@ -99,8 +97,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private List<String> _partyHeros = new ArrayList<String>();
   private List<String> _summonableHeroes;
 
-  // My own special version of Brown since there is not one for Color
-  private final Color MY_BROWN = new Color(130, 100, 90);
+//  // My own special version of Brown since there is not one for Color
+//  private final Color MY_BROWN = new Color(130, 100, 90);
 
   /** Help Title for the mainframe */
   private static final String _helpTitle = "GREETINGS ADVENTURER!";
@@ -190,8 +188,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     // Add menu
     setJMenuBar(new Menubar());
 
-    _leftHolder = makePanelHolder(MY_BROWN, " Actions ", Color.WHITE);
-    _rightHolder = makePanelHolder(MY_BROWN, " Chronos Logo ", Color.WHITE);
+    _leftHolder = makePanelHolder(Constants.MY_BROWN, " Actions ", Color.WHITE);
+    _rightHolder = makePanelHolder(Constants.MY_BROWN, " Chronos Logo ", Color.WHITE);
 
     _contentPane.add(_leftHolder, "cell 0 0, wmax 50%, grow");
     _contentPane.add(_rightHolder, "cell 1 0, wmax 50%, grow");
@@ -216,10 +214,10 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     holder.setPreferredSize(holderSize);
     holder.setBackground(borderColor);
 
-    Border matte = BorderFactory.createMatteBorder(5, 5, 5, 5, borderColor);
-    Border titled = BorderFactory.createTitledBorder(matte, title,
-        TitledBorder.CENTER, TitledBorder.TOP, Util.makeRunicFont(14f), Color.BLACK);
-    holder.setBorder(titled);
+//    Border matte = BorderFactory.createMatteBorder(5, 5, 5, 5, borderColor);
+//    Border titled = BorderFactory.createTitledBorder(matte, title,
+//        TitledBorder.CENTER, TitledBorder.TOP, Util.makeRunicFont(14f), Color.BLACK);
+//    holder.setBorder(titled);
     holder.setBackground(backColor);
 
     return holder;
@@ -303,27 +301,20 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   }
 
 
+  /**
+   * Layout the IOPanel on the left: scrolling text window and working Comandline input area
+   */
+  public void addIOPanel()
+  {
+    _iop = new IOPanel();
+    _leftHolder.removeAll();
+    _leftHolder.add(_iop);
+  }
+
 
   // ============================================================
   // Private Methods
   // ============================================================
-
-
-  // TODO This method is called after an Adventure is opened, so should be in MainframeCiv.
-  /**
-   * Layout the IOPanel on the left: scrolling text window and working Comandline input area
-   * 
-   * @return the image panel with no image
-   */
-  private JPanel createIOPanel()
-  {
-    _iop = new IOPanel();
-    _leftHolder.removeAll();
-    add(_iop);
-    return _iop;
-  }
-
-
 
   /**
    * Create the Adventure, Heroes, and Create-Hero buttons, and button panel for them
@@ -339,7 +330,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     buttonPanel.setLayout(new MigLayout("wrap 1"));
     buttonPanel.setPreferredSize(new Dimension(
         (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
-    buttonPanel.setBackground(MY_BROWN.brighter());
+    buttonPanel.setBackground(Constants.MY_BROWN.brighter());
 
     /** Buttons are at 25% to allow space for Command Line later */
     buttonPanel.add(adventureButton, "hmax 25%, grow");
@@ -369,7 +360,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
             Mainframe.this, "Select an Adventure", "Adventures",
             JOptionPane.INFORMATION_MESSAGE, null, adventuresArr, adventuresArr[0]);
         if (selectedValue != null) {
-          System.out.println("Adventure selected was: " + selectedValue);
+          // System.out.println("Adventure selected was: " + selectedValue);
           _mfCiv.loadSelectedAdventure(selectedValue.toString());
         }
       }
@@ -458,7 +449,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private JButton createButtonWithTextAndIcon(String imageFilePath, String buttonText)
   {
     JButton button = new JButton(buttonText);
-    button.setBackground(MY_BROWN.brighter().brighter());
+    button.setBackground(Constants.MY_BROWN.brighter().brighter());
 
     // button.setFont(new Font("Tahoma", Font.PLAIN, 24));
     button.setFont(Util.makeRunicFont(14f));
@@ -561,18 +552,20 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   // }
 
 
-  /**
-   * Display the image and text of a Building or the Town
-   * 
-   * @param description - the description to display in the output panel
-   * @param image - the image to display in the right-side image panel
-   */
-  public void displayTextAndImage(String description, String image)
-  {
-    displayText(description);
-    // _mfCiv.displayImage(image);
-  }
+//  /**
+//   * Display the image and text of a Building or the Town
+//   * 
+//   * @param description - the description to display in the output panel
+//   * @param image - the image to display in the right-side image panel
+//   */
+//  public void displayTextAndImage(String description, String image)
+//  {
+//    displayText(description);
+//    _imagePanel.setDisplay(image);
+//    // _mfCiv.displayImage(image);
+//  }
 
+  
   /**
    * Display text onto the scrolling output panel
    * 

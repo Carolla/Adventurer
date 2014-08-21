@@ -11,10 +11,15 @@
 
 package mylib.pdc;
 
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.TreeSet;
+
+import javax.imageio.ImageIO;
 
 import mylib.Constants;
 
@@ -27,7 +32,8 @@ import mylib.Constants;
  *          <DT>Build 1.1   Jan 29, 2013    // moved from Chronos to MyLibary <DD>
  *          </DL>
  */
-public class Utilities {
+public class Utilities 
+{
 	
 
 //	/**

@@ -1,5 +1,4 @@
 /**
- * MainframeCiv.java Copyright (c) 2010, Carolla Development, Inc. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
@@ -10,7 +9,6 @@
 package civ;
 
 import hic.BuildingRectangle;
-import hic.IOPanel;
 import hic.Mainframe;
 import hic.screenConfiguration.ImagePanel;
 
@@ -18,17 +16,13 @@ import java.awt.Color;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import javax.imageio.ImageIO;
-
-import chronos.Chronos;
+import pdc.Util;
 import chronos.pdc.Adventure;
 import chronos.pdc.registry.AdventureRegistry;
 import chronos.pdc.registry.RegistryFactory;
@@ -88,9 +82,11 @@ public class MainframeCiv
 
   /** Current Building being displayed, and can be entered */
   private final Rectangle _townReturn = new Rectangle(0, 0, 100, 100);
-  
+
   /** Initial right-side image: Chronos logo */
   private static final String INITIAL_IMAGE = "ChronosLogo.jpg";
+  /** Title of initial image */
+  private static final String INITIAL_TITLE = "Chronos Logo";
 
 
   // ============================================================
@@ -108,7 +104,7 @@ public class MainframeCiv
   public MainframeCiv(Mainframe frame)
   {
     _frame = frame;
-    displayImage(INITIAL_IMAGE);
+    ImagePanel.setDisplay(Util.convertToImage(INITIAL_IMAGE), INITIAL_TITLE);
     // _personRW = new PersonReadWriter();
     // _advReg = (AdventureRegistry) RegistryFactory.getInstance().getRegistry(RegKey.ADV);
     // _cp = new CommandParser(this);
@@ -135,22 +131,23 @@ public class MainframeCiv
   // Public methods
   // ============================================================
 
-  /**
-   * Get the image from its filename, and then let {@code paintComponent} override take over
-   * 
-   * @param imageName the name of the image to display on the {@code ImagePanel}
-   */
-  private void displayImage(String imageName)
-  {
-    try {
-      Image myImage = ImageIO.read(new File(Chronos.ADV_IMAGE_PATH + imageName));
-      ImagePanel.setDisplay(myImage);
-    } catch (IllegalArgumentException iaex) {
-      System.err.println("IMagePanel: null image path given");
-    } catch (IOException ioex) {
-      System.err.println("IMagePanel: problems reading the image file");
-    }
-  }
+  // /**
+  // * Create an {@code Image} type from its filename
+  // *
+  // * @param imageName the name of the image to convert
+  // */
+  // private Image createDisplayImage(String imageName)
+  // {
+  // try {
+  // Image myImage = ImageIO.read(new File(Chronos.ADV_IMAGE_PATH + imageName));
+  // return myImage;
+  // // ImagePanel.setDisplay(myImage);
+  // } catch (IllegalArgumentException iaex) {
+  // System.err.println("IMagePanel: null image path given");
+  // } catch (IOException ioex) {
+  // System.err.println("IMagePanel: problems reading the image file");
+  // }
+  // }
 
 
 
@@ -227,13 +224,15 @@ public class MainframeCiv
 
 
   /**
-   * Load the selected adventure from the Adventure registry
+   * Load the selected adventure from the Adventure registry. Replace the opening button panel with
+   * the IOPanel (text and command line)
    * 
    * @param adventureName selected from the Adventure by the user
    */
   public void loadSelectedAdventure(String adventureName)
   {
     _adv = _advReg.getAdventure(adventureName);
+    _frame.addIOPanel();
     openTown();
   }
 
@@ -263,8 +262,10 @@ public class MainframeCiv
   {
     _onTown = true;
     // _bdCiv.exitBuilding();
-    _frame.add(new IOPanel());
-    _frame.displayTextAndImage(_adv.getOverview(), TOWN_IMAGE);
+    String townName = _adv.getTownName();
+    Image townImage = Util.convertToImage(TOWN_IMAGE);
+    ImagePanel.setDisplay(townImage, townName);
+    _frame.displayText(_adv.getOverview());
   }
 
 

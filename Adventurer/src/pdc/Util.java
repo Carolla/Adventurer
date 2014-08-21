@@ -10,7 +10,11 @@
 package pdc;
 
 import java.awt.Font;
+import java.awt.Image;
 import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 import mylib.MsgCtrl;
 import chronos.Chronos;
@@ -27,6 +31,25 @@ public class Util
   private Util()
   {}
 
+  /**
+   * Create an {@code Image} type from its filename
+   * 
+   * @param imageName the name of the image to convert
+   */
+  static public Image convertToImage(String imageName)
+  {
+    Image myImage = null;
+    try {
+      myImage = ImageIO.read(new File(Chronos.ADV_IMAGE_PATH + imageName));
+    } catch (IllegalArgumentException iaex) {
+      System.err.println("IMagePanel: null image path given");
+    } catch (IOException ioex) {
+      System.err.println("IMagePanel: problems reading the image file");
+    }
+    return myImage;
+  }
+
+  
   /**
    * Create a Runic font that simulates English letters. <br>
    * Warning: Be careful of character selection and float size; round-up errors for {@code float} 
