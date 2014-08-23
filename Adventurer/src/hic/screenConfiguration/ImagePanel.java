@@ -10,16 +10,10 @@
 
 package hic.screenConfiguration;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 
-import javax.swing.BorderFactory;
 import javax.swing.JComponent;
-import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
-
-import pdc.Util;
 
 /**
  * The {@code ImagePanel} class extends {@code JComponent} so that it is easy to draw onto. It is a
@@ -34,10 +28,12 @@ public class ImagePanel extends JComponent
 {
   /** Reference to singleton ImagePanel */
   static private ImagePanel _imagePanel;
+
   /** The actual image to be displayed */
-  static private Image _image;
-  /** The border around the image */
-  static private TitledBorder _border;
+  private Image _image;
+
+  /** Default image: the Chronos logo */
+  private final String DEFAULT_IMAGE = "ChronosLogo.jpg";
 
 
   // ============================================================
@@ -67,19 +63,6 @@ public class ImagePanel extends JComponent
   // Public methods
   // ============================================================
 
-  /**
-   * Set the border of the ImagePanel
-   * 
-   * @param borderColor color of the titled border, usually CONSTANTS.MY_BROWN
-   */
-  static public void setImageBorder(Color borderColor)
-  {
-    Border matte = BorderFactory.createMatteBorder(5, 5, 5, 5, borderColor);
-    _border = BorderFactory.createTitledBorder(matte, "",
-        TitledBorder.CENTER, TitledBorder.TOP, Util.makeRunicFont(14f), Color.BLACK);
-//    _imagePanel.setBorder(_border);
-  }
-
 
   /**
    * Set the image into the panel and let {@code paintComponent} take over
@@ -87,15 +70,14 @@ public class ImagePanel extends JComponent
    * @param image the picture to display, or {@code image} type
    * @param title the caption over the image being displayed
    */
-  static public void setDisplay(Image image, String title)
+  public void setImage(Image image)
   {
     _image = image;
-    _border.setTitle(title);
   }
 
 
   /**
-   * Required override method to draw on a {@code JComponent}, in this case, {@code ImagePanel}
+   * Required override method to draw on {@code JComponent.ImagePanel}
    */
   @Override
   public void paintComponent(Graphics g)

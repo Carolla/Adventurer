@@ -10,7 +10,6 @@ package civ;
 
 import hic.BuildingRectangle;
 import hic.Mainframe;
-import hic.screenConfiguration.ImagePanel;
 
 import java.awt.Color;
 import java.awt.Image;
@@ -104,7 +103,7 @@ public class MainframeCiv
   public MainframeCiv(Mainframe frame)
   {
     _frame = frame;
-    ImagePanel.setDisplay(Util.convertToImage(INITIAL_IMAGE), INITIAL_TITLE);
+    _frame.setImageAndTitle(Util.convertToImage(INITIAL_IMAGE), INITIAL_TITLE);
     // _personRW = new PersonReadWriter();
     // _advReg = (AdventureRegistry) RegistryFactory.getInstance().getRegistry(RegKey.ADV);
     // _cp = new CommandParser(this);
@@ -264,7 +263,7 @@ public class MainframeCiv
     // _bdCiv.exitBuilding();
     String townName = _adv.getTownName();
     Image townImage = Util.convertToImage(TOWN_IMAGE);
-    ImagePanel.setDisplay(townImage, townName);
+    _frame.setImageAndTitle(townImage, townName);
     _frame.displayText(_adv.getOverview());
   }
 

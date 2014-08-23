@@ -15,6 +15,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,12 +27,15 @@ import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 
 import mylib.Constants;
 import mylib.hic.HelpDialog;
@@ -97,8 +101,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private List<String> _partyHeros = new ArrayList<String>();
   private List<String> _summonableHeroes;
 
-//  // My own special version of Brown since there is not one for Color
-//  private final Color MY_BROWN = new Color(130, 100, 90);
+  // // My own special version of Brown since there is not one for Color
+  // private final Color MY_BROWN = new Color(130, 100, 90);
 
   /** Help Title for the mainframe */
   private static final String _helpTitle = "GREETINGS ADVENTURER!";
@@ -214,10 +218,10 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     holder.setPreferredSize(holderSize);
     holder.setBackground(borderColor);
 
-//    Border matte = BorderFactory.createMatteBorder(5, 5, 5, 5, borderColor);
-//    Border titled = BorderFactory.createTitledBorder(matte, title,
-//        TitledBorder.CENTER, TitledBorder.TOP, Util.makeRunicFont(14f), Color.BLACK);
-//    holder.setBorder(titled);
+    Border matte = BorderFactory.createMatteBorder(5, 5, 5, 5, borderColor);
+    Border titled = BorderFactory.createTitledBorder(matte, title,
+        TitledBorder.CENTER, TitledBorder.TOP, Util.makeRunicFont(14f), Color.BLACK);
+    holder.setBorder(titled);
     holder.setBackground(backColor);
 
     return holder;
@@ -552,20 +556,20 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   // }
 
 
-//  /**
-//   * Display the image and text of a Building or the Town
-//   * 
-//   * @param description - the description to display in the output panel
-//   * @param image - the image to display in the right-side image panel
-//   */
-//  public void displayTextAndImage(String description, String image)
-//  {
-//    displayText(description);
-//    _imagePanel.setDisplay(image);
-//    // _mfCiv.displayImage(image);
-//  }
+  // /**
+  // * Display the image and text of a Building or the Town
+  // *
+  // * @param description - the description to display in the output panel
+  // * @param image - the image to display in the right-side image panel
+  // */
+  // public void displayTextAndImage(String description, String image)
+  // {
+  // displayText(description);
+  // _imagePanel.setDisplay(image);
+  // // _mfCiv.displayImage(image);
+  // }
 
-  
+
   /**
    * Display text onto the scrolling output panel
    * 
@@ -574,6 +578,19 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   public void displayText(String msg)
   {
     _iop.appendText(msg);
+  }
+
+
+  /**
+   * Display an image and its title onto the Image panel
+   * 
+   * @param image to display on the rightside
+   * @param title of the image, shown centered in the title border
+   */
+  public void setImageAndTitle(Image image, String title)
+  {
+    _imagePanel.setImage(image);
+    Border border = _rightHolder.getBorder();
   }
 
 
