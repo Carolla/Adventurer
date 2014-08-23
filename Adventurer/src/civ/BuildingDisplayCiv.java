@@ -2,7 +2,6 @@
 package civ;
 
 import hic.Mainframe;
-import hic.screenConfiguration.ImagePanel;
 import pdc.Util;
 import chronos.pdc.buildings.Building;
 import chronos.pdc.registry.BuildingRegistry;
@@ -78,7 +77,8 @@ public class BuildingDisplayCiv
         if (description.length() > 0 && imagePath.length() > 0) {
 //          _frame.displayTextAndImage(description, imagePath);
           String bldgName = _bldg.getName();
-          _frame.setImageAndTitle(Util.convertToImage(imagePath), bldgName);
+          _frame.setImage(Util.convertToImage(imagePath));
+          _frame.setImageTitle(bldgName);
 //          _frame.displayText(description);
         } else {
             System.err.println("Unabled to display building " + _bldg);

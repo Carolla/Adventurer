@@ -103,7 +103,8 @@ public class MainframeCiv
   public MainframeCiv(Mainframe frame)
   {
     _frame = frame;
-    _frame.setImageAndTitle(Util.convertToImage(INITIAL_IMAGE), INITIAL_TITLE);
+    _frame.setImage(Util.convertToImage(INITIAL_IMAGE));
+    _frame.setImageTitle(INITIAL_TITLE);
     // _personRW = new PersonReadWriter();
     // _advReg = (AdventureRegistry) RegistryFactory.getInstance().getRegistry(RegKey.ADV);
     // _cp = new CommandParser(this);
@@ -263,7 +264,8 @@ public class MainframeCiv
     // _bdCiv.exitBuilding();
     String townName = _adv.getTownName();
     Image townImage = Util.convertToImage(TOWN_IMAGE);
-    _frame.setImageAndTitle(townImage, townName);
+    _frame.setImage(townImage);
+    _frame.setImageTitle(townName);
     _frame.displayText(_adv.getOverview());
   }
 

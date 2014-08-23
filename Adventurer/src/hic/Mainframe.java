@@ -582,18 +582,29 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
 
   /**
-   * Display an image and its title onto the Image panel
+   * Display an image in the Image panel
    * 
    * @param image to display on the rightside
-   * @param title of the image, shown centered in the title border
    */
-  public void setImageAndTitle(Image image, String title)
+  public void setImage(Image image)
   {
     _imagePanel.setImage(image);
-    Border border = _rightHolder.getBorder();
   }
 
+  
+  /**
+   * Display a title onto the border of the right side image panel
+   * 
+   * @param title of the panel to set
+   */
+  public void setImageTitle(String title)
+  {
+    TitledBorder border = (TitledBorder) _rightHolder.getBorder();
+    border.setTitle(title);
+  }
 
+  
+  
   public void drawBuilding(BuildingRectangle rect)
   {
     Graphics2D g = (Graphics2D) _rightHolder.getGraphics();
