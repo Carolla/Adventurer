@@ -8,7 +8,7 @@
  */
 
 
-package hic.screenConfiguration;
+package hic;
 
 import java.awt.Graphics;
 import java.awt.Image;

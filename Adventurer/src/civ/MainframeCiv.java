@@ -261,7 +261,6 @@ public class MainframeCiv
   public void openTown()
   {
     _onTown = true;
-    // _bdCiv.exitBuilding();
     String townName = _adv.getTownName();
     Image townImage = Util.convertToImage(TOWN_IMAGE);
     _frame.setImage(townImage);

@@ -9,8 +9,6 @@
 
 package hic;
 
-import hic.screenConfiguration.ImagePanel;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -310,9 +308,11 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
    */
   public void addIOPanel()
   {
-    _iop = new IOPanel();
     _leftHolder.removeAll();
+    _iop = new IOPanel();
+    setTranscriptTitle("Transcript");
     _leftHolder.add(_iop);
+    
   }
 
 
@@ -603,6 +603,17 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     border.setTitle(title);
   }
 
+
+  /**
+   * Display a title onto the border of the left side IO Panel
+   * 
+   * @param title of the panel to set
+   */
+  public void setTranscriptTitle(String title)
+  {
+    TitledBorder border = (TitledBorder) _leftHolder.getBorder();
+    border.setTitle(title);
+  }
   
   
   public void drawBuilding(BuildingRectangle rect)
