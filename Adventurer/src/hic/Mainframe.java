@@ -344,9 +344,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     _leftHolder.add(buttonPanel);
   }
 
-  /** Does it matter if I add Javadoc Comments?
-   * Regular Java comments seem to cause no-changes in Git problems.
-   */
 
   /**
    * Create the behavior for selecting an adventure, which drives the frame update. <br>
