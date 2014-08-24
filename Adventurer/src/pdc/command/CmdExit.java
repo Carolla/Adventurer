@@ -20,22 +20,14 @@ import civ.MainframeCiv;
 
 
 /**
- * Moves the Hero from inside theBuilding being displayed (current Building) to exterior, and
- * displays its exterior description and image.
+ * Moves the Hero from inside the Building being displayed (current Building) to Town View, and
+ * displays the Town image and description and image. EXIT has no effect if called from Town View;
+ * it will ask if the user meant QUIT instead, to leave the program.
  * <P>
  * Format: EXIT <br>
- * where:
- * <UL>
- * <LI>Building Type is the Building class, e.g., Inn, Bank, Jail;</LI>
- * <LI>Building Name is the actual string name of the Building, and is Adventure specific;</LI>
- * </UL>
- * If no arguments are given, the type of the current Building is assumed. The command string is
- * case-insensitive. See <code>init()</code> method.
  * 
  * @author Alan Cline
- * @version <DL>
- *          <DT>1.0 Mar 19 2014 // original <DD>
- *          </DL>
+ * @version 1.0 Mar 19 2014 // original <br>
  * @see Command
  */
 public class CmdExit extends Command
