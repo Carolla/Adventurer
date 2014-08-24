@@ -56,6 +56,8 @@ import civ.MainframeCiv;
  *          Aug 3, 2014 // added Runic font to the buttons <br>
  *          Aug 6, 2014 // removed innner classes and merged StandardLayout with IOPanel <br>
  *          Aug 18, 2014 // moved {@code ImagePanel} backend methods to {@code MainframeCiv} <br>
+ *          Aug 23 2014 // added methods to change titles on either panel, and images in the imaage
+ *          pane <br>
  */
 // Mainframe serialization unnecessary
 @SuppressWarnings("serial")
@@ -71,12 +73,9 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   public static final int PAD = 10;
 
   /** Icons for the left-side buttons */
-  // private static final String REGISTRAR_IMAGE = "icn_Register.jpg";
   private static final String REGISTRAR_IMAGE = "raw_Register.jpg";
   private static final String HALL_IMAGE = "icn_HallOfHeroes.jpg";
   private static final String ADV_IMAGE = "icn_Town.jpg";
-  // /** Initial right-side image: Chronos logo */
-  // private static final String INITIAL_IMAGE = "ChronosLogo.jpg";
 
   /** Width of the platform user's window frame */
   private static int USERWIN_WIDTH;
@@ -99,8 +98,13 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private List<String> _partyHeros = new ArrayList<String>();
   private List<String> _summonableHeroes;
 
-  // // My own special version of Brown since there is not one for Color
-  // private final Color MY_BROWN = new Color(130, 100, 90);
+  /** Title of the IOPanel of left side */
+  private final String IOPANEL_TITLE = " Transcript ";
+  /** Title of the initial three-button panel on left side */
+  private final String INITIAL_OPENING_TITLE = " Actions ";
+//  /** Title of the Image Panel on right side */
+//  private final String INITIAL_IMAGE_TITLE = " Chronos Logo ";
+
 
   /** Help Title for the mainframe */
   private static final String _helpTitle = "GREETINGS ADVENTURER!";
@@ -164,6 +168,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
    */
   private Mainframe()
   {
+    // Create the components of the mainframe
     createFrameAndMenubar(); // contains left and right panel holders
     addImagePanel(); // add image panel on right for adding images later
     createButtons(); // creates three action buttons on panel
@@ -175,11 +180,12 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
     // Create the Civ
     _mfCiv = new MainframeCiv(this);
+
   }
 
 
   /**
-   * Create mainframe layout and menubar; and add left and right panel holders
+   * Create mainframe layout and menubar; add left and right panel holders, which have titled borders
    */
   private void createFrameAndMenubar()
   {
@@ -190,8 +196,9 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     // Add menu
     setJMenuBar(new Menubar());
 
-    _leftHolder = makePanelHolder(Constants.MY_BROWN, " Actions ", Color.WHITE);
-    _rightHolder = makePanelHolder(Constants.MY_BROWN, " Chronos Logo ", Color.WHITE);
+    _leftHolder = makePanelHolder(Constants.MY_BROWN, INITIAL_OPENING_TITLE, Color.WHITE);
+//    _rightHolder = makePanelHolder(Constants.MY_BROWN, INITIAL_IMAGE_TITLE, Color.WHITE);
+    _rightHolder = makePanelHolder(Constants.MY_BROWN, "", Color.WHITE);
 
     _contentPane.add(_leftHolder, "cell 0 0, wmax 50%, grow");
     _contentPane.add(_rightHolder, "cell 1 0, wmax 50%, grow");
@@ -310,9 +317,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   {
     _leftHolder.removeAll();
     _iop = new IOPanel();
-    setTranscriptTitle("Transcript");
+    setTranscriptTitle(IOPANEL_TITLE);
     _leftHolder.add(_iop);
-    
   }
 
 
@@ -468,13 +474,13 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   // Deprecated Methods Temporarily
   // ============================================================
 
-  // /**
-  // * Create the CommandLine input area
-  // */
-  // private void createCommandLine()
-  // {
-  // _cmdLine = new InputPanel(_mfCiv.getCmdParser());
-  // }
+   /**
+   * Retrieve the MainframeCiv
+   */
+   public MainframeCiv getMainframeCiv()
+   {
+     return _mfCiv;
+   }
 
 
   // /**
@@ -578,7 +584,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
    */
   public void displayText(String msg)
   {
-    _iop.appendText(msg);
+//    _iop.appendText(msg);
+      _iop.displayText(msg);
   }
 
 
@@ -592,16 +599,17 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     _imagePanel.setImage(image);
   }
 
-  
+
   /**
-   * Display a title onto the border of the right side image panel
+   * Display a title onto the border of the right side image panel.
+   * Add one space char on either side for aesthetics
    * 
    * @param title of the panel to set
    */
   public void setImageTitle(String title)
   {
     TitledBorder border = (TitledBorder) _rightHolder.getBorder();
-    border.setTitle(title);
+    border.setTitle(" " + title + " ");
   }
 
 
@@ -615,8 +623,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     TitledBorder border = (TitledBorder) _leftHolder.getBorder();
     border.setTitle(title);
   }
-  
-  
+
+
   public void drawBuilding(BuildingRectangle rect)
   {
     Graphics2D g = (Graphics2D) _rightHolder.getGraphics();
@@ -670,71 +678,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   {
     return _rightHolder.getSize();
   }
-
-
-  // /**
-  // * Checks for Help Key to display Help text
-  // *
-  // * @param e any key released
-  // */
-  // public void keyReleased(KeyEvent e)
-  // {
-  // System.out.println("keyReleased(): Extended key code received = " + e.getExtendedKeyCode());
-  // if (e.getKeyCode() == KeyEvent.VK_F1) {
-  // System.out.println("F1 Help key pressed");
-  // }
-  // }
-  //
-  // /** Required implementation for KeyListener, does nothing */
-  // public void keyPressed(KeyEvent e)
-  // {
-  // System.out.println("keyPressed(): Extended key code received = " + e.getExtendedKeyCode());
-  // if (e.getKeyCode() == KeyEvent.VK_F1) {
-  // System.out.println("F1 Help key pressed");
-  // }
-  // }
-  //
-  // /** Required implementation for KeyListener, does nothing */
-  // public void keyTyped(KeyEvent e)
-  // {
-  // System.out.println("keyTyped(): Extended key code received = " + e.getExtendedKeyCode());
-  // if (e.getKeyCode() == KeyEvent.VK_F1) {
-  // System.out.println("F1 Help key pressed");
-  // }
-  // }
-
-
-  // /**
-  // * Layout the image panel on the right side of the frame
-  // */
-  // private void addImagePanel()
-  // {
-  // JPanel picPanel = new JPanel(new MigLayout("", "[grow,fill]", "[grow,fill]"));
-  // // picPanel.setPreferredSize(new Dimension(
-  // // (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
-  // picPanel.setSize(new Dimension(
-  // (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
-  // picPanel.setBackground(Color.WHITE);
-  // _imagePanel = new ImagePanel(picPanel, INITIAL_IMAGE);
-  //
-  // _rightHolder.addMouseListener(Mainframe.this);
-  // _rightHolder.addMouseMotionListener(Mainframe.this);
-  // _rightHolder.add(_imagePanel);
-  // }
-
-
-  // /**
-  // * Clear the right side and add the new image on the image panel
-  // *
-  // * @param imagePath {@code jpg} to display
-  // */
-  // private void displayImage(String imagePath)
-  // {
-  // // _rightHolder.removeAll();
-  // _imagePanel.removeAll();
-  // _imagePanel.displayImage(imagePath);
-  // // _rightHolder.add(_imagePanel);
-  // }
 
 
   // ============================================================

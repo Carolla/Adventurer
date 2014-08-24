@@ -32,9 +32,6 @@ public class ImagePanel extends JComponent
   /** The actual image to be displayed */
   private Image _image;
 
-  /** Default image: the Chronos logo */
-  private final String DEFAULT_IMAGE = "ChronosLogo.jpg";
-
 
   // ============================================================
   // Constructors and constructor helpers

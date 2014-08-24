@@ -11,6 +11,8 @@
 
 package civ;
 
+import hic.IOPanel;
+
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
@@ -20,8 +22,8 @@ import pdc.command.Scheduler;
 
 /**
  * Receives a user input string from the command window and converts it to a command object, which
- * it to the <code>Scheduler</code> for invocation. <code>Scheduler</code> calls
- * <code>CmdParser</code> when it needs a new user command.
+ * it to the {@code Scheduler} for invocation. {@code Scheduler} calls {@code CmdParser} when it
+ * needs a new user command.
  * 
  * @author Alan Cline
  * @version Sep 1 2006 // Split application into HIC, PDC, DMC components <br>
@@ -38,13 +40,13 @@ public class CommandParser
   /**
    * Command lexicon is sorted alphabetically by command string for easier user readability. The
    * first entry is the (case-insensitive) command String from the user, the second entry is the
-   * <code>CmdToken</code> that creates the <code>Command</code> object. <br>
+   * {@code CmdToken} that creates the {@code Command} object. <br>
    * NOTE: If the command table gets long, then sort in order of probablity for efficiency (current
    * look-up algorithm is linear).
    */
   private final String[][] _cmdTable = {
       {"ENTER", "CmdEnter"}, // Enter into a Building and show its interior description
-      // {"EXIT", "CmdReturn"}, // Leave the building, return to town
+  // {"EXIT", "CmdReturn"}, // Leave the building, return to town
       // {"RETURN", "CmdReturn"}, // Synonym for Exit
       // { "HELP", "CmdHelp" }, // List the user command names and their descriptions.
       // { "INVENTORY", "CmdInventory" }, // Describe the money the Hero has (later, this will tell
@@ -56,7 +58,7 @@ public class CommandParser
 
   /** Internal reference: command-specific data arguments */
   private ArrayList<String> _parms = null;
-  /** Internal reference: the factory that creates <code>Command</code> objects. */
+  /** Internal reference: the factory that creates {@code Command} objects. */
   private CommandFactory _cmf = null;
 
   private String _userInput = null; // buffer to hold user input string
@@ -67,42 +69,54 @@ public class CommandParser
   /** Identify a command string in which only a return key is entered. */
   private final String CMD_EMPTY = "";
 
-  private MainframeCiv _advCiv;
+  private IOPanel _output;
 
   private final ArrayList<String> _names;
 
-
-  // ============================================================
-  // Constructors and constructor helpers
-  // ============================================================
 
   /** Internal reference to ensure singleton object. */
   static private CommandParser _cp = null;
   /** Start the Scheduler up when the CommandPaarser starts */
   static private Scheduler _skedder = null;
 
-  /**
-   * Constructor which also creates an ArrayList for command-specific parms sent to a Command, and a
-   * <code>CommandFactory</code>.
-   * 
-   * Creates or returns the <code>CommandParser</code> reference. A <code>CommandFactory</code> is
-   * created as part of this class to funnal activity through <code>CommandParser</code>. The
-   * <Scheduler> is also created on its own threa to handle the commands
-   * 
-   * @return Instance of the newly created <code>CommandParser</code>
-   */
-  // public CommandParser(MainframeCiv mfc)
-  public CommandParser()
+  // ============================================================
+  // Constructors and constructor helpers
+  // ============================================================
+
+  private CommandParser()
   {
     _names = new ArrayList<String>(20);
-    _names.add("Test");
-
-    // _advCiv = mfc;
     _parms = new ArrayList<String>();
     _cmf = new CommandFactory();
     // Start the scheduler off on its own thread
     _skedder = Scheduler.createInstance(this);
     new Thread(_skedder).start();
+  }
+
+
+  /**
+   * Set the output area for all messages resulting from the command line
+   * 
+   * @param owner transcript area of the IOPanel
+   */
+  public void setOutput(IOPanel owner)
+  {
+    _output = owner;
+  }
+
+
+  /**
+   * A {@code CommandFactory} is created as part of this class to funnal activity through
+   * {@code CommandParser}. The {@code Scheduler} is created on its own thread to handle the
+   * commands. Also creates an ArrayList for command-specific parms sent to a Command, and a
+   * {@code CommandFactory}.
+   */
+  static public CommandParser getInstance()
+  {
+    if (_cp == null) {
+      _cp = new CommandParser();
+    }
+    return _cp;
   }
 
 
@@ -112,10 +126,10 @@ public class CommandParser
   // ============================================================
 
   /**
-   * Collects user input and converts the first token into a <code>Command</code> token. Sends the
-   * <code>Command</code> token to the <code>CommandFactory </code> to create the specific
-   * <code>Command</code> subclass, and passes the remainder of the parms to the command for further
-   * parsing. This method is called as part of the <code>Scheduler</code>'s loop.
+   * Collects user input and converts the first token into a {@code Command} token. Sends the
+   * {@code Command} token to the {@code CommandFactory } to create the specific {@code Command}
+   * subclass, and passes the remainder of the parms to the command for further parsing. This method
+   * is called as part of the {@code Scheduler}'s loop.
    * 
    * @return one of the many user command subclasses available
    */
@@ -125,7 +139,6 @@ public class CommandParser
     String cmdToken = null; // name of the command from the command table
     String cmdString = null; // contains the name of the command as first token
 
-    // _userInput = "Enter";
     if (_userInput != null) {
       cmdString = extractCommandLine(_userInput);
       cmdToken = getCommandToken(cmdString);
@@ -136,14 +149,13 @@ public class CommandParser
 
 
   /**
-   * Receives and holds the command string from the windows command window. It will be retrieved
-   * from the <code>Scheduler </code>when it is ready for another user command.
+   * Receives and holds the command string from the command window. It will be retrieved by the
+   * {@code Scheduler} when it is ready for another user command.
    * 
    * @param cmdIn the input the user entered as a command
    */
   public void receiveCommand(String cmdIn)
   {
-    // Pass the command line into the parser to generate the command token
     _userInput = cmdIn;
   }
 
@@ -162,13 +174,12 @@ public class CommandParser
       System.err.println(token + " command could not be created.");
       cmd = _cmf.createCommand("intCmdEnd");
     }
-    if (cmd.init(_parms, _advCiv) == false) {
-      _advCiv.handleError(token + " invalid command parms.");
+    if (cmd.init(_parms, _output) == false) {
+      _output.displayText(token + " invalid command parms.");
       cmd = _cmf.createCommand("intCmdEnd");
     }
     return cmd;
   }
-
 
   private String extractCommandLine(String ip)
   {
@@ -192,8 +203,8 @@ public class CommandParser
 
   // /**
   // * Traverses the command table and displays the command names, and their description,
-  // * in a non-modal <code>HelpWindow</code> as a reminder to the user.
-  // * This method is called by <code>CmdHelp.exec()</code>.
+  // * in a non-modal {@code HelpWindow} as a reminder to the user.
+  // * This method is called by {@code CmdHelp.exec()}.
   // */
   // public void help()
   // {
@@ -242,10 +253,10 @@ public class CommandParser
 
   /**
    * Searches through the command table for the first word in the user input string and returns the
-   * canonical <code>Command </code> name associated with it.
+   * canonical {@code Command } name associated with it.
    * 
-   * @return canonical name of the <code>Command</code> (concrete subCommand) to
-   *         <code>Schedule</code>, or null.
+   * @return canonical name of the {@code Command} (concrete subCommand) to {@code Schedule}, or
+   *         null.
    */
   private String lookup(String cmdString)
   {
@@ -266,8 +277,8 @@ public class CommandParser
    * Tokenizes the input line into its tokens and parms list.
    * 
    * @param ipLine String taken in from command window
-   * @return <code>Command</code> token, which is always the first token, and saves parms list (if
-   *         any) for later.
+   * @return @code Command} token, which is always the first token, and saves parms list (if any)
+   *         for later.
    */
   private String parse(String ipLine)
   {

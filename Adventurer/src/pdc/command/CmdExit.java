@@ -11,11 +11,12 @@
 
 package pdc.command;
 
+import hic.IOPanel;
+
 import java.util.List;
 
 import chronos.pdc.buildings.Building;
 import civ.MainframeCiv;
-import civ.CommandParser;
 
 
 /**
@@ -39,63 +40,60 @@ import civ.CommandParser;
  */
 public class CmdExit extends Command
 {
-    // THESE CONSTANTS MUST BE STATIC BECAUSE THEY ARE CALLED IN THE CONSTRUCTOR
-    /** The description of what the command does, used in the <code>help()</code> method. */
-    static final String CMD_DESCRIPTION = "Enter into the Building of choice.";
-    /** This command starts immediately, requiring no delay. */
-    static final int DELAY = 0;
-    /** This command takes 10 seconds on the game clock. */
-    static final int DURATION = 30;
-    /** Commnand format */
-    static private final String CMDFMT = "EXIT";
+  // THESE CONSTANTS MUST BE STATIC BECAUSE THEY ARE CALLED IN THE CONSTRUCTOR
+  /** The description of what the command does, used in the <code>help()</code> method. */
+  static final String CMD_DESCRIPTION = "Enter into the Building of choice.";
+  /** This command starts immediately, requiring no delay. */
+  static final int DELAY = 0;
+  /** This command takes 10 seconds on the game clock. */
+  static final int DURATION = 30;
+  /** Commnand format */
+  static private final String CMDFMT = "EXIT";
 
-    /** The building to enter */
-    private Building _curBldg = null;
-    private MainframeCiv _mfCiv;
+  /** The building to enter */
+  private Building _curBldg = null;
+  private MainframeCiv _mfCiv;
 
-    /*
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND RELATED METHODS
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-     */
+  /*
+   * CONSTRUCTOR(S) AND RELATED METHODS
+   */
 
-    /** Constructor called by the CommandFactory. There is no delay nor duration. */
-    public CmdExit()
-    {
-        super("CmdExit", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
-    }
-
-
-    /*
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PUBLIC METHODS
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-     */
-
-    /**
-     * Enters the current building. There can be 0 or 1 args in the arglist. If an arg is specified,
-     * then checks if it is a Building class, or the name of a particular Building. It then converts
-     * the name into the Building class.
-     * 
-     * @param args if empty, then use current Buiilding; otherwise gets Building specified
-     * @param mfCiv 
-     * @return true if all worked, else returns false on input error
-     */
-    public boolean init(List<String> args, MainframeCiv mfCiv)
-    {
-        _mfCiv = mfCiv;
-        return true;
-    }
+  /** Constructor called by the CommandFactory. There is no delay nor duration. */
+  public CmdExit()
+  {
+    super("CmdExit", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
+  }
 
 
-    /**
-     * Forces the program to end.
-     * 
-     * @return false always to break out of the Scheduler loop
-     */
-    public boolean exec()
-    {
-        _mfCiv.openTown();
-        return true;
-    }
+  // ============================================================
+  // Public methods
+  // ============================================================
+
+  /**
+   * Enters the current building. There can be 0 or 1 args in the arglist. If an arg is specified,
+   * then checks if it is a Building class, or the name of a particular Building. It then converts
+   * the name into the Building class.
+   * 
+   * @param args if empty, then use current Buiilding; otherwise gets Building specified
+   * @param mfCiv
+   * @return true if all worked, else returns false on input error
+   */
+  public boolean init(List<String> args, IOPanel iopanel)
+  {
+    return true;
+  }
+
+
+  /**
+   * Forces the program to end.
+   * 
+   * @return false always to break out of the Scheduler loop
+   */
+  public boolean exec()
+  {
+    _mfCiv.openTown();
+    return true;
+  }
 
 } // end CmdExit class
 

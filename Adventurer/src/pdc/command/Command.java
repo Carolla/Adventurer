@@ -11,10 +11,10 @@
 
 package pdc.command; // This package value is needed by the subcommands; see _cmdPackage field
 
+import hic.IOPanel;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import civ.MainframeCiv;
 
 
 /**
@@ -86,8 +86,7 @@ public abstract class Command
 
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND RELATED METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
   /** Default contructor */
@@ -123,10 +122,9 @@ public abstract class Command
     // this._curRoom = _inn.getCurrentRoom();
   }
 
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ ABSTRACT METHODS IMPLEMENTED in SubClass
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
+  // ============================================================
+  // ABSTRACT METHODS IMPLEMENTED in SubClass
+  // ============================================================
 
   /**
    * This abstract method must be implemented by the subcommand to collect whatever references or
@@ -134,10 +132,10 @@ public abstract class Command
    * passed as an ArrayList in the order defined in the Format phrase of the subCommand.
    * 
    * @param args list of parms that apply to the Command
-   * @param mfCiv
+   * @param output the JPanel that displays text output and error messages
    * @return true if the all parms are valid
    */
-  public abstract boolean init(List<String> args, MainframeCiv mfCiv);
+  public abstract boolean init(List<String> args, IOPanel output);
 
   /**
    * This abstract method must be implemented by the subcommand to execute whatever specific action
@@ -148,10 +146,10 @@ public abstract class Command
    */
   public abstract boolean exec();
 
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PUBLIC METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
+
+  // ============================================================
+  // PUBLIC METHODS
+  // ============================================================
 
   public String convertArgsToString(List<String> args)
   {

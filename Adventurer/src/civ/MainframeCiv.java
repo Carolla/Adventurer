@@ -35,13 +35,13 @@ import dmc.PersonReadWriter;
  * @author Tim Armstrong
  * @version Nov 2, 2013 // moved from CIV component <br>
  *          Mar 19 2014 // added current Building for ENTER command <br>
- *          Aug 18 2014 // added displayImage() to show Chronos logo on portal page <br>
+ *          Aug 18 2014 // added {@code displayImage} to show Chronos logo on portal page <br>
  */
 public class MainframeCiv
 {
   private AdventureRegistry _advReg = null;
   private BuildingDisplayCiv _bdCiv = null;
-  private CommandParser _cp = null;
+//  private CommandParser _cp = null;
 
   // private static final String TOWN_IMAGE = "ext_Quasqueton.JPG";
   private static final String TOWN_IMAGE = "ext_BiljurBaz.JPG";
@@ -99,7 +99,6 @@ public class MainframeCiv
    * @param personRW supports the Summon Hero and Create Hero buttons
    * @param advReg registry to support the Adventures button
    */
-  // public MainframeCiv(Mainframe frame, PersonReadWriter personRW, AdventureRegistry advReg)
   public MainframeCiv(Mainframe frame)
   {
     _frame = frame;
@@ -107,7 +106,6 @@ public class MainframeCiv
     _frame.setImageTitle(INITIAL_TITLE);
     // _personRW = new PersonReadWriter();
     // _advReg = (AdventureRegistry) RegistryFactory.getInstance().getRegistry(RegKey.ADV);
-    // _cp = new CommandParser(this);
     // _bdCiv =
     // new BuildingDisplayCiv(_frame, (BuildingRegistry)
     // RegistryFactory.getInstance().getRegistry(RegKey.BLDG));
@@ -131,26 +129,6 @@ public class MainframeCiv
   // Public methods
   // ============================================================
 
-  // /**
-  // * Create an {@code Image} type from its filename
-  // *
-  // * @param imageName the name of the image to convert
-  // */
-  // private Image createDisplayImage(String imageName)
-  // {
-  // try {
-  // Image myImage = ImageIO.read(new File(Chronos.ADV_IMAGE_PATH + imageName));
-  // return myImage;
-  // // ImagePanel.setDisplay(myImage);
-  // } catch (IllegalArgumentException iaex) {
-  // System.err.println("IMagePanel: null image path given");
-  // } catch (IOException ioex) {
-  // System.err.println("IMagePanel: problems reading the image file");
-  // }
-  // }
-
-
-
   /**
    * Retrieves the Adventures for selection from the Adventure Registry
    * 
@@ -165,11 +143,6 @@ public class MainframeCiv
       results.add(a.getKey());
     }
     return results;
-  }
-
-  public CommandParser getCmdParser()
-  {
-    return _cp;
   }
 
 
@@ -224,6 +197,17 @@ public class MainframeCiv
 
 
   /**
+   * Is a building displayed, or is the Hero at the Town view?
+   * 
+   * @return true if there is no current building displayed
+   */
+  public boolean isOnTown()
+  {
+    return _onTown;
+  }
+
+  
+  /**
    * Load the selected adventure from the Adventure registry. Replace the opening button panel with
    * the IOPanel (text and command line)
    * 
@@ -236,6 +220,7 @@ public class MainframeCiv
     openTown();
   }
 
+
   /**
    * Get the town name
    * 
@@ -245,6 +230,7 @@ public class MainframeCiv
   {
     return _adv.getTownName();
   }
+
 
   /**
    * Find a list of heroes that can be summoned
@@ -257,14 +243,15 @@ public class MainframeCiv
     return heroes;
   }
 
+
   /** Creates the standard layout to display the town image and description */
   public void openTown()
   {
     _onTown = true;
-    String townName = _adv.getTownName();
     Image townImage = Util.convertToImage(TOWN_IMAGE);
     _frame.setImage(townImage);
-    _frame.setImageTitle(townName);
+    String townTitle = " The Town of " + _adv.getTownName();
+    _frame.setImageTitle(townTitle);
     _frame.displayText(_adv.getOverview());
   }
 

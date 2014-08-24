@@ -24,9 +24,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import mylib.Constants;
 import net.miginfocom.swing.MigLayout;
 import pdc.Util;
 import civ.CommandParser;
+import civ.MainframeCiv;
 
 /**
  * This class serves as the text output and command line input after and Adventure is selected
@@ -36,6 +38,7 @@ import civ.CommandParser;
  *          Jul 9, 2014 // ABC refactored for clearer output panel and command line input <br>
  *          Aug 2, 2014 // ABC replaced frame sizing with call to {@code Mainframe.getWindowSize()}<br>
  *          Aug 6, 2014 // ABC Merged {@code Mainframe.StandardLayout} inner class with this class <br>
+ *          Aug 18, 2014 // ABC Removed as inner class and made stand-along class <br>
  */
 @SuppressWarnings("serial")
 public class IOPanel extends JPanel
@@ -45,7 +48,7 @@ public class IOPanel extends JPanel
   private boolean _redirectIO;
 
   // Command window requires the Command Parser to send commands
-  private CommandParser _cp = null;
+  // private CommandParser _cp = null;
   private JTextField _cmdWin = null;
 
   /**
@@ -59,36 +62,59 @@ public class IOPanel extends JPanel
   // Constructors and constructor helpers
   // ============================================================
 
-
   /**
-   * Creates 2-paned panel to represent CommandLine Input and Description Output
+   * Creates output test panel and input CommandLine Input panel
    */
   public IOPanel()
   {
     setLayout(new MigLayout("", "[grow]", "[][]"));
     _output = new JTextArea();
-    _output.setAlignmentY(JTextArea.BOTTOM_ALIGNMENT);
+    // _output.setAlignmentY(JTextArea.BOTTOM_ALIGNMENT);
+    _output.setAlignmentY(JTextArea.TOP_ALIGNMENT);
 
-    // final JScrollPane outputPanel = createOutputPanel();
     _scrollpane = createOutputPanel();
     this.add(_scrollpane, "cell 0 1");
 
-    _cp = new CommandParser();
     final JPanel inputPanel = createCmdLinePanel();
     this.add(inputPanel, "cell 0 2");
   }
 
 
-  /**
-   * Adds the string onto the existing text
-   * 
-   * @param msg the string to append
-   */
-  public void appendText(String msg)
-  {
-    _output.append(msg);
-  }
+/** Display a block of testin the output Transcript area
+     * 
+     * @param msg  text block to display
+     */
+    public void displayText(String msg)
+    {
+      _output.append(msg + Constants.NEWLINE);
+      // Ensure that the text scrolls as new text is appended
+      _cmdWin.setFocusable(true);
+      _cmdWin.requestFocusInWindow();
+      _cmdWin.setCaretPosition(0);
+    }
 
+
+//  /**
+//   * Adds the string onto the existing text
+//   * 
+//   * @param msg the string to append
+//   */
+//  public void appendText(String msg)
+//  {
+//    _output.append(msg + "\n");
+//  }
+
+
+  /**
+   * Call the Mainframe's Civ for the building/town status
+   * @return true if there are no buildings displayed and hero is at town level
+   */
+  public boolean isOnTown()
+  {
+    Mainframe mf = Mainframe.getInstance();
+    MainframeCiv mfciv = mf.getMainframeCiv();
+    return mfciv.isOnTown();
+  }
 
   // ============================================================
   // Public Methods
@@ -137,19 +163,22 @@ public class IOPanel extends JPanel
     southPanel.add(cmdPrompt, "cell 0 0,alignx center");
     southPanel.add(_cmdWin, "cell 1 0,alignx left");
 
+    // Create the command parser that goes in here
+    final CommandParser cp = CommandParser.getInstance();
+    cp.setOutput(this);
+
     // Add function to send commands to command parser.
     _cmdWin.addActionListener(new ActionListener()
     {
       public void actionPerformed(ActionEvent event)
       {
         // Save the user's input to be retrieved by the command parser
+        _cmdWin.requestFocusInWindow();
         String in = _cmdWin.getText();
-        _cp.receiveCommand(in);
+        cp.receiveCommand(in);
         // Echo the text and clear the command line
         _output.append(in + "\n");
         _cmdWin.setText("");
-        _cmdWin.requestFocusInWindow();
-        // _cmdWin.setFocusable(true);
       }
     });
     return southPanel;
@@ -157,7 +186,7 @@ public class IOPanel extends JPanel
 
 
   /**
-   * Create the north panel output window: scollable, non-editable output area
+   * Create the north panel transcript output window: scollable, non-editable output area
    * 
    * @return the primary user output window
    */
@@ -168,7 +197,6 @@ public class IOPanel extends JPanel
     _output.setWrapStyleWord(true);
     _output.setFocusable(false);
     _output.setFont(Util.makeRunicFont(14f));
-    // _output.setBackground(Color.LIGHT_GRAY); // just for fun, make the background non-white
     _output.setBackground(MY_LIGHT_BROWN); // make the background my version of a nice warm brown
     _output.setForeground(Color.BLACK); // text is colored with the setForeground statement
 
@@ -203,12 +231,10 @@ public class IOPanel extends JPanel
       public void write(int b)
       {} // never called
 
-
       public void write(byte[] b, int off, int len)
       {
         _output.append(new String(b, off, len));
         // Ensure that the text scrolls as new text is appended
-        // _output.setCaretPosition(_output.getDocument().getLength());
         _cmdWin.setFocusable(true);
         _cmdWin.requestFocusInWindow();
         _cmdWin.setCaretPosition(0);
@@ -217,6 +243,7 @@ public class IOPanel extends JPanel
 
     return op;
   }
-
+  
+  
 } // end OutputPanel class
 
