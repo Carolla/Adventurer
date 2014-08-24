@@ -304,7 +304,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
    */
   public void showHelp()
   {
-    System.out.println("Help Dialog set visible in showHelp");
     _helpdlg.setVisible(true);
     _helpdlg.showHelp(_helpTitle, _helpText);
   }

@@ -25,50 +25,42 @@ import civ.Adventurer;
 @SuppressWarnings("serial")
 public class Menubar extends JMenuBar
 {
+
+  // ============================================================
+  // Constructor and constructor helpers
+  // ============================================================
+
   public Menubar()
   {
     setBackground(Color.LIGHT_GRAY);
     populateAdventureMenu();
-//    populateHeroMenu();
-    populateEnterMenu();
+    // populateHeroMenu();
+    // populateEnterMenu();
     populateHelpMenu();
   }
 
 
-  private JMenuItem createMenuItemWithAction(String string, ActionListener exitAction)
-  {
-    JMenuItem item = new JMenuItem(string);
-    item.addActionListener(exitAction);
-    return item;
-  }
+  // ============================================================
+  // Public Methods
+  // ============================================================
 
 
-  /**
-   * Create a menu item that is disabled--until it is implemented
-   * 
-   * @param string the name of the menu item
-   * @return a menu item
-   */
-  private JMenuItem createMenuItemWithNoAction(String string)
-  {
-    JMenuItem item = new JMenuItem(string);
-    item.setEnabled(false);
-    return item;
-  }
-
+  // ============================================================
+  // Private Methods
+  // ============================================================
 
   private void populateAdventureMenu()
   {
     // Populate the Adventure menu
     JMenu mnAdventure = new JMenu("Adventure");
     this.add(mnAdventure);
-    mnAdventure.add(createMenuItemWithNoAction("New"));
-    mnAdventure.add(createMenuItemWithNoAction("Open"));
-    mnAdventure.add(createMenuItemWithNoAction("Close"));
-    mnAdventure.add(createMenuItemWithNoAction("Save"));
-    mnAdventure.add(createMenuItemWithNoAction("Save As..."));
-    mnAdventure.add(new JMenuItem("---"));
-    mnAdventure.add(createMenuItemWithAction("Exit", new ActionListener() {
+    // mnAdventure.add(createMenuItemWithNoAction("New"));
+    // mnAdventure.add(createMenuItemWithNoAction("Open"));
+    // mnAdventure.add(createMenuItemWithNoAction("Close"));
+    // mnAdventure.add(createMenuItemWithNoAction("Save"));
+    // mnAdventure.add(createMenuItemWithNoAction("Save As..."));
+    // mnAdventure.add(new JMenuItem("---"));
+    mnAdventure.add(createMenuItemWithAction("Quit", new ActionListener() {
       public void actionPerformed(ActionEvent e)
       {
         Adventurer.exit();
@@ -76,21 +68,6 @@ public class Menubar extends JMenuBar
     }));
   }
 
-
-  private void populateEnterMenu()
-  {
-    // Populate the Enter menu
-    JMenu mnEnter = new JMenu("Enter");
-    this.add(mnEnter);
-//    mnEnter.add(createMenuItemWithNoAction("Registrar"));
-    mnEnter.add(createMenuItemWithNoAction("Arena"));
-    mnEnter.add(new JMenuItem("---"));
-    mnEnter.add(createMenuItemWithNoAction("Inn"));
-    mnEnter.add(createMenuItemWithNoAction("Store"));
-    mnEnter.add(createMenuItemWithNoAction("Bank"));
-    mnEnter.add(createMenuItemWithNoAction("Jail"));
-    mnEnter.add(createMenuItemWithNoAction("Guild"));
-  }
 
 
   /** Populate the Help menu with the Help and About options */
@@ -118,7 +95,7 @@ public class Menubar extends JMenuBar
       public void actionPerformed(ActionEvent evt)
       {
         // Audit statement
-        MsgCtrl.traceEvent(evt);
+//        MsgCtrl.traceEvent(evt);
         // Attach the (inner class) dialog to the main frame
         JDialog dialog = new AboutDialog((JFrame) getParent().getParent().getParent());
         dialog.setVisible(true);
@@ -128,13 +105,56 @@ public class Menubar extends JMenuBar
   }
 
 
-//  private void populateHeroMenu()
-//  {
-//    // Populate the Hero menu
-//    JMenu mnHeroes = new JMenu("Heroes");
-//    this.add(mnHeroes);
-//    mnHeroes.add(createMenuItemWithNoAction("Summon Hero"));
-//    mnHeroes.add(createMenuItemWithNoAction("Save Hero"));
-//  }
+  private JMenuItem createMenuItemWithAction(String string, ActionListener exitAction)
+  {
+    JMenuItem item = new JMenuItem(string);
+    item.addActionListener(exitAction);
+    return item;
+  }
 
-}   // end of Menubar class
+
+  /**
+   * Create a menu item that is disabled--until it is implemented
+   * 
+   * @param string the name of the menu item
+   * @return a menu item
+   */
+  private JMenuItem createMenuItemWithNoAction(String string)
+  {
+    JMenuItem item = new JMenuItem(string);
+    item.setEnabled(false);
+    return item;
+  }
+
+
+  // ============================================================
+  // Deprecated Methods (may be used later)
+  // ============================================================
+
+  // private void populateEnterMenu()
+  // {
+  // // Populate the Enter menu
+  // JMenu mnEnter = new JMenu("Enter");
+  // this.add(mnEnter);
+  // // mnEnter.add(createMenuItemWithNoAction("Registrar"));
+  // mnEnter.add(createMenuItemWithNoAction("Arena"));
+  // mnEnter.add(new JMenuItem("---"));
+  // mnEnter.add(createMenuItemWithNoAction("Inn"));
+  // mnEnter.add(createMenuItemWithNoAction("Store"));
+  // mnEnter.add(createMenuItemWithNoAction("Bank"));
+  // mnEnter.add(createMenuItemWithNoAction("Jail"));
+  // mnEnter.add(createMenuItemWithNoAction("Guild"));
+  // }
+
+
+
+  // private void populateHeroMenu()
+  // {
+  // // Populate the Hero menu
+  // JMenu mnHeroes = new JMenu("Heroes");
+  // this.add(mnHeroes);
+  // mnHeroes.add(createMenuItemWithNoAction("Summon Hero"));
+  // mnHeroes.add(createMenuItemWithNoAction("Save Hero"));
+  // }
+
+} // end of Menubar class
