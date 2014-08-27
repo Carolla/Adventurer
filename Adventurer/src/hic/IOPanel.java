@@ -165,7 +165,6 @@ public class IOPanel extends JPanel
 
     // Create the command parser that goes in here
     final CommandParser cp = CommandParser.getInstance();
-    cp.setOutput(this);
 
     // Add function to send commands to command parser.
     _cmdWin.addActionListener(new ActionListener()

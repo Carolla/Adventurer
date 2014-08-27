@@ -102,8 +102,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private final String IOPANEL_TITLE = " Transcript ";
   /** Title of the initial three-button panel on left side */
   private final String INITIAL_OPENING_TITLE = " Actions ";
-//  /** Title of the Image Panel on right side */
-//  private final String INITIAL_IMAGE_TITLE = " Chronos Logo ";
+  // /** Title of the Image Panel on right side */
+  // private final String INITIAL_IMAGE_TITLE = " Chronos Logo ";
 
 
   /** Help Title for the mainframe */
@@ -185,7 +185,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
 
   /**
-   * Create mainframe layout and menubar; add left and right panel holders, which have titled borders
+   * Create mainframe layout and menubar; add left and right panel holders, which have titled
+   * borders
    */
   private void createFrameAndMenubar()
   {
@@ -197,7 +198,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     setJMenuBar(new Menubar());
 
     _leftHolder = makePanelHolder(Constants.MY_BROWN, INITIAL_OPENING_TITLE, Color.WHITE);
-//    _rightHolder = makePanelHolder(Constants.MY_BROWN, INITIAL_IMAGE_TITLE, Color.WHITE);
+    // _rightHolder = makePanelHolder(Constants.MY_BROWN, INITIAL_IMAGE_TITLE, Color.WHITE);
     _rightHolder = makePanelHolder(Constants.MY_BROWN, "", Color.WHITE);
 
     _contentPane.add(_leftHolder, "cell 0 0, wmax 50%, grow");
@@ -379,6 +380,25 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   }
 
 
+  /**
+   * Display a prompt, asking a question of the user
+   * 
+   * @param msg the question to be asked, must be yes or no
+   * @return the answer to the prompt
+   */
+  public boolean displayPrompt(String msg)
+  {
+    int selection =
+        JOptionPane.showConfirmDialog(this, msg, "REALLY?", JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.QUESTION_MESSAGE);
+    if (selection == JOptionPane.OK_OPTION) {
+      return true;
+    }
+    return false;
+  }
+
+
+
   private JButton createHeroCreationButton()
   {
     JButton button = createButtonWithTextAndIcon(REGISTRAR_IMAGE, "Create New Heroes");
@@ -473,13 +493,13 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   // Deprecated Methods Temporarily
   // ============================================================
 
-   /**
+  /**
    * Retrieve the MainframeCiv
    */
-   public MainframeCiv getMainframeCiv()
-   {
-     return _mfCiv;
-   }
+  public MainframeCiv getMainframeCiv()
+  {
+    return _mfCiv;
+  }
 
 
   // /**
@@ -583,8 +603,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
    */
   public void displayText(String msg)
   {
-//    _iop.appendText(msg);
-      _iop.displayText(msg);
+    // _iop.appendText(msg);
+    _iop.displayText(msg);
   }
 
 
@@ -600,8 +620,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
 
   /**
-   * Display a title onto the border of the right side image panel.
-   * Add one space char on either side for aesthetics
+   * Display a title onto the border of the right side image panel. Add one space char on either
+   * side for aesthetics
    * 
    * @param title of the panel to set
    */

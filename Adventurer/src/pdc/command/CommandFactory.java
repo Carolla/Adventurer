@@ -13,6 +13,7 @@
 package pdc.command;
 
 
+
 /** 
  * Creates a concrete object that is a subclass of the Abstract Command class.
  * Once the command is created, the command line string is passed for parsing to retrieve
@@ -48,7 +49,7 @@ public class CommandFactory
 	{
 		try {
 			// Subclass Commands must have empty constructors (no formal input arguments)
-		    _curCmd = (Command) Class.forName(Command.CMD_PACKAGE + cmdClassName).newInstance();
+      _curCmd = (Command) Class.forName(Command.CMD_PACKAGE + cmdClassName).newInstance();
         } catch (NullPointerException e) {
             System.err.println("Command name or format is illegally null: " + e.getMessage());
         } catch (Exception e) {

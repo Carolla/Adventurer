@@ -11,8 +11,6 @@
 
 package pdc.command;
 
-import hic.IOPanel;
-
 import java.util.List;
 
 
@@ -84,10 +82,10 @@ public class intCmdEnd extends Command
    * abstract methods.
    * 
    * @param args ArrayList of Strings; only delay parm is needed
-   * @param iop   text area for text info and error messages
+   * @param mfciv delegated to handle displahing info and error messages
    * @return true if there are no parms
    */
-  public boolean init(List<String> args, IOPanel iop)
+  public boolean init(List<String> args)
   {
     if (args.size() == NBR_ARGS) {
       // Integer prevCmdDuration = (Integer) args.get(0);

@@ -11,7 +11,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-import mylib.MsgCtrl;
 import civ.Adventurer;
 
 /**
@@ -63,7 +62,7 @@ public class Menubar extends JMenuBar
     mnAdventure.add(createMenuItemWithAction("Quit", new ActionListener() {
       public void actionPerformed(ActionEvent e)
       {
-        Adventurer.exit();
+        Adventurer.quit();
       }
     }));
   }
@@ -95,7 +94,7 @@ public class Menubar extends JMenuBar
       public void actionPerformed(ActionEvent evt)
       {
         // Audit statement
-//        MsgCtrl.traceEvent(evt);
+        // MsgCtrl.traceEvent(evt);
         // Attach the (inner class) dialog to the main frame
         JDialog dialog = new AboutDialog((JFrame) getParent().getParent().getParent());
         dialog.setVisible(true);

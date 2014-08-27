@@ -11,7 +11,7 @@
 
 package civ;
 
-import hic.IOPanel;
+import hic.Mainframe;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -46,13 +46,13 @@ public class CommandParser
    */
   private final String[][] _cmdTable = {
       {"ENTER", "CmdEnter"}, // Enter into a Building and show its interior description
+      {"QUIT", "CmdQuit"}, // End the program.
   // {"EXIT", "CmdReturn"}, // Leave the building, return to town
       // {"RETURN", "CmdReturn"}, // Synonym for Exit
       // { "HELP", "CmdHelp" }, // List the user command names and their descriptions.
       // { "INVENTORY", "CmdInventory" }, // Describe the money the Hero has (later, this will tell
       // the items too)
       // { "LOOK", "CmdLook" }, // Give a description of the Room and any People inside it.
-      // { "QUIT", "CmdQuit" }, // End the program.
       // { "WAIT", "CmdWait" }, // Wait a specific amount of time, in hours or minutes.
   };
 
@@ -69,10 +69,9 @@ public class CommandParser
   /** Identify a command string in which only a return key is entered. */
   private final String CMD_EMPTY = "";
 
-  private IOPanel _output;
+  private MainframeCiv _mfCiv;
 
   private final ArrayList<String> _names;
-
 
   /** Internal reference to ensure singleton object. */
   static private CommandParser _cp = null;
@@ -83,25 +82,20 @@ public class CommandParser
   // Constructors and constructor helpers
   // ============================================================
 
+  /**
+   * Creates the singleton CommandParser, and connects to the {@code CommandFactory} and the
+   * {@code MainframeCiv} for displaying parser output to {@code IOPanel}.
+   */
   private CommandParser()
   {
     _names = new ArrayList<String>(20);
     _parms = new ArrayList<String>();
     _cmf = new CommandFactory();
+    _mfCiv = Mainframe.getInstance().getMainframeCiv();
+
     // Start the scheduler off on its own thread
     _skedder = Scheduler.createInstance(this);
     new Thread(_skedder).start();
-  }
-
-
-  /**
-   * Set the output area for all messages resulting from the command line
-   * 
-   * @param owner transcript area of the IOPanel
-   */
-  public void setOutput(IOPanel owner)
-  {
-    _output = owner;
   }
 
 
@@ -118,7 +112,6 @@ public class CommandParser
     }
     return _cp;
   }
-
 
 
   // ============================================================
@@ -174,8 +167,8 @@ public class CommandParser
       System.err.println(token + " command could not be created.");
       cmd = _cmf.createCommand("intCmdEnd");
     }
-    if (cmd.init(_parms, _output) == false) {
-      _output.displayText(token + " invalid command parms.");
+    if (cmd.init(_parms) == false) {
+      _mfCiv.handleError(token + " invalid command parms.");
       cmd = _cmf.createCommand("intCmdEnd");
     }
     return cmd;

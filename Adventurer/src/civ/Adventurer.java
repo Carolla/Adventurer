@@ -26,29 +26,29 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
  * @author Tim Armstrong
  * @version April 16, 2012 TAA // original <br>
  *          May 13, 2012 TAA // added new refresh flag <br>
- *          July 15, 2014 ABC // Enabled Exit menu option to call static exit() method and work
+ *          July 15, 2014 ABC // Enabled Quit menu option to call static quit() method and work
  *          similar to windowClosing event <br>
  *          July 21, 2014 ABC // removed environment variables, based everything off user's home
  *          directory <br>
+ *          Aug 24, 2014 // renamed {@code exit} method to {@code quit} for consistency with menu <br>
  */
 public class Adventurer
 {
-  /** Launcher class does not require a constructor--it has the <code>main</code> method. */
+  /** Launcher class does not require a constructor--it has the {@code main} method. */
   private Adventurer()
   {}
 
   /**
    * Creates the main frame and passes control to it.
    * <UL>
-   * <LI>Starts a separate Swing thread for the GUI's <code>Swing Event Queue</code> (SEQ), per
-   * Swing's "strict single-thread rule". All Swing processing occurs from the single SEQ thread.
-   * Unlike older versions of Java, Swing must now be invoked inside an EventQueue
-   * <code>Runnable</code>. As <i>Core Java</i> (Volume 1, Horstmann & Cornell, (c) 2008, p287)
-   * states: "For now, you should simply consider it a magic incantation that is used to start a
-   * Swing program."</LI>
+   * <LI>Starts a separate Swing thread for the GUI's {@code Swing Event Queue} (SEQ), per Swing's
+   * "strict single-thread rule". All Swing processing occurs from the single SEQ thread. Unlike
+   * older versions of Java, Swing must now be invoked inside an EventQueue {@code Runnable}. As
+   * <i>Core Java</i> (Volume 1, Horstmann & Cornell, (c) 2008, p287) states: "For now, you should
+   * simply consider it a magic incantation that is used to start a Swing program."</LI>
    * <LI>
-   * The Event <code>Scheduler</code> runs a second thread concurrently to poll the
-   * <code>CommandParser</code> for user command inputs.</LI>
+   * The Event {@code Scheduler} runs a second thread concurrently to poll the {@code CommandParser}
+   * for user command inputs.</LI>
    * <LI>
    * Initializes the system by creating necessary singletons, registries, and data files; on exit,
    * closes all registries.</LI>
@@ -85,10 +85,10 @@ public class Adventurer
 
 
   /** Close all registries and shutdown the system */
-  public static void exit()
+  public static void quit()
   {
     closeRegistries();
-    System.exit(1);
+    System.exit(0);
   }
 
 

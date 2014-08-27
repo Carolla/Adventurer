@@ -175,13 +175,31 @@ public class MainframeCiv
     }
   }
 
+  
   public void handleError(String string)
   {
     _frame.displayText(string);
-
   }
 
 
+  /** Display a prompt message asking for confirmation 
+   * 
+   * @param mesg  question to ask for confirmation
+   * @return true if the user seleted YES
+   */
+  public boolean msgPrompt(String msg)
+  {
+    return _frame.displayPrompt(msg);
+  }
+
+  
+  /** Close down the application */
+  public void quit()
+  {
+    Adventurer.quit();
+  }
+  
+  
   public void handleMouseMovement(Point p)
   {
     if (_onTown) {

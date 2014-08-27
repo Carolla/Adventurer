@@ -11,10 +11,12 @@
 
 package pdc.command; // This package value is needed by the subcommands; see _cmdPackage field
 
-import hic.IOPanel;
+import hic.Mainframe;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import civ.MainframeCiv;
 
 
 /**
@@ -56,13 +58,11 @@ import java.util.List;
  * </OL>
  * 
  * @author Alan Cline
- * @version <DL>
- *          <DT>1.0 Aug 24 2006 // original <DD> <DT>2.0 Dec 31 2007 // Add package constant to wrap
- *          all command into this Command package <DD> <DT>2.1 Feb 16 2008 // Add base class <code>
- *          usage()</code> to avoid subcommand overrides <DD> <DT>2.2 Feb 19 2008 // Moved
- *          getTalkee() from subcommands into this base class. <DD> <DT>2.3 Jul 4 2008 // Final
- *          commenting for Javadoc compliance<DD>
- *          </DL>
+ * @version Aug 24 2006 // original <br>
+ *          Dec 31 2007 // Add package constant to wrap all command into this Command package <br>
+ *          Feb 16 2008 // Add base class {@code usage} avoid subcommand overrides <br>
+ *          Feb 19 2008 // Moved {@code getTalkee} from subcommands into this base class. <br>
+ *          Jul 4 2008 // Final commenting for Javadoc compliance <br>
  */
 public abstract class Command
 {
@@ -83,15 +83,18 @@ public abstract class Command
   protected String _description = null;
   /** The syntax of the command, used in the <code>usage()</code> method. */
   protected String _cmdfmt = null;
+  /** MainframeCiv handles errors and messages to {@code hic.IOPanel} */
+  protected MainframeCiv _mfciv;
 
-
-  /*
-   * CONSTRUCTOR(S) AND RELATED METHODS
-   */
+  // ============================================================
+  // PUBLIC METHODS
+  // ============================================================
 
   /** Default contructor */
   public Command()
-  {}
+  { 
+    _mfciv = Mainframe.getInstance().getMainframeCiv();
+  }
 
   /**
    * Creates a Command based on its name, and assigns it a delay and duration of effect; also
@@ -118,8 +121,9 @@ public abstract class Command
     this._cmdfmt = fmt;
     // Initialize internal attributes
     this._parms = new ArrayList<String>();
-    // this._inn = Inn.getInstance();
-    // this._curRoom = _inn.getCurrentRoom();
+    // Set message handling civ
+    _mfciv = Mainframe.getInstance().getMainframeCiv();
+
   }
 
   // ============================================================
@@ -132,10 +136,9 @@ public abstract class Command
    * passed as an ArrayList in the order defined in the Format phrase of the subCommand.
    * 
    * @param args list of parms that apply to the Command
-   * @param output the JPanel that displays text output and error messages
    * @return true if the all parms are valid
    */
-  public abstract boolean init(List<String> args, IOPanel output);
+  public abstract boolean init(List<String> args);
 
   /**
    * This abstract method must be implemented by the subcommand to execute whatever specific action
@@ -211,10 +214,9 @@ public abstract class Command
     _delay = newDelay;
   }
 
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PROTECTED METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
+  // ============================================================
+  // PROTECTED METHODS
+  // ============================================================
 
   /**
    * Displays correct usage format for user command in case of error. This method will work if there

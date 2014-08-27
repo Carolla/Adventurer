@@ -11,32 +11,25 @@
 
 package pdc.command;
 
-import hic.IOPanel;
 
 import java.util.List;
-
-import civ.MainframeCiv;
 
 
 /**
  * Stops the user command dialogue and triggers the shutdown methods to end the program.
  * <p>
- * Format: QUIT [or EXIT] <br>
+ * Format: QUIT <br>
  * The command string is case-insensitive. See <code>init()</code> method.
  * 
  * @author Alan Cline
- * @version <DL>
- *          <DT>1.0 Sep 2 2006 // original <DD> <DT>1.1 Sep 30 2007 // Reconfigure CmdQuit in with
- *          command package <DD> <DT>2.0 Dec 31 2007 // Moved this command into the latest command
- *          package <DD> <DT>2.1 Jul 4 2008 // Final commenting for Javadoc compliance<DD>
- *          </DL>
+ * @version Sep 2 2006 // original <br>
+ *          Sep 30 2007 // Reconfigure CmdQuit in with command package <br>
+ *          Dec 31 2007 // Moved this command into the latest command package <br>
+ *          Jul 4 2008 // Final commenting for Javadoc compliance <br>
  * @see Command
  */
 public class CmdQuit extends Command
 {
-  /** Will hold reference to Mainframe Civ **/
-  private MainframeCiv _mfCiv;
-
   // THESE CONSTANTS MUST BE STATIC BECAUSE THEY ARE CALLED IN THE CONSTRUCTOR
   /** The description of what the command does, used in the <code>help()</code> method. */
   static final String CMD_DESCRIPTION = "End the program.";
@@ -44,6 +37,8 @@ public class CmdQuit extends Command
   static final int DELAY = 0; // This command starts immediately on invocation
   /** This command takes no time on the game clock. */
   static final int DURATION = 0;
+  /** Format for usage string on input error */
+  static final String FMT = "QUIT [no paramters]";
 
 
   // ============================================================
@@ -53,7 +48,7 @@ public class CmdQuit extends Command
   /** Constructor called by the CommandFactory. There is no delay nor duration. */
   public CmdQuit()
   {
-    super("CmdQuit", DELAY, DURATION, CMD_DESCRIPTION, null);
+    super("CmdQuit", DELAY, DURATION, CMD_DESCRIPTION, FMT);
   }
 
 
@@ -65,16 +60,14 @@ public class CmdQuit extends Command
    * In this case, no parms are needed.
    * 
    * @param args is empty for this command; implemented as required for abstract method
+   * @param mfCiv the particluar civ handling this command's info and error messages
    * 
    * @return true if all worked, else returns false on input error
    */
   @Override
-  public boolean init(List<String> args, IOPanel iopanel)
+  public boolean init(List<String> args)
   {
-    if (args.size() == 0) {
-      return true;
-    }
-    return false;
+    return (args.size() == 0) ? true : false;
   }
 
 
@@ -86,16 +79,10 @@ public class CmdQuit extends Command
   @Override
   public boolean exec()
   {
-    _mfCiv.handleError("Quit command exec().");
-    System.out.println("The Inn is closed for business.");
-
-    // Close down the windowing system
-    // MainFrame win = MainFrame.getInstance();
-    // if (win != null) {
-    // win.quit();
-    // }
+    if (super._mfciv.msgPrompt("Quit Adventurer?") == true) {
+      super._mfciv.quit();
+    }
     return true;
   }
-
 } // end CmdQuit class
 

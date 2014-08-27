@@ -219,7 +219,7 @@ public class Scheduler implements Runnable
     // Create endCmd to signal to get another user command
     Command endCmd = new intCmdEnd(delay);
     _parms.clear(); // refresh the parm list
-    endCmd.init(_parms, null);
+    endCmd.init(_parms);
     return endCmd;
   }
 

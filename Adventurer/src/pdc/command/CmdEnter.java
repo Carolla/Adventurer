@@ -80,12 +80,11 @@ public class CmdEnter extends Command
    * @return true if all worked, else returns false on input error
    */
   @Override
-  public boolean init(List<String> args, IOPanel iopanel)
+  public boolean init(List<String> args)
   {
-    _op = iopanel;
     // Get the Building parm, or null
-    if ((args.size() == 0) && (iopanel.isOnTown())) {
-      iopanel.displayText(ERRMSG_NOBLDG);
+    if ((args.size() == 0) && (_mfCiv.isOnTown())) {
+      _mfCiv.handleError(ERRMSG_NOBLDG);
     }
     _targetBldg = convertArgsToString(args);
     return true;
