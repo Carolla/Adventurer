@@ -642,16 +642,17 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
 
   /** Call the {@code quit} method if the window is closed by a window close event */
-  public void windowClosing(WindowEvent e) 
+  public void windowClosing(WindowEvent e)
   {
     ActionListener task = new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          _mfCiv.quit();
-        }
+      public void actionPerformed(ActionEvent e)
+      {
+        _mfCiv.quit();
+      }
     };
   }
 
-  
+
   // ============================================================
   // Inner Mock for Testing
   // ============================================================
