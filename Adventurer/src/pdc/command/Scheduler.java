@@ -146,19 +146,19 @@ public class Scheduler implements Runnable
   }
 
 
-  // TEMPORARY REMOVAL UNTIL QUIT COMMAND IMPLEMENTED
-  /**
-   * Make a {@code CmdQuit} to end the game and schedule it for the {@code DeltaQueue}.
-   */
-  public void schedEndGame()
-  {
-    // // Create CmdQuit to signal to end the game
-    // Command cmdQuit = new CmdQuit();
-    // _parms.clear(); // refresh the parm list
-    // // Send no-parms arg list to Quit command
-    // cmdQuit.init(_parms, null);
-    // sched(cmdQuit);
-  }
+//  // TEMPORARY REMOVAL UNTIL QUIT COMMAND IMPLEMENTED
+//  /**
+//   * Make a {@code CmdQuit} to end the game and schedule it for the {@code DeltaQueue}.
+//   */
+//  public void schedEndGame()
+//  {
+//    // // Create CmdQuit to signal to end the game
+//    // Command cmdQuit = new CmdQuit();
+//    // _parms.clear(); // refresh the parm list
+//    // // Send no-parms arg list to Quit command
+//    // cmdQuit.init(_parms, null);
+//    // sched(cmdQuit);
+//  }
 
 
   /*

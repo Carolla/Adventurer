@@ -603,7 +603,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
    */
   public void displayText(String msg)
   {
-    // _iop.appendText(msg);
     _iop.displayText(msg);
   }
 

@@ -38,7 +38,7 @@ public class CmdQuit extends Command
   /** This command takes no time on the game clock. */
   static final int DURATION = 0;
   /** Format for usage string on input error */
-  static final String FMT = "QUIT [no paramters]";
+//  static final String FMT = "[takes no parameters]";
 
 
   // ============================================================
@@ -48,7 +48,7 @@ public class CmdQuit extends Command
   /** Constructor called by the CommandFactory. There is no delay nor duration. */
   public CmdQuit()
   {
-    super("CmdQuit", DELAY, DURATION, CMD_DESCRIPTION, FMT);
+    super("CmdQuit", DELAY, DURATION, CMD_DESCRIPTION, null);
   }
 
 
@@ -68,6 +68,11 @@ public class CmdQuit extends Command
   public boolean init(List<String> args)
   {
     return (args.size() == 0) ? true : false;
+//    if (ok) {
+//      usage();
+//      return false;
+//    }
+//    return true;
   }
 
 
@@ -79,9 +84,7 @@ public class CmdQuit extends Command
   @Override
   public boolean exec()
   {
-    if (super._mfciv.msgPrompt("Quit Adventurer?") == true) {
-      super._mfciv.quit();
-    }
+    _mfciv.quit();
     return true;
   }
 } // end CmdQuit class

@@ -41,9 +41,7 @@ public class MainframeCiv
 {
   private AdventureRegistry _advReg = null;
   private BuildingDisplayCiv _bdCiv = null;
-//  private CommandParser _cp = null;
 
-  // private static final String TOWN_IMAGE = "ext_Quasqueton.JPG";
   private static final String TOWN_IMAGE = "ext_BiljurBaz.JPG";
 
   /** Default Buildings to initialize registry with */
@@ -193,10 +191,21 @@ public class MainframeCiv
   }
 
   
+  /** Close down the application
+   * @param msg   text to display
+   * @param errFlag use different color for display if an error; else display info message
+   */
+  public void msgOut(String msg, boolean errFlag)
+  {
+    _frame.displayText(msg);
+  }
+
   /** Close down the application */
   public void quit()
   {
-    Adventurer.quit();
+    if (msgPrompt("Quit Adventurer?") == true) {
+       Adventurer.quit();
+    }
   }
   
   

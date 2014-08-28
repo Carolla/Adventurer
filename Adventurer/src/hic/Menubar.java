@@ -11,8 +11,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-import civ.Adventurer;
-
 /**
  * Contains all the actions available from the menubar. This class uses the AdvMainframeCiv as its
  * Civ.
@@ -62,7 +60,7 @@ public class Menubar extends JMenuBar
     mnAdventure.add(createMenuItemWithAction("Quit", new ActionListener() {
       public void actionPerformed(ActionEvent e)
       {
-        Adventurer.quit();
+        Mainframe.getInstance().getMainframeCiv().quit();
       }
     }));
   }

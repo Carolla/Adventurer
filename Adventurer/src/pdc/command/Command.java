@@ -104,13 +104,13 @@ public abstract class Command
    * @param delay the length of time before the command fires
    * @param duration the length of time taken by executing the command
    * @param desc a short explanation of the purpose of the command (for help).
-   * @param fmt command syntax for the <code>usage()</code> error message
+   * @param fmt command syntax for the {@code usage} error message; is null is no parms are needed
    * @throws NullPointerException if the name or fmt parms are null
    */
   public Command(String name, int delay, int duration, String desc, String fmt)
       throws NullPointerException
   {
-    if ((name == null) || (fmt == null)) {
+    if (name == null) {
       throw new NullPointerException("Invalid parms in Command constructor");
     }
     // Assign formal arg values
@@ -226,10 +226,10 @@ public abstract class Command
   protected void usage()
   {
     if (_cmdfmt == null) {
-      System.err.println(_name + " command takes no parms");
+      _mfciv.msgOut(_name + " command takes no parms", true);
     }
     else {
-      System.err.println(_name + " " + _cmdfmt);
+      _mfciv.msgOut(_name + " " + _cmdfmt, true);
     }
     // Do not increment the game clock for this command
     _delay = 0;
