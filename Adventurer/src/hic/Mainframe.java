@@ -22,6 +22,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -193,6 +194,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     setupSizeAndBoundaries();
     setupContentPane();
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    // setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
     // Add menu
     setJMenuBar(new Menubar());
@@ -300,26 +302,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   // Public Methods
   // ============================================================
 
-  /**
-   * Display the help text for this mainframe; implements {@code IHelpText}
-   */
-  public void showHelp()
-  {
-    _helpdlg.setVisible(true);
-    _helpdlg.showHelp(_helpTitle, _helpText);
-  }
-
-
-  /**
-   * Layout the IOPanel on the left: scrolling text window and working Comandline input area
-   */
-  public void addIOPanel()
-  {
-    _leftHolder.removeAll();
-    _iop = new IOPanel();
-    setTranscriptTitle(IOPANEL_TITLE);
-    _leftHolder.add(_iop);
-  }
 
 
   // ============================================================
@@ -378,25 +360,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     });
     return button;
   }
-
-
-  /**
-   * Display a prompt, asking a question of the user
-   * 
-   * @param msg the question to be asked, must be yes or no
-   * @return the answer to the prompt
-   */
-  public boolean displayPrompt(String msg)
-  {
-    int selection =
-        JOptionPane.showConfirmDialog(this, msg, "REALLY?", JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.QUESTION_MESSAGE);
-    if (selection == JOptionPane.OK_OPTION) {
-      return true;
-    }
-    return false;
-  }
-
 
 
   private JButton createHeroCreationButton()
@@ -492,6 +455,47 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   // ============================================================
   // Deprecated Methods Temporarily
   // ============================================================
+
+  /**
+   * Layout the IOPanel on the left: scrolling text window and working Comandline input area
+   */
+  public void addIOPanel()
+  {
+    _leftHolder.removeAll();
+    _iop = new IOPanel();
+    setTranscriptTitle(IOPANEL_TITLE);
+    _leftHolder.add(_iop);
+  }
+
+
+  /**
+   * Display a prompt, asking a question of the user
+   * 
+   * @param msg the question to be asked, must be yes or no
+   * @return the answer to the prompt
+   */
+  public boolean displayPrompt(String msg)
+  {
+    int selection =
+        JOptionPane.showConfirmDialog(this, msg, "REALLY?", JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.QUESTION_MESSAGE);
+    if (selection == JOptionPane.OK_OPTION) {
+      return true;
+    }
+    return false;
+  }
+
+
+  /**
+   * Display text onto the scrolling output panel
+   * 
+   * @param msg text to append to existing text in panel
+   */
+  public void displayText(String msg)
+  {
+    _iop.displayText(msg);
+  }
+
 
   /**
    * Retrieve the MainframeCiv
@@ -596,14 +600,77 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   // }
 
 
-  /**
-   * Display text onto the scrolling output panel
-   * 
-   * @param msg text to append to existing text in panel
-   */
-  public void displayText(String msg)
+  public Dimension getImagePanelSize()
   {
-    _iop.displayText(msg);
+    return _rightHolder.getSize();
+  }
+
+
+  public void drawBuilding(BuildingRectangle rect)
+  {
+    Graphics2D g = (Graphics2D) _rightHolder.getGraphics();
+    rect.drawBuildingBox(g);
+  }
+
+
+  public void mouseClicked(MouseEvent e)
+  {
+    _mfCiv.handleClick(e.getPoint());
+  }
+
+  public void mouseEntered(MouseEvent e)
+  {}
+
+  public void mouseExited(MouseEvent e)
+  {}
+
+  public void mousePressed(MouseEvent e)
+  {}
+
+  public void mouseReleased(MouseEvent e)
+  {}
+
+  public void mouseDragged(MouseEvent e)
+  {
+    _mfCiv.handleMouseMovement(e.getPoint());
+  }
+
+  public void mouseMoved(MouseEvent e)
+  {
+    _mfCiv.handleMouseMovement(e.getPoint());
+  }
+
+
+  /** Call the {@code quit} method if the window is closed by a window close event */
+  public void windowClosing(WindowEvent e) 
+  {
+    ActionListener task = new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          _mfCiv.quit();
+        }
+    };
+  }
+
+  
+  // ============================================================
+  // Inner Mock for Testing
+  // ============================================================
+
+  // ============================================================
+  // Public Methods
+  // ============================================================
+
+  public void redraw()
+  {
+    validate();
+    repaint();
+  }
+
+
+  public void setHeroList(List<String> list)
+  {
+    _partyHeros = list;
+    // setHeroPartyText();
   }
 
 
@@ -643,64 +710,16 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   }
 
 
-  public void drawBuilding(BuildingRectangle rect)
+  /**
+   * Display the help text for this mainframe; implements {@code IHelpText}
+   */
+  public void showHelp()
   {
-    Graphics2D g = (Graphics2D) _rightHolder.getGraphics();
-    rect.drawBuildingBox(g);
+    _helpdlg.setVisible(true);
+    _helpdlg.showHelp(_helpTitle, _helpText);
   }
 
 
-  public void redraw()
-  {
-    validate();
-    repaint();
-  }
-
-
-  public void setHeroList(List<String> list)
-  {
-    _partyHeros = list;
-    // setHeroPartyText();
-  }
-
-
-
-  public void mouseClicked(MouseEvent e)
-  {
-    _mfCiv.handleClick(e.getPoint());
-  }
-
-  public void mouseEntered(MouseEvent e)
-  {}
-
-  public void mouseExited(MouseEvent e)
-  {}
-
-  public void mousePressed(MouseEvent e)
-  {}
-
-  public void mouseReleased(MouseEvent e)
-  {}
-
-  public void mouseDragged(MouseEvent e)
-  {
-    _mfCiv.handleMouseMovement(e.getPoint());
-  }
-
-  public void mouseMoved(MouseEvent e)
-  {
-    _mfCiv.handleMouseMovement(e.getPoint());
-  }
-
-  public Dimension getImagePanelSize()
-  {
-    return _rightHolder.getSize();
-  }
-
-
-  // ============================================================
-  // Inner Mock for Testing
-  // ============================================================
 
   /** Inner class for testing */
   public class MockMF
