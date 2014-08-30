@@ -22,6 +22,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -193,8 +194,9 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   {
     setupSizeAndBoundaries();
     setupContentPane();
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    // setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    // Add the frame listener to prompt and terminate the application
+    setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    addWindowListener(new Terminator());
 
     // Add menu
     setJMenuBar(new Menubar());
@@ -641,21 +643,18 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   }
 
 
-  /** Call the {@code quit} method if the window is closed by a window close event */
-  public void windowClosing(WindowEvent e)
-  {
-    ActionListener task = new ActionListener() {
-      public void actionPerformed(ActionEvent e)
-      {
-        _mfCiv.quit();
-      }
-    };
-  }
+  // /** Call the {@code quit} method if the window is closed by a window close event */
+  // public void windowClosing(WindowEvent e)
+  // {
+  // ActionListener closeListener = new ActionListener() {
+  // public void actionPerformed(ActionEvent e)
+  // {
+  // _mfCiv.quit();
+  // }
+  // };
+  // add(closeListener);
+  // }
 
-
-  // ============================================================
-  // Inner Mock for Testing
-  // ============================================================
 
   // ============================================================
   // Public Methods
@@ -721,6 +720,38 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   }
 
 
+
+  // ============================================================
+  // Inner Class for catching frame events
+  // ============================================================
+  /**
+   * This is an inner class only to inherit from the {@code WindowAdaptor} class instead of
+   * implementing a lot of unneeded methods by implementing {@code WindowListener} interface.
+   * 
+   * @author alancline
+   * @version Aug 29, 2014 // original <br>
+   */
+  public class Terminator extends WindowAdapter
+  {
+    /** Default constructor */
+    public Terminator()
+    {}
+
+    /**
+     * Close the window and the applicaiton by calling the {@code Adventurer.quit} method.
+     * 
+     * @param event when user closes application frame
+     */
+    public void windowClosing(WindowEvent evt)
+    {
+      _mfCiv.quit();
+    }
+  }
+
+
+  // ============================================================
+  // Inner Mock for Testing
+  // ============================================================
 
   /** Inner class for testing */
   public class MockMF
