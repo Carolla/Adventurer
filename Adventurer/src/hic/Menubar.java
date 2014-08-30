@@ -91,9 +91,6 @@ public class Menubar extends JMenuBar
     {
       public void actionPerformed(ActionEvent evt)
       {
-        // Audit statement
-        // MsgCtrl.traceEvent(evt);
-        // Attach the (inner class) dialog to the main frame
         JDialog dialog = new AboutDialog((JFrame) getParent().getParent().getParent());
         dialog.setVisible(true);
       }

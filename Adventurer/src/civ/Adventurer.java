@@ -85,7 +85,7 @@ public class Adventurer
 
 
   /** Close all registries and shutdown the system */
-  public static void quit()
+  public static void approvedQuit()
   {
     closeRegistries();
     System.exit(0);
