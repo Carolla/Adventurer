@@ -65,7 +65,7 @@ public class BuildingRegistry extends Registry
       super.add(new Jail()); // Jail
       super.add(new ClericsGuild()); // Monastery
       super.add(new Store()); // Rat's Pack
-      super.add(new RoguesGuild()); // Rogues' Den
+      super.add(new RoguesGuild()); // Rouge's Den
       super.add(new FightersGuild()); // Stadium
       super.add(new Bank()); // The Bank
       super.add(new Inn()); // Ugly Ogre Inn
