@@ -226,10 +226,10 @@ public abstract class Command
   protected void usage()
   {
     if (_cmdfmt == null) {
-      _mfciv.msgOut(_name + " command takes no parms", true);
+      _mfciv.errorOut(_name + " command takes no parms");
     }
     else {
-      _mfciv.msgOut(_name + " " + _cmdfmt, true);
+      _mfciv.errorOut(_name + " " + _cmdfmt);
     }
     // Do not increment the game clock for this command
     _delay = 0;

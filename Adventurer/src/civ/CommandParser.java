@@ -47,8 +47,9 @@ public class CommandParser
   private final String[][] _cmdTable = {
       {"ENTER", "CmdEnter"}, // Enter into a Building and show its interior description
       {"QUIT", "CmdQuit"}, // End the program.
-  // {"EXIT", "CmdReturn"}, // Leave the building, return to town
+  // {"EXIT", "CmdReturn"}, // Leave the building's interior and go to building's exterior
       // {"RETURN", "CmdReturn"}, // Synonym for Exit
+      // {"TO TOWN", "CmdReturn"}, // Return to Town View
       // { "HELP", "CmdHelp" }, // List the user command names and their descriptions.
       // { "INVENTORY", "CmdInventory" }, // Describe the money the Hero has (later, this will tell
       // the items too)
@@ -65,10 +66,11 @@ public class CommandParser
 
   // Special cases
   /** Error message if command cannot be found. */
-  private final String CMD_ERROR = "I don't understand. Try again.";
+  private final String CMD_ERROR = "I don't understand what you want to do.";
   /** Identify a command string in which only a return key is entered. */
   private final String CMD_EMPTY = "";
 
+  // Reference to mainframe for info and error messages
   private MainframeCiv _mfCiv;
 
   private final ArrayList<String> _names;
@@ -167,8 +169,8 @@ public class CommandParser
       System.err.println(token + " command could not be created.");
       cmd = _cmf.createCommand("intCmdEnd");
     }
+    // Each command takes care of their own parm-error message
     if (cmd.init(_parms) == false) {
-      _mfCiv.handleError(token + " invalid command parms.");
       cmd = _cmf.createCommand("intCmdEnd");
     }
     return cmd;
@@ -183,11 +185,14 @@ public class CommandParser
 
   private String getCommandToken(String s)
   {
+    if (s == null) {
+      return null;
+    }
     // Get first token and check it against the command table
     String token = lookup(s);
     // If command cannot be found, ask user to try again
     if (token == null) {
-      System.err.println(CMD_ERROR);
+      _mfCiv.errorOut(CMD_ERROR);
     }
     return token;
   }
@@ -284,7 +289,7 @@ public class CommandParser
     // Check for an empty carriage return entered first;
     // StringTokenizer throws exception on it
     if (ipLine.equalsIgnoreCase(CMD_EMPTY)) {
-      return CMD_EMPTY;
+      return null;
     }
     // StringTokenizer class defaults to whitespace as delimiter
     StringTokenizer line = new StringTokenizer(ipLine);

@@ -13,6 +13,7 @@ package hic;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.OutputStream;
@@ -47,8 +48,6 @@ public class IOPanel extends JPanel
   private final JScrollPane _scrollpane;
   private boolean _redirectIO;
 
-  // Command window requires the Command Parser to send commands
-  // private CommandParser _cp = null;
   private JTextField _cmdWin = null;
 
   /**
@@ -69,9 +68,8 @@ public class IOPanel extends JPanel
   {
     setLayout(new MigLayout("", "[grow]", "[][]"));
     _output = new JTextArea();
-    // _output.setAlignmentY(JTextArea.BOTTOM_ALIGNMENT);
     _output.setAlignmentY(JTextArea.TOP_ALIGNMENT);
-
+  
     _scrollpane = createOutputPanel();
     this.add(_scrollpane, "cell 0 1");
 
@@ -80,33 +78,47 @@ public class IOPanel extends JPanel
   }
 
 
-/** Display a block of testin the output Transcript area
-     * 
-     * @param msg  text block to display
-     */
-    public void displayText(String msg)
-    {
-      _output.append(msg + Constants.NEWLINE);
-      // Ensure that the text scrolls as new text is appended
-      _cmdWin.setFocusable(true);
-      _cmdWin.requestFocusInWindow();
-      _cmdWin.setCaretPosition(0);
-    }
+  /**
+   * Display a block of text in the output Transcript area
+   * 
+   * @param msg text block to display
+   */
+  public void displayText(String msg)
+  {
+    _output.append(msg + Constants.NEWLINE);
 
+    // Ensure that the text scrolls as new text is appended
+    _cmdWin.setFocusable(true);
+    _cmdWin.requestFocusInWindow();
+    _cmdWin.setCaretPosition(0);
+  }
 
-//  /**
-//   * Adds the string onto the existing text
-//   * 
-//   * @param msg the string to append
-//   */
-//  public void appendText(String msg)
-//  {
-//    _output.append(msg + "\n");
-//  }
+  
+  // TODO JTextArea will not change color and font; JTextPane is needed for that.
+  /**
+   * Display error text, using different Font and color, then return to standard font and color.
+   * 
+   * @param msg text block to display
+   */
+  public void displayErrorText(String msg)
+  {
+    // For now, just call the standard output method
+    displayText(msg);
+
+//    Color prevColor = _output.getForeground();
+//    Font prevFont = _output.getFont();
+//    _output.setForeground(Color.RED);
+//    _output.setFont(new Font("Sans Serif", Font.BOLD, 14));
+//    // Write the text
+//    displayText(msg);
+//    _output.setForeground(prevColor);
+//    _output.setFont(prevFont);
+  }
 
 
   /**
    * Call the Mainframe's Civ for the building/town status
+   * 
    * @return true if there are no buildings displayed and hero is at town level
    */
   public boolean isOnTown()
@@ -120,20 +132,20 @@ public class IOPanel extends JPanel
   // Public Methods
   // ============================================================
 
-  /**
-   * Set the text into the output pane, then return focus to the command line
-   * 
-   * @param text to display
-   */
-  public void setDescription(String text)
-  {
-    _output.setText(text + "\n");
-    // Set cursor to top of description on first display
-    _output.setCaretPosition(0);
-    // JViewport jv = _output.getViewport();
-    // jv.setViewPosition(new Point(0,0));
-    _cmdWin.requestFocusInWindow();
-  }
+//  /**
+//   * Set the text into the output pane, then return focus to the command line
+//   * 
+//   * @param text to display
+//   */
+//  public void setDescription(String text)
+//  {
+//    _output.setText(text + "\n");
+//    // Set cursor to top of description on first display
+//    _output.setCaretPosition(0);
+//    // JViewport jv = _output.getViewport();
+//    // jv.setViewPosition(new Point(0,0));
+//    _cmdWin.requestFocusInWindow();
+//  }
 
 
   // ============================================================
@@ -242,7 +254,7 @@ public class IOPanel extends JPanel
 
     return op;
   }
-  
-  
+
+
 } // end OutputPanel class
 

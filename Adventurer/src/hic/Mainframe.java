@@ -467,6 +467,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     _iop = new IOPanel();
     setTranscriptTitle(IOPANEL_TITLE);
     _leftHolder.add(_iop);
+    redraw();
   }
 
 
@@ -489,6 +490,17 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
 
   /**
+   * Display error text onto the scrolling output panel
+   * 
+   * @param msg text to append to existing text in panel
+   */
+  public void displayErrorText(String msg)
+  {
+    _iop.displayErrorText(msg);
+  }
+
+  
+  /**
    * Display text onto the scrolling output panel
    * 
    * @param msg text to append to existing text in panel
@@ -498,7 +510,20 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     _iop.displayText(msg);
   }
 
+  
+  /**
+   * Display image and associated test to the IOPanel
+   * 
+   * @param msg   text to append to text in IOPanel 
+   * @param image to display in Image Panel
+   */
+  public void displayImageAndText(String msg, Image image)
+  {
+    _iop.displayText(msg);
+    _imagePanel.setImage(image);
+  }
 
+  
   /**
    * Retrieve the MainframeCiv
    */

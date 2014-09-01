@@ -11,12 +11,11 @@
 
 package pdc.command;
 
-import pdc.GameClock;
-
-import civ.CommandParser;
-
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
+
+import pdc.GameClock;
+import civ.CommandParser;
 
 
 /**
@@ -146,21 +145,6 @@ public class Scheduler implements Runnable
   }
 
 
-//  // TEMPORARY REMOVAL UNTIL QUIT COMMAND IMPLEMENTED
-//  /**
-//   * Make a {@code CmdQuit} to end the game and schedule it for the {@code DeltaQueue}.
-//   */
-//  public void schedEndGame()
-//  {
-//    // // Create CmdQuit to signal to end the game
-//    // Command cmdQuit = new CmdQuit();
-//    // _parms.clear(); // refresh the parm list
-//    // // Send no-parms arg list to Quit command
-//    // cmdQuit.init(_parms, null);
-//    // sched(cmdQuit);
-//  }
-
-
   /*
    * PRIVATE METHODS
    */
@@ -169,6 +153,7 @@ public class Scheduler implements Runnable
    * Process a single loop of Scheduler and Command parsing activity, sleeping between each cycle.
    * Generally, loop through the deltaQ, retrieving commands and calling each {@code Command.exec()}
    * method.
+   * @throws InterruptedException   required because a Thread sleeps here
    */
   private void doCommands() throws InterruptedException
   {
@@ -179,8 +164,7 @@ public class Scheduler implements Runnable
         // Retrieve next Command in queue
         cmdToDo = _dq.getNextCmd();
         if (cmdToDo == null) {
-          System.err.println("Scheduler: DeltaCmdList is unexpectedly empty");
-          break;
+          throw new IllegalStateException("Scheduler: DeltaCmdList is unexpectedly empty"); 
         }
         // If CmdEnd, then return to CommandParser to get another User command;
         // then add a CmdEnd to trigger a new user command after newCmd is executed
@@ -199,10 +183,10 @@ public class Scheduler implements Runnable
           cmdToDo.exec();
         }
       } catch (NoSuchElementException e) {
-        System.err.println(e.getMessage());
-        break;
+        throw new IllegalStateException(e.getMessage()); 
       }
-    };
+      
+    } // end of while loop
   }
 
 

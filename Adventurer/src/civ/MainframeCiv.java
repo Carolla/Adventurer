@@ -24,6 +24,7 @@ import java.util.TreeMap;
 import pdc.Util;
 import chronos.pdc.Adventure;
 import chronos.pdc.registry.AdventureRegistry;
+import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import dmc.PersonReadWriter;
@@ -39,8 +40,9 @@ import dmc.PersonReadWriter;
  */
 public class MainframeCiv
 {
-  private AdventureRegistry _advReg = null;
-  private BuildingDisplayCiv _bdCiv = null;
+  private AdventureRegistry _advReg;
+  private BuildingDisplayCiv _bdCiv;
+  private BuildingRegistry _bReg;
 
   private static final String TOWN_IMAGE = "ext_BiljurBaz.JPG";
 
@@ -104,12 +106,8 @@ public class MainframeCiv
     _frame.setImageTitle(INITIAL_TITLE);
     // _personRW = new PersonReadWriter();
     // _advReg = (AdventureRegistry) RegistryFactory.getInstance().getRegistry(RegKey.ADV);
-    // _bdCiv =
-    // new BuildingDisplayCiv(_frame, (BuildingRegistry)
-    // RegistryFactory.getInstance().getRegistry(RegKey.BLDG));
     // createBuildingBoxes();
   }
-
 
   private void createBuildingBoxes()
   {
@@ -149,19 +147,20 @@ public class MainframeCiv
   // ============================================================
 
   /**
-   * Try to open the building passed in
+   * Enter the Building specified. If the Hero is at the Town level, get the
+   * {@code BuildingRegistry} and {@ocde BuildingCiv}
    * 
    * @param bldName the name of the building to open
    */
   public void enterBuilding(String bldName)
   {
     if (_onTown) {
-      if (_bdCiv.approachBuilding(bldName)) {
-        _onTown = false;
-      }
-    } else {
-      _bdCiv.enterBuilding();
+      _bReg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
+      _bdCiv = new BuildingDisplayCiv(_frame, _bReg);
+      _onTown = false;
     }
+    // Always enter the building on request
+    _bdCiv.enterBuilding(bldName);
   }
 
 
@@ -173,16 +172,22 @@ public class MainframeCiv
     }
   }
 
-  
-  public void handleError(String string)
+
+  /**
+   * Display an error message in a different font color than normal messages
+   * 
+   * @param msg the error message to display
+   */
+  public void errorOut(String msg)
   {
-    _frame.displayText(string);
+    _frame.displayErrorText(msg);
   }
 
 
-  /** Display a prompt message asking for confirmation 
+  /**
+   * Display a prompt message asking for confirmation
    * 
-   * @param mesg  question to ask for confirmation
+   * @param mesg question to ask for confirmation
    * @return true if the user seleted YES
    */
   public boolean msgPrompt(String msg)
@@ -190,25 +195,27 @@ public class MainframeCiv
     return _frame.displayPrompt(msg);
   }
 
-  
-  /** Close down the application
-   * @param msg   text to display
-   * @param errFlag use different color for display if an error; else display info message
+
+  /**
+   * Close down the application
+   * 
+   * @param msg text to display
    */
-  public void msgOut(String msg, boolean errFlag)
+  public void msgOut(String msg)
   {
     _frame.displayText(msg);
   }
+
 
   /** Close down the application */
   public void quit()
   {
     if (msgPrompt("Quit Adventurer?") == true) {
-       Adventurer.approvedQuit();
+      Adventurer.approvedQuit();
     }
   }
-  
-  
+
+
   public void handleMouseMovement(Point p)
   {
     if (_onTown) {
@@ -233,7 +240,7 @@ public class MainframeCiv
     return _onTown;
   }
 
-  
+
   /**
    * Load the selected adventure from the Adventure registry. Replace the opening button panel with
    * the IOPanel (text and command line)

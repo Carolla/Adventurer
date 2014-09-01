@@ -11,31 +11,28 @@
 
 package pdc.command;
 
-import hic.IOPanel;
-
 import java.util.List;
-
-import civ.MainframeCiv;
 
 
 /**
  * Moves the Hero from outside the Building (or Town) being displayed to inside, and displays its
  * interior description and image.
  * <P>
- * Format: ENTER (current Building) <br>
+ * Format: ENTER (current Building name | current Bulding type) <br>
  * where:
  * <UL>
- * <LI>Building Type is the Building class, e.g., Inn, Bank, Jail;</LI>
  * <LI>Building Name is the actual string name of the Building, and is Adventure specific;</LI>
+ * <LI>Building Type is the Building class, e.g., Inn, Bank, Jail;</LI>
  * </UL>
  * If no arguments are given, the type of the currently displayed Building is assumed. The command
  * string is case-insensitive. If the user enters 'the' in front of the building name or type, it
  * will check with and without this word; e.g., "ENTER the Jail" is the same as "ENTER Jail". See
- * {@code init()} method.
+ * {@code init()} method, unless the word "the" is part of the building's name.
  * 
  * @author Alan Cline
  * @version Mar 19 2014 // original <br>
  *          Aug 23, 2014 // updated {@code init} method to handle IOPanel for outputs <br>
+ *          Aug 30, 2014 // updated {@code exec} method to handle current building <br>
  * 
  * @see Command
  */
@@ -53,21 +50,26 @@ public class CmdEnter extends Command
 
   /** The building to enter */
   private String _targetBldg = null;
-  /** mainframe reference to get buildings */
-  MainframeCiv _mfCiv = null;
 
   /** Error message if no current building to enter */
   private final String ERRMSG_NOBLDG =
       "I see no building here. What building did you want to enter?";
 
-  private IOPanel _op;
-  
+
+  // ============================================================
+  // Constructors and constructor helpers
+  // ============================================================
+
   /** Constructor called by the CommandFactory. There is no delay nor duration. */
   public CmdEnter()
   {
     super("CmdEnter", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
   }
 
+
+  // ============================================================
+  // Implementation Methods
+  // ============================================================
 
   /**
    * Enters the current building. There can be 0 or many args in the arglist. If an arg is not
@@ -83,19 +85,20 @@ public class CmdEnter extends Command
   public boolean init(List<String> args)
   {
     // Get the Building parm, or null
-    if ((args.size() == 0) && (_mfCiv.isOnTown())) {
-      _mfCiv.handleError(ERRMSG_NOBLDG);
+    if ((args.size() == 0) && (super._mfciv.isOnTown())) {
+      super._mfciv.errorOut(ERRMSG_NOBLDG);
+      return false;
     }
     _targetBldg = convertArgsToString(args);
     return true;
   }
 
+
+  /** Enter the designated building, or the current building if displayed */
   public boolean exec()
   {
-//    // Null is legal parm for this call
-//    _mfCiv.enterBuilding(_targetBldg);
-    // TEMPORARY
-    _op.displayText("Trying to enter a Building, but not implemented yet");
+    // Null is legal parm for this call
+    super._mfciv.enterBuilding(_targetBldg);
     return true;
   }
 
