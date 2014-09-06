@@ -32,7 +32,7 @@ import chronos.pdc.buildings.WizardsGuild;
  * All Town Buildings are collected here. The initlal (default) Registry contains 8 buildings.
  * 
  * @author Alan Cline
- * @version 1.0 April 20, 2013 // original <br>
+ * @version April 20, 2013 // original <br>
  */
 public class BuildingRegistry extends Registry
 {

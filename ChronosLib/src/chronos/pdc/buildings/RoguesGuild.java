@@ -17,10 +17,7 @@ import mylib.ApplicationException;
  * constructor creates the default "Rogues' Den".
  * 
  * @author Alan Cline
- * @version <DL>
- *          <DT>Build 1.0 April 17, 2013 // original
- *          <DD>
- *          </DL>
+ * @version April 17, 2013 // original <br>
  */
 public class RoguesGuild extends Building
 {
@@ -72,7 +69,7 @@ public class RoguesGuild extends Building
 
 
   /**
-   * Constructor for typical general store with default business hours
+   * Constructor for typical thieves' guild with default business hours
    * 
    * @param name of this building
    * @param master who runs this building
@@ -89,8 +86,7 @@ public class RoguesGuild extends Building
 
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PUBLIC METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * PUBLIC METHODS
    */
 
   /*
@@ -149,13 +145,11 @@ public class RoguesGuild extends Building
 
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PRIVATE METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * PRIVATE METHODS
    */
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ INNER CLASS: MockStore
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * INNER CLASS: MockStore
    */
 
   public class MockRoguesGuild

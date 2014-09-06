@@ -1,5 +1,6 @@
 /**
- * 
+ * Mainframe.Civ  Copyright (c) 2010, Carolla Development, Inc. All Rights Reserved
+ *
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
  * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
@@ -60,7 +61,7 @@ public class MainframeCiv
       {0.6f, 0.7f, 0.09f, 0.09f}, // Stadium
       {0.35f, 0.8f, 0.09f, 0.09f}, // Arcaneum
       {0.45f, 0.8f, 0.09f, 0.09f}, // Monastery
-      {0.55f, 0.8f, 0.09f, 0.09f}, // Rogue's Den
+      {0.55f, 0.8f, 0.09f, 0.09f}, // Rouge's Den
       {0.7f, 0.65f, 0.09f, 0.09f}, // Jail
       {0.8f, 0.1f, 0.2f, 0.15f}}; // Quasqueton
 
@@ -70,7 +71,7 @@ public class MainframeCiv
       Color.red, // Stadium
       Color.red, // Arcaneum
       Color.red, // Monastery
-      Color.red, // Rogue's Den
+      Color.red, // Rouge's Den
       Color.red, // Jail
       Color.red}; // Quasqueston
 
@@ -314,4 +315,4 @@ public class MainframeCiv
     _frame.redraw();
   }
 
-} // end of AdvMainframeCiv outer class
+} // end of MainframeCiv class

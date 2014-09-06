@@ -60,15 +60,13 @@ public abstract class Building extends RegistryElement
   protected String _internalImagePath = null;
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
-   * ABSTRACT METHODS for Derived Classes
+   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ ABSTRACT METHODS for Derived Classes
    * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
    */
 
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
-   * CONSTRUCTOR(S) AND RELATED METHODS
+   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND RELATED METHODS
    * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
    */
 
@@ -122,7 +120,7 @@ public abstract class Building extends RegistryElement
   }
 
   /*
-   * PUBLIC METHODS 
+   * PUBLIC METHODS
    */
 
   /**

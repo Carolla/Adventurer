@@ -31,12 +31,18 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
  *          July 21, 2014 ABC // removed environment variables, based everything off user's home
  *          directory <br>
  *          Aug 24, 2014 // renamed {@code exit} method to {@code quit} for consistency with menu <br>
+ *          Sept 6, 2014 // ABC removed repeated getInstance calls from loop <br>
  */
 public class Adventurer
 {
+  /** Quick reference to avoid repated calls to {@code getInstance} */
+  static private RegistryFactory _rf;
+
+
   /** Launcher class does not require a constructor--it has the {@code main} method. */
-  private Adventurer()
+  public Adventurer()
   {}
+
 
   /**
    * Creates the main frame and passes control to it.
@@ -70,8 +76,8 @@ public class Adventurer
             @Override
             public void windowClosing(WindowEvent e)
             {
-              closeRegistries();
               super.windowClosing(e);
+              approvedQuit();
             }
           });
         } catch (Exception e) {
@@ -97,8 +103,9 @@ public class Adventurer
    */
   private static void initRegistries()
   {
+    _rf = RegistryFactory.getInstance();
     for (RegKey key : RegKey.values()) {
-      RegistryFactory.getInstance().getRegistry(key);
+      _rf.getRegistry(key);
     }
   }
 
@@ -108,8 +115,9 @@ public class Adventurer
    */
   private static void closeRegistries()
   {
+    _rf = RegistryFactory.getInstance();
     for (RegKey key : RegKey.values()) {
-      Registry reg = RegistryFactory.getInstance().getRegistry(key);
+      Registry reg = _rf.getRegistry(key);
       reg.closeRegistry();
     }
   }
@@ -119,18 +127,19 @@ public class Adventurer
   // Inner class for testing
   // ============================================================
 
-  // public class MockLauncher
-  // {
-  // public MockLauncher()
-  // {}
-  //
-  // public static void initRegistries()
-  // {
-  // Adventurer.this.initRegistries();
-  // }
-  //
-  // }
+  /** Inner class for testing {@code Adventurer} launcher */
+  public class MockLauncher
+  {
+    public MockLauncher()
+    {}
+
+    public void initRegistries()
+    {
+      Adventurer.initRegistries();
+    }
+
+  } // end of MockLauncher inner class
 
 
-} // end of Launcher class
+} // end of Adventurer class
 

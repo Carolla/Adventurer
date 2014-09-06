@@ -24,10 +24,7 @@ import com.db4o.query.Predicate;
  * Contains the Patrons for the Inn. They interact with the Hero
  * 
  * @author Alan Cline
- * @version <DL>
- *          <DT>Build 1.0 Jan 21, 2013 // original
- *          <DD>
- *          </DL>
+ * @version Jan 21, 2013 // original <br>
  */
 public class NPCRegistry extends Registry
 {
@@ -42,8 +39,7 @@ public class NPCRegistry extends Registry
    * that the NPC may reveal RETORT_LIST: A list of negative messages that the NPC may reveal
    */
   private enum Index {
-    NAME, NOTE, AFFINITY, PEACE, NBR_RUMORS, NBR_RETORTS,
-    FAR_DESC, NEAR_DESC
+    NAME, NOTE, AFFINITY, PEACE, NBR_RUMORS, NBR_RETORTS, FAR_DESC, NEAR_DESC
   };
 
   /** Index position where the variable rumor list starts */
@@ -424,7 +420,7 @@ public class NPCRegistry extends Registry
 
 
   /*
-   * CONSTRUCTOR(S) AND RELATED METHODS 
+   * CONSTRUCTOR(S) AND RELATED METHODS
    */
   /**
    * Private ctor because this singleton is called from getInstance(). Registry filename is used for
@@ -492,6 +488,8 @@ public class NPCRegistry extends Registry
   public ArrayList<NPC> getNPCList()
   {
     List<IRegistryElement> npcSet = get(new Predicate<IRegistryElement>() {
+      private static final long serialVersionUID = 6815466908808374953L;
+
       public boolean match(IRegistryElement candidate)
       {
         return true;
@@ -506,8 +504,7 @@ public class NPCRegistry extends Registry
 
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PRIVATE METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * PRIVATE METHODS
    */
 
   /**
@@ -561,13 +558,11 @@ public class NPCRegistry extends Registry
 
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PRIVATE METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * PRIVATE METHODS
    */
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ MockPatronRegistry INNER CLASS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * MockPatronRegistry INNER CLASS
    */
   public class MockPatronRegistry
   {

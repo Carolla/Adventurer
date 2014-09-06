@@ -7,15 +7,15 @@
  * by email: acline@carolla.com
  */
 
-package test.integ;
+package test.integ.A00_InitQuit;
+
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import hic.Mainframe;
-import hic.Mainframe.MockMF;
 
 import java.io.File;
+import java.io.FileOutputStream;
 
 import mylib.MsgCtrl;
 
@@ -28,10 +28,11 @@ import org.junit.Test;
 import chronos.Chronos;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
+import civ.Adventurer;
+import civ.Adventurer.MockLauncher;
 
 /**
- * Test the Adventurer (Launcher) class: ensure that all Registries are created, and that the
- * Mainframe is backed by the MainframeCiv
+ * Test the Adventurer (Launcher) class: ensure that all Registries are created.
  * 
  * @author alancline
  * @version July 19, 2014 // ABC original
@@ -40,6 +41,9 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
 public class TA00a_Initialize
 {
   static private RegistryFactory _rf = null;
+  private Adventurer _launcher;
+  private MockLauncher _mock;
+
   /**
    * INFO ONLY: Keys used by RegistryFactory public enum RegKey { ADV("Adventure"),
    * BLDG("Building"), ITEM("Item"), NPC("NPC"), OCP("Occupation"), SKILL("Skill"), TOWN("Town");
@@ -72,9 +76,6 @@ public class TA00a_Initialize
   @AfterClass
   public static void tearDownAfterClass() throws Exception
   {
-    // for (RegKey key : RegKey.values()) {
-    // Registry reg = RegistryFactory.getInstance().getRegistry(key);
-    // reg.closeRegistry();
   }
 
   /**
@@ -84,6 +85,8 @@ public class TA00a_Initialize
   public void setUp() throws Exception
   {
     _rf = RegistryFactory.getInstance();
+    _launcher = new Adventurer();
+    _mock = _launcher.new MockLauncher();
   }
 
 
@@ -96,6 +99,8 @@ public class TA00a_Initialize
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     _rf = null;
+    _mock = null;
+    _launcher = null;
   }
 
 
@@ -105,11 +110,11 @@ public class TA00a_Initialize
 
   /** Run the main to create the registries, the mainframe and mainframe civ */
   @Test
-  public void testMain()
+  public void testMainNoRegs()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln("Integration test: Adventurer.TA00a_Initialize");
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.msgln(this, "\t testMainNoRegs");
 
     // SETUP: Ensure that there are as many regfiles as they are reg keys
     int keynum = RegKey.values().length;
@@ -121,9 +126,42 @@ public class TA00a_Initialize
     deleteRegistryFiles();
 
     // DO create the registries
+    _mock.initRegistries();
+    
+    // VERIFY all registry files created
+    assertTrue(RegistryFilesExist());
+
+    // VERIFY all registries exist: get number objects in RegistryFactory map
+    assertTrue(keynum == _rf.getNumberOfRegistries());
+
+    // TEARDOWN: close all registries
     for (RegKey key : RegKey.values()) {
-      _rf.getRegistry(key);
+      _rf.closeRegistry(key);
     }
+  }
+
+
+  /** Run the main to create the registries when the files already exist */
+  @Test
+  public void testMainWithRegs()
+  {
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.msgln(this, "\t testMainWithRegs");
+
+    // SETUP: Ensure that there are as many regfiles as they are reg keys
+    int keynum = RegKey.values().length;
+    int pathnum = paths.length;
+    MsgCtrl.msg("\tNumber of keys = " + keynum);
+    MsgCtrl.msgln("\tNumber of file paths = " + pathnum);
+    assertEquals(keynum, pathnum);
+
+    // Create all registry files to ensure that they exist
+    _mock.initRegistries();
+    assertTrue(RegistryFilesExist());
+
+    // Try creating the registries when they already exist 
+    _mock.initRegistries();
 
     // VERIFY all registry files created
     assertTrue(RegistryFilesExist());
@@ -131,16 +169,10 @@ public class TA00a_Initialize
     // VERIFY all registries exist: get number objects in RegistryFactory map
     assertTrue(keynum == _rf.getNumberOfRegistries());
 
-    // VERIFY MainframeCiv exists
-    Mainframe mf = Mainframe.getInstance();
-    MockMF mmf = mf.new MockMF();
-    assertTrue(mmf.hasCiv());
-
     // TEARDOWN: close all registries
     for (RegKey key : RegKey.values()) {
       _rf.closeRegistry(key);
     }
-
   }
 
 
@@ -148,12 +180,13 @@ public class TA00a_Initialize
   // Helper Methods
   // ============================================================
 
-  /** Check that all Registry files exist */
+  /** Check that all Registry files exist and are of non-zero length */
   private boolean RegistryFilesExist()
   {
     boolean retval = true;
     for (String s : paths) {
-      retval = doesExist(s);
+      File f = new File(s);
+      retval = (doesExist(s) && (f.length() > 0));
       if (retval == false) {
         break;
       }
@@ -161,7 +194,17 @@ public class TA00a_Initialize
     return retval;
   }
 
+  
+//  /** Create almost-empoty Registry files for testing */
+//  private void createFiles()
+//  {
+//    for (String s : paths) {
+//      FileOutputStream fos = new FileOutputStream(s);
+//      fos.wr
+//    }
+//  }
 
+  
   /** Check existence of single Registry file */
   private boolean doesExist(String path)
   {

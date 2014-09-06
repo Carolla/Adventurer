@@ -9,12 +9,10 @@
 
 package test;
 
-import mylib.test.MyLibraryTestSuite;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import test.integ.TA00a_Initialize;
+import test.integ.A00_InitQuit.TA00a_Initialize;
 
 
 /**

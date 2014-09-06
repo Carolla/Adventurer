@@ -104,8 +104,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private final String IOPANEL_TITLE = " Transcript ";
   /** Title of the initial three-button panel on left side */
   private final String INITIAL_OPENING_TITLE = " Actions ";
-  // /** Title of the Image Panel on right side */
-  // private final String INITIAL_IMAGE_TITLE = " Chronos Logo ";
 
 
   /** Help Title for the mainframe */

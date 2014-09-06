@@ -1,5 +1,5 @@
 /**
- * TA00b_Exit.java Copyright (c) 2014, Carolla Development, Inc. All Rights Reserved
+ * TA00b_Quit.java Copyright (c) 2014, Carolla Development, Inc. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
@@ -7,7 +7,7 @@
  * by email: acline@carolla.com
  */
 
-package test.integ;
+package test.integ.A00_InitQuit;
 
 import mylib.MsgCtrl;
 
@@ -22,8 +22,9 @@ import org.junit.Test;
  * 
  * @author alancline
  * @version Jul 23, 2014 // original <br>
+ *          Sept 5, 2014 // Exit was renamed to Quit, to terminate program
  */
-public class TA00b_Exit
+public class TA00b_Quit
 {
 
   // ============================================================
@@ -36,8 +37,6 @@ public class TA00b_Exit
   @BeforeClass
   public static void setUpBeforeClass() throws Exception
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.msg("Integration test: Adventurer.TA00b_Exit ");
   }
 
   /**
@@ -52,7 +51,10 @@ public class TA00b_Exit
    */
   @Before
   public void setUp() throws Exception
-  {}
+  {
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.msgln(this, "\tAdventurer.TA00b_Quit ");
+  }
 
   /**
    * @throws java.lang.Exception
@@ -74,14 +76,13 @@ public class TA00b_Exit
    * tested
    */
   @Test
-  public void testTA00b_Exit()
+  public void testTA00b_Quit()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, ": testTA00b_Exit()");
+    MsgCtrl.msgln(this, ": testTA00b_Quit()");
 
-    MsgCtrl.msgln("Nothing to test for integration--"
-        + "it is all GUI testing or has already been tested.");
+
   }
 
   // ============================================================
@@ -89,4 +90,4 @@ public class TA00b_Exit
   // ============================================================
 
 
-} // end of TA00b_Exit class
+} // end of TA00b_Quit class

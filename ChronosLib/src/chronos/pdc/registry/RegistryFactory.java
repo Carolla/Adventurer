@@ -34,7 +34,7 @@ public class RegistryFactory
   // ============================================================
   public enum RegKey {
     ADV("Adventure"), BLDG("Building"), ITEM("Item"), NPC("NPC"), OCP("Occupation"),
-    SKILL("Skill"), TOWN("Town");   // HELP("AdvHelp");
+    SKILL("Skill"), TOWN("Town"); 
 
     private RegKey(String nm)
     {
@@ -101,6 +101,7 @@ public class RegistryFactory
     String regName = Chronos.REGISTRY_CLASSPKG + regtype + "Registry";
     try {
       reg = (Registry) Class.forName(regName).newInstance();
+//      System.err.println("RegistryFactory.createRegistry() created = " + reg.toString());
       _regMap.put(regtype, reg);
 
     } catch (ClassNotFoundException ex) {
@@ -143,6 +144,7 @@ public class RegistryFactory
     if (reg == null) {
       reg = createRegistry(regtype);
     }
+//    System.err.println("RegistryFactory.getRegistry() = " + reg.toString());
     return reg;
   }
 
