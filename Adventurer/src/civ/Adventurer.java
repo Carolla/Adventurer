@@ -128,9 +128,9 @@ public class Adventurer
   // ============================================================
 
   /** Inner class for testing {@code Adventurer} launcher */
-  public class MockLauncher
+  public class MockAdventurer
   {
-    public MockLauncher()
+    public MockAdventurer()
     {}
 
     public void initRegistries()
@@ -138,7 +138,13 @@ public class Adventurer
       Adventurer.initRegistries();
     }
 
-  } // end of MockLauncher inner class
+    public void closeRegistries()
+    {
+      Adventurer.closeRegistries();
+    }
+
+    
+  } // end of MockAdventurer inner class
 
 
 } // end of Adventurer class

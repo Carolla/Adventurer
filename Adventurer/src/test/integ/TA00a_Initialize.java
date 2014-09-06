@@ -7,7 +7,8 @@
  * by email: acline@carolla.com
  */
 
-package test.integ.A00_InitQuit;
+package test.integ;
+
 
 
 import static org.junit.Assert.assertEquals;
@@ -15,7 +16,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileOutputStream;
 
 import mylib.MsgCtrl;
 
@@ -29,7 +29,7 @@ import chronos.Chronos;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.Adventurer;
-import civ.Adventurer.MockLauncher;
+import civ.Adventurer.MockAdventurer;
 
 /**
  * Test the Adventurer (Launcher) class: ensure that all Registries are created.
@@ -40,9 +40,9 @@ import civ.Adventurer.MockLauncher;
  */
 public class TA00a_Initialize
 {
-  static private RegistryFactory _rf = null;
+  static private RegistryFactory _rf;
   private Adventurer _launcher;
-  private MockLauncher _mock;
+  private MockAdventurer _mock;
 
   /**
    * INFO ONLY: Keys used by RegistryFactory public enum RegKey { ADV("Adventure"),
@@ -86,7 +86,7 @@ public class TA00a_Initialize
   {
     _rf = RegistryFactory.getInstance();
     _launcher = new Adventurer();
-    _mock = _launcher.new MockLauncher();
+    _mock = _launcher.new MockAdventurer();
   }
 
 
@@ -112,8 +112,8 @@ public class TA00a_Initialize
   @Test
   public void testMainNoRegs()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.msgln(this, "\t testMainNoRegs");
 
     // SETUP: Ensure that there are as many regfiles as they are reg keys
@@ -145,8 +145,8 @@ public class TA00a_Initialize
   @Test
   public void testMainWithRegs()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.msgln(this, "\t testMainWithRegs");
 
     // SETUP: Ensure that there are as many regfiles as they are reg keys

@@ -7,7 +7,12 @@
  * by email: acline@carolla.com
  */
 
-package test.integ.A00_InitQuit;
+package test.integ;
+
+
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
 
 import mylib.MsgCtrl;
 
@@ -17,8 +22,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import chronos.Chronos;
+import civ.Adventurer;
+import civ.Adventurer.MockAdventurer;
+
 /**
- * Ensure that the program exits back to the system, closing all registries
+ * Ensure that the program exits back to the system, closing all registries, but not deleting them.
  * 
  * @author alancline
  * @version Jul 23, 2014 // original <br>
@@ -26,6 +35,10 @@ import org.junit.Test;
  */
 public class TA00b_Quit
 {
+
+  private final String[] paths = {Chronos.AdventureRegPath, Chronos.BuildingRegPath,
+      Chronos.ItemRegPath, Chronos.NPCRegPath, Chronos.OcpRegPath, Chronos.SkillRegPath,
+      Chronos.TownRegPath};
 
   // ============================================================
   // Fixtures
@@ -36,8 +49,7 @@ public class TA00b_Quit
    */
   @BeforeClass
   public static void setUpBeforeClass() throws Exception
-  {
-  }
+  {}
 
   /**
    * @throws java.lang.Exception
@@ -52,8 +64,7 @@ public class TA00b_Quit
   @Before
   public void setUp() throws Exception
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.msgln(this, "\tAdventurer.TA00b_Quit ");
+    MsgCtrl.errorMsgsOn(true);
   }
 
   /**
@@ -76,18 +87,50 @@ public class TA00b_Quit
    * tested
    */
   @Test
-  public void testTA00b_Quit()
+  public void test_Quit()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, ": testTA00b_Quit()");
+    MsgCtrl.msgln(this, "\t testTA00b_Quit()");
 
+    // Ensure that the Registries exist
+    Adventurer adv = new Adventurer();
+    MockAdventurer mock = adv.new MockAdventurer();
+    mock.initRegistries();
+    
+    // Close down the registries
+    mock.closeRegistries();
+
+    // VERIFY that the registries still exist
+    assertTrue(registryFilesExist());
 
   }
 
   // ============================================================
   // Helper Methods
   // ============================================================
+
+  /** Check that all Registry files exist and are of non-zero length */
+  private boolean registryFilesExist()
+  {
+    boolean retval = true;
+    for (String s : paths) {
+      File f = new File(s);
+      retval = (doesExist(s) && (f.length() > 0));
+      if (retval == false) {
+        break;
+      }
+    }
+    return retval;
+  }
+
+  
+  /** Check existence of single Registry file */
+  private boolean doesExist(String path)
+  {
+    File rf = new File(path);
+    return rf.exists();
+  }
 
 
 } // end of TA00b_Quit class

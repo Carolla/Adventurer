@@ -32,9 +32,9 @@ public class TownRegistry extends Registry
       "Rat's Pack", "Rouge's Den", "Stadium", "The Bank", "Ugly Ogre Inn"};
 
   // INFO: Types that correspond to the above names: Wizard's Guild, Jail, Cleric's Guild,
-  // General Store, Thieves' Guild, Fighrter's Guild, Bank, Inn
+  // General Store, Thieves' Guild, Fighter's Guild, Bank, Inn
 
-  
+
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
    */

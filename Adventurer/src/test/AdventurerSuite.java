@@ -12,7 +12,8 @@ package test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import test.integ.A00_InitQuit.TA00a_Initialize;
+import test.integ.TA00a_Initialize;
+import test.integ.TA00b_Quit;
 
 
 /**
@@ -75,17 +76,15 @@ import test.integ.A00_InitQuit.TA00a_Initialize;
  * @version Jun 4 2009 // original <br>
  *          Jan 18 2010 // add Occupation and Skill class testing <br>
  *          Jul 11 2010 // updated for tests with CIV support <br>
- *          Jul 26 2014 // {@code UC00a. Initilization} classes added: 
- *          {@code Adventurer} (the app Launcher), {@code MainframeCiv}; <br>
+ *          Jul 26 2014 // {@code UC00a. Initilization} classes added: {@code Adventurer} (the app
+ *          Launcher), {@code MainframeCiv}; <br>
  */
 // Jul 26 2014 // {@code UC00b. Exit} classes added; <br>
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    // Integration tests
-    TA00a_Initialize.class,
 
     // CIV test files
-//    TestMainFrameCiv.class,
+    // TestMainFrameCiv.class,
     // TestBuildingDisplayCiv.class,
     // TestHeroDisplayCiv.class,
     // TestNewHeroCiv.class,
@@ -113,15 +112,17 @@ import test.integ.A00_InitQuit.TA00a_Initialize;
     // TestHalfOrcPeasant.class
     // TestHobbitPeasant.class
 
-    // TODO: Activate ChronosLibSuite and MyLibrarySuite test suites
-/**     // SUPPORT REGRESSION TESTS
-    // CHRONOS SUITE
-    ChronosLibSuite.class,
+    // Integration tests
+    TA00a_Initialize.class,
+    TA00b_Quit.class
 
-    // MYLIBRARY TEST SUITE
-    MyLibrarySuite.class
-*/
-    
+// TODO: Activate ChronosLibSuite and MyLibrarySuite test suites
+/**
+ * // SUPPORT REGRESSION TESTS // CHRONOS SUITE ChronosLibSuite.class,
+ * 
+ * // MYLIBRARY TEST SUITE MyLibrarySuite.class
+ */
+
 })
 public class AdventurerSuite
 {
