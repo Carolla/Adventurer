@@ -12,9 +12,6 @@ package test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import test.integ.TA00a_Initialize;
-import test.integ.TA00b_Quit;
-
 
 /**
  * Regression test suite for all the {@code JUnit} test cases for the source code packages of the
@@ -79,7 +76,6 @@ import test.integ.TA00b_Quit;
  *          Jul 26 2014 // {@code UC00a. Initilization} classes added: {@code Adventurer} (the app
  *          Launcher), {@code MainframeCiv}; <br>
  */
-// Jul 26 2014 // {@code UC00b. Exit} classes added; <br>
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 
@@ -103,18 +99,6 @@ import test.integ.TA00b_Quit;
     // DMC test files
     // TestPersonReadWriter.class
 
-    // Integration Tests
-    // TestHumanPeasant.class
-    // TestDwarfPeasant.class
-    // TestElfPeasant.class
-    // TestGnomePeasant.class
-    // TestHalfElfPeasant.class
-    // TestHalfOrcPeasant.class
-    // TestHobbitPeasant.class
-
-    // Integration tests
-    TA00a_Initialize.class,
-    TA00b_Quit.class
 
 // TODO: Activate ChronosLibSuite and MyLibrarySuite test suites
 /**

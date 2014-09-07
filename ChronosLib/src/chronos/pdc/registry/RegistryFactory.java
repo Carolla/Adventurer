@@ -12,6 +12,7 @@ package chronos.pdc.registry;
 
 import java.util.HashMap;
 
+import mylib.MsgCtrl;
 import mylib.pdc.Registry;
 import chronos.Chronos;
 
@@ -140,6 +141,7 @@ public class RegistryFactory
    */
   public Registry getRegistry(RegKey regtype)
   {
+
     Registry reg = getExisting(regtype);
     if (reg == null) {
       reg = createRegistry(regtype);
