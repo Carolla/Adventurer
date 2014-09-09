@@ -12,7 +12,6 @@ package chronos.pdc.registry;
 
 import java.util.HashMap;
 
-import mylib.MsgCtrl;
 import mylib.pdc.Registry;
 import chronos.Chronos;
 
@@ -61,6 +60,7 @@ public class RegistryFactory
     _regMap = new HashMap<RegKey, Registry>();
   }
 
+  
   /** Retrieve or create the factory class, a collection of all Registries */
   static public RegistryFactory getInstance()
   {

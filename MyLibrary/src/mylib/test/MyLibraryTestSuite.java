@@ -9,7 +9,6 @@
 
 package mylib.test;
 
-import mylib.test.civ.TestDataShuttle;
 import mylib.test.dmc.TestDbReadWriter;
 import mylib.test.pdc.TestMetaDie;
 import mylib.test.pdc.TestRegistry;

@@ -133,7 +133,7 @@ public class DbReadWriter
         // Close the db file and remove the object container
         if (_db != null) {
             _db.close();
- //           _db = null;
+            _db = null;
         }
     }
 
