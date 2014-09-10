@@ -294,8 +294,8 @@ public class TestRegistry extends TestCase
    */
   public void testGetByKey() throws ApplicationException
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.msgln(this, "\ttestGetByKey()");
 
     // Prepare: Add a few objects to the db

@@ -12,12 +12,16 @@ package test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import test.integ.TA00a_Initialize;
+import test.integ.TA00b_Quit;
+
 
 /**
- * Regression test suite for all the {@code JUnit} test cases for the source code packages of
- * {@code ChronosLib} application-specific library and the {@code MyLibrary} generic library. Test
- * class are added for unit test and integration tests as each class is built for its first use case
- * implementation. See the class diagrams for each use case respectively.
+ * Regression test suite for all the {@code JUnit} unit and integration test cases for
+ * {@code Adventurer}. This suite includes the {@code ChronosLib} application-specific library,
+ * which indirectly calls the {@code MyLibrary} generic library. After the two libraries test suites
+ * are called, then the {@code UnitTestSuite} class is called, then finally all the integration
+ * tests, which are collected individually here.
  * 
  * @author Alan Cline
  * @version Jun 4 2009 // original <br>
@@ -30,28 +34,14 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
 
     // ChronosLib test suite (includes MyLibaryTestSuite.class)
-    ChronosSuite.class
+    ChronosSuite.class,
 
-// CIV test files
-// TestMainFrameCiv.class,
-// TestBuildingDisplayCiv.class,
-// TestHeroDisplayCiv.class,
-// TestNewHeroCiv.class,
-// TestNewHeroFields.class,
+    // UnitTestSuite includes all unit tests for all componentns
+    UnitTestSuite.class,
 
-// PDC test files:
-// TestDwarf.class
-// TestHuman.class
-// TestHunger.class
-// TestInventory.class
-// TestKlass.class
-// TestPeasant.class
-// TestPerson.class
-// TestRace.class
-
-// DMC test files
-// TestPersonReadWriter.class
-
+    // Individual integration tests for each use case
+    TA00a_Initialize.class,
+    TA00b_Quit.class
 
 })
 public class AdventurerSuite

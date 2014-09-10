@@ -233,7 +233,7 @@ public class MsgCtrl
    */
   static public void where(Object obj)
   {
-    if ((obj != null) && (AUDIT_SUPPRESS == false)) {
+    if ((obj != null) && ((AUDIT_SUPPRESS == false) || (ERROR_SUPPRESS == false))) {
       String method = Thread.currentThread().getStackTrace()[2].getMethodName();
       System.out.println("\n" + obj.getClass().getName() + ":\t" + method);
     }

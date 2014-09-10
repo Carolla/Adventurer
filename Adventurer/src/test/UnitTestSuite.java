@@ -13,26 +13,18 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
- * Run all unit tests for {@code Adventurer} components. Unit tests are collected in their own
- * respective suites for {@code PDC, CIV}, and {@code DMC}.<br>
- * The collective unit test suites for {@code ChronosLib} and {@code MyLibrary} are included here
- * and run first because they support the {@code Adventurer}-specific unit tests. <br>
- * Integration tests for each use case are run from {@code AdventureSuite}, which also runs this
- * suite.
+ * Run all unit tests for {@code Adventurer} components. Unit tests are grouped by their components
+ * for {@code PDC, CIV}, and {@code DMC}.<br>
+ * The collective unit test suites for {@code ChronosLib} and {@code MyLibrary} are not included
+ * here.
  * 
- * @see test.AdventureSuite 
+ * @see test.AdventureSuite
  * 
  * @author Alan Cline
  * @version Sept 7 2014 // original <br>
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-
-/** MyLibary unit test suite */
-// MyLibraryTestSuite.class,
-
-/** ChronosLib unit test suite */
-// ChronosSuite.class
 
 /** CIV test files */
 // TestMainFrameCiv.class,

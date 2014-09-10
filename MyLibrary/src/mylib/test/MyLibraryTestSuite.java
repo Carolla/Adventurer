@@ -38,7 +38,6 @@ import org.junit.runners.Suite;
 
     // DMC Test files
     TestDbReadWriter.class,
-// TestHelpReader.class
 
 })
 /** Compilation of all unit tests for regression and integration testing. */

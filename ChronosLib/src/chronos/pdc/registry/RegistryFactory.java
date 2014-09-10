@@ -12,6 +12,7 @@ package chronos.pdc.registry;
 
 import java.util.HashMap;
 
+import mylib.MsgCtrl;
 import mylib.pdc.Registry;
 import chronos.Chronos;
 
@@ -34,7 +35,7 @@ public class RegistryFactory
   // ============================================================
   public enum RegKey {
     ADV("Adventure"), BLDG("Building"), ITEM("Item"), NPC("NPC"), OCP("Occupation"),
-    SKILL("Skill"), TOWN("Town"); 
+    SKILL("Skill"), TOWN("Town");
 
     private RegKey(String nm)
     {
@@ -60,7 +61,7 @@ public class RegistryFactory
     _regMap = new HashMap<RegKey, Registry>();
   }
 
-  
+
   /** Retrieve or create the factory class, a collection of all Registries */
   static public RegistryFactory getInstance()
   {
@@ -77,7 +78,8 @@ public class RegistryFactory
 
   /**
    * Close a registry and remove it from the factory collection
-   * @param regtype one of the specified registry types 
+   * 
+   * @param regtype one of the specified registry types
    */
   public void closeRegistry(RegKey regtype)
   {
@@ -102,12 +104,15 @@ public class RegistryFactory
     String regName = Chronos.REGISTRY_CLASSPKG + regtype + "Registry";
     try {
       reg = (Registry) Class.forName(regName).newInstance();
-//      System.err.println("RegistryFactory.createRegistry() created = " + reg.toString());
+       System.err.println("RegistryFactory.createRegistry() created = " + reg.toString());
       _regMap.put(regtype, reg);
 
     } catch (ClassNotFoundException ex) {
       System.err.println("createRegistry(): cannot find specified registry in common location:"
           + ex.getMessage());
+//      MsgCtrl.errorMsgsOn(true);
+//      MsgCtrl.where(this);
+//      MsgCtrl.errMsgln("Cannot find specified registry in common location: " + ex.getMessage());
     } catch (IllegalAccessException ex) {
       System.err.println("createRegistry(): cannot access specified method: " + ex.getMessage());
     } catch (IllegalArgumentException ex) {
@@ -146,7 +151,7 @@ public class RegistryFactory
     if (reg == null) {
       reg = createRegistry(regtype);
     }
-//    System.err.println("RegistryFactory.getRegistry() = " + reg.toString());
+    // System.err.println("RegistryFactory.getRegistry() = " + reg.toString());
     return reg;
   }
 

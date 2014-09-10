@@ -287,7 +287,7 @@ public class TestRegistryFactory
     assertEquals(_rf.getNumberOfRegistries(), 0);
 
     // DO: Null request
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.errMsg("EXPECTED TEST MSG:\t");
     Registry testreg = _rf.getRegistry(null);
     MsgCtrl.errorMsgsOn(false);
@@ -310,7 +310,7 @@ public class TestRegistryFactory
     for (RegKey key : RegKey.values()) {
       _rf.closeRegistry(key);
       if (verbose) {
-        MsgCtrl.auditMsgsOn(true);
+        MsgCtrl.auditMsgsOn(false);
         MsgCtrl.msgln("\tClosing " + key.name());
       }
     }

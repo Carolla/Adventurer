@@ -442,8 +442,8 @@ public class TestDbReadWriter extends TestCase
   @Test
   public void testDbOpenFileExists()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // NORMAL: Ensure that database is already open and try to open it; it should reload from file
