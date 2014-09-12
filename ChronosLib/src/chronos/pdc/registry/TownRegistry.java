@@ -62,6 +62,10 @@ public class TownRegistry extends Registry
   @Override
   public void initialize()
   {
+    /*
+     * TODO Why call parmless ctor; call ctor with default data like other registries? Or use this
+     * model for all registries, and move element default data out of Registries
+     */
     // Create the default town and add it to the TownRegistry
     Town town = new Town();
     // Add the default buildings to it

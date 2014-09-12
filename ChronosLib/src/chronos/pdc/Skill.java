@@ -16,10 +16,10 @@ import chronos.civ.SkillKeys;
 
 /**
  * Each Skill contains a name, description, and an associated action. Skills are inherent to certain
- * races (e.g. Elf's tingle) and klass (e.g. Rogue's Detect Traps skil). Skills are also associated
- * with certain occupations, e.g., a Jeweler can "Appraise". The entire set of skills are stored in
- * the SkillRegistry for assigning to the Hero. Later, the corresponding skill actions will be
- * implemented so the Hero can use them.
+ * races (e.g. Elf's <i>Tingle</i>) and klass (e.g. Rogue's <i>Detect Traps</i>). Skills are also
+ * associated with certain occupations, e.g., a Jeweler can <i>Appraise</i>. The entire set of
+ * skills are stored in the {@code SkillRegistry} for assigning to the Hero. Later, the
+ * corresponding skill actions will be implemented so the Hero can use them.
  * 
  * @author Alan Cline
  * @version Jan 5 2010 // original <br>
@@ -57,7 +57,7 @@ public class Skill extends RegistryElement
   {}
 
   /**
-   * Construct an skill from its components
+   * Construct a skill from its components
    * 
    * @param name of the skill; cannot be null
    * @param desc description of the skill, and how it might be used; cannot be null.

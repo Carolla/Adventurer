@@ -103,7 +103,7 @@ public class ItemRegistry extends Registry
 
 
   /*
-   * CONSTRUCTOR(S) AND RELATED METHODS 
+   * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
   /**
@@ -144,10 +144,8 @@ public class ItemRegistry extends Registry
   }
 
 
-
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PUBLIC METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * PUBLIC METHODS
    */
 
   // /** Retrieves the Iteml with the requested unique name
@@ -236,15 +234,13 @@ public class ItemRegistry extends Registry
   }
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PRIVATE METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   *  PRIVATE METHODS
    */
 
   /**
    * Load a table of Items into the ItemRegistry
    * 
    * @param table the initial Items to load
-   * @return false if a problem occurs, else true
    * @throw ApplicationException if the Item could not be added to the db
    */
   private void loadTable(String[][] table) throws ApplicationException
@@ -264,8 +260,7 @@ public class ItemRegistry extends Registry
 
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ INNER CLASS: MockItemRegistry for
-   * Testing ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * INNER CLASS: MockItemRegistry for Testing 
    */
 
 

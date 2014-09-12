@@ -61,14 +61,14 @@ public class BuildingRegistry extends Registry
     // Create each of the default buildings and save to registry
     // The constructors load the default data
     try {
-      super.add(new WizardsGuild()); // Arcaneum
-      super.add(new Jail()); // Jail
-      super.add(new ClericsGuild()); // Monastery
-      super.add(new Store()); // Rat's Pack
-      super.add(new RoguesGuild()); // Rouge's Den
-      super.add(new FightersGuild()); // Stadium
-      super.add(new Bank()); // The Bank
       super.add(new Inn()); // Ugly Ogre Inn
+      super.add(new Store()); // Rat's Pack
+      super.add(new Jail()); // Jail
+      super.add(new Bank()); // The Bank
+      super.add(new FightersGuild()); // Stadium
+      super.add(new RoguesGuild()); // Rouge's Den
+      super.add(new ClericsGuild()); // Monastery
+      super.add(new WizardsGuild()); // Arcaneum
     } catch (ApplicationException ex) {
       MsgCtrl.errMsgln(this, ex.getMessage());
     }

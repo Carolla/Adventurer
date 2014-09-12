@@ -12,7 +12,6 @@ package chronos.pdc.registry;
 
 import java.util.HashMap;
 
-import mylib.MsgCtrl;
 import mylib.pdc.Registry;
 import chronos.Chronos;
 
@@ -100,19 +99,17 @@ public class RegistryFactory
    */
   public Registry createRegistry(RegKey regtype)
   {
+    // TODO Check if the registry already exists before creating another one
     Registry reg = null;
     String regName = Chronos.REGISTRY_CLASSPKG + regtype + "Registry";
     try {
       reg = (Registry) Class.forName(regName).newInstance();
-       System.err.println("RegistryFactory.createRegistry() created = " + reg.toString());
+//       System.err.println("RegistryFactory.createRegistry() created = " + reg.toString());
       _regMap.put(regtype, reg);
 
     } catch (ClassNotFoundException ex) {
       System.err.println("createRegistry(): cannot find specified registry in common location:"
           + ex.getMessage());
-//      MsgCtrl.errorMsgsOn(true);
-//      MsgCtrl.where(this);
-//      MsgCtrl.errMsgln("Cannot find specified registry in common location: " + ex.getMessage());
     } catch (IllegalAccessException ex) {
       System.err.println("createRegistry(): cannot access specified method: " + ex.getMessage());
     } catch (IllegalArgumentException ex) {

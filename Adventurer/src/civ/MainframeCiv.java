@@ -104,6 +104,7 @@ public class MainframeCiv
   {
     _frame = frame;
     _frame.setImage(Util.convertToImage(INITIAL_IMAGE));
+    // TODO Why is this in the civ, and not the hic.Mainframe?
     _frame.setImageTitle(INITIAL_TITLE);
     // _personRW = new PersonReadWriter();
     // _advReg = (AdventureRegistry) RegistryFactory.getInstance().getRegistry(RegKey.ADV);

@@ -21,10 +21,7 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
  * Inn, General Store, Bank, and user-defined ones.
  * 
  * @author Alan Cline
- * @version <DL>
- *          <DT>Build 1.0 Jan 28, 2013 // original
- *          <DD>
- *          </DL>
+ * @version Jan 28, 2013 // original <br>
  */
 public abstract class Building extends RegistryElement
 {
@@ -36,6 +33,7 @@ public abstract class Building extends RegistryElement
   protected final String BUILDING_CLOSED = "Sorry, the %s is not open now. "
       + "Return during normal business hours between %s and %s.";
 
+  // TODO Convert these fields into final, and uninitialize them here
   /** Name of this building */
   protected String _name = null;
 
@@ -60,14 +58,12 @@ public abstract class Building extends RegistryElement
   protected String _internalImagePath = null;
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ ABSTRACT METHODS for Derived Classes
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * ABSTRACT METHODS for Derived Classes
    */
 
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND RELATED METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
 
@@ -82,8 +78,7 @@ public abstract class Building extends RegistryElement
    * @throws ApplicationException if NPC cannot be found
    **/
   protected Building(String name, String master, String hoverText, String exterior,
-      String interior,
-      String extImagePath, String intImagePath)
+      String interior, String extImagePath, String intImagePath)
   {
     this(name, master, hoverText, exterior, interior);
 
@@ -136,9 +131,8 @@ public abstract class Building extends RegistryElement
     if ((tod > hrs[0]) && (tod < hrs[1])) {
       s = getInteriorDescription();
     } else {
-      s =
-          String.format(BUILDING_CLOSED, getName(), getMeridianTime(hrs[0]),
-              getMeridianTime(hrs[1]));
+      s = String.format(BUILDING_CLOSED, getName(), getMeridianTime(hrs[0]),
+          getMeridianTime(hrs[1]));
     }
     return s;
   }
@@ -157,6 +151,7 @@ public abstract class Building extends RegistryElement
     return hrs;
   }
 
+  
   /**
    * When does the Inn close for business?
    * 
@@ -220,7 +215,7 @@ public abstract class Building extends RegistryElement
     return _internalImagePath;
   }
 
-  /*
+  /**
    * Gets the NPC object that runs this Building
    * 
    * @returns Gets the NPC object that runs this Building

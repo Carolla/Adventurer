@@ -10,28 +10,23 @@
 
 package chronos.pdc;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import mylib.ApplicationException;
+import mylib.Constants;
+import mylib.dmc.RegistryElement;
 import chronos.pdc.buildings.Building;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 
-import mylib.ApplicationException;
-import mylib.Constants;
-import mylib.dmc.RegistryElement;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * A Town is the thin container for all Buildings, and some global settings.
  * 
  * @author Alan Cline
- * @version <DL>
- *          <DT>Build 1.0 Feb 6, 2013 // original
- *          <DD>
- *          <DT>Build 110 May 4, 2013 // updated and augmented
- *          <DD>
- *          </DL>
+ * @version Feb 6, 2013 // original <br>
+ *          May 4, 2013 // updated and augmented <br>
  */
 public class Town extends RegistryElement
 {
@@ -45,6 +40,7 @@ public class Town extends RegistryElement
   /** Cost of living factor. All prices in the town are multiplied by this number: 1.0 is standard. */
   private double _costOfLiving = 1.0;
 
+  // TODO Move this initializer into constructor
   /** Buildings in town */
   private List<Building> _buildings = new ArrayList<Building>();
 
@@ -81,13 +77,12 @@ public class Town extends RegistryElement
    * closes.
    */
   private long _gameClock = 0L;
-  /** Fixed start time when Town awakes: 7am */
-  private int INIT_TIME = 7;
+  /** Fixed start time when Town awakes: 6am */
+  private int INIT_TIME = 6;
 
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND RELATED METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
   /** Default constructor that creates the default Town */

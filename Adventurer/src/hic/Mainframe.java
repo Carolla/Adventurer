@@ -227,6 +227,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     holder.setBackground(borderColor);
 
     Border matte = BorderFactory.createMatteBorder(5, 5, 5, 5, borderColor);
+    // TODO Move call to pdc.Util to mfCiv so pdc is not imported; and duplicate calls are avoided
     Border titled = BorderFactory.createTitledBorder(matte, title,
         TitledBorder.CENTER, TitledBorder.TOP, Util.makeRunicFont(14f), Color.BLACK);
     holder.setBorder(titled);
@@ -278,6 +279,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private void prepareHelpDialog()
   {
     _helpdlg = HelpDialog.getInstance(this);
+    // TODO Move call to pdc.Util to mfCiv so pdc is not imported; and duplicate calls are avoided
     _helpdlg.setMyFont(Util.makeRunicFont(14f));
     _contentPane.addKeyListener(new KeyListener() {
       public void keyReleased(KeyEvent e)
@@ -445,6 +447,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     button.setBackground(Constants.MY_BROWN.brighter().brighter());
 
     // button.setFont(new Font("Tahoma", Font.PLAIN, 24));
+    // TODO Move call to pdc.Util to mfCiv so pdc is not imported; and duplicate calls are avoided
     button.setFont(Util.makeRunicFont(14f));
     button.setIcon(new ImageIcon(Chronos.ADV_IMAGE_PATH + imageFilePath));
     button.setIconTextGap(40);
@@ -497,7 +500,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     _iop.displayErrorText(msg);
   }
 
-  
+
   /**
    * Display text onto the scrolling output panel
    * 
@@ -508,11 +511,11 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     _iop.displayText(msg);
   }
 
-  
+
   /**
    * Display image and associated test to the IOPanel
    * 
-   * @param msg   text to append to text in IOPanel 
+   * @param msg text to append to text in IOPanel
    * @param image to display in Image Panel
    */
   public void displayImageAndText(String msg, Image image)
@@ -521,7 +524,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     _imagePanel.setImage(image);
   }
 
-  
+
   /**
    * Retrieve the MainframeCiv
    */
@@ -664,19 +667,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   {
     _mfCiv.handleMouseMovement(e.getPoint());
   }
-
-
-  // /** Call the {@code quit} method if the window is closed by a window close event */
-  // public void windowClosing(WindowEvent e)
-  // {
-  // ActionListener closeListener = new ActionListener() {
-  // public void actionPerformed(ActionEvent e)
-  // {
-  // _mfCiv.quit();
-  // }
-  // };
-  // add(closeListener);
-  // }
 
 
   // ============================================================

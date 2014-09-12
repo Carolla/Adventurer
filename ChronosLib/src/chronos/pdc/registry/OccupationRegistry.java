@@ -18,7 +18,6 @@ import mylib.pdc.Registry;
 import chronos.Chronos;
 import chronos.pdc.Occupation;
 import chronos.pdc.Skill;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 
 /**
  * Contains a set of occupations and associated Skills that a player may assign to his Hero. It also
@@ -40,11 +39,11 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
 public class OccupationRegistry extends Registry
 {
   /** Quick reference to the RegistryFactory to avoid repeated calls */
-  private RegistryFactory _rf;
+  // private RegistryFactory _rf;
   /** Quick reference to the SkillRegistry to avoid repeated calls */
   private SkillRegistry _skReg;
 
-  
+
   /**
    * Use this table to init the OccupTable with the occupation and skill names. Put occupations into
    * alphabetical order, which is how the names will be displayed. Each skill must be in the
@@ -141,11 +140,11 @@ public class OccupationRegistry extends Registry
   @Override
   public void initialize()
   {
-    _rf = RegistryFactory.getInstance();
-    _rf.getRegistry(RegKey.SKILL);
+    // _rf = RegistryFactory.getInstance();
+    // _rf.getRegistry(RegKey.SKILL);
 
-    // Open Skill Registry for verification purposes
-    _skReg = (SkillRegistry) _rf.getRegistry(RegKey.SKILL);
+    // // Open Skill Registry for verification purposes
+    // _skReg = (SkillRegistry) _rf.getRegistry(RegKey.SKILL);
 
     // Create new Occupations and save to registry
     try {
@@ -176,7 +175,7 @@ public class OccupationRegistry extends Registry
     if (occup == null) {
       throw new ApplicationException("add(): Received illegal null Occupation");
     }
-    
+
     // Create new Occupations and save to registry
     if (verifySkill(_skReg, occup.getSkillName()) == true) {
       super.add(occup); // super is used to highlight inheritance
