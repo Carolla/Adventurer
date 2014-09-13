@@ -17,10 +17,7 @@ import mylib.ApplicationException;
  * default "The Rat's Pack".
  * 
  * @author Alan Cline
- * @version <DL>
- *          <DT>Build 1.0 Jan 28, 2013 // original
- *          <DD>
- *          </DL>
+ * @version Jan 28, 2013 // original <br>
  */
 public class Store extends Building
 {

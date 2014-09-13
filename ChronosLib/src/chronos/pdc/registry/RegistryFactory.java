@@ -12,6 +12,7 @@ package chronos.pdc.registry;
 
 import java.util.HashMap;
 
+import mylib.MsgCtrl;
 import mylib.pdc.Registry;
 import chronos.Chronos;
 
@@ -29,9 +30,7 @@ public class RegistryFactory
 
   private HashMap<RegKey, Registry> _regMap = null;
 
-  // ============================================================
-  // Public list of all possible registries subclasses
-  // ============================================================
+  /** Public list of all possible registries subclasses */
   public enum RegKey {
     ADV("Adventure"), BLDG("Building"), ITEM("Item"), NPC("NPC"), OCP("Occupation"),
     SKILL("Skill"), TOWN("Town");
@@ -99,16 +98,16 @@ public class RegistryFactory
    */
   public Registry createRegistry(RegKey regtype)
   {
-    // TODO Check if the registry already exists before creating another one
     Registry reg = null;
     String regName = Chronos.REGISTRY_CLASSPKG + regtype + "Registry";
     try {
       reg = (Registry) Class.forName(regName).newInstance();
-//       System.err.println("RegistryFactory.createRegistry() created = " + reg.toString());
+      // System.err.println("RegistryFactory.createRegistry() created = " + reg.toString());
       _regMap.put(regtype, reg);
 
+      // TODO Figure out how to suppress these exception messages during testing
     } catch (ClassNotFoundException ex) {
-      System.err.println("createRegistry(): cannot find specified registry in common location:"
+      System.err.println("createRegistry(): cannot find specified registry in common location: "
           + ex.getMessage());
     } catch (IllegalAccessException ex) {
       System.err.println("createRegistry(): cannot access specified method: " + ex.getMessage());
@@ -143,7 +142,6 @@ public class RegistryFactory
    */
   public Registry getRegistry(RegKey regtype)
   {
-
     Registry reg = getExisting(regtype);
     if (reg == null) {
       reg = createRegistry(regtype);

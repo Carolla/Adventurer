@@ -37,7 +37,7 @@ import chronos.pdc.buildings.WizardsGuild;
 public class BuildingRegistry extends Registry
 {
   /*
-   * CONSTRUCTOR(S) AND RELATED METHODS 
+   * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
   /** Called by RegistryFactory class */
@@ -46,6 +46,10 @@ public class BuildingRegistry extends Registry
     super(Chronos.BuildingRegPath);
   }
 
+  /*
+   * TODO Remove this method; do not mix test code in production code Call it from a mock or in some
+   * other way
+   */
   /** Called in testing */
   public BuildingRegistry(String testMode)
   {

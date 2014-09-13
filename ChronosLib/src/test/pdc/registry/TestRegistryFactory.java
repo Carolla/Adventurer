@@ -29,6 +29,7 @@ import chronos.Chronos;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 
+
 /**
  * {@code RegistryFactory} is an non-instantable static class comprised <i>mostly</i> of static
  * methods.
@@ -74,6 +75,13 @@ public class TestRegistryFactory
   // ============================================================
 
   /**
+   * @NotNeeded RegistryFactory.getInstance() -- wrapper method <br>
+   */
+  public void _testsNotNeeded()
+  {}
+
+
+  /**
    * Close a registry and remove it from the factory collection. Do not delete the file.
    * 
    * @Normal close an existing registry
@@ -83,7 +91,7 @@ public class TestRegistryFactory
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, ": testCloseRegistry()");
+    MsgCtrl.where(this);
 
     // SETUP: ensure that registry already exists and is open
     _rf.getRegistry(RegKey.ITEM);
@@ -114,7 +122,7 @@ public class TestRegistryFactory
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, ": testCloseRegistry()_Empty");
+    MsgCtrl.where(this);
 
     // SETUP: ensure that registry is exists and is closed
     _rf.getRegistry(RegKey.ITEM);
@@ -144,7 +152,7 @@ public class TestRegistryFactory
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, ": testCreateRegistry()");
+    MsgCtrl.where(this);
 
     // SETUP: ensure that registry doesn't already exist
     int regnum = _rf.getNumberOfRegistries();
@@ -173,7 +181,7 @@ public class TestRegistryFactory
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, ": testGetNumberOfRegistries()");
+    MsgCtrl.where(this);
 
     // SETUP: Clear all registry entries
     removeAllRegistries(false);
@@ -216,7 +224,7 @@ public class TestRegistryFactory
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, ": testGetRegistry()_Uncreated");
+    MsgCtrl.where(this);
 
     // SETUP: ensure that registries to be created does not yet exist
     removeAllRegistries(false);
@@ -226,7 +234,7 @@ public class TestRegistryFactory
     assertFalse(regfile1.exists());
 
     // DO:
-    Registry testreg1 = _rf.getRegistry(RegKey.ADV);
+    _rf.getRegistry(RegKey.ADV);
 
     // VERIFY: factory has a new registry and file exists
     assertTrue(regfile1.exists());
@@ -248,7 +256,7 @@ public class TestRegistryFactory
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, ": testGetRegistry_Exists()");
+    MsgCtrl.where(this);
 
     // SETUP: ensure that registry to be created already exists
     assertEquals(_rf.getNumberOfRegistries(), 0);
@@ -281,14 +289,14 @@ public class TestRegistryFactory
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, ": testGetRegistry()_Errors");
+    MsgCtrl.where(this);
 
     // SETUP
     assertEquals(_rf.getNumberOfRegistries(), 0);
 
     // DO: Null request
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.errMsg("EXPECTED TEST MSG:\t");
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.errMsg("UNSUPPRESSIBLE EXPECTED ERROR MSG:\t");
     Registry testreg = _rf.getRegistry(null);
     MsgCtrl.errorMsgsOn(false);
 
@@ -316,5 +324,5 @@ public class TestRegistryFactory
     }
   }
 
-  
-}     // end of TestRegistryFactory
+
+} // end of TestRegistryFactory

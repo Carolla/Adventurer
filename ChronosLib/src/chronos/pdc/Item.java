@@ -22,14 +22,9 @@ import chronos.civ.MiscKeys.ItemFields;
  * Contains the attributes of a generic Item. For now, that is name and weight.
  * 
  * @author Alan Cline
- * @version <DL>
- *          <DT>Build 1.0 Jun 8, 2009 // original
- *          <DD>
- *          <DT>Build 1.1 Oct 21, 2009 // changed ctor to take int weights instead of codes
- *          <DD>
- *          <DT>Build 1.2 Apr 11 2011 // TAA changed visibiltiy of attributes to protected
- *          <DD>
- *          </DL>
+ * @version Jun 8, 2009 // original <br>
+ *          Oct 21, 2009 // changed ctor to take int weights instead of codes <br>
+ *          Apr 11 2011 // TAA changed visibiltiy of attributes to protected <br>
  */
 public class Item extends RegistryElement
 {
@@ -57,7 +52,7 @@ public class Item extends RegistryElement
   static public final int SILVER_WEIGHT = 1;
 
   /*
-   *  CONSTRUCTOR(S) AND RELATED METHODS
+   * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
   /** Default constructor */

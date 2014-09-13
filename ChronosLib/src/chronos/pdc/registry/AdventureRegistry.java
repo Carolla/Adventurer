@@ -22,12 +22,12 @@ import com.db4o.query.Predicate;
 
 /**
  * Contains a set of Adventure objects, where each Adventure contains the name of a Town and an
- * Arena. <code>AdventureRegistry</code> is called by reflection from the <code>Registry</code> base
- * class.
+ * Arena. {@code AdventureRegistry} is called by reflection from the {@code Registry.createRegistry}
+ * base class method.
  * 
  * @author Alan Cline
- * @version Jan 1 2010 // original
- * @version Jun 28 2014 // make available only through Class reflection call; some cleanup
+ * @version Jan 1 2010 // original <br>
+ *          Jun 28 2014 // make available only through Class reflection call; some cleanup <br>
  */
 public class AdventureRegistry extends Registry
 {
@@ -83,7 +83,7 @@ public class AdventureRegistry extends Registry
 
   /**
    * Create the default Adventure Registry, containing only a single Adventure. It is called by the
-   * base <code>Registry</code> class
+   * base {@code Registry} class
    */
   @Override
   protected void initialize()
