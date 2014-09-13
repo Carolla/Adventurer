@@ -38,10 +38,10 @@ public class Adventurer
   /** Quick reference to avoid repated calls to {@code getInstance} */
   static private RegistryFactory _rf;
 
-
   /** Launcher class does not require a constructor--it has the {@code main} method. */
   public Adventurer()
-  {}
+  {
+  }
 
 
   /**

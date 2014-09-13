@@ -10,7 +10,6 @@
 package test.integ;
 
 
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -34,7 +33,7 @@ import civ.Adventurer.MockAdventurer;
 /**
  * Test the Adventurer (Launcher) class: ensure that all Registries are created.
  * 
- * @author alancline
+ * @author Al Cline
  * @version July 19, 2014 // ABC original
  * 
  */
@@ -75,8 +74,7 @@ public class TA00a_Initialize
    */
   @AfterClass
   public static void tearDownAfterClass() throws Exception
-  {
-  }
+  {}
 
   /**
    * @throws java.lang.Exception
@@ -127,7 +125,7 @@ public class TA00a_Initialize
 
     // DO create the registries
     _mock.initRegistries();
-    
+
     // VERIFY all registry files created
     assertTrue(RegistryFilesExist());
 
@@ -160,7 +158,7 @@ public class TA00a_Initialize
     _mock.initRegistries();
     assertTrue(RegistryFilesExist());
 
-    // Try creating the registries when they already exist 
+    // Try creating the registries when they already exist
     _mock.initRegistries();
 
     // VERIFY all registry files created
@@ -194,17 +192,17 @@ public class TA00a_Initialize
     return retval;
   }
 
-  
-//  /** Create almost-empoty Registry files for testing */
-//  private void createFiles()
-//  {
-//    for (String s : paths) {
-//      FileOutputStream fos = new FileOutputStream(s);
-//      fos.wr
-//    }
-//  }
 
-  
+  // /** Create almost-empoty Registry files for testing */
+  // private void createFiles()
+  // {
+  // for (String s : paths) {
+  // FileOutputStream fos = new FileOutputStream(s);
+  // fos.wr
+  // }
+  // }
+
+
   /** Check existence of single Registry file */
   private boolean doesExist(String path)
   {

@@ -12,6 +12,8 @@ package test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import test.pdc.registry.TestAdvRegistry;
+
 /**
  * Run all unit tests for {@code Adventurer} components. Unit tests are grouped by their components
  * for {@code PDC, CIV}, and {@code DMC}.<br>
@@ -34,6 +36,7 @@ import org.junit.runners.Suite;
 // TestNewHeroFields.class,
 
 /** PDC test files */
+  TestAdvRegistry.class
 // TestDwarf.class
 // TestHuman.class
 // TestHunger.class
