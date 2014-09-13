@@ -20,34 +20,25 @@ import mylib.dmc.IRegistryElement;
 import com.db4o.query.Predicate;
 
 /**
- * The base class for all Registries, and contains a component to <code>DbReadWriter</code> All
- * derived registries wll become persistent singleton containers for unique homogeneous objects. The
- * singleton will reload the file when created, or intialize from static tables if the file doesn't
- * exist.
+ * The base class for all Registries, and contains component <code>DbReadWriter</code> All derived
+ * registries wll become persistent singleton containers for unique homogeneous objects. The
+ * singleton will reload the file when created, or intialize from static tables containing default
+ * data if the file doesn't exist.
  * <p>
  * All concrete classes derived from this abstact class works with a data management component class
  * <code>DbReadWriter</code> to handle the actual database read and write operations.
  * <p>
- * All Registry elements must implement the interface <code>IRegistryElement</code>. Do not use the
- * default <code>boolean Object.equals()</code> method because it compares objects independent of
- * the field data within (an instantiation level compare) and will not work as expected with db4o.
+ * WARNING: All Registry elements must implement the interface <code>IRegistryElement</code>. Do not
+ * use the default <code>boolean Object.equals()</code> method because it compares objects
+ * independent of the field data within (an instantiation level compare) and will not work as
+ * expected with db4o.
  * 
  * @author Alan Cline
- * @version Aug 6, 2012 // original
+ * @version Aug 6, 2012 // original <br>
+ *          Sept 13, 2014 // removed need for _closeflag <br>
  */
 public abstract class Registry
 {
-
-  // TODO Remove the need for this flag
-  /** Flag to indicate when the db is closed or not */
-  protected boolean _isClosed = true;
-
-  /**
-   * Initialize registry with beginning data from static tables, called when the registry file does
-   * not exist. Method abstract because each derived registry has its own type-specific init data
-   * table.
-   */
-  protected abstract void initialize();
 
   /**
    * The DMC registry class for handling persistence. Each derived-class Registry has its own
@@ -61,11 +52,19 @@ public abstract class Registry
   /** Warning message for a non-unique object found in the database */
   static public final String DBREG_NOT_UNIQUE = "Non-unique object found while trying to retrieve";
 
-  // public static final String TEST_MODE = "Allows construction of Registry without calling DB";
 
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
+
+  // end of Registry class
+
+  /**
+   * Initialize registry with beginning data from static tables, called when the registry file does
+   * not exist. Method abstract because each derived registry has its own type-specific init data
+   * table.
+   */
+  protected abstract void initialize();
 
   /**
    * Creates a Registry (read-write) and its DbReadWriter component. If the Registry exists, its
@@ -80,7 +79,6 @@ public abstract class Registry
     // Creates registry file and reloads it (new registry will be empty)
     if (filename != null) {
       _regRW = new DbReadWriter(filename);
-      _isClosed = false;
       // Set the persistence number of elements in the Registry
       _nbrElements = getAll().size();
       if (_nbrElements == 0) {
@@ -118,23 +116,17 @@ public abstract class Registry
     return retval;
   }
 
-  public boolean isClosed()
-  {
-    return _isClosed;
-  }
 
   /** Close the registry and remove the reference */
   public void closeRegistry()
   {
     _regRW.dbClose();
-    _isClosed = true;
   }
 
   /** Close the registry and delete its file */
   public void deleteRegistry()
   {
     _regRW.dbDelete();
-    _isClosed = true;
   }
 
   /**
@@ -195,6 +187,8 @@ public abstract class Registry
     return elementList;
   }
 
+
+  // TODO Remove this method
   /** @return the concrete type of registry */
   public Registry getReference()
   {
@@ -376,4 +370,4 @@ public abstract class Registry
   // return retval;
   // }
 
-} // end of Registry class
+}

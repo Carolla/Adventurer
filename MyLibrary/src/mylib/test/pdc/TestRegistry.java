@@ -19,8 +19,14 @@ import mylib.ApplicationException;
 import mylib.Constants;
 import mylib.MsgCtrl;
 import mylib.dmc.IRegistryElement;
+import mylib.pdc.Registry;
 import mylib.test.dmc.SomeObject;
 import mylib.test.pdc.ConcreteRegistry.MockRegistry;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 
 import com.db4o.query.Predicate;
 
@@ -31,18 +37,12 @@ import com.db4o.query.Predicate;
  * 
  * @author Timothy Armstrong
  * @author Al Cline
- * @version <DL>
- *          <DT>Build 1.0 Jan 23 2011 // original
- *          <DD>
- *          <DT>Build 1.1 May 16 2011 // TAA fixed errors
- *          <DD>
- *          <DT>Build 1.2 May 23 2011 // TAA ensured all methods included
- *          <DD>
- *          <DT>Build 1.3 Dec 24 2011 // ABC revamped for new Registry base clase
- *          <DD>
- *          <DT>Build 1.4 Feb 25, 2013 // ABC revamped for native queries in Registry base clase
- *          <DD>
- *          </DL>
+ * @version Jan 23 2011 // original <br>
+ *          May 16 2011 // TAA fixed errors <br>
+ *          May 23 2011 // TAA ensured all methods included <br>
+ *          Dec 24 2011 // ABC revamped for new Registry base clase <br>
+ *          Feb 25, 2013 // ABC revamped for native queries in Registry base clase <br>
+ *          Sep 13, 2014 // tested fro closeFlag removal <br>
  */
 public class TestRegistry extends TestCase
 {
@@ -58,10 +58,19 @@ public class TestRegistry extends TestCase
   /** A predicate for retrieving objects by name */
   Predicate<IRegistryElement> _pred = null;
 
+  // ============================================================
+  // Fixtures
+  // ============================================================
 
-  /**
-   * @throws java.lang.Exception for anything unexpected
-   */
+  @BeforeClass
+  public static void setUpBeforeClass() throws Exception
+  {}
+
+  @AfterClass
+  public static void tearDownAfterClass() throws Exception
+  {}
+
+  @Before
   public void setUp() throws Exception
   {
     // Change Registry location to test registry file
@@ -79,10 +88,7 @@ public class TestRegistry extends TestCase
     assertEquals(0, _testReg.getNbrElements());
   }
 
-
-  /**
-   * @throws java.lang.Exception for anything unexpected
-   */
+  @After
   public void tearDown() throws Exception
   {
     _testReg.deleteRegistry();
@@ -94,12 +100,36 @@ public class TestRegistry extends TestCase
   }
 
 
-  /*********************************************************************************************************
-   * BEGIN THE TESTS
-   **********************************************************************************************************/
+  // ============================================================
+  // Tests
+  // ============================================================
+
+  /** 9 methods
+   * @NotNeeded Registry() -- empty constructor for testing <br>
+   * @NotNeeded Registry(String) -- abstract constructo
+   * @NotNeeded initialize() -- abstract method <br>
+   * @NotNeeded isClosed() -- getter (perhaps not needed at all) <br>
+   * @NotNeeded closeRegistry() -- wrapper for DBReadWriter <br>
+   * @NotNeeded deleteRegistry() -- wrapper for DBReadWriter <br>
+   * @NotNeeded getReference() -- method to be removed; does nothing <br>
+   * @NotNeeded getDBRW() -- getter <br>
+   * @NotNeeded getNbrElements() -- getter <br>
+   */
+  public void _testsNotNeeded()
+  {}
 
   /**
-   * MyLib.pdc.ConcreteRegistry
+   * @NotImplemented eraseDbFiles(String)
+   * @NotImplemented getElementNames()
+   * @NotImplemented getString(String)
+   * @NotImplemented getUnique(String)
+   * @NotImplemented isUnique(String)
+   * @NotImplemented queryByPredicate(Predicate<IRegistryElement>)
+   */
+  
+  
+  /**
+   * /** MyLib.pdc.ConcreteRegistry
    * 
    * @Normal Add one or more objects and retrieve them again
    * @Normal Add two identical objects and verify if both are added, or one overwrites the first
@@ -110,7 +140,7 @@ public class TestRegistry extends TestCase
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\ttestAdd()");
+    MsgCtrl.where(this);
 
     // Normal Create an object to add and verify
     SomeObject so1 = new SomeObject(4.2, "object one");
@@ -155,7 +185,7 @@ public class TestRegistry extends TestCase
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\ttestContains()");
+    MsgCtrl.where(this);
 
     // Normal Create an object to add and verify
     SomeObject so1 = new SomeObject(4.2, "object one");
@@ -207,7 +237,7 @@ public class TestRegistry extends TestCase
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\ttestDelete()");
+    MsgCtrl.where(this);
 
     // Normal Create an object to add and verify
     SomeObject so = new SomeObject(4.2, "perfect");
@@ -256,7 +286,7 @@ public class TestRegistry extends TestCase
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\ttestGetAll()");
+    MsgCtrl.where(this);
 
     // Normal dump all the objects in the registry
     // Add some elements first because setup() cleared the registry
@@ -296,7 +326,7 @@ public class TestRegistry extends TestCase
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\ttestGetByKey()");
+    MsgCtrl.where(this);
 
     // Prepare: Add a few objects to the db
     SomeObject so1 = new SomeObject(1.0, "one");
@@ -382,7 +412,7 @@ public class TestRegistry extends TestCase
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\ttestGetByPredicate()");
+    MsgCtrl.where(this);
 
     // Prepare: Add a few objects to the db
     SomeObject so1 = new SomeObject(1.0, "one");
@@ -459,7 +489,7 @@ public class TestRegistry extends TestCase
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\ttestUpdate()");
+    MsgCtrl.where(this);
 
     // Normal Ensure that one object is swapped for a newer one
     // First, place an object in the registry
@@ -502,16 +532,6 @@ public class TestRegistry extends TestCase
   }
 
 
-  /**
-   * Tests that are not needed, or not determined if needed, for various reasons.
-   * 
-   * @Not_Needed close() wrapper <br>
-   * @Not_Needed getUnique(String) embedded in testGet() as cross-check <br>
-   * @Not_Needed getNbrElements() simple setter <br>
-   */
-  public void NotNeeded()
-  {}
-
 
   /*********************************************************************************************************
    * PRIVATE METHODS
@@ -535,5 +555,5 @@ public class TestRegistry extends TestCase
   }
 
 
-} // end of TestSkillRegistry class
+} // end of TestRegistry class
 
