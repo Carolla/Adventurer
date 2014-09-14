@@ -9,15 +9,14 @@
 
 package chronos.pdc.registry;
 
-import chronos.Chronos;
-import chronos.pdc.Town;
+import java.util.ArrayList;
+import java.util.List;
 
 import mylib.ApplicationException;
 import mylib.dmc.IRegistryElement;
 import mylib.pdc.Registry;
-
-import java.util.ArrayList;
-import java.util.List;
+import chronos.Chronos;
+import chronos.pdc.Town;
 
 /**
  * Contains a collection of all Town objects
@@ -34,10 +33,9 @@ public class TownRegistry extends Registry
   // INFO: Types that correspond to the above names: Wizard's Guild, Jail, Cleric's Guild,
   // General Store, Thieves' Guild, Fighter's Guild, Bank, Inn
 
-
-  /*
-   * CONSTRUCTOR(S) AND RELATED METHODS
-   */
+  // ==============================================================================
+  // CONSTRUCTOR(S) AND RELATED METHODS
+  // ==============================================================================
 
   /**
    * Private ctor because this singleton is called from getInstance(). Registry filename is used for
@@ -50,9 +48,9 @@ public class TownRegistry extends Registry
     super(Chronos.TownRegPath);
   }
 
-  /*
-   * PUBLIC METHODS
-   */
+  // ==============================================================================
+  // PUBLIC METHODS
+  // ==============================================================================
 
   /**
    * Populate the TownRegistry with the default Town, and the names of the buildings and arena.
@@ -107,10 +105,10 @@ public class TownRegistry extends Registry
     return townList;
   }
 
+  // ==============================================================================
+  // PRIVATE METHODS
+  // ==============================================================================
 
-  /*
-   * PRIVATE METHODS
-   */
 
 } // end of TownRegistry class
 

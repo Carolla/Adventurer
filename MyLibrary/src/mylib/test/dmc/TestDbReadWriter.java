@@ -53,6 +53,10 @@ public class TestDbReadWriter extends TestCase
   /** File for db persistence */
   private final File _regFile = new File(REG_PATH);
 
+  // ====================================================================
+  // Fixtures
+  // ====================================================================
+
 
   /**
    * Create database and associated file, and mock DBRW for testing.
@@ -87,10 +91,17 @@ public class TestDbReadWriter extends TestCase
     MsgCtrl.errorMsgsOn(false);
   }
 
+  // ====================================================================
+  // BEGIN TESTS
+  // ====================================================================
 
   /**
-   * Chronos.dmc.DbReadWriter
-   * 
+   * @Not_Implemented DbOpenError() -- don't know how to trigger the db errors
+   * @Not_implemented dbSave(Object obj)
+   */
+
+
+  /**
    * @Error Null filename for constructor; force null pointer exception
    */
   @Test
@@ -98,7 +109,7 @@ public class TestDbReadWriter extends TestCase
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\t testConstructorError()");
+    MsgCtrl.where(this);
 
     // Delete the database created by setUp() and its ObjectContainer
     _regRW.dbDelete();
@@ -116,13 +127,7 @@ public class TestDbReadWriter extends TestCase
   }
 
 
-  /*
-   * TEST METHODS
-   */
-  
   /**
-   * Chronos.dmc.DbReadWriter
-   * 
    * @Normal Confirm that an existing file will reload for new database
    */
   @Test
@@ -130,13 +135,13 @@ public class TestDbReadWriter extends TestCase
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\t testConstructorReload()");
-  
+    MsgCtrl.where(this);
+
     // NORMAL: Setup has created db, container, and file
     DbReadWriter oldRW = _regRW;
     ObjectContainer oldContainer = _mock.getContainer();
     File oldFile = _regFile;
-  
+
     // Close down the file and recreate the database with the same file; DBRW still exists
     _regRW.dbClose();
     assertNotNull(_regRW);
@@ -147,7 +152,7 @@ public class TestDbReadWriter extends TestCase
     long fileLen = _regFile.length();
     MsgCtrl.msgln("\tWrote file " + _mock.getPath() + "\t:" + fileLen + " bytes.");
     assertTrue(_regFile.exists());
-  
+
     // Now try to create DBRW and confirm that it reused existing one, and that same file is used
     // Create new registry, open database and read-write file (default config)
     _regRW = new DbReadWriter(REG_PATH);
@@ -162,8 +167,6 @@ public class TestDbReadWriter extends TestCase
 
 
   /**
-   * Chronos.dmc.DbReadWriter
-   * 
    * @Normal Verify that objects are added to the db correctly
    * @Normal Verify that objects are updated to the db correctly
    */
@@ -172,7 +175,7 @@ public class TestDbReadWriter extends TestCase
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\t testAdd()");
+    MsgCtrl.where(this);
 
     // Get current number of elements in db, even if 0
     assertNotNull(_regRW);
@@ -205,8 +208,6 @@ public class TestDbReadWriter extends TestCase
 
 
   /**
-   * Chronos.dmc.DbReadWriter
-   * 
    * @Error force a NullPointerException object cannot be null
    * @Error force a DatabaseClosedException db cannot be null (closed)
    * @Error force a ObjectNotStorableException try to store a String
@@ -216,7 +217,7 @@ public class TestDbReadWriter extends TestCase
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\t testAddError()");
+    MsgCtrl.where(this);
 
     // Create a target object to save
     SomeObject so = new SomeObject(-1.0, "negative");
@@ -241,8 +242,6 @@ public class TestDbReadWriter extends TestCase
 
 
   /**
-   * Chronos.dmc.DbReadWriter
-   * 
    * @Normal case works because it is part of tearDown(), and runs repeatedly
    * @Error close db and try to write to it
    * @Error try to close an already closed db
@@ -253,7 +252,7 @@ public class TestDbReadWriter extends TestCase
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\t testDbClose()");
+    MsgCtrl.where(this);
 
     // Create a target object to save
     SomeObject so = new SomeObject(12.34, "numbers");
@@ -278,8 +277,6 @@ public class TestDbReadWriter extends TestCase
 
 
   /**
-   * Chronos.dmc.DbReadWriter
-   * 
    * @Normal objects in the db are identified
    * @Error
    * @Error
@@ -289,7 +286,7 @@ public class TestDbReadWriter extends TestCase
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\t testContains()");
+    MsgCtrl.where(this);
 
     // Normal Add a few objects and check that they are known
     SomeObject so1 = new SomeObject(1.0, "one");
@@ -350,8 +347,6 @@ public class TestDbReadWriter extends TestCase
 
 
   /**
-   * Chronos.dmc.DbReadWriter
-   * 
    * @Normal delete a unique object from the database
    * @Normal attempt to delete the same object twice
    * @Error force DatabaseClosedException attempt to delete from a closed database
@@ -362,7 +357,7 @@ public class TestDbReadWriter extends TestCase
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\t testDelete()");
+    MsgCtrl.where(this);
 
     SomeObject so1 = new SomeObject(12.2, "soon to be dead");
     SomeObject so2 = new SomeObject(24.4, "tried to be RO read");
@@ -406,8 +401,6 @@ public class TestDbReadWriter extends TestCase
 
 
   /**
-   * Chronos.dmc.DbReadWriter
-   * 
    * @Normal: Write to file, close db, then re-read previously written object
    * @throws ApplicationException on unexpected error
    */
@@ -416,7 +409,7 @@ public class TestDbReadWriter extends TestCase
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\t testDbOpenExistingFile()");
+    MsgCtrl.where(this);
 
     // Create object to write
     SomeObject so = new SomeObject(1.0, "test reliving through dbClose()");
@@ -434,8 +427,6 @@ public class TestDbReadWriter extends TestCase
 
 
   /**
-   * Chronos.dmc.DbReadWriter
-   * 
    * @Normal: Ensure that database is already open and try to open it
    * @Normal: Ensure that database is closed but file exists
    */
@@ -462,8 +453,6 @@ public class TestDbReadWriter extends TestCase
 
 
   /**
-   * Chronos.dmc.DbReadWriter
-   * 
    * @Error force a DatabaseReadOnlyException Change the config to RO and try to add
    */
   @Test
@@ -471,7 +460,7 @@ public class TestDbReadWriter extends TestCase
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\t testDbReadOnly()");
+    MsgCtrl.where(this);
 
     // Create a target object to save
     SomeObject so = new SomeObject(111.1, "ones");
@@ -491,8 +480,6 @@ public class TestDbReadWriter extends TestCase
 
 
   /**
-   * Chronos.dmc.DbReadWriter
-   * 
    * @Normal extract element lists using different kinds of Predicates
    */
   @Test
@@ -500,7 +487,7 @@ public class TestDbReadWriter extends TestCase
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\t testDbQuery()");
+    MsgCtrl.where(this);
 
     // Populate the database with some objects
     final SomeObject t1 = new SomeObject(212.0, "degrees");
@@ -581,8 +568,6 @@ public class TestDbReadWriter extends TestCase
 
 
   /**
-   * Chronos.dmc.DbReadWriter
-   * 
    * @Normal Ensure that the correct number of objects stored in the db is returned
    */
   @Test
@@ -590,7 +575,7 @@ public class TestDbReadWriter extends TestCase
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\t testGetNbrElements()");
+    MsgCtrl.where(this);
 
     // Create objects to write
     SomeObject so1 = new SomeObject(1.0, "first object saved");
@@ -636,18 +621,9 @@ public class TestDbReadWriter extends TestCase
   }
 
 
-  /**
-   * Target method for which tests are not needed for various reasons, mostly setters and getters
-   * ExtObjectContainer getDB() simple wrapper DbOpenError() don't know how to trigger the db errors
-   */
-  public void NotImplemented()
-  {}
-
-
-
-  /*
-   * PRIVATE HELPER METHODS
-   */
+  // ====================================================================
+  // PRIVATE HELPER METHODS
+  // ====================================================================
 
   /**
    * Get the number of elements in the db using a Predicate
@@ -664,6 +640,14 @@ public class TestDbReadWriter extends TestCase
     });
     return elementList.size();
   }
+
+
+  /** 1
+   * @NotNeeded getDB() -- getter
+   */
+  void _testsNotNeeded()
+  {}
+
 
 
 } // end of TestDBRegistryRW class

@@ -12,7 +12,6 @@ package chronos.pdc.registry;
 
 import java.util.HashMap;
 
-import mylib.MsgCtrl;
 import mylib.pdc.Registry;
 import chronos.Chronos;
 
@@ -107,7 +106,7 @@ public class RegistryFactory
 
       // TODO Figure out how to suppress these exception messages during testing
     } catch (ClassNotFoundException ex) {
-      System.err.println("createRegistry(): cannot find specified registry in common location: "
+      System.err.println("createRegistry(): Class.forName() cannot find specified registry: "
           + ex.getMessage());
     } catch (IllegalAccessException ex) {
       System.err.println("createRegistry(): cannot access specified method: " + ex.getMessage());
@@ -115,8 +114,12 @@ public class RegistryFactory
       System.err.println("createRegistry(): found unexpected argument: " + ex.getMessage());
     } catch (NullPointerException ex) {
       System.err.println("createRegistry(): null pointer exception thrown: " + ex.getMessage());
+    } catch (InstantiationException ex) {
+      System.err.println("createRegistry(): class cannot be created with newInstance(): "
+          + ex.getMessage());
     } catch (Exception ex) {
-      System.err.println("createRegistry(): unexpected exception thrown: " + ex.getMessage());
+      System.err.println("createRegistry(): possible database closed exception thrown: "
+          + ex.getMessage());
     }
     return reg;
   }

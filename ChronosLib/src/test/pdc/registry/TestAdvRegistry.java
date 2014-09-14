@@ -34,17 +34,26 @@ import chronos.pdc.registry.TownRegistry;
  * Test the repository for Adventure storage
  * 
  * @author Alan Cline
- * @version Feb 16, 2014 // original
+ * @version Feb 16, 2014 // original <br>
+ *          Sep 13, 2014 // cleaned up and added MsgCtrl.where() method <br>
  */
 public class TestAdvRegistry
 {
+  /** Factory that retrieves or creates all registries (singletons) */
+  static private RegistryFactory _rf;
+
+  // ===========================================================================
+  // FIXTURES
+  // ===========================================================================
 
   /**
    * @throws java.lang.Exception
    */
   @BeforeClass
   public static void setUpBeforeClass() throws Exception
-  {}
+  {
+    _rf = RegistryFactory.getInstance();
+  }
 
 
   /**
@@ -70,64 +79,58 @@ public class TestAdvRegistry
   public void tearDown() throws Exception
   {
     MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    _rf = null;
   }
 
 
-  // @Test
-  // public void testCloseRegistry()
-  // {
-  // BuildingRegistry breg = (BuildingRegistry)
-  // AdvRegistryFactory.getInstance().getRegistry(RegKey.BLDG);
-  // breg.closeRegistry();
-  // BuildingRegistry breg2 = (BuildingRegistry)
-  // AdvRegistryFactory.getInstance().getRegistry(RegKey.BLDG);
-  // assertNotSame(breg, breg2);
-  // breg2.closeRegistry();
-  // }
-
+  // ===========================================================================
+  // BEGIN TESTS
+  // ===========================================================================
 
   @Test
   public void testRegistryList()
   {
-    AdventureRegistry areg =
-        (AdventureRegistry) RegistryFactory.getInstance().getRegistry(RegKey.ADV);
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.where(this);
+
+    AdventureRegistry areg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
     assertNotNull(areg);
     areg.closeRegistry();
 
-    BuildingRegistry breg =
-        (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
+    BuildingRegistry breg = (BuildingRegistry) _rf.getRegistry(RegKey.BLDG);
     assertNotNull(breg);
     breg.closeRegistry();
 
-    ItemRegistry ireg = (ItemRegistry) RegistryFactory.getInstance().getRegistry(RegKey.ITEM);
+    TownRegistry treg = (TownRegistry) _rf.getRegistry(RegKey.TOWN);
+    assertNotNull(treg);
+    treg.closeRegistry();
+
+    ItemRegistry ireg = (ItemRegistry) _rf.getRegistry(RegKey.ITEM);
     assertNotNull(ireg);
     ireg.closeRegistry();
 
-    NPCRegistry nreg = (NPCRegistry) RegistryFactory.getInstance().getRegistry(RegKey.NPC);
+    NPCRegistry nreg = (NPCRegistry) _rf.getRegistry(RegKey.NPC);
     assertNotNull(nreg);
     nreg.closeRegistry();
 
-    OccupationRegistry oreg =
-        (OccupationRegistry) RegistryFactory.getInstance().getRegistry(RegKey.OCP);
+    OccupationRegistry oreg = (OccupationRegistry) _rf.getRegistry(RegKey.OCP);
     assertNotNull(oreg);
     oreg.closeRegistry();
 
-    SkillRegistry sreg = (SkillRegistry) RegistryFactory.getInstance().getRegistry(RegKey.SKILL);
+    SkillRegistry sreg = (SkillRegistry) _rf.getRegistry(RegKey.SKILL);
     assertNotNull(sreg);
     sreg.closeRegistry();
 
-    TownRegistry treg = (TownRegistry) RegistryFactory.getInstance().getRegistry(RegKey.TOWN);
-    assertNotNull(treg);
-    treg.closeRegistry();
+//    TownRegistry treg = (TownRegistry) _rf.getRegistry(RegKey.TOWN);
+//    assertNotNull(treg);
+//    treg.closeRegistry();
+    
     // Close secondary registry
-    breg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
+    breg = (BuildingRegistry) _rf.getRegistry(RegKey.BLDG);
     breg.closeRegistry();
 
-
-    // AdvHelpRegistry hreg = (AdvHelpRegistry)
-    // RegistryFactory.getInstance().getRegistry(RegKey.HELP);
-    // assertNotNull(hreg);
-    // hreg.closeRegistry();
   }
 
 
@@ -163,13 +166,21 @@ public class TestAdvRegistry
 
     int count = 0;
     for (RegKey key : RegKey.values()) {
-      Registry reg = RegistryFactory.getInstance().getRegistry(key);
+      Registry reg = _rf.getRegistry(key);
       MsgCtrl.msgln("Closing registry " + key);
       reg.closeRegistry();
       count++;
     }
     MsgCtrl.msgln("\t" + count + " registries closed");
   }
+
+  /**
+   * 1
+   * 
+   * @NonNeeded getAdventure(String) -- wrapper to mylib.pdc.Registry
+   */
+  void _testsNotNeeded()
+  {}
 
 
 } // end of TestAdvHelp class

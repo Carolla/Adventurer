@@ -10,11 +10,12 @@
 package chronos.pdc.buildings;
 
 import mylib.ApplicationException;
-import mylib.dmc.RegistryElement;
+import mylib.dmc.IRegistryElement;
 import chronos.pdc.NPC;
 import chronos.pdc.registry.NPCRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
+
 
 /**
  * Is base class for all Guilds: Magic-User, Cleric, Fighter, and Rogue; and for all town buildings:
@@ -23,7 +24,7 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
  * @author Alan Cline
  * @version Jan 28, 2013 // original <br>
  */
-public abstract class Building extends RegistryElement
+public abstract class Building implements IRegistryElement
 {
   /** Default Opening Time for all buildings */
   private final int DEFAULT_OPENHOURS = 900;
@@ -151,7 +152,7 @@ public abstract class Building extends RegistryElement
     return hrs;
   }
 
-  
+
   /**
    * When does the Inn close for business?
    * 
@@ -264,6 +265,16 @@ public abstract class Building extends RegistryElement
     // Convert to String for returning
     String meridianTime = new String(sb);
     return meridianTime;
+  }
+
+  /**
+   * Get the lookup key for building
+   * 
+   * @return the building name as key
+   */
+  public String getKey()
+  {
+    return _name;
   }
 
 

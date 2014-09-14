@@ -32,7 +32,6 @@ public class Town extends RegistryElement
 {
   /** Name of the town */
   private String _name = null;
-
   /** Description of the town when first entererd during the day */
   private String _descDay = null;
   /** Description of the town when first entererd during the night */
@@ -40,6 +39,9 @@ public class Town extends RegistryElement
   /** Cost of living factor. All prices in the town are multiplied by this number: 1.0 is standard. */
   private double _costOfLiving = 1.0;
 
+  // Convenience reference to RegistryFactory
+  private BuildingRegistry _bReg = null;
+  
   // TODO Move this initializer into constructor
   /** Buildings in town */
   private List<Building> _buildings = new ArrayList<Building>();
@@ -90,6 +92,7 @@ public class Town extends RegistryElement
   {
     // Initalize the default town
     this(TOWN_NAME, DESC_DAY, DESC_NIGHT);
+    _bReg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
     // for (String s : DEF_BLDGS) {
     // if (buildingRegContainsName(s)) {
     // _buildingNames.add(s);
@@ -137,10 +140,8 @@ public class Town extends RegistryElement
    */
   public void addBuildings(String[] bldgList) throws ApplicationException
   {
-    BuildingRegistry bReg =
-        (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
     for (String bName : bldgList) {
-      Building b = bReg.getBuilding(bName);
+      Building b = _bReg.getBuilding(bName);    // Causes unsafe creation; cast needed?
       if (b == null) {
         throw new ApplicationException("Cannot find " + bName + " in BuildingRegistry.");
       }
@@ -160,9 +161,7 @@ public class Town extends RegistryElement
    */
   public boolean buildingRegContainsName(String bldgName)
   {
-    BuildingRegistry bReg =
-        (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
-    Building b = bReg.getBuilding(bldgName);
+    Building b = _bReg.getBuilding(bldgName);
     return b != null;
   }
 
@@ -186,12 +185,11 @@ public class Town extends RegistryElement
   /** Get a Building object from the Building Registry */
   public Building getBuilding(String name)
   {
-    BuildingRegistry bldgReg =
-        (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
-    Building bldg = (Building) bldgReg.getUnique(name);
+    Building bldg = (Building) _bReg.getUnique(name);
     return bldg;
   }
 
+  
   /** Get the cost of living (price adjustment) for this town */
   public double getCostOfLiving()
   {

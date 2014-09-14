@@ -34,7 +34,6 @@ import org.junit.runners.Suite;
     TestUtilities.class,
 
     // CIV Test files
-//    TestDataShuttle.class,
 
     // DMC Test files
     TestDbReadWriter.class,

@@ -9,7 +9,6 @@
 
 package mylib.pdc;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,8 +40,8 @@ public abstract class Registry
 {
 
   /**
-   * The DMC registry class for handling persistence. Each derived-class Registry has its own
-   * ReadWriter
+   * The DMC registry class for handling persistence. Each derived-class {@code Registry} has its
+   * own ReadWriter
    */
   protected DbReadWriter _regRW = null;
 
@@ -56,8 +55,6 @@ public abstract class Registry
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
-
-  // end of Registry class
 
   /**
    * Initialize registry with beginning data from static tables, called when the registry file does
@@ -94,8 +91,10 @@ public abstract class Registry
   protected Registry()
   {}
 
+
   /**
-   * Add a new unique element into the database. Object must not be null.
+   * Add a new unique element into the database. Object cannot be null, or have an empty (white
+   * space only) key.
    * 
    * @param obj object to add to database
    * @return true if the add was successful, else false (as with duplicate attempts)
@@ -104,10 +103,11 @@ public abstract class Registry
   {
     boolean retval = false;
     // Ensure that a null isn't being added
-    if (obj == null) {
+    if ((obj == null) || (obj.getKey().trim().length() == 0)) {
       return retval;
     }
-    // Add object only if it does not already exist
+
+    // Ensure that only unique objects are added
     if (contains(obj) == false) {
       _regRW.dbAdd(obj);
       _nbrElements++;
@@ -161,21 +161,22 @@ public abstract class Registry
     }
   }
 
-  public void eraseDbFiles(String regPath)
-  {
-    File regfile = new File(regPath);
-    regfile.delete();
-    // _regRW = null;
-  }
+  // public void eraseDbFiles(String regPath)
+  // {
+  // File regfile = new File(regPath);
+  // regfile.delete();
+  // }
 
   /**
-   * Retrieve one or more objects by name. The object's <code>getKey()</code> method is called.
+   * Retrieve one or more objects by name. The object's {@code getKey} method is called.
    * 
    * @param name of the target object to match against for comparison
    * @return the list of all elements that match the name
    */
   public List<IRegistryElement> get(final String name)
   {
+    // Suppression needed for the annoymous inner class
+    @SuppressWarnings("serial")
     // Run the query using the getKey method
     Predicate<IRegistryElement> pred = new Predicate<IRegistryElement>() {
       public boolean match(IRegistryElement candidate)
@@ -370,4 +371,6 @@ public abstract class Registry
   // return retval;
   // }
 
-}
+} // end of Registry class
+
+

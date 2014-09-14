@@ -71,9 +71,9 @@ public class AdventureRegistry extends Registry
           + "holocaust cloak.\n\n";
 
 
-  /*
-   * CONSTRUCTOR(S) AND RELATED METHODS
-   */
+  // ===========================================================================
+  // CONSTRUCTOR(S) AND RELATED METHODS
+  // ===========================================================================
 
   protected AdventureRegistry()
   {
@@ -94,9 +94,11 @@ public class AdventureRegistry extends Registry
   }
 
 
-  /**
-   * PUBLIC METHODS
-   */
+  // ===========================================================================
+  // PUBLIC METHODS
+  // ===========================================================================
+
+
   /**
    * Get a particlar Adventure by name
    * 
@@ -133,10 +135,13 @@ public class AdventureRegistry extends Registry
     return advList;
   }
 
+  // ===========================================================================
+  // PRIVATE METHODS
+  // ===========================================================================
 
-  /*
-   * INNER CLASS: MockAdventureRegistry for Testing
-   */
+  // ===========================================================================
+  // INNER CLASS: MockAdventureRegistry for Testing
+  // ===========================================================================
 
   /** Inner class for testing Person */
   public class MockAdventureRegistry
@@ -144,7 +149,6 @@ public class AdventureRegistry extends Registry
     /** Default constructor */
     public MockAdventureRegistry()
     {}
-
 
     /** Diagnostic to dump all skills in the Registry */
     public void dump()

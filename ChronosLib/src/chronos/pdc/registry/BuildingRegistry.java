@@ -90,7 +90,7 @@ public class BuildingRegistry extends Registry
   /**
    * Retrieve a building by name from the building registry
    * 
-   * @param name name of the building desired
+   * @param name  of the building desired
    * @return the building; else null if not found
    */
   public Building getBuilding(String name)

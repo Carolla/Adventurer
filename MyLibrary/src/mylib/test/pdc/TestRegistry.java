@@ -15,11 +15,9 @@ import java.io.File;
 import java.util.List;
 
 import junit.framework.TestCase;
-import mylib.ApplicationException;
 import mylib.Constants;
 import mylib.MsgCtrl;
 import mylib.dmc.IRegistryElement;
-import mylib.pdc.Registry;
 import mylib.test.dmc.SomeObject;
 import mylib.test.pdc.ConcreteRegistry.MockRegistry;
 
@@ -101,22 +99,9 @@ public class TestRegistry extends TestCase
 
 
   // ============================================================
-  // Tests
+  // BEGIN TESTS
   // ============================================================
 
-  /** 9 methods
-   * @NotNeeded Registry() -- empty constructor for testing <br>
-   * @NotNeeded Registry(String) -- abstract constructo
-   * @NotNeeded initialize() -- abstract method <br>
-   * @NotNeeded isClosed() -- getter (perhaps not needed at all) <br>
-   * @NotNeeded closeRegistry() -- wrapper for DBReadWriter <br>
-   * @NotNeeded deleteRegistry() -- wrapper for DBReadWriter <br>
-   * @NotNeeded getReference() -- method to be removed; does nothing <br>
-   * @NotNeeded getDBRW() -- getter <br>
-   * @NotNeeded getNbrElements() -- getter <br>
-   */
-  public void _testsNotNeeded()
-  {}
 
   /**
    * @NotImplemented eraseDbFiles(String)
@@ -126,17 +111,14 @@ public class TestRegistry extends TestCase
    * @NotImplemented isUnique(String)
    * @NotImplemented queryByPredicate(Predicate<IRegistryElement>)
    */
-  
-  
+
+
   /**
-   * /** MyLib.pdc.ConcreteRegistry
-   * 
-   * @Normal Add one or more objects and retrieve them again
-   * @Normal Add two identical objects and verify if both are added, or one overwrites the first
-   * @Error Verify that null cannot be saved in the db
-   * @throws ApplicationException is one occurs unexpectedly
+   * @Normal Add one or more objects and retrieve them again <br>
+   * @Normal Add two identical objects and verify if both are added, or one overwrites the first <br>
+   * @Error Verify that null cannot be saved in the db <br>
    */
-  public void testAdd() throws ApplicationException
+  public void testAdd()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
@@ -173,15 +155,12 @@ public class TestRegistry extends TestCase
 
 
   /**
-   * MyLib.pdc.ConcreteRegistry
-   * 
-   * @Normal Add one or more objects and verify they are in the registry
-   * @Normal Verify that a deleted object is no longer contained in the registry
-   * @Normal Verify that an updated object is still contained in the registry
-   * @Error Verify that null cannot be checked to be in the registry
-   * @throws ApplicationException for any unexpected exception
+   * @Normal Add one or more objects and verify they are in the registry <br>
+   * @Normal Verify that a deleted object is no longer contained in the registry <br>
+   * @Normal Verify that an updated object is still contained in the registry <br>
+   * @Error Verify that null cannot be checked to be in the registry <br>
    */
-  public void testContains() throws ApplicationException
+  public void testContains()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
@@ -226,14 +205,11 @@ public class TestRegistry extends TestCase
 
 
   /**
-   * MyLib.pdc.ConcreteRegistry
-   * 
-   * @Normal Delete objects and verify their removal
-   * @Error Delete a null object
-   * @Error Delete the same object twice
-   * @throws ApplicationException is one occurs unexpectedly
+   * @Normal Delete objects and verify their removal <br>
+   * @Error Delete a null object <br>
+   * @Error Delete the same object twice <br>
    */
-  public void testDelete() throws ApplicationException
+  public void testDelete()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
@@ -276,13 +252,10 @@ public class TestRegistry extends TestCase
 
 
   /**
-   * MyLib.pdc.ConcreteRegistry
-   * 
-   * @Normal Get all elements in the registry
-   * @Error Get an element with an null key
-   * @throws ApplicationException is one occurs unexpectedly
+   * @Normal Get all elements in the registry <br>
+   * @Error Get an element with an null key <br>
    */
-  public void testGetAll() throws ApplicationException
+  public void testGetAll()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
@@ -308,21 +281,17 @@ public class TestRegistry extends TestCase
     for (int k = 0; k < list.size(); k++) {
       MsgCtrl.msgln("\t" + list.get(k).toString());
     }
-
   }
 
 
   /**
-   * MyLib.pdc.ConcreteRegistry
-   * 
-   * @Normal Get an element by its key
-   * @Normal Change key and try to get it again
-   * @Normal Get a list of elements that have the same key
-   * @Normal Get an element with an empty (whitespace) key
-   * @Error Get an element with an null key
-   * @throws ApplicationException is one occurs unexpectedly
+   * @Normal Get an element by its key <br>
+   * @Normal Change key and try to get it again <br>
+   * @Normal Get a list of elements that have the same key <br>
+   * @Normal Get an element with an empty (whitespace) key <br>
+   * @Error Get an element with an null key <br>
    */
-  public void testGetByKey() throws ApplicationException
+  public void testGetByKey()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
@@ -369,46 +338,34 @@ public class TestRegistry extends TestCase
     for (IRegistryElement s : elist) {
       MsgCtrl.msgln("\t" + s);
     }
-
-    // // Normal get an object with an empty string name
-    // SomeObject emptySO = new SomeObject(-99.0, " ");
-    // assertTrue(_testReg.add(emptySO));
-    // elist = _testReg.get(" ");
-    // assertEquals(1, elist.size());
-    // // ... and is same as getUnique()
-    // try {
-    // assertNotNull(_testReg.getUnique(" "));
-    // } catch (NullPointerException ex) {
-    // MsgCtrl.errMsgln("\tExpected exception: " + ex.getMessage());
-    // }
-    //
-    // // Error get an object with a null key
-    // SomeObject nullSO = new SomeObject(-99.0, null);
-    // assertTrue(_testReg.add(nullSO));
-    // try {
-    // elist = _testReg.get(nullSO.getKey());
-    // } catch (NullPointerException ex) {
-    // MsgCtrl.errMsgln("\tExpected exception: " + ex.getMessage());
-    // }
-    // // ... and is same as getUnique()
-    // try {
-    // String nullStr = null;
-    // _testReg.getUnique(nullStr);
-    // } catch (NullPointerException ex) {
-    // MsgCtrl.errMsgln("\tExpected exception: " + ex.getMessage());
-    // }
   }
 
 
   /**
-   * MyLib.pdc.ConcreteRegistry Same as testGetByKey, which is overloaded by this one
-   * 
-   * @Normal Get an element by its key
-   * @Normal Change key and try to get it again
-   * @Normal Get a list of elements that have the same key
-   * @throws ApplicationException is one occurs unexpectedly
+   * @Normal Get an element with an empty (whitespace) key <br>
+   * @Error Get an element with an null key <br>
    */
-  public void testGetByPredicate() throws ApplicationException
+  public void testGetByEmptyKey()
+  {
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.where(this);
+
+    /* Previously commented code */
+    // Normal get an object with an empty string name
+    List<IRegistryElement> elist = _testReg.get(" ");
+    assertEquals(0, elist.size());
+    // ... and is same as getUnique()
+    assertNull(_testReg.getUnique(" "));
+  }
+
+
+  /**
+   * @Normal Get an element by its key <br>
+   * @Normal Change key and try to get it again <br>
+   * @Normal Get a list of elements that have the same key <br>
+   */
+  public void testGetByPredicate()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
@@ -459,33 +416,19 @@ public class TestRegistry extends TestCase
 
     // Error get an object with an empty string name
     SomeObject emptySO = new SomeObject(-99.0, " ");
-    assertTrue(_testReg.add(emptySO));
-    try {
-      elist = _testReg.get(keyPredicate(emptySO));
-    } catch (NullPointerException ex) {
-      MsgCtrl.errMsgln("\tExpected exception: " + ex.getMessage());
-    }
-    // ... and is same as getUnique()
-    try {
-      assertNull(_testReg.getUnique(" "));
-    } catch (NullPointerException ex) {
-      MsgCtrl.errMsgln("\tExpected exception: " + ex.getMessage());
-    }
+    assertFalse(_testReg.add(emptySO));
   }
 
 
   /**
-   * MyLib.pdc.ConcreteRegistry
-   * 
-   * @Normal Ensure that one object is swapped for a newer one
-   * @Normal Ensure that one object is swapped for the itself (same incident) without incident
-   * @Normal Ensure that one object is swapped for different one but of the same field values
-   * @Normal Try to replace an object when more than one is in the registry
-   * @Error Try to replace an object that does not exist in the registry
-   * @Null Replace an object with a null object
-   * @throws ApplicationException is one occurs unexpectedly
+   * @Normal Ensure that one object is swapped for a newer one <br>
+   * @Normal Ensure that one object is swapped for the itself (same incident) without incident <br>
+   * @Normal Ensure that one object is swapped for different one but of the same field values <br>
+   * @Normal Try to replace an object when more than one is in the registry <br>
+   * @Error Try to replace an object that does not exist in the registry <br>
+   * @Null Replace an object with a null object <br>
    */
-  public void testUpdate() throws ApplicationException
+  public void testUpdate()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
@@ -532,7 +475,6 @@ public class TestRegistry extends TestCase
   }
 
 
-
   /*********************************************************************************************************
    * PRIVATE METHODS
    **********************************************************************************************************/
@@ -545,6 +487,8 @@ public class TestRegistry extends TestCase
    */
   private Predicate<IRegistryElement> keyPredicate(final SomeObject target)
   {
+    // Suppression needed for the annoymous inner class
+    @SuppressWarnings("serial")
     Predicate<IRegistryElement> pred = new Predicate<IRegistryElement>() {
       public boolean match(IRegistryElement candidate)
       {
@@ -553,6 +497,23 @@ public class TestRegistry extends TestCase
     };
     return pred;
   }
+
+
+  /**
+   * 9 methods
+   * 
+   * @NotNeeded Registry() -- empty constructor for testing <br>
+   * @NotNeeded Registry(String) -- abstract constructo
+   * @NotNeeded initialize() -- abstract method <br>
+   * @NotNeeded isClosed() -- getter (perhaps not needed at all) <br>
+   * @NotNeeded closeRegistry() -- wrapper for DBReadWriter <br>
+   * @NotNeeded deleteRegistry() -- wrapper for DBReadWriter <br>
+   * @NotNeeded getReference() -- method to be removed; does nothing <br>
+   * @NotNeeded getDBRW() -- getter <br>
+   * @NotNeeded getNbrElements() -- getter <br>
+   */
+  void _testsNotNeeded()
+  {}
 
 
 } // end of TestRegistry class
