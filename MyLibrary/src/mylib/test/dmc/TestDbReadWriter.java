@@ -42,8 +42,6 @@ public class TestDbReadWriter extends TestCase
   private DbReadWriter _regRW = null;
   /** MockObject for target object */
   private MockDBRW _mock = null;
-  // /** Name of the persistence file */
-  // private final String REG_NAME = "Test.reg";
   /** File separator for current platform */
   private final String FILE_SEPARATOR = System.getProperty("file.separator");
   /** Place temporary test files in current directory */
@@ -52,7 +50,7 @@ public class TestDbReadWriter extends TestCase
   /** File for db persistence */
   private final File _regFile = new File(REG_PATH);
 
-  
+
   // ====================================================================
   // Fixtures
   // ====================================================================
@@ -179,7 +177,7 @@ public class TestDbReadWriter extends TestCase
 
     // Get current number of elements in db, even if 0
     assertNotNull(_regRW);
-    int beforeNbr = getNbrElements();
+    int beforeNbr = _regRW.dbSize();
 
     // NORMAL Add two objects and verify that count increased
     SomeObject defaultSO = new SomeObject(11, "default");
@@ -191,7 +189,7 @@ public class TestDbReadWriter extends TestCase
     _regRW.dbAdd(setSO);
 
     // Check the db size after adding
-    int afterNbr = getNbrElements();
+    int afterNbr = _regRW.dbSize();
     MsgCtrl.msg("\tDB size after adding: \t\t" + afterNbr);
     assertEquals(beforeNbr + 2, afterNbr);
 
@@ -200,7 +198,7 @@ public class TestDbReadWriter extends TestCase
     _regRW.dbAdd(defaultSO);
 
     // Ensure that the same number of objects are in the database
-    afterNbr = getNbrElements();
+    afterNbr = _regRW.dbSize();
     MsgCtrl.msgln("DB size after updating: \t\t" + afterNbr);
     MsgCtrl.msgln("\t\tdefaultSO: " + defaultSO.toString());
     assertEquals(beforeNbr + 2, afterNbr);
@@ -296,7 +294,7 @@ public class TestDbReadWriter extends TestCase
     _regRW.dbAdd(so2);
     _regRW.dbAdd(so3);
     // Verify results
-    assertEquals(3, getNbrElements());
+    assertEquals(3, _regRW.dbSize());
     assertTrue(_regRW.dbContains(so2));
     assertTrue(_regRW.dbContains(so1));
     assertTrue(_regRW.dbContains(so3));
@@ -308,42 +306,9 @@ public class TestDbReadWriter extends TestCase
     assertFalse(_regRW.dbContains(soNull));
     // Add another one
     _regRW.dbAdd(so4);
-    assertEquals(4, getNbrElements());
+    assertEquals(4, _regRW.dbSize());
     assertTrue(_regRW.dbContains(so4));
   }
-
-
-  // /** Chronos.dmc.DbReadWriter
-  // * Cannot think how to force these exceptions for this private method.
-  // * Will write these tests as these exceptions appear
-  // * @Error: force a DatabaseFileLockedException
-  // * @Error: force a Db4oIOException
-  // * @Error: force a IncompatibleFileFormatException
-  // * @Error: force a OldFormatException
-  // */
-  // @Test
-  // public void testDbOpenError()
-  // {
-  // MsgCtrl.auditMsgsOn(false);
-  // MsgCtrl.errorMsgsOn(false);
-  // MsgCtrl.msgln(this, "\t testDbOpenError()");
-  //
-  // // Confirm file exists and database is open
-  // assertTrue(_regFile.exists());
-  // assertNotNull(_mock.getContainer());
-  //
-  // // ERROR: Force a locked file exception, which occurs when the database is already in use
-  // // Create a second DBRW for the same file
-  // try {
-  // ObjectContainer oc = _mock.openDB();
-  // assertNotNull(oc);
-  // // Read from the test file from two processes concurrently without an intervening commit
-  // oc.queryByExample(null);
-  // _regRW.getAllElements();
-  // } catch (DatabaseFileLockedException ex) {
-  // MsgCtrl.errMsgln("\tExpected exception: " + ex.getMessage());
-  // }
-  // }
 
 
   /**
@@ -364,16 +329,16 @@ public class TestDbReadWriter extends TestCase
 
     // Normal: Delete an existing object from the db
     _regRW.dbAdd(so1);
-    MsgCtrl.msgln("\tDb contains " + getNbrElements() + " elements");
-    assertEquals(1, getNbrElements());
+    MsgCtrl.msgln("\tDb contains " + _regRW.dbSize() + " elements");
+    assertEquals(1, _regRW.dbSize());
     _regRW.dbDelete(so1);
-    MsgCtrl.msgln("\tDb contains " + getNbrElements() + " elements");
-    assertEquals(0, getNbrElements());
+    MsgCtrl.msgln("\tDb contains " + _regRW.dbSize() + " elements");
+    assertEquals(0, _regRW.dbSize());
 
     // Normal Try to delete the same object twice: silent fail
     _regRW.dbDelete(so1);
-    MsgCtrl.msgln("\tDb contains " + getNbrElements() + " elements");
-    assertEquals(0, getNbrElements());
+    MsgCtrl.msgln("\tDb contains " + _regRW.dbSize() + " elements");
+    assertEquals(0, _regRW.dbSize());
 
     // Error: Close the database and try again
     _regRW.dbClose();
@@ -390,8 +355,8 @@ public class TestDbReadWriter extends TestCase
     _regRW.dbAdd(so1);
     _regRW.dbAdd(so2);
     _regRW.dbReadOnly(false);
-    MsgCtrl.msgln("\tDb contains " + getNbrElements() + " elements");
-    assertEquals(2, getNbrElements());
+    MsgCtrl.msgln("\tDb contains " + _regRW.dbSize() + " elements");
+    assertEquals(2, _regRW.dbSize());
     try {
       _regRW.dbDelete(so1);
     } catch (DatabaseReadOnlyException ex) {
@@ -413,16 +378,21 @@ public class TestDbReadWriter extends TestCase
     // Create object to write
     SomeObject so = new SomeObject(1.0, "test reliving through dbClose()");
     MsgCtrl.msgln("\tobject created = " + so.toString());
+//    MsgCtrl.msgln("\tdb created at " + REG_PATH);
 
     // NORMAL: Write to file, close db, then re-read previously written object
+    MsgCtrl.msgln("\tBefore adding, db contains \t\t" + _regRW.dbSize() + " elements.");
     _regRW.dbAdd(so);
+    MsgCtrl.msgln("\tAfter adding, db contains \t\t" + _regRW.dbSize() + " elements.");
     _regRW.dbClose();
     // reopen the file
     _regRW = new DbReadWriter(REG_PATH);
     assertNotNull(_regRW);
     // TODO db doesn't seem to read object from previous session
+    MsgCtrl.msgln("\tBefore checking, db contains contains \t" + _regRW.dbSize() + " elements.");
     assertTrue(_regRW.dbContains(so));
-    MsgCtrl.msgln("\tobject added = " + so.toString());
+    MsgCtrl.msgln("\tAfter checking, db contains contains \t" + _regRW.dbSize() + " elements.");
+    MsgCtrl.msgln("\tobject retreived = " + so.toString());
   }
 
 
@@ -571,7 +541,7 @@ public class TestDbReadWriter extends TestCase
    * @Normal Ensure that the correct number of objects stored in the db is returned
    */
   @Test
-  public void testGetNbrElements()
+  public void testdbSize()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
@@ -587,7 +557,7 @@ public class TestDbReadWriter extends TestCase
     _regRW.dbAdd(so1);
     _regRW.dbAdd(so2);
     _regRW.dbAdd(so3);
-    int nbrObjs = getNbrElements();
+    int nbrObjs = _regRW.dbSize();
     MsgCtrl.msgln("\tNumber of objects retrieved after adding three objects = " + nbrObjs);
     assertEquals(3, nbrObjs);
 
@@ -596,7 +566,7 @@ public class TestDbReadWriter extends TestCase
     _regRW = new DbReadWriter(REG_PATH);
     MsgCtrl.msgln("\tNumber of objects after closing and opening db = " + nbrObjs);
     _regRW.dbAdd(so4);
-    nbrObjs = getNbrElements();
+    nbrObjs = _regRW.dbSize();
     MsgCtrl.msgln("\tNumber of objects after adding a new object = " + nbrObjs);
     assertEquals(4, nbrObjs);
 
@@ -605,17 +575,17 @@ public class TestDbReadWriter extends TestCase
     _regRW.dbDelete(so2);
     _regRW.dbDelete(so1);
     MsgCtrl.msgln("\tso2 then so1 deleted.");
-    assertEquals(2, getNbrElements());
+    assertEquals(2, _regRW.dbSize());
 
     // Now delete last two and try again
     _regRW.dbDelete(so4);
     _regRW.dbDelete(so3);
     MsgCtrl.msgln("\tso4 then so3 deleted.");
-    assertEquals(0, getNbrElements());
+    assertEquals(0, _regRW.dbSize());
 
     // Normal Delete an object that is not in the db
     _regRW.dbDelete(so4); // it has been deleted already
-    nbrObjs = getNbrElements();
+    nbrObjs = _regRW.dbSize();
     MsgCtrl.msgln("\tAttempted to retrieve non-stored object after second delete: " + nbrObjs);
     assertEquals(0, nbrObjs);
   }
@@ -624,22 +594,6 @@ public class TestDbReadWriter extends TestCase
   // ====================================================================
   // PRIVATE HELPER METHODS
   // ====================================================================
-
-  /**
-   * Get the number of elements in the db using a Predicate
-   * 
-   * @return number of elements
-   */
-  private int getNbrElements()
-  {
-    List<IRegistryElement> elementList = _regRW.dbQuery(new Predicate<IRegistryElement>() {
-      public boolean match(IRegistryElement candidate)
-      {
-        return true;
-      }
-    });
-    return elementList.size();
-  }
 
 
   /**

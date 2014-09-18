@@ -113,10 +113,6 @@ public class DbReadWriter
     if (obj == null) {
       throw new NullPointerException("DbReadWriter(): " + DBERR_FILE_FORMAT);
     }
-    // // if (_db == null) {
-    // if (_db.isClosed()) {
-    // throw new DatabaseClosedException();
-    // }
     else {
       _db.store(obj);
       _db.commit();
@@ -136,8 +132,6 @@ public class DbReadWriter
       if (!_db.isClosed()) {
         _db.close();
       }
-      // _db = null;
-      // }
     } catch (Db4oIOException ex) {
       MsgCtrl.where(this);
       System.err.println("Cannot close database " + ex.getMessage());
@@ -159,17 +153,23 @@ public class DbReadWriter
 
 
   /**
-   * Verify if a particular object exists, found by calling that objects <code>equals()</code>
-   * method
+   * Verify if a particular object exists, found by calling that objects {@code equals} method
    * 
    * @param target name of the object with specific fields to find
    * @return true if it exists in the db, else false
    * 
-   * @throws DatabaseClosedException trying to delete from a closed (null) db
+   * @throws DatabaseClosedException trying to check against a closed (null) db
    */
   public boolean dbContains(final IRegistryElement target) throws DatabaseClosedException
   {
-    return _db.isStored(target);
+     return _db.isStored(target);
+//    List<IRegistryElement> elementList = _db.query(new Predicate<IRegistryElement>() {
+//      public boolean match(IRegistryElement candidate)
+//      {
+//        return candidate.getKey().equals(target.getKey());
+//      }
+//    });
+//    return (elementList.size() > 0) ? true : false;
   }
 
 
@@ -264,6 +264,8 @@ public class DbReadWriter
       // Open the db only if it is not already open. The file is created or reloads the
       // ObjectContainer
       if ((_db == null) || (_db.isClosed())) {
+        // EmbeddedConfiguration config = Db4oEmbedded.newConfiguration();
+        // config.common().objectClass(SomeObject.class).cascadeOnUpdate(true);
         _db = (ExtObjectContainer) Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), _regPath);
       }
     } catch (Db4oIOException ex) {
@@ -355,15 +357,23 @@ public class DbReadWriter
     }
   }
 
-  // /**
-  // * Get the database container to perform class-specific native queries
-  // *
-  // * @return the Extended Object Container
-  // */
-  // public ExtObjectContainer getDB()
-  // {
-  // return _db;
-  // }
+
+  /**
+   * Get the number of elements in the db using a Predicate
+   * 
+   * @return number of elements
+   */
+  @SuppressWarnings("serial")
+  public int dbSize()
+  {
+    List<IRegistryElement> elementList = _db.query(new Predicate<IRegistryElement>() {
+      public boolean match(IRegistryElement candidate)
+      {
+        return true;
+      }
+    });
+    return elementList.size();
+  }
 
 
   // ================================================================================
@@ -381,6 +391,15 @@ public class DbReadWriter
   {
     public MockDBRW()
     {}
+
+    // /** Clear the database of all elements. Code taken from db4o tutorial */
+    // public void clearDatabase()
+    // {
+    // ObjectSet<Object> result = _db.queryByExample(new Object());
+    // while(result.hasNext()) {
+    // _db.delete(result.next());
+    // }
+    // }
 
     /**
      * Deletes all elements in the registry, its ObjectContainer, and deletes the associated db

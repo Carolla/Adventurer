@@ -56,7 +56,7 @@ public class SomeObject implements IRegistryElement
   public boolean equals(Object object)
   {
     SomeObject target = (SomeObject) object;
-    return ((this._num == target.getNum()) && (this._word.equals(target.getWord())));
+    return ((_num == target.getNum()) && (_word.equals(target.getWord())));
   }
 
 
