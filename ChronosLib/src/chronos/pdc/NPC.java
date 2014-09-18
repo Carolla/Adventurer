@@ -12,7 +12,7 @@ package chronos.pdc;
 import java.util.ArrayList;
 
 import mylib.ApplicationException;
-import mylib.dmc.RegistryElement;
+import mylib.dmc.IRegistryElement;
 
 /**
  * A Patron frequents the Inn of the town. He or she will reveal information about the Arena to the
@@ -22,12 +22,9 @@ import mylib.dmc.RegistryElement;
  * Buildmasters, like the Innkeeper, have more.
  * 
  * @author Alan Cline
- * @version <DL>
- *          <DT>Build 1.0 Jan 21, 2013 // original
- *          <DD>
- *          </DL>
+ * @version Jan 21, 2013 // original <br>
  */
-public class NPC extends RegistryElement
+public class NPC implements IRegistryElement
 {
   /** Name of the Patron */
   private String _name = null;

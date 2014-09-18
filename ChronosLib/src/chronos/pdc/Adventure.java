@@ -28,9 +28,6 @@ import mylib.dmc.RegistryElement;
  */
 public class Adventure extends RegistryElement
 {
-//    /** Reference to this singleton */
-//    static private Adventure _thisAdventure = null;
-    
     /** Name of this Adventure */
     private String _name = null;
     /** Overview of the adventure */

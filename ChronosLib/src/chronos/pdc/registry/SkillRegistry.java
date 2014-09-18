@@ -23,14 +23,11 @@ import mylib.dmc.IRegistryElement;
 import mylib.pdc.Registry;
 
 /**
- * Contains a set of skills that a player may assign to his Hero. <code>SkillRegistry2</code> is a
+ * Contains a set of skills that a player may assign to his Hero. {@code SkillRegistry} is a
  * read-only singleton and is only initialized once.
  * 
  * @author Alan Cline
- * @version <DL>
- *          <DT>Build 1.0 Jan 1 2010 // original
- *          <DD>
- *          </DL>
+ * @version Jan 1 2010 // original <br>
  */
 public class SkillRegistry extends Registry
 {
@@ -74,6 +71,7 @@ public class SkillRegistry extends Registry
       {"Trapping", "Set, find, or remove simple mechanical traps"},
       {"Tumbling", "Reduce damage up to 6 HP if falling off walls"},
       {"Woodworking", "Repair wooden items, e.g. xbows"}};
+
 
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS

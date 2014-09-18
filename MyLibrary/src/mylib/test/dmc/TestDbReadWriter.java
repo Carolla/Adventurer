@@ -13,7 +13,6 @@ import java.io.File;
 import java.util.List;
 
 import junit.framework.TestCase;
-import mylib.ApplicationException;
 import mylib.MsgCtrl;
 import mylib.dmc.DbReadWriter;
 import mylib.dmc.DbReadWriter.MockDBRW;
@@ -53,6 +52,7 @@ public class TestDbReadWriter extends TestCase
   /** File for db persistence */
   private final File _regFile = new File(REG_PATH);
 
+  
   // ====================================================================
   // Fixtures
   // ====================================================================
@@ -402,17 +402,17 @@ public class TestDbReadWriter extends TestCase
 
   /**
    * @Normal: Write to file, close db, then re-read previously written object
-   * @throws ApplicationException on unexpected error
    */
   @Test
-  public void testDbOpenExistingFile() throws ApplicationException
+  public void testDbOpenExistingFile()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
     // Create object to write
     SomeObject so = new SomeObject(1.0, "test reliving through dbClose()");
+    MsgCtrl.msgln("\tobject created = " + so.toString());
 
     // NORMAL: Write to file, close db, then re-read previously written object
     _regRW.dbAdd(so);
@@ -642,7 +642,9 @@ public class TestDbReadWriter extends TestCase
   }
 
 
-  /** 1
+  /**
+   * 1
+   * 
    * @NotNeeded getDB() -- getter
    */
   void _testsNotNeeded()

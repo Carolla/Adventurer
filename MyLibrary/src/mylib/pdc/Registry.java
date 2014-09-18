@@ -84,6 +84,7 @@ public abstract class Registry
     }
   }
 
+  
   /**
    * Cannot be called by any class other than Registry subclass, allows for testing without touching
    * the database directly.
@@ -102,7 +103,7 @@ public abstract class Registry
   public boolean add(IRegistryElement obj)
   {
     boolean retval = false;
-    // Ensure that a null isn't being added
+    // Ensure that a null or an empoty key is not being added
     if ((obj == null) || (obj.getKey().trim().length() == 0)) {
       return retval;
     }
@@ -137,14 +138,15 @@ public abstract class Registry
    */
   public boolean contains(final IRegistryElement target)
   {
-    // Run the query using the equals method
-    List<IRegistryElement> obSet = _regRW.dbQuery(new Predicate<IRegistryElement>() {
-      public boolean match(IRegistryElement candidate)
-      {
-        return target.equals(candidate);
-      }
-    });
-    return (obSet.size() > 0) ? true : false;
+    return _regRW.dbContains(target);
+//    // Run the query using the equals method
+//    List<IRegistryElement> obSet = _regRW.dbQuery(new Predicate<IRegistryElement>() {
+//      public boolean match(IRegistryElement candidate)
+//      {
+//        return target.equals(candidate);
+//      }
+//    });
+//    return (obSet.size() > 0) ? true : false;
   }
 
   /**
@@ -175,13 +177,16 @@ public abstract class Registry
    */
   public List<IRegistryElement> get(final String name)
   {
-    // Suppression needed for the annoymous inner class
+    // Suppression needed for the annoymous inner class to turn off warnings
     @SuppressWarnings("serial")
     // Run the query using the getKey method
     Predicate<IRegistryElement> pred = new Predicate<IRegistryElement>() {
       public boolean match(IRegistryElement candidate)
       {
-        return candidate.getKey().equalsIgnoreCase(name);
+        String key = candidate.getKey();
+        boolean retval = key.equalsIgnoreCase(name);
+        return retval;
+//        return candidate.getKey().equalsIgnoreCase(name);
       }
     };
     List<IRegistryElement> elementList = get(pred);

@@ -12,6 +12,8 @@ package mylib.dmc;
 import java.io.File;
 import java.util.List;
 
+import mylib.MsgCtrl;
+
 import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
@@ -41,7 +43,7 @@ import com.db4o.query.Predicate;
 public class DbReadWriter
 {
   /** The instance of the database in memory */
-  private ExtObjectContainer _db = null;
+  private ExtObjectContainer _db;
   /** The path of the database file */
   private String _regPath = null;
 
@@ -111,9 +113,10 @@ public class DbReadWriter
     if (obj == null) {
       throw new NullPointerException("DbReadWriter(): " + DBERR_FILE_FORMAT);
     }
-    if (_db == null) {
-      throw new DatabaseClosedException();
-    }
+    // // if (_db == null) {
+    // if (_db.isClosed()) {
+    // throw new DatabaseClosedException();
+    // }
     else {
       _db.store(obj);
       _db.commit();
@@ -126,12 +129,18 @@ public class DbReadWriter
    * 
    * @throws Db4oIOException on a db4o-specific IO exception
    */
-  public void dbClose() throws Db4oIOException
+  public void dbClose() // throws Db4oIOException
   {
-    // Close the db file and remove the object container
-    if (_db != null) {
-      _db.close();
-      _db = null;
+    try {
+      // Close the db file and remove the object container
+      if (!_db.isClosed()) {
+        _db.close();
+      }
+      // _db = null;
+      // }
+    } catch (Db4oIOException ex) {
+      MsgCtrl.where(this);
+      System.err.println("Cannot close database " + ex.getMessage());
     }
   }
 
@@ -160,24 +169,40 @@ public class DbReadWriter
    */
   public boolean dbContains(final IRegistryElement target) throws DatabaseClosedException
   {
-    List<IRegistryElement> obSet = null;
-    if (_db == null) {
-      throw new DatabaseClosedException();
-    }
-    try {
-      obSet = _db.query(new Predicate<IRegistryElement>() {
-        public boolean match(IRegistryElement candidate)
-        {
-          return candidate.equals(target);
-        }
-      });
-    } catch (DatabaseClosedException ex) {
-      System.err.println("\tDbReadWriter.contains(): " + DBERR_CLOSED + ex.getMessage());
-    }
-    // Return true if any of the target objects are found
-    return (obSet.size() > 0) ? true : false;
+    return _db.isStored(target);
   }
 
+
+  // /**
+  // * Verify if a particular object exists, found by calling that objects <code>equals()</code>
+  // * method
+  // *
+  // * @param target name of the object with specific fields to find
+  // * @return true if it exists in the db, else false
+  // *
+  // * @throws DatabaseClosedException trying to delete from a closed (null) db
+  // */
+  // @SuppressWarnings("serial")
+  // public boolean dbContains(final IRegistryElement target) throws DatabaseClosedException
+  // {
+  // List<IRegistryElement> obSet = null;
+  // // if (_db == null) {
+  // // if (_db.isClosed()) {
+  // // throw new DatabaseClosedException();
+  // // }
+  // try {
+  // obSet = _db.query(new Predicate<IRegistryElement>() {
+  // public boolean match(IRegistryElement candidate)
+  // {
+  // return candidate.equals(target);
+  // }
+  // });
+  // } catch (DatabaseClosedException ex) {
+  // System.err.println("\tDbReadWriter.contains(): " + DBERR_CLOSED + ex.getMessage());
+  // }
+  // // Return true if any of the target objects are found
+  // return (obSet.size() > 0) ? true : false;
+  // }
 
   /**
    * Delete an object from the database. The object must be retrieved before being deleted. The
@@ -196,7 +221,8 @@ public class DbReadWriter
     if (target == null) {
       throw new NullPointerException(DBERR_NULL_OBJECT);
     }
-    if (_db == null) {
+    // if (_db == null) {
+    if (_db.isClosed()) {
       throw new DatabaseClosedException();
     }
     boolean retval = false;
@@ -237,9 +263,8 @@ public class DbReadWriter
     try {
       // Open the db only if it is not already open. The file is created or reloads the
       // ObjectContainer
-      if (_db == null) {
-        _db = (ExtObjectContainer) Db4oEmbedded.openFile(
-            Db4oEmbedded.newConfiguration(), _regPath);
+      if ((_db == null) || (_db.isClosed())) {
+        _db = (ExtObjectContainer) Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), _regPath);
       }
     } catch (Db4oIOException ex) {
       System.err.println("DbReadWriter ctor: " + ex.getMessage());
@@ -291,7 +316,8 @@ public class DbReadWriter
   {
     List<IRegistryElement> elementList = null;
     // Guards: db and predicate must exist
-    if (_db == null) {
+    // if (_db == null) {
+    if (_db.isClosed()) {
       throw new DatabaseClosedException();
     }
     if (pred == null) {
@@ -320,7 +346,7 @@ public class DbReadWriter
     if (obj == null) {
       throw new NullPointerException("DbReadWriter(): " + DBERR_FILE_FORMAT);
     }
-    if (_db == null) {
+    if (_db.isClosed()) {
       throw new DatabaseClosedException();
     }
     else {
@@ -329,20 +355,22 @@ public class DbReadWriter
     }
   }
 
-  /**
-   * Get the database container to perform class-specific native queries
-   * 
-   * @return the Extended Object Container
-   */
-  public ExtObjectContainer getDB()
-  {
-    return _db;
-  }
+  // /**
+  // * Get the database container to perform class-specific native queries
+  // *
+  // * @return the Extended Object Container
+  // */
+  // public ExtObjectContainer getDB()
+  // {
+  // return _db;
+  // }
 
 
   // ================================================================================
   // PRIVATE METHODS
   // ================================================================================
+
+
 
   // ================================================================================
   // Innet Class: MockDBRW

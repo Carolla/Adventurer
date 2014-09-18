@@ -10,7 +10,9 @@
 
 package test.pdc.registry;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import mylib.MsgCtrl;
 import mylib.pdc.Registry;
 
@@ -20,6 +22,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import chronos.pdc.Adventure;
 import chronos.pdc.registry.AdventureRegistry;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.ItemRegistry;
@@ -51,10 +54,7 @@ public class TestAdvRegistry
    */
   @BeforeClass
   public static void setUpBeforeClass() throws Exception
-  {
-    _rf = RegistryFactory.getInstance();
-  }
-
+  {}
 
   /**
    * @throws java.lang.Exception
@@ -63,14 +63,14 @@ public class TestAdvRegistry
   public static void tearDownAfterClass() throws Exception
   {}
 
-
   /**
    * @throws java.lang.Exception
    */
   @Before
   public void setUp() throws Exception
-  {}
-
+  {
+    _rf = RegistryFactory.getInstance();
+  }
 
   /**
    * @throws java.lang.Exception
@@ -88,6 +88,9 @@ public class TestAdvRegistry
   // BEGIN TESTS
   // ===========================================================================
 
+  /**
+   * @Normal open all 7 registries
+   */
   @Test
   public void testRegistryList()
   {
@@ -95,60 +98,66 @@ public class TestAdvRegistry
     MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
+    // SETUP: None
+
+    // DO
     AdventureRegistry areg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
     assertNotNull(areg);
-    areg.closeRegistry();
 
     BuildingRegistry breg = (BuildingRegistry) _rf.getRegistry(RegKey.BLDG);
     assertNotNull(breg);
-    breg.closeRegistry();
-
-    TownRegistry treg = (TownRegistry) _rf.getRegistry(RegKey.TOWN);
-    assertNotNull(treg);
-    treg.closeRegistry();
 
     ItemRegistry ireg = (ItemRegistry) _rf.getRegistry(RegKey.ITEM);
     assertNotNull(ireg);
-    ireg.closeRegistry();
 
     NPCRegistry nreg = (NPCRegistry) _rf.getRegistry(RegKey.NPC);
     assertNotNull(nreg);
-    nreg.closeRegistry();
 
     OccupationRegistry oreg = (OccupationRegistry) _rf.getRegistry(RegKey.OCP);
     assertNotNull(oreg);
-    oreg.closeRegistry();
 
     SkillRegistry sreg = (SkillRegistry) _rf.getRegistry(RegKey.SKILL);
     assertNotNull(sreg);
-    sreg.closeRegistry();
 
-//    TownRegistry treg = (TownRegistry) _rf.getRegistry(RegKey.TOWN);
-//    assertNotNull(treg);
-//    treg.closeRegistry();
-    
-    // Close secondary registry
-    breg = (BuildingRegistry) _rf.getRegistry(RegKey.BLDG);
-    breg.closeRegistry();
+    TownRegistry treg = (TownRegistry) _rf.getRegistry(RegKey.TOWN);
+    assertNotNull(treg);
+
+    // Teardown: Close all registries
+    closeAllRegistries();
 
   }
 
 
-  // @Test
-  // public void testGetInstance()
-  // {
-  // MsgCtrl.auditMsgsOn(true);
-  //
-  // // Create all registries by traversing the enum key list
-  // for (RegKey key : RegKey.values()) {
-  // MsgCtrl.msgln(key.toString());
-  // Registry reg = AdvRegistryFactory.getInstance().getRegistry(key);
-  // assertNotNull(reg);
-  // reg.closeRegistry();
-  // }
-  // }
-  //
-  //
+  /**
+   * @Normal Add a new Adventure into the AdvReg, then retrieve it without recreating it
+   * @Error Add an existing into AdvReg (attempt duplicated)
+   */
+  @Test
+  public void testNewInstance()
+  {
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.where(this);
+
+    // SETUP None
+    String DEF_ADVENTURE = "The Quest for Rogahn and Zelligar";
+
+    // DO
+    // Add a new Adventure to the AdvRegistry
+    AdventureRegistry areg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
+    assertNotNull(areg);
+
+    // VERIFY AdvReg contains single element
+    assertEquals(1, areg.getNbrElements());
+    // and the element is the recent adventure
+    Adventure adv = areg.getAdventure(DEF_ADVENTURE);
+    assertTrue(adv.getName().equals(DEF_ADVENTURE));
+
+    // TEARDOWN
+    closeAllRegistries();
+  }
+
+
   // @Test
   // public void testGetInstanceFails()
   // {
@@ -159,19 +168,17 @@ public class TestAdvRegistry
   // }
 
 
+  // ===========================================================================
   // PRIVATE HELPER METHODS
+  // ===========================================================================
+
   private void closeAllRegistries()
   {
-    MsgCtrl.auditMsgsOn(true);
-
-    int count = 0;
+    _rf = RegistryFactory.getInstance();
     for (RegKey key : RegKey.values()) {
       Registry reg = _rf.getRegistry(key);
-      MsgCtrl.msgln("Closing registry " + key);
       reg.closeRegistry();
-      count++;
     }
-    MsgCtrl.msgln("\t" + count + " registries closed");
   }
 
   /**
