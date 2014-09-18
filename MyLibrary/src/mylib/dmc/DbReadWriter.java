@@ -152,8 +152,14 @@ public class DbReadWriter
   }
 
 
+  // TODO Fix {@code _db.isStored}. For some reason, the db4o method returns false always.
+  // Workaround used: completely search the db and then return true if size > 0.
   /**
-   * Verify if a particular object exists, found by calling that objects {@code equals} method
+   * Verify if a particular object exists, found by calling that object's {@code getKey} and
+   * {@code equals} method.
+   * <P>
+   * Warning: For some reason, the db4o method returns false always. Workaround used: completely
+   * search the db and then return true if size > 0.
    * 
    * @param target name of the object with specific fields to find
    * @return true if it exists in the db, else false
@@ -162,14 +168,15 @@ public class DbReadWriter
    */
   public boolean dbContains(final IRegistryElement target) throws DatabaseClosedException
   {
-     return _db.isStored(target);
-//    List<IRegistryElement> elementList = _db.query(new Predicate<IRegistryElement>() {
-//      public boolean match(IRegistryElement candidate)
-//      {
-//        return candidate.getKey().equals(target.getKey());
-//      }
-//    });
-//    return (elementList.size() > 0) ? true : false;
+    // return _db.isStored(target); // for some reason, this always returns false
+    
+    List<IRegistryElement> elementList = _db.query(new Predicate<IRegistryElement>() {
+      public boolean match(IRegistryElement candidate)
+      {
+        return candidate.equals(target);
+      }
+    });
+    return (elementList.size() > 0) ? true : false;
   }
 
 
@@ -392,14 +399,6 @@ public class DbReadWriter
     public MockDBRW()
     {}
 
-    // /** Clear the database of all elements. Code taken from db4o tutorial */
-    // public void clearDatabase()
-    // {
-    // ObjectSet<Object> result = _db.queryByExample(new Object());
-    // while(result.hasNext()) {
-    // _db.delete(result.next());
-    // }
-    // }
 
     /**
      * Deletes all elements in the registry, its ObjectContainer, and deletes the associated db
@@ -435,12 +434,6 @@ public class DbReadWriter
     public ObjectContainer openDB()
     {
       DbReadWriter.this.dbOpen();
-      return _db;
-    }
-
-    /** Retruns returns the database container */
-    public ObjectContainer getContainer()
-    {
       return _db;
     }
 

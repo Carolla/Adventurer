@@ -22,7 +22,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.db4o.ObjectContainer;
 import com.db4o.ext.DatabaseClosedException;
 import com.db4o.ext.DatabaseReadOnlyException;
 import com.db4o.query.Predicate;
@@ -70,7 +69,6 @@ public class TestDbReadWriter extends TestCase
     assertNotNull(_regRW);
     _mock = _regRW.new MockDBRW();
     assertNotNull(_mock);
-    assertNotNull(_mock.getContainer());
   }
 
 
@@ -137,7 +135,6 @@ public class TestDbReadWriter extends TestCase
 
     // NORMAL: Setup has created db, container, and file
     DbReadWriter oldRW = _regRW;
-    ObjectContainer oldContainer = _mock.getContainer();
     File oldFile = _regFile;
 
     // Close down the file and recreate the database with the same file; DBRW still exists
@@ -157,7 +154,6 @@ public class TestDbReadWriter extends TestCase
     assertFalse(oldRW == _regRW);
     _mock = _regRW.new MockDBRW();
     assertNotNull(_mock);
-    assertTrue(oldContainer != _mock.getContainer());
     fileLen = _regFile.length();
     MsgCtrl.msgln("\tNewly loaded file " + _mock.getPath() + "\t:" + fileLen + " bytes.");
     assertEquals(oldFile, _regFile);
@@ -371,8 +367,8 @@ public class TestDbReadWriter extends TestCase
   @Test
   public void testDbOpenExistingFile()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // Create object to write
@@ -409,15 +405,13 @@ public class TestDbReadWriter extends TestCase
 
     // NORMAL: Ensure that database is already open and try to open it; it should reload from file
     assertTrue(_regFile.exists());
-    assertNotNull(_mock.getContainer());
     assertNotNull(_mock.openDB()); // open database...
     assertTrue(_regFile.exists()); // ...and check that file still exists
 
     // NORMAL: Ensure that database is closed but file exists
     // Same file will be reopened
     assertTrue(_regFile.exists());
-    _regRW.dbClose(); // db container is set to null
-    assertNull(_mock.getContainer());
+    _regRW.dbClose(); 
     assertTrue(_regFile.exists());
   }
 

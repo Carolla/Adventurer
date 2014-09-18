@@ -293,8 +293,8 @@ public class TestRegistry extends TestCase
    */
   public void testGetByKey()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
     // Prepare: Add a few objects to the db
@@ -304,6 +304,7 @@ public class TestRegistry extends TestCase
     _testReg.add(so3);
     _testReg.add(so1);
     _testReg.add(so2);
+    MsgCtrl.msgln("Contents: " + _testReg.getElementNames());
     assertEquals(3, _testReg.getNbrElements());
 
     // Normal Get an element by its key...
@@ -315,6 +316,7 @@ public class TestRegistry extends TestCase
     // Normal Change key and try to get it again
     so3.setKey("threeCopy");
     _testReg.update(so3);
+    MsgCtrl.msgln("Contents: " + _testReg.getElementNames());
     elist = _testReg.get(so3.getKey());
     assertEquals(so3, elist.get(0));
     // ... and is same as getUnique()
@@ -329,8 +331,9 @@ public class TestRegistry extends TestCase
     SomeObject so12 = new SomeObject(2.0, "eleventy");
     SomeObject so13 = new SomeObject(3.0, "eleventy");
     _testReg.add(so11);
-    _testReg.add(so12);
-    _testReg.add(so13);
+    _testReg.add(so12);   
+    _testReg.add(so13);   
+    MsgCtrl.msgln("Contents: " + _testReg.getElementNames());
     assertEquals(6, _testReg.getNbrElements());
     // Retrieve the three objects with the same 'eleventy' keyword
     elist = _testReg.get("eleventy");

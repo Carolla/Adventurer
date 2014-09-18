@@ -139,14 +139,6 @@ public abstract class Registry
   public boolean contains(final IRegistryElement target)
   {
     return _regRW.dbContains(target);
-//    // Run the query using the equals method
-//    List<IRegistryElement> obSet = _regRW.dbQuery(new Predicate<IRegistryElement>() {
-//      public boolean match(IRegistryElement candidate)
-//      {
-//        return target.equals(candidate);
-//      }
-//    });
-//    return (obSet.size() > 0) ? true : false;
   }
 
   /**
