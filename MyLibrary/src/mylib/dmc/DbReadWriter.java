@@ -169,7 +169,16 @@ public class DbReadWriter
    */
   public boolean dbContains(final IRegistryElement target) throws DatabaseClosedException
   {
-    return _db.isStored(target);
+//    return _db.isStored(target);  // this db4o call doesn't seem to work
+    // Run the query using the equals method
+    List<IRegistryElement> obSet = _db.query(new Predicate<IRegistryElement>() {
+      public boolean match(IRegistryElement candidate)
+      {
+        return target.equals(candidate);
+      }
+    });
+    return (obSet.size() > 0) ? true : false;
+
   }
 
 
@@ -420,7 +429,7 @@ public class DbReadWriter
     }
 
     /** Retruns returns the database container */
-    public ObjectContainer getContainer()
+    public ExtObjectContainer getContainer()
     {
       return _db;
     }

@@ -446,8 +446,7 @@ public class TestDbReadWriter extends TestCase
     // NORMAL: Ensure that database is closed but file exists
     // Same file will be reopened
     assertTrue(_regFile.exists());
-    _regRW.dbClose(); // db container is set to null
-    assertNull(_mock.getContainer());
+    _regRW.dbClose(); 
     assertTrue(_regFile.exists());
   }
 

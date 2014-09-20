@@ -11,7 +11,7 @@ package chronos.pdc;
 
 import mylib.ApplicationException;
 import mylib.civ.DataShuttle;
-import mylib.dmc.RegistryElement;
+import mylib.dmc.IRegistryElement;
 import chronos.civ.SkillKeys;
 
 /**
@@ -29,7 +29,7 @@ import chronos.civ.SkillKeys;
  *          2.3 FebJ10 2013 // ABC removed RegObject for db4o <br>
  *          2.4 Mar 25 2013 // ABC added in IRegistryElement <br>
  */
-public class Skill extends RegistryElement
+public class Skill implements IRegistryElement
 {
   // Serializable because it is part of the serialized Person object
   static final long serialVersionUID = 101005L; // creation date

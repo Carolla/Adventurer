@@ -107,7 +107,6 @@ public abstract class Registry
     if ((obj == null) || (obj.getKey().trim().length() == 0)) {
       return retval;
     }
-
     // Ensure that only unique objects are added
     if (contains(obj) == false) {
       _regRW.dbAdd(obj);
@@ -139,14 +138,6 @@ public abstract class Registry
   public boolean contains(final IRegistryElement target)
   {
     return _regRW.dbContains(target);
-//    // Run the query using the equals method
-//    List<IRegistryElement> obSet = _regRW.dbQuery(new Predicate<IRegistryElement>() {
-//      public boolean match(IRegistryElement candidate)
-//      {
-//        return target.equals(candidate);
-//      }
-//    });
-//    return (obSet.size() > 0) ? true : false;
   }
 
   /**
