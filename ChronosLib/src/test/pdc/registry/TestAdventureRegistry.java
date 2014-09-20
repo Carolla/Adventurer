@@ -1,5 +1,5 @@
 /**
- * TestAdvRegistry.java Copyright (c) 2014, Carolla Development, Inc. All Rights Reserved
+ * TestAdventureRegistry.java Copyright (c) 2014, Carolla Development, Inc. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
@@ -40,7 +40,7 @@ import chronos.pdc.registry.TownRegistry;
  * @version Feb 16, 2014 // original <br>
  *          Sep 13, 2014 // cleaned up and added MsgCtrl.where() method <br>
  */
-public class TestAdvRegistry
+public class TestAdventureRegistry
 {
   /** Factory that retrieves or creates all registries (singletons) */
   static private RegistryFactory _rf;

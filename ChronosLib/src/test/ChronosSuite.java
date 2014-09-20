@@ -14,6 +14,7 @@ import mylib.test.MyLibraryTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import test.pdc.registry.TestAdventureRegistry;
 import test.pdc.registry.TestRegistryFactory;
 
 /**
@@ -33,27 +34,53 @@ import test.pdc.registry.TestRegistryFactory;
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
 {
-    // MyLibrary test suit
+    /* MyLibrary test suit */
     MyLibraryTestSuite.class,
 
-    // Chronos PDC test files:
-    TestRegistryFactory.class
+    /* CIV test files */
+    // TestDefaultList.class,
+    // TestHeroDefaults.class,
+    // TestMiscKeys.class,
+    // TestOccupationsKeys.class,
+    // TestSkillKeys.class,
+
+    /* DMC test files */
+    // None
     
-    // Chronos PDC Building test suit
-    // BuildingsSuite.class,
+    /* Chronos PDC.Building test files */
+    // TestBank.class,
+    // TestBuilding.class,
+    // TestClericsGuild.class,
+    // TestFightersGuild.class,
+    // TestInn.class,
+    // TestJail.class,
+    // TestRoguesGuild.class,
+    // TestStore.class,
+    // TestWizardsGuild.class,
 
-    // Chronos PDC Registry test suit
-    // RegistrySuite.class,
+    /* Chronos PDC.Registry test files */
+//    TestAdventureRegistry.class,
+    // TestBuildingRegistry.class,
+    // TestHelpTextObject.class,
+    // TestItemRegistry.class,
+    // TestNPCRegistry.class,
+    // TestOccupationRegistry.class,
+    TestRegistryFactory.class
+    // TestSkillRegistry.class,
+    // TestTownRegistry.class,
 
+    /* Chronos PDC test files */
+    // TestAdventure.class,
     // TestAge.class,
     // TestArena.class,
     // TestAttributeList.class,
     // TestItem.class,
     // TestNPC.class,
+    // TestNullNPC.class,
     // TestOccupation.class,
     // TestRace.class,
     // TestSkill.class,
-    // TestTown.class, // something left in wrong state in RegistrySuite.class test
+    // TestTown.class,
     // TestUtilities.class,
 
 })
