@@ -74,19 +74,48 @@ public class RegistryFactory
   // ============================================================
 
   /**
-   * Close a registry and remove it from the factory collection
-   * 
-   * @param regtype one of the specified registry types
+   * Close all registries currently open, and remove them from the {@code RegistryFactory}
+   * collection
    */
-  public void closeRegistry(RegKey regtype)
+  public void closeAllRegistries()
   {
-    Registry reg = _regMap.get(regtype);
-    if (reg != null) {
-      reg.closeRegistry();
-      _regMap.remove(regtype);
+    for (RegKey key : RegKey.values()) {
+      Registry reg = _regMap.get(key);
+      if (reg != null) {
+        reg.getDBRW().dbClose();
+        _regMap.remove(key);
+      }
     }
   }
 
+
+  /**
+   * Close a registry and remove it from the factory collection
+   * 
+   * @param key one of the specified registry keys
+   */
+  public void closeRegistry(RegKey key)
+  {
+    Registry reg = _regMap.get(key); // get returns null if not found
+    if (reg != null) {
+      reg.getDBRW().dbClose();
+      _regMap.remove(key);
+    }
+  }
+
+
+  // /**
+  // * Close a registry and remove it from the factory collection
+  // *
+  // * @param reg one of the specified registry objects
+  // */
+  // public void closeRegistry(Registry reg)
+  // {
+  // if (reg != null) {
+  // reg.getDBRW().dbClose();
+  // _regMap.remove(reg);
+  // }
+  // }
 
   /**
    * Creates a registry of the given type. Registry location defaults to ChronosLib resources.
@@ -122,6 +151,19 @@ public class RegistryFactory
           + ex.getMessage());
     }
     return reg;
+  }
+
+
+  /**
+   * Close all registries and delete their .reg files
+   */
+  public void deleteAllRegistries()
+  {
+    for (RegKey key : RegKey.values()) {
+      Registry reg = _regMap.get(key);
+      reg.getDBRW().dbClose();
+      _regMap.remove(reg);
+    }
   }
 
 

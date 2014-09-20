@@ -74,8 +74,7 @@ public class TestOccupation
     @AfterClass
     public static void cleanUp() 
     {
-        // Close the secondary Registry but do not delete the file
-        ((SkillRegistry) RegistryFactory.getInstance().getRegistry(RegKey.SKILL)).closeRegistry();
+      RegistryFactory.getInstance().closeAllRegistries();
     }
 
     

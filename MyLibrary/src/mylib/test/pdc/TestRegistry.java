@@ -40,7 +40,7 @@ import com.db4o.query.Predicate;
  *          May 23 2011 // TAA ensured all methods included <br>
  *          Dec 24 2011 // ABC revamped for new Registry base clase <br>
  *          Feb 25, 2013 // ABC revamped for native queries in Registry base clase <br>
- *          Sep 13, 2014 // tested fro closeFlag removal <br>
+ *          Sep 13, 2014 // tested for closeFlag removal <br>
  */
 public class TestRegistry extends TestCase
 {
@@ -56,6 +56,7 @@ public class TestRegistry extends TestCase
   /** A predicate for retrieving objects by name */
   Predicate<IRegistryElement> _pred = null;
 
+  
   // ============================================================
   // Fixtures
   // ============================================================
@@ -89,8 +90,7 @@ public class TestRegistry extends TestCase
   @After
   public void tearDown() throws Exception
   {
-    _testReg.deleteRegistry();
-    _testReg = null;
+    _testReg.getDBRW().dbClose();
     _mock = null;
     // Al messages are OFF after each test
     MsgCtrl.auditMsgsOn(false);

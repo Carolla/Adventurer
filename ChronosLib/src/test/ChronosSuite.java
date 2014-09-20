@@ -29,7 +29,8 @@ import test.pdc.registry.TestRegistryFactory;
  *          Jan 26 2013 // ensure all integration testing works for complete suite <br>
  *          Apr 14, 2013 // converted all tests to JUnit 4 <br>
  *          July 23, 2014 // refactored file with new unit and integration tests <br>
- *          July 26, 2014 // {@code UC00a. Initialization} classes added: {@code RegistryFactory}
+ *          July 26, 2014 // {@code UC00a. Initialization} classes added: {@code RegistryFactory} <br>
+ *          Sep 20, 2014 // Organized test file list <br>
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
@@ -59,7 +60,7 @@ import test.pdc.registry.TestRegistryFactory;
     // TestWizardsGuild.class,
 
     /* Chronos PDC.Registry test files */
-//    TestAdventureRegistry.class,
+    TestAdventureRegistry.class,
     // TestBuildingRegistry.class,
     // TestHelpTextObject.class,
     // TestItemRegistry.class,

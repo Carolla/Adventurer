@@ -84,13 +84,13 @@ public abstract class Registry
     }
   }
 
-  
-  /**
-   * Cannot be called by any class other than Registry subclass, allows for testing without touching
-   * the database directly.
-   */
-  protected Registry()
-  {}
+
+//  /**
+//   * Cannot be called by any class other than Registry subclass, allows for testing without touching
+//   * the database directly.
+//   */
+//  protected Registry()
+//  {}
 
 
   /**
@@ -117,18 +117,6 @@ public abstract class Registry
   }
 
 
-  /** Close the registry and remove the reference */
-  public void closeRegistry()
-  {
-    _regRW.dbClose();
-  }
-
-  /** Close the registry and delete its file */
-  public void deleteRegistry()
-  {
-    _regRW.dbDelete();
-  }
-
   /**
    * Verifies if the given objects exists in the registry. The object's equal() method is called.
    * 
@@ -148,7 +136,7 @@ public abstract class Registry
    */
   public void delete(IRegistryElement obj) throws NullPointerException
   {
-    // Reduce the nuber of elements only if the delete worked
+    // Reduce the number of elements only if the delete worked
     if (_regRW.dbDelete(obj) == true) {
       _nbrElements--;
     }
@@ -177,7 +165,7 @@ public abstract class Registry
         String key = candidate.getKey();
         boolean retval = key.equalsIgnoreCase(name);
         return retval;
-//        return candidate.getKey().equalsIgnoreCase(name);
+        // return candidate.getKey().equalsIgnoreCase(name);
       }
     };
     List<IRegistryElement> elementList = get(pred);
@@ -185,13 +173,13 @@ public abstract class Registry
   }
 
 
-  // TODO Remove this method
-  /** @return the concrete type of registry */
-  public Registry getReference()
-  {
-    // return _thisReg;
-    return null;
-  }
+//  // TODO Remove this method
+//  /** @return the concrete type of registry */
+//  public Registry getReference()
+//  {
+//    // return _thisReg;
+//    return null;
+//  }
 
   /** @return the db read-writer object reference for this registry */
   public DbReadWriter getDBRW()
@@ -284,6 +272,18 @@ public abstract class Registry
     // If no element found, return null
     return regElem;
   }
+
+
+  /**
+   * Check if registry is closed or not
+   * 
+   * @returns true if registry is closed
+   */
+  public boolean isClosed()
+  {
+    return _regRW.dbIsClosed();
+  }
+
 
   /**
    * Verifes if the string (key) is unique to the Registry Calls getUnique() to return a boolean

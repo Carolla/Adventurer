@@ -77,7 +77,7 @@ public class TestJail
     @AfterClass
     public static void cleanUp() 
     {
-        ((NPCRegistry) RegistryFactory.getInstance().getRegistry(RegKey.NPC)).closeRegistry();
+      RegistryFactory.getInstance().closeAllRegistries();
     }
     
     /**

@@ -11,10 +11,10 @@
 package test.pdc.registry;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import mylib.MsgCtrl;
-import mylib.pdc.Registry;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -80,6 +80,7 @@ public class TestAdventureRegistry
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
+    _rf.closeAllRegistries();
     _rf = null;
   }
 
@@ -98,11 +99,10 @@ public class TestAdventureRegistry
     MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
-    // SETUP: None
-
     // DO
     AdventureRegistry areg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
     assertNotNull(areg);
+    assertFalse(areg.isClosed());
 
     BuildingRegistry breg = (BuildingRegistry) _rf.getRegistry(RegKey.BLDG);
     assertNotNull(breg);
@@ -122,18 +122,25 @@ public class TestAdventureRegistry
     TownRegistry treg = (TownRegistry) _rf.getRegistry(RegKey.TOWN);
     assertNotNull(treg);
 
-    // Teardown: Close all registries
-    closeAllRegistries();
+    int regNum = _rf.getNumberOfRegistries();
+    MsgCtrl.msgln("Registires open and stored in RegistryFactory collection = " + regNum);
+    assertTrue(regNum == RegKey.values().length);
+    
+    MsgCtrl.msgln("Closing all Registires");
+    _rf.closeAllRegistries();
+    regNum = _rf.getNumberOfRegistries();
+    MsgCtrl.msgln("Registires open and stored in RegistryFactory collection = " + regNum);
+    assertEquals(0, regNum);
 
   }
 
-
+  
   /**
    * @Normal Add a new Adventure into the AdvReg, then retrieve it without recreating it
    * @Error Add an existing into AdvReg (attempt duplicated)
    */
   @Test
-  public void testNewInstance()
+  public void testNewInstance() throws Exception
   {
     MsgCtrl.auditMsgsOn(true);
     MsgCtrl.errorMsgsOn(true);
@@ -143,8 +150,9 @@ public class TestAdventureRegistry
     String DEF_ADVENTURE = "The Quest for Rogahn and Zelligar";
 
     // DO
-    // Add a new Adventure to the AdvRegistry
+    // Add a new Adventure to the AdventureRegistry
     AdventureRegistry areg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
+    assertFalse(areg.isClosed());
     assertNotNull(areg);
 
     // VERIFY AdvReg contains single element
@@ -153,8 +161,6 @@ public class TestAdventureRegistry
     Adventure adv = areg.getAdventure(DEF_ADVENTURE);
     assertTrue(adv.getName().equals(DEF_ADVENTURE));
 
-    // TEARDOWN
-    closeAllRegistries();
   }
 
 
@@ -172,14 +178,6 @@ public class TestAdventureRegistry
   // PRIVATE HELPER METHODS
   // ===========================================================================
 
-  private void closeAllRegistries()
-  {
-    _rf = RegistryFactory.getInstance();
-    for (RegKey key : RegKey.values()) {
-      Registry reg = _rf.getRegistry(key);
-      reg.closeRegistry();
-    }
-  }
 
   /**
    * 1

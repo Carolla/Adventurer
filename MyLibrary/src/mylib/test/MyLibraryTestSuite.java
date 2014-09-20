@@ -22,11 +22,13 @@ import org.junit.runners.Suite;
  * @version Jun 4 2009 // original <br>
  *          Jan 18 2010 // add Occupation and Skill class testing <br>
  *          Jul 11 2010 // updated for tests with CIV support <br>
- *          Jul 26 2014 // {@code UC00a. Initialization} classes added: {@code Registry}
+ *          Jul 26 2014 // {@code UC00a. Initialization} classes added: {@code Registry} <br>
+ *          Sep 20, 2014 // removed unneeded test files and uncommented needed ones <br>
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
 {
+    // TODO Are these two CIV classes necessary, or should they be deleted?
     // CIV Test files
     // TestBaseCiv.class,
     // TestDataShuttle.class,

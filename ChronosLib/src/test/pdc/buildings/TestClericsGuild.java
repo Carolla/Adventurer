@@ -25,9 +25,7 @@ import org.junit.Test;
 
 import chronos.pdc.buildings.ClericsGuild;
 import chronos.pdc.buildings.ClericsGuild.MockClericsGuild;
-import chronos.pdc.registry.NPCRegistry;
 import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 
 /**
  *    Tests the various Guild-specific methods.
@@ -77,7 +75,7 @@ public class TestClericsGuild
     @AfterClass
     public static void cleanUp() 
     {
-        ((NPCRegistry) RegistryFactory.getInstance().getRegistry(RegKey.NPC)).closeRegistry();
+      RegistryFactory.getInstance().closeAllRegistries();
     }
     
 

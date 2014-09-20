@@ -37,6 +37,7 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
  * @author alancline
  * @version Jul 19, 2014 // original <br>
  *          Jul 24, 2014 // refactored to allow for registries not residing in the common location <br>
+ *          Sep 20, 2014 // test removeAllRegistries <br>
  */
 public class TestRegistryFactory
 {
@@ -63,10 +64,12 @@ public class TestRegistryFactory
   @After
   public void tearDown() throws Exception
   {
+    _rf.closeAllRegistries();
+    assertEquals(_rf.getNumberOfRegistries(), 0);
+    _rf = null;
     // Turn off messaging at end of each test
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    _rf = null;
   }
 
 
@@ -89,8 +92,8 @@ public class TestRegistryFactory
   @Test
   public void testCloseRegistry()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
     // SETUP: ensure that registry already exists and is open
@@ -100,14 +103,13 @@ public class TestRegistryFactory
     assertTrue(regfile.exists());
 
     // DO
+    MsgCtrl.msgln("Number of registries before closing = " + regnum);
     _rf.closeRegistry(RegKey.ITEM);
+    MsgCtrl.msgln("Number of registries after closing = " + regnum);
 
     // VERIFY
     assertEquals(_rf.getNumberOfRegistries(), regnum - 1);
     assertTrue(regfile.exists()); // file did not get deleted
-
-    // TEARDOWN
-    // Nothing to do
 
   }
 
@@ -135,9 +137,6 @@ public class TestRegistryFactory
 
     // VERIFY: size does not decrease; no runtime error; nothing else happens
     assertEquals(_rf.getNumberOfRegistries(), regnum - 1);
-
-    // TEARDOWN
-    // Nothing to do
 
   }
 
@@ -168,7 +167,7 @@ public class TestRegistryFactory
     assertTrue(regfile.exists());
 
     // TEARDOWN
-    _rf.closeRegistry(RegKey.ITEM);
+    // Nothing to do
 
   }
 
@@ -184,7 +183,7 @@ public class TestRegistryFactory
     MsgCtrl.where(this);
 
     // SETUP: Clear all registry entries
-    removeAllRegistries(false);
+    _rf.closeAllRegistries();
 
     // DO: create two registries
     _rf.getRegistry(RegKey.ITEM);
@@ -209,8 +208,8 @@ public class TestRegistryFactory
     // VERIFY: Ensure that only one registry exists
     assertEquals(_rf.getNumberOfRegistries(), 0);
 
-    // TEARDOWN: Clear all registry entries
-    removeAllRegistries(false);
+    // TEARDOWN
+    // Nothing to do
   }
 
 
@@ -227,7 +226,7 @@ public class TestRegistryFactory
     MsgCtrl.where(this);
 
     // SETUP: ensure that registries to be created does not yet exist
-    removeAllRegistries(false);
+    _rf.closeAllRegistries();
     assertEquals(_rf.getNumberOfRegistries(), 0);
     File regfile1 = new File(Chronos.AdventureRegPath);
     regfile1.delete();
@@ -240,9 +239,7 @@ public class TestRegistryFactory
     assertTrue(regfile1.exists());
     assertEquals(_rf.getNumberOfRegistries(), 1);
 
-    // TEARDOWN: close all registries opened
-    _rf.closeRegistry(RegKey.ADV);
-    assertEquals(_rf.getNumberOfRegistries(), 0);
+    // TEARDOWN
   }
 
 
@@ -273,9 +270,8 @@ public class TestRegistryFactory
     assertEquals(_rf.getNumberOfRegistries(), 1);
     assertEquals(testreg, testreg2);
 
-    // TEARDOWN: close all registries opened
-    testreg.closeRegistry();
-    testreg2.closeRegistry();
+    // TEARDOWN
+    // Nothing to do
   }
 
 
@@ -313,16 +309,6 @@ public class TestRegistryFactory
   // Helper Methods
   // ============================================================
 
-  private void removeAllRegistries(boolean verbose)
-  {
-    for (RegKey key : RegKey.values()) {
-      _rf.closeRegistry(key);
-      if (verbose) {
-        MsgCtrl.auditMsgsOn(false);
-        MsgCtrl.msgln("\tClosing " + key.name());
-      }
-    }
-  }
 
 
 } // end of TestRegistryFactory
