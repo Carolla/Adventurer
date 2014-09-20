@@ -176,7 +176,7 @@ public abstract class Registry
       public boolean match(IRegistryElement candidate)
       {
         String key = candidate.getKey();
-        boolean retval = key.equalsIgnoreCase(name);
+        boolean retval = key.equals(name);
         return retval;
 //        return candidate.getKey().equalsIgnoreCase(name);
       }

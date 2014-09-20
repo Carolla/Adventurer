@@ -12,21 +12,18 @@
 
 package chronos.pdc;
 
+import mylib.dmc.IRegistryElement;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import chronos.pdc.registry.TownRegistry;
-
-import mylib.dmc.RegistryElement;
 
 /**
  *  Singleton containing a refernce to a Town and an Arena, two required elements of all Adventures.
  *
  * @author Alan Cline
- * @version <DL>
- * <DT> Build 1.0		June 8, 2013   // original <DD>
- * </DL>
+ * @version June 8, 2013   // original <br>
  */
-public class Adventure extends RegistryElement
+public class Adventure implements IRegistryElement
 {
     /** Name of this Adventure */
     private String _name = null;

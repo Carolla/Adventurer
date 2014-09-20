@@ -11,7 +11,7 @@ package chronos.pdc;
 
 import mylib.ApplicationException;
 import mylib.civ.DataShuttle;
-import mylib.dmc.RegistryElement;
+import mylib.dmc.IRegistryElement;
 import chronos.civ.OccupationKeys;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
@@ -27,7 +27,7 @@ import chronos.pdc.registry.SkillRegistry;
  *          June 13, 2011 // TAA updated for registries <br>
  *          Feb 29, 2012 // ABC updated to add Skill object <br>
  */
-public class Occupation extends RegistryElement
+public class Occupation implements IRegistryElement
 {
   // Serializable because it is part of the serialized Person object
   static final long serialVersionUID = 20110205L; // creation date

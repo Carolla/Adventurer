@@ -94,8 +94,8 @@ public class TestAdvRegistry
   @Test
   public void testRegistryList()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // SETUP: None
@@ -130,7 +130,7 @@ public class TestAdvRegistry
 
   /**
    * @Normal Add a new Adventure into the AdvReg, then retrieve it without recreating it
-   * @Error Add an existing into AdvReg (attempt duplicated)
+   * @Error Add an existing Adventure into AdvReg (attempt duplicated)
    */
   @Test
   public void testNewInstance()
@@ -151,6 +151,7 @@ public class TestAdvRegistry
     assertEquals(1, areg.getNbrElements());
     // and the element is the recent adventure
     Adventure adv = areg.getAdventure(DEF_ADVENTURE);
+    MsgCtrl.msgln("candidate key = " + adv.getKey());
     assertTrue(adv.getName().equals(DEF_ADVENTURE));
 
     // TEARDOWN

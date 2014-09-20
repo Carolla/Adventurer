@@ -12,7 +12,7 @@ package chronos.pdc;
 import java.util.EnumMap;
 
 import mylib.ApplicationException;
-import mylib.dmc.RegistryElement;
+import mylib.dmc.IRegistryElement;
 import chronos.civ.MiscKeys;
 import chronos.civ.MiscKeys.ItemCategory;
 import chronos.civ.MiscKeys.ItemFields;
@@ -26,7 +26,7 @@ import chronos.civ.MiscKeys.ItemFields;
  *          Oct 21, 2009 // changed ctor to take int weights instead of codes <br>
  *          Apr 11 2011 // TAA changed visibiltiy of attributes to protected <br>
  */
-public class Item extends RegistryElement
+public class Item implements IRegistryElement
 {
   // /** METADATA CONSTANTS */
   // /** Recommended serialization constant */

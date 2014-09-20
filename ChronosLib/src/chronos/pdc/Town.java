@@ -15,7 +15,7 @@ import java.util.List;
 
 import mylib.ApplicationException;
 import mylib.Constants;
-import mylib.dmc.RegistryElement;
+import mylib.dmc.IRegistryElement;
 import chronos.pdc.buildings.Building;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
@@ -28,7 +28,7 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
  * @version Feb 6, 2013 // original <br>
  *          May 4, 2013 // updated and augmented <br>
  */
-public class Town extends RegistryElement
+public class Town implements IRegistryElement
 {
   /** Name of the town */
   private String _name = null;
