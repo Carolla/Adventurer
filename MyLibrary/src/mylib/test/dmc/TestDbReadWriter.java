@@ -57,7 +57,6 @@ public class TestDbReadWriter extends TestCase
   // Fixtures
   // ====================================================================
 
-
   /**
    * Create database and associated file, and mock DBRW for testing.
    * 
@@ -74,7 +73,6 @@ public class TestDbReadWriter extends TestCase
     assertNotNull(_mock);
     assertNotNull(_mock.getContainer());
   }
-
 
   /**
    * Returns db and mock to null state, db file used for test is deleted
@@ -406,8 +404,8 @@ public class TestDbReadWriter extends TestCase
   @Test
   public void testDbOpenExistingFile()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // Create object to write

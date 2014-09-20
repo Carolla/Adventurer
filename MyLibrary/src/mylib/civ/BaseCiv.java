@@ -41,9 +41,9 @@ public abstract class BaseCiv<M extends Enum<M>, W extends Enum<W>>
     protected DataShuttle<M> _ds = null;
     /** Every Civ is associated with a shuttle for display data. */
     protected DataShuttle<W> _ws = null;
-
     /** Every Civ is associated with a specific model */
     protected ObservableModel<M> _model = null;
+    
     /** Every Civ is associated with its specific widget, whether JDialog, JPanel, JComponent, 
      * or Window */
     protected Container _widget = null;

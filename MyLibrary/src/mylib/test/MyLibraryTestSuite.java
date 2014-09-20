@@ -20,23 +20,26 @@ import org.junit.runners.Suite;
 /**
  * @author Alan Cline
  * @version Jun 4 2009 // original <br>
- * Jan 18 2010 // add Occupation and Skill class testing  <br>
- * Jul 11 2010 // updated for tests with CIV support  <br>
- * Jul 26 2014 // {@code UC00a. Initialization} classes added: {@code Registry}
-
+ *          Jan 18 2010 // add Occupation and Skill class testing <br>
+ *          Jul 11 2010 // updated for tests with CIV support <br>
+ *          Jul 26 2014 // {@code UC00a. Initialization} classes added: {@code Registry}
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
 {
-    // PDC Test files
-    TestMetaDie.class,
-    TestRegistry.class,
-    TestUtilities.class,
-
     // CIV Test files
+    // TestBaseCiv.class,
+    // TestDataShuttle.class,
 
     // DMC Test files
     TestDbReadWriter.class,
+
+    // PDC Test files
+    TestMetaDie.class,
+    // TestObservableModel.class,
+    TestRegistry.class,
+    TestUtilities.class,
+
 
 })
 /** Compilation of all unit tests for regression and integration testing. */

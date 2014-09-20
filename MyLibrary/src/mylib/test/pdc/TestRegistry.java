@@ -347,8 +347,8 @@ public class TestRegistry extends TestCase
    */
   public void testGetByEmptyKey()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     /* Previously commented code */
