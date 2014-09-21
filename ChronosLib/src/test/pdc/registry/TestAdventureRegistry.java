@@ -14,7 +14,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import mylib.MsgCtrl;
+import mylib.dmc.IRegistryElement;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -44,6 +49,8 @@ public class TestAdventureRegistry
 {
   /** Factory that retrieves or creates all registries (singletons) */
   static private RegistryFactory _rf;
+
+  private String DEF_ADVENTURE = "The Quest for Rogahn and Zelligar";
 
   // ===========================================================================
   // FIXTURES
@@ -90,13 +97,13 @@ public class TestAdventureRegistry
   // ===========================================================================
 
   /**
-   * @Normal open all 7 registries
+   * @Normal open and close all 7 registries
    */
   @Test
   public void testRegistryList()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // DO
@@ -125,29 +132,26 @@ public class TestAdventureRegistry
     int regNum = _rf.getNumberOfRegistries();
     MsgCtrl.msgln("Registires open and stored in RegistryFactory collection = " + regNum);
     assertTrue(regNum == RegKey.values().length);
-    
+
     MsgCtrl.msgln("Closing all Registires");
     _rf.closeAllRegistries();
     regNum = _rf.getNumberOfRegistries();
     MsgCtrl.msgln("Registires open and stored in RegistryFactory collection = " + regNum);
     assertEquals(0, regNum);
-
   }
 
-  
+
   /**
    * @Normal Add a new Adventure into the AdvReg, then retrieve it without recreating it
-   * @Error Add an existing into AdvReg (attempt duplicated)
    */
   @Test
-  public void testNewInstance() throws Exception
+  public void testNewInstance()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // SETUP None
-    String DEF_ADVENTURE = "The Quest for Rogahn and Zelligar";
 
     // DO
     // Add a new Adventure to the AdventureRegistry
@@ -160,29 +164,164 @@ public class TestAdventureRegistry
     // and the element is the recent adventure
     Adventure adv = areg.getAdventure(DEF_ADVENTURE);
     assertTrue(adv.getName().equals(DEF_ADVENTURE));
-
   }
 
 
-  // @Test
-  // public void testGetInstanceFails()
-  // {
-  // // Get a local adv help registry
-  // AdvHelpRegistry advReg = (AdvHelpRegistry)
-  // AdvRegistryFactory.getInstance().getRegistry(null);
-  // assertNull(advReg);
-  // }
+  /**
+   * @Normal Try to duplicate an AdventureRegisty in the collection
+   */
+  @Test
+  public void testNewInstance_Dup()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // SETUP None
+
+    // DO
+    // Add a new Adventure to the AdventureRegistry
+    AdventureRegistry areg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
+    assertFalse(areg.isClosed());
+    assertNotNull(areg);
+    MsgCtrl.msgln("Registry " + areg + " open and stored");
+
+    int regNum = _rf.getNumberOfRegistries();
+    MsgCtrl.msgln("Registries open and stored in RegistryFactory collection = " + regNum);
+    assertEquals(1, regNum);
+
+    // Try to add another AdventureRegistry
+    AdventureRegistry areg2 = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
+    assertFalse(areg2.isClosed());
+    assertNotNull(areg2);
+    MsgCtrl.msgln("Registry " + areg2 + " open and stored");
+
+    // VERIFY RegistryFactory contains same single element
+    assertEquals(areg, areg2);
+    regNum = _rf.getNumberOfRegistries();
+    assertEquals(1, regNum);
+    // ...and the element is the recent adventure
+    assertEquals(1, areg.getAdventureList().size());
+  }
+
+
+  /**
+   * @Normal Return an adventure by name
+   */
+  @Test
+  public void testGetAdventure()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // SETUP None
+    MsgCtrl.msgln("Creating default adventure in Registry ");
+    AdventureRegistry areg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
+    assertNotNull(areg);
+
+    // DO
+    MsgCtrl.msgln("Retrieving adventure from Registry ");
+    List<IRegistryElement> advList = areg.get(DEF_ADVENTURE);
+    assertNotNull(advList);
+    assertEquals(1, advList.size());
+
+    // VERIFY
+    MsgCtrl.msgln("Retrieving adventure name from Adventure");
+    Adventure adv = (Adventure) advList.get(0);
+    assertEquals(DEF_ADVENTURE, adv.getName());
+  }
+
+
+  /**
+   * @Error Return an non-existing adventure
+   * @Error Return an adventure with an empty null key
+   * @Null Return an adventure with a null key
+   * @Error Retrieve an adventure from a non-existing AdventureRegistry
+   */
+  @Test
+  public void testGetAdventure_Nonexisting()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // SETUP None
+    MsgCtrl.msgln("Creating default adventure in Registry ");
+    AdventureRegistry areg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
+    assertNotNull(areg);
+
+    // DO
+    MsgCtrl.msgln("Retrieving non-existing adventure from Registry ");
+    List<IRegistryElement> advList = areg.get("Salazar's Lair");
+
+    // VERIFY
+    assertEquals(0, advList.size());
+    MsgCtrl.msgln("Received an empty list");
+  }
+
+
+  /**
+   * @Error Attempt to return an adventure with an empty key
+   * @Null Return an adventure with a null key -- compile error
+   */
+  @Test
+  public void testGetAdventure_EmptyKey()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // SETUP None
+    MsgCtrl.msgln("Creating default adventure in Registry ");
+    AdventureRegistry areg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
+    assertNotNull(areg);
+
+    // DO
+    MsgCtrl.msgln("Attempting to retrieve a adventure with an empty key");
+    List<IRegistryElement> advList = areg.get("   ");
+
+    // VERIFY
+    assertEquals(0, advList.size());
+    MsgCtrl.msgln("Received an empty list");
+  }
+
+
+  /**
+   * @Normal  Get a list of all adventures in the AdventureRegistry
+   */
+  @Test
+  public void testGetAdventureList()
+  {
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.where(this);
+
+    // SETUP None
+    MsgCtrl.msgln("Creating default adventure in Registry ");
+    AdventureRegistry areg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
+    assertNotNull(areg);
+
+    // DO
+    MsgCtrl.msgln("Dumping all Adventures in AdventureRegistry, which is 1");
+    ArrayList<Adventure> advList = areg.getAdventureList();
+
+    // VERIFY
+    assertEquals(1, advList.size());
+    MsgCtrl.msgln("Received a list of one: " + advList.get(0).getName());
+  }
 
 
   // ===========================================================================
   // PRIVATE HELPER METHODS
   // ===========================================================================
 
+  /**
+   * @Null Return an adventure with a null key
+   */
 
   /**
-   * 1
-   * 
-   * @NonNeeded getAdventure(String) -- wrapper to mylib.pdc.Registry
+   * All methods tested
    */
   void _testsNotNeeded()
   {}
