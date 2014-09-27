@@ -35,6 +35,7 @@ import com.db4o.query.Predicate;
  * @author Alan Cline
  * @version Aug 6, 2012 // original <br>
  *          Sept 13, 2014 // removed need for _closeflag <br>
+ *          Sept 27, 2014 // removed ctor used only for testing <br>
  */
 public abstract class Registry
 {
@@ -85,14 +86,6 @@ public abstract class Registry
   }
 
 
-//  /**
-//   * Cannot be called by any class other than Registry subclass, allows for testing without touching
-//   * the database directly.
-//   */
-//  protected Registry()
-//  {}
-
-
   /**
    * Add a new unique element into the database. Object cannot be null, or have an empty (white
    * space only) key.
@@ -116,7 +109,14 @@ public abstract class Registry
     return retval;
   }
 
+  
+  /** Close the given registry */
+  public void closeRegistry()
+  {
+    _regRW.dbClose();
+  }
 
+  
   /**
    * Verifies if the given objects exists in the registry. The object's equal() method is called.
    * 
@@ -142,11 +142,6 @@ public abstract class Registry
     }
   }
 
-  // public void eraseDbFiles(String regPath)
-  // {
-  // File regfile = new File(regPath);
-  // regfile.delete();
-  // }
 
   /**
    * Retrieve one or more objects by name. The object's {@code getKey} method is called.
@@ -163,7 +158,10 @@ public abstract class Registry
       public boolean match(IRegistryElement candidate)
       {
         String key = candidate.getKey();
+        // System.err.print("\tName to match =  " + name);
+        // System.err.print("\tCandidate = " + candidate );
         boolean retval = key.equalsIgnoreCase(name);
+        // System.err.println("\tFound = " + retval);
         return retval;
         // return candidate.getKey().equalsIgnoreCase(name);
       }
@@ -173,19 +171,12 @@ public abstract class Registry
   }
 
 
-//  // TODO Remove this method
-//  /** @return the concrete type of registry */
-//  public Registry getReference()
-//  {
-//    // return _thisReg;
-//    return null;
-//  }
+  // /** @return the db read-writer object reference for this registry */
+  // public DbReadWriter getDBRW()
+  // {
+  // return _regRW;
+  // }
 
-  /** @return the db read-writer object reference for this registry */
-  public DbReadWriter getDBRW()
-  {
-    return _regRW;
-  }
 
   /**
    * Gets the requested object from the database using the predicate from the same element type as
@@ -205,7 +196,8 @@ public abstract class Registry
    * 
    * @return one or more registry elements that match the Predicate, else returns null.
    */
-  protected List<IRegistryElement> getAll()
+  @SuppressWarnings("serial")
+  public List<IRegistryElement> getAll()
   {
     List<IRegistryElement> elementList = get(new Predicate<IRegistryElement>() {
       public boolean match(IRegistryElement candidate)
@@ -243,6 +235,7 @@ public abstract class Registry
     return names;
   }
 
+  
   /**
    * Retrieves a unique Registry element using that entry's equal() method
    * 
@@ -256,7 +249,6 @@ public abstract class Registry
     if ((name == null) || (name.trim().length() == 0)) {
       return null;
     }
-
     IRegistryElement regElem = null;
     List<IRegistryElement> elementList = get(name);
     int nbrFound = elementList.size();
@@ -277,7 +269,7 @@ public abstract class Registry
   /**
    * Check if registry is closed or not
    * 
-   * @returns true if registry is closed
+   * @return true if registry is closed
    */
   public boolean isClosed()
   {
@@ -289,8 +281,8 @@ public abstract class Registry
    * Verifes if the string (key) is unique to the Registry Calls getUnique() to return a boolean
    * instead of an object
    * 
-   * @name to check for uniqueness
-   * @returns true if name is unique in the registry, else false
+   * @param name to check for uniqueness
+   * @return true if name is unique in the registry, else false
    */
   public boolean isUnique(String name)
   {
@@ -303,24 +295,6 @@ public abstract class Registry
       return false;
     }
     return retval;
-  }
-
-  /**
-   * Retrieves a list of Registry element based on the Predicate from the caller.
-   * 
-   * @param pred the object that contains the boolean match() method for extraction
-   * @return a list of all elements in which match() returns true
-   * @throws NullPointerException if the target name is null or empty
-   */
-  public List<IRegistryElement> queryByPredicate(Predicate<IRegistryElement> pred)
-      throws NullPointerException
-  {
-    // Guard
-    if (pred == null) {
-      throw new NullPointerException("Predicate cannot be null");
-    }
-    List<IRegistryElement> elementList = _regRW.dbQuery(pred);
-    return elementList;
   }
 
   /**
@@ -350,22 +324,6 @@ public abstract class Registry
     return retval;
   }
 
-  // // Create a predicate to match against the target's key
-  // Predicate<IRegistryElement> pred = new Predicate<IRegistryElement>() {
-  // public boolean match(IRegistryElement candidate)
-  // {
-  // return candidate.getKey().equals(target.getKey());
-  // }
-  // };
-  //
-  // // Run the query using the equals method
-  // List<IRegistryElement> obSet = _regRW.dbQuery(pred);
-  // boolean retval = false;
-  // if (obSet.size() == 1) {
-  // retval = add(target);
-  // }
-  // return retval;
-  // }
 
 } // end of Registry class
 

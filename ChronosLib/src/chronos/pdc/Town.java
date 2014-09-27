@@ -41,7 +41,7 @@ public class Town implements IRegistryElement
 
   // Convenience reference to RegistryFactory
   private BuildingRegistry _bReg = null;
-  
+
   // TODO Move this initializer into constructor
   /** Buildings in town */
   private List<Building> _buildings = new ArrayList<Building>();
@@ -50,19 +50,18 @@ public class Town implements IRegistryElement
   private final static String TOWN_NAME = "Biljur'Baz";
   /** Description of town when entered in the daytime */
   private final static String DESC_DAY =
-      "A country road divides a few dilapidated buildings from the " +
-          "apple treees and grain fields on the other side. One of the larger buildings catches " +
-          "your glance in the center of the town--the Inn.  You can also see a Bank, a Store, and "
-          +
-          "a few others. Larger, more foreboding buildings decorate the slopes around the town. " +
-          "At the edge of town, nestled among a mountain foothill, is a huge and ominious " +
-          "fortress of dark rock. Even by day, it says, \"Stay away.\"";
+      "A country road divides a few dilapidated buildings from the "
+          + "apple treees and grain fields on the other side. One of the larger buildings catches "
+          + "your glance in the center of the town--the Inn.  You can also see a Bank, a Store, "
+          + "and a few others. Larger, more foreboding buildings decorate the slopes around the town. "
+          + "At the edge of town, nestled among a mountain foothill, is a huge and ominious "
+          + "fortress of dark rock. Even by day, it says, \"Stay away.\"";
 
   /** Description of town when entered in the evening */
   private final static String DESC_NIGHT =
-      "Yellow lights burn in a line along a country road, casting " +
-          "more shadow than illumination. You see small squares of light from the windows of " +
-          "largest grey building near the center of town--probably the town's Inn. ";
+      "Yellow lights burn in a line along a country road, casting "
+          + "more shadow than illumination. You see small squares of light from the windows of "
+          + "largest grey building near the center of town--probably the town's Inn. ";
 
   // /** Buildings of the default town */
   // private final String[] DEF_BLDGS = {"Ugly Ogre Inn", "The Bank", "Jail", "Rat's Pack",
@@ -141,7 +140,7 @@ public class Town implements IRegistryElement
   public void addBuildings(String[] bldgList) throws ApplicationException
   {
     for (String bName : bldgList) {
-      Building b = _bReg.getBuilding(bName);    // Causes unsafe creation; cast needed?
+      Building b = _bReg.getBuilding(bName); // Causes unsafe creation; cast needed?
       if (b == null) {
         throw new ApplicationException("Cannot find " + bName + " in BuildingRegistry.");
       }
@@ -189,7 +188,7 @@ public class Town implements IRegistryElement
     return bldg;
   }
 
-  
+
   /** Get the cost of living (price adjustment) for this town */
   public double getCostOfLiving()
   {

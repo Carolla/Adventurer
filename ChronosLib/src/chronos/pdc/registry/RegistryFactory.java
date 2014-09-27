@@ -82,7 +82,7 @@ public class RegistryFactory
     for (RegKey key : RegKey.values()) {
       Registry reg = _regMap.get(key);
       if (reg != null) {
-        reg.getDBRW().dbClose();
+        reg.closeRegistry();
         _regMap.remove(key);
       }
     }
@@ -98,24 +98,11 @@ public class RegistryFactory
   {
     Registry reg = _regMap.get(key); // get returns null if not found
     if (reg != null) {
-      reg.getDBRW().dbClose();
+      reg.closeRegistry(); // this is the registry's method, not this method it's in
       _regMap.remove(key);
     }
   }
 
-
-  // /**
-  // * Close a registry and remove it from the factory collection
-  // *
-  // * @param reg one of the specified registry objects
-  // */
-  // public void closeRegistry(Registry reg)
-  // {
-  // if (reg != null) {
-  // reg.getDBRW().dbClose();
-  // _regMap.remove(reg);
-  // }
-  // }
 
   /**
    * Creates a registry of the given type. Registry location defaults to ChronosLib resources.
@@ -161,7 +148,7 @@ public class RegistryFactory
   {
     for (RegKey key : RegKey.values()) {
       Registry reg = _regMap.get(key);
-      reg.getDBRW().dbClose();
+      reg.closeRegistry();
       _regMap.remove(reg);
     }
   }

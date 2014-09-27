@@ -15,8 +15,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.List;
 
 import mylib.MsgCtrl;
+import mylib.pdc.Registry;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -124,8 +126,8 @@ public class TestAdventurer
   @Test
   public void testCloseRegistries()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // ENSURE that the Registries exist
@@ -150,8 +152,8 @@ public class TestAdventurer
   @Test
   public void testInitRegistriesWithoutFiles()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // SETUP: Ensure that there are as many regfiles as they are reg keys
@@ -210,6 +212,8 @@ public class TestAdventurer
 
     // VERIFY all registries exist: get number objects in RegistryFactory map
     assertTrue(keynum == _rf.getNumberOfRegistries());
+//    // Dump content of each Registry
+//    dumpRegistries();
 
     // TEARDOWN: close all registries
     for (RegKey key : RegKey.values()) {
@@ -222,6 +226,17 @@ public class TestAdventurer
   // Helper Methods
   // ============================================================
 
+//  /** Dump the contents of each registry in the RegistryFactory collection */
+//  private void dumpRegistries()
+//  {
+//    Registry reg = _rf.getRegistry(RegKey.ADV);
+//    List<String> elist = reg.getElementNames();
+//    for (String nm : elist){
+//      MsgCtrl.msgln(nm);
+//    }
+//  }
+  
+  
   /** Check that all Registry files exist and are of non-zero length */
   private boolean registryFilesExist()
   {
@@ -263,5 +278,5 @@ public class TestAdventurer
   }
 
 
-} // end of TestLauncher class
+} // end of TestAdventurer class
 
