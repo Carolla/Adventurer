@@ -52,6 +52,14 @@ public class Adventure implements IRegistryElement
   // CONSTRUCTOR(S) AND RELATED METHODS
   // ============================================================
 
+  /** Create the default Adventure */
+  public Adventure()
+  {
+    Adventure adv = new Adventure();
+  }
+  
+  
+  
   /**
    * Creates the default {@code Adventure}. The town should be in the {@code TownRegistry}, and the
    * {@code Arena} should be in its own Arena file. For now, only the names of these parms are in

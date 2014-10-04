@@ -142,8 +142,7 @@ public class DbReadWriter
 
 
   /**
-     * Verify if a particular object exists, found by calling that objects <code>equals()</code>
-     * method
+     * Verify if a particular object exists, found by calling that object's {@code equals} method
      * 
      * @param target name of the object with specific fields to find
      * @return true if it exists in the db, else false

@@ -19,22 +19,21 @@ import mylib.dmc.IRegistryElement;
 import com.db4o.query.Predicate;
 
 /**
- * The base class for all Registries, and contains component <code>DbReadWriter</code> All derived
+ * The base class for all Registries, contains component {@code DbReadWriter}. All derived
  * registries wll become persistent singleton containers for unique homogeneous objects. The
  * singleton will reload the file when created, or intialize from static tables containing default
  * data if the file doesn't exist.
  * <p>
  * All concrete classes derived from this abstact class works with a data management component class
- * <code>DbReadWriter</code> to handle the actual database read and write operations.
+ * {@code DbReadWriter} to handle the actual database read and write operations.
  * <p>
- * WARNING: All Registry elements must implement the interface <code>IRegistryElement</code>. Do not
- * use the default <code>boolean Object.equals()</code> method because it compares objects
- * independent of the field data within (an instantiation level compare) and will not work as
- * expected with db4o.
+ * WARNING: All Registry elements must implement the interface {@code IRegistryElement}. Do not use
+ * the default {@code boolean Object.equals} method because it compares objects independent of the
+ * field data within (an instantiation level compare) and will not work as expected with db4o.
  * 
  * @author Alan Cline
  * @version Aug 6, 2012 // original <br>
- *          Sept 13, 2014 // removed need for _closeflag <br>
+ *          Sept 13, 2014 // removed need for closeflag <br>
  *          Sept 27, 2014 // removed ctor used only for testing <br>
  */
 public abstract class Registry
@@ -52,17 +51,17 @@ public abstract class Registry
   /** Warning message for a non-unique object found in the database */
   static public final String DBREG_NOT_UNIQUE = "Non-unique object found while trying to retrieve";
 
-
-  /*
-   * CONSTRUCTOR(S) AND RELATED METHODS
-   */
-
   /**
    * Initialize registry with beginning data from static tables, called when the registry file does
    * not exist. Method abstract because each derived registry has its own type-specific init data
    * table.
    */
   protected abstract void initialize();
+
+  
+  // ============================================================
+  // CONSTRUCTOR AND RELATED METHODS
+  // ============================================================
 
   /**
    * Creates a Registry (read-write) and its DbReadWriter component. If the Registry exists, its
@@ -86,6 +85,11 @@ public abstract class Registry
   }
 
 
+  // ============================================================
+  // PUBLIC METHODS
+  // ============================================================
+
+
   /**
    * Add a new unique element into the database. Object cannot be null, or have an empty (white
    * space only) key.
@@ -96,7 +100,7 @@ public abstract class Registry
   public boolean add(IRegistryElement obj)
   {
     boolean retval = false;
-    // Ensure that a null or an empoty key is not being added
+    // Ensure that a null or an empty key is not being added
     if ((obj == null) || (obj.getKey().trim().length() == 0)) {
       return retval;
     }
@@ -109,14 +113,14 @@ public abstract class Registry
     return retval;
   }
 
-  
+
   /** Close the given registry */
   public void closeRegistry()
   {
     _regRW.dbClose();
   }
 
-  
+
   /**
    * Verifies if the given objects exists in the registry. The object's equal() method is called.
    * 
@@ -235,7 +239,7 @@ public abstract class Registry
     return names;
   }
 
-  
+
   /**
    * Retrieves a unique Registry element using that entry's equal() method
    * 

@@ -204,8 +204,6 @@ public class Town implements IRegistryElement
 
 
   /*
-   * (non-Javadoc)
-   * 
    * @see mylib.dmc.IRegistryElement#getKey()
    */
   @Override

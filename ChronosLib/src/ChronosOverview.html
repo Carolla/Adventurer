@@ -18,11 +18,11 @@
 
 <body bgcolor="white">
 
-The <code>Chronos Gaming Framework</code> is comprised of two programs: 
+The {@code Chronos Gaming Framework}  is comprised of two programs: 
 an adventure authoring kit and editor, <i>Quest Master</i>, and 
 a corresponding player module, <i>Adventurer</i>. 
  
-<h2><code>Chronos</code> Description</h2>
+<h2>{@code Chronos}  Description</h2>
 <i>Quest Master</i> enables a user to build a multiplayer game, or an interactive
 novel, that is a role-playing adventure game. 
 <i>Adventurer</i> allows users to play the game that the author built.
@@ -35,7 +35,7 @@ The playing arena can contain several types of geographic locales such as a town
  a forest, etc.  A town is generally located on the outskirts of the unknown region to be explored.  
  For example, a town would be near the entrance to a castle or a dungeon.
 <P>
-The initial <code>Chronos</code> programs come with a set of default monsters, non-player
+The initial {@code Chronos}  programs come with a set of default monsters, non-player
 characters, the player's avator skills, items, and other basics to allow a game to be played "out of the
 box" using a medeval fantasy genre.
 <P> 
@@ -61,7 +61,7 @@ install and use it so that they can experience first-hand what their game player
         hand-held daggers). The Hero can even throw furniture and other items at enemies! </LI>
 </UL>
 <i>Quest Master</i> defines, and <i>Adventurer</i> executes, the various 
-locales and situations of the <code>Chronos</code> world (regardless of genre). 
+locales and situations of the {@code Chronos}  world (regardless of genre). 
 The avatar can pursue the following activities. 
  <UL>
     <LI>Town Square: Register a new Character and get a team together for play. </LI>
@@ -78,7 +78,7 @@ The avatar can pursue the following activities.
         monsters, find treasure, solve puzzles, and gain experience to rise to the
         next level of ability. The Quest Master author may name these locales as he or she wishes. 
         See the <i>Adventurer</i> description for an example of the default arenas  
-        provided with <code>Chronos</code>.  </LI> 
+        provided with {@code Chronos} .  </LI> 
 </UL>
 The game is never actually "won"; there is always one more adventure. After the Hero 
 reaches Level 10, the highest possible level, there is little to interest him or her. It is encouraged that 
@@ -155,7 +155,7 @@ For example, in the default medeval fantasy world,
         Guild ("Rogues' Den"). </LI>
     <LI>The training arena is a "hotel-type" dungeon called "Quasqueton" and based on a popular
         D&D dungeon. It has numerous, easily mapped rooms with a little bit of everything 
-        <code>Chronos</code> has to offer. Quasqueton was once owned by Salazar the
+        {@code Chronos}  has to offer. Quasqueton was once owned by Salazar the
         Mage and Zelligar the Warlord.</LI> 
      <LI>The other arena, "The Temple of Pomarj" is intended for a more experienced 
         player and has many intricate traps, and a few puzzles. It is of the variety in which a
@@ -195,54 +195,48 @@ types, structures, and icons to add to the palettes for futher customization.
 The application is driven by three critical design principles.
 <OL>
 <LI><i>Model-Driven Architecture (MDA) and Separation of Concerns</i>. 
-    The application is broken into four components: 
+    The application is broken into five components: 
     a Problem Domain Component (PDC) that contains the core program (business) logic; 
     a Data Management Component (DMC) for data persistence and management 
     implementation; a Human Interface Component (HIC) for user interaction and GUI display;
+    a validation and testing plug called the Component Interface Validator (CIV);
     and a System Interface Component (SIC) for communicating to external systems,
     across a network, through files, or by other means.
     Each component is further decomposed into responsibility-based objects.
     For more details, see each of the Javadoc descriptions for the respective component packages.
     </LI><P>
- <LI><i>Test-First Development (TFD), JUnit automated testing, and the Component Integration 
+ <LI><i>Test-Driven Development (TDD), JUnit automated testing, and the Component Integration 
     Validatior (CIV)</i>.  
     JUnit does not test GUI code well, so automated GUI testing is bypassed; JUnit tests simulate the
-    GUI by hooking into an interface boundary called a CIV. 
-    By placing no logic in the HIC, only about 15% of code (the cosmetics) cannot be tested with JUnit
-    automation, but is easily tested by manual GUI inspection. 
+    GUI by hooking into the CIV interface boundary. 
+    By placing no logic in the HIC, all but about 15% of code (the cosmetics) can be tested
+    automatically JUnit; manual GUI testing by inspection is consequently simpler too. 
     The CIV provides a place to start and end JUnit integration tests. 
     JUnit test flows start at an input CIV immediately behind an HIC's input GUI widget, and verify 
     results collected from an output CIV immediately behind an HIC's output GUI widget. 
-     For more details, see the descriptions for the CIV package. </LI><P>
- <LI><i>Field Shuttle and Data Shuttle Transport</i>. 
-    Each component talks with each other through a minimal communication "pipe", or data
-    transport protocol. 
-    Each component's knowledge of each other is minimized to decrease coupling, 
-    enable quicker maintenance, and allow user interfaces to be treated as "plug-ins". 
-    (This is especially important as <i>Adventurer</i> moves to a Kinect and Internet interface.) 
+    For more details, see the descriptions for the CIV package. </LI><P>
+<LI><i>Architectural Rules</i></LI>.
+    To maintain the integrity of the architecture and subordinate code, certain rules must be
+    followed:      
     The DMC and HIC are prohibited from talking to each other directly, but must go through
-    the PDC. Importing an HIC class in the PDC or DMC is forbidden, and vice versa. 
-    In order to pass PDC independent data to
-     and from the HIC, which knows nothing about PDC type information, the GUI widget field
-     data (always Strings) are placed into a <i>field shuttle</i> to the CIV.  
-     The CIV validates the field data and converts the <i>field shuttle</i> to a <i>data shuttle</i>,
-     containing the internal format used by the PDC object.  
-     This <i>DataShuttle</i> approach means that getter and setter methods, which expose private 
-     variables to public scope, are avoided.
-     The HIC's <i>field shuttle</i>  and PDC's <i>DataShuttle</i> are the same key-value pair object, 
-     except that the shuttle's data keys are for HIC or PDC objects respectively, and the 
-     <i>field shuttle</i> contains only Strings. 
+    the PDC. {@code Import}ing an HIC class in the PDC or DMC is forbidden, and vice versa. 
+    In order to pass PDC independent data to and from the HIC, which knows nothing about PDC type 
+    information, the GUI widget field data (always Strings) are reformatted by the CIV.  
+    The CIV validates the field data and converts the {@code String} data to whatever internal
+    format is used by the PDC object.  
 </OL>
 
 <H3>Future Versions</H3>
-Currently, <code>Chronos</code> is a single-player game that allows the user to control
-up to four avatars in the same game from the same workstation. 
+Currently, {@code Chronos} is a single-player game that allows the user to control a single avatar
+within the game. In the next version, the player will be able to control up to four avatars in the 
+same game from the same workstation. 
 The avatars start out by taking turns, but as different actions take different amounts of
 time to complete, and monsters and events pre-empt or interleave their actions, the game
 has a real-time "feel" to it, and each avatar takes its action as it can in sequence. 
 <P>
-Future versions willl support the Kinect NUI (natural user interface, or gesture-oriented interface)
-and will support multiple players controlling their avatars on their own computers across the Internet.  
+Future versions will use the Kinect NUI (natural user interface, or gesture-oriented interface) 
+and will support multiple players controlling their avatars on their own computers across the 
+Internet.  
 
 <h3>Related Documentation</h3>
 See the class diagram and sequence diagrams for the major use cases. <br>

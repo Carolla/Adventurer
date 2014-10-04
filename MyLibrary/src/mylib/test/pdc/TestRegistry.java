@@ -36,10 +36,10 @@ import com.db4o.query.Predicate;
  * 
  * @author Timothy Armstrong
  * @author Al Cline
- * @version Jan 23 2011 // original <br>
- *          May 16 2011 // TAA fixed errors <br>
- *          May 23 2011 // TAA ensured all methods included <br>
- *          Dec 24 2011 // ABC revamped for new Registry base clase <br>
+ * @version Jan 23, 2011 // original <br>
+ *          May 16, 2011 // TAA fixed errors <br>
+ *          May 23, 2011 // TAA ensured all methods included <br>
+ *          Dec 24, 2011 // ABC revamped for new Registry base clase <br>
  *          Feb 25, 2013 // ABC revamped for native queries in Registry base clase <br>
  *          Sep 13, 2014 // tested for closeFlag removal <br>
  *          Sep 27, 2014 // pruned again, looking for missed bug <br>
