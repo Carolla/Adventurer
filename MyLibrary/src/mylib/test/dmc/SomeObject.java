@@ -33,7 +33,7 @@ public class SomeObject implements IRegistryElement
 
 
   /**
-   * Constructor with specified field values. 
+   * Constructor with specified field values.
    * 
    * @param value any float number
    * @param text any text string
@@ -52,8 +52,7 @@ public class SomeObject implements IRegistryElement
    * @param target object to match against
    * @return true if both fields match, else false
    */
-  @Override
-  public boolean equals(Object object)
+  public boolean equals(IRegistryElement object)
   {
     SomeObject target = (SomeObject) object;
     return ((this._num == target.getNum()) && (this._word.equals(target.getWord())));

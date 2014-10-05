@@ -57,9 +57,9 @@ public class Adventure implements IRegistryElement
   {
     Adventure adv = new Adventure();
   }
-  
-  
-  
+
+
+
   /**
    * Creates the default {@code Adventure}. The town should be in the {@code TownRegistry}, and the
    * {@code Arena} should be in its own Arena file. For now, only the names of these parms are in
@@ -117,21 +117,23 @@ public class Adventure implements IRegistryElement
   // }
 
   /**
-   * Check if two Adventures are equal or not. The name is sufficient to confirm uniqueness
+   * Two Adventures are equal if all the adventure name, Town name, and Arena name are equal
    * 
    * @param otherThing the Skill to be considered
-   * @return true if the Skill has the same name and description as this object
+   * @return true if all elements are equal
    */
   @Override
-  public boolean equals(Object otherThing)
+  public boolean equals(IRegistryElement otherThing)
   {
     // Guard against null input
     if (otherThing == null) {
       return false;
     }
     Adventure adv = (Adventure) otherThing;
-    boolean bName = _name.equals(adv._name);
-    return bName;
+    boolean bName = _name.equals(adv.getName());
+    boolean bTown = _town.getName().equals(adv.getTown().getName());
+    boolean bArena = _arenaName.equals(adv.getArenaName());
+    return (bName && bTown && bArena);
   }
 
 

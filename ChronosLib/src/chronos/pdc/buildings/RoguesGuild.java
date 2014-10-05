@@ -11,6 +11,7 @@
 package chronos.pdc.buildings;
 
 import mylib.ApplicationException;
+import mylib.dmc.IRegistryElement;
 
 /**
  * Rogues' Guild for lock picking, skill practicing, and other tricks-of-the-sleeve The default
@@ -90,12 +91,11 @@ public class RoguesGuild extends Building
    */
 
   /*
-   * Two Guilds are considerd equal if their name and building masters are equal
+   * Two Guilds are considerd equal if their keys and building masters are equal
    * 
    * @see mylib.dmc.IRegistryElement#equals(mylib.dmc.IRegistryElement)
    */
-  @Override
-  public boolean equals(Object target)
+  public boolean equals(IRegistryElement target)
   {
     // Guards against null target
     if (target == null) {

@@ -155,7 +155,7 @@ public class Occupation implements IRegistryElement
    * @see mylib.dmc.IRegistryElement#equals(mylib.dmc.IRegistryElement)
    */
   @Override
-  public boolean equals(Object otherThing)
+  public boolean equals(IRegistryElement otherThing)
   {
     // Guard against null input
     if (otherThing == null) {
@@ -164,7 +164,7 @@ public class Occupation implements IRegistryElement
     Occupation ocp = (Occupation) otherThing;
     boolean bName = _name.equals(ocp._name);
     boolean bSkill = _skillName.equals(ocp._skillName);
-    return (bName);
+    return (bName || bSkill);
   }
 
   // /** Two Occupations are considered equal if their names and associated

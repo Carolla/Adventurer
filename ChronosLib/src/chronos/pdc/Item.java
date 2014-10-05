@@ -148,7 +148,7 @@ public class Item implements IRegistryElement
    * @return true if the Item has the same name (or phrase), or memory address
    */
   @Override
-  public boolean equals(Object otherThing)
+  public boolean equals(IRegistryElement otherThing)
   {
     // Check that the parameter exists
     if (otherThing == null) {

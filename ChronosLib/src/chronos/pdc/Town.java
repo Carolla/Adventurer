@@ -167,7 +167,7 @@ public class Town implements IRegistryElement
 
   /** Two Towns are equal if their names are equal */
   @Override
-  public boolean equals(Object targetTown)
+  public boolean equals(IRegistryElement targetTown)
   {
     Town target = (Town) targetTown;
     return _name.equalsIgnoreCase(target.getName());

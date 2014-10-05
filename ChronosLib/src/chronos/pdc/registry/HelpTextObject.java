@@ -10,7 +10,6 @@
 
 package chronos.pdc.registry;
 
-import mylib.dmc.IRegistryElement;
 
 /**
  * <Class Description>
@@ -21,7 +20,7 @@ import mylib.dmc.IRegistryElement;
  *          <DD>
  *          </DL>
  */
-public class HelpTextObject implements IRegistryElement
+public class HelpTextObject 
 {
   /** Unique identifier for this object */
   private String _helpID = null;

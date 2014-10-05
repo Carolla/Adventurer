@@ -28,17 +28,14 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
 {
-    // TODO Are these two CIV classes necessary, or should they be deleted?
     // CIV Test files
-    // TestBaseCiv.class,
-    // TestDataShuttle.class,
+    // None
 
     // DMC Test files
     TestDbReadWriter.class,
 
     // PDC Test files
     TestMetaDie.class,
-    // TestObservableModel.class,
     TestRegistry.class,
     TestUtilities.class,
 
@@ -50,38 +47,4 @@ public class MyLibraryTestSuite
 }
 
 // end of MyLibraryTestSuite class
-
-
-// public class MyLibraryTestSuite{
-// {
-// /** Compilation of all unit tests for regression and integration testing. */
-// public MyLibraryTestSuite() {}
-//
-// public static Test suite()
-// {
-// String caption = "Test Suite for MyLibrary";
-// TestSuite suite = new TestSuite(caption);
-//
-// //$JUnit-BEGIN$
-//
-// // PDC test files:
-// // suite.addTestSuite(TestHelpEngine.class); // not yet written
-// suite.addTestSuite(TestMetaDie.class);
-// // suite.addTestSuite(TestObservableModel.class); // not yet written
-// suite.addTestSuite(TestRegistry.class);
-// suite.addTestSuite(TestUtilities.class);
-//
-// // CIV test files
-// // suite.addTestSuite(TestBaseCiv.class); // not yet written
-// suite.addTestSuite(TestDataShuttle.class);
-//
-// // DMC test files
-// suite.addTestSuite(TestDbReadWriter.class);
-// // suite.addTestSuite(TestHelpContentHandler.class); // not yet written
-// // TODO doesn't pass yet
-// // suite.addTestSuite(TestHelpReader.class);
-//
-// //$JUnit-END$
-// return suite;
-// }
 

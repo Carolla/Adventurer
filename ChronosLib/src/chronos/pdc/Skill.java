@@ -101,13 +101,13 @@ public class Skill implements IRegistryElement
    */
 
   /**
-   * Two Skills are considered equal if their names are equal. This is a required implementation for
-   * the IRegistryElement interface.
+   * Two Skills are considered equal if their names and description are equal. 
    * 
    * @param otherThing the Skill to be considered
    * @return true if the Skill has the same name as this object
    */
-  public boolean equals(Object otherThing)
+  @Override
+  public boolean equals(IRegistryElement otherThing)
   {
     // Guard against null input
     if (otherThing == null) {
@@ -115,7 +115,8 @@ public class Skill implements IRegistryElement
     }
     Skill target = (Skill) otherThing;
     boolean bName = _name.equals(target._name);
-    return bName;
+    boolean bDesc = _description.equals(target._name);
+    return (bName || bDesc);
   }
 
   /**
@@ -181,8 +182,7 @@ public class Skill implements IRegistryElement
   }
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ Inner Class: MockSkill
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * Inner Class: MockSkill
    */
 
   public class MockSkill

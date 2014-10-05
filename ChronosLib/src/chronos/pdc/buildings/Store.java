@@ -11,6 +11,7 @@
 package chronos.pdc.buildings;
 
 import mylib.ApplicationException;
+import mylib.dmc.IRegistryElement;
 
 /**
  * Main building in town for buying and selling supplies. The default constructor creates the
@@ -94,7 +95,7 @@ public class Store extends Building
    * @see mylib.dmc.IRegistryElement#equals(mylib.dmc.IRegistryElement)
    */
   @Override
-  public boolean equals(Object target)
+  public boolean equals(IRegistryElement target)
   {
     if (target == null) {
       return false;

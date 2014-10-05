@@ -12,6 +12,7 @@
 package chronos.pdc.buildings;
 
 import mylib.ApplicationException;
+import mylib.dmc.IRegistryElement;
 
 /**
  *    Main building in town for rest, food, conversation, and sometimes even a bar brawl.
@@ -117,7 +118,7 @@ public class Inn extends Building
      * @see mylib.dmc.IRegistryElement#equals(mylib.dmc.IRegistryElement)
      */
     @Override
-    public boolean equals(Object target)
+    public boolean equals(IRegistryElement target)
     {
         if (target == null) {
             return false;
