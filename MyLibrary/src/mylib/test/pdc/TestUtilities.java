@@ -11,9 +11,8 @@
 package mylib.test.pdc;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNull;
-
+import static org.junit.Assert.assertTrue;
 import mylib.MsgCtrl;
 import mylib.pdc.Utilities;
 
@@ -28,6 +27,7 @@ import org.junit.Test;
  * @version Jan 28, 2013 // original <br>
  *          May 6, 2013 // moved to JUnit 4 <br>
  *          Oct 4, 2014 // added tests to match the new methods in Utilities <br>
+ *          Oct 14, 2014 // added more tests for untested methods <br>
  */
 public class TestUtilities
 {
@@ -55,21 +55,22 @@ public class TestUtilities
   // ================================================================================
 
   /**
-   * Truncates text line to within limit by replacing last space in limit with newline character.
+   * static String cropLine(String msg, int width) Truncates text line {@code msg} to within
+   * {@code width} limit by replacing last space in limit with newline character.
    * 
-   * @Normal A line of text is cropped before the last word
-   * @Normal A line of text is cropped after the last word, at a white space
-   * @Normal A line of text is cropped after a tab (valid) character
-   * @Normal A line of text is cropped after a carriage return (\r) character
-   * @Normal String contains newline character at crop point.
-   * @Normal String contains backspace character
-   * @Normal A backspace character (\b) is not counted as whitespace
-   * @Normal An escaped double quote (\") is not counted as whitespace
-   * @Normal An escaped single quote (\') is not counted as whitespace
-   * @Normal An escaped escape char (\\) is not counted as whitespace
+   * @Normal A line of text is cropped before the last word <br>
+   * @Normal A line of text is cropped after the last word, at a white space <br>
+   * @Normal A line of text is cropped after a tab (valid) character <br>
+   * @Normal A line of text is cropped after a carriage return (\r) character <br>
+   * @Normal String contains newline character at crop point. <br>
+   * @Normal String contains backspace character <br>
+   * @Normal A backspace character (\b) is not counted as whitespace <br>
+   * @Normal An escaped double quote (\") is not counted as whitespace <br>
+   * @Normal An escaped single quote (\') is not counted as whitespace <br>
+   * @Normal An escaped escape char (\\) is not counted as whitespace <br>
    */
   @Test
-  public void cropLine()
+  public void testCropLine()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
@@ -151,17 +152,18 @@ public class TestUtilities
 
 
   /**
-   * Error cases for mylib.pdc.Utilities.cropLine()
+   * static String cropLine(String msg, int width) Truncates text line {@code msg} to within
+   * {@code width} limit by replacing last space in limit with newline character.
    * 
-   * @Special Input line is less than crop width permitted; return input string
-   * @Error Input line contains a newline within the width; return input string
-   * @Null Null input line
+   * @Special Input line is less than crop width permitted; return input string <br>
+   * @Error Input line contains a newline within the width; return input string <br>
+   * @Null Null input line <br>
    */
   @Test
-  public void cropLineErrors()
+  public void testCropLineErrors()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // Special Message is too short to need cropping
@@ -190,7 +192,109 @@ public class TestUtilities
     s1 = Utilities.cropLine(null, limit);
     assertNull(s1);
     MsgCtrl.errMsgln("\tExpected msg: Null input line--cannot crop.");
+  }
 
+
+  /**
+   * static String formatInches(String) Converts from inches, to feet and inches
+   * 
+   * @Normal string value must be integer less than, equal to, and greater than one foot <br>
+   * @Normal string value contains exactly zero inches <br>
+   * @Error string value contains decimal fraction <br>
+   * @Error string value contains negative number <br>
+   * @Error string value contains empty string <br>
+   * @Null string parm is null <br>
+   */
+  @Test
+  public void testFormatInches()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    String[] values = {"11", "12", "13", "27", "101", "0"};
+    String[] expValues = {"0' 11\"", "1' 0\"", "1' 1\"", "2' 3\"", "8' 5\"", "0' 0\""};
+
+    // Normal run a series of heights through the converter
+    for (int k = 0; k < values.length; k++) {
+      String result = Utilities.formatInches(values[k]);
+      MsgCtrl.msgln("\t" + values[k] + " inches = " + result);
+      assertTrue(result.equals(expValues[k]));
+    }
+
+    // Error string value contains decimal fraction
+    String fracValue = "12.5";
+    try {
+      Utilities.formatInches(fracValue);
+    } catch (NumberFormatException ex) {
+      MsgCtrl.errMsgln("\tExpected NumberFormatException for decimal fraction");
+    }
+
+    // Error string value contains negative number
+    fracValue = "-24";
+    MsgCtrl.errMsgln("\tExpected null return for negative height");
+    assertNull(Utilities.formatInches(fracValue));
+
+    // Error string value contains empty string
+    fracValue = " ";
+    MsgCtrl.errMsgln("\tExpected null return for empty string");
+    assertNull(Utilities.formatInches(fracValue));
+
+    // Null string parm is null
+    MsgCtrl.errMsgln("\tExpected null return for null parm");
+    assertNull(Utilities.formatInches(null));
+  }
+
+
+  /**
+   * static String formatOunces(String) Converts from ounces to pounds and ounces format
+   * 
+   * @Normal string value must be integer less than, equal to, and greater than one pound <br>
+   * @Normal string value contains exactly zero ounces <br>
+   * @Error string value contains decimal fraction <br>
+   * @Error string value contains negative number <br>
+   * @Error string value contains empty string <br>
+   * @Null string parm is null <br>
+   */
+  @Test
+  public void testFormatOunces()
+  {
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.where(this);
+
+    String[] values = {"15", "16", "17", "32", "101", "0"};
+    String[] expValues =
+        {"0 lb. 15 oz.", "1 lb. 0 oz.", "1 lb. 1 oz.", "2 lb. 0 oz.", "6 lb. 5 oz.", "0 lb. 0 oz."};
+
+    // Normal run a series of heights through the converter
+    for (int k = 0; k < values.length; k++) {
+      String result = Utilities.formatOunces(values[k]);
+      MsgCtrl.msgln("\t" + values[k] + " oz = " + result);
+      assertTrue(result.equals(expValues[k]));
+    }
+
+    // Error string value contains decimal fraction
+    String fracValue = "12.5";
+    try {
+      Utilities.formatOunces(fracValue);
+    } catch (NumberFormatException ex) {
+      MsgCtrl.errMsgln("\tExpected NumberFormatException for decimal fraction");
+    }
+
+    // Error string value contains negative number
+    fracValue = "-24";
+    MsgCtrl.errMsgln("\tExpected null return for negative height");
+    assertNull(Utilities.formatOunces(fracValue));
+
+    // Error string value contains empty string
+    fracValue = " ";
+    MsgCtrl.errMsgln("\tExpected null return for empty string");
+    assertNull(Utilities.formatOunces(fracValue));
+
+    // Null string parm is null
+    MsgCtrl.errMsgln("\tExpected null return for null parm");
+    assertNull(Utilities.formatOunces(null));
   }
 
 
@@ -261,6 +365,11 @@ public class TestUtilities
     assertEquals(longLine.length(), result.length()); // newlines replaced blank chars
 
   }
+
+  /*
+   * formatSeconds(String) isEmptyString(String) isTraitsEqual(int[], int[]) wordWrap(String, int)
+   * sort(ArrayList<String>)
+   */
 
 
 } // end of TestUtilities class

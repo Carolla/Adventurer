@@ -72,32 +72,7 @@ public class Utilities
 
 
   /**
-   * Formats a height in decimal feet to one representing feet and inches
-   * 
-   * @param strHeight to convert into feet and inches
-   * @return the converted input; else null if empty
-   */
-  static public String formatHeight(String strHeight)
-  {
-    // Guard: verify inut parm has data in it
-    if (isEmptyString(strHeight)) {
-      return null;
-    }
-
-    // Get integer and ensure that it is a positive number
-    int total = Integer.parseInt(strHeight);
-    if (total < 0) {
-      return null;
-    }
-    int feet = total / Constants.INCHES_PER_FOOT;
-    int inches = total % Constants.INCHES_PER_FOOT;
-    String fullWt = String.format("%s' %s\"", feet, inches);
-    return fullWt;
-  }
-
-
-  /**
-   * Formats inches to representing feet and inches
+   * Converts inches to feet and inches format
    * 
    * @param strInches to convert into feet and inches
    * @return the converted input
@@ -117,13 +92,13 @@ public class Utilities
     // Format line into something presentantable
     int feet = total / Constants.INCHES_PER_FOOT;
     int inches = total % Constants.INCHES_PER_FOOT;
-    String fullSize = String.format("%s' %s\" ", feet, inches);
-    return fullSize;
+    String result = String.format("%s' %s\"", feet, inches);
+    return result;
   }
 
 
   /**
-   * Formats decimal ounces to one representing pounds and ounces
+   * Converts ounces to pounds and ounces format
    * 
    * @param strOunces to convert into pounds and ounces
    * @return the converted input; else null if empty
