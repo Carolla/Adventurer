@@ -13,6 +13,7 @@ package mylib.test.pdc;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import mylib.MsgCtrl;
 import mylib.pdc.Utilities;
 
@@ -259,13 +260,13 @@ public class TestUtilities
   @Test
   public void testFormatOunces()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     String[] values = {"15", "16", "17", "32", "101", "0"};
     String[] expValues =
-        {"0 lb. 15 oz.", "1 lb. 0 oz.", "1 lb. 1 oz.", "2 lb. 0 oz.", "6 lb. 5 oz.", "0 lb. 0 oz."};
+    {"0 lb. 15 oz.", "1 lb. 0 oz.", "1 lb. 1 oz.", "2 lb. 0 oz.", "6 lb. 5 oz.", "0 lb. 0 oz."};
 
     // Normal run a series of heights through the converter
     for (int k = 0; k < values.length; k++) {
@@ -298,13 +299,179 @@ public class TestUtilities
   }
 
 
+  /**
+   * static String formatSecondss(String) Converts from seconds to years and fractional years
+   * 
+   * @Normal string value must be integer less than, equal to, and greater than one year <br>
+   * @Normal string value contains exactly zero seconds <br>
+   * @Error string value contains decimal fraction <br>
+   * @Error string value contains negative number <br>
+   * @Error string value contains empty string <br>
+   * @Null string parm is null <br>
+   */
+  @Test
+  public void testFormatSeconds()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    String[] values = {"3600", "86400", "2592000", "31104000", "62208000", "87654321", "0"};
+    String[] expValues =
+    {"0.000 yrs.", "0.003 yrs.", "0.083 yrs.", "1.000 yrs.", "2.000 yrs.", "2.818 yrs.",
+        "0.000 yrs."};
+    // String[] expValues =
+    // {"0.000115741 yrs.", "0.002777778 yrs.", "0.08333333 yrs.", "1.000 yrs.", "2.000 yrs.",
+    // "2.818194456 yrs.", "0 yrs."};
+
+    // Normal run a series of heights through the converter
+    for (int k = 0; k < values.length; k++) {
+      String result = Utilities.formatSeconds(values[k]);
+      MsgCtrl.msgln("\t" + values[k] + " secs = " + result);
+      assertTrue(result.equals(expValues[k]));
+    }
+
+    // Error string value contains decimal fraction
+    String fracValue = "12.5";
+    try {
+      Utilities.formatSeconds(fracValue);
+    } catch (NumberFormatException ex) {
+      MsgCtrl.errMsgln("\tExpected NumberFormatException for decimal fraction");
+    }
+
+    // Error string value contains negative number
+    fracValue = "-24";
+    MsgCtrl.errMsgln("\tExpected null return for negative height");
+    assertNull(Utilities.formatSeconds(fracValue));
+
+    // Error string value contains empty string
+    fracValue = " ";
+    MsgCtrl.errMsgln("\tExpected null return for empty string");
+    assertNull(Utilities.formatSeconds(fracValue));
+
+    // Null string parm is null
+    MsgCtrl.errMsgln("\tExpected null return for null parm");
+    assertNull(Utilities.formatSeconds(null));
+  }
 
   /**
-   * Crop a multi-line string to a fixed limit, and replace the last blank space within that limit
-   * with the newline sequence.
+   * static boolean isEmptyString(String target) Returns true if {@code target} is only white space
    * 
-   * @Normal single line already within the limit, with and without newlines.
-   * @Normal single line with no newline characters already in it
+   * @Normal checks for non-empty string <br>
+   * @Normal checks for empty string <br>
+   * @Normal checks for all-spaces target <br>
+   * @Normal checks for control characters: \n\b\r\t <br>
+   * @Null checks for null parameter
+   */
+  @Test
+  public void testIsEmptryString()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // Normal checks for non-empty string <br>
+    String s1 = "non-empty test string";
+    MsgCtrl.msgln("\tfalse:\t " + s1);
+    assertFalse(Utilities.isEmptyString(s1));
+
+    // Normal checks for empty string
+    s1 = "";
+    MsgCtrl.msgln("\ttrue:\t (empty string)");
+    assertTrue(Utilities.isEmptyString(s1));
+
+    // Normal checks for empty string
+    s1 = "     ";
+    MsgCtrl.msgln("\ttrue:\t (five space characters)");
+    assertTrue(Utilities.isEmptyString(s1));
+
+    // Normal checks for control characters: \n\b\r\t
+    s1 = "\n\b\r\t";
+    MsgCtrl.msgln("\ttrue:\t (\n\b\r\t characters)");
+    assertTrue(Utilities.isEmptyString(s1));
+
+    // Error checks for null parameter
+    MsgCtrl.msgln("\ttrue:\t (null parm)");
+    assertTrue(Utilities.isEmptyString(null));
+
+  }
+
+
+  /**
+   * static boolean isTraitsEqual(int[] expValue, int[] testValue) Checks if two int equal-length
+   * arrays are equal, element by element. Arrays must be of equal length.
+   * 
+   * @Normal arrays contain exactly the same elements <br>
+   * @Normal arrays contain one value different <br>
+   * @Normal arrays contain all values different <br>
+   * @Error arrays are of different length <br>
+   * @Error arrays are not totally filled but have 0 values in one or more slots <br>
+   * @Special arrays have 0's in all slots; legal but useless for comparing prime traits
+   * @Null one or both parms are null
+   */
+  @Test
+  public void testIsTraitsEqual()
+  {
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.where(this);
+
+    // Setup
+    int[] ctrlValues = {12, 12, 12, 13, 13, 18};
+
+    // Normal arrays contain exactly the same elements
+    int[] expValue1 = {12, 12, 12, 13, 13, 18};
+    MsgCtrl.msgln("\ttrue: identical arrays");
+    assertTrue(Utilities.isTraitsEqual(expValue1, ctrlValues));
+
+    // Normal arrays contain one value different
+    int[] expValue2 = {12, 12, 12, 13, 11, 18};
+    MsgCtrl.msgln("\tfalse: only 5th element is different");
+    assertFalse(Utilities.isTraitsEqual(expValue2, ctrlValues));
+
+    // Normal arrays contain one value different
+    int[] expValue3 = {15, 15, 15, 15, 15, 15};
+    MsgCtrl.msgln("\tfalse: all elements have different values");
+    assertFalse(Utilities.isTraitsEqual(expValue3, ctrlValues));
+
+    // Error arrays are of different length
+    int[] expValue4 = {12, 12, 12, 13, 13};
+    MsgCtrl.msgln("\tfalse: first array parm is shorter than second array parm");
+    assertFalse(Utilities.isTraitsEqual(expValue4, ctrlValues));
+
+    MsgCtrl.msgln("\tfalse: second array parm is shorter than first array parm");
+    assertFalse(Utilities.isTraitsEqual(ctrlValues, expValue4));
+
+    // Error arrays have 0 in some slots
+    int[] expValue5 = {12, 0, 12, 12, 13, 13, 18};
+    MsgCtrl.msgln("\tfalse: second element contains a 0 value");
+    assertFalse(Utilities.isTraitsEqual(expValue5, ctrlValues));
+
+    // Special arrays have 0's in all slots; legal but useless for comparing prime traits
+    int[] expValue6 = {0, 0, 0, 0, 0};
+    MsgCtrl.msgln("\tfalse: both arrays are only 5-elements long, and contains all zeroes");
+    assertTrue(Utilities.isTraitsEqual(expValue6, expValue6));
+
+    // Null one or both parms are null
+    MsgCtrl.msgln("\tfalse: first parm is null; second parm is not");
+    assertFalse(Utilities.isTraitsEqual(null, ctrlValues));
+    MsgCtrl.msgln("\tfalse: first parm is not null; second parm is null");
+    assertFalse(Utilities.isTraitsEqual(ctrlValues, null));
+    MsgCtrl.msgln("\tfalse: both parms are null");
+    assertFalse(Utilities.isTraitsEqual(null, null));
+
+
+
+  }
+
+
+  /**
+   * static String wordWrap(String msg, int width) Crop a multi-line {@code msg} string to a fixed
+   * {@code width} limit, and replace the last blank space within that limit with the newline
+   * sequence.
+   * 
+   * @Normal single line already within the limit, with and without newlines. <br>
+   * @Normal single line with no newline characters already in it. <br>
    */
   @Test
   public void testWordWrap()
@@ -366,8 +533,8 @@ public class TestUtilities
 
   }
 
+  // TODO unimplemented tests
   /*
-   * formatSeconds(String) isEmptyString(String) isTraitsEqual(int[], int[]) wordWrap(String, int)
    * sort(ArrayList<String>)
    */
 

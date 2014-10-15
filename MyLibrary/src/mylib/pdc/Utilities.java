@@ -40,12 +40,12 @@ public class Utilities
     if (msg == null) {
       return null;
     }
-    
+
     // Ensure that msg needs to be cropped
     if (msg.length() <= width) {
       return msg;
     }
-    // Ensure that msg contain no newlines already 
+    // Ensure that msg contain no newlines already
     if ((msg.contains(Constants.NEWLINE)) && (msg.indexOf(Constants.NEWLINE) < width)) {
       return msg;
     }
@@ -136,12 +136,13 @@ public class Utilities
     }
 
     // Format line into something presentantable
-    float total = Float.parseFloat(strSecs) / Constants.SECS_PER_YEAR;
+    // float total = Float.parseFloat(strSecs) / Constants.SECS_PER_YEAR;
+    double total = Double.parseDouble(strSecs) / Constants.SECS_PER_YEAR;
     // Only positive numbers are returned
     if (total < 0) {
       return null;
     }
-    String age = String.format("%2.1f yrs.", total);
+    String age = String.format("%2.3f yrs.", total);
     return age;
   }
 
@@ -181,9 +182,10 @@ public class Utilities
   static public boolean isTraitsEqual(int[] expValue, int[] testValue)
   {
     // Guard against non-existent trait array
-    if (expValue == null) {
+    if ((expValue == null) || (testValue == null)) {
       return false;
     }
+
     // Guard against overrunning the array
     if (expValue.length != testValue.length) {
       return false;
@@ -200,6 +202,30 @@ public class Utilities
       }
     }
     return retval;
+  }
+
+
+  /**
+   * Sort an {@code ArrayList<String>} alphabetically, which then can be accessed by the {@code get}
+   * method sequentially. The sort algorithm uses a {@code TreeSet} because it automatically uses an
+   * insert-sort algorithm with no duplicates.
+   * 
+   * @param target unsorted list
+   * @return the arraylist sorted, accessible sequentially by the get() method.
+   */
+  static public ArrayList<String> sort(ArrayList<String> target)
+  {
+    // Use the TreeSet collection and allow the insert-sort to work
+    Collection<String> tree = new TreeSet<String>(Collator.getInstance());
+    tree.addAll(target);
+  
+    // Now convert the TreeSet back to an ArrayList t
+    ArrayList<String> result = new ArrayList<String>(target.size());
+    for (String s : tree) {
+      result.add(s);
+    }
+  
+    return result;
   }
 
 
@@ -228,30 +254,6 @@ public class Utilities
     // Conver the buffer back to a string
     String finalString = new String(finalPara);
     return finalString;
-  }
-
-
-  /**
-   * Sort an ArrayList<String> alphabetically, which then can be accessed by the get() method
-   * sequentially. The sort algorithm uses a TreeSet because it automatically uses an insert-sort
-   * algorithm with no duplicates.
-   * 
-   * @param target unsorted list
-   * @return the arraylist sorted, accessible sequentially by the get() method.
-   */
-  static public ArrayList<String> sort(ArrayList<String> target)
-  {
-    // Use the TreeSet collection and allow the insert-sort to work
-    Collection<String> tree = new TreeSet<String>(Collator.getInstance());
-    tree.addAll(target);
-
-    // Now convert the TreeSet back to an ArrayList t
-    ArrayList<String> result = new ArrayList<String>(target.size());
-    for (String s : tree) {
-      result.add(s);
-    }
-
-    return result;
   }
 
 
