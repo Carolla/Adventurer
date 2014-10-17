@@ -11,9 +11,12 @@
 package mylib.test.pdc;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
+
+import java.util.ArrayList;
+
 import mylib.MsgCtrl;
 import mylib.pdc.Utilities;
 
@@ -412,8 +415,8 @@ public class TestUtilities
   @Test
   public void testIsTraitsEqual()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // Setup
@@ -460,11 +463,86 @@ public class TestUtilities
     MsgCtrl.msgln("\tfalse: both parms are null");
     assertFalse(Utilities.isTraitsEqual(null, null));
 
-
-
   }
 
 
+  /**
+   * static {@code ArrayList<String> sort(ArrayList<String> target)} Sort on {@code target}
+   * alphabetically, The sort algorithm uses a {@code TreeSet} because it automatically uses an
+   * insert-sort algorithm with no duplicates.
+   * 
+   * @Normal Sort an unsorted list of unique elements <br>
+   * @Normal Sort an already sorted list <br>
+   * @Normal Sort an unsorted list with duplicate and triplicate elements <br>
+   * @Normal Sort an unsorted list with empty elements<br>
+   * @Error Input parm has no length <br>
+   * @Null  input parm is null
+   */
+  @Test
+  public void testUniqueSort()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // SETUP: Upper case, lower case, punctuation
+    String[] raw = {"The", "quick", "brown", "fox", "jumps", "over", "the", "lazy", "dog", "."};
+    String[] exp = { ".", "brown", "dog", "fox", "jumps", "lazy", "over", "quick", "the", "The"};
+    ArrayList<String> ctrlList = convertToArrayList(raw);
+    MsgCtrl.msg("\t");
+    for (int k = 0; k < ctrlList.size(); k++) {
+      MsgCtrl.msg(" " + ctrlList.get(k));
+    }
+
+    // Normal Sort an unsorted list of unique elements <br>
+    ArrayList<String> sorted = Utilities.uniqueSort(ctrlList);
+    MsgCtrl.msg("\n1. \t");
+    for (int k = 0; k < sorted.size(); k++) {
+      MsgCtrl.msg(" " + sorted.get(k));
+      assertTrue(sorted.get(k).equals(exp[k]));
+    }
+
+    // Normal Sort an already sorted list <br>
+    sorted = Utilities.uniqueSort(sorted);
+    MsgCtrl.msg("\n2. \t");
+    for (int k = 0; k < sorted.size(); k++) {
+      MsgCtrl.msg(" " + sorted.get(k));
+      assertTrue(sorted.get(k).equals(exp[k]));
+    }
+
+    // Normal Sort an unsorted list with duplicate and triplicate elements <br>
+    String[] raw2 = {"The", "quick", "fox", "fox", ".", "the", "over", "the", "lazy", "dog", "."};
+    String[] expRaw2 = {".", "dog", "fox", "lazy", "over", "quick", "the", "The"};
+    ctrlList = convertToArrayList(raw2);
+    sorted = Utilities.uniqueSort(ctrlList);
+    MsgCtrl.msg("\n3. \t");
+    for (int k = 0; k < sorted.size(); k++) {
+      MsgCtrl.msg(" " + sorted.get(k));
+      assertTrue(sorted.get(k).equals(expRaw2[k]));
+    }
+
+    // Normal Sort an unsorted list with empty elements<br>
+    String[] raw3 = {"The", "quick", "   ", "fox", "jumps", "over", "the", "\t", "dog", "."};
+    String[] expRaw3 = { "   ", "\t", ".", "dog", "fox", "jumps", "over", "quick", "the", "The"};
+    ctrlList = convertToArrayList(raw3);
+    sorted = Utilities.uniqueSort(ctrlList);
+    MsgCtrl.msg("\n4. \t");
+    for (int k = 0; k < sorted.size(); k++) {
+      MsgCtrl.msg(" " + sorted.get(k));
+      assertTrue(sorted.get(k).equals(expRaw3[k]));
+    }
+
+    //  Error Input parm has no length <br>
+    ArrayList<String> noData = new ArrayList<String>();
+    sorted = Utilities.uniqueSort(noData);
+    assertTrue(sorted.size() == 0);
+    
+    // Null  enter null input parm
+    sorted = Utilities.uniqueSort(null);
+    assertNull(sorted);
+  }
+
+  
   /**
    * static String wordWrap(String msg, int width) Crop a multi-line {@code msg} string to a fixed
    * {@code width} limit, and replace the last blank space within that limit with the newline
@@ -476,9 +554,9 @@ public class TestUtilities
   @Test
   public void testWordWrap()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\t testWordWrap():");
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.where(this);
 
     // Set the line length to 30 for convenience
     int WIDTH = 40;
@@ -533,10 +611,20 @@ public class TestUtilities
 
   }
 
-  // TODO unimplemented tests
-  /*
-   * sort(ArrayList<String>)
-   */
+  // ================================================================================
+  // Private Helper Methods
+  // ================================================================================
+
+  /** Convert string[] to ArrayList<String> */
+  private ArrayList<String> convertToArrayList(String[] source)
+  {
+    ArrayList<String> dest = new ArrayList<String>();
+    for (int k = 0; k < source.length; k++) {
+      dest.add(source[k]);
+    }
+    return dest;
+  }
+
 
 
 } // end of TestUtilities class

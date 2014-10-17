@@ -23,6 +23,8 @@ import mylib.Constants;
  * @version Dec 28, 2010 // original <br>
  *          Jan 29, 2013 // moved from Chronos to MyLibary <br>
  *          Oct 5, 2014 // cleaned up cropLine and added tests into {@code TestUtilities} <br>
+ *          Oct 16, 2014 // renamed {@code sort} to {@code uniqueSort} to emphasize dups are removed
+ *          during sort <br>
  */
 public class Utilities
 {
@@ -208,23 +210,28 @@ public class Utilities
   /**
    * Sort an {@code ArrayList<String>} alphabetically, which then can be accessed by the {@code get}
    * method sequentially. The sort algorithm uses a {@code TreeSet} because it automatically uses an
-   * insert-sort algorithm with no duplicates.
+   * insert-sort algorithm with no duplicates. Whitespace and control chars, e.g., '\t' are sorted
+   * before punctuation, before lower case, before upper case.
    * 
    * @param target unsorted list
    * @return the arraylist sorted, accessible sequentially by the get() method.
    */
-  static public ArrayList<String> sort(ArrayList<String> target)
+  static public ArrayList<String> uniqueSort(ArrayList<String> target)
   {
+    // Guard against null input
+    if (target == null) {
+      return null;
+    }
     // Use the TreeSet collection and allow the insert-sort to work
     Collection<String> tree = new TreeSet<String>(Collator.getInstance());
     tree.addAll(target);
-  
+
     // Now convert the TreeSet back to an ArrayList t
     ArrayList<String> result = new ArrayList<String>(target.size());
     for (String s : tree) {
       result.add(s);
     }
-  
+
     return result;
   }
 
