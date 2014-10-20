@@ -181,7 +181,7 @@ public class Utilities
    * @param testValue array of 6 traits to compare
    * @return true if all match; else false
    */
-  static public boolean isTraitsEqual(int[] expValue, int[] testValue)
+  static public boolean isEqual(int[] expValue, int[] testValue)
   {
     // Guard against non-existent trait array
     if ((expValue == null) || (testValue == null)) {

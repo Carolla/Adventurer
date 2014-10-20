@@ -413,7 +413,7 @@ public class TestUtilities
    * @Null one or both parms are null
    */
   @Test
-  public void testIsTraitsEqual()
+  public void testIsEqual()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
@@ -425,43 +425,43 @@ public class TestUtilities
     // Normal arrays contain exactly the same elements
     int[] expValue1 = {12, 12, 12, 13, 13, 18};
     MsgCtrl.msgln("\ttrue: identical arrays");
-    assertTrue(Utilities.isTraitsEqual(expValue1, ctrlValues));
+    assertTrue(Utilities.isEqual(expValue1, ctrlValues));
 
     // Normal arrays contain one value different
     int[] expValue2 = {12, 12, 12, 13, 11, 18};
     MsgCtrl.msgln("\tfalse: only 5th element is different");
-    assertFalse(Utilities.isTraitsEqual(expValue2, ctrlValues));
+    assertFalse(Utilities.isEqual(expValue2, ctrlValues));
 
     // Normal arrays contain one value different
     int[] expValue3 = {15, 15, 15, 15, 15, 15};
     MsgCtrl.msgln("\tfalse: all elements have different values");
-    assertFalse(Utilities.isTraitsEqual(expValue3, ctrlValues));
+    assertFalse(Utilities.isEqual(expValue3, ctrlValues));
 
     // Error arrays are of different length
     int[] expValue4 = {12, 12, 12, 13, 13};
     MsgCtrl.msgln("\tfalse: first array parm is shorter than second array parm");
-    assertFalse(Utilities.isTraitsEqual(expValue4, ctrlValues));
+    assertFalse(Utilities.isEqual(expValue4, ctrlValues));
 
     MsgCtrl.msgln("\tfalse: second array parm is shorter than first array parm");
-    assertFalse(Utilities.isTraitsEqual(ctrlValues, expValue4));
+    assertFalse(Utilities.isEqual(ctrlValues, expValue4));
 
     // Error arrays have 0 in some slots
     int[] expValue5 = {12, 0, 12, 12, 13, 13, 18};
     MsgCtrl.msgln("\tfalse: second element contains a 0 value");
-    assertFalse(Utilities.isTraitsEqual(expValue5, ctrlValues));
+    assertFalse(Utilities.isEqual(expValue5, ctrlValues));
 
     // Special arrays have 0's in all slots; legal but useless for comparing prime traits
     int[] expValue6 = {0, 0, 0, 0, 0};
     MsgCtrl.msgln("\tfalse: both arrays are only 5-elements long, and contains all zeroes");
-    assertTrue(Utilities.isTraitsEqual(expValue6, expValue6));
+    assertTrue(Utilities.isEqual(expValue6, expValue6));
 
     // Null one or both parms are null
     MsgCtrl.msgln("\tfalse: first parm is null; second parm is not");
-    assertFalse(Utilities.isTraitsEqual(null, ctrlValues));
+    assertFalse(Utilities.isEqual(null, ctrlValues));
     MsgCtrl.msgln("\tfalse: first parm is not null; second parm is null");
-    assertFalse(Utilities.isTraitsEqual(ctrlValues, null));
+    assertFalse(Utilities.isEqual(ctrlValues, null));
     MsgCtrl.msgln("\tfalse: both parms are null");
-    assertFalse(Utilities.isTraitsEqual(null, null));
+    assertFalse(Utilities.isEqual(null, null));
 
   }
 
@@ -554,8 +554,8 @@ public class TestUtilities
   @Test
   public void testWordWrap()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // Set the line length to 30 for convenience

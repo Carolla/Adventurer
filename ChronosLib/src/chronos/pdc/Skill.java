@@ -10,7 +10,6 @@
 package chronos.pdc;
 
 import mylib.ApplicationException;
-import mylib.civ.DataShuttle;
 import mylib.dmc.IRegistryElement;
 import chronos.civ.SkillKeys;
 
@@ -150,24 +149,25 @@ public class Skill implements IRegistryElement
     return _name;
   }
 
+  // TODO Replace DataShuttle construct with something else
   /**
    * Convert a skill object into a data shuttle to be passed back to the HIC
    * 
    * @param skill The skill to be converted to a shuttle
    * @return shuttle packed with data
    */
-  public DataShuttle<SkillKeys> loadShuttle(DataShuttle<SkillKeys> ds)
-  {
-    if (ds != null) {
-      // Load up the shuttle
-      ds.putField(SkillKeys.NAME, _name);
-      ds.putField(SkillKeys.ACTION, _action);
-      ds.putField(SkillKeys.DESC, _description);
-      // ds.putField(SkillKeys.RACE, _race);
-      // ds.putField(SkillKeys.KLASS, _klass);
-    }
-    return ds;
-  }
+//  public DataShuttle<SkillKeys> loadShuttle(DataShuttle<SkillKeys> ds)
+//  {
+//    if (ds != null) {
+//      // Load up the shuttle
+//      ds.putField(SkillKeys.NAME, _name);
+//      ds.putField(SkillKeys.ACTION, _action);
+//      ds.putField(SkillKeys.DESC, _description);
+//      // ds.putField(SkillKeys.RACE, _race);
+//      // ds.putField(SkillKeys.KLASS, _klass);
+//    }
+//    return ds;
+//  }
 
   /**
    * Convert Skill to string

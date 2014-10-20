@@ -14,7 +14,6 @@ import mylib.test.MyLibraryTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import test.pdc.registry.TestAdventureRegistry;
 import test.pdc.registry.TestRegistryFactory;
 
 /**
@@ -60,7 +59,7 @@ import test.pdc.registry.TestRegistryFactory;
     // TestWizardsGuild.class,
 
     /* Chronos PDC.Registry test files */
-    TestAdventureRegistry.class,
+    // TestAdventureRegistry.class,
     // TestBuildingRegistry.class,
     // TestHelpTextObject.class,
     // TestItemRegistry.class,

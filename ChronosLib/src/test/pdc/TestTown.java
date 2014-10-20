@@ -8,6 +8,13 @@
  */
 
 
+  /*
+   * Town(String, String, String) addBuildings(String[]) buildingRegContainsName(String)
+   * equals(IRegistryElement) getAllBuildings() getBuilding(String) getCostOfLiving()
+   * getDayDescription() getKey() getName() getNightDescription() setCostOfLiving(double) toString()
+   */
+
+
 package test.pdc;
 
 import static org.junit.Assert.assertEquals;
@@ -35,10 +42,8 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
  * Verify that the Town Class works as expected
  * 
  * @author Alan Cline
- * @version <DL>
- *          <DT>Build 1.0 Feb 6, 2013 // original
- *          <DD>
- *          </DL>
+ * @version Feb 6, 2013 // original <br>
+ *          Oct 17, 2014 // added more tests <br>
  */
 public class TestTown
 {
@@ -132,6 +137,12 @@ public class TestTown
   // BEGIN TESTS
   // ===========================================================================
 
+  /*
+   * Town(String, String, String) addBuildings(String[]) buildingRegContainsName(String)
+   * equals(IRegistryElement) getAllBuildings() getBuilding(String) getCostOfLiving()
+   * getDayDescription() getKey() getName() getNightDescription() setCostOfLiving(double) toString()
+   */
+
   /**
    * Test constructor was built correctly in setUp()
    * 
@@ -174,11 +185,9 @@ public class TestTown
   public void NotNeeded()
   {}
 
-
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PRIVATE METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
+  // ===========================================================================
+  // Private Helper Methods
+  // ===========================================================================
 
   /**
    * Display the contents of the town
@@ -200,6 +209,5 @@ public class TestTown
     }
 
   }
-
 
 } // end of TestTown class
