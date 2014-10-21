@@ -10,7 +10,6 @@
 package chronos.pdc;
 
 import mylib.ApplicationException;
-import mylib.civ.DataShuttle;
 import mylib.dmc.IRegistryElement;
 import chronos.civ.SkillKeys;
 
@@ -101,13 +100,13 @@ public class Skill implements IRegistryElement
    */
 
   /**
-   * Two Skills are considered equal if their names are equal. This is a required implementation for
-   * the IRegistryElement interface.
+   * Two Skills are considered equal if their names and description are equal. 
    * 
    * @param otherThing the Skill to be considered
    * @return true if the Skill has the same name as this object
    */
-  public boolean equals(Object otherThing)
+  @Override
+  public boolean equals(IRegistryElement otherThing)
   {
     // Guard against null input
     if (otherThing == null) {
@@ -115,7 +114,8 @@ public class Skill implements IRegistryElement
     }
     Skill target = (Skill) otherThing;
     boolean bName = _name.equals(target._name);
-    return bName;
+    boolean bDesc = _description.equals(target._name);
+    return (bName || bDesc);
   }
 
   /**
@@ -149,24 +149,25 @@ public class Skill implements IRegistryElement
     return _name;
   }
 
+  // TODO Replace DataShuttle construct with something else
   /**
    * Convert a skill object into a data shuttle to be passed back to the HIC
    * 
    * @param skill The skill to be converted to a shuttle
    * @return shuttle packed with data
    */
-  public DataShuttle<SkillKeys> loadShuttle(DataShuttle<SkillKeys> ds)
-  {
-    if (ds != null) {
-      // Load up the shuttle
-      ds.putField(SkillKeys.NAME, _name);
-      ds.putField(SkillKeys.ACTION, _action);
-      ds.putField(SkillKeys.DESC, _description);
-      // ds.putField(SkillKeys.RACE, _race);
-      // ds.putField(SkillKeys.KLASS, _klass);
-    }
-    return ds;
-  }
+//  public DataShuttle<SkillKeys> loadShuttle(DataShuttle<SkillKeys> ds)
+//  {
+//    if (ds != null) {
+//      // Load up the shuttle
+//      ds.putField(SkillKeys.NAME, _name);
+//      ds.putField(SkillKeys.ACTION, _action);
+//      ds.putField(SkillKeys.DESC, _description);
+//      // ds.putField(SkillKeys.RACE, _race);
+//      // ds.putField(SkillKeys.KLASS, _klass);
+//    }
+//    return ds;
+//  }
 
   /**
    * Convert Skill to string
@@ -181,8 +182,7 @@ public class Skill implements IRegistryElement
   }
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ Inner Class: MockSkill
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * Inner Class: MockSkill
    */
 
   public class MockSkill

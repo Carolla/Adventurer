@@ -11,6 +11,7 @@ package test.pdc.registry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -37,6 +38,7 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
  * @author alancline
  * @version Jul 19, 2014 // original <br>
  *          Jul 24, 2014 // refactored to allow for registries not residing in the common location <br>
+ *          Sep 20, 2014 // test removeAllRegistries <br>
  */
 public class TestRegistryFactory
 {
@@ -58,28 +60,35 @@ public class TestRegistryFactory
   public void setUp() throws Exception
   {
     _rf = RegistryFactory.getInstance();
+    assertNotNull(_rf);
   }
 
   @After
   public void tearDown() throws Exception
   {
+    _rf.closeAllRegistries();
+    assertEquals(_rf.getNumberOfRegistries(), 0);
+    _rf = null;
     // Turn off messaging at end of each test
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    _rf = null;
   }
 
 
   // ============================================================
-  // Tests
+  // Begin Tests
   // ============================================================
 
   /**
-   * @NotNeeded RegistryFactory.getInstance() -- wrapper method <br>
+   * @NotNeeded {@code RegistryFactory()} -- wrapper method <br>
+   * @NotNeeded {@code getInstance()} -- wrapper method <br>
    */
   public void _testsNotNeeded()
   {}
 
+  /*
+   * closeAllRegistries() deleteAllRegistries() getExisting(RegKey)
+   */
 
   /**
    * Close a registry and remove it from the factory collection. Do not delete the file.
@@ -100,15 +109,13 @@ public class TestRegistryFactory
     assertTrue(regfile.exists());
 
     // DO
+    MsgCtrl.msgln("Number of registries before closing = " + regnum);
     _rf.closeRegistry(RegKey.ITEM);
+    MsgCtrl.msgln("Number of registries after closing = " + regnum);
 
     // VERIFY
     assertEquals(_rf.getNumberOfRegistries(), regnum - 1);
     assertTrue(regfile.exists()); // file did not get deleted
-
-    // TEARDOWN
-    // Nothing to do
-
   }
 
 
@@ -136,9 +143,6 @@ public class TestRegistryFactory
     // VERIFY: size does not decrease; no runtime error; nothing else happens
     assertEquals(_rf.getNumberOfRegistries(), regnum - 1);
 
-    // TEARDOWN
-    // Nothing to do
-
   }
 
   /**
@@ -146,6 +150,7 @@ public class TestRegistryFactory
    * 
    * @Normal create a valid registry
    * @Error passing a non-valid enum RegKey type will cause a compile error
+   * @Null passing a null enum RegKey type will NOT cause a compile error
    */
   @Test
   public void testCreateRegistry()
@@ -167,8 +172,8 @@ public class TestRegistryFactory
     assertEquals(_rf.getNumberOfRegistries(), regnum + 1);
     assertTrue(regfile.exists());
 
-    // TEARDOWN
-    _rf.closeRegistry(RegKey.ITEM);
+    // Error pass in a null regkey
+    assertNull(_rf.createRegistry(null));
 
   }
 
@@ -184,7 +189,7 @@ public class TestRegistryFactory
     MsgCtrl.where(this);
 
     // SETUP: Clear all registry entries
-    removeAllRegistries(false);
+    _rf.closeAllRegistries();
 
     // DO: create two registries
     _rf.getRegistry(RegKey.ITEM);
@@ -209,8 +214,8 @@ public class TestRegistryFactory
     // VERIFY: Ensure that only one registry exists
     assertEquals(_rf.getNumberOfRegistries(), 0);
 
-    // TEARDOWN: Clear all registry entries
-    removeAllRegistries(false);
+    // TEARDOWN
+    // Nothing to do
   }
 
 
@@ -227,7 +232,7 @@ public class TestRegistryFactory
     MsgCtrl.where(this);
 
     // SETUP: ensure that registries to be created does not yet exist
-    removeAllRegistries(false);
+    _rf.closeAllRegistries();
     assertEquals(_rf.getNumberOfRegistries(), 0);
     File regfile1 = new File(Chronos.AdventureRegPath);
     regfile1.delete();
@@ -240,9 +245,7 @@ public class TestRegistryFactory
     assertTrue(regfile1.exists());
     assertEquals(_rf.getNumberOfRegistries(), 1);
 
-    // TEARDOWN: close all registries opened
-    _rf.closeRegistry(RegKey.ADV);
-    assertEquals(_rf.getNumberOfRegistries(), 0);
+    // TEARDOWN
   }
 
 
@@ -254,8 +257,8 @@ public class TestRegistryFactory
   @Test
   public void testGetRegistry_Exists()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
     // SETUP: ensure that registry to be created already exists
@@ -273,9 +276,8 @@ public class TestRegistryFactory
     assertEquals(_rf.getNumberOfRegistries(), 1);
     assertEquals(testreg, testreg2);
 
-    // TEARDOWN: close all registries opened
-    testreg.closeRegistry();
-    testreg2.closeRegistry();
+    // TEARDOWN
+    // Nothing to do
   }
 
 
@@ -295,11 +297,8 @@ public class TestRegistryFactory
     assertEquals(_rf.getNumberOfRegistries(), 0);
 
     // DO: Null request
-    MsgCtrl.errorMsgsOn(true);
-    MsgCtrl.errMsg("UNSUPPRESSIBLE EXPECTED ERROR MSG:\t");
     Registry testreg = _rf.getRegistry(null);
-    MsgCtrl.errorMsgsOn(false);
-
+    
     // VERIFY
     assertNull(testreg);
     assertEquals(_rf.getNumberOfRegistries(), 0);
@@ -313,16 +312,6 @@ public class TestRegistryFactory
   // Helper Methods
   // ============================================================
 
-  private void removeAllRegistries(boolean verbose)
-  {
-    for (RegKey key : RegKey.values()) {
-      _rf.closeRegistry(key);
-      if (verbose) {
-        MsgCtrl.auditMsgsOn(false);
-        MsgCtrl.msgln("\tClosing " + key.name());
-      }
-    }
-  }
 
 
 } // end of TestRegistryFactory

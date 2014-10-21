@@ -25,6 +25,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 import com.db4o.query.Predicate;
 
@@ -35,12 +36,13 @@ import com.db4o.query.Predicate;
  * 
  * @author Timothy Armstrong
  * @author Al Cline
- * @version Jan 23 2011 // original <br>
- *          May 16 2011 // TAA fixed errors <br>
- *          May 23 2011 // TAA ensured all methods included <br>
- *          Dec 24 2011 // ABC revamped for new Registry base clase <br>
+ * @version Jan 23, 2011 // original <br>
+ *          May 16, 2011 // TAA fixed errors <br>
+ *          May 23, 2011 // TAA ensured all methods included <br>
+ *          Dec 24, 2011 // ABC revamped for new Registry base clase <br>
  *          Feb 25, 2013 // ABC revamped for native queries in Registry base clase <br>
- *          Sep 13, 2014 // tested fro closeFlag removal <br>
+ *          Sep 13, 2014 // tested for closeFlag removal <br>
+ *          Sep 27, 2014 // pruned again, looking for missed bug <br>
  */
 public class TestRegistry extends TestCase
 {
@@ -55,6 +57,7 @@ public class TestRegistry extends TestCase
 
   /** A predicate for retrieving objects by name */
   Predicate<IRegistryElement> _pred = null;
+
 
   // ============================================================
   // Fixtures
@@ -89,8 +92,7 @@ public class TestRegistry extends TestCase
   @After
   public void tearDown() throws Exception
   {
-    _testReg.deleteRegistry();
-    _testReg = null;
+    _testReg.closeRegistry();
     _mock = null;
     // Al messages are OFF after each test
     MsgCtrl.auditMsgsOn(false);
@@ -102,22 +104,14 @@ public class TestRegistry extends TestCase
   // BEGIN TESTS
   // ============================================================
 
-
   /**
-   * @NotImplemented eraseDbFiles(String)
-   * @NotImplemented getElementNames()
-   * @NotImplemented getString(String)
-   * @NotImplemented getUnique(String)
-   * @NotImplemented isUnique(String)
-   * @NotImplemented queryByPredicate(Predicate<IRegistryElement>)
-   */
-
-
-  /**
+   * mylib.test.pdc.add(IRegistryElement)
+   * 
    * @Normal Add one or more objects and retrieve them again <br>
    * @Normal Add two identical objects and verify if both are added, or one overwrites the first <br>
    * @Error Verify that null cannot be saved in the db <br>
    */
+  @Test
   public void testAdd()
   {
     MsgCtrl.auditMsgsOn(false);
@@ -155,11 +149,14 @@ public class TestRegistry extends TestCase
 
 
   /**
+   * mylib.test.pdc.contains(IRegistryElement)
+   * 
    * @Normal Add one or more objects and verify they are in the registry <br>
    * @Normal Verify that a deleted object is no longer contained in the registry <br>
    * @Normal Verify that an updated object is still contained in the registry <br>
    * @Error Verify that null cannot be checked to be in the registry <br>
    */
+  @Test
   public void testContains()
   {
     MsgCtrl.auditMsgsOn(false);
@@ -205,10 +202,13 @@ public class TestRegistry extends TestCase
 
 
   /**
+   * mylib.test.pdc.delete(IRegistryElement)
+   * 
    * @Normal Delete objects and verify their removal <br>
    * @Error Delete a null object <br>
    * @Error Delete the same object twice <br>
    */
+  @Test
   public void testDelete()
   {
     MsgCtrl.auditMsgsOn(false);
@@ -252,9 +252,158 @@ public class TestRegistry extends TestCase
 
 
   /**
+   * mylib.test.pdc.get(Predicate<IRegistryElement>)
+   * 
+   * @Normal Get an element by its key <br>
+   * @Normal Change key and try to get it again <br>
+   * @Normal Get a list of elements that have the same key <br>
+   */
+  @Test
+  public void testGet_ByPredicate()
+  {
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.where(this);
+
+    // Prepare: Add a few objects to the db
+    SomeObject so1 = new SomeObject(1.0, "one");
+    SomeObject so2 = new SomeObject(2.0, "two");
+    SomeObject so3 = new SomeObject(3.0, "three");
+    _testReg.add(so3);
+    _testReg.add(so1);
+    _testReg.add(so2);
+    MsgCtrl.msgln("Contents: " + _testReg.getElementNames());
+    assertEquals(3, _testReg.getNbrElements());
+
+    // Normal Get an element by its key...
+    Predicate<IRegistryElement> pred = keyPredicate(so2);
+    List<IRegistryElement> elist = _testReg.get(pred);
+    assertEquals(so2, elist.get(0));
+    // ... and is same as getUnique()
+    assertEquals(so2, _testReg.getUnique(so2.getKey()));
+
+    // Normal Change key and try to get it again
+    so3.setKey("threeCopy");
+    _testReg.update(so3);
+    elist = _testReg.get(keyPredicate(so3));
+    assertEquals(so3, elist.get(0));
+    // ... and is same as getUnique()
+    assertEquals(so3, _testReg.getUnique(so3.getKey()));
+    // Ensure that original is not in registry
+    assertEquals(0, _testReg.get("three").size());
+    assertEquals(1, _testReg.get("threeCopy").size());
+
+    // Normal Get a list of elements that have the same key
+    // Add some same non-key values for different keys to get a list
+    SomeObject so11 = new SomeObject(1.0, "eleventy");
+    SomeObject so12 = new SomeObject(2.0, "eleventy");
+    SomeObject so13 = new SomeObject(3.0, "eleventy");
+    _testReg.add(so11);
+    _testReg.add(so12);   
+    _testReg.add(so13);   
+    MsgCtrl.msgln("Contents: " + _testReg.getElementNames());
+    assertEquals(6, _testReg.getNbrElements());
+    // Retrieve the three objects with the same 'eleventy' keyword (that matches so11)
+    elist = _testReg.get(keyPredicate(so11));
+    assertEquals(3, elist.size());
+    for (IRegistryElement s : elist) {
+      MsgCtrl.msgln("\t" + s);
+    }
+
+    // Error get an object with an empty string name
+    SomeObject emptySO = new SomeObject(-99.0, " ");
+    assertFalse(_testReg.add(emptySO));
+  }
+
+  /**
+   * mylib.test.pdc.get(String)
+   * 
+   * @Normal Get an element by its key <br>
+   * @Normal Change key and try to get it again <br>
+   * @Normal Get a list of elements that have the same key <br>
+   * @Normal Get an element with an empty (whitespace) key <br>
+   * @Error Get an element with an null key <br>
+   */
+  @Test
+  public void testGet_ByString()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // Prepare: Add a few objects to the db
+    SomeObject so1 = new SomeObject(1.0, "one");
+    SomeObject so2 = new SomeObject(2.0, "two");
+    SomeObject so3 = new SomeObject(3.0, "three");
+    _testReg.add(so3);
+    _testReg.add(so1);
+    _testReg.add(so2);
+    assertEquals(3, _testReg.getNbrElements());
+
+    // Normal Get an element by its key...
+    List<IRegistryElement> elist = _testReg.get(so2.getKey());
+    assertEquals(so2, elist.get(0));
+    // ... and is same as getUnique()
+    assertEquals(so2, _testReg.getUnique(so2.getKey()));
+
+    // Normal Change key and try to get it again
+    so3.setKey("threeCopy");
+    _testReg.update(so3);
+    elist = _testReg.get(so3.getKey());
+    assertEquals(so3, elist.get(0));
+    // ... and is same as getUnique()
+    assertEquals(so3, _testReg.getUnique(so3.getKey()));
+    // Ensure that original is not in registry
+    assertEquals(0, _testReg.get("three").size());
+    assertEquals(1, _testReg.get("threeCopy").size());
+
+    // Normal Get a list of elements that have the same key
+    // Add some same non-key values for different keys to get a list
+    SomeObject so11 = new SomeObject(1.0, "eleventy");
+    SomeObject so12 = new SomeObject(2.0, "eleventy");
+    SomeObject so13 = new SomeObject(3.0, "eleventy");
+    _testReg.add(so11);
+    _testReg.add(so12);
+    _testReg.add(so13);
+    assertEquals(6, _testReg.getNbrElements());
+    // Retrieve the three objects with the same 'eleventy' keyword
+    elist = _testReg.get("eleventy");
+    assertEquals(3, elist.size());
+    for (IRegistryElement s : elist) {
+      MsgCtrl.msgln("\t" + s);
+    }
+  }
+
+
+  /**
+   * mylib.test.pdc.get(String)
+   * 
+   * @Error No element should exist with an empty (whitespace) key <br>
+   * @Error Get an element with an null key <br>
+   */
+  @Test
+  public void testGet_ByEmptyKey()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    /* Previously commented code */
+    // Normal get an object with an empty string name
+    List<IRegistryElement> elist = _testReg.get(" ");
+    assertEquals(0, elist.size());
+    // ... and is same as getUnique()
+    assertNull(_testReg.getUnique(" "));
+  }
+
+
+  /**
+   * mylib.test.pdc.getAll()
+   * 
    * @Normal Get all elements in the registry <br>
    * @Error Get an element with an null key <br>
    */
+  @Test
   public void testGetAll()
   {
     MsgCtrl.auditMsgsOn(false);
@@ -283,147 +432,9 @@ public class TestRegistry extends TestCase
     }
   }
 
-
   /**
-   * @Normal Get an element by its key <br>
-   * @Normal Change key and try to get it again <br>
-   * @Normal Get a list of elements that have the same key <br>
-   * @Normal Get an element with an empty (whitespace) key <br>
-   * @Error Get an element with an null key <br>
-   */
-  public void testGetByKey()
-  {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
-    MsgCtrl.where(this);
-
-    // Prepare: Add a few objects to the db
-    SomeObject so1 = new SomeObject(1.0, "one");
-    SomeObject so2 = new SomeObject(2.0, "two");
-    SomeObject so3 = new SomeObject(3.0, "three");
-    _testReg.add(so3);
-    _testReg.add(so1);
-    _testReg.add(so2);
-    MsgCtrl.msgln("Contents: " + _testReg.getElementNames());
-    assertEquals(3, _testReg.getNbrElements());
-
-    // Normal Get an element by its key...
-    List<IRegistryElement> elist = _testReg.get(so2.getKey());
-    assertEquals(so2, elist.get(0));
-    // ... and is same as getUnique()
-    assertEquals(so2, _testReg.getUnique(so2.getKey()));
-
-    // Normal Change key and try to get it again
-    so3.setKey("threeCopy");
-    _testReg.update(so3);
-    MsgCtrl.msgln("Contents: " + _testReg.getElementNames());
-    elist = _testReg.get(so3.getKey());
-    assertEquals(so3, elist.get(0));
-    // ... and is same as getUnique()
-    assertEquals(so3, _testReg.getUnique(so3.getKey()));
-    // Ensure that original is not in registry
-    assertEquals(0, _testReg.get("three").size());
-    assertEquals(1, _testReg.get("threeCopy").size());
-
-    // Normal Get a list of elements that have the same key
-    // Add some same non-key values for different keys to get a list
-    SomeObject so11 = new SomeObject(1.0, "eleventy");
-    SomeObject so12 = new SomeObject(2.0, "eleventy");
-    SomeObject so13 = new SomeObject(3.0, "eleventy");
-    _testReg.add(so11);
-    _testReg.add(so12);   
-    _testReg.add(so13);   
-    MsgCtrl.msgln("Contents: " + _testReg.getElementNames());
-    assertEquals(6, _testReg.getNbrElements());
-    // Retrieve the three objects with the same 'eleventy' keyword
-    elist = _testReg.get("eleventy");
-    assertEquals(3, elist.size());
-    for (IRegistryElement s : elist) {
-      MsgCtrl.msgln("\t" + s);
-    }
-  }
-
-
-  /**
-   * @Normal Get an element with an empty (whitespace) key <br>
-   * @Error Get an element with an null key <br>
-   */
-  public void testGetByEmptyKey()
-  {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
-    MsgCtrl.where(this);
-
-    /* Previously commented code */
-    // Normal get an object with an empty string name
-    List<IRegistryElement> elist = _testReg.get(" ");
-    assertEquals(0, elist.size());
-    // ... and is same as getUnique()
-    assertNull(_testReg.getUnique(" "));
-  }
-
-
-  /**
-   * @Normal Get an element by its key <br>
-   * @Normal Change key and try to get it again <br>
-   * @Normal Get a list of elements that have the same key <br>
-   */
-  public void testGetByPredicate()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    // Prepare: Add a few objects to the db
-    SomeObject so1 = new SomeObject(1.0, "one");
-    SomeObject so2 = new SomeObject(2.0, "two");
-    SomeObject so3 = new SomeObject(3.0, "three");
-    _testReg.add(so3);
-    _testReg.add(so1);
-    _testReg.add(so2);
-    assertEquals(3, _testReg.getNbrElements());
-
-    // Normal Get an element by its key...
-    Predicate<IRegistryElement> pred = keyPredicate(so2);
-    List<IRegistryElement> elist = _testReg.get(pred);
-    assertEquals(so2, elist.get(0));
-    // ... and is same as getUnique()
-    assertEquals(so2, _testReg.getUnique(so2.getKey()));
-
-    // Normal Change key and try to get it again
-    so3.setKey("threeCopy");
-    _testReg.update(so3);
-    elist = _testReg.get(keyPredicate(so3));
-    assertEquals(so3, elist.get(0));
-    // ... and is same as getUnique()
-    assertEquals(so3, _testReg.getUnique(so3.getKey()));
-    // Ensure that original is not in registry
-    assertEquals(0, _testReg.get("three").size());
-    assertEquals(1, _testReg.get("threeCopy").size());
-
-    // Normal Get a list of elements that have the same key
-    // Add some same non-key values for different keys to get a list
-    SomeObject so11 = new SomeObject(1.0, "eleventy");
-    SomeObject so12 = new SomeObject(2.0, "eleventy");
-    SomeObject so13 = new SomeObject(3.0, "eleventy");
-    _testReg.add(so11);
-    _testReg.add(so12);
-    _testReg.add(so13);
-    assertEquals(6, _testReg.getNbrElements());
-    // Retrieve the three objects with the same 'eleventy' keyword (that matches so11)
-    elist = _testReg.get(keyPredicate(so11));
-    assertEquals(3, elist.size());
-    for (IRegistryElement s : elist) {
-      MsgCtrl.msgln("\t" + s);
-    }
-
-    // Error get an object with an empty string name
-    SomeObject emptySO = new SomeObject(-99.0, " ");
-    assertFalse(_testReg.add(emptySO));
-  }
-
-
-  /**
+   * mylib.test.pdc.update(RegistryElement)
+   * 
    * @Normal Ensure that one object is swapped for a newer one <br>
    * @Normal Ensure that one object is swapped for the itself (same incident) without incident <br>
    * @Normal Ensure that one object is swapped for different one but of the same field values <br>
@@ -431,6 +442,7 @@ public class TestRegistry extends TestCase
    * @Error Try to replace an object that does not exist in the registry <br>
    * @Null Replace an object with a null object <br>
    */
+  @Test
   public void testUpdate()
   {
     MsgCtrl.auditMsgsOn(false);
@@ -503,21 +515,26 @@ public class TestRegistry extends TestCase
 
 
   /**
-   * 9 methods
+   * 3 methods
    * 
-   * @NotNeeded Registry() -- empty constructor for testing <br>
-   * @NotNeeded Registry(String) -- abstract constructo
    * @NotNeeded initialize() -- abstract method <br>
-   * @NotNeeded isClosed() -- getter (perhaps not needed at all) <br>
-   * @NotNeeded closeRegistry() -- wrapper for DBReadWriter <br>
-   * @NotNeeded deleteRegistry() -- wrapper for DBReadWriter <br>
-   * @NotNeeded getReference() -- method to be removed; does nothing <br>
    * @NotNeeded getDBRW() -- getter <br>
    * @NotNeeded getNbrElements() -- getter <br>
    */
   void _testsNotNeeded()
   {}
 
+  /**
+   * 5 methods
+   * 
+   * @NotImplemented Registry(String)
+   * @NotImplemented getElementNames()
+   * @NotImplemented getUnique(String)
+   * @NotImplemented isClosed()
+   * @NotImplemented isUnique(String)
+   */
+  void _testsToBeImplemente()
+  {}
 
 } // end of TestRegistry class
 

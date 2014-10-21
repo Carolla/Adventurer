@@ -56,8 +56,7 @@ public class NPC implements IRegistryElement
   private final int MAX_AFFINITY = 5;
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND RELATED METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
   /** Default constructor */
@@ -122,7 +121,7 @@ public class NPC implements IRegistryElement
    * @see mylib.dmc.IRegistryElement#equals(mylib.dmc.IRegistryElement)
    */
   @Override
-  public boolean equals(Object target)
+  public boolean equals(IRegistryElement target)
   {
     NPC p = (NPC) target;
     boolean bName = _name.equals(p._name);

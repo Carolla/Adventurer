@@ -82,7 +82,7 @@ public class Jail extends Building
          * @see mylib.dmc.IRegistryElement#equals(mylib.dmc.IRegistryElement)
          */
         @Override
-        public boolean equals(Object target)
+        public boolean equals(IRegistryElement target)
         {
             if (target == null) {
                 return false;

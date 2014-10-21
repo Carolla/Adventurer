@@ -59,8 +59,6 @@ public class DbReadWriter
   private final String DBERR_NULL_OBJECT = "Attempted to delete a null object from the db";
   /** Invalid filename error message */
   private final String DBERR_FILENAME = "Invalid filename given for Registry resources";
-  /** Unknown db4o IO error */
-  private final String DBERR_DB4OIO = "Unknown IO error with db4o";
   /** Incompatible File format error */
   private final String DBERR_FILE_FORMAT = "Incompatible file format encountered";
   /** Old format File error */
@@ -121,7 +119,7 @@ public class DbReadWriter
 
 
   /**
-   * Closes down the database and its file
+   * Closes down the database and its file, sets 
    * 
    * @throws Db4oIOException on a db4o-specific IO exception
    */
@@ -140,6 +138,29 @@ public class DbReadWriter
 
 
   /**
+     * Verify if a particular object exists, found by calling that object's {@code equals} method
+     * 
+     * @param target name of the object with specific fields to find
+     * @return true if it exists in the db, else false
+     * 
+     * @throws DatabaseClosedException trying to delete from a closed (null) db
+     */
+    public boolean dbContains(final IRegistryElement target) throws DatabaseClosedException
+    {
+  //    return _db.isStored(target);  // this db4o call doesn't seem to work
+      // Run the query using the equals method
+      List<IRegistryElement> obSet = _db.query(new Predicate<IRegistryElement>() {
+        public boolean match(IRegistryElement candidate)
+        {
+          return target.equals(candidate);
+        }
+      });
+      return (obSet.size() > 0) ? true : false;
+  
+    }
+
+
+  /**
    * Close down the database and delete its file
    * 
    * @throws Db4oIOException on a db4o-specific IO exception
@@ -152,32 +173,7 @@ public class DbReadWriter
   }
 
 
-  // TODO Fix {@code _db.isStored}. For some reason, the db4o method returns false always.
-  // Workaround used: completely search the db and then return true if size > 0.
-  /**
-   * Verify if a particular object exists, found by calling that object's {@code getKey} and
-   * {@code equals} method.
-   * <P>
-   * Warning: For some reason, the db4o method returns false always. Workaround used: completely
-   * search the db and then return true if size > 0.
-   * 
-   * @param target name of the object with specific fields to find
-   * @return true if it exists in the db, else false
-   * 
-   * @throws DatabaseClosedException trying to check against a closed (null) db
-   */
-  public boolean dbContains(final IRegistryElement target) throws DatabaseClosedException
-  {
-    // return _db.isStored(target); // for some reason, this always returns false
-    
-    List<IRegistryElement> elementList = _db.query(new Predicate<IRegistryElement>() {
-      public boolean match(IRegistryElement candidate)
-      {
-        return candidate.equals(target);
-      }
-    });
-    return (elementList.size() > 0) ? true : false;
-  }
+  
 
 
   // /**
@@ -228,7 +224,6 @@ public class DbReadWriter
     if (target == null) {
       throw new NullPointerException(DBERR_NULL_OBJECT);
     }
-    // if (_db == null) {
     if (_db.isClosed()) {
       throw new DatabaseClosedException();
     }
@@ -255,7 +250,16 @@ public class DbReadWriter
     return retval;
   }
 
-
+  
+  /** Is the database closed to transactions?
+   * @return true if db is closed
+   */
+  public boolean dbIsClosed() 
+  {
+    return _db.isClosed();
+  }
+  
+  
   /**
    * Create the object container for transaction processing with the default configuration; set the
    * db to open status. This is used when the DBRW is created.
@@ -296,22 +300,6 @@ public class DbReadWriter
 
 
   /**
-   * Set the database to ReadOnly (true) or ReadWrite (false), depending on the parm. Reset the
-   * current configuration as indicated, close the database, and open it with the new requested
-   * configuration.
-   * 
-   * @param roFlag true for readOnly, false for the default ReadWrite
-   */
-  public void dbReadOnly(boolean roFlag)
-  {
-    // Get the current configuration; needs Extended services for this
-    Configuration config = _db.configure();
-    // Set the configuration to the desired state
-    config.readOnly(roFlag);
-  }
-
-
-  /**
    * Gets one or more of elements that match the predicate provided.
    * 
    * @param pred predicate objet containing the comparison function to match for retrieval
@@ -337,50 +325,49 @@ public class DbReadWriter
     return elementList;
   }
 
+
   /**
-   * Add a new object into the database. All abnormal cases that cause exceptions to be thrown must
-   * be handled by the caller. This is same as <code>dbAdd()</code> except that it takes a generic
-   * Object instead of a <code>IRegistryElement</code> object.
+   * Set the database to ReadOnly (true) or ReadWrite (false), depending on the parm. Reset the
+   * current configuration as indicated, close the database, and open it with the new requested
+   * configuration.
    * 
-   * @param obj object to add
-   * @throws NullPointerException registry should not try to save a null
-   * @throws DatabaseClosedException db needs to be in correct state
-   * @throws DatabaseReadOnlyException DBregistry does not use RO state in QM
-   * @throws ObjectNotStorableException strange objects should be screened by DBRegistry
+   * @param roFlag true for readOnly, false for the default ReadWrite
    */
-  public void dbSave(Object obj) throws NullPointerException,
-      DatabaseClosedException, DatabaseReadOnlyException, ObjectNotStorableException
+  public void dbReadOnly(boolean roFlag)
   {
-    // Do not allow null objects to be stored
-    if (obj == null) {
-      throw new NullPointerException("DbReadWriter(): " + DBERR_FILE_FORMAT);
-    }
-    if (_db.isClosed()) {
-      throw new DatabaseClosedException();
-    }
-    else {
-      _db.store(obj);
-      _db.commit();
-    }
+    // Get the current configuration; needs Extended services for this
+    Configuration config = _db.configure();
+    // Set the configuration to the desired state
+    config.readOnly(roFlag);
   }
 
 
-  /**
-   * Get the number of elements in the db using a Predicate
-   * 
-   * @return number of elements
-   */
-  @SuppressWarnings("serial")
-  public int dbSize()
-  {
-    List<IRegistryElement> elementList = _db.query(new Predicate<IRegistryElement>() {
-      public boolean match(IRegistryElement candidate)
-      {
-        return true;
-      }
-    });
-    return elementList.size();
-  }
+//  /**
+//   * Add a new object into the database. All abnormal cases that cause exceptions to be thrown must
+//   * be handled by the caller. This is same as <code>dbAdd()</code> except that it takes a generic
+//   * Object instead of a <code>IRegistryElement</code> object.
+//   * 
+//   * @param obj object to add
+//   * @throws NullPointerException registry should not try to save a null
+//   * @throws DatabaseClosedException db needs to be in correct state
+//   * @throws DatabaseReadOnlyException DBregistry does not use RO state in QM
+//   * @throws ObjectNotStorableException strange objects should be screened by DBRegistry
+//   */
+//  public void dbSave(Object obj) throws NullPointerException,
+//      DatabaseClosedException, DatabaseReadOnlyException, ObjectNotStorableException
+//  {
+//    // Do not allow null objects to be stored
+//    if (obj == null) {
+//      throw new NullPointerException("DbReadWriter(): " + DBERR_FILE_FORMAT);
+//    }
+//    if (_db.isClosed()) {
+//      throw new DatabaseClosedException();
+//    }
+//    else {
+//      _db.store(obj);
+//      _db.commit();
+//    }
+//  }
 
 
   // ================================================================================
@@ -434,6 +421,12 @@ public class DbReadWriter
     public ObjectContainer openDB()
     {
       DbReadWriter.this.dbOpen();
+      return _db;
+    }
+
+    /** Retruns returns the database container */
+    public ExtObjectContainer getContainer()
+    {
       return _db;
     }
 

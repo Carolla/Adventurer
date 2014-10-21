@@ -9,8 +9,9 @@
 
 package chronos.pdc;
 
+import java.util.List;
+
 import mylib.ApplicationException;
-import mylib.civ.DataShuttle;
 import mylib.dmc.IRegistryElement;
 import chronos.civ.OccupationKeys;
 import chronos.pdc.registry.RegistryFactory;
@@ -101,7 +102,7 @@ public class Occupation implements IRegistryElement
     }
   }
 
-  
+
   /*
    * ACCESSORS FOR DISPLAYING THE PARTS
    */
@@ -155,7 +156,7 @@ public class Occupation implements IRegistryElement
    * @see mylib.dmc.IRegistryElement#equals(mylib.dmc.IRegistryElement)
    */
   @Override
-  public boolean equals(Object otherThing)
+  public boolean equals(IRegistryElement otherThing)
   {
     // Guard against null input
     if (otherThing == null) {
@@ -164,7 +165,7 @@ public class Occupation implements IRegistryElement
     Occupation ocp = (Occupation) otherThing;
     boolean bName = _name.equals(ocp._name);
     boolean bSkill = _skillName.equals(ocp._skillName);
-    return (bName);
+    return (bName || bSkill);
   }
 
   // /** Two Occupations are considered equal if their names and associated
@@ -252,28 +253,27 @@ public class Occupation implements IRegistryElement
   // return sk;
   // }
 
+    // TODO: Convert the data shuttle to something else
   /**
    * Convert a occupation object into a data shuttle to be passed back to the HIC
    * 
    * @param occ The occupation to be converted to a shuttle
    * @return shuttle packed with data
    */
-  public DataShuttle<OccupationKeys> loadShuttle(
-      DataShuttle<OccupationKeys> ds)
+  public List<OccupationKeys> loadShuttle(List<OccupationKeys> ds)
   {
     if (ds != null)
     {
       // Load up the shuttle
-      ds.putField(OccupationKeys.NAME, _name);
-      ds.putField(OccupationKeys.DESC, "Not implemented yet");
-      ds.putField(OccupationKeys.SKILL, _skillName);
+//      ds.add(OccupationKeys.NAME, _name);
+//      ds.putField(OccupationKeys.DESC, "Not implemented yet");
+//      ds.putField(OccupationKeys.SKILL, _skillName);
     }
     return ds;
   }
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ ACCESSORS FOR DISPLAYING THE PARTS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * ACCESSORS FOR DISPLAYING THE PARTS
    */
 
   /** Return a string of the Occupatio's name and skill */

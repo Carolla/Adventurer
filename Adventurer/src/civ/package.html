@@ -17,169 +17,41 @@
 
 <body bgcolor="white">
 
-CIV (Component Interface Validator): This package contains all classes that
-are responsible for validating and filtering inputs and outputs from and to the
-HIC classes, and the other components. The CIV serves as a gateway between 
-the HIC (GUI) and the PDC to enforce best data and minimize coupling. The CIV
-is required to allow automated JUnit testing because it provides a socket to bypass
-the GUI code, which JUnit does not test well. It also is primary in allowing
-GUI changes to be made (or even replaced) with a minimum of effort.
+CIV (Component Interface Validator). <br>
+This package contains all classes that are responsible for validating and filtering inputs and 
+outputs from and to the HIC classes. The CIV serves as a gateway between 
+the HIC (GUI) and the PDC to enforce best data, minimize coupling, and enable automated JUnit testing
+of as much of the logic as possible. 
+The CIV enables automated JUnit testing by providing a socket to bypass the GUI code, which JUnit 
+does not test well. It also is primary in allowing GUI changes to be made (or even replaced) with a 
+minimum of effort.
 <P>
-<i>How Best to Use the CIV Objects</i>.  
-There are input CIVs, or objects that validate input-oriented GUI widgets before passing 
-data into the PDC; and there are output CIVs, or objects that prepare internally
-formatted data into a GUI-viewable format for output widgets. According to the
-DaVinci standard, no HIC objects may import PDC or DMC objects; HIC classes
-must always send or receive data through a CIV object. As a result, the <i>data 
-shuttle</i> approach was developed to allow type-agnostic data to be transported
-into and out of the system without a minimum of data and object coupling, and
-avoids the setters and getters that work around (read: breaks) object encapsulation 
-and bulks up an otherwise elegant object's implementation.
+<i>How to Use CIV Objects</i>.  
+Although there is only one CIV component, objects within a particular CIV tend to handle either
+output data to the GUI, or input data from the GUI. For covenience, these objects-within-the-CIV
+component are referred to as "output Civs" or "inputs Civs".
+Input Civs take data from input-oriented GUI widgets, validates it, and converts it to the internal
+format before passing the data to the PDC.
+Errors are returned immediately by the Civ to the HIC object for displaying in error dialogs.
 <P>
-Input widgets are created by some user-triggered event, such as happens when
-a user selects OPEN or NEW from the Menubar to create a new PDC object. 
-The input widget is created, and in turn creates its corresponding CIV object. 
-The HIC packs the field data into a <i>dataShuttle</i> (see below) and the CIV 
-object unpacks it for validation. When the data is validated, the CIV object creates
-the PDC object (or whatever other action was desired) and passes the shuttle to 
-the PDC object. Errors are returned immediately by the CIV to the HIC
-object for displaying in error dialogs or other means.
+Output Civs work symmetrically in reverse of how input Civs work.
+Output Civs prepare internally-formatted data into a GUI-viewable format for the output GUI widgets. 
+According to the coding standard, no HIC objects may import PDC or DMC objects; 
+HIC classes must always send or receive data through a CIV object. 
 <P>
-Output widgets work symmetrically in reverse of how input widget flow works.
 Every PDC object that has data to be displayed should know how to display itself,
-and thus should implement a <code>display()</code> method with data shuttle
-support.  
-The PDC <code>display()</code> method creates the output CIV, passing the
-data shuttle to the CIV constructor, which creates the GUI widget, passing the
-same, or modified, data shuttle to the widget constructor. 
-HIC widgets can only display String data, so the data from the output CIV to the 
+and thus should implement a {@code display} method, which creates the output Civ, passing the data
+to the CIV constructor, which creates the GUI widget. 
+HIC widgets can only display String data, so the data from the output Civ to the 
 widget can be prepared in several ways. 
 <BL>
 <LI> If there are only a few parameters, the String data can be passed to the 
 widget in its constructor. </LI>
-<LI> If there are many parameters, the String data can be put into an 
-<code>EnumMap</code> data shuttle, and passed to the widget's constructor. 
-In this case, the order in which the data is put into the <code>EnumMap</code>
+<LI> If there are more than three or four parameters, the {@code String} data can be put into an 
+{@code EnumMap}, and passed to the widget's constructor. 
+In this case, the order in which the data is put into the {@code EnumMap}
 is irrelevant, because the enum key of the map is used for retrieval.</LI>
-</BL>    
-For consistency, the data shuttle approach is strongly recommended even if the
-first method would suffice.
-<P> 
-<i>How to Use an EnumMap Data Shuttle</i>
-A data shuttle is a EnumMap class containing a key-value pair that uses an 
-enum as the key, and String data as its value. The data shuttle allows a 
-collection of data to be transferred from an input GUI via an input CIV object to a 
-PDC object without having knowledge of the PDC internals or data types. 
-It also allows the PDC object to display data via an output CIV to one or more
-GUI widgets without knowing what data the GUI widget actually needs. In many 
-cases, multiple output widgets will have different fields, and the data shuttle can
-contain the superset of all fields; the GUI then retrieves only the specific data 
-needed for display.
-<P>
-Create a list of enums that the GUI widget, corresponding CIV, and PDC 
-being used, can access. The enums are the keys to the GUI fields, and the
-String values are the data collected from (or displayed in) the GUI widget.
-Putting the enum list in the CIV object usually works, although
-a public class of enums can be used. (Multiple enum sets can be placed in the
-same public class of enums.) </LI>
-<P>
-The declaration of the data shuttle, 
-<code>EnumMap&lt;enumName, String&gt;</code>, where 
-<code>enumName</code> is the specific name (and Type) of the enum keys 
-created, and String is the value of the key-value pair. 
-For convenience, this is replaced with the more general <code>dataShuttle</code>
-when used in method signatures in the explanations below. 
-<P>
-<i> Transporting Data IN from the GUI Widget</i>
-<OL>
-<LI>Create a method <code>dataShuttle packFields()</code> 
-in the widget that creates the data shuttle by moving the input field data into 
-the map, using an enum constant as the key, and the field data as the String
-value. This method is called by the <code>actionPerformed<></code> method 
-of the GUI widget in response to some user-triggered event. The map is passed
-to the CIV's <code>validateFields(dataShuttle)</code>. </LI> 
-<LI>Create a method <code>dataShuttle packShuttle(dataShuttle)</code> in the
-CIV object that moves the now-validated GUI data to PDC data associated with 
-the enum keys and puts it into the map as String data. If the data was valid, the
-actual input data shuttle can be passed directly to the PDC.</LI>
-<LI> Create an <code>void unpack(dataShuttle)</code> to update the PDC 
-attributes directly. Although the CIV knows the PDC data types and can update 
-the PDC attributes through setter methods (not recommended) and avoid 
-packing the data shuttle with Strings, that approach would require a setter for 
-each of the PDC attributes associated with the GUI fields. The data Shuttle 
-approach will avoid setters by allowing the PDC's 
-<code>unpack()</code> method to update the PDC attributes directly. </LI>
-<LI> Create a <code>display()</code> method in the PDC object that creates
-the output CIV and calls its <code>packShuttle</code> method.</LI>
-<LI>Create a method <code>public EnumMap&lt;enumClass, String&gt; 
-packShuttle(EnumMap&lt;enumClass, String&gt;)</code> that takes a data shuttle
-(the EnumMap) and moves the PDC data associated with the enum keys
-and puts it into the map as String data.</LI>
-</OL> 
-<P>
-<i> Transporting Data OUT to the GUI Widget</i>
-<OL>
-<LI>Create a method <code>dataShuttle packFields()</code> 
-in the PDC to create a data shuttle by moving the attribute values into 
-the map, using an enum constant as the key, and the attribute data as the String
-value. This method is called by the PDC <code>display()</code> method 
- The map is passed to the output CIV's constructor. </LI> 
-<LI>The CIV constructor creates the output GUI widget and, if no manipulation
-is needed, pass the data shuttle directly to the widget constructor for unpacking
-and displaying. Typically, String values can be passed directly through without 
-unpacking.</LI>
-<LI> In some cases, attribute values must be extracted from the
-shuttle and manipulated, and then repacked into the shuttle for display.  
-For example, a monetary value internally stored in <i>dollars</i> may need to be
-converted to the external display format for <i>Euros</i>. 
-In another example, a single internal value, e.g., <i>weight in ounces</i> needs 
-to be displayed in more than one field, i.e., <i>weight in lbs</i> and 
-<i>weight in ounces</i> in the widget. </LI> 
-<LI>Create a <code>void unpackFields(dataShuttle)</code> method in the GUI
-widget that the constructor can call to directly set the display values of its fields;
-or at least, after the widget is instantiated, the <code>unpackFields()</code>
-method can be called to populate the widget fields.
-</LI>
-<P>
-See the diagram below for an example of how the CIVs are used to create and
-display a PDC <code>Project</code>. The steps below correspond to the method
-calls in the diagram.
-<P>
-<img src="doc-files/CIV_Architecture.jpeg"  height="400"  />
-<OL>
-<LI> The user selects Project->NEW from the MenuBar. </LI>
-<LI> The <code>New Action</code> method's 
-<code>actionPerformed(Event)</code>
-creates the input widget <code>NewProjectDialog</code> </LI>
-<LI> The <code>NewProjectDialog</code> creates the
- <code>NewProjectDialogCiv</code> object, abbreviated NPDCiv. </LI>
-<LI> The user enters the data to populate the input widget, and hits the Enter
-key. </LI>
-<LI> The Enter key listener's <code>actionPerformed</code> method calls
-its <code>dataShuttle packFields()</code> method, and then calls the CIV's 
-<code>createProject(dataShuttle)</code></LI> 
-<LI> The CIV's createProject() </code> method validates the input field data with
-<code><boolean validateFields(dataShuttle)</code> </LI>
-<LI> If the data is valid, the CIV object creates the new <code>Project</code>,
-passing the data shuttle to the Project constructor. If not, error codes are 
-returned so that the proper error widget can be displayed. </LI>
-<LI> On the output side, now that the Project object is created, the CIV object 
-tells the <code>Project</code> to <code>display()</code> itself. </LI>
- <LI> The method <code>Project.display()</code> calls 
- <code>packShuttle()</code> and creates a new output CIV  to interface with an
-  output HIC widget, passing the data shuttle to the CIV constructor. </LI>
-  LI> The <code>ProjectDialogCiv</code> creates the 
-  <code>ProjectDialog</code> widget, sending it the data shuttle in the 
-  <code>ProjectDialog</code> constructor. </LI>
-  LI> When the user closes the output widget, the thread is returned back to
- the state in which the menubar was originally triggered. </LI>
- </OL>
-<P>
-NOTE: There is much commonality between the CIV package that interfaces to
-the HIC component, and the DMI package that similarly interfaces to the DMC
-(Data Management Component) package. Both CIV and DMI (Data Management
-Interface) work similarly, and for the same purpose. One difference is that the DMI
-can be tested by JUnit directly, but the GUI part of the HIC cannot. 
+</BL>
 
 </body>
 </html>

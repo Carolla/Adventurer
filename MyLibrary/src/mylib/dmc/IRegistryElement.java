@@ -30,12 +30,12 @@ package mylib.dmc;
  * <P>
  * 
  * <Pre>
- *  List&ltIRegistryElement&gt obSet = _db.query(new Predicate&ltIRegistryElement&gt() { 
- *    public boolean match(IRegistryElement candidate)                                        
- *    {                                                                                                                                
- *      return candidate.equals(target);                                                                           
- *    }                                                                                                                                 
- *  });
+ *    List&ltIRegistryElement&gt obSet = _db.query(new Predicate&ltIRegistryElement&gt() { 
+ *      public boolean match(IRegistryElement candidate)                                        
+ *      {                                                                                                                                
+ *        return candidate.equals(target);                                                                           
+ *      }                                                                                                                                 
+ *   });
  * </Pre>
  * 
  * @author Alan Cline
@@ -44,13 +44,14 @@ package mylib.dmc;
 public interface IRegistryElement
 {
   /**
-   * Compare one or more of the fields of this obect with the target
+   * Compare two {@code IRegistryElement}s objects, usually by comparing select fields. The
+   * implementation of this method should not override, or default to, the Object {@code equals}
+   * method.
    * 
    * @param target to check for equality
-   * @return true if the the 'this' object and the target are equal; else false
+   * @return true if the 'this' object and the target are equal; else false
    */
-  @Override
-  abstract public boolean equals(Object target);
+  abstract public boolean equals(IRegistryElement target);
 
   /**
    * Return a unique field of the element to act as a search key. This method allows a retrieval by
@@ -61,3 +62,4 @@ public interface IRegistryElement
   abstract public String getKey();
 
 } // end of IRegisterElement interface
+

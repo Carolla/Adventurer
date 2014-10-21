@@ -16,10 +16,8 @@ import java.awt.Color;
  * Contains the global constants and methods that all objects require.
  * 
  * @author Alan Cline
- * @version <DL>
- *          <DT>Build 1.0 Aug 5, 2012 // original, most taken from Chronos.java
- *          <DT>Build 2.0 June 21, 2014 // ABC: Added env var CHRONOS_ROOT install dir location <DD>
- *          </DL>
+ * @version Aug 5, 2012 // original, most taken from Chronos.java <br>
+ *          June 21, 2014 // ABC: Added env var CHRONOS_ROOT install dir location <br>
  */
 public class Constants
 {

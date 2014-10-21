@@ -15,7 +15,6 @@ import java.awt.EventQueue;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import mylib.pdc.Registry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 
@@ -40,8 +39,7 @@ public class Adventurer
 
   /** Launcher class does not require a constructor--it has the {@code main} method. */
   public Adventurer()
-  {
-  }
+  {}
 
 
   /**
@@ -115,11 +113,7 @@ public class Adventurer
    */
   private static void closeRegistries()
   {
-    _rf = RegistryFactory.getInstance();
-    for (RegKey key : RegKey.values()) {
-      Registry reg = _rf.getRegistry(key);
-      reg.closeRegistry();
-    }
+    _rf.closeAllRegistries();
   }
 
 
@@ -143,7 +137,7 @@ public class Adventurer
       Adventurer.closeRegistries();
     }
 
-    
+
   } // end of MockAdventurer inner class
 
 

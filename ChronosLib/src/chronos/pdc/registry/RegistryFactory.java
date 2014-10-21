@@ -74,16 +74,32 @@ public class RegistryFactory
   // ============================================================
 
   /**
+   * Close all registries currently open, and remove them from the {@code RegistryFactory}
+   * collection
+   */
+  public void closeAllRegistries()
+  {
+    for (RegKey key : RegKey.values()) {
+      Registry reg = _regMap.get(key);
+      if (reg != null) {
+        reg.closeRegistry();
+        _regMap.remove(key);
+      }
+    }
+  }
+
+
+  /**
    * Close a registry and remove it from the factory collection
    * 
-   * @param regtype one of the specified registry types
+   * @param key one of the specified registry keys
    */
-  public void closeRegistry(RegKey regtype)
+  public void closeRegistry(RegKey key)
   {
-    Registry reg = _regMap.get(regtype);
+    Registry reg = _regMap.get(key); // get returns null if not found
     if (reg != null) {
-      reg.closeRegistry();
-      _regMap.remove(regtype);
+      reg.closeRegistry(); // this is the registry's method, not this method it's in
+      _regMap.remove(key);
     }
   }
 
@@ -93,10 +109,14 @@ public class RegistryFactory
    * Registry is stored for quick access in this factory
    * 
    * @param regtype defined in {@code RegistryFactory.RegKey enum}
-   * @return the requested Registry
+   * @return the requested Registry, or null if cannot be created
    */
   public Registry createRegistry(RegKey regtype)
   {
+    // Guard: RegKey may be null (dumb compiler should have checked that!)
+    if (regtype == null) {
+      return null;
+    }
     Registry reg = null;
     String regName = Chronos.REGISTRY_CLASSPKG + regtype + "Registry";
     try {
@@ -108,6 +128,7 @@ public class RegistryFactory
     } catch (ClassNotFoundException ex) {
       System.err.println("createRegistry(): Class.forName() cannot find specified registry: "
           + ex.getMessage());
+      ex.printStackTrace();
     } catch (IllegalAccessException ex) {
       System.err.println("createRegistry(): cannot access specified method: " + ex.getMessage());
     } catch (IllegalArgumentException ex) {
@@ -122,6 +143,19 @@ public class RegistryFactory
           + ex.getMessage());
     }
     return reg;
+  }
+
+
+  /**
+   * Close all registries and delete their .reg files
+   */
+  public void deleteAllRegistries()
+  {
+    for (RegKey key : RegKey.values()) {
+      Registry reg = _regMap.get(key);
+      reg.closeRegistry();
+      _regMap.remove(reg);
+    }
   }
 
 
@@ -143,7 +177,7 @@ public class RegistryFactory
    * @return an existing registry of the requested type, or null if it doesn't exist or can't be
    *         found
    */
-  public Registry getRegistry(RegKey regtype)
+  public Registry getRegistry(RegKey regtype) 
   {
     Registry reg = getExisting(regtype);
     if (reg == null) {

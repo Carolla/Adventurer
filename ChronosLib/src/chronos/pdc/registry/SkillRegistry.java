@@ -12,15 +12,14 @@ package chronos.pdc.registry;
 import java.util.ArrayList;
 import java.util.List;
 
-import chronos.Chronos;
-import chronos.pdc.Skill;
-
-import com.db4o.query.Predicate;
-
 import mylib.ApplicationException;
 import mylib.MsgCtrl;
 import mylib.dmc.IRegistryElement;
 import mylib.pdc.Registry;
+import chronos.Chronos;
+import chronos.pdc.Skill;
+
+import com.db4o.query.Predicate;
 
 /**
  * Contains a set of skills that a player may assign to his Hero. {@code SkillRegistry} is a

@@ -36,9 +36,10 @@ import chronos.pdc.buildings.WizardsGuild;
  */
 public class BuildingRegistry extends Registry
 {
-  /*
-   * CONSTRUCTOR(S) AND RELATED METHODS
-   */
+
+  // ========================================================================
+  // CONSTRUCTOR(S) AND RELATED METHODS
+  // ========================================================================
 
   /** Called by RegistryFactory class */
   protected BuildingRegistry()
@@ -46,15 +47,6 @@ public class BuildingRegistry extends Registry
     super(Chronos.BuildingRegPath);
   }
 
-  /*
-   * TODO Remove this method; do not mix test code in production code Call it from a mock or in some
-   * other way
-   */
-  /** Called in testing */
-  public BuildingRegistry(String testMode)
-  {
-    super();
-  }
 
   /**
    * Creates the Building Registry with the default buildings and saves it
@@ -78,6 +70,7 @@ public class BuildingRegistry extends Registry
     }
   }
 
+  
   /**
    * Get all the Buildings of the registry, which will also include NPCs unfortunately as an element
    */
@@ -90,7 +83,7 @@ public class BuildingRegistry extends Registry
   /**
    * Retrieve a building by name from the building registry
    * 
-   * @param name  of the building desired
+   * @param name of the building desired
    * @return the building; else null if not found
    */
   public Building getBuilding(String name)

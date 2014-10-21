@@ -13,6 +13,7 @@
 package chronos.pdc.buildings;
 
 import mylib.ApplicationException;
+import mylib.dmc.IRegistryElement;
 
 /**
  *    Clerics' Guild for spells, magical items, quests, and lodging
@@ -87,7 +88,7 @@ public class ClericsGuild extends Building
      * @see mylib.dmc.IRegistryElement#equals(mylib.dmc.IRegistryElement)
      */
     @Override
-    public boolean equals(Object target)
+    public boolean equals(IRegistryElement target)
     {
         // Guards against null target
         if (target == null) {

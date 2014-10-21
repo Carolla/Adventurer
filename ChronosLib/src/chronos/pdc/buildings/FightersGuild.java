@@ -13,6 +13,7 @@
 package chronos.pdc.buildings;
 
 import mylib.ApplicationException;
+import mylib.dmc.IRegistryElement;
 
 /**
  *    Fighters' Guild, for practice, quests, and lodging
@@ -89,7 +90,7 @@ public class FightersGuild extends Building
      * @see mylib.dmc.IRegistryElement#equals(mylib.dmc.IRegistryElement)
      */
     @Override
-    public boolean equals(Object target)
+    public boolean equals(IRegistryElement target)
     {
         // Guards against null target
         if (target == null) {

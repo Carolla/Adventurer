@@ -12,8 +12,9 @@
 
 package test.pdc;
 
-import chronos.pdc.buildings.Building;
 import mylib.ApplicationException;
+import mylib.dmc.IRegistryElement;
+import chronos.pdc.buildings.Building;
 
 /**
  *    Enables testing of the abstract base class building
@@ -49,7 +50,7 @@ public class ConcreteBuilding extends Building
      * @see mylib.dmc.IRegistryElement#equals(mylib.dmc.IRegistryElement)
      */
     @Override
-    public boolean equals(Object target)
+    public boolean equals(IRegistryElement target)
     {
         Building bldg = (Building) target;
         boolean bName = (this._name).equals(bldg.getKey());
