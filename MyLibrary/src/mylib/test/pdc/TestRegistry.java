@@ -261,8 +261,8 @@ public class TestRegistry extends TestCase
   @Test
   public void testGet_ByPredicate()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // Prepare: Add a few objects to the db
