@@ -29,6 +29,7 @@ import org.junit.Test;
 
 import com.db4o.query.Predicate;
 
+/** Tim put a comment here! */
 
 /**
  * Tests the base class <code>Registry</code> using <code>ConcreteRegistry</code> as its concrete
