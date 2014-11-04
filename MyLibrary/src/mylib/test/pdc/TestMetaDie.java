@@ -18,7 +18,6 @@ import mylib.MsgCtrl;
 import mylib.pdc.MetaDie;
 import mylib.pdc.MetaDie.MockMetaDie;
 
-/** A non-random comment */
 
 /**
  * Ensure that the MetaDie class is working properly.
