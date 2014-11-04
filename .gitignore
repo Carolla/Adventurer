@@ -1,5 +1,6 @@
 # Chronos specific
 doc/
+*.reg
 
 # Directories #
 build/
