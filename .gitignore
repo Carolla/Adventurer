@@ -2,6 +2,8 @@
 doc/
 *.reg
 
+# Tim's comment is first, and thus better #
+:
 # Directories #
 build/
 bin/
