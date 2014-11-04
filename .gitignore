@@ -2,6 +2,8 @@
 doc/
 *.reg
 
+# ignore your face!
+
 # Directories #
 build/
 bin/
