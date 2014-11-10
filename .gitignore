@@ -3,9 +3,8 @@ doc/
 *.reg
 
 
-# ignore your face!
-
-# Tim's comment is first, and thus better #
+# Git #
+.git/config
 
 # Directories #
 build/
