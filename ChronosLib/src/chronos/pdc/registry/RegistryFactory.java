@@ -183,7 +183,6 @@ public class RegistryFactory
     if (reg == null) {
       reg = createRegistry(regtype);
     }
-    // System.err.println("RegistryFactory.getRegistry() = " + reg.toString());
     return reg;
   }
 

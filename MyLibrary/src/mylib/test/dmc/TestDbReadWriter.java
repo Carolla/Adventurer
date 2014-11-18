@@ -64,6 +64,7 @@ public class TestDbReadWriter extends TestCase
   @Before
   public void setUp() throws Exception
   {
+    MsgCtrl.auditMsgsOn(true);
     MsgCtrl.errorMsgsOn(true);
     // Create new registry, open database and read-write file (default config)
     _regRW = new DbReadWriter(REG_PATH);
@@ -97,6 +98,24 @@ public class TestDbReadWriter extends TestCase
    */
 
 
+//  /**
+//   * @Normal Clear out an empty registry (0 elements)  
+//   * @Normal Clear out a non-empty registry  
+//   * @Error Null filename for constructor; force null pointer exception
+//   */
+//  @Test
+//  public void testClear()
+//  {
+//    MsgCtrl.auditMsgsOn(true);
+//    MsgCtrl.errorMsgsOn(true);
+//    MsgCtrl.where(this);
+//
+//    // Normal
+//    MsgCtrl.msgln("Current registry size = " + _mock.dbSize());
+//
+//  }
+
+    
   /**
    * @Error Null filename for constructor; force null pointer exception
    */
@@ -548,44 +567,41 @@ public class TestDbReadWriter extends TestCase
     SomeObject so1 = new SomeObject(1.0, "first object saved");
     SomeObject so2 = new SomeObject(2.0, "second object saved");
     SomeObject so3 = new SomeObject(3.0, "third object saved");
-    SomeObject so4 = new SomeObject(4.0, "fourth object saved");
+//    SomeObject so4 = new SomeObject(4.0, "fourth object saved");
 
     // NORMAL: Write to file, then get db size
+    int nbrObjs = _mock.dbSize();
     _regRW.dbAdd(so1);
     _regRW.dbAdd(so2);
     _regRW.dbAdd(so3);
-    int nbrObjs = _mock.dbSize();
+    int nbrObjsAfter = _mock.dbSize();
     MsgCtrl.msgln("\tNumber of objects retrieved after adding three objects = " + nbrObjs);
-    assertEquals(3, nbrObjs);
+    assertEquals(nbrObjsAfter, nbrObjs+3);
 
     // Close, reopen, add one more, then try again
-    _regRW.dbClose();
-    _regRW = new DbReadWriter(REG_PATH);
-    MsgCtrl.msgln("\tNumber of objects after closing and opening db = " + nbrObjs);
-    _regRW.dbAdd(so4);
-    _mock = _regRW.new MockDBRW(); // new mock needed for reopened regRW
     nbrObjs = _mock.dbSize();
-    MsgCtrl.msgln("\tNumber of objects after adding a new object = " + nbrObjs);
-    assertEquals(4, nbrObjs);
+    _regRW.dbClose();
+    _regRW.dbOpen();
+    nbrObjsAfter = _mock.dbSize();
+    MsgCtrl.msgln("\tNumber of objects after closing and opening db = " + nbrObjs);
+    assertEquals(nbrObjs, nbrObjsAfter);
 
     // Now delete two and try again
     MsgCtrl.msg("\n\tDb closed and reopened then...");
+    nbrObjs = _mock.dbSize();
     _regRW.dbDelete(so2);
     _regRW.dbDelete(so1);
+    nbrObjsAfter = _mock.dbSize();
     MsgCtrl.msgln("\tso2 then so1 deleted.");
-    assertEquals(2, _mock.dbSize());
+    assertEquals(nbrObjsAfter, nbrObjs-2);
 
-    // Now delete last two and try again
-    _regRW.dbDelete(so4);
-    _regRW.dbDelete(so3);
-    MsgCtrl.msgln("\tso4 then so3 deleted.");
-    assertEquals(0, _mock.dbSize());
-
-    // Normal Delete an object that is not in the db
-    _regRW.dbDelete(so4); // it has been deleted already
+    // Now delete last one and try again
     nbrObjs = _mock.dbSize();
-    MsgCtrl.msgln("\tAttempted to retrieve non-stored object after second delete: " + nbrObjs);
-    assertEquals(0, nbrObjs);
+    _regRW.dbDelete(so3);
+    nbrObjsAfter = _mock.dbSize();
+    MsgCtrl.msgln("\tso4 then so3 deleted.");
+    assertEquals(nbrObjsAfter, nbrObjs-1);
+
   }
 
 

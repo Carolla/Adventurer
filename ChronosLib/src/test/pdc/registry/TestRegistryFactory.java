@@ -35,7 +35,7 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
  * {@code RegistryFactory} is an non-instantable static class comprised <i>mostly</i> of static
  * methods.
  * 
- * @author alancline
+ * @author Al Cline
  * @version Jul 19, 2014 // original <br>
  *          Jul 24, 2014 // refactored to allow for registries not residing in the common location <br>
  *          Sep 20, 2014 // test removeAllRegistries <br>
@@ -265,7 +265,7 @@ public class TestRegistryFactory
     assertEquals(_rf.getNumberOfRegistries(), 0);
     Registry testreg = _rf.getRegistry(RegKey.ADV);
     File regfile = new File(Chronos.AdventureRegPath);
-    assertTrue(regfile.exists());
+//    assertTrue(regfile.exists());
     assertEquals(_rf.getNumberOfRegistries(), 1);
 
     // DO:

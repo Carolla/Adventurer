@@ -105,14 +105,14 @@ public class Arena
     }
 
     
-    /** Delete the arena file
-    * @see mylib.pdc.Registry#deleteRegistry(boolean)
-    */
-    public void delete()
-    {
-        _dbi.dbDelete();
-        _thisArena = null;
-    }
+//    /** Delete the arena file
+//    * @see mylib.pdc.Registry#deleteRegistry(boolean)
+//    */
+//    public void delete()
+//    {
+//        _dbi.dbDelete();
+//        _thisArena = null;
+//    }
 
     
     /** 

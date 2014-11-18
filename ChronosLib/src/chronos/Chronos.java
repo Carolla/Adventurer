@@ -44,9 +44,10 @@ public class Chronos
    */
 
   /** Base environment variable for shared file resources path */
-  public static String CHRONOS_ROOT = System.getProperty("user.home") + "/git/eChronos";
+  public static String CHRONOS_ROOT = System.getProperty("user.dir"); // + "/eChronos";
   /** Relative path location of all shared resources */
-  public static String RESOURCES_PATH = CHRONOS_ROOT + "/ChronosLib/resources";
+//  public static String RESOURCES_PATH = CHRONOS_ROOT + "/ChronosLib/resources";
+  public static String RESOURCES_PATH = CHRONOS_ROOT + "/resources";
   /** Relative path location of Adventurer-specific resources */
   public static String ADV_RESOURCES_PATH = CHRONOS_ROOT + "/Adventurer/resources";
 

@@ -116,11 +116,11 @@ public class ConcreteRegistry extends Registry
     }
 
 
-    /** Exposes the db erase method for testing purposes */
-    public void eraseDB()
-    {
-      _dbMock.dbErase();
-    }
+//    /** Exposes the db erase method for testing purposes */
+//    public void eraseDB()
+//    {
+//      _dbMock.dbErase();
+//    }
 
 
     /** Get all the elements in the Registry */
