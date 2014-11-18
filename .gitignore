@@ -1,5 +1,10 @@
 # Chronos specific
 doc/
+*.reg
+
+
+# Git #
+.git/config
 
 # Directories #
 build/
