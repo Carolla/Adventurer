@@ -35,6 +35,7 @@ import com.db4o.query.Predicate;
  *          Feb 25, 2013 // replaced queryByExample with native queries <br>
  *          Mar 18, 2013 // revised after adding IRegistryElement <br>
  *          Nov 1, 2014 // removed dbSize to mock, and fixed tests messing new mock with new regRW <br>
+ *          Nov 9, 2014 // moved dbDelete into mock and reafactored tests <br>
  */
 public class TestDbReadWriter extends TestCase
 {
@@ -79,7 +80,7 @@ public class TestDbReadWriter extends TestCase
   @After
   public void tearDown() throws Exception
   {
-    _regRW.dbDelete();
+    _mock.dbDelete();
     _regRW = null;
     _mock = null;
     MsgCtrl.auditMsgsOn(false);
@@ -107,7 +108,7 @@ public class TestDbReadWriter extends TestCase
     MsgCtrl.where(this);
 
     // Delete the database created by setUp() and its ObjectContainer
-    _regRW.dbDelete();
+    _mock.dbDelete();
 
     // Confirm that DBRW and file does not exist before call...
     assertFalse(_regFile.exists());
