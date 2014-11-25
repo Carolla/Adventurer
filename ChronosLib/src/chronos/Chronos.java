@@ -9,6 +9,9 @@
 
 package chronos;
 
+import java.io.File;
+import java.io.IOException;
+
 import mylib.Constants;
 
 
@@ -43,8 +46,21 @@ public class Chronos
    * workspace.
    */
 
+  /** Initializer for CHRONOS_ROOT static variable */
+  private static String findChronosRootDir() 
+  {
+	  String fileName = null;
+	  try {
+		fileName = new File("..").getCanonicalPath();
+	} catch (IOException e) {
+		System.err.println("Unable to locate CHRONOS_ROOT");
+		System.exit(-1);
+	}
+	  return fileName;
+  }
   /** Base environment variable for shared file resources path */
-  public static String CHRONOS_ROOT = System.getProperty("user.home") + "/git/eChronos";
+  public static String CHRONOS_ROOT = findChronosRootDir();
+
   /** Relative path location of all shared resources */
   public static String RESOURCES_PATH = CHRONOS_ROOT + "/ChronosLib/resources";
   /** Relative path location of Adventurer-specific resources */
@@ -214,7 +230,7 @@ public class Chronos
     return DEFAULT_PKG;
   }
 
-  /**
+/**
    * Allow the base location of class files to be defined or redirected for testing
    * 
    * @param pkgName location of file wrto the Chronos root directory
