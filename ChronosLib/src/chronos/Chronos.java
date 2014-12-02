@@ -9,6 +9,9 @@
 
 package chronos;
 
+import java.io.File;
+import java.io.IOException;
+
 import mylib.Constants;
 
 
@@ -43,6 +46,7 @@ public class Chronos
    * workspace.
    */
 
+  // TODO: Tim will revise these paths to folder agnostic
   /** Base environment variable for shared file resources path */
   public static String CHRONOS_ROOT = System.getProperty("user.dir"); // + "/eChronos";
   /** Relative path location of all shared resources */
@@ -50,15 +54,13 @@ public class Chronos
   public static String RESOURCES_PATH = CHRONOS_ROOT + "/resources";
   /** Relative path location of Adventurer-specific resources */
   public static String ADV_RESOURCES_PATH = CHRONOS_ROOT + "/Adventurer/resources";
-
   /** Most registry Classes are located in the ChronosLib shared source package (ChronosLib) */
   public static final String REGISTRY_CLASSPKG = "chronos.pdc.registry.";
-  // /** Adventurer-specific registry Classes are located in the an alternate location */
-  // public static final String ALT_REGISTRY_CLASSPKG = "adventurer.pdc.registry.";
 
   /** Path for all data Registries */
-  public static final String REGISTRY_PATH = RESOURCES_PATH + FS + "registries" + FS;
-
+//  public static final String REGISTRY_PATH = RESOURCES_PATH + FS + "registries" + FS;
+  public static final String REGISTRY_PATH = "/Projects/eChronos/ChronosLib/resources/";
+  
   /** These images are in the Adventurer resources directory */
   public static final String ADV_IMAGE_PATH = ADV_RESOURCES_PATH + FS + "images" + FS;
   /** Chared images are in the ChronosLib resources directory */
