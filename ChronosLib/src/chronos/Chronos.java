@@ -46,9 +46,21 @@ public class Chronos
    * workspace.
    */
 
-  // TODO: Tim will revise these paths to folder agnostic
   /** Base environment variable for shared file resources path */
-  public static String CHRONOS_ROOT = System.getProperty("user.dir"); // + "/eChronos";
+  public static String CHRONOS_ROOT = findChronosRootDir();
+  /** Initializer for CHRONOS_ROOT static variable */
+  private static String findChronosRootDir() 
+  {
+	  String fileName = null;
+	  try {
+		fileName = new File("..").getCanonicalPath();
+	} catch (IOException e) {
+		System.err.println("Unable to locate CHRONOS_ROOT");
+		System.exit(-1);
+	}
+	  return fileName;
+  }
+  
   /** Relative path location of all shared resources */
 //  public static String RESOURCES_PATH = CHRONOS_ROOT + "/ChronosLib/resources";
   public static String RESOURCES_PATH = CHRONOS_ROOT + "/resources";
@@ -217,7 +229,7 @@ public class Chronos
     return DEFAULT_PKG;
   }
 
-  /**
+/**
    * Allow the base location of class files to be defined or redirected for testing
    * 
    * @param pkgName location of file wrto the Chronos root directory

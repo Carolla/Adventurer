@@ -38,8 +38,8 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
 import mylib.MsgCtrl;
-import mylib.civ.DataShuttle;
-import mylib.civ.DataShuttle.ErrorType;
+import mylib.civ.List;
+import mylib.civ.List.ErrorType;
 import mylib.hic.HelpKeyListener;
 import net.miginfocom.swing.MigLayout;
 import chronos.Chronos;
@@ -165,7 +165,7 @@ public class NewHeroDisplay extends JPanel
   /** Associated validating CIV object */
   private NewHeroCiv _nhCiv = null;
   /** Parm object for passing and receiving field data */
-  private DataShuttle<NewHeroFields> _shuttle = null;
+  private List<NewHeroFields> _shuttle = null;
 
 
   // ============================================================
@@ -759,20 +759,20 @@ public class NewHeroDisplay extends JPanel
    * 
    * @return data shuttle of fields for this widget
    */
-  private DataShuttle<NewHeroFields> packFields()
+  private List<NewHeroFields> packFields()
   {
-    // Package each of these into the data shuttle
-    _shuttle.putField(NewHeroFields.NAME, _name);
-    _shuttle.putField(NewHeroFields.GENDER, _gender);
-    _shuttle.putField(NewHeroFields.HAIR_COLOR, _hairColor);
-    _shuttle.putField(NewHeroFields.OCCUPATION, _occup);
-    _shuttle.putField(NewHeroFields.RACENAME, _raceName);
-    _shuttle.putField(NewHeroFields.KLASSNAME, NewHeroFields.KLASSNAME.getDefault());
-    _shuttle.putField(NewHeroFields.ABILITY_SCORES, _nhCiv.getAllScores());
-
-    _shuttle.removeKey(NewHeroFields.HAIR_COLOR_OPTIONS);
-    _shuttle.removeKey(NewHeroFields.OCCUPATION_OPTIONS);
-    _shuttle.removeKey(NewHeroFields.RACE_OPTIONS);
+//    // Package each of these into the data shuttle
+//    _shuttle.putField(NewHeroFields.NAME, _name);
+//    _shuttle.putField(NewHeroFields.GENDER, _gender);
+//    _shuttle.putField(NewHeroFields.HAIR_COLOR, _hairColor);
+//    _shuttle.putField(NewHeroFields.OCCUPATION, _occup);
+//    _shuttle.putField(NewHeroFields.RACENAME, _raceName);
+//    _shuttle.putField(NewHeroFields.KLASSNAME, NewHeroFields.KLASSNAME.getDefault());
+//    _shuttle.putField(NewHeroFields.ABILITY_SCORES, _nhCiv.getAllScores());
+//
+//    _shuttle.removeKey(NewHeroFields.HAIR_COLOR_OPTIONS);
+//    _shuttle.removeKey(NewHeroFields.OCCUPATION_OPTIONS);
+//    _shuttle.removeKey(NewHeroFields.RACE_OPTIONS);
 
     // Call the Civ to validate; process any errocodes
     return _shuttle;

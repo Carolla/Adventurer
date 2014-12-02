@@ -11,23 +11,18 @@
 
 package civ;
 
-import pdc.character.Person;
-
-import chronos.pdc.AttributeList;
-import chronos.pdc.Race;
-
-import mylib.Constants;
-import mylib.civ.DataShuttle;
-import mylib.civ.DataShuttle.ErrorType;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import pdc.character.Person;
+import chronos.pdc.AttributeList;
+import chronos.pdc.Race;
+
 /**
  * Negotiates data between the input widget and the backend PDC object, using
- * two different DataShuttle&ltPersonKeys&gt objects. Two shuttles are created
+ * two different List&ltPersonKeys&gt objects. Two shuttles are created
  * to keep internally formatted data of the model distinct from String data of
  * the widget. This input civ takes the input data, creates the Person, and
  * creates the output HeroDisplayCiv, which gains controls when the Person is
@@ -50,8 +45,8 @@ import java.util.Map;
  */
 public class NewHeroCiv {
 	private Person _person = null;
-	private DataShuttle<PersonKeys> _ds = null;
-	private DataShuttle<NewHeroFields> _ws = null;
+	private List<PersonKeys> _ds = null;
+	private List<NewHeroFields> _ws = null;
 	
 	private String _selectedRace = null;
 	private String _selectedGender = null;
@@ -88,35 +83,35 @@ public class NewHeroCiv {
 	 * Creates and saves the widget for reference, and shuttles for the two
 	 * transport directions.
 	 */
-	public NewHeroCiv() {
-		// Create the shuttles, references, and model for this civ
-		_ds = new DataShuttle<PersonKeys>(PersonKeys.class);
-		_ws = new DataShuttle<NewHeroFields>(NewHeroFields.class);
-	}
+//	public NewHeroCiv() {
+//		// Create the shuttles, references, and model for this civ
+//		_ds = new List<PersonKeys>(PersonKeys.class);
+//		_ws = new List<NewHeroFields>(NewHeroFields.class);
+//	}
 
-	/**
-	 * Called by widget to get a widget shuttle with key data for display.
-	 * Default keys needed on initial display are NAME, GENDER, HAIRCOLOR
-	 * (list), OCCUPATION (list), and RACE (list).
-	 * 
-	 * @return the widget shuttle for display
-	 */
-	public DataShuttle<NewHeroFields> getDefaults() {
-		// Put the single-valued defaults into the widget shuttle
-		_ws.putField(NewHeroFields.NAME, NewHeroFields.NAME.getDefault());
-		_ws.putField(NewHeroFields.GENDER, NewHeroFields.GENDER.getDefault());
-		_ws.putField(NewHeroFields.KLASSNAME,
-				NewHeroFields.KLASSNAME.getDefault());
-		_ws.putField(NewHeroFields.RACE_OPTIONS,
-				NewHeroFields.RACE_OPTIONS.getDefault());
-		_ws.putField(NewHeroFields.HAIR_COLOR_OPTIONS,
-				NewHeroFields.HAIR_COLOR_OPTIONS.getDefault());
-		_ws.putField(NewHeroFields.OCCUPATION_OPTIONS,
-				NewHeroFields.OCCUPATION_OPTIONS.getDefault());
-
-		// Return the shuttle for display
-		return _ws;
-	}
+//	/**
+//	 * Called by widget to get a widget shuttle with key data for display.
+//	 * Default keys needed on initial display are NAME, GENDER, HAIRCOLOR
+//	 * (list), OCCUPATION (list), and RACE (list).
+//	 * 
+//	 * @return the widget shuttle for display
+//	 */
+//	public List<NewHeroFields> getDefaults() {
+//		// Put the single-valued defaults into the widget shuttle
+//		_ws.putField(NewHeroFields.NAME, NewHeroFields.NAME.getDefault());
+//		_ws.putField(NewHeroFields.GENDER, NewHeroFields.GENDER.getDefault());
+//		_ws.putField(NewHeroFields.KLASSNAME,
+//				NewHeroFields.KLASSNAME.getDefault());
+//		_ws.putField(NewHeroFields.RACE_OPTIONS,
+//				NewHeroFields.RACE_OPTIONS.getDefault());
+//		_ws.putField(NewHeroFields.HAIR_COLOR_OPTIONS,
+//				NewHeroFields.HAIR_COLOR_OPTIONS.getDefault());
+//		_ws.putField(NewHeroFields.OCCUPATION_OPTIONS,
+//				NewHeroFields.OCCUPATION_OPTIONS.getDefault());
+//
+//		// Return the shuttle for display
+//		return _ws;
+//	}
 
 	/**
 	 * Calls each key and confirms that the widget data is valid
@@ -126,9 +121,9 @@ public class NewHeroCiv {
 	 * @return widget shuttle with ErrorType.OK. If an invalid key occurs, the
 	 *         error methods can be checked for which key was invalid.
 	 */
-	private DataShuttle<NewHeroFields> isValid(DataShuttle<NewHeroFields> ws) 
+	private List<NewHeroFields> isValid(List<NewHeroFields> ws) 
 	{
-		NewHeroFields.isValid(ws);
+//		NewHeroFields.isValid(ws);
 		return ws;
 	}
 
@@ -142,53 +137,53 @@ public class NewHeroCiv {
 	 *            contains the field keys from the widget
 	 * @return ws; if errors, the shuttle's error flags will be set
 	 */
-	public DataShuttle<NewHeroFields> submit(DataShuttle<NewHeroFields> ws) {
-		// Guard: if shuttle is null, return immediately
-		if (ws == null) {
-			return ws;
-		}
-		// Guard: if shuttle contains no keys, return empty shuttle with error
-		// flags
-		if (ws.size() == 0) {
-			ws.setErrorType(ErrorType.EMPTY_SHUTTLE);
-			ws.setErrorMessage(DataShuttle.EMPTY_SHUTTLE_MSG);
-			return ws;
-		}
-		// Load a value into the shuttle for each slot requested; ignore others
-		// Return immediately if the requested key is not found
-		try {
-			// Validate the data before proceeding; bad data is returned with
-			// error flags.
-			if (isValid(ws).getErrorType() != ErrorType.OK) {
-				return ws;
-			}
-			// Convert the widget shuttle to a model shuttle
-			_ds = convertToModel(ws);
-
-			// Allow the Civ to perform other actions on the data shuttle before
-			// unloading it
-			createPerson(_ds);
-
-			// Local action must create a model if it doesn't exist
-			if (_person == null) {
-				ws.setErrorType(ErrorType.CREATION_EXCEPTION);
-				ws.setErrorMessage("Can't create that kind of Person");
-				return ws;
-			}
-
-			// Set the values from the shuttle into the model using the given
-			// keys
-			// If error, the shuttle will contain the error flags
-			// _ds = _person.unload(_ds);
-
-			// In case the shuttle is of the wrong type
-		} catch (ClassCastException ex) {
-			ws.setErrorType(ErrorType.CLASS_CAST_EXCEPTION);
-			ws.setErrorMessage(DataShuttle.CAST_EXCEPTION_MSG);
-			return ws;
-		}
-		return ws;
-	}
+//	public List<NewHeroFields> submit(List<NewHeroFields> ws) {
+//		// Guard: if shuttle is null, return immediately
+//		if (ws == null) {
+//			return ws;
+//		}
+//		// Guard: if shuttle contains no keys, return empty shuttle with error
+//		// flags
+//		if (ws.size() == 0) {
+//			ws.setErrorType(ErrorType.EMPTY_SHUTTLE);
+//			ws.setErrorMessage(List.EMPTY_SHUTTLE_MSG);
+//			return ws;
+//		}
+//		// Load a value into the shuttle for each slot requested; ignore others
+//		// Return immediately if the requested key is not found
+//		try {
+//			// Validate the data before proceeding; bad data is returned with
+//			// error flags.
+//			if (isValid(ws).getErrorType() != ErrorType.OK) {
+//				return ws;
+//			}
+//			// Convert the widget shuttle to a model shuttle
+//			_ds = convertToModel(ws);
+//
+//			// Allow the Civ to perform other actions on the data shuttle before
+//			// unloading it
+//			createPerson(_ds);
+//
+//			// Local action must create a model if it doesn't exist
+//			if (_person == null) {
+////				ws.setErrorType(ErrorType.CREATION_EXCEPTION);
+////				ws.setErrorMessage("Can't create that kind of Person");
+//				return ws;
+//			}
+//
+//			// Set the values from the shuttle into the model using the given
+//			// keys
+//			// If error, the shuttle will contain the error flags
+//			// _ds = _person.unload(_ds);
+//
+//			// In case the shuttle is of the wrong type
+//		} catch (ClassCastException ex) {
+////			ws.setErrorType(ErrorType.CLASS_CAST_EXCEPTION);
+////			ws.setErrorMessage(List.CAST_EXCEPTION_MSG);
+//			return ws;
+//		}
+//		return ws;
+//	}
 	
 	/**
 	 * Provides the attributes to the UI to create the controls.
@@ -326,7 +321,7 @@ public class NewHeroCiv {
 	 * @return the input shuttle with model data, with error flags set if a
 	 *         problem occurs.
 	 */
-	private DataShuttle<PersonKeys> convertToModel(DataShuttle<NewHeroFields> ws) {
+	private List<PersonKeys> convertToModel(List<NewHeroFields> ws) {
 		// Guard against no shuttle or empty shuttle
 		if (ws == null || ws.size() == 0) {
 			return null;
@@ -356,34 +351,34 @@ public class NewHeroCiv {
 	 *            key-value pair of person fields needed to create the Person
 	 *            object
 	 */
-	private void createPerson(DataShuttle<PersonKeys> inMap) {
-		// Null Guard
-		if (DataShuttle.hasErrors(inMap)) {
-			return;
-		}
-		try {
-			//Create the AttributeList
-			AttributeList attribList = getAttributeList();
-			
-			// If any of these keys have null values, the exception is thrown
-			// and the error flags are set
-			_person = new Person((String) inMap.getField(PersonKeys.NAME),
-					(String) inMap.getField(PersonKeys.GENDER),
-					(String) inMap.getField(PersonKeys.OCCUPATION),
-					(String) inMap.getField(PersonKeys.HAIR_COLOR),
-					(String) inMap.getField(PersonKeys.RACENAME),
-					(String) inMap.getField(PersonKeys.KLASSNAME),
-					attribList);
-			// Ask the model to display itself -- IS THIS THE WRONG PLACE FOR
-			// THIS CALL?
-			if (!Constants.IN_TEST) {
-				_person.display();
-			}
-		} catch (InstantiationException ex) {
-			inMap.setErrorType(ErrorType.CREATION_EXCEPTION);
-			inMap.setErrorMessage("NewHeroCiv.localAction(): Person constructor failed");
-		}
-	}
+//	private void createPerson(List<PersonKeys> inMap) {
+//		// Null Guard
+//		if (List.hasErrors(inMap)) {
+//			return;
+//		}
+//		try {
+//			//Create the AttributeList
+//			AttributeList attribList = getAttributeList();
+//			
+//			// If any of these keys have null values, the exception is thrown
+//			// and the error flags are set
+//			_person = new Person((String) inMap.getField(PersonKeys.NAME),
+//					(String) inMap.getField(PersonKeys.GENDER),
+//					(String) inMap.getField(PersonKeys.OCCUPATION),
+//					(String) inMap.getField(PersonKeys.HAIR_COLOR),
+//					(String) inMap.getField(PersonKeys.RACENAME),
+//					(String) inMap.getField(PersonKeys.KLASSNAME),
+//					attribList);
+//			// Ask the model to display itself -- IS THIS THE WRONG PLACE FOR
+//			// THIS CALL?
+//			if (!Constants.IN_TEST) {
+//				_person.display();
+//			}
+//		} catch (InstantiationException ex) {
+//			inMap.setErrorType(ErrorType.CREATION_EXCEPTION);
+//			inMap.setErrorMessage("NewHeroCiv.localAction(): Person constructor failed");
+//		}
+//	}
 
 	
 	/*
@@ -402,7 +397,7 @@ public class NewHeroCiv {
 
 		}
 
-		public DataShuttle<PersonKeys> getDS() {
+		public List<PersonKeys> getDS() {
 			return _ds;
 		}
 
@@ -414,7 +409,7 @@ public class NewHeroCiv {
 			return _person.getTraits();
 		}
 
-		public DataShuttle<NewHeroFields> getWS() {
+		public List<NewHeroFields> getWS() {
 			return _ws;
 		}
 
@@ -425,46 +420,46 @@ public class NewHeroCiv {
 		 *            widget shuttle
 		 * @return model shuttle containing wigdet shuttle data
 		 */
-		public DataShuttle<PersonKeys> convertToModel(
-				DataShuttle<NewHeroFields> ws) {
+		public List<PersonKeys> convertToModel(
+				List<NewHeroFields> ws) {
 			return NewHeroCiv.this.convertToModel(ws);
 		}
 
-		/**
-		 * Call the createPerson method with known user options
-		 * 
-		 * @param ws
-		 *            shuttle containing NewHeroFields
-		 * @return model shuttle containing wigdet shuttle data
-		 */
-		public DataShuttle<PersonKeys> createPerson(
-				DataShuttle<NewHeroFields> ws) {
-			// NewHeroCiv.this.createPerson(ws);
-			// Null Guard
-			if (DataShuttle.hasErrors(ws)) {
-				return null;
-			}
-			try {
-				// If any of these keys have null values, the exception is
-				// thrown and the error flags are set
-				_person = new Person((String) ws.getField(NewHeroFields.NAME),
-						(String) ws.getField(NewHeroFields.GENDER),
-						(String) ws.getField(NewHeroFields.OCCUPATION),
-						(String) ws.getField(NewHeroFields.HAIR_COLOR),
-						(String) ws.getField(NewHeroFields.RACENAME),
-						(String) ws.getField(NewHeroFields.KLASSNAME));
-
-			} catch (InstantiationException ex) {
-				ws.setErrorType(ErrorType.CREATION_EXCEPTION);
-				ws.setErrorMessage("NewHeroCiv.localAction(): Person constructor failed");
-			}
-
-			// If person is created with an error, then load the attributes
-			if (ws.getErrorType() == ErrorType.OK) {
-				// _person.loadPersonData(_ds);
-			}
-			return _ds;
-		}
+//		/**
+//		 * Call the createPerson method with known user options
+//		 * 
+//		 * @param ws
+//		 *            shuttle containing NewHeroFields
+//		 * @return model shuttle containing wigdet shuttle data
+//		 */
+//		public List<PersonKeys> createPerson(
+//				List<NewHeroFields> ws) {
+//			// NewHeroCiv.this.createPerson(ws);
+//			// Null Guard
+//			if (List.hasErrors(ws)) {
+//				return null;
+//			}
+//			try {
+//				// If any of these keys have null values, the exception is
+//				// thrown and the error flags are set
+//				_person = new Person((String) ws.getField(NewHeroFields.NAME),
+//						(String) ws.getField(NewHeroFields.GENDER),
+//						(String) ws.getField(NewHeroFields.OCCUPATION),
+//						(String) ws.getField(NewHeroFields.HAIR_COLOR),
+//						(String) ws.getField(NewHeroFields.RACENAME),
+//						(String) ws.getField(NewHeroFields.KLASSNAME));
+//
+//			} catch (InstantiationException ex) {
+////				ws.setErrorType(ErrorType.CREATION_EXCEPTION);
+//				ws.setErrorMessage("NewHeroCiv.localAction(): Person constructor failed");
+//			}
+//
+//			// If person is created with an error, then load the attributes
+////			if (ws.getErrorType() == ErrorType.OK) {
+//				// _person.loadPersonData(_ds);
+//			}
+////			return _ds;
+//		}
 
 	} // end of MockNewHeroCiv class
 

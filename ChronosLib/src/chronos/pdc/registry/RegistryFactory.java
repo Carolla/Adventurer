@@ -30,9 +30,13 @@ public class RegistryFactory
   private HashMap<RegKey, Registry> _regMap = null;
 
   /** Public list of all possible registries subclasses */
-  public enum RegKey {
+  public enum RegKey
+  {
     ADV("Adventure"), BLDG("Building"), ITEM("Item"), NPC("NPC"), OCP("Occupation"),
     SKILL("Skill"), TOWN("Town");
+
+    private String _name = null;
+
 
     private RegKey(String nm)
     {
@@ -45,7 +49,6 @@ public class RegistryFactory
       return _name;
     }
 
-    private String _name = null;
   }
 
 
@@ -177,7 +180,7 @@ public class RegistryFactory
    * @return an existing registry of the requested type, or null if it doesn't exist or can't be
    *         found
    */
-  public Registry getRegistry(RegKey regtype) 
+  public Registry getRegistry(RegKey regtype)
   {
     Registry reg = getExisting(regtype);
     if (reg == null) {

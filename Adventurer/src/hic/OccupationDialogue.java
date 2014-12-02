@@ -11,15 +11,6 @@
 
 package hic;
 
-import civ.OccupationDisplayCiv;
-
-import chronos.civ.OccupationKeys;
-
-import mylib.MsgCtrl;
-import mylib.civ.DataShuttle;
-
-import net.miginfocom.swing.MigLayout;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -27,6 +18,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -38,14 +30,16 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import mylib.MsgCtrl;
+import net.miginfocom.swing.MigLayout;
+import chronos.civ.OccupationKeys;
+import civ.OccupationDisplayCiv;
+
 ///** Allows the user to show their Person's many attributes. 
 
 /**
  * @author Timothy Armstrong
- * @version <DL>
- *          <DT>Build 1.0 Sept 12 2011 // original
- *          <DD>
- *          </DL>
+ * @version Sept 12 2011 // original <br>
  */
 @SuppressWarnings("serial")
 public class OccupationDialogue extends JDialog {
@@ -87,7 +81,7 @@ public class OccupationDialogue extends JDialog {
 	private OccupationDisplayCiv _occCiv = null;
 
 	/** Keys to Items data to be displayed */
-	DataShuttle<OccupationKeys> _ws = null;
+	List<OccupationKeys> _ws = null;
 
 	/** Selected item in Occupation field */
 	private String _occSelected = null;
@@ -159,11 +153,10 @@ public class OccupationDialogue extends JDialog {
 	// private JPanel _klassPanel;
 
 	/*
-	 * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND
-	 * RELATED METHODS ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	 * CONSTRUCTOR(S) AND RELATED METHODS 
 	 */
 
-	/** Default constuctor */
+	/** Default constructor */
 	public OccupationDialogue() {
 	}
 
@@ -454,11 +447,11 @@ public class OccupationDialogue extends JDialog {
 		}
 
 		// Do what you need to do to save an occupation
-		packShuttle();
+//		packShuttle();
 
 		int saveState = 0;
 		_occCiv.submit(_ws);
-		if (_ws.getErrorType() == DataShuttle.ErrorType.OK) {
+		if (_ws.getErrorType() == List.ErrorType.OK) {
 			saveState = _occCiv.save(_ws);
 		} else {
 			// Check error conditions
@@ -523,21 +516,21 @@ public class OccupationDialogue extends JDialog {
 	}
 
 	/** Pack the current data into a shuttle for submission to the CIV */
-	private DataShuttle<OccupationKeys> packShuttle() {
-		_ws.putField(OccupationKeys.NAME, _nameText.getText());
-		_ws.putField(OccupationKeys.DESC, _descText.getText());
-		_ws.putField(OccupationKeys.SKILL, _skillSelected);
-		return _ws;
-	}
+//	private List<OccupationKeys> packShuttle() {
+//		_ws.putField(OccupationKeys.NAME, _nameText.getText());
+//		_ws.putField(OccupationKeys.DESC, _descText.getText());
+//		_ws.putField(OccupationKeys.SKILL, _skillSelected);
+//		return _ws;
+//	}
 
 	@SuppressWarnings({ "unchecked" })
-    private void unpackShuttle(DataShuttle<OccupationKeys> ds) {
+    private void unpackShuttle(List<OccupationKeys> ds) {
 		// Unpack the data shuttle into individual pieces of info
-		_occName = (String) ds.getField(OccupationKeys.NAME);
-		_occDesc = (String) ds.getField(OccupationKeys.DESC);
-		_occList = (ArrayList<String>) ds.getField(OccupationKeys.OCCLIST);
-		_skillSelected = (String) ds.getField(OccupationKeys.SKILL);
-		_skilllist = (ArrayList<String>) ds.getField(OccupationKeys.SKILLLIST);
+//		_occName = (String) ds.getField(OccupationKeys.NAME);
+//		_occDesc = (String) ds.getField(OccupationKeys.DESC);
+//		_occList = (ArrayList<String>) ds.getField(OccupationKeys.OCCLIST);
+//		_skillSelected = (String) ds.getField(OccupationKeys.SKILL);
+//		_skilllist = (ArrayList<String>) ds.getField(OccupationKeys.SKILLLIST);
 	}
 } // end OccupationDialogue class
 

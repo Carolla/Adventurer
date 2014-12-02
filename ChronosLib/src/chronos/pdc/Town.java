@@ -245,17 +245,9 @@ public class Town implements IRegistryElement
 
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PRIVATE METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * PRIVATE METHODS
    */
+
 
 } // end of Town class
 
-
-
-// /** The Dungeon's overview */
-// private final String DEF_DGN_INTRO = "This is the fortress of the mighty warrior Rogahn and the "
-// +
-// "genius mage Zeliigar. Nestled among the escarpment outside of town, it has become the " +
-// "lair to bandits looking for loot, vile creatures looking for shelter, and horrible monsters that "+
-// "have found a good supply of food--human or otherwise." ;

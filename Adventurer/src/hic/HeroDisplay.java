@@ -37,7 +37,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import mylib.MsgCtrl;
-import mylib.civ.DataShuttle;
 import net.miginfocom.swing.MigLayout;
 import chronos.Chronos;
 import civ.HeroDisplayCiv;
@@ -208,7 +207,7 @@ public class HeroDisplay extends JPanel
   private HeroDisplayCiv _hdCiv = null;
 
   /** Keys to Hero data to be displayed */
-  DataShuttle<PersonKeys> _ds = null;
+  List<PersonKeys> _ds = null;
 
   /** Items to be displayed */
   private ArrayList<String> _itemList = null;
@@ -264,119 +263,119 @@ public class HeroDisplay extends JPanel
 
 
   /** Stub until the display is working properly. */
-  public boolean displayAttributes(DataShuttle<PersonKeys> ds)
+  public boolean displayAttributes(List<PersonKeys> ds)
   {
     // Set private field equal to passed parameter
     _ds = ds;
 
-    // Generate titled border (banner) containing Hero's name
-    int mfpad = Mainframe.PAD;
-    String mftitle = " Attributes for " + _ds.getField(PersonKeys.NAME)
-        + " ";
-    Border thisBorder = BorderFactory.createMatteBorder(mfpad, mfpad,
-        mfpad, mfpad, Color.WHITE);
-    Border titledBorder = BorderFactory.createTitledBorder(thisBorder,
-        mftitle, TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION);
-    setBorder(titledBorder);
-
-    // ADD HELP MESSAGE TO INSTRUCT HOW TO SHIFT FOCUS
-    add(new JLabel(HELP_LABEL), "span");
-
-    // Use a larger special font for the Hero's name. Extract the label font
-    // size from the cell
-    Font nameFont = null;
-    try {
-      // Returned font is of pt size 1
-      Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(
-          Chronos.RUNIC_ENGLISH_FONT_FILE));
-
-      // Derive a 30 pt version:
-      nameFont = newFont.deriveFont(NAME_HT);
-    } catch (FontFormatException e) {
-      MsgCtrl.errMsgln("Could not format font: " + e.getMessage());
-    } catch (IOException e) {
-      MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
-    }
-    // NamePlate before Attribute grid: Name, gender, Race, Klass
-    String namePlate = _ds.getField(PersonKeys.NAME) + ": "
-        + _ds.getField(PersonKeys.GENDER) + " "
-        + _ds.getField(PersonKeys.RACENAME) + " "
-        + _ds.getField(PersonKeys.KLASSNAME);
-    // Put some space above and below the namePlate
-    _charName = new JLabel(namePlate);
-
-    // GraphicsEnvironment env =
-    // GraphicsEnvironment.getLocalGraphicsEnvironment();
-    // String[] fontNames = env.getAvailableFontFamilyNames();
-
-    _charName.setFont(nameFont);
-    // TODO: Update this to change the size Tim
-    while (_charName.getPreferredSize().width > DATA_WIDTH) {
-      // Edit name font down a notch or two
-      Font labelFont = _charName.getFont();
-      String labelText = _charName.getText();
-
-      int stringWidth = _charName.getFontMetrics(labelFont).stringWidth(
-          labelText);
-      int componentWidth = DATA_WIDTH;
-
-      // Find out how much the font can grow in width.
-      double widthRatio = (double) componentWidth / (double) stringWidth;
-
-      int newFontSize = (int) (labelFont.getSize() * widthRatio);
-
-      // Recreate the new font
-      try {
-        Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(
-            Chronos.RUNIC_ENGLISH_FONT_FILE));
-
-        // Set the label's font size to the newly determined size.
-        Font smallNameFont = newFont.deriveFont(newFontSize);
-        _charName.setFont(smallNameFont);
-      } catch (FontFormatException e) {
-        MsgCtrl.errMsgln("Could not format font: " + e.getMessage());
-      } catch (IOException e) {
-        MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
-      }
-    }
-    add(_charName, "span, gaptop 5, gapbottom 8");
-
-    // Display Ability Scores
-
-    List<Integer> attList = (List<Integer>) ds.getField(PersonKeys.ABILITY_SCORES);
-    List<String> attributes = new NewHeroCiv().getAttributes();
-
-    JPanel scorePanel = new JPanel();
-
-    int i = 0;
-    for (String att : attributes) {
-      JLabel scoreLabel = new JLabel(att + ": " + attList.get(i).toString());
-      scorePanel.add(scoreLabel);
-      i++;
-    }
-
-    add(scorePanel, "span");
-
-    // CREATE THE ATTRIBUTE GRID PANEL AND SIZE IT FOR DISPLAY
-    _attribPanel = buildAttributePanel();
-    // Ensure that the attribute panel does not exceed the HeroDisplay panel
-    // width
-    _attribPanel.setPreferredSize(new Dimension(DATA_WIDTH, _attribPanel
-        .getHeight()));
-    // attribPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK,
-    // 1));
-    add(_attribPanel, "span, center, gapbottom 0");// , span, growx");
-
-    // ADD SAVE & CANCEL BUTTONS TO THE BOTTOM OF THE PANEL
-    _buttonPanel = buildButtonPanel();
-    _buttonPanel.setPreferredSize(new Dimension(DATA_WIDTH, _buttonPanel
-        .getHeight()));
-    add(_buttonPanel, "span, center, gapbottom 5");
-
-    Mainframe frame = Mainframe.getInstance();
-    // frame.changeToLeftPanel(this);
-    // revalidate();
-    // repaint();
+//    // Generate titled border (banner) containing Hero's name
+//    int mfpad = Mainframe.PAD;
+//    String mftitle = " Attributes for " + _ds.getField(PersonKeys.NAME)
+//        + " ";
+//    Border thisBorder = BorderFactory.createMatteBorder(mfpad, mfpad,
+//        mfpad, mfpad, Color.WHITE);
+//    Border titledBorder = BorderFactory.createTitledBorder(thisBorder,
+//        mftitle, TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION);
+//    setBorder(titledBorder);
+//
+//    // ADD HELP MESSAGE TO INSTRUCT HOW TO SHIFT FOCUS
+//    add(new JLabel(HELP_LABEL), "span");
+//
+//    // Use a larger special font for the Hero's name. Extract the label font
+//    // size from the cell
+//    Font nameFont = null;
+//    try {
+//      // Returned font is of pt size 1
+//      Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(
+//          Chronos.RUNIC_ENGLISH_FONT_FILE));
+//
+//      // Derive a 30 pt version:
+//      nameFont = newFont.deriveFont(NAME_HT);
+//    } catch (FontFormatException e) {
+//      MsgCtrl.errMsgln("Could not format font: " + e.getMessage());
+//    } catch (IOException e) {
+//      MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
+//    }
+//    // NamePlate before Attribute grid: Name, gender, Race, Klass
+//    String namePlate = _ds.getField(PersonKeys.NAME) + ": "
+//        + _ds.getField(PersonKeys.GENDER) + " "
+//        + _ds.getField(PersonKeys.RACENAME) + " "
+//        + _ds.getField(PersonKeys.KLASSNAME);
+//    // Put some space above and below the namePlate
+//    _charName = new JLabel(namePlate);
+//
+//    // GraphicsEnvironment env =
+//    // GraphicsEnvironment.getLocalGraphicsEnvironment();
+//    // String[] fontNames = env.getAvailableFontFamilyNames();
+//
+//    _charName.setFont(nameFont);
+//    // TODO: Update this to change the size Tim
+//    while (_charName.getPreferredSize().width > DATA_WIDTH) {
+//      // Edit name font down a notch or two
+//      Font labelFont = _charName.getFont();
+//      String labelText = _charName.getText();
+//
+//      int stringWidth = _charName.getFontMetrics(labelFont).stringWidth(
+//          labelText);
+//      int componentWidth = DATA_WIDTH;
+//
+//      // Find out how much the font can grow in width.
+//      double widthRatio = (double) componentWidth / (double) stringWidth;
+//
+//      int newFontSize = (int) (labelFont.getSize() * widthRatio);
+//
+//      // Recreate the new font
+//      try {
+//        Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(
+//            Chronos.RUNIC_ENGLISH_FONT_FILE));
+//
+//        // Set the label's font size to the newly determined size.
+//        Font smallNameFont = newFont.deriveFont(newFontSize);
+//        _charName.setFont(smallNameFont);
+//      } catch (FontFormatException e) {
+//        MsgCtrl.errMsgln("Could not format font: " + e.getMessage());
+//      } catch (IOException e) {
+//        MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
+//      }
+//    }
+//    add(_charName, "span, gaptop 5, gapbottom 8");
+//
+//    // Display Ability Scores
+//
+//    List<Integer> attList = (List<Integer>) ds.getField(PersonKeys.ABILITY_SCORES);
+//    List<String> attributes = new NewHeroCiv().getAttributes();
+//
+//    JPanel scorePanel = new JPanel();
+//
+//    int i = 0;
+//    for (String att : attributes) {
+//      JLabel scoreLabel = new JLabel(att + ": " + attList.get(i).toString());
+//      scorePanel.add(scoreLabel);
+//      i++;
+//    }
+//
+//    add(scorePanel, "span");
+//
+//    // CREATE THE ATTRIBUTE GRID PANEL AND SIZE IT FOR DISPLAY
+//    _attribPanel = buildAttributePanel();
+//    // Ensure that the attribute panel does not exceed the HeroDisplay panel
+//    // width
+//    _attribPanel.setPreferredSize(new Dimension(DATA_WIDTH, _attribPanel
+//        .getHeight()));
+//    // attribPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK,
+//    // 1));
+//    add(_attribPanel, "span, center, gapbottom 0");// , span, growx");
+//
+//    // ADD SAVE & CANCEL BUTTONS TO THE BOTTOM OF THE PANEL
+//    _buttonPanel = buildButtonPanel();
+//    _buttonPanel.setPreferredSize(new Dimension(DATA_WIDTH, _buttonPanel
+//        .getHeight()));
+//    add(_buttonPanel, "span, center, gapbottom 5");
+//
+//    Mainframe frame = Mainframe.getInstance();
+//    // frame.changeToLeftPanel(this);
+//    // revalidate();
+//    // repaint();
     return true;
   }
 

@@ -1,21 +1,19 @@
 package test.civ;
 
-import pdc.character.Person;
-
-import civ.HeroDisplayCiv;
-import civ.PersonKeys;
-
-import mylib.Constants;
-import mylib.MsgCtrl;
-import mylib.civ.DataShuttle;
-
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
+import mylib.Constants;
+import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.Before;
+
+import pdc.character.Person;
+import civ.HeroDisplayCiv;
+import civ.PersonKeys;
 
 /**
  * 
@@ -672,24 +670,24 @@ public class TestFileLocation extends TestCase
      *            shuttle containing data formatted for the widget
      * @return true only if all asserts passed
      */
-    private boolean verifyPersonDisplay(DataShuttle<PersonKeys> ws)
+    private boolean verifyPersonDisplay(List<PersonKeys> ws)
     {
         // Null guards
         if (ws == null) {
             return false;
         }
-        if (!DataShuttle.hasErrors(ws)) {
-            return false;
+//        if (!Liste.hasErrors(ws)) {
+//            return false;
         }
         // temps
-        String s = null;
+//        String s = null;
         // Verify that the Person contains the expected data
         // Compare each requested key value with the expected output value
         // NamePlate before Attribute grid: Name, gender, Race, Klass
-        s = (String) ws.getField(PersonKeys.NAME);
-        assertEquals(s, NAME);
-        s = (String) ws.getField(PersonKeys.GENDER);
-        assertEquals(s, GENDER);
+//        s = (String) ws.getField(PersonKeys.NAME);
+//        assertEquals(s, NAME);
+//        s = (String) ws.getField(PersonKeys.GENDER);
+//        assertEquals(s, GENDER);
         s = (String) ws.getField(PersonKeys.RACENAME);
         assertEquals(s, RACENAME);
         s = (String) ws.getField(PersonKeys.KLASSNAME);

@@ -31,8 +31,8 @@ public class Adventure implements IRegistryElement
 
   /** Town within the adventure */
   private Town _town = null;
-  // /** Name of the Town for this Adventure */
-  // private String _townName = null;
+  /** Name of the Town for this Adventure */
+  private String _townName = null;
   /** Name of the Arena for this Adventure */
   private String _arenaName = null;
 

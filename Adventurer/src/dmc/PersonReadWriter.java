@@ -14,7 +14,7 @@ import java.util.List;
 
 import mylib.Constants;
 import mylib.MsgCtrl;
-import mylib.civ.DataShuttle;
+import mylib.civ.List;
 import pdc.character.Person;
 import chronos.Chronos;
 import chronos.civ.MiscKeys.PersonFileData;
@@ -110,19 +110,19 @@ public class PersonReadWriter
     return p;
   }
 
-  /**
-   * Pack the Hero file related data that only this object has.
-   * 
-   * @param fileMap shuttle of keys designating the data to return
-   * @return a data shuttle for displaying directory files for saving the Person
-   */
-  public DataShuttle<PersonFileData> packFileData(DataShuttle<PersonFileData> fileMap)
-  {
-    fileMap.putField(PersonFileData.RESOURCE_DIR, DORMITORY);
-    fileMap.putField(PersonFileData.PERSON_EXT, PERSON_EXT);
-    fileMap.putField(PersonFileData.CHOOSER_LABEL, PERSON_LABEL);
-    return fileMap;
-  }
+//  /**
+//   * Pack the Hero file related data that only this object has.
+//   * 
+//   * @param fileMap shuttle of keys designating the data to return
+//   * @return a data shuttle for displaying directory files for saving the Person
+//   */
+//  public List<PersonFileData> packFileData(List<PersonFileData> fileMap)
+//  {
+//    fileMap.putField(PersonFileData.RESOURCE_DIR, DORMITORY);
+//    fileMap.putField(PersonFileData.PERSON_EXT, PERSON_EXT);
+//    fileMap.putField(PersonFileData.CHOOSER_LABEL, PERSON_LABEL);
+//    return fileMap;
+//  }
 
   /**
    * Return a list of all the names of people saved in the dormitory
