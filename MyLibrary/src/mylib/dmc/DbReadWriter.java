@@ -82,8 +82,7 @@ public class DbReadWriter
   public DbReadWriter(String filepath) throws NullPointerException
   {
     if (filepath == null) {
-      throw new NullPointerException("DbReadWriter(): " + DBERR_FILENAME
-          + " set to null");
+      throw new NullPointerException("DbReadWriter(): " + DBERR_FILENAME + " set to null");
     }
     _regPath = filepath;
     dbOpen();
@@ -226,14 +225,9 @@ public class DbReadWriter
   {
     try {
       // Open the db only if it is not already open. The file is created
-      // or reloads the
-      // ObjectContainer
+      // or reloads the ObjectContainer
       if ((_db == null) || (_db.isClosed())) {
-        // EmbeddedConfiguration config =
-        // Db4oEmbedded.newConfiguration();
-        // config.common().objectClass(SomeObject.class).cascadeOnUpdate(true);
-        _db = (ExtObjectContainer) Db4oEmbedded.openFile(
-            Db4oEmbedded.newConfiguration(), _regPath);
+        _db = (ExtObjectContainer) Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), _regPath);
       }
     } catch (Db4oIOException ex) {
       System.err.println("DbReadWriter ctor: " + ex.getMessage());
@@ -328,18 +322,24 @@ public class DbReadWriter
 
 
     /**
-     * Deletes all elements in the registry, its ObjectContainer, and deletes the associated db
-     * file. This method is only used for testing.
+     * Deletes all elements in the registry. This method is only used for testing.
      * <p>
-     * WARNING: This method is for testing only. An application should never have a need to delete
+     * WARNING: This method is for testing only. An application should never have a need to clear
      * the database, file, and DbReadWriter.
      */
-    public void dbErase()
+    public void dbClear()
     {
-      // Delete the associated file
-      File regfile = new File(_regPath);
-      regfile.delete();
+      ObjectSet<IRegistryElement> obSet = _db.query(new Predicate<IRegistryElement>() {
+        public boolean match(IRegistryElement candidate)
+        {
+          return true;
+        }
+      });
+      for (IRegistryElement elem : obSet) {
+        _db.delete(elem);
+      }
     }
+
 
     /** Finds all elements in the given Registry ReadWriter */
     public int dbSize()

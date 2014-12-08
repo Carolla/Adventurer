@@ -35,7 +35,7 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
  * {@code RegistryFactory} is an non-instantable static class comprised <i>mostly</i> of static
  * methods.
  * 
- * @author alancline
+ * @author Al Cline
  * @version Jul 19, 2014 // original <br>
  *          Jul 24, 2014 // refactored to allow for registries not residing in the common location <br>
  *          Sep 20, 2014 // test removeAllRegistries <br>
@@ -198,7 +198,7 @@ public class TestRegistryFactory
     assertEquals(_rf.getNumberOfRegistries(), 2);
 
     // DO: create a third registry
-    _rf.getRegistry(RegKey.ADV);
+    _rf.getRegistry(RegKey.NPC);
     // VERIFY: Ensure that three registries exist
     assertEquals(_rf.getNumberOfRegistries(), 3);
 
@@ -210,7 +210,7 @@ public class TestRegistryFactory
     assertEquals(_rf.getNumberOfRegistries(), 1);
 
     // DO: last registrys
-    _rf.closeRegistry(RegKey.ADV);
+    _rf.closeRegistry(RegKey.NPC);
     // VERIFY: Ensure that only one registry exists
     assertEquals(_rf.getNumberOfRegistries(), 0);
 
@@ -234,12 +234,12 @@ public class TestRegistryFactory
     // SETUP: ensure that registries to be created does not yet exist
     _rf.closeAllRegistries();
     assertEquals(_rf.getNumberOfRegistries(), 0);
-    File regfile1 = new File(Chronos.AdventureRegPath);
+    File regfile1 = new File(Chronos.SkillRegPath);
     regfile1.delete();
     assertFalse(regfile1.exists());
 
     // DO:
-    _rf.getRegistry(RegKey.ADV);
+    _rf.getRegistry(RegKey.SKILL);
 
     // VERIFY: factory has a new registry and file exists
     assertTrue(regfile1.exists());
@@ -257,19 +257,19 @@ public class TestRegistryFactory
   @Test
   public void testGetRegistry_Exists()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // SETUP: ensure that registry to be created already exists
     assertEquals(_rf.getNumberOfRegistries(), 0);
-    Registry testreg = _rf.getRegistry(RegKey.ADV);
-    File regfile = new File(Chronos.AdventureRegPath);
-    assertTrue(regfile.exists());
+    Registry testreg = _rf.getRegistry(RegKey.SKILL);
+    File regfile = new File(Chronos.SkillRegPath);
+//    assertTrue(regfile.exists());
     assertEquals(_rf.getNumberOfRegistries(), 1);
 
     // DO:
-    Registry testreg2 = _rf.getRegistry(RegKey.ADV);
+    Registry testreg2 = _rf.getRegistry(RegKey.SKILL);
 
     // VERIFY: factory has same registry file exists
     assertTrue(regfile.exists());

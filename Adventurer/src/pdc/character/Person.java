@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
+import javax.lang.model.type.ErrorType;
+
 import mylib.ApplicationException;
 import mylib.Constants;
 import mylib.MsgCtrl;
-import mylib.civ.DataShuttle;
-import mylib.civ.DataShuttle.ErrorType;
 import mylib.dmc.IRegistryElement;
 import pdc.Inventory;
 import pdc.Klass;
@@ -177,10 +177,10 @@ public class Person implements Serializable, IRegistryElement
    * METADATA CONSTANTS
    */
 
-//  /**
-//   * Minimum intelligence to be able to learn any new language except Common and Race lang
-//   */
-//  static private final int MIN_LANG_INT = 10;
+  // /**
+  // * Minimum intelligence to be able to learn any new language except Common and Race lang
+  // */
+  // static private final int MIN_LANG_INT = 10;
 
   /* INTERNAL OBJECT COMPONENTS */
   /** The DMC read/writer for Person */
@@ -602,8 +602,8 @@ public class Person implements Serializable, IRegistryElement
     // Create the civ to process the output data
     HeroDisplayCiv heroCiv = new HeroDisplayCiv(this);
     // Load the Person's attribute data into a shuttle
-    DataShuttle<PersonKeys> attribShuttle = loadPersonData(new DataShuttle<PersonKeys>(
-        PersonKeys.class));
+//    List<PersonKeys> attribShuttle = loadPersonData(new List<PersonKeys>(PersonKeys.class));
+    List<PersonKeys> attribShuttle = null;  // temp
     heroCiv.populateAttributes(attribShuttle);
     // Load the Person's Inventory data into a list
     heroCiv.populateInventory(_Inventory.getInventory());
@@ -717,8 +717,8 @@ public class Person implements Serializable, IRegistryElement
    * @param pfd person file data needed for saving the person
    * @return the PersonReadWriter data
    */
-  public DataShuttle<PersonFileData> getFileData(
-      DataShuttle<PersonFileData> pfd)
+  public List<PersonFileData> getFileData(
+      List<PersonFileData> pfd)
   {
     _prw = new PersonReadWriter();
     pfd = _prw.packFileData(pfd);
@@ -1078,7 +1078,7 @@ public class Person implements Serializable, IRegistryElement
 
   // /* Load the Person's displayable data into the data shuttle for the given
   // key
-  // * @see mylib.pdc.ObservableModel#load(mylib.civ.DataShuttle)
+  // * @see mylib.pdc.ObservableModel#load(mylib.civ.List)
   // * This should only be called through the base class
   // ObservableModel.loadShuttle(ds)
   // *
@@ -1087,7 +1087,7 @@ public class Person implements Serializable, IRegistryElement
   // * @return the shuttle with the loaded data
   // */
   // @Override
-  // protected DataShuttle<PersonKeys> load(DataShuttle<PersonKeys> ds)
+  // protected List<PersonKeys> load(List<PersonKeys> ds)
   // throws ClassCastException
   // {
   // // Load a value into the shuttle for each slot requested; ignore others
@@ -1170,7 +1170,7 @@ public class Person implements Serializable, IRegistryElement
   // break;
   // default:
   // ds.setErrorType(ErrorType.MISSING_KEY);
-  // ds.setErrorMessage(key.name() + DataShuttle.MISSING_KEY_MSG);
+  // ds.setErrorMessage(key.name() + List.MISSING_KEY_MSG);
   // ds.setErrorSource(key);
   // } // end of switch
   // } // end of for-loop
@@ -1184,7 +1184,7 @@ public class Person implements Serializable, IRegistryElement
    * 
    * @return the shuttle with the loaded data
    */
-  public DataShuttle<PersonKeys> loadPersonData(DataShuttle<PersonKeys> ds)
+  public List<PersonKeys> loadPersonData(List<PersonKeys> ds)
   {
     ds.putField(PersonKeys.AC, new Integer(_Inventory.calcAC(_acMod)));
     ds.putField(PersonKeys.AGE, new Double(_Race.getAgeYears()));
@@ -1415,11 +1415,11 @@ public class Person implements Serializable, IRegistryElement
    * 
    * @param ds contains the data to load into this object
    * 
-   * @see mylib.pdc.ObservableModel#unload(mylib.civ.DataShuttle)
+   * @see mylib.pdc.ObservableModel#unload(mylib.civ.List)
    * 
    * @throws ClassCastException if the value cannot be cast properly during validation
    */
-  public DataShuttle<PersonKeys> unload(DataShuttle<PersonKeys> ds)
+  public List<PersonKeys> unload(List<PersonKeys> ds)
       throws ClassCastException
   {
     // Load a value into the shuttle for each slot requested; ignore others
@@ -1476,12 +1476,12 @@ public class Person implements Serializable, IRegistryElement
    * 
    * @param ds contains the data to load into this object
    * 
-   * @see mylib.pdc.ObservableModel#unload(mylib.civ.DataShuttle)
+   * @see mylib.pdc.ObservableModel#unload(mylib.civ.List)
    * 
    * @throws ClassCastException if the value cannot be cast properly during validation
    */
   // @Override
-  // protected void unload(DataShuttle<PersonKeys> ds)
+  // protected void unload(List<PersonKeys> ds)
   // throws ClassCastException
   // {
   // // Load a value into the shuttle for each slot requested; ignore others

@@ -46,8 +46,10 @@ public class Chronos
    * workspace.
    */
 
+  /** Base environment variable for shared file resources path */
+  public static String ECHRONOS_ROOT = find_eChronosRootDir() + FS;
   /** Initializer for CHRONOS_ROOT static variable */
-  private static String findChronosRootDir() 
+  private static String find_eChronosRootDir() 
   {
 	  String fileName = null;
 	  try {
@@ -58,35 +60,31 @@ public class Chronos
 	}
 	  return fileName;
   }
-  /** Base environment variable for shared file resources path */
-  public static String CHRONOS_ROOT = findChronosRootDir();
-
+  
   /** Relative path location of all shared resources */
-  public static String RESOURCES_PATH = CHRONOS_ROOT + "/ChronosLib/resources";
+//  public static String RESOURCES_PATH = CHRONOS_ROOT + "/ChronosLib/resources";
+  public static String CHRONOS_LIB_RESOURCES_PATH = ECHRONOS_ROOT + "ChronosLib" + FS +"resources";
   /** Relative path location of Adventurer-specific resources */
-  public static String ADV_RESOURCES_PATH = CHRONOS_ROOT + "/Adventurer/resources";
-
+  public static String ADV_RESOURCES_PATH = ECHRONOS_ROOT + "/Adventurer/resources";
   /** Most registry Classes are located in the ChronosLib shared source package (ChronosLib) */
   public static final String REGISTRY_CLASSPKG = "chronos.pdc.registry.";
-  // /** Adventurer-specific registry Classes are located in the an alternate location */
-  // public static final String ALT_REGISTRY_CLASSPKG = "adventurer.pdc.registry.";
 
   /** Path for all data Registries */
-  public static final String REGISTRY_PATH = RESOURCES_PATH + FS + "registries" + FS;
-
+  public static final String REGISTRY_PATH = CHRONOS_LIB_RESOURCES_PATH + FS + "registries" + FS;
+  
   /** These images are in the Adventurer resources directory */
   public static final String ADV_IMAGE_PATH = ADV_RESOURCES_PATH + FS + "images" + FS;
   /** Chared images are in the ChronosLib resources directory */
-  public static final String IMAGE_PATH = RESOURCES_PATH + FS + "images" + FS;
+  public static final String IMAGE_PATH = CHRONOS_LIB_RESOURCES_PATH + FS + "images" + FS;
 
-  // LOG FOR TESTING
-  // static {
-  // System.out.println("Chronos Log: ");
-  // System.out.println("RESOURCES_PATH = " + RESOURCES_PATH);
-  // System.out.println("IMAGE_PATH = " + IMAGE_PATH);
-  // System.out.println("ADV_RESOURCES_PATH = " + ADV_RESOURCES_PATH);
-  // System.out.println("ADV_IMAGE_PATH = " + ADV_IMAGE_PATH);
-  // }
+//   LOG FOR TESTING
+   static {
+//   System.out.println("Chronos Log: ");
+//   System.out.println("CHRONOS_LIB_RESOURCES_PATH = " + CHRONOS_LIB_RESOURCES_PATH);
+//   System.out.println("IMAGE_PATH = " + IMAGE_PATH);
+//   System.out.println("ADV_RESOURCES_PATH = " + ADV_RESOURCES_PATH);
+//   System.out.println("ADV_IMAGE_PATH = " + ADV_IMAGE_PATH);
+   }
 
   /** Location of AdventureRegistry */
   public static String AdventureRegPath = REGISTRY_PATH + "Adventures.reg";
@@ -109,28 +107,28 @@ public class Chronos
 
   // LOG FOR TESTING
   static {
-    // System.out.println("Chronos Log: ");
-    // System.out.println("AdventureRegPath = " + AdventureRegPath);
-    // System.out.println("BuildingRegPath = " + BuildingRegPath);
-    // System.out.println("ItemRegPath = " + ItemRegPath);
-    // System.out.println("NPCRegPath = " + NPCRegPath);
-    // System.out.println("OcpRegPath = " + OcpRegPath);
-    // System.out.println("PersonRegPath = " + PersonRegPath);
-    // System.out.println("SkillRegPath = " + SkillRegPath);
-    // System.out.println("TownRegPath = " + TownRegPath);
-    // System.out.println("AdvHelpRegPath = " + AdvHelpRegPath);
+//     System.out.println("Chronos Log: ");
+//     System.out.println("AdventureRegPath = " + AdventureRegPath);
+//     System.out.println("BuildingRegPath = " + BuildingRegPath);
+//     System.out.println("ItemRegPath = " + ItemRegPath);
+//     System.out.println("NPCRegPath = " + NPCRegPath);
+//     System.out.println("OcpRegPath = " + OcpRegPath);
+//     System.out.println("PersonRegPath = " + PersonRegPath);
+//     System.out.println("SkillRegPath = " + SkillRegPath);
+//     System.out.println("TownRegPath = " + TownRegPath);
+//     System.out.println("AdvHelpRegPath = " + AdvHelpRegPath);
   }
 
   /** Fake Registry location for testing purposes. */
   public static String FakeRegPath = REGISTRY_PATH + "FakeStuff.reg";
 
   /** Location of Arenas (dungeons), one each in their own db file */
-  public static final String ArenaPath = RESOURCES_PATH + "data" + FS;
+  public static final String ArenaPath = CHRONOS_LIB_RESOURCES_PATH + "data" + FS;
   /** Extension to all Arena filenames */
   public static final String ARENA_EXT = ".dgn";
 
   /** Extension path to user-generating resources, such as the user characters */
-  public static final String USER_RESOURCES = RESOURCES_PATH + "user" + FS;
+  public static final String USER_RESOURCES = CHRONOS_LIB_RESOURCES_PATH + "user" + FS;
 
 
   /**
@@ -141,16 +139,16 @@ public class Chronos
 
 
   /** Location of font file used for name display */
-  static public final String RUNIC_FONT_FILE = RESOURCES_PATH + Constants.FILE_SEPARATOR + "fonts"
+  static public final String RUNIC_FONT_FILE = CHRONOS_LIB_RESOURCES_PATH + Constants.FILE_SEPARATOR + "fonts"
       + Constants.FILE_SEPARATOR + "RUNE_A.ttf";
 
   /** Location of font file used for English-runic display */
-  static public final String RUNIC_ENGLISH_FONT_FILE = RESOURCES_PATH + Constants.FILE_SEPARATOR
+  static public final String RUNIC_ENGLISH_FONT_FILE = CHRONOS_LIB_RESOURCES_PATH + Constants.FILE_SEPARATOR
       + "fonts"
       + Constants.FILE_SEPARATOR + "RUNENG1.ttf";
 
   /** Location of font file used for English-runic, mixed-case display */
-  static public final String RUNIC_ENGLISH2_FONT_FILE = RESOURCES_PATH + Constants.FILE_SEPARATOR
+  static public final String RUNIC_ENGLISH2_FONT_FILE = CHRONOS_LIB_RESOURCES_PATH + Constants.FILE_SEPARATOR
       + "fonts"
       + Constants.FILE_SEPARATOR + "RUNENG2.ttf";
 

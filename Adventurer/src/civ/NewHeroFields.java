@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import mylib.civ.DataShuttle;
-import mylib.civ.DataShuttle.ErrorType;
+import javax.lang.model.type.ErrorType;
+
 import chronos.pdc.Occupation;
 import chronos.pdc.Race;
 import chronos.pdc.registry.OccupationRegistry;
@@ -214,32 +214,31 @@ public enum NewHeroFields {
      *            data shuttle containing the keys to check for validity
      * @return true if shuttle data is valid, else set shuttle's error flags
      */
-    static public DataShuttle<NewHeroFields> isValid(
-            DataShuttle<NewHeroFields> ws)
+  static public List<NewHeroFields> isValid(List<NewHeroFields> ws)
     {
-        // Load a value into the shuttle for each slot requested; ignore others
-        for (NewHeroFields key : ws.getKeys()) {
-            Object obj = ws.getField(key);
-            // Null is only valid for a few special cases
-            if (obj == null) {
-                if ((key == HAIR_COLOR_OPTIONS) || (key == RACE_OPTIONS)
-                        || (key == OCCUPATION_OPTIONS)) {
-                    break;
-                } else {
-                    ws.setErrorType(ErrorType.NULL_FIELD);
-                    ws.setErrorMessage(key.name());
-                    ws.setErrorSource(key);
-                    break;
-                }
-            }
-            if (key.isValid(obj) == false) {
-                // Every key requested must have data to go with it, else error
-                ws.setErrorType(ErrorType.FIELD_INVALID);
-                ws.setErrorMessage(key.name());
-                ws.setErrorSource(key);
-                break;
-            }
-        }
+//        // Load a value into the shuttle for each slot requested; ignore others
+//        for (NewHeroFields key : ws.getKeys()) {
+//            Object obj = ws.getField(key);
+//            // Null is only valid for a few special cases
+//            if (obj == null) {
+//                if ((key == HAIR_COLOR_OPTIONS) || (key == RACE_OPTIONS)
+//                        || (key == OCCUPATION_OPTIONS)) {
+//                    break;
+//                } else {
+//                    ws.setErrorType(ErrorType.NULL_FIELD);
+//                    ws.setErrorMessage(key.name());
+//                    ws.setErrorSource(key);
+//                    break;
+//                }
+//            }
+//            if (key.isValid(obj) == false) {
+//                // Every key requested must have data to go with it, else error
+//                ws.setErrorType(ErrorType.FIELD_INVALID);
+//                ws.setErrorMessage(key.name());
+//                ws.setErrorSource(key);
+//                break;
+//            }
+//        }
         return ws;
     }
 

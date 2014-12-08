@@ -75,6 +75,9 @@ public class AdventureRegistry extends Registry
   // CONSTRUCTOR(S) AND RELATED METHODS
   // ===========================================================================
 
+  /**
+   * This method is a wrapper to the base class which passes the data file path and not the source code
+   */
   protected AdventureRegistry()
   {
     super(Chronos.AdventureRegPath);
