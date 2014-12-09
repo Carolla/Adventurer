@@ -19,7 +19,6 @@ public class Battle {
 	 */
 	public boolean isInBattle(Combatant combatant) {
 		return (_player == combatant || _enemy == combatant);
-
 	}
 
 	public boolean isOngoing() {
@@ -34,7 +33,7 @@ public class Battle {
 	}
 
 	public boolean isWinner(Combatant combatant) {
-		return true;
+		return !combatant.isDefeated();
 	}
 
 }

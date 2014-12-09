@@ -223,13 +223,13 @@ public class DbReadWriter
    */
   public DB_ERROR dbOpen()
   {
-    try {
+    //try {
       // Open the db only if it is not already open. The file is created
       // or reloads the ObjectContainer
       if ((_db == null) || (_db.isClosed())) {
         _db = (ExtObjectContainer) Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), _regPath);
       }
-    } catch (Db4oIOException ex) {
+    /**} catch (Db4oIOException ex) {
       System.err.println("DbReadWriter ctor: " + ex.getMessage());
       return DB_ERROR.DB4OIO;
     } catch (DatabaseFileLockedException ex) {
@@ -246,7 +246,7 @@ public class DbReadWriter
     } catch (DatabaseReadOnlyException ex) {
       System.err.println("DbReadWriter ctor: " + DBERR_RO_DB);
       return DB_ERROR.RO_DB;
-    }
+    }*/
     return DB_ERROR.OK;
   }
 
