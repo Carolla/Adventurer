@@ -39,6 +39,7 @@ import com.db4o.query.Predicate;
  *          Dec 16, 2012 // updated with more robust testing <br>
  *          Feb 25 2013 // replaced queryByExample with native queries <br>
  *          Mar 18, 2013 // revised after adding IRegistryElement <br>
+ *          Dec 7, 2013 // changed dbOpen signature <br>
  */
 public class DbReadWriter
 {
@@ -46,6 +47,9 @@ public class DbReadWriter
   private ExtObjectContainer _db;
   /** The path of the database file */
   private String _regPath = null;
+
+  /** Invalid filename error message */
+  private final String DBERR_FILENAME = "Invalid filename given for Registry resources";
 
   /** Database file locked error */
   private final String DBERR_FILE_LOCKED = "Database file locked (already open)";
@@ -57,8 +61,6 @@ public class DbReadWriter
   private final String DBERR_NULL_PREDICATE = "dbQuery must have a non-null Predicate object";
   /** Attempted to delete a null object from the db */
   private final String DBERR_NULL_OBJECT = "Attempted to delete a null object from the db";
-  /** Invalid filename error message */
-  private final String DBERR_FILENAME = "Invalid filename given for Registry resources";
   /** Incompatible File format error */
   private final String DBERR_FILE_FORMAT = "Incompatible file format encountered";
   /** Old format File error */
@@ -66,7 +68,8 @@ public class DbReadWriter
 
   /** Error code for db4o possibilities */
   static public enum DB_ERROR {
-    OK, FILE_LOCKED, CLOSED, RO_DB, NULL_PREDICATE, NULL_OBJECT, FILENAME, DB4OIO, FILE_FORMAT, OLD_FORMAT
+    OK, FILE_LOCKED, CLOSED, RO_DB, NULL_PREDICATE, NULL_OBJECT, FILENAME, DB4OIO, FILE_FORMAT, 
+    OLD_FORMAT
   }
 
   // ================================================================================
@@ -84,8 +87,9 @@ public class DbReadWriter
     if (filepath == null) {
       throw new NullPointerException("DbReadWriter(): " + DBERR_FILENAME + " set to null");
     }
-    _regPath = filepath;
-    dbOpen();
+    if (dbOpen(filepath) == DB_ERROR.OK) {
+      _regPath = filepath;
+    }
   }
 
   // ================================================================================
@@ -117,7 +121,7 @@ public class DbReadWriter
   }
 
   /**
-   * Closes down the database and its file, sets
+   * Closes down the database but keeps its file
    */
   public void dbClose()
   {
@@ -213,22 +217,21 @@ public class DbReadWriter
   }
 
   /**
-   * Create the object container for transaction processing with the default configuration; set the
-   * db to open status. This is used when the DBRW is created.
+   * Create a new db only if it doesn't exist; else db4o will throw an exception. Create the object
+   * container for transaction processing with the default configuration. Javadoc Tutorial says, "If
+   * the file with this name already exists, it will be opened as db4o database, otherwise a new
+   * db4o database will be created."
    * <P>
    * NOTE: The folder structure must exist before a db file within it can be created. db4o will not
    * create folders: db4o will throw an enigmatic System IO error.
    * 
-   * @return enum error code (OK) if all worked, or some other error code
+   * @return enum error code (OK) if all worked, else some other error code
    */
-  public DB_ERROR dbOpen()
+  public DB_ERROR dbOpen(String filepath)
   {
     try {
-      // Open the db only if it is not already open. The file is created
-      // or reloads the ObjectContainer
-      if ((_db == null) || (_db.isClosed())) {
-        _db = (ExtObjectContainer) Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), _regPath);
-      }
+//      System.err.println("dbOpen(): attepting to open/create file at " + filepath);
+      _db = (ExtObjectContainer) Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), filepath);
     } catch (Db4oIOException ex) {
       System.err.println("DbReadWriter ctor: " + ex.getMessage());
       return DB_ERROR.DB4OIO;
@@ -260,8 +263,7 @@ public class DbReadWriter
    * @throws NullPointerException if the predicate is null
    */
   public List<IRegistryElement> dbQuery(Predicate<IRegistryElement> pred)
-      throws Db4oIOException, DatabaseClosedException,
-      NullPointerException
+      throws Db4oIOException, DatabaseClosedException, NullPointerException
   {
     List<IRegistryElement> elementList = null;
     // Guards: db and predicate must exist
@@ -353,7 +355,7 @@ public class DbReadWriter
       return obSet.size();
     }
 
-    /** Retruns returns the database container */
+    /** Returns returns the database container */
     public ExtObjectContainer getContainer()
     {
       return _db;
@@ -369,10 +371,10 @@ public class DbReadWriter
       return _regPath;
     }
 
-    /** Wraps outer method, returns the database container */
+    /** Wraps outer method, returns an existing database container */
     public ObjectContainer openDB()
     {
-      DbReadWriter.this.dbOpen();
+      DbReadWriter.this.dbOpen(_regPath);
       return _db;
     }
 

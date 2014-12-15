@@ -18,6 +18,7 @@ import junit.framework.TestCase;
 import mylib.Constants;
 import mylib.MsgCtrl;
 import mylib.dmc.IRegistryElement;
+import mylib.pdc.Registry;
 import mylib.test.dmc.SomeObject;
 import mylib.test.pdc.ConcreteRegistry.MockRegistry;
 
@@ -28,8 +29,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.db4o.query.Predicate;
-
-/** a comment */
 
 
 /**
@@ -45,6 +44,7 @@ import com.db4o.query.Predicate;
  *          Feb 25, 2013 // ABC revamped for native queries in Registry base clase <br>
  *          Sep 13, 2014 // tested for closeFlag removal <br>
  *          Sep 27, 2014 // pruned again, looking for missed bug <br>
+ *          Dec 7, 2014 // added specific getUnique() tests<br>
  */
 public class TestRegistry extends TestCase
 {
@@ -53,9 +53,9 @@ public class TestRegistry extends TestCase
   /** MockDBRW to access the internal DbReadWriter methods */
   private MockRegistry _mock = null;
   /** Location of test file */
-  private final String TEST_FILEPATH = Constants.RESOURCES + "Test.reg";
+  private final String TEST_FILEPATH = Constants.MYLIB_RESOURCES + "Test.reg";
   /** Temp storage to return Registry back to normal non-test location */
-  private String _regLoc = null;
+//  private String _regLoc = null;
 
   /** A predicate for retrieving objects by name */
   Predicate<IRegistryElement> _pred = null;
@@ -76,10 +76,8 @@ public class TestRegistry extends TestCase
   @Before
   public void setUp() throws Exception
   {
-    // Change Registry location to test registry file
-    _regLoc = TEST_FILEPATH;
     // Create a Registry object, which will be initialized if one doesn't exist
-    _testReg = new ConcreteRegistry(_regLoc);
+    _testReg = new ConcreteRegistry(TEST_FILEPATH);
     assertNotNull(_testReg);
     _mock = _testReg.new MockRegistry();
     assertNotNull(_mock);
@@ -434,6 +432,33 @@ public class TestRegistry extends TestCase
     }
   }
 
+
+  /**
+   * mylib.test.pdc.getUnique(String)
+   * 
+   * @Normal Get an element by its name <br>
+   */
+  @Test
+  public void testGetUnique()
+  {
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.where(this);
+
+    // Concrete Registry already creted with 0 elements
+    assertEquals(_testReg.getNbrElements(), 0);
+
+    // Add get a unique object from the list
+    SomeObject obj = new SomeObject(11.2, "key");
+    assertNotNull(obj);
+    _testReg.add(obj);    
+    assertEquals(_testReg.getNbrElements(), 1);
+    // Retrieve the object by name
+    IRegistryElement elem = _testReg.getUnique("key");
+    assertEquals("key", obj.getKey());
+  }
+    
+    
   /**
    * mylib.test.pdc.update(RegistryElement)
    * 
@@ -496,6 +521,19 @@ public class TestRegistry extends TestCase
    * PRIVATE METHODS
    **********************************************************************************************************/
 
+  /** Clear all the elements from a Registry
+   * 
+   * @param Registry  to be cleared
+   */
+  private void clearRegistry(Registry reg) 
+  {
+    List<IRegistryElement> elist = reg.getAll();
+    for (IRegistryElement elem : elist) {
+      reg.delete(elem);
+    }
+  }
+  
+  
   /**
    * Create a target predicate to match against the db candidate's key
    * 

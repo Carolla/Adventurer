@@ -10,6 +10,8 @@
 package mylib;
 
 import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
 
 
 /**
@@ -27,32 +29,50 @@ public class Constants
   public static final int NOT_FOUND = -1;
   public static final int UNASSIGNED = -99;
 
-  /**
-   * Test flag that is sometimes needed to turn off GUI production features during testing
-   */
-  public static boolean IN_TEST = false;
+  /** Platform-dependent constants */
+  public static final String NEWLINE = System.getProperty("line.separator");
+  public static final String FS = System.getProperty("file.separator");
+
+  /** Initializer for MYLIB_ROOT */
+  private static String findMyLibRootDir()
+  {
+    String fileName = null;
+    try {
+      fileName = new File(".").getCanonicalPath();
+    } catch (IOException e) {
+      System.err.println("Unable to locate MYLIB_ROOT");
+      System.exit(-1);
+    }
+    return fileName;
+  }
 
   /**
    * Current working directory of the user; assumes program is running here. Contains source files
    * in workspace so that all other files can be found relatively. During installation, this root
    * directory is assigned by the user.
    */
-  public static final String ROOT_DIR = System.getProperty("user.dir");
-  public static final String HOME_DIR = System.getProperty("user.home");
-  public static final String USER_NAME = System.getProperty("user.name");
-  /** Platform-independent delimeter between file names. For Mac, it is "/" */
-  public static final String FILE_SEPARATOR = System.getProperty("file.separator");
-  /** Platform-dependent line separator */
-  public static final String NEWLINE = System.getProperty("line.separator");
+  public static final String MYLIB_ROOT_DIR = Constants.findMyLibRootDir();
+  // public static final String ROOT_DIR = System.getProperty("user.dir");
+  // public static final String HOME_DIR = System.getProperty("user.home");
+  // public static final String USER_NAME = System.getProperty("user.name");
+  /* Platform-independent delimiter between file names. For Mac, it is "/" */
+  // public static final String FILE_SEPARATOR = System.getProperty("file.separator");
   // public static final String WORKSPACE = new File(ROOT_DIR).getParent();
-  public static final String WORKSPACE = HOME_DIR; // + FILE_SEPARATOR + USER_NAME;
+  // public static final String WORKSPACE = HOME_DIR; // + FILE_SEPARATOR + USER_NAME;
 
   /**
    * Absolute root path to all resources, containing images, characters, and other non-source files
    */
-  public static final String RESOURCES = ROOT_DIR + FILE_SEPARATOR + "resources" + FILE_SEPARATOR;
+  public static final String MYLIB_RESOURCES = MYLIB_ROOT_DIR + FS + "resources" + FS;
   /** Extension path to user-generating resources, such as the user characters */
-  public static final String USER_RESOURCES = RESOURCES + "user" + FILE_SEPARATOR;
+  // public static final String USER_RESOURCES = RESOURCES + "user" + FILE_SEPARATOR;
+
+  // LOG FOR TESTING
+  // static {
+  // System.out.println("MyLib.Constants Log: ");
+  // System.out.println("MYLIB_ROOT_DIR = " + MYLIB_ROOT_DIR);
+  // System.out.println("MYLIB_RESOURCES = " + MYLIB_RESOURCES);
+  // }
 
   /**
    * Default package name for class files. Package names differ from the directories in that they

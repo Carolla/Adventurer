@@ -222,6 +222,7 @@ public abstract class Registry
     return _nbrElements;
   }
 
+  
   /**
    * Retrieves a list of all names of the elements in the Registry
    * 
@@ -247,7 +248,7 @@ public abstract class Registry
    * @return the particular matching object; or null if not found or name was null
    * @throws ApplicationException if more than one (non-unique) match was found
    */
-  public IRegistryElement getUnique(final String name) throws ApplicationException
+  public IRegistryElement getUnique(String name) throws ApplicationException
   {
     // Guard
     if ((name == null) || (name.trim().length() == 0)) {
@@ -300,7 +301,8 @@ public abstract class Registry
     }
     return retval;
   }
-
+  
+  
   /**
    * Update an existing object in the registry. The existing object must already be in the database,
    * and will be replaced with the first one it finds that matches it. The element's getKey() method

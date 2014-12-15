@@ -13,6 +13,7 @@ import java.io.File;
 import java.util.List;
 
 import junit.framework.TestCase;
+import mylib.Constants;
 import mylib.MsgCtrl;
 import mylib.dmc.DbReadWriter;
 import mylib.dmc.DbReadWriter.MockDBRW;
@@ -35,7 +36,8 @@ import com.db4o.query.Predicate;
  *          Feb 25, 2013 // replaced queryByExample with native queries <br>
  *          Mar 18, 2013 // revised after adding IRegistryElement <br>
  *          Nov 1, 2014 // removed dbSize to mock, and fixed tests messing new mock with new regRW <br>
- *          Nov 9, 2014 // moved dbDelete into mock and reafactored tests <br>
+ *          Nov 9, 2014 // moved dbDelete into mock and refactored tests <br>
+ *          Dec 7, 2014 // revised dbOpen(String) signature and associated tests <br>
  */
 public class TestDbReadWriter extends TestCase
 {
@@ -43,11 +45,8 @@ public class TestDbReadWriter extends TestCase
   private DbReadWriter _regRW = null;
   /** MockObject for target object */
   private MockDBRW _mock = null;
-  /** File separator for current platform */
-  private final String FILE_SEPARATOR = System.getProperty("file.separator");
-  /** Place temporary test files in current directory */
-  private final String REG_PATH = System.getProperty("user.dir") + FILE_SEPARATOR
-      + "resources" + FILE_SEPARATOR + "Test.reg";
+  /** Place temporary test files in resource directory */
+  private final String REG_PATH = Constants.MYLIB_RESOURCES + "Test.reg";
   /** File for db persistence */
   private final File _regFile = new File(REG_PATH);
 
@@ -74,49 +73,29 @@ public class TestDbReadWriter extends TestCase
   }
 
   /**
-   * Returns db and mock to null state, db file used for test is deleted
+   * Closes db, delete it and its mock to null state, db file used for test is deleted
    * 
    * @throws java.lang.Exception to catch unexcepted things
    */
   @After
   public void tearDown() throws Exception
   {
-    _mock.dbDelete();
+    _mock.dbDelete(); // closes the db and deletes its filer
     _regRW = null;
     _mock = null;
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
   }
 
+
   // ====================================================================
   // BEGIN TESTS
   // ====================================================================
 
+
   /**
-   * @Not_Implemented DbOpenError() -- don't know how to trigger the db errors
-   * @Not_implemented dbSave(Object obj)
-   */
-
-
-//  /**
-//   * @Normal Clear out an empty registry (0 elements)  
-//   * @Normal Clear out a non-empty registry  
-//   * @Error Null filename for constructor; force null pointer exception
-//   */
-//  @Test
-//  public void testClear()
-//  {
-//    MsgCtrl.auditMsgsOn(true);
-//    MsgCtrl.errorMsgsOn(true);
-//    MsgCtrl.where(this);
-//
-//    // Normal
-//    MsgCtrl.msgln("Current registry size = " + _mock.dbSize());
-//
-//  }
-
-    
-  /**
+   * mylib.dmc.DbReadWriter(String) throws NullPointerException
+   * 
    * @Error Null filename for constructor; force null pointer exception
    */
   @Test
@@ -126,7 +105,7 @@ public class TestDbReadWriter extends TestCase
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    // Delete the database created by setUp() and its ObjectContainer
+    // Delete the database created by setUp()
     _mock.dbDelete();
 
     // Confirm that DBRW and file does not exist before call...
@@ -143,6 +122,8 @@ public class TestDbReadWriter extends TestCase
 
 
   /**
+   * mylib.dmc.DbReadWriter(String) throws NullPointerException
+   * 
    * @Normal Confirm that an existing file will reload for new database
    */
   @Test
@@ -180,6 +161,9 @@ public class TestDbReadWriter extends TestCase
 
 
   /**
+   * void mylib.dmc.DbReadWriter.add(IRegistryElement) throws NullPointerException,
+   * DatabaseClosedException, DatabaseReadOnlyException, ObjectNotStorableException
+   * 
    * @Normal Verify that objects are added to the db correctly
    * @Normal Verify that objects are updated to the db correctly
    */
@@ -221,6 +205,9 @@ public class TestDbReadWriter extends TestCase
 
 
   /**
+   * void mylib.dmc.DbReadWriter.add(IRegistryElement) throws NullPointerException,
+   * DatabaseClosedException, DatabaseReadOnlyException, ObjectNotStorableException
+   * 
    * @Error force a NullPointerException object cannot be null
    * @Error force a DatabaseClosedException db cannot be null (closed)
    * @Error force a ObjectNotStorableException try to store a String
@@ -250,11 +237,13 @@ public class TestDbReadWriter extends TestCase
       MsgCtrl.errMsgln("\t Expected exception: " + "db closed (null)");
     }
     // Reopen DbReadWriter so that tearDown() will not fail
-    _regRW.dbOpen();
+    _regRW.dbOpen(REG_PATH);
   }
 
 
   /**
+   * void mylib.dmc.DbReadWriter.dbClose()
+   * 
    * @Normal case works because it is part of tearDown(), and runs repeatedly
    * @Error close db and try to write to it
    * @Error try to close an already closed db
@@ -285,14 +274,14 @@ public class TestDbReadWriter extends TestCase
       MsgCtrl.errMsgln("\t Expected exception: " + "db closed (null)");
     }
     // Reopen DbReadWriter so that tearDown() will not fail
-    _regRW.dbOpen();
+    _regRW.dbOpen(REG_PATH);
   }
 
 
   /**
+   * boolean mylib.dmc.DbReadWriter.dbContains(IRegistryElement) throws DatabaseClosedException
+   * 
    * @Normal objects in the db are identified
-   * @Error
-   * @Error
    */
   @Test
   public void testDbContains()
@@ -327,6 +316,8 @@ public class TestDbReadWriter extends TestCase
 
 
   /**
+   * boolean mylib.dmc.DbReadWriter.dbDelete(IRegistryElement)
+   * 
    * @Normal delete a unique object from the database
    * @Normal attempt to delete the same object twice
    * @Error force DatabaseClosedException attempt to delete from a closed database
@@ -383,6 +374,8 @@ public class TestDbReadWriter extends TestCase
 
 
   /**
+   * DB_ERROR mylib.dmc.DbReadWriter(String)
+   * 
    * @Normal: Write to file, close db, then re-read previously written object
    */
   @Test
@@ -415,7 +408,9 @@ public class TestDbReadWriter extends TestCase
 
 
   /**
-   * @Normal: Ensure that database is already open and try to open it
+   * DB_ERROR mylib.dmc.DbReadWriter.open(String)
+   * 
+   * @Error: Ensure that database is already open and try to open it
    * @Normal: Ensure that database is closed but file exists
    */
   @Test
@@ -425,10 +420,10 @@ public class TestDbReadWriter extends TestCase
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    // NORMAL: Ensure that database is already open and try to open it; it should reload from file
-    assertTrue(_regFile.exists());
-    assertNotNull(_mock.openDB()); // open database...
-    assertTrue(_regFile.exists()); // ...and check that file still exists
+    // // ERROR: Reopening an open db throws a db locked exception
+    // assertTrue(_regFile.exists());
+    // assertNotNull(_mock.openDB()); // open database...
+    // assertTrue(_regFile.exists()); // ...and check that file still exists
 
     // NORMAL: Ensure that database is closed but file exists
     // Same file will be reopened
@@ -466,6 +461,9 @@ public class TestDbReadWriter extends TestCase
 
 
   /**
+   * List<IRegistryElement> dbQuery(Predicate<IRegistryElement>) throws Db4oIOException,
+   * DatabaseClosedException, NullPointerException
+   * 
    * @Normal extract element lists using different kinds of Predicates
    */
   @Test
@@ -567,7 +565,6 @@ public class TestDbReadWriter extends TestCase
     SomeObject so1 = new SomeObject(1.0, "first object saved");
     SomeObject so2 = new SomeObject(2.0, "second object saved");
     SomeObject so3 = new SomeObject(3.0, "third object saved");
-//    SomeObject so4 = new SomeObject(4.0, "fourth object saved");
 
     // NORMAL: Write to file, then get db size
     int nbrObjs = _mock.dbSize();
@@ -575,13 +572,13 @@ public class TestDbReadWriter extends TestCase
     _regRW.dbAdd(so2);
     _regRW.dbAdd(so3);
     int nbrObjsAfter = _mock.dbSize();
-    MsgCtrl.msgln("\tNumber of objects retrieved after adding three objects = " + nbrObjs);
-    assertEquals(nbrObjsAfter, nbrObjs+3);
+    MsgCtrl.msgln("\tNumber of objects retrieved after adding three objects = " + nbrObjsAfter);
+    assertEquals(nbrObjsAfter, nbrObjs + 3);
 
     // Close, reopen, add one more, then try again
     nbrObjs = _mock.dbSize();
     _regRW.dbClose();
-    _regRW.dbOpen();
+    _regRW.dbOpen(REG_PATH);
     nbrObjsAfter = _mock.dbSize();
     MsgCtrl.msgln("\tNumber of objects after closing and opening db = " + nbrObjs);
     assertEquals(nbrObjs, nbrObjsAfter);
@@ -593,15 +590,14 @@ public class TestDbReadWriter extends TestCase
     _regRW.dbDelete(so1);
     nbrObjsAfter = _mock.dbSize();
     MsgCtrl.msgln("\tso2 then so1 deleted.");
-    assertEquals(nbrObjsAfter, nbrObjs-2);
+    assertEquals(nbrObjsAfter, nbrObjs - 2);
 
     // Now delete last one and try again
     nbrObjs = _mock.dbSize();
     _regRW.dbDelete(so3);
     nbrObjsAfter = _mock.dbSize();
-    MsgCtrl.msgln("\tso4 then so3 deleted.");
-    assertEquals(nbrObjsAfter, nbrObjs-1);
-
+    MsgCtrl.msgln("\tso3 deleted.");
+    assertEquals(nbrObjsAfter, nbrObjs - 1);
   }
 
 
@@ -611,9 +607,12 @@ public class TestDbReadWriter extends TestCase
 
 
   /**
-   * 1
+   * 4 There are four methods that do not need to be tested due to their simplistic nature.
    * 
    * @NotNeeded getDB() -- getter
+   * @NotNeeded dbIsClosed() -- wrapper
+   * @NotNeeded DbOpenError() -- don't know how to trigger the db errors
+   * @NotNeeded dbSave(Object) 
    */
   void _testsNotNeeded()
   {}
