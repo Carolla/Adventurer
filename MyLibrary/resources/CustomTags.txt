@@ -1,0 +1,9 @@
+# The following custom tages should be used to annotate JUnit test files.
+# Cut-n-paste the following custom tag descriptors in the 'Extra Javadoc options' screen
+#   when generating Javadoc. 
+
+-tag Normal.Test:m:"Normal 'happy path' tests"
+-tag Error.Test:m:"Trigger an error condition"
+-tag Null.Test:m:"Null parm or results tests"
+-tag Not.Implemented:m:"Tests to be written for the methods listed"
+-tag Not.Needed:m:"Tests--and reasons--not needed for the methods listed"

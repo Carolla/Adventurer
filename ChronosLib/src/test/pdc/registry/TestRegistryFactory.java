@@ -32,7 +32,7 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
 
 
 /**
- * {@code RegistryFactory} is an non-instantable static class comprised <i>mostly</i> of static
+ * {@code RegistryFactory} is an non-instantiable static class comprised <i>mostly</i> of static
  * methods.
  * 
  * @author Al Cline
@@ -80,8 +80,8 @@ public class TestRegistryFactory
   // ============================================================
 
   /**
-   * @NotNeeded {@code RegistryFactory()} -- wrapper method <br>
-   * @NotNeeded {@code getInstance()} -- wrapper method <br>
+   * @Not.Needed {@code RegistryFactory()} -- wrapper method <br>
+   * @Not.Needed {@code getInstance()} -- wrapper method <br>
    */
   public void _testsNotNeeded()
   {}
@@ -93,7 +93,7 @@ public class TestRegistryFactory
   /**
    * Close a registry and remove it from the factory collection. Do not delete the file.
    * 
-   * @Normal close an existing registry
+   * @Normal.Test close an existing registry
    */
   @Test
   public void testCloseRegistry()
@@ -122,7 +122,7 @@ public class TestRegistryFactory
   /**
    * Close a registry and remove it from the factory collection. Do not delete the file.
    * 
-   * @Error close a registry that is closed (but file may or may not exist)
+   * @Error.Test close a registry that is closed (but file may or may not exist)
    */
   @Test
   public void testCloseRegistry_Empty()
@@ -148,9 +148,9 @@ public class TestRegistryFactory
   /**
    * Create a singleton registry given a registry type, using Class reflection
    * 
-   * @Normal create a valid registry
-   * @Error passing a non-valid enum RegKey type will cause a compile error
-   * @Null passing a null enum RegKey type will NOT cause a compile error
+   * @Normal.Test create a valid registry
+   * @Error.Test passing a non-valid enum RegKey type will cause a compile error
+   * @Null.Test passing a null enum RegKey type will NOT cause a compile error
    */
   @Test
   public void testCreateRegistry()
@@ -222,7 +222,7 @@ public class TestRegistryFactory
   /**
    * Get a Registry, and if it doesn't exist, create it and add the entry to the factory's map
    * 
-   * @Normal Get a registry that does not yet exist
+   * @Normal.Test Get a registry that does not yet exist
    */
   @Test
   public void testGetRegistry_Uncreated()
@@ -252,7 +252,7 @@ public class TestRegistryFactory
   /**
    * Get a Registry, and if it doesn't exist, create it and add the entry to the factory's map
    * 
-   * @Normal Get a registry that already exists
+   * @Normal.Test Get a registry that already exists
    */
   @Test
   public void testGetRegistry_Exists()
@@ -284,7 +284,7 @@ public class TestRegistryFactory
   /**
    * Get a Registry, and if it doesn't exist, create it and add the entry to the factory's map
    * 
-   * @Null use null to request a null registry returns null
+   * @Null.Test use null to request a null registry returns null
    */
   @Test
   public void testGetRegistry_Errors()

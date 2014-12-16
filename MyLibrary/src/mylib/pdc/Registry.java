@@ -20,11 +20,11 @@ import com.db4o.query.Predicate;
 
 /**
  * The base class for all Registries, contains component {@code DbReadWriter}. All derived
- * registries wll become persistent singleton containers for unique homogeneous objects. The
- * singleton will reload the file when created, or intialize from static tables containing default
+ * registries will become persistent singleton containers for unique homogeneous objects. The
+ * singleton will reload the file when created, or initialize from static tables containing default
  * data if the file doesn't exist.
  * <p>
- * All concrete classes derived from this abstact class works with a data management component class
+ * All concrete classes derived from this abstract class works with a data management component class
  * {@code DbReadWriter} to handle the actual database read and write operations.
  * <p>
  * WARNING: All Registry elements must implement the interface {@code IRegistryElement}. Do not use
@@ -283,8 +283,9 @@ public abstract class Registry
 
 
   /**
-   * Verifes if the string (key) is unique to the Registry Calls getUnique() to return a boolean
-   * instead of an object
+   * Verifies if the string (key) is unique to the Registry Calls getUnique() to return a boolean
+   * instead of an object. The database doc promises not to store non-unique objects into db4o,
+   * so this method should never be needed.
    * 
    * @param name to check for uniqueness
    * @return true if name is unique in the registry, else false
