@@ -48,7 +48,7 @@ public class TestPerson extends TestCase {
 	// Base path for all files in this project
 	// final String RESOURCE_DIR =
 	// "/Projects/workspace/Adventurer/src/resources/";
-	final String RESOURCE_DIR = Chronos.RESOURCES_PATH;
+	final String RESOURCE_DIR = Chronos.CHRONOS_LIB_RESOURCES_PATH;
 
 	// These attributes are bare minumum to allow access into the object methods
 	private final String _hisName = "Falsoon";

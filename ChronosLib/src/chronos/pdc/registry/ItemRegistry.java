@@ -109,10 +109,7 @@ public class ItemRegistry extends Registry
   /**
    * Private ctor because this singleton is called from getInstance(). Registry filename is used for
    * database
-   * 
-   * @param init flag to initialize registry for default data if true
    */
-  // private ItemRegistry(boolean init)
   protected ItemRegistry()
   {
     super(Chronos.ItemRegPath);

@@ -141,10 +141,10 @@ public class RegistryFactory
     } catch (InstantiationException ex) {
       System.err.println("createRegistry(): class cannot be created with newInstance(): "
           + ex.getMessage());
-    } catch (Exception ex) {
-      System.err.println("createRegistry(): possible database closed exception thrown: "
-          + ex.getMessage());
-    }
+    } //catch (Exception ex) {
+//      System.err.println("createRegistry(): possible database closed exception thrown: "
+//          + ex.getMessage());
+//    }
     return reg;
   }
 

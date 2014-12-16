@@ -53,10 +53,10 @@ public class TestRegistry extends TestCase
   /** MockDBRW to access the internal DbReadWriter methods */
   private MockRegistry _mock = null;
   /** Location of test file */
-  private final String TEST_FILEPATH = Constants.MYLIB_RESOURCES + "Test.reg";
-  /** Temp storage to return Registry back to normal non-test location */
-//  private String _regLoc = null;
-
+  private static final String TEST_FILEPATH = Constants.MYLIB_RESOURCES + "Test.reg";
+  /** Temporary Test file */
+  private static File _testfile = null;
+  
   /** A predicate for retrieving objects by name */
   Predicate<IRegistryElement> _pred = null;
 
@@ -69,10 +69,17 @@ public class TestRegistry extends TestCase
   public static void setUpBeforeClass() throws Exception
   {}
 
+  
+  /** Remove the leftover test file */
   @AfterClass
   public static void tearDownAfterClass() throws Exception
-  {}
+  {
+    System.out.println("tearDownAfterClass(): running cleanup to delete test file.");
+    _testfile.delete();
+    assertFalse(_testfile.exists());
+  }
 
+  
   @Before
   public void setUp() throws Exception
   {
@@ -83,8 +90,8 @@ public class TestRegistry extends TestCase
     assertNotNull(_mock);
 
     // Ensure that registry exists with no elements
-    File handle = new File(TEST_FILEPATH);
-    assertTrue(handle.exists());
+    _testfile = new File(TEST_FILEPATH);
+    assertTrue(_testfile.exists());
     _mock.clearElements();
     assertEquals(0, _testReg.getNbrElements());
   }
@@ -94,7 +101,7 @@ public class TestRegistry extends TestCase
   {
     _testReg.closeRegistry();
     _mock = null;
-    // Al messages are OFF after each test
+    // All messages are OFF after each test
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
   }
@@ -441,8 +448,8 @@ public class TestRegistry extends TestCase
   @Test
   public void testGetUnique()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // Concrete Registry already creted with 0 elements

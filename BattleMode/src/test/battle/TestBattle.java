@@ -39,6 +39,20 @@ public class TestBattle {
 		{
 			battle.advance();
 		}
+		assertFalse(battle.isOngoing());
+		assertTrue(battle.isWinner(player) || battle.isWinner(enemy));
+	}
+	
+	@Test
+	public void WhenBattleEndsThereIsAWinnerAndALoser()
+	{
+		Combatant player = new DummyPlayer();
+		Combatant enemy = new DummyEnemy();
+		Battle battle = new Battle(player, enemy);
+		while (battle.isOngoing())
+		{
+			battle.advance();
+		}
 		assertTrue(battle.isWinner(player));
 		assertFalse(battle.isWinner(enemy));
 	}

@@ -23,7 +23,7 @@ public class Battle {
 	}
 
 	public boolean isOngoing() {
-		return (_player.isDefeated() || _enemy.isDefeated());
+		return !(_player.isDefeated() || _enemy.isDefeated());
 	}
 
 	/**
