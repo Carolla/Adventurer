@@ -10,11 +10,15 @@
 
 package mylib.test.pdc;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.List;
 
-import junit.framework.TestCase;
 import mylib.Constants;
 import mylib.MsgCtrl;
 import mylib.dmc.IRegistryElement;
@@ -45,7 +49,7 @@ import com.db4o.query.Predicate;
  *          Sep 27, 2014 // pruned again, looking for missed bug <br>
  *          Dec 7, 2014 // added specific getUnique() tests<br>
  */
-public class TestRegistry extends TestCase
+public class TestRegistry
 {
   /** Concrete derived class of Registry */
   private ConcreteRegistry _testReg = null;
@@ -73,7 +77,6 @@ public class TestRegistry extends TestCase
   @AfterClass
   public static void tearDownAfterClass() throws Exception
   {
-    System.out.println("tearDownAfterClass(): running cleanup to delete test file.");
     _testfile.delete();
     assertFalse(_testfile.exists());
   }

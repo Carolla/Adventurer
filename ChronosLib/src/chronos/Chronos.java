@@ -80,7 +80,7 @@ public class Chronos
   public static final String REGISTRY_PATH = CHRONOS_LIB_RESOURCES_PATH + FS + "registries" + FS;
   /** These images are in the Adventurer resources directory */
   public static final String ADV_IMAGE_PATH = ADV_RESOURCES_PATH + FS + "images" + FS;
-  /** Chared images are in the ChronosLib resources directory */
+  /** Shared images are in the ChronosLib resources directory */
   public static final String IMAGE_PATH = CHRONOS_LIB_RESOURCES_PATH + FS + "images" + FS;
 
 //   LOG FOR TESTING
