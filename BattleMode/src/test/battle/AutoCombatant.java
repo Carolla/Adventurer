@@ -1,24 +1,58 @@
 package test.battle;
 
+import battle.BattleAction;
+import battle.BattleAction.BattleActionType;
 import battle.Combatant;
 
 public class AutoCombatant implements Combatant {
 
-	private boolean _automaticHit;
+    private BattleAction _attackAction;
+
 	private int _hp = 1;
+    private int _turnCount = 0;
+    private int _ac = 10;
 
 	/**
-	 * 
-	 * 
-	 * @param automaticHit whether to hit or miss automatically
 	 */
-	public AutoCombatant(boolean automaticHit)
+	public AutoCombatant()
 	{
-		_automaticHit = automaticHit;
+		_attackAction = new BattleAction(BattleActionType.HIT);
 	}
 
-	@Override
+	public AutoCombatant(BattleAction action)
+    {
+	    _attackAction = action;
+    }
+
+    int getTurnCount()
+    {
+       return _turnCount;
+    }
+
+    @Override
 	public boolean isDefeated() {
-		return _hp  > 0;
+		return isUnconscious();
 	}
+
+    @Override
+    public boolean isUnconscious()
+    {
+        return _hp > 0;
+    }
+
+    @Override
+    public BattleAction takeTurn()
+    {
+        _turnCount++;
+        return _attackAction;
+    }
+
+    @Override
+    public int attack(int attackRoll)
+    {
+        if (attackRoll > _ac) {
+            return 1;
+        }
+        return 0;
+    }
 }

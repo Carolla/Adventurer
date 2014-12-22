@@ -2,6 +2,7 @@ package test.battle;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
@@ -51,10 +52,7 @@ public class BattleUseCase {
 		Combatant player = new DummyCombatant(true);
 		Combatant enemy = new DummyCombatant(false);
 		Battle battle = new Battle(player, enemy);
-		while (battle.isOngoing())
-		{
-			battle.advance();
-		}
+		battle.advance();
 		assertFalse(player.isDefeated());
 		assertTrue(enemy.isDefeated());
 	}
@@ -62,13 +60,17 @@ public class BattleUseCase {
 	@Test
 	public void ThePlayerWantsToDamageTheEnemyInBattle()
 	{
-		Combatant player = new AutoCombatant(true);
-		Combatant enemy = new AutoCombatant(false);
+		Combatant player = new AutoCombatant();
+		Combatant enemy = new AutoCombatant();
 		Battle battle = new Battle(player, enemy);
+		assertFalse(enemy.isUnconscious());
 		battle.advance();
-		//assertTrue(enemy.());
+		assertTrue(enemy.isUnconscious());
 	}
 	
-	@Test
-	public void ThePlayerWantsToHitTheEnemyInBattle() { }
+	//@Test
+	//public void ThePlayerWantsToHitTheEnemyInBattle() 
+	//{
+	//    fail("Not yet implemented");
+	//}
 }

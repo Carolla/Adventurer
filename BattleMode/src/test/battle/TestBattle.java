@@ -1,10 +1,13 @@
 package test.battle;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import battle.BattleAction;
+import battle.BattleAction.BattleActionType;
 import battle.Battle;
 import battle.Combatant;
 
@@ -66,6 +69,21 @@ public class TestBattle {
 			battle.advance();
 		}
 		assertFalse(battle.isWinner(enemy) || battle.isWinner(player));
+	}
+	
+	@Test
+	public void BattleAllowsPlayersToTakeSuccessiveTurns()
+	{
+	    BattleAction playerAction = new BattleAction(BattleActionType.HIT);
+	    BattleAction enemyAction = new BattleAction(BattleActionType.MISS);
+		AutoCombatant player = new AutoCombatant(playerAction);
+		AutoCombatant enemy = new AutoCombatant(enemyAction);
+		Battle battle = new Battle(player, enemy);
+		assertEquals(0, player.getTurnCount());
+		assertEquals(0, enemy.getTurnCount());
+		battle.advance();
+		assertEquals(1, player.getTurnCount());
+		assertEquals(1, enemy.getTurnCount());
 	}
 	
 	private Battle SetupBasicBattle() 
