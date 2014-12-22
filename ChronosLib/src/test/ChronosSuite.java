@@ -38,7 +38,6 @@ import test.pdc.registry.TestRegistryFactory;
     MyLibraryTestSuite.class,
 
     /* CIV test files */
-    // TestDefaultList.class,
     // TestHeroDefaults.class,
     // TestMiscKeys.class,
     // TestOccupationsKeys.class,

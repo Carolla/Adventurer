@@ -10,11 +10,15 @@
 
 package mylib.test.pdc;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.List;
 
-import junit.framework.TestCase;
 import mylib.Constants;
 import mylib.MsgCtrl;
 import mylib.dmc.IRegistryElement;
@@ -28,8 +32,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.db4o.query.Predicate;
-
-/** a comment */
 
 
 /**
@@ -45,18 +47,19 @@ import com.db4o.query.Predicate;
  *          Feb 25, 2013 // ABC revamped for native queries in Registry base clase <br>
  *          Sep 13, 2014 // tested for closeFlag removal <br>
  *          Sep 27, 2014 // pruned again, looking for missed bug <br>
+ *          Dec 7, 2014 // added specific getUnique() tests<br>
  */
-public class TestRegistry extends TestCase
+public class TestRegistry
 {
   /** Concrete derived class of Registry */
   private ConcreteRegistry _testReg = null;
   /** MockDBRW to access the internal DbReadWriter methods */
   private MockRegistry _mock = null;
   /** Location of test file */
-  private final String TEST_FILEPATH = Constants.RESOURCES + "Test.reg";
-  /** Temp storage to return Registry back to normal non-test location */
-  private String _regLoc = null;
-
+  private static final String TEST_FILEPATH = Constants.MYLIB_RESOURCES + "Test.reg";
+  /** Temporary Test file */
+  private static File _testfile = null;
+  
   /** A predicate for retrieving objects by name */
   Predicate<IRegistryElement> _pred = null;
 
@@ -69,24 +72,28 @@ public class TestRegistry extends TestCase
   public static void setUpBeforeClass() throws Exception
   {}
 
+  
+  /** Remove the leftover test file */
   @AfterClass
   public static void tearDownAfterClass() throws Exception
-  {}
+  {
+    _testfile.delete();
+    assertFalse(_testfile.exists());
+  }
 
+  
   @Before
   public void setUp() throws Exception
   {
-    // Change Registry location to test registry file
-    _regLoc = TEST_FILEPATH;
     // Create a Registry object, which will be initialized if one doesn't exist
-    _testReg = new ConcreteRegistry(_regLoc);
+    _testReg = new ConcreteRegistry(TEST_FILEPATH);
     assertNotNull(_testReg);
     _mock = _testReg.new MockRegistry();
     assertNotNull(_mock);
 
     // Ensure that registry exists with no elements
-    File handle = new File(TEST_FILEPATH);
-    assertTrue(handle.exists());
+    _testfile = new File(TEST_FILEPATH);
+    assertTrue(_testfile.exists());
     _mock.clearElements();
     assertEquals(0, _testReg.getNbrElements());
   }
@@ -96,7 +103,7 @@ public class TestRegistry extends TestCase
   {
     _testReg.closeRegistry();
     _mock = null;
-    // Al messages are OFF after each test
+    // All messages are OFF after each test
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
   }
@@ -109,9 +116,9 @@ public class TestRegistry extends TestCase
   /**
    * mylib.test.pdc.add(IRegistryElement)
    * 
-   * @Normal Add one or more objects and retrieve them again <br>
-   * @Normal Add two identical objects and verify if both are added, or one overwrites the first <br>
-   * @Error Verify that null cannot be saved in the db <br>
+   * @Normal.Test Add one or more objects and retrieve them again <br>
+   * @Normal.Test Add two identical objects and verify if both are added, or one overwrites the first <br>
+   * @Error.Test Verify that null cannot be saved in the db <br>
    */
   @Test
   public void testAdd()
@@ -135,7 +142,7 @@ public class TestRegistry extends TestCase
     // Normal Add two identical objects and verify that the second is not added
     SomeObject so1Copy = new SomeObject(4.2, "object one");
     assertTrue(so1Copy.equals(so1));
-    // The copies is rejected because it matches an original
+    // The copy is rejected because it matches an original
     assertFalse(_testReg.add(so1Copy));
     assertEquals(2, _testReg.getNbrElements());
     assertTrue(_testReg.contains(so2));
@@ -153,10 +160,10 @@ public class TestRegistry extends TestCase
   /**
    * mylib.test.pdc.contains(IRegistryElement)
    * 
-   * @Normal Add one or more objects and verify they are in the registry <br>
-   * @Normal Verify that a deleted object is no longer contained in the registry <br>
-   * @Normal Verify that an updated object is still contained in the registry <br>
-   * @Error Verify that null cannot be checked to be in the registry <br>
+   * @Normal.Test Add one or more objects and verify they are in the registry <br>
+   * @Normal.Test Verify that a deleted object is no longer contained in the registry <br>
+   * @Normal.Test Verify that an updated object is still contained in the registry <br>
+   * @Error.Test Verify that null cannot be checked to be in the registry <br>
    */
   @Test
   public void testContains()
@@ -206,9 +213,9 @@ public class TestRegistry extends TestCase
   /**
    * mylib.test.pdc.delete(IRegistryElement)
    * 
-   * @Normal Delete objects and verify their removal <br>
-   * @Error Delete a null object <br>
-   * @Error Delete the same object twice <br>
+   * @Normal.Test Delete objects and verify their removal <br>
+   * @Error.Test Delete a null object <br>
+   * @Error.Test Delete the same object twice <br>
    */
   @Test
   public void testDelete()
@@ -256,9 +263,9 @@ public class TestRegistry extends TestCase
   /**
    * mylib.test.pdc.get(Predicate<IRegistryElement>)
    * 
-   * @Normal Get an element by its key <br>
-   * @Normal Change key and try to get it again <br>
-   * @Normal Get a list of elements that have the same key <br>
+   * @Normal.Test Get an element by its key <br>
+   * @Normal.Test Change key and try to get it again <br>
+   * @Normal.Test Get a list of elements that have the same key <br>
    */
   @Test
   public void testGet_ByPredicate()
@@ -320,11 +327,11 @@ public class TestRegistry extends TestCase
   /**
    * mylib.test.pdc.get(String)
    * 
-   * @Normal Get an element by its key <br>
-   * @Normal Change key and try to get it again <br>
-   * @Normal Get a list of elements that have the same key <br>
-   * @Normal Get an element with an empty (whitespace) key <br>
-   * @Error Get an element with an null key <br>
+   * @Normal.Test Get an element by its key <br>
+   * @Normal.Test Change key and try to get it again <br>
+   * @Normal.Test Get a list of elements that have the same key <br>
+   * @Normal.Test Get an element with an empty (whitespace) key <br>
+   * @Error.Test Get an element with an null key <br>
    */
   @Test
   public void testGet_ByString()
@@ -380,8 +387,8 @@ public class TestRegistry extends TestCase
   /**
    * mylib.test.pdc.get(String)
    * 
-   * @Error No element should exist with an empty (whitespace) key <br>
-   * @Error Get an element with an null key <br>
+   * @Error.Test No element should exist with an empty (whitespace) key <br>
+   * @Error.Test Get an element with an null key <br>
    */
   @Test
   public void testGet_ByEmptyKey()
@@ -402,8 +409,8 @@ public class TestRegistry extends TestCase
   /**
    * mylib.test.pdc.getAll()
    * 
-   * @Normal Get all elements in the registry <br>
-   * @Error Get an element with an null key <br>
+   * @Normal.Test Get all elements in the registry <br>
+   * @Error.Test Get an element with an null key <br>
    */
   @Test
   public void testGetAll()
@@ -434,15 +441,62 @@ public class TestRegistry extends TestCase
     }
   }
 
+
+  /**
+   * mylib.test.pdc.getUnique(String)
+   * 
+   * @Normal.Test Get an element by its name <br>
+   * @Normal.Test Get the same element again <br>
+   * @Error.Test Attempt an element that is not stored <br>
+   * @Error.Test Attempt an element by its non-key value <br>
+   * @Null.Test Attempt to retrieve with null key <br>
+   */
+  @Test
+  public void testGetUnique()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // Concrete Registry already created with 0 elements by setup()
+    assertEquals(_testReg.getNbrElements(), 0);
+
+    // Add get a unique object from the list
+    SomeObject obj = new SomeObject(11.2, "key");
+    assertNotNull(obj);
+    _testReg.add(obj);    
+    assertEquals(_testReg.getNbrElements(), 1);
+    
+    // Retrieve the object by name
+    IRegistryElement elem = _testReg.getUnique("key");
+    assertEquals("key", obj.getKey());
+    assertEquals("key", elem.getKey());
+    
+    // Retrieve the same object by name again
+    IRegistryElement elem2 = _testReg.getUnique("key");
+    assertEquals("key", obj.getKey());
+    assertEquals("key", elem2.getKey());
+    assertEquals(elem, elem2);
+    
+    // Attempt to get an object by its non-key value
+    IRegistryElement nonKeyElem = _testReg.getUnique("11.2");
+    assertNull(nonKeyElem);
+
+    // Attempt to get a null value 
+    IRegistryElement elem3 = _testReg.getUnique(null);
+    assertNull(elem3);
+  }
+    
+    
   /**
    * mylib.test.pdc.update(RegistryElement)
    * 
-   * @Normal Ensure that one object is swapped for a newer one <br>
-   * @Normal Ensure that one object is swapped for the itself (same incident) without incident <br>
-   * @Normal Ensure that one object is swapped for different one but of the same field values <br>
-   * @Normal Try to replace an object when more than one is in the registry <br>
-   * @Error Try to replace an object that does not exist in the registry <br>
-   * @Null Replace an object with a null object <br>
+   * @Normal.Test Ensure that one object is swapped for a newer one <br>
+   * @Normal.Test Ensure that one object is swapped for the itself (same incident) without incident <br>
+   * @Normal.Test Ensure that one object is swapped for different one but of the same field values <br>
+   * @Normal.Test Try to replace an object when more than one is in the registry <br>
+   * @Error.Test Try to replace an object that does not exist in the registry <br>
+   * @Null.Test Replace an object with a null object <br>
    */
   @Test
   public void testUpdate()
@@ -504,7 +558,7 @@ public class TestRegistry extends TestCase
    */
   private Predicate<IRegistryElement> keyPredicate(final SomeObject target)
   {
-    // Suppression needed for the annoymous inner class
+    // Suppression needed for the anonymous inner class
     @SuppressWarnings("serial")
     Predicate<IRegistryElement> pred = new Predicate<IRegistryElement>() {
       public boolean match(IRegistryElement candidate)
@@ -519,9 +573,10 @@ public class TestRegistry extends TestCase
   /**
    * 3 methods
    * 
-   * @NotNeeded initialize() -- abstract method <br>
-   * @NotNeeded getDBRW() -- getter <br>
-   * @NotNeeded getNbrElements() -- getter <br>
+   * @Not.Needed initialize() -- abstract method <br>
+   * @Not.Needed getDBRW() -- getter <br>
+   * @Not.Needed getNbrElements() -- getter <br>
+   * @Not.Needed Registry(String) -- abstract base class <br>
    */
   void _testsNotNeeded()
   {}
@@ -529,13 +584,11 @@ public class TestRegistry extends TestCase
   /**
    * 5 methods
    * 
-   * @NotImplemented Registry(String)
-   * @NotImplemented getElementNames()
-   * @NotImplemented getUnique(String)
-   * @NotImplemented isClosed()
-   * @NotImplemented isUnique(String)
+   * @Not.Implemented getElementNames() <br>
+   * @Not.Implemented isClosed() -- can this method be removed? <br>
+   * @Not.Implemented isUnique(String) -- is this method actually needed? <br>
    */
-  void _testsToBeImplemente()
+  void _testsToBeImplemented()
   {}
 
 } // end of TestRegistry class

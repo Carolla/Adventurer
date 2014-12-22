@@ -367,19 +367,19 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private JButton createHeroCreationButton()
   {
     JButton button = createButtonWithTextAndIcon(REGISTRAR_IMAGE, "Create New Heroes");
-    button.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent arg0)
-      {
-        NewHeroDisplay nhd = null;
-        try {
-          nhd = new NewHeroDisplay();
-        } catch (InstantiationException e) {
-          e.printStackTrace();
-          System.exit(0);
-        }
-        // changeToLeftPanel(nhd); // This my still be needed
-      }
-    });
+//    button.addActionListener(new ActionListener() {
+//      public void actionPerformed(ActionEvent arg0)
+//      {
+//        NewHeroDisplay nhd = null;
+//        try {
+//          nhd = new NewHeroDisplay();
+//        } catch (InstantiationException e) {
+//          e.printStackTrace();
+//          System.exit(0);
+//        }
+//        // changeToLeftPanel(nhd); // This my still be needed
+//      }
+//    });
     return button;
   }
 

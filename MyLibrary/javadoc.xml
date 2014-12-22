@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+    <target name="javadoc">
+        <javadoc access="private" additionalparam=" -tag NotNeeded:m:”Unit Tests Not Needed for”&#13;-tag Normal:m:”Normal Tests”&#13;-tag Error:m:”Error Tests”&#13;-tag Null:m:”Null Parameter Tests”&#13;-tag NotImplemented:m:”Test To Be Built Later” &#10;-tag Bounds:m:”Boundary Value Tests”&#13;-tag Special:m:”Special Case Test”" author="true" classpath="/Applications/EclipseKepler/plugins/org.junit_4.11.0.v201303080030/junit.jar:src/mylib/libResources/miglayout-3.7.3.1-swing.jar:src/mylib/libResources/hamcrest-all-1.3.jar:src/mylib/libResources/db4o-8.0.249.16098-core-java5.jar:/Applications/EclipseKepler/plugins/org.hamcrest.core_1.3.0.v201303031735.jar" destdir="doc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.7" sourcefiles="src/mylib/test/dmc/TestDbReadWriter.java" sourcepath="src" splitindex="true" use="true" version="true"/>
+    </target>
+</project>

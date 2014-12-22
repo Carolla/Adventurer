@@ -1424,47 +1424,47 @@ public class Person implements Serializable, IRegistryElement
   {
     // Load a value into the shuttle for each slot requested; ignore others
     // Return immediately if the requested key is not found
-    for (PersonKeys key : ds.getKeys()) {
-      Object value = ds.getField(key);
-      // Every key must have valid data of the right type to be saved in
-      // the model, else error
-      // There should be no keys without data
-      if (value == null) {
-        ds.setErrorType(ErrorType.FIELD_INVALID);
-        ds.setErrorMessage(key.name());
-        ds.setErrorSource(key);
-        break;
-      } else {
-        switch (key) {
-          case NAME:
-            _name = ds.getField(PersonKeys.NAME).toString();
-            break;
-          case GENDER:
-            _gender = ds.getField(PersonKeys.GENDER).toString();
-            break;
-          case HAIR_COLOR:
-            _hairColor = ds.getField(PersonKeys.HAIR_COLOR)
-                .toString();
-            break;
-          case KLASSNAME:
-            ds.putField(PersonKeys.KLASSNAME, _klass.getKlassName());
-            break;
-          case OCCUPATION:
-            ds.putField(PersonKeys.OCCUPATION, _Occupation);
-            break;
-          case RACENAME:
-            ds.putField(PersonKeys.RACENAME, _Race.getRaceName());
-            break;
-          case XP:
-            ds.putField(PersonKeys.XP, _klass.getXP());
-            break;
-          default:
-            ds.setErrorType(ErrorType.MISSING_FIELD);
-            ds.setErrorMessage(key.name());
-            ds.setErrorSource(key);
-        } // end of switch
-      } // end of if-else
-    } // end of for-loop
+//    for (PersonKeys key : ds.getKeys()) {
+//      Object value = ds.getField(key);
+//      // Every key must have valid data of the right type to be saved in
+//      // the model, else error
+//      // There should be no keys without data
+//      if (value == null) {
+//        ds.setErrorType(ErrorType.FIELD_INVALID);
+//        ds.setErrorMessage(key.name());
+//        ds.setErrorSource(key);
+//        break;
+//      } else {
+//        switch (key) {
+//          case NAME:
+//            _name = ds.getField(PersonKeys.NAME).toString();
+//            break;
+//          case GENDER:
+//            _gender = ds.getField(PersonKeys.GENDER).toString();
+//            break;
+//          case HAIR_COLOR:
+//            _hairColor = ds.getField(PersonKeys.HAIR_COLOR)
+//                .toString();
+//            break;
+//          case KLASSNAME:
+//            ds.putField(PersonKeys.KLASSNAME, _klass.getKlassName());
+//            break;
+//          case OCCUPATION:
+//            ds.putField(PersonKeys.OCCUPATION, _Occupation);
+//            break;
+//          case RACENAME:
+//            ds.putField(PersonKeys.RACENAME, _Race.getRaceName());
+//            break;
+//          case XP:
+//            ds.putField(PersonKeys.XP, _klass.getXP());
+//            break;
+//          default:
+//            ds.setErrorType(ErrorType.MISSING_FIELD);
+//            ds.setErrorMessage(key.name());
+//            ds.setErrorSource(key);
+//        } // end of switch
+//      } // end of if-else
+//    } // end of for-loop
       // Return shuttle in case it contains errors
     return ds;
 

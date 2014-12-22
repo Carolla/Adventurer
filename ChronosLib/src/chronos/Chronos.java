@@ -28,6 +28,7 @@ import mylib.Constants;
  *          June 21, 2014 // ABC: Used CHRONOS_ROOT and added syntactic synonyms <br>
  *          July 19, 2014 // ABC: Refactored after architectural changes to source <br>
  *          July 25, 2014 // ABC: Moved AdvHelpRegistry from Adventurer to shared registry area<br>
+ *          Dec 7, 2014 // ABC: Moved platform-independent directory variables to Contants.java <br>
  */
 public class Chronos
 {
@@ -36,7 +37,7 @@ public class Chronos
   {};
 
   /** Synonyms */
-  private static final String FS = Constants.FILE_SEPARATOR;
+  private static final String FS = Constants.FS;
 
   /**
    * Chronos install directory environment variable for resource root between Quest Master and
@@ -46,22 +47,25 @@ public class Chronos
    * workspace.
    */
 
-  /** Base environment variable for shared file resources path */
-  public static String ECHRONOS_ROOT = find_eChronosRootDir() + FS;
   /** Initializer for CHRONOS_ROOT static variable */
   private static String find_eChronosRootDir() 
   {
-	  String fileName = null;
-	  try {
-		fileName = new File("..").getCanonicalPath();
-	} catch (IOException e) {
-		System.err.println("Unable to locate CHRONOS_ROOT");
-		System.exit(-1);
-	}
-	  return fileName;
+    String fileName = null;
+    try {
+      fileName = new File("..").getCanonicalPath();
+    } catch (IOException e) {
+      System.err.println("Unable to locate CHRONOS_ROOT");
+      System.exit(-1);
+    }
+    return fileName;
   }
-  
+
+  /** Base environment variable for shared file resources path */
+  public static String ECHRONOS_ROOT = find_eChronosRootDir() + FS;
+
   /** Relative path location of all shared resources */
+  public static String RESOURCES_PATH = ECHRONOS_ROOT + "/resources";
+
 //  public static String RESOURCES_PATH = CHRONOS_ROOT + "/ChronosLib/resources";
   public static String CHRONOS_LIB_RESOURCES_PATH = ECHRONOS_ROOT + "ChronosLib" + FS +"resources";
   /** Relative path location of Adventurer-specific resources */
@@ -70,11 +74,13 @@ public class Chronos
   public static final String REGISTRY_CLASSPKG = "chronos.pdc.registry.";
 
   /** Path for all data Registries */
+  // public static final String REGISTRY_PATH = RESOURCES_PATH + FS + "registries" + FS;
+//  public static final String REGISTRY_PATH = "/Projects/eChronos/ChronosLib/resources/";
+
   public static final String REGISTRY_PATH = CHRONOS_LIB_RESOURCES_PATH + FS + "registries" + FS;
-  
   /** These images are in the Adventurer resources directory */
   public static final String ADV_IMAGE_PATH = ADV_RESOURCES_PATH + FS + "images" + FS;
-  /** Chared images are in the ChronosLib resources directory */
+  /** Shared images are in the ChronosLib resources directory */
   public static final String IMAGE_PATH = CHRONOS_LIB_RESOURCES_PATH + FS + "images" + FS;
 
 //   LOG FOR TESTING
@@ -139,18 +145,15 @@ public class Chronos
 
 
   /** Location of font file used for name display */
-  static public final String RUNIC_FONT_FILE = CHRONOS_LIB_RESOURCES_PATH + Constants.FILE_SEPARATOR + "fonts"
-      + Constants.FILE_SEPARATOR + "RUNE_A.ttf";
+  static public final String RUNIC_FONT_FILE = RESOURCES_PATH + FS + "fonts" + FS + "RUNE_A.ttf";
 
   /** Location of font file used for English-runic display */
-  static public final String RUNIC_ENGLISH_FONT_FILE = CHRONOS_LIB_RESOURCES_PATH + Constants.FILE_SEPARATOR
-      + "fonts"
-      + Constants.FILE_SEPARATOR + "RUNENG1.ttf";
+  static public final String RUNIC_ENGLISH_FONT_FILE = RESOURCES_PATH + FS + "fonts" + FS
+      + "RUNENG1.ttf";
 
   /** Location of font file used for English-runic, mixed-case display */
-  static public final String RUNIC_ENGLISH2_FONT_FILE = CHRONOS_LIB_RESOURCES_PATH + Constants.FILE_SEPARATOR
-      + "fonts"
-      + Constants.FILE_SEPARATOR + "RUNENG2.ttf";
+  static public final String RUNIC_ENGLISH2_FONT_FILE = RESOURCES_PATH + FS + "fonts" + FS
+      + "RUNENG2.ttf";
 
   /** Define half standard deviation range boundary for normal distribution */
   static public final double HALF_SIGMA = (1.0 / 6.0) * 100.0;
@@ -228,7 +231,7 @@ public class Chronos
     return DEFAULT_PKG;
   }
 
-/**
+  /**
    * Allow the base location of class files to be defined or redirected for testing
    * 
    * @param pkgName location of file wrto the Chronos root directory
