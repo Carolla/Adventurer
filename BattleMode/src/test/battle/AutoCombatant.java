@@ -37,7 +37,7 @@ public class AutoCombatant implements Combatant {
     @Override
     public boolean isUnconscious()
     {
-        return _hp > 0;
+        return _hp == 0;
     }
 
     @Override
@@ -51,6 +51,7 @@ public class AutoCombatant implements Combatant {
     public int attack(int attackRoll)
     {
         if (attackRoll > _ac) {
+            _hp--;
             return 1;
         }
         return 0;

@@ -25,7 +25,7 @@ public class BattleAction
         switch (_type)
         {
             case HIT:
-                opponent.attack(1);
+                opponent.attack(20);
                 break;
             case MISS:
             case WAIT:
