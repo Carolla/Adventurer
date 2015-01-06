@@ -19,7 +19,6 @@ public class Battle {
 	 */
 	public boolean isInBattle(Combatant combatant) {
 		return (_player == combatant || _enemy == combatant);
-
 	}
 
 	public boolean isOngoing() {
@@ -31,10 +30,14 @@ public class Battle {
 	 */
 	public void advance() {
 		System.out.println("Round " + _round++);
+		BattleAction playerAction = _player.takeTurn();
+		playerAction.Execute(_enemy);
+		BattleAction enemyAction = _enemy.takeTurn();
+		enemyAction.Execute(_player);
 	}
 
 	public boolean isWinner(Combatant combatant) {
-		return true;
+		return !combatant.isDefeated();
 	}
 
 }
