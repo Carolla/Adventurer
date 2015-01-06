@@ -64,6 +64,7 @@ public class CmdEnter extends Command
   public CmdEnter()
   {
     super("CmdEnter", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
+    System.out.println("CmdEnter(): creating ENTER command.");
   }
 
 

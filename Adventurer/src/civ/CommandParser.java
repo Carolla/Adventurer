@@ -93,7 +93,7 @@ public class CommandParser
     _names = new ArrayList<String>(20);
     _parms = new ArrayList<String>();
     _cmf = new CommandFactory();
-    _mfCiv = Mainframe.getInstance().getMainframeCiv();
+//    _mfCiv = Mainframe.getInstance().getMainframeCiv();
 
     // Start the scheduler off on its own thread
     _skedder = Scheduler.createInstance(this);
@@ -302,5 +302,34 @@ public class CommandParser
     return cmdToken;
   }
 
+  
+  // ============================================================
+  // Mock inner class
+  // ============================================================
+  public class MockCP
+  {
+    public MockCP() { }
+    
+    
+    /** Get the input command */
+    public String getInput()
+    {
+      return CommandParser.this._userInput;
+    }
+
+    
+  } // end of MockCP inner class
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 } // end of CommandParser class
 

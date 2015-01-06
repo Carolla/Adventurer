@@ -10,12 +10,12 @@
 package civ;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Observer;
 
 import mylib.ApplicationException;
 import mylib.Constants;
 import mylib.MsgCtrl;
+import mylib.civ.DataShuttle;
 import chronos.civ.SkillKeys;
 import chronos.pdc.Skill;
 import chronos.pdc.registry.SkillRegistry;
@@ -27,16 +27,11 @@ import chronos.pdc.registry.SkillRegistry;
  * then formats and displays the data because the GUI has no knowledge of PDC objects.
  * 
  * @author Timothy Armstrong
- * @version <DL>
- *          <DT>Build 1.0 June 21 2011 // original
- *          <DD>
- *          <DT>Build 2.0 August 7, 2011 // changed validate to submit
- *          <DD>
- *          <DT>Build 3.0 Sept 1, 2011 // Numerous changes to work with display
- *          </DL>
+ * @version June 21 2011 // original <br>
+ *          August 7, 2011 // changed validate to submit <br>
+ *          Sept 1, 2011 // Numerous changes to work with display <br>
  */
-public class SkillDisplayCiv // extends BaseCiv<SkillKeys, SkillKeys> implements
-    Observer
+public class SkillDisplayCiv extends BaseCiv<SkillKeys, SkillKeys> implements Observer
 {
   /** Associated Inventory of the Person */
   private SkillRegistry _skreg = null;
@@ -66,11 +61,11 @@ public class SkillDisplayCiv // extends BaseCiv<SkillKeys, SkillKeys> implements
   /** Error type for validating input for Skills */
   static public final int INVALID_WHITESPACE = -3;
 
-  // /** Data shuttle */
-  // private List<SkillKeys> _ds = null;
-  //
-  // /** Widget shuttle */
-  // private List<SkillKeys> _ws = null;
+  /** Data shuttle */
+  private DataShuttle<SkillKeys> _ds = null;
+
+  /** Widget shuttle */
+  private DataShuttle<SkillKeys> _ws = null;
 
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
@@ -79,8 +74,8 @@ public class SkillDisplayCiv // extends BaseCiv<SkillKeys, SkillKeys> implements
   // /** Default constructor */
   // public SkillDisplayCiv()
   // {
-  // _ds = new List<SkillKeys>(SkillKeys.class);
-  // _ws = new List<SkillKeys>(SkillKeys.class);
+  // _ds = new DataShuttle<SkillKeys>(SkillKeys.class);
+  // _ws = new DataShuttle<SkillKeys>(SkillKeys.class);
   // // This should be _model
   // _skreg = (SkillRegistry) RegistryFactory.getInstance().getRegistry(RegKey.SKILL);
   // // _skreg.load(); //TODO: Fix this line.
@@ -101,75 +96,76 @@ public class SkillDisplayCiv // extends BaseCiv<SkillKeys, SkillKeys> implements
     return _skreg.getNbrElements();
   }
 
-  // /**
-  // * Implemented method to return data shuttle with SkillKeys
-  // *
-  // * @return Returns shuttle with default data for display
-  // */
-  // public List<SkillKeys> getDefaults() {
-  // if (_ds == null) {
-  // return null;
-  // }
-  //
-  // List<String> skills = getSkills();
-  // skills.add(0, "NEW");
-  //
-  // String[] races = getRaces();
-  // String[] klasses = getKlasses();
-  //
-  // List<String> racelist = new ArrayList<String>();
-  // for (int i = 0; i < races.length; i++) {
-  // racelist.add(races[i]);
-  // }
-  // racelist.add(0, "All");
-  //
-  // List<String> klasslist = new ArrayList<String>();
-  // for (int i = 0; i < klasses.length; i++) {
-  // klasslist.add(klasses[i]);
-  // }
-  // klasslist.add(0, "All");
-  //
-  // // Build shuttle of default data
-  // _ds.putField(SkillKeys.NAME, SkillKeys.NAME.getDefault());
-  // _ds.putField(SkillKeys.ACTION, SkillKeys.ACTION.getDefault());
-  // _ds.putField(SkillKeys.DESC, SkillKeys.DESC.getDefault());
-  // _ds.putField(SkillKeys.RACE, SkillKeys.RACE.getDefault());
-  // _ds.putField(SkillKeys.KLASS, SkillKeys.KLASS.getDefault());
-  // _ds.putField(SkillKeys.RACELIST, racelist);
-  // _ds.putField(SkillKeys.KLASSLIST, klasslist);
-  // _ds.putField(SkillKeys.SKILLLIST, skills);
-  //
-  // _ws = convertToDisplay(_ds);
-  // return _ws;
-  // }
+  /**
+   * Implemented method to return data shuttle with SkillKeys
+   * 
+   * @return Returns shuttle with default data for display
+   */
+  public DataShuttle<SkillKeys> getDefaults()
+  {
+    if (_ds == null) {
+      return null;
+    }
 
-//  /**
-//   * Loads the skill with the given name into the shuttle and passes back
-//   * 
-//   * @param skillName name of the skill to be populated
-//   * @return data shuttle packed with information of skill named in parameter
-//   */
-//  public List<SkillKeys> getSkill(String skillName)
-//  {
-//    // Create the skill and the data shuttle
-//    Skill skill = null;
-//    skill = _skreg.getSkill(skillName);
-//
-//    if (skill == null) {
-//      return null;
-//    } else {
-//      return skill.loadShuttle(_ws);
-//    }
-//  }
+    ArrayList<String> skills = getSkills();
+    skills.add(0, "NEW");
+
+    String[] races = getRaces();
+    String[] klasses = getKlasses();
+
+    ArrayList<String> racelist = new ArrayList<String>();
+    for (int i = 0; i < races.length; i++) {
+      racelist.add(races[i]);
+    }
+    racelist.add(0, "All");
+
+    ArrayList<String> klasslist = new ArrayList<String>();
+    for (int i = 0; i < klasses.length; i++) {
+      klasslist.add(klasses[i]);
+    }
+    klasslist.add(0, "All");
+
+    // Build shuttle of default data
+    _ds.putField(SkillKeys.NAME, SkillKeys.NAME.getDefault());
+    _ds.putField(SkillKeys.ACTION, SkillKeys.ACTION.getDefault());
+    _ds.putField(SkillKeys.DESC, SkillKeys.DESC.getDefault());
+    _ds.putField(SkillKeys.RACE, SkillKeys.RACE.getDefault());
+    _ds.putField(SkillKeys.KLASS, SkillKeys.KLASS.getDefault());
+    _ds.putField(SkillKeys.RACELIST, racelist);
+    _ds.putField(SkillKeys.KLASSLIST, klasslist);
+    _ds.putField(SkillKeys.SKILLLIST, skills);
+
+    _ws = convertToDisplay(_ds);
+    return _ws;
+  }
+
+  // /**
+  // * Loads the skill with the given name into the shuttle and passes back
+  // *
+  // * @param skillName name of the skill to be populated
+  // * @return data shuttle packed with information of skill named in parameter
+  // */
+  // public DataShuttle<SkillKeys> getSkill(String skillName)
+  // {
+  // // Create the skill and the data shuttle
+  // Skill skill = null;
+  // skill = _skreg.getSkill(skillName);
+  //
+  // if (skill == null) {
+  // return null;
+  // } else {
+  // return skill.loadShuttle(_ws);
+  // }
+  // }
 
   /**
    * Gets the list of skills for display
    * 
    * @return the names of all the Skills in the registry
    */
-  public List<String> getSkills()
+  public ArrayList<String> getSkills()
   {
-    List<String> skillList = new ArrayList<String>();
+    ArrayList<String> skillList = new ArrayList<String>();
     for (Skill s : _skreg.getSkillList()) {
       skillList.add(s.getName());
     }
@@ -203,7 +199,7 @@ public class SkillDisplayCiv // extends BaseCiv<SkillKeys, SkillKeys> implements
   // * @return True if the values are acceptable
   // */
   // @Override
-  // public List<SkillKeys> isValid(List<SkillKeys> ws)
+  // public DataShuttle<SkillKeys> isValid(DataShuttle<SkillKeys> ws)
   // {
   // _ds = convertToModel(ws);
   //
@@ -282,16 +278,14 @@ public class SkillDisplayCiv // extends BaseCiv<SkillKeys, SkillKeys> implements
    * @param shuttle in/out shuttle containing the model/widget data
    * @return shuttle containing widget String data
    */
-  @Override
-  public List<SkillKeys> convertToDisplay(
-      List<SkillKeys> shuttle)
+  public DataShuttle<SkillKeys> convertToDisplay(DataShuttle<SkillKeys> shuttle)
   {
     // Guard: if shuttle is null, return false immediately
     if (shuttle == null) {
       return null;
     }
     // Explicit cast for unchecked exception
-    List<SkillKeys> ds = shuttle;
+    DataShuttle<SkillKeys> ds = shuttle;
     ds.putField(SkillKeys.ACTION, "Not yet implemented");
     // case NAME: // no change to this key
     // break;
@@ -317,8 +311,7 @@ public class SkillDisplayCiv // extends BaseCiv<SkillKeys, SkillKeys> implements
   }
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PRIVATE METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * PRIVATE METHODS
    */
 
   /**
@@ -327,15 +320,14 @@ public class SkillDisplayCiv // extends BaseCiv<SkillKeys, SkillKeys> implements
    * @param shuttle in/out shuttle containing the model/widget data
    * @return shuttle containing widget String data
    */
-  @Override
-  public List<SkillKeys> convertToModel(List<SkillKeys> shuttle)
+  public DataShuttle<SkillKeys> convertToModel(DataShuttle<SkillKeys> shuttle)
   {
     // Guard: if shuttle is null, return false immediately
     if (shuttle == null) {
       return null;
     }
     // Explicit cast for unchecked exception
-    List<SkillKeys> ds = shuttle;
+    DataShuttle<SkillKeys> ds = shuttle;
     // try {
     // for (SkillKeys key : ds.getKeys()) {
     // switch (key) {
@@ -370,11 +362,11 @@ public class SkillDisplayCiv // extends BaseCiv<SkillKeys, SkillKeys> implements
    * 
    * @return true if the save worked correctly
    */
-  public int save(List<SkillKeys> ws)
+  public int save(DataShuttle<SkillKeys> ws)
   {
     MsgCtrl.msgln(this, "\tsave(): ");
 
-    List<SkillKeys> ds = convertToModel(ws);
+    DataShuttle<SkillKeys> ds = convertToModel(ws);
 
     String name = (String) ds.getField(SkillKeys.NAME);
     String desc = (String) ds.getField(SkillKeys.DESC);
@@ -413,8 +405,8 @@ public class SkillDisplayCiv // extends BaseCiv<SkillKeys, SkillKeys> implements
   // * @return data (widget) shuttle with error modes set
   // */
   // @Override
-  // // public List<SkillKeys> submit (List ds)
-  // public List<SkillKeys> submit(List<SkillKeys> ws)
+  // // public DataShuttle<SkillKeys> submit (List ds)
+  // public DataShuttle<SkillKeys> submit(DataShuttle<SkillKeys> ws)
   // {
   // _ds = convertToModel(ws);
   // MsgCtrl.msgln(this, "\tsubmit(): ");
@@ -457,32 +449,32 @@ public class SkillDisplayCiv // extends BaseCiv<SkillKeys, SkillKeys> implements
   // return _ws;
   // }
 
-//  /*
-//   * Update the widget from the update SkillRegistry model
-//   * 
-//   * @param myObs the object being watched for changes
-//   * 
-//   * @param myObject arbitary object that the observable model passes to this observer
-//   */
-//  public void update(Observable myObs, Object myObject)
-//  {
-//    MsgCtrl.errMsgln("Update message received");
-//    // Guard: if either argument is null, return immediately
-//    if ((myObs == null) || (myObject == null)) {
-//      return;
-//    } else {
-//      _ws = getDefaults();
-//      convertToDisplay(_ws);
-//    }
-//    // Explicit cast of data shuttle received to shuttle of right type
-//    // @SuppressWarnings("unchecked")
-//    // List<SkillKeys> ds = (List<SkillKeys>) myObject;
-//    //
-//    // try {
-//    // for (SkillKeys key : ds.getKeys()) {
-//    // switch (key) {
-//    // case ACTION:
-//  }
+  // /*
+  // * Update the widget from the update SkillRegistry model
+  // *
+  // * @param myObs the object being watched for changes
+  // *
+  // * @param myObject arbitary object that the observable model passes to this observer
+  // */
+  // public void update(Observable myObs, Object myObject)
+  // {
+  // MsgCtrl.errMsgln("Update message received");
+  // // Guard: if either argument is null, return immediately
+  // if ((myObs == null) || (myObject == null)) {
+  // return;
+  // } else {
+  // _ws = getDefaults();
+  // convertToDisplay(_ws);
+  // }
+  // // Explicit cast of data shuttle received to shuttle of right type
+  // // @SuppressWarnings("unchecked")
+  // // DataShuttle<SkillKeys> ds = (DataShuttle<SkillKeys>) myObject;
+  // //
+  // // try {
+  // // for (SkillKeys key : ds.getKeys()) {
+  // // switch (key) {
+  // // case ACTION:
+  // }
 
 } // end of SkillDisplayCiv class
 

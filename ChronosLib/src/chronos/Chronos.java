@@ -37,7 +37,7 @@ public class Chronos
   {};
 
   /** Synonyms */
-  private static final String FS = Constants.FS;
+  public static final String FS = Constants.FS;
 
   /**
    * Chronos install directory environment variable for resource root between Quest Master and
@@ -143,17 +143,16 @@ public class Chronos
    */
   public static String DEFAULT_PKG = "pdc.";
 
-
+  /** Generic font folder */
+  public static final String FONT_PATH = CHRONOS_LIB_RESOURCES_PATH + FS +"fonts" + FS;
   /** Location of font file used for name display */
   static public final String RUNIC_FONT_FILE = RESOURCES_PATH + FS + "fonts" + FS + "RUNE_A.ttf";
 
   /** Location of font file used for English-runic display */
-  static public final String RUNIC_ENGLISH_FONT_FILE = RESOURCES_PATH + FS + "fonts" + FS
-      + "RUNENG1.ttf";
+  static public final String RUNIC_ENGLISH_FONT_FILE = FONT_PATH + "RUNENG1.ttf";
 
   /** Location of font file used for English-runic, mixed-case display */
-  static public final String RUNIC_ENGLISH2_FONT_FILE = RESOURCES_PATH + FS + "fonts" + FS
-      + "RUNENG2.ttf";
+  static public final String RUNIC_ENGLISH2_FONT_FILE = FONT_PATH + "RUNENG2.ttf";
 
   /** Define half standard deviation range boundary for normal distribution */
   static public final double HALF_SIGMA = (1.0 / 6.0) * 100.0;

@@ -1,5 +1,4 @@
 /**
- * HeroDisplay.java Copyright (c) 2009, Carolla Development, Inc. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
@@ -13,14 +12,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.FontFormatException;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.StringTokenizer;
 
 import javax.swing.BorderFactory;
@@ -34,14 +29,12 @@ import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
 
 import mylib.MsgCtrl;
+import mylib.civ.DataShuttle;
 import net.miginfocom.swing.MigLayout;
-import chronos.Chronos;
 import civ.HeroDisplayCiv;
 import civ.MiscKeys.ItemCategory;
-import civ.NewHeroCiv;
 import civ.PersonKeys;
 
 /** TODO: [4] Add Help for Attribute page */
@@ -207,7 +200,7 @@ public class HeroDisplay extends JPanel
   private HeroDisplayCiv _hdCiv = null;
 
   /** Keys to Hero data to be displayed */
-  List<PersonKeys> _ds = null;
+  DataShuttle<PersonKeys> _ds = null;
 
   /** Items to be displayed */
   private ArrayList<String> _itemList = null;
@@ -239,8 +232,7 @@ public class HeroDisplay extends JPanel
 
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND RELATED METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
   /** Default constuctor */
@@ -263,119 +255,119 @@ public class HeroDisplay extends JPanel
 
 
   /** Stub until the display is working properly. */
-  public boolean displayAttributes(List<PersonKeys> ds)
+  public boolean displayAttributes(DataShuttle<PersonKeys> ds)
   {
     // Set private field equal to passed parameter
     _ds = ds;
 
-//    // Generate titled border (banner) containing Hero's name
-//    int mfpad = Mainframe.PAD;
-//    String mftitle = " Attributes for " + _ds.getField(PersonKeys.NAME)
-//        + " ";
-//    Border thisBorder = BorderFactory.createMatteBorder(mfpad, mfpad,
-//        mfpad, mfpad, Color.WHITE);
-//    Border titledBorder = BorderFactory.createTitledBorder(thisBorder,
-//        mftitle, TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION);
-//    setBorder(titledBorder);
-//
-//    // ADD HELP MESSAGE TO INSTRUCT HOW TO SHIFT FOCUS
-//    add(new JLabel(HELP_LABEL), "span");
-//
-//    // Use a larger special font for the Hero's name. Extract the label font
-//    // size from the cell
-//    Font nameFont = null;
-//    try {
-//      // Returned font is of pt size 1
-//      Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(
-//          Chronos.RUNIC_ENGLISH_FONT_FILE));
-//
-//      // Derive a 30 pt version:
-//      nameFont = newFont.deriveFont(NAME_HT);
-//    } catch (FontFormatException e) {
-//      MsgCtrl.errMsgln("Could not format font: " + e.getMessage());
-//    } catch (IOException e) {
-//      MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
-//    }
-//    // NamePlate before Attribute grid: Name, gender, Race, Klass
-//    String namePlate = _ds.getField(PersonKeys.NAME) + ": "
-//        + _ds.getField(PersonKeys.GENDER) + " "
-//        + _ds.getField(PersonKeys.RACENAME) + " "
-//        + _ds.getField(PersonKeys.KLASSNAME);
-//    // Put some space above and below the namePlate
-//    _charName = new JLabel(namePlate);
-//
-//    // GraphicsEnvironment env =
-//    // GraphicsEnvironment.getLocalGraphicsEnvironment();
-//    // String[] fontNames = env.getAvailableFontFamilyNames();
-//
-//    _charName.setFont(nameFont);
-//    // TODO: Update this to change the size Tim
-//    while (_charName.getPreferredSize().width > DATA_WIDTH) {
-//      // Edit name font down a notch or two
-//      Font labelFont = _charName.getFont();
-//      String labelText = _charName.getText();
-//
-//      int stringWidth = _charName.getFontMetrics(labelFont).stringWidth(
-//          labelText);
-//      int componentWidth = DATA_WIDTH;
-//
-//      // Find out how much the font can grow in width.
-//      double widthRatio = (double) componentWidth / (double) stringWidth;
-//
-//      int newFontSize = (int) (labelFont.getSize() * widthRatio);
-//
-//      // Recreate the new font
-//      try {
-//        Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(
-//            Chronos.RUNIC_ENGLISH_FONT_FILE));
-//
-//        // Set the label's font size to the newly determined size.
-//        Font smallNameFont = newFont.deriveFont(newFontSize);
-//        _charName.setFont(smallNameFont);
-//      } catch (FontFormatException e) {
-//        MsgCtrl.errMsgln("Could not format font: " + e.getMessage());
-//      } catch (IOException e) {
-//        MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
-//      }
-//    }
-//    add(_charName, "span, gaptop 5, gapbottom 8");
-//
-//    // Display Ability Scores
-//
-//    List<Integer> attList = (List<Integer>) ds.getField(PersonKeys.ABILITY_SCORES);
-//    List<String> attributes = new NewHeroCiv().getAttributes();
-//
-//    JPanel scorePanel = new JPanel();
-//
-//    int i = 0;
-//    for (String att : attributes) {
-//      JLabel scoreLabel = new JLabel(att + ": " + attList.get(i).toString());
-//      scorePanel.add(scoreLabel);
-//      i++;
-//    }
-//
-//    add(scorePanel, "span");
-//
-//    // CREATE THE ATTRIBUTE GRID PANEL AND SIZE IT FOR DISPLAY
-//    _attribPanel = buildAttributePanel();
-//    // Ensure that the attribute panel does not exceed the HeroDisplay panel
-//    // width
-//    _attribPanel.setPreferredSize(new Dimension(DATA_WIDTH, _attribPanel
-//        .getHeight()));
-//    // attribPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK,
-//    // 1));
-//    add(_attribPanel, "span, center, gapbottom 0");// , span, growx");
-//
-//    // ADD SAVE & CANCEL BUTTONS TO THE BOTTOM OF THE PANEL
-//    _buttonPanel = buildButtonPanel();
-//    _buttonPanel.setPreferredSize(new Dimension(DATA_WIDTH, _buttonPanel
-//        .getHeight()));
-//    add(_buttonPanel, "span, center, gapbottom 5");
-//
-//    Mainframe frame = Mainframe.getInstance();
-//    // frame.changeToLeftPanel(this);
-//    // revalidate();
-//    // repaint();
+    // // Generate titled border (banner) containing Hero's name
+    // int mfpad = Mainframe.PAD;
+    // String mftitle = " Attributes for " + _ds.getField(PersonKeys.NAME)
+    // + " ";
+    // Border thisBorder = BorderFactory.createMatteBorder(mfpad, mfpad,
+    // mfpad, mfpad, Color.WHITE);
+    // Border titledBorder = BorderFactory.createTitledBorder(thisBorder,
+    // mftitle, TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION);
+    // setBorder(titledBorder);
+    //
+    // // ADD HELP MESSAGE TO INSTRUCT HOW TO SHIFT FOCUS
+    // add(new JLabel(HELP_LABEL), "span");
+    //
+    // // Use a larger special font for the Hero's name. Extract the label font
+    // // size from the cell
+    // Font nameFont = null;
+    // try {
+    // // Returned font is of pt size 1
+    // Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(
+    // Chronos.RUNIC_ENGLISH_FONT_FILE));
+    //
+    // // Derive a 30 pt version:
+    // nameFont = newFont.deriveFont(NAME_HT);
+    // } catch (FontFormatException e) {
+    // MsgCtrl.errMsgln("Could not format font: " + e.getMessage());
+    // } catch (IOException e) {
+    // MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
+    // }
+    // // NamePlate before Attribute grid: Name, gender, Race, Klass
+    // String namePlate = _ds.getField(PersonKeys.NAME) + ": "
+    // + _ds.getField(PersonKeys.GENDER) + " "
+    // + _ds.getField(PersonKeys.RACENAME) + " "
+    // + _ds.getField(PersonKeys.KLASSNAME);
+    // // Put some space above and below the namePlate
+    // _charName = new JLabel(namePlate);
+    //
+    // // GraphicsEnvironment env =
+    // // GraphicsEnvironment.getLocalGraphicsEnvironment();
+    // // String[] fontNames = env.getAvailableFontFamilyNames();
+    //
+    // _charName.setFont(nameFont);
+    // // TODO: Update this to change the size Tim
+    // while (_charName.getPreferredSize().width > DATA_WIDTH) {
+    // // Edit name font down a notch or two
+    // Font labelFont = _charName.getFont();
+    // String labelText = _charName.getText();
+    //
+    // int stringWidth = _charName.getFontMetrics(labelFont).stringWidth(
+    // labelText);
+    // int componentWidth = DATA_WIDTH;
+    //
+    // // Find out how much the font can grow in width.
+    // double widthRatio = (double) componentWidth / (double) stringWidth;
+    //
+    // int newFontSize = (int) (labelFont.getSize() * widthRatio);
+    //
+    // // Recreate the new font
+    // try {
+    // Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(
+    // Chronos.RUNIC_ENGLISH_FONT_FILE));
+    //
+    // // Set the label's font size to the newly determined size.
+    // Font smallNameFont = newFont.deriveFont(newFontSize);
+    // _charName.setFont(smallNameFont);
+    // } catch (FontFormatException e) {
+    // MsgCtrl.errMsgln("Could not format font: " + e.getMessage());
+    // } catch (IOException e) {
+    // MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
+    // }
+    // }
+    // add(_charName, "span, gaptop 5, gapbottom 8");
+    //
+    // // Display Ability Scores
+    //
+    // List<Integer> attList = (List<Integer>) ds.getField(PersonKeys.ABILITY_SCORES);
+    // List<String> attributes = new NewHeroCiv().getAttributes();
+    //
+    // JPanel scorePanel = new JPanel();
+    //
+    // int i = 0;
+    // for (String att : attributes) {
+    // JLabel scoreLabel = new JLabel(att + ": " + attList.get(i).toString());
+    // scorePanel.add(scoreLabel);
+    // i++;
+    // }
+    //
+    // add(scorePanel, "span");
+    //
+    // // CREATE THE ATTRIBUTE GRID PANEL AND SIZE IT FOR DISPLAY
+    // _attribPanel = buildAttributePanel();
+    // // Ensure that the attribute panel does not exceed the HeroDisplay panel
+    // // width
+    // _attribPanel.setPreferredSize(new Dimension(DATA_WIDTH, _attribPanel
+    // .getHeight()));
+    // // attribPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK,
+    // // 1));
+    // add(_attribPanel, "span, center, gapbottom 0");// , span, growx");
+    //
+    // // ADD SAVE & CANCEL BUTTONS TO THE BOTTOM OF THE PANEL
+    // _buttonPanel = buildButtonPanel();
+    // _buttonPanel.setPreferredSize(new Dimension(DATA_WIDTH, _buttonPanel
+    // .getHeight()));
+    // add(_buttonPanel, "span, center, gapbottom 5");
+    //
+    // Mainframe frame = Mainframe.getInstance();
+    // // frame.changeToLeftPanel(this);
+    // // revalidate();
+    // // repaint();
     return true;
   }
 
@@ -618,61 +610,36 @@ public class HeroDisplay extends JPanel
     attribPanel.setBackground(_backColor);
 
     // Row 1: XP, Level, Hit Points, Occupation, Hunger state
-    attribPanel.add(gridCell("XP: ", (String) _ds.getField(PersonKeys.XP)),
-        "sg r1");
+    attribPanel.add(gridCell("XP: ", (String) _ds.getField(PersonKeys.XP)), "sg r1");
     attribPanel.add(
-        gridCell("Level: ", (String) _ds.getField(PersonKeys.LEVEL)),
-        "sg r1");
-    attribPanel.add(gridCell("HP: ", (String) _ds.getField(PersonKeys.HP)),
-        "sg r1");
-    attribPanel.add(
-        gridCell("", (String) _ds.getField(PersonKeys.OCCUPATION)),
-        "sg r1");
-    attribPanel.add(gridCell("", (String) _ds.getField(PersonKeys.HUNGER)),
-        "sg r1");
+        gridCell("Level: ", (String) _ds.getField(PersonKeys.LEVEL)), "sg r1");
+    attribPanel.add(gridCell("HP: ", (String) _ds.getField(PersonKeys.HP)), "sg r1");
+    attribPanel.add(gridCell("", (String) _ds.getField(PersonKeys.OCCUPATION)), "sg r1");
+    attribPanel.add(gridCell("", (String) _ds.getField(PersonKeys.HUNGER)), "sg r1");
 
     // Row 2: Armor Class, Speed, Age, Height, and Weight
-    attribPanel.add(gridCell("AC: ", (String) _ds.getField(PersonKeys.AC)),
-        "sg r1");
-    attribPanel.add(
-        gridCell("Age: ", (String) _ds.getField(PersonKeys.AGE)),
-        "sg r1");
-    attribPanel.add(
-        gridCell("Speed: ", (String) _ds.getField(PersonKeys.SPEED)),
-        "sg r1");
-    attribPanel.add(
-        gridCell("Ht: ", (String) _ds.getField(PersonKeys.HEIGHT)),
-        "sg r1");
-    attribPanel.add(
-        gridCell("Wt: ", ((String) _ds.getField(PersonKeys.WEIGHT))
-            + " lbs"), "sg r1");
+    attribPanel.add(gridCell("AC: ", (String) _ds.getField(PersonKeys.AC)), "sg r1");
+    attribPanel.add(gridCell("Age: ", (String) _ds.getField(PersonKeys.AGE)), "sg r1");
+    attribPanel.add(gridCell("Speed: ", (String) _ds.getField(PersonKeys.SPEED)), "sg r1");
+    attribPanel.add(gridCell("Ht: ", (String) _ds.getField(PersonKeys.HEIGHT)), "sg r1");
+    attribPanel.add(gridCell("Wt: ", ((String) _ds.getField(PersonKeys.WEIGHT)) + " lbs"), "sg r1");
 
     // Row 3: Gold, Silver, Gold Banked, and Load
-    attribPanel.add(
-        gridCell("Gold: ", ((String) _ds.getField(PersonKeys.GOLD))
-            + " gp"), "sg r1");
-    attribPanel.add(
-        gridCell("Silver: ", ((String) _ds.getField(PersonKeys.SILVER))
-            + " sp"), "sg r1");
-    attribPanel.add(
-        gridCell("Gold Banked: ",
-            (String) _ds.getField(PersonKeys.GOLD_BANKED)),
+    attribPanel.add(gridCell("Gold: ", ((String) _ds.getField(PersonKeys.GOLD)) + " gp"), "sg r1");
+    attribPanel.add(gridCell("Silver: ", ((String) _ds.getField(PersonKeys.SILVER)) + " sp"),
+        "sg r1");
+    attribPanel.add(gridCell("Gold Banked: ", (String) _ds.getField(PersonKeys.GOLD_BANKED)),
         "span 2, growx");
-    attribPanel.add(
-        gridCell("Load: ", ((String) _ds.getField(PersonKeys.LOAD))
-            + " lbs"), "sg r1");
+    attribPanel.add(gridCell("Load: ", ((String) _ds.getField(PersonKeys.LOAD)) + " lbs"), "sg r1");
 
     // Row 4: MaxLangs, Languages (remaining width of the panel)
-    JPanel maxLangCell = gridCell("Max Langs: ",
-        (String) _ds.getField(PersonKeys.MAX_LANGS));
+    JPanel maxLangCell = gridCell("Max Langs: ", (String) _ds.getField(PersonKeys.MAX_LANGS));
     // maxLangCell.setSize(minCellWidth, 10);
     attribPanel.add(maxLangCell, "sg r1"); // gridCell("Max Langs: ",
                                            // (String)
                                            // _ds.getField(PersonKeys.MAX_LANGS)),
                                            // "sg r1");
-    attribPanel.add(
-        gridCell("Known Languages: ",
-            (String) _ds.getField(PersonKeys.LANGUAGES)),
+    attribPanel.add(gridCell("Known Languages: ", (String) _ds.getField(PersonKeys.LANGUAGES)),
         "span 4, growx");
 
     // Row 5: Character Description
@@ -737,7 +704,7 @@ public class HeroDisplay extends JPanel
         // Mainframe.getInstance().
         setVisible(false);
         Mainframe frame = Mainframe.getInstance();
-//        frame.resetPanels();
+        // frame.resetPanels();
       }
     });
 
@@ -769,7 +736,7 @@ public class HeroDisplay extends JPanel
         // MenuBar.getInstance().resetMenus();
         // Remove this panel
         Mainframe frame = Mainframe.getInstance();
-//        frame.resetPanels();
+        // frame.resetPanels();
         hd.setVisible(false);
       }
 
@@ -789,7 +756,7 @@ public class HeroDisplay extends JPanel
         // Collect all the attributes and save to a new Hero file
         setVisible(false);
         Mainframe frame = Mainframe.getInstance();
-//        frame.resetPanels();
+        // frame.resetPanels();
         // int response = mf.confirmQuit();
         // if (response == Mainframe.NOSAVE) {
         // Mainframe.getInstance().setEditFlag(false);

@@ -15,12 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mylib.Constants;
-import mylib.MsgCtrl;
+import mylib.civ.DataShuttle;
+import mylib.civ.DataShuttle.ErrorType;
 import pdc.Inventory;
 import pdc.character.Person;
 import chronos.civ.MiscKeys.PersonFileData;
 import chronos.pdc.AttributeList;
 import chronos.pdc.Item;
+import chronos.pdc.Occupation;
 import chronos.pdc.Skill;
 
 /**
@@ -58,8 +60,7 @@ public class HeroDisplayCiv
   public static boolean NEW_CHAR = false;
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND RELATED METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
   /**
@@ -75,10 +76,10 @@ public class HeroDisplayCiv
     }
 
     _person = person;
-    if (!Constants.IN_TEST) {
-      // Create the output display, passing this civ for later callbacks
-      _widget = new HeroDisplay(this);
-    }
+    // if (!Constants.IN_TEST) {
+    // // Create the output display, passing this civ for later callbacks
+    // _widget = new HeroDisplay(this);
+    // }
   }
 
   /**
@@ -97,10 +98,10 @@ public class HeroDisplayCiv
     // Now load the person from the registry
     _person = _person.load(name);
 
-    if (!Constants.IN_TEST) {
-      // Create the output display, passing this civ for later callbacks
-      _widget = new HeroDisplay(this);
-    }
+    // if (!Constants.IN_TEST) {
+    // // Create the output display, passing this civ for later callbacks
+    // _widget = new HeroDisplay(this);
+    // }
     _person.display();
     this.resetLoadState();
   }
@@ -111,26 +112,27 @@ public class HeroDisplayCiv
     return _inventory.getNbrItems();
   }
 
-//  /**
-//   * Save the Person to a new file. This method pops up a file chooser so the user can select a
-//   * filename; else the Hero's name is used. If the Person is newly created, then the Person is
-//   * saved to a new file. If the Person already existed, then no file writes are written because the
-//   * <code>HeroDislay</code> panel does not allow edits; Save As options are disabled.
-//   * 
-//   * @return true if the save worked correctly
-//   */
-//  public List<PersonFileData> getPersonFileData()
-//  {
-//    MsgCtrl.msgln(this, "\tsavePerson(): ");
-//
-    // Get the requested key data map needed for the chooser from the CIV
-//    _fileData = new List<PersonFileData>(PersonFileData.class);
-//    _fileData.assignKey(PersonFileData.RESOURCE_DIR);
-//    _fileData.assignKey(PersonFileData.DEFAULT_FILENAME);
-//    _fileData.assignKey(PersonFileData.PERSON_EXT);
-//    _fileData.assignKey(PersonFileData.CHOOSER_LABEL);
-//    return _person.getFileData(_fileData);
-//  }
+  // /**
+  // * Save the Person to a new file. This method pops up a file chooser so the user can select a
+  // * filename; else the Hero's name is used. If the Person is newly created, then the Person is
+  // * saved to a new file. If the Person already existed, then no file writes are written because
+  // the
+  // * <code>HeroDislay</code> panel does not allow edits; Save As options are disabled.
+  // *
+  // * @return true if the save worked correctly
+  // */
+  // public List<PersonFileData> getPersonFileData()
+  // {
+  // MsgCtrl.msgln(this, "\tsavePerson(): ");
+  //
+  // Get the requested key data map needed for the chooser from the CIV
+  // _fileData = new List<PersonFileData>(PersonFileData.class);
+  // _fileData.assignKey(PersonFileData.RESOURCE_DIR);
+  // _fileData.assignKey(PersonFileData.DEFAULT_FILENAME);
+  // _fileData.assignKey(PersonFileData.PERSON_EXT);
+  // _fileData.assignKey(PersonFileData.CHOOSER_LABEL);
+  // return _person.getFileData(_fileData);
+  // }
 
   public boolean populateAbilityScores(AttributeList attribs)
   {
@@ -145,14 +147,13 @@ public class HeroDisplayCiv
    * @param ds shuttle containing internally formatted key values
    * @return false is an error occurs
    */
-  public boolean populateAttributes(List<PersonKeys> ds)
+  public boolean populateAttributes(DataShuttle<PersonKeys> ds)
   {
-    // Create a shuttle to contain the data and convert to widget String
-    // format
-    List<PersonKeys> fieldShuttle = convertAttributes(ds);
-    if (!Constants.IN_TEST) {
-      _widget.displayAttributes(fieldShuttle);
-    }
+    // Create a shuttle to contain the data and convert to widget String format
+    DataShuttle<PersonKeys> fieldShuttle = convertAttributes(ds);
+    // if (!Constants.IN_TEST) {
+    // _widget.displayAttributes(fieldShuttle);
+    // }
     return true;
   }
 
@@ -167,9 +168,9 @@ public class HeroDisplayCiv
     // Create a shuttle to contain the data and convert to widget String
     // format
     ArrayList<String> items = convertItems(itemList);
-    if (!Constants.IN_TEST) {
-      _widget.displayInventory(items);
-    }
+    // if (!Constants.IN_TEST) {
+    // _widget.displayInventory(items);
+    // }
     return true;
   }
 
@@ -243,58 +244,58 @@ public class HeroDisplayCiv
     return tmp.wake();
   }
 
-  // /**
-  // * Convert the attribute shuttle to an all-String shuttle for display. Each
-  // * key value is a single field
-  // *
-  // * @param ds
-  // * model data shuttle
-  // * @return the string map of output data
-  // */
-  // private List<PersonKeys> convertAttributes(List<PersonKeys> ds) {
-  // // Guard against null shuttle
-  // if (ds == null) {
-  // return null;
-  // }
-  // // Guard: against invalid data in shuttle, but pass it to the GUI for
-  // // error messaging
-  // if (ds.getErrorType() != ErrorType.OK) {
-  // return ds;
-  // }
-  // // Guard: in case of null shuttles
-  // if (ds.size() == 0) {
-  // ds.setErrorType(ErrorType.EMPTY_SHUTTLE);
-  // return null;
-  // }
-  // // Convert each value to a String en masse
-  // for (PersonKeys key : ds.getKeys()) {
-  // Object obj = ds.getField(key);
-  // String str = BaseCiv.toString(obj);
-  // // Handle manipulations for special keys
-  // // Converts from inches to "9' 99" format (e.g., 81 in = 6' 9")
-  // if (key == PersonKeys.HEIGHT) {
-  // str = BaseCiv.formatHeight(str);
-  // ds.putField(key, str);
-  // }
-  // // Converts from ounces to "999.9 lb." format (e.g,100 oz = 6.25
-  // // lb.)
-  // else if (key == PersonKeys.LOAD) {
-  // int load = ((Integer) obj).intValue();
-  // double num = load / Constants.OUNCES_PER_POUND;
-  // str = Double.toString(num);
-  // ds.putField(key, str);
-  // } else if (key == PersonKeys.OCCUPATION) {
-  // str = ((Occupation) obj).getName();
-  // ds.putField(key, str);
-  // } else if (key == PersonKeys.ABILITY_SCORES) {
-  // List<Integer> scores = ((AttributeList)obj).getList();
-  // ds.putField(key, scores);
-  // } else {
-  // ds.putField(key, str);
-  // }
-  // }
-  // return ds;
-  // }
+  /**
+   * Convert the attribute shuttle to an all-String shuttle for display. Each key value is a single
+   * field
+   * 
+   * @param ds model data shuttle
+   * @return the string map of output data
+   */
+  private DataShuttle<PersonKeys> convertAttributes(DataShuttle<PersonKeys> ds)
+  {
+    // Guard against null shuttle
+    if (ds == null) {
+      return null;
+    }
+    // Guard: against invalid data in shuttle, but pass it to the GUI for
+    // error messaging
+    if (ds.getErrorType() != ErrorType.OK) {
+      return ds;
+    }
+    // Guard: in case of null shuttles
+    if (ds.size() == 0) {
+      ((DataShuttle<PersonKeys>) ds).setErrorType(ErrorType.EMPTY_SHUTTLE);
+      return null;
+    }
+    // Convert each value to a String en masse
+    for (PersonKeys key : ds.getKeys()) {
+      Object obj = ds.getField(key);
+      String str = BaseCiv.toString(obj);
+      // Handle manipulations for special keys
+      // Converts from inches to "9' 99" format (e.g., 81 in = 6' 9")
+      if (key == PersonKeys.HEIGHT) {
+        str = BaseCiv.formatHeight(str);
+        ((DataShuttle<PersonKeys>) ds).putField(key, str);
+      }
+      // Converts from ounces to "999.9 lb." format (e.g,100 oz = 6.25
+      // lb.)
+      else if (key == PersonKeys.LOAD) {
+        int load = ((Integer) obj).intValue();
+        double num = load / Constants.OUNCES_PER_POUND;
+        str = Double.toString(num);
+        ((DataShuttle<PersonKeys>) ds).putField(key, str);
+      } else if (key == PersonKeys.OCCUPATION) {
+        str = ((Occupation) obj).getName();
+        ((DataShuttle<PersonKeys>) ds).putField(key, str);
+      } else if (key == PersonKeys.ABILITY_SCORES) {
+        List<Integer> scores = ((AttributeList) obj).getList();
+        ((DataShuttle<PersonKeys>) ds).putField(key, scores);
+      } else {
+        ((DataShuttle<PersonKeys>) ds).putField(key, str);
+      }
+    }
+    return ds;
+  }
 
   /**
    * Convert the Item objects into string fields for list display. All Item fields are concatenated

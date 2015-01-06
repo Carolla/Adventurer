@@ -63,7 +63,7 @@ public class TA00a_Initialize
   @BeforeClass
   public static void setUpBeforeClass() throws Exception
   {
-    assertTrue(Chronos.CHRONOS_ROOT != null);
+    assertTrue(Chronos.ECHRONOS_ROOT != null);
     assertTrue(Chronos.ADV_RESOURCES_PATH != null);
     assertTrue(Chronos.RESOURCES_PATH != null);
     assertTrue(Chronos.IMAGE_PATH != null);

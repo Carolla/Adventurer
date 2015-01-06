@@ -11,8 +11,6 @@
 
 package pdc.command;
 
-import hic.IOPanel;
-
 import java.util.List;
 
 import chronos.pdc.buildings.Building;
@@ -66,11 +64,11 @@ public class CmdExit extends Command
    * then checks if it is a Building class, or the name of a particular Building. It then converts
    * the name into the Building class.
    * 
-   * @param args if empty, then use current Buiilding; otherwise gets Building specified
-   * @param mfCiv
+   * @param args if empty, then use current Building; otherwise get Building specified
    * @return true if all worked, else returns false on input error
    */
-  public boolean init(List<String> args, IOPanel iopanel)
+  @Override
+  public boolean init(List<String> args)
   {
     return true;
   }

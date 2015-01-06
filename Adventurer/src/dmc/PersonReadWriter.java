@@ -10,14 +10,11 @@
 package dmc;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import mylib.Constants;
 import mylib.MsgCtrl;
-import mylib.civ.List;
 import pdc.character.Person;
 import chronos.Chronos;
-import chronos.civ.MiscKeys.PersonFileData;
 
 import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
@@ -46,7 +43,7 @@ public class PersonReadWriter
   /** The name to put on the File Filter button for Person files */
   private final String PERSON_LABEL = ".chr (Person Files)";
   /** The directory where Persons are saved */
-  private final String DORMITORY = Chronos.USER_RESOURCES + "dormitory" + Constants.FILE_SEPARATOR;
+  private final String DORMITORY = Chronos.USER_RESOURCES + "dormitory" + Constants.FS;
 
   /** XML Tag names to be used by various objects */
   /** Person file start tag */
@@ -129,7 +126,7 @@ public class PersonReadWriter
    * 
    * @return a list of the names of all the characters in the dormitory
    */
-  public List<String> wakePeople()
+  public ArrayList<String> wakePeople()
   {
     ArrayList<String> sleepers = new ArrayList<String>();
     ObjectContainer db =

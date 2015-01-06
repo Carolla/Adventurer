@@ -16,7 +16,6 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -29,6 +28,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import mylib.MsgCtrl;
+import mylib.civ.DataShuttle;
 import net.miginfocom.swing.MigLayout;
 import chronos.civ.SkillKeys;
 import civ.SkillDisplayCiv;
@@ -37,10 +37,7 @@ import civ.SkillDisplayCiv;
 
 /**
  * @author Timothy Armstrong
- * @version <DL>
- *          <DT>Build 1.0 Aug 15 2011 // original
- *          <DD>
- *          </DL>
+ * @version Aug 15 2011 // original <br>
  */
 public class SkillDialogue extends JDialog
 {
@@ -108,7 +105,7 @@ public class SkillDialogue extends JDialog
   // /** Keys to Hero data to be displayed */
   // EnumMap<SkillKeys, String> _attribs = null;
   /** Keys to Items data to be displayed */
-  List<SkillKeys> _ws = null;
+  DataShuttle<SkillKeys> _ws = null;
 
   /** Selected item in Skill field */
   private String _skillSelected = null;
@@ -131,7 +128,7 @@ public class SkillDialogue extends JDialog
   /** Skill name */
   private String _skillName = "";
 
-  /** Skill decription */
+  /** Skill description */
   private String _skillDesc = "";
 
   /** Skill action */
@@ -183,8 +180,7 @@ public class SkillDialogue extends JDialog
   private JPanel _klassPanel;
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND RELATED METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
   /** Default constuctor */
@@ -610,7 +606,7 @@ public class SkillDialogue extends JDialog
 
     int saveState = 0;
     _sdCiv.submit(_ws);
-    if (_ws.getErrorType() == List.ErrorType.OK) {
+    if (_ws.getErrorType() == DataShuttle.ErrorType.OK) {
       saveState = _sdCiv.save(_ws);
     } else {
       // Check error conditions
@@ -702,7 +698,7 @@ public class SkillDialogue extends JDialog
   // }
 
   // /** Pack the current data into a shuttle for submission to the CIV */
-  // private List<SkillKeys> packShuttle() {
+  // private DataShuttle<SkillKeys> packShuttle() {
   // _ws.putField(SkillKeys.NAME, _nameText.getText());
   // _ws.putField(SkillKeys.DESC, _descText.getText());
   // _ws.putField(SkillKeys.ACTION, _actionText.getText());
@@ -712,17 +708,17 @@ public class SkillDialogue extends JDialog
   // }
 
   @SuppressWarnings("unchecked")
-  private void unpackShuttle(List<SkillKeys> ds)
+  private void unpackShuttle(DataShuttle<SkillKeys> ds)
   {
     // Unpack the data shuttle into individual pieces of info
-//    _skillName = (String) ds.getField(SkillKeys.NAME);
-//    _skillDesc = (String) ds.getField(SkillKeys.DESC);
-//    _skillAction = (String) ds.getField(SkillKeys.ACTION);
-//    _raceSelected = (String) ds.getField(SkillKeys.RACE);
-//    _klassSelected = (String) ds.getField(SkillKeys.KLASS);
-//    _klasslist = (ArrayList<String>) ds.getField(SkillKeys.KLASSLIST);
-//    _racelist = (ArrayList<String>) ds.getField(SkillKeys.RACELIST);
-//    _skilllist = (ArrayList<String>) ds.getField(SkillKeys.SKILLLIST);
+    // _skillName = (String) ds.getField(SkillKeys.NAME);
+    // _skillDesc = (String) ds.getField(SkillKeys.DESC);
+    // _skillAction = (String) ds.getField(SkillKeys.ACTION);
+    // _raceSelected = (String) ds.getField(SkillKeys.RACE);
+    // _klassSelected = (String) ds.getField(SkillKeys.KLASS);
+    // _klasslist = (ArrayList<String>) ds.getField(SkillKeys.KLASSLIST);
+    // _racelist = (ArrayList<String>) ds.getField(SkillKeys.RACELIST);
+    // _skilllist = (ArrayList<String>) ds.getField(SkillKeys.SKILLLIST);
   }
 } // end HeroDisplay class
 

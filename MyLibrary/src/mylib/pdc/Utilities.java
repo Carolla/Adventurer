@@ -31,7 +31,7 @@ public class Utilities
 
   /**
    * Replaces the last white space character with a newline character within the designated limit.
-   * See {@code Utilities.wordWrap} for paragraps of text
+   * See {@code Utilities.wordWrap} for paragraphs of text
    * 
    * @param msg the string to insert the newline
    * @param width the limit to crop the string; the remnant is not returned

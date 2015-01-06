@@ -16,7 +16,6 @@ import java.util.List;
 
 import chronos.pdc.buildings.Building;
 import civ.MainframeCiv;
-import civ.CommandParser;
 
 
 /**
@@ -74,9 +73,8 @@ public class CmdReturn extends Command
      * @param mfCiv 
      * @return	true		if all worked, else returns false on input error
      */
-    public boolean init(List<String> args, MainframeCiv mfCiv)
+    public boolean init(List<String> args)
     {
-        _mfCiv = mfCiv;
         return true;
     }
 

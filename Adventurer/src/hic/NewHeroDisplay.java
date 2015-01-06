@@ -38,8 +38,8 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
 import mylib.MsgCtrl;
-import mylib.civ.List;
-import mylib.civ.List.ErrorType;
+import mylib.civ.DataShuttle;
+import mylib.civ.DataShuttle.ErrorType;
 import mylib.hic.HelpKeyListener;
 import net.miginfocom.swing.MigLayout;
 import chronos.Chronos;
@@ -165,7 +165,7 @@ public class NewHeroDisplay extends JPanel
   /** Associated validating CIV object */
   private NewHeroCiv _nhCiv = null;
   /** Parm object for passing and receiving field data */
-  private List<NewHeroFields> _shuttle = null;
+  private DataShuttle<NewHeroFields> _shuttle = null;
 
 
   // ============================================================
@@ -759,7 +759,7 @@ public class NewHeroDisplay extends JPanel
    * 
    * @return data shuttle of fields for this widget
    */
-  private List<NewHeroFields> packFields()
+  private DataShuttle<NewHeroFields> packFields()
   {
 //    // Package each of these into the data shuttle
 //    _shuttle.putField(NewHeroFields.NAME, _name);

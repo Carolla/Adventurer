@@ -8,13 +8,11 @@ package pdc.character;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.List;
-
-import javax.lang.model.type.ErrorType;
 
 import mylib.ApplicationException;
 import mylib.Constants;
 import mylib.MsgCtrl;
+import mylib.civ.DataShuttle;
 import mylib.dmc.IRegistryElement;
 import pdc.Inventory;
 import pdc.Klass;
@@ -602,8 +600,9 @@ public class Person implements Serializable, IRegistryElement
     // Create the civ to process the output data
     HeroDisplayCiv heroCiv = new HeroDisplayCiv(this);
     // Load the Person's attribute data into a shuttle
-//    List<PersonKeys> attribShuttle = loadPersonData(new List<PersonKeys>(PersonKeys.class));
-    List<PersonKeys> attribShuttle = null;  // temp
+    // DataShuttle<PersonKeys> attribShuttle = loadPersonData(new
+    // DataShuttle<PersonKeys>(PersonKeys.class));
+    DataShuttle<PersonKeys> attribShuttle = null; // temp
     heroCiv.populateAttributes(attribShuttle);
     // Load the Person's Inventory data into a list
     heroCiv.populateInventory(_Inventory.getInventory());
@@ -717,11 +716,10 @@ public class Person implements Serializable, IRegistryElement
    * @param pfd person file data needed for saving the person
    * @return the PersonReadWriter data
    */
-  public List<PersonFileData> getFileData(
-      List<PersonFileData> pfd)
+  public DataShuttle<PersonFileData> getFileData(DataShuttle<PersonFileData> pfd)
   {
     _prw = new PersonReadWriter();
-    pfd = _prw.packFileData(pfd);
+    // pfd = packFileData(pfd);
     // Add the Person's name as a default file name
     pfd.putField(PersonFileData.DEFAULT_FILENAME, _name);
     return pfd;
@@ -806,7 +804,7 @@ public class Person implements Serializable, IRegistryElement
     boolean bGender = _gender.equals(other.getGender());
     boolean bOccup = _Occupation.equals(other.getOccupation());
     boolean bRace = _Race.equals(other.getRace());
-    List<Skill> skillset = other.getSkills();
+    ArrayList<Skill> skillset = other.getSkills();
     boolean bSkills = _skills.equals(skillset);
 
     return (bName || bGender || bOccup || bRace || bSkills);
@@ -983,8 +981,7 @@ public class Person implements Serializable, IRegistryElement
   }
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ INVENTORY WRAPPERS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * INVENTORY WRAPPERS
    */
 
   /**
@@ -998,8 +995,7 @@ public class Person implements Serializable, IRegistryElement
   }
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ KLASS WRAPPERS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * KLASS WRAPPERS
    */
 
   // /** Return the calculated Armor Class
@@ -1072,12 +1068,10 @@ public class Person implements Serializable, IRegistryElement
   }
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ COMMON GETTERS and SETTERS for
-   * BASE CLASS and COMPONENTS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * COMMON GETTERS and SETTERS for BASE CLASS and COMPONENTS 
    */
 
-  // /* Load the Person's displayable data into the data shuttle for the given
-  // key
+  // /* Load the Person's displayable data into the data shuttle for the given key
   // * @see mylib.pdc.ObservableModel#load(mylib.civ.List)
   // * This should only be called through the base class
   // ObservableModel.loadShuttle(ds)
@@ -1087,7 +1081,7 @@ public class Person implements Serializable, IRegistryElement
   // * @return the shuttle with the loaded data
   // */
   // @Override
-  // protected List<PersonKeys> load(List<PersonKeys> ds)
+  // protected DataShuttle<PersonKeys> load(DataShuttle<PersonKeys> ds)
   // throws ClassCastException
   // {
   // // Load a value into the shuttle for each slot requested; ignore others
@@ -1184,7 +1178,7 @@ public class Person implements Serializable, IRegistryElement
    * 
    * @return the shuttle with the loaded data
    */
-  public List<PersonKeys> loadPersonData(List<PersonKeys> ds)
+  public DataShuttle<PersonKeys> loadPersonData(DataShuttle<PersonKeys> ds)
   {
     ds.putField(PersonKeys.AC, new Integer(_Inventory.calcAC(_acMod)));
     ds.putField(PersonKeys.AGE, new Double(_Race.getAgeYears()));
@@ -1259,7 +1253,7 @@ public class Person implements Serializable, IRegistryElement
    * Get the names of all people in the database
    * 
    */
-  public List<String> wake()
+  public ArrayList<String> wake()
   {
     _prw = new PersonReadWriter();
     return _prw.wakePeople();
@@ -1419,53 +1413,53 @@ public class Person implements Serializable, IRegistryElement
    * 
    * @throws ClassCastException if the value cannot be cast properly during validation
    */
-  public List<PersonKeys> unload(List<PersonKeys> ds)
+  public DataShuttle<PersonKeys> unload(DataShuttle<PersonKeys> ds)
       throws ClassCastException
   {
     // Load a value into the shuttle for each slot requested; ignore others
     // Return immediately if the requested key is not found
-//    for (PersonKeys key : ds.getKeys()) {
-//      Object value = ds.getField(key);
-//      // Every key must have valid data of the right type to be saved in
-//      // the model, else error
-//      // There should be no keys without data
-//      if (value == null) {
-//        ds.setErrorType(ErrorType.FIELD_INVALID);
-//        ds.setErrorMessage(key.name());
-//        ds.setErrorSource(key);
-//        break;
-//      } else {
-//        switch (key) {
-//          case NAME:
-//            _name = ds.getField(PersonKeys.NAME).toString();
-//            break;
-//          case GENDER:
-//            _gender = ds.getField(PersonKeys.GENDER).toString();
-//            break;
-//          case HAIR_COLOR:
-//            _hairColor = ds.getField(PersonKeys.HAIR_COLOR)
-//                .toString();
-//            break;
-//          case KLASSNAME:
-//            ds.putField(PersonKeys.KLASSNAME, _klass.getKlassName());
-//            break;
-//          case OCCUPATION:
-//            ds.putField(PersonKeys.OCCUPATION, _Occupation);
-//            break;
-//          case RACENAME:
-//            ds.putField(PersonKeys.RACENAME, _Race.getRaceName());
-//            break;
-//          case XP:
-//            ds.putField(PersonKeys.XP, _klass.getXP());
-//            break;
-//          default:
-//            ds.setErrorType(ErrorType.MISSING_FIELD);
-//            ds.setErrorMessage(key.name());
-//            ds.setErrorSource(key);
-//        } // end of switch
-//      } // end of if-else
-//    } // end of for-loop
-      // Return shuttle in case it contains errors
+    // for (PersonKeys key : ds.getKeys()) {
+    // Object value = ds.getField(key);
+    // // Every key must have valid data of the right type to be saved in
+    // // the model, else error
+    // // There should be no keys without data
+    // if (value == null) {
+    // ds.setErrorType(ErrorType.FIELD_INVALID);
+    // ds.setErrorMessage(key.name());
+    // ds.setErrorSource(key);
+    // break;
+    // } else {
+    // switch (key) {
+    // case NAME:
+    // _name = ds.getField(PersonKeys.NAME).toString();
+    // break;
+    // case GENDER:
+    // _gender = ds.getField(PersonKeys.GENDER).toString();
+    // break;
+    // case HAIR_COLOR:
+    // _hairColor = ds.getField(PersonKeys.HAIR_COLOR)
+    // .toString();
+    // break;
+    // case KLASSNAME:
+    // ds.putField(PersonKeys.KLASSNAME, _klass.getKlassName());
+    // break;
+    // case OCCUPATION:
+    // ds.putField(PersonKeys.OCCUPATION, _Occupation);
+    // break;
+    // case RACENAME:
+    // ds.putField(PersonKeys.RACENAME, _Race.getRaceName());
+    // break;
+    // case XP:
+    // ds.putField(PersonKeys.XP, _klass.getXP());
+    // break;
+    // default:
+    // ds.setErrorType(ErrorType.MISSING_FIELD);
+    // ds.setErrorMessage(key.name());
+    // ds.setErrorSource(key);
+    // } // end of switch
+    // } // end of if-else
+    // } // end of for-loop
+    // Return shuttle in case it contains errors
     return ds;
 
   } // end of unload() method
@@ -1481,7 +1475,7 @@ public class Person implements Serializable, IRegistryElement
    * @throws ClassCastException if the value cannot be cast properly during validation
    */
   // @Override
-  // protected void unload(List<PersonKeys> ds)
+  // protected void unload(DataShuttle<PersonKeys> ds)
   // throws ClassCastException
   // {
   // // Load a value into the shuttle for each slot requested; ignore others
@@ -1705,8 +1699,7 @@ public class Person implements Serializable, IRegistryElement
   }
 
   /*
-   * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ INNER CLASS: MockPerson
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * INNER CLASS: MockPerson
    */
 
   /** Inner class for testing Person */
