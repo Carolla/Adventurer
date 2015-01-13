@@ -11,11 +11,11 @@ package civ;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observer;
 
 import mylib.ApplicationException;
 import mylib.Constants;
 import mylib.MsgCtrl;
+import mylib.civ.BaseCiv;
 import mylib.civ.DataShuttle;
 import chronos.civ.OccupationKeys;
 import chronos.pdc.Occupation;
@@ -34,8 +34,8 @@ import chronos.pdc.registry.SkillRegistry;
  * @author Timothy Armstrong
  * @version Sept 12, 2011 // original <br>
  */
-public class OccupationDisplayCiv extends BaseCiv<OccupationKeys, OccupationKeys> implements
-    Observer
+public class OccupationDisplayCiv extends BaseCiv<OccupationKeys, OccupationKeys> // implements
+                                                                                  // Observer
 {
   /** Occupation Registry */
   private OccupationRegistry _occreg = null;
@@ -286,6 +286,25 @@ public class OccupationDisplayCiv extends BaseCiv<OccupationKeys, OccupationKeys
 
     return _occreg.getNbrElements();
 
+  }
+
+  @Override
+  protected DataShuttle<OccupationKeys> isValid(DataShuttle<OccupationKeys> shuttle)
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public Object getOccupation(String _occSelected)
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public int getSize()
+  {
+    // TODO Auto-generated method stub
+    return 0;
   }
 
   // /**

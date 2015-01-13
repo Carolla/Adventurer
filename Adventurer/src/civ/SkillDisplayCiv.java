@@ -10,11 +10,13 @@
 package civ;
 
 import java.util.ArrayList;
+import java.util.Observable;
 import java.util.Observer;
 
 import mylib.ApplicationException;
 import mylib.Constants;
 import mylib.MsgCtrl;
+import mylib.civ.BaseCiv;
 import mylib.civ.DataShuttle;
 import chronos.civ.SkillKeys;
 import chronos.pdc.Skill;
@@ -380,6 +382,26 @@ public class SkillDisplayCiv extends BaseCiv<SkillKeys, SkillKeys> implements Ob
 
     _skreg.add(newSkill);
     return _skreg.getNbrElements();
+  }
+
+  public DataShuttle<SkillKeys> getSkill(String _skillSelected)
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void update(Observable o, Object arg)
+  {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  protected DataShuttle<SkillKeys> isValid(DataShuttle<SkillKeys> shuttle)
+  {
+    // TODO Auto-generated method stub
+    return null;
   }
 
   // /**

@@ -707,6 +707,12 @@ public class SkillDialogue extends JDialog
   // return _ws;
   // }
 
+  /** Pack the current data into a shuttle for submission to the CIV */
+  private DataShuttle<SkillKeys> packShuttle()
+  {
+    return _ws;
+  }
+
   @SuppressWarnings("unchecked")
   private void unpackShuttle(DataShuttle<SkillKeys> ds)
   {

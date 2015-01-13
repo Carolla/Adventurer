@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mylib.Constants;
+import mylib.civ.BaseCiv;
 import mylib.civ.DataShuttle;
 import mylib.civ.DataShuttle.ErrorType;
 import pdc.Inventory;
