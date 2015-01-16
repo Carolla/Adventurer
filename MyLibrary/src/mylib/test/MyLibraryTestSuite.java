@@ -29,7 +29,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses(
 {
     // CIV Test files
-    // None
+    // BaseCiv.class
+    // DataShuttle.class
 
     // DMC Test files
     TestDbReadWriter.class,

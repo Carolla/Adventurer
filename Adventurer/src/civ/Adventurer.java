@@ -14,7 +14,10 @@ import hic.Mainframe;
 import java.awt.EventQueue;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.List;
 
+import mylib.dmc.IRegistryElement;
+import mylib.pdc.Registry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 
@@ -34,7 +37,7 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
  */
 public class Adventurer
 {
-  /** Quick reference to avoid repated calls to {@code getInstance} */
+  /** Quick reference to avoid repeated calls to {@code getInstance} */
   static private RegistryFactory _rf;
 
   /** Launcher class does not require a constructor--it has the {@code main} method. */
@@ -68,6 +71,7 @@ public class Adventurer
       {
         try {
           initRegistries();
+          dumpAllRegistries();
           final Mainframe frame = Mainframe.getInstance();
           frame.setVisible(true);
           frame.addWindowListener(new WindowAdapter() {
@@ -97,6 +101,33 @@ public class Adventurer
 
 
   /**
+   * Close all database Registries (singletons)
+   */
+  private static void closeRegistries()
+  {
+    _rf.closeAllRegistries();
+  }
+
+  /**
+   * Dump the contents of all the registries for viewing
+   */
+  static private void dumpAllRegistries()
+  {
+    _rf = RegistryFactory.getInstance();
+    for (RegKey key : RegKey.values()) {
+      Registry reg = _rf.getRegistry(key);
+      List<IRegistryElement> reglist = reg.getAll();
+      System.out.print("Registry " + key.name());
+      System.out.println("\t" + reglist.size() + " elements");
+      System.out.println("\t" + reglist.toString());
+    }
+  }
+
+  // ============================================================
+  // Inner class for testing
+  // ============================================================
+
+  /**
    * Open all database Registries (singletons) for convenience and performance
    */
   private static void initRegistries()
@@ -105,21 +136,29 @@ public class Adventurer
     for (RegKey key : RegKey.values()) {
       _rf.getRegistry(key);
     }
+    // Check proper initialization, else terminate program
+    verifyRegistries();
   }
 
 
   /**
-   * Close all database Registries (singletons)
+   * Validate the creation of all the registries for default sizes. Later, this method will have to
+   * be modified for any new material added beyond the defaults.
    */
-  private static void closeRegistries()
+  static private void verifyRegistries()
   {
-    _rf.closeAllRegistries();
+    // Expected size of each of the registries
+    _rf = RegistryFactory.getInstance();
+    for (RegKey key : RegKey.values()) {
+      Registry reg = _rf.getRegistry(key);
+      int defaultSize = key.getDefaultSize();
+      // Kickout if the registries are not initialized properly
+      if (reg.getNbrElements() != defaultSize) {
+        System.err.println("Registry " + reg.toString()
+            + " has the wrong number of default elements");
+      }
+    }
   }
-
-
-  // ============================================================
-  // Inner class for testing
-  // ============================================================
 
   /** Inner class for testing {@code Adventurer} launcher */
   public class MockAdventurer

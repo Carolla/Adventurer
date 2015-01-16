@@ -10,8 +10,11 @@
 
 package chronos.pdc;
 
+import java.io.File;
+
 import mylib.ApplicationException;
 import mylib.dmc.IRegistryElement;
+import chronos.Chronos;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import chronos.pdc.registry.TownRegistry;
@@ -25,27 +28,13 @@ import chronos.pdc.registry.TownRegistry;
 public class Adventure implements IRegistryElement
 {
   /** Name of this Adventure */
-  private String _name = null;
+  private String _name;
   /** Overview of the adventure */
-  private String _overview = null;
-
-  /** Town within the adventure */
-  private Town _town = null;
+  private String _overview;
   /** Name of the Town for this Adventure */
-  private String _townName = null;
+  private String _townName;
   /** Name of the Arena for this Adventure */
-  private String _arenaName = null;
-
-  // /**
-  // * If an Adventure is open, then all elements are expanded in the tree; if closed, then only the
-  // * Adventure's name is shown and the tree is not expandable
-  // */
-  // private boolean _open = true;
-
-  // /** Error message for any null input parm to constructor */
-  // private String nullMsg = "%s cannot be null";
-  // /** Error message if given town or arena does not exist */
-  // private String cannotFindMsg = "Cannot find %s in registry";
+  private String _arenaName;
 
 
   // ============================================================
@@ -54,19 +43,17 @@ public class Adventure implements IRegistryElement
 
   /** Create the default Adventure */
   public Adventure()
-  {
-    Adventure adv = new Adventure();
-  }
+  {}
 
 
 
   /**
-   * Creates the default {@code Adventure}. The town should be in the {@code TownRegistry}, and the
-   * {@code Arena} should be in its own Arena file. For now, only the names of these parms are in
-   * this {@code Adventure}.
+   * Creates the default {@code Adventure}. Only the names of the elements are included after
+   * verifying that they are in their respective registries. The {@code Arena} will be verified to
+   * be in its own {@code .dgn} file (not a Registry).
    * 
    * @param advName this adventure
-   * @param townName the primary town in the adventure (homebase)
+   * @param townName the primary town in the adventure
    * @param arenaName arena in the adventure
    * @param overview description and background story of town, arena, and situation
    * @throws throws ApplicationException if any of the parms are null, or the Town cannot be found
@@ -79,20 +66,20 @@ public class Adventure implements IRegistryElement
     if ((advName == null) || (townName == null) || (arenaName == null) || (overview == null)) {
       throw new ApplicationException("Adventure cannot have null parms");
     }
-    // Does the Town already exist in a registry?
-    TownRegistry treg = (TownRegistry) RegistryFactory.getInstance().getRegistry(RegKey.TOWN);
-    _town = (Town) treg.getUnique(townName);
-    if (_town == null) {
+    // Guard against a non-existent Town
+    if (!townExists(townName)) {
       throw new ApplicationException("Town cannot be found for this Adventure");
+    }
+    // Guard against a non-existent Arena file
+    if (!arenaExists(arenaName)) {
+      throw new ApplicationException("Arena cannot be found for this Adventure");
     }
     // Set the parms
     else {
       _name = advName;
+      _townName = townName;
       _arenaName = arenaName;
       _overview = overview;
-    }
-    if (getTown() == null) {
-      throw new ApplicationException("Town cannot be found in the TownRegistry");
     }
   }
 
@@ -116,6 +103,27 @@ public class Adventure implements IRegistryElement
   // System.out.println("\tOverview: \t" + getOverview());
   // }
 
+  /** Checks if the Town exists in the TownRegistry
+   * @param townName to check in TownRegistry
+   * @return true if town found, else false
+   */
+  private boolean townExists(String townName)
+  {
+    TownRegistry treg = (TownRegistry) RegistryFactory.getInstance().getRegistry(RegKey.TOWN);
+    return (treg.getUnique(townName) == null)  ? false : true;
+  }
+  
+  /** Checks if the Arena exists in a dgn file
+   * @param arenaName to check 
+   * @return true if town found, else false
+   */
+  private boolean arenaExists(String arenaName)
+  {
+    File arenaFile = new File(Chronos.ARENA_PATH + arenaName + Chronos.ARENA_EXT);
+    return arenaFile.exists();
+  }
+
+  
   /**
    * Two Adventures are equal if all the adventure name, Town name, and Arena name are equal
    * 
@@ -131,7 +139,7 @@ public class Adventure implements IRegistryElement
     }
     Adventure adv = (Adventure) otherThing;
     boolean bName = _name.equals(adv.getName());
-    boolean bTown = _town.getName().equals(adv.getTown().getName());
+    boolean bTown = _townName.equals(adv.getTownName());
     boolean bArena = _arenaName.equals(adv.getArenaName());
     return (bName && bTown && bArena);
   }
@@ -160,7 +168,7 @@ public class Adventure implements IRegistryElement
    */
   public String getTownName()
   {
-    return _town.getName();
+    return _townName;
   }
 
   /**
@@ -191,16 +199,6 @@ public class Adventure implements IRegistryElement
     return (_arenaName == null) ? null : Arena.getInstance(_arenaName);
   }
 
-
-  /**
-   * If the Adventure has a Town, get it from the TownRegistry
-   * 
-   * @return the Town object or null
-   */
-  public Town getTown()
-  {
-    return _town;
-  }
 
 
   // /** Return true if the Adventure is open */
@@ -247,7 +245,7 @@ public class Adventure implements IRegistryElement
     {
       String[] parms = new String[4];
       parms[0] = _name;
-      parms[1] = _town.getName();
+      parms[1] = _townName;
       parms[2] = _arenaName;
       parms[3] = _overview;
       return parms;

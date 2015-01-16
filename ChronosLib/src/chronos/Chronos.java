@@ -66,7 +66,6 @@ public class Chronos
   /** Relative path location of all shared resources */
   public static String RESOURCES_PATH = ECHRONOS_ROOT + "/resources";
 
-//  public static String RESOURCES_PATH = CHRONOS_ROOT + "/ChronosLib/resources";
   public static String CHRONOS_LIB_RESOURCES_PATH = ECHRONOS_ROOT + "ChronosLib" + FS +"resources";
   /** Relative path location of Adventurer-specific resources */
   public static String ADV_RESOURCES_PATH = ECHRONOS_ROOT + "/Adventurer/resources";
@@ -74,8 +73,7 @@ public class Chronos
   public static final String REGISTRY_CLASSPKG = "chronos.pdc.registry.";
 
   /** Path for all data Registries */
-  // public static final String REGISTRY_PATH = RESOURCES_PATH + FS + "registries" + FS;
-//  public static final String REGISTRY_PATH = "/Projects/eChronos/ChronosLib/resources/";
+  public static final String ARENA_PATH = CHRONOS_LIB_RESOURCES_PATH + FS + "data" + FS;
 
   public static final String REGISTRY_PATH = CHRONOS_LIB_RESOURCES_PATH + FS + "registries" + FS;
   /** These images are in the Adventurer resources directory */

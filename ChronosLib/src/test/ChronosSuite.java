@@ -38,7 +38,8 @@ import test.pdc.registry.TestRegistryFactory;
     MyLibraryTestSuite.class,
 
     /* CIV test files */
-    // TestHeroDefaults.class,
+    // TestDefaultLists.class,
+    // TestHeroDefaults
     // TestMiscKeys.class,
     // TestOccupationsKeys.class,
     // TestSkillKeys.class,
@@ -80,7 +81,6 @@ import test.pdc.registry.TestRegistryFactory;
     // TestRace.class,
     // TestSkill.class,
     // TestTown.class,
-    // TestUtilities.class,
 
 })
 /** Compilation of all unit tests for regression and integration testing. */

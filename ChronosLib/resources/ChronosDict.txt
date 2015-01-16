@@ -2,3 +2,7 @@ registries
 alan
 cline
 presentable
+refactored
+quasqueton
+guilds
+parms
