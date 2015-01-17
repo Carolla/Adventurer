@@ -62,16 +62,16 @@ public class TestUtilities
    * static String cropLine(String msg, int width) Truncates text line {@code msg} to within
    * {@code width} limit by replacing last space in limit with newline character.
    * 
-   * @Normal A line of text is cropped before the last word <br>
-   * @Normal A line of text is cropped after the last word, at a white space <br>
-   * @Normal A line of text is cropped after a tab (valid) character <br>
-   * @Normal A line of text is cropped after a carriage return (\r) character <br>
-   * @Normal String contains newline character at crop point. <br>
-   * @Normal String contains backspace character <br>
-   * @Normal A backspace character (\b) is not counted as whitespace <br>
-   * @Normal An escaped double quote (\") is not counted as whitespace <br>
-   * @Normal An escaped single quote (\') is not counted as whitespace <br>
-   * @Normal An escaped escape char (\\) is not counted as whitespace <br>
+   * @Normal.Test A line of text is cropped before the last word <br>
+   * @Normal.Test A line of text is cropped after the last word, at a white space <br>
+   * @Normal.Test A line of text is cropped after a tab (valid) character <br>
+   * @Normal.Test A line of text is cropped after a carriage return (\r) character <br>
+   * @Normal.Test String contains newline character at crop point. <br>
+   * @Normal.Test String contains backspace character <br>
+   * @Normal.Test A backspace character (\b) is not counted as whitespace <br>
+   * @Normal.Test An escaped double quote (\") is not counted as whitespace <br>
+   * @Normal.Test An escaped single quote (\') is not counted as whitespace <br>
+   * @Normal.Test An escaped escape char (\\) is not counted as whitespace <br>
    */
   @Test
   public void testCropLine()
@@ -159,9 +159,9 @@ public class TestUtilities
    * static String cropLine(String msg, int width) Truncates text line {@code msg} to within
    * {@code width} limit by replacing last space in limit with newline character.
    * 
-   * @Special Input line is less than crop width permitted; return input string <br>
-   * @Error Input line contains a newline within the width; return input string <br>
-   * @Null Null input line <br>
+   * @Special.Test  Input line is less than crop width permitted; return input string <br>
+   * @Error.Test    Input line contains a newline within the width; return input string <br>
+   * @Null.Test     Null input line <br>
    */
   @Test
   public void testCropLineErrors()
@@ -202,12 +202,12 @@ public class TestUtilities
   /**
    * static String formatInches(String) Converts from inches, to feet and inches
    * 
-   * @Normal string value must be integer less than, equal to, and greater than one foot <br>
-   * @Normal string value contains exactly zero inches <br>
-   * @Error string value contains decimal fraction <br>
-   * @Error string value contains negative number <br>
-   * @Error string value contains empty string <br>
-   * @Null string parm is null <br>
+   * @Normal.Test string value must be integer less than, equal to, and greater than one foot <br>
+   * @Normal.Test string value contains exactly zero inches <br>
+   * @Error.Test string value contains decimal fraction <br>
+   * @Error.Test string value contains negative number <br>
+   * @Error.Test string value contains empty string <br>
+   * @Null.Test string parm is null <br>
    */
   @Test
   public void testFormatInches()
@@ -253,12 +253,12 @@ public class TestUtilities
   /**
    * static String formatOunces(String) Converts from ounces to pounds and ounces format
    * 
-   * @Normal string value must be integer less than, equal to, and greater than one pound <br>
-   * @Normal string value contains exactly zero ounces <br>
-   * @Error string value contains decimal fraction <br>
-   * @Error string value contains negative number <br>
-   * @Error string value contains empty string <br>
-   * @Null string parm is null <br>
+   * @Normal.Test string value must be integer less than, equal to, and greater than one pound <br>
+   * @Normal.Test string value contains exactly zero ounces <br>
+   * @Error.Test string value contains decimal fraction <br>
+   * @Error.Test string value contains negative number <br>
+   * @Error.Test string value contains empty string <br>
+   * @Null.Test string parm is null <br>
    */
   @Test
   public void testFormatOunces()
@@ -305,12 +305,12 @@ public class TestUtilities
   /**
    * static String formatSecondss(String) Converts from seconds to years and fractional years
    * 
-   * @Normal string value must be integer less than, equal to, and greater than one year <br>
-   * @Normal string value contains exactly zero seconds <br>
-   * @Error string value contains decimal fraction <br>
-   * @Error string value contains negative number <br>
-   * @Error string value contains empty string <br>
-   * @Null string parm is null <br>
+   * @Normal.Test string value must be integer less than, equal to, and greater than one year <br>
+   * @Normal.Test string value contains exactly zero seconds <br>
+   * @Error.Test string value contains decimal fraction <br>
+   * @Error.Test string value contains negative number <br>
+   * @Error.Test string value contains empty string <br>
+   * @Null.Test string parm is null <br>
    */
   @Test
   public void testFormatSeconds()
@@ -360,11 +360,11 @@ public class TestUtilities
   /**
    * static boolean isEmptyString(String target) Returns true if {@code target} is only white space
    * 
-   * @Normal checks for non-empty string <br>
-   * @Normal checks for empty string <br>
-   * @Normal checks for all-spaces target <br>
-   * @Normal checks for control characters: \n\b\r\t <br>
-   * @Null checks for null parameter
+   * @Normal.Test checks for non-empty string <br>
+   * @Normal.Test checks for empty string <br>
+   * @Normal.Test checks for all-spaces target <br>
+   * @Normal.Test checks for control characters: \n\b\r\t <br>
+   * @Null.Test checks for null parameter
    */
   @Test
   public void testIsEmptryString()
@@ -404,13 +404,13 @@ public class TestUtilities
    * static boolean isTraitsEqual(int[] expValue, int[] testValue) Checks if two int equal-length
    * arrays are equal, element by element. Arrays must be of equal length.
    * 
-   * @Normal arrays contain exactly the same elements <br>
-   * @Normal arrays contain one value different <br>
-   * @Normal arrays contain all values different <br>
-   * @Error arrays are of different length <br>
-   * @Error arrays are not totally filled but have 0 values in one or more slots <br>
-   * @Special arrays have 0's in all slots; legal but useless for comparing prime traits
-   * @Null one or both parms are null
+   * @Normal.Test arrays contain exactly the same elements <br>
+   * @Normal.Test arrays contain one value different <br>
+   * @Normal.Test arrays contain all values different <br>
+   * @Error.Test arrays are of different length <br>
+   * @Error.Test arrays are not totally filled but have 0 values in one or more slots <br>
+   * @Special.Test arrays have 0's in all slots; legal but useless for comparing prime traits
+   * @Null.Test one or both parms are null
    */
   @Test
   public void testIsEqual()
@@ -471,12 +471,12 @@ public class TestUtilities
    * alphabetically, The sort algorithm uses a {@code TreeSet} because it automatically uses an
    * insert-sort algorithm with no duplicates.
    * 
-   * @Normal Sort an unsorted list of unique elements <br>
-   * @Normal Sort an already sorted list <br>
-   * @Normal Sort an unsorted list with duplicate and triplicate elements <br>
-   * @Normal Sort an unsorted list with empty elements<br>
-   * @Error Input parm has no length <br>
-   * @Null  input parm is null
+   * @Normal.Test Sort an unsorted list of unique elements <br>
+   * @Normal.Test Sort an already sorted list <br>
+   * @Normal.Test Sort an unsorted list with duplicate and triplicate elements <br>
+   * @Normal.Test Sort an unsorted list with empty elements<br>
+   * @Error.Test Input parm has no length <br>
+   * @Null.Test  input parm is null
    */
   @Test
   public void testUniqueSort()
@@ -548,8 +548,8 @@ public class TestUtilities
    * {@code width} limit, and replace the last blank space within that limit with the newline
    * sequence.
    * 
-   * @Normal single line already within the limit, with and without newlines. <br>
-   * @Normal single line with no newline characters already in it. <br>
+   * @Normal.Test single line already within the limit, with and without newlines. <br>
+   * @Normal.Test single line with no newline characters already in it. <br>
    */
   @Test
   public void testWordWrap()
