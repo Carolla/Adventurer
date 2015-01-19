@@ -30,4 +30,16 @@ public interface Combatant {
      */
     int attack(int attackRoll);
 
+    /**
+     * Check the status of HP.
+     * 
+     * @return whether combatant has max HP
+     */
+    boolean hasFullHP();
+
+    /**
+     * Write to the console the HP left for the combatant.
+     */
+    void displayHP();
+
 }

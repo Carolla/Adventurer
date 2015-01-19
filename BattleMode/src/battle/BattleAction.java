@@ -20,17 +20,22 @@ public class BattleAction
         _type = type;
     }
 
-    public void Execute(Combatant opponent)
+    /**
+     * Complete the action, constituting one round of battle
+     * 
+     * @param opponent the target for this round
+     * @return the damage done
+     */
+    public int Execute(Combatant opponent)
     {
         switch (_type)
         {
             case HIT:
-                opponent.attack(20);
-                break;
+                return opponent.attack(20);
             case MISS:
             case WAIT:
             default:
-                break;
+                return 0;
         }
     }
 }

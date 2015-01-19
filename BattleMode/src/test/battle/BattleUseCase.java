@@ -2,14 +2,12 @@ package test.battle;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
+import test.battle.AutoCombatant.CombatantType;
 import battle.Battle;
 import battle.Combatant;
-import battle.Enemy;
-import battle.Player;
 
 /**
 ##########################Use Case Brief##############################
@@ -39,8 +37,8 @@ public class BattleUseCase {
 	@Test
 	public void ThePlayerWantsToDoCombatWithTheEnemy()
 	{
-		Combatant player = new Player();
-		Combatant enemy = new Enemy();
+		Combatant player = new DummyCombatant(true);
+		Combatant enemy = new DummyCombatant(false);
 		Battle battle = new Battle(player, enemy);
 		assertTrue(battle.isInBattle(player));
 		assertTrue(battle.isInBattle(enemy));
@@ -60,12 +58,12 @@ public class BattleUseCase {
 	@Test
 	public void ThePlayerWantsToDamageTheEnemyInBattle()
 	{
-		Combatant player = new AutoCombatant();
-		Combatant enemy = new AutoCombatant();
+		Combatant player = new AutoCombatant(CombatantType.HERO);
+		Combatant enemy = new AutoCombatant(CombatantType.ENEMY);
 		Battle battle = new Battle(player, enemy);
-		assertFalse(enemy.isUnconscious());
+		assertTrue(enemy.hasFullHP());
 		battle.advance();
-		assertTrue(enemy.isUnconscious());
+		assertFalse(enemy.hasFullHP());
 	}
 	
 	//@Test

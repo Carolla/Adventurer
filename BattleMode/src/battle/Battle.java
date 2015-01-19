@@ -32,8 +32,10 @@ public class Battle {
 		System.out.println("Round " + _round++);
 		BattleAction playerAction = _player.takeTurn();
 		playerAction.Execute(_enemy);
+		_enemy.displayHP();
 		BattleAction enemyAction = _enemy.takeTurn();
 		enemyAction.Execute(_player);
+		_player.displayHP();
 	}
 
 	public boolean isWinner(Combatant combatant) {

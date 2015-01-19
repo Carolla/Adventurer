@@ -38,4 +38,13 @@ public class DummyCombatant implements Combatant {
     {
         return 0;
     }
+
+    @Override
+    public boolean hasFullHP()
+    {
+        return true;
+    }
+
+    @Override
+    public void displayHP() { }
 }	
