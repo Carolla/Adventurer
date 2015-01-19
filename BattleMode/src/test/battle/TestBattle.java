@@ -6,8 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import battle.BattleAction;
-import battle.BattleAction.BattleActionType;
+import test.battle.AutoCombatant.CombatantType;
 import battle.Battle;
 import battle.Combatant;
 
@@ -74,10 +73,8 @@ public class TestBattle {
 	@Test
 	public void BattleAllowsPlayersToTakeSuccessiveTurns()
 	{
-	    BattleAction playerAction = new BattleAction(BattleActionType.HIT);
-	    BattleAction enemyAction = new BattleAction(BattleActionType.MISS);
-		AutoCombatant player = new AutoCombatant(playerAction);
-		AutoCombatant enemy = new AutoCombatant(enemyAction);
+		AutoCombatant player = new AutoCombatant(CombatantType.HERO);
+		AutoCombatant enemy = new AutoCombatant(CombatantType.ENEMY);
 		Battle battle = new Battle(player, enemy);
 		assertEquals(0, player.getTurnCount());
 		assertEquals(0, enemy.getTurnCount());

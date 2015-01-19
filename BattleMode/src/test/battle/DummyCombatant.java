@@ -1,7 +1,5 @@
 package test.battle;
 
-import battle.BattleAction;
-import battle.BattleAction.BattleActionType;
 import battle.Combatant;
 
 /**
@@ -28,9 +26,9 @@ public class DummyCombatant implements Combatant {
     }
 
     @Override
-    public BattleAction takeTurn()
+    public int takeTurn(Combatant opponent)
     {
-        return new BattleAction(BattleActionType.WAIT);
+        return 0;
     }
 
     @Override

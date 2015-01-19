@@ -18,9 +18,10 @@ public interface Combatant {
     /**
      * Each combtant executes actions during a battle, turn by turn.  Takes
      * the next turn for a combatant.
-     * @return 
+     * @param _enemy the enemy to strike this round
+     * @return the damage done
      */
-    BattleAction takeTurn();
+    int takeTurn(Combatant _enemy);
 
     /**
      * Causes damage to an opponent.  

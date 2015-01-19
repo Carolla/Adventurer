@@ -62,13 +62,23 @@ public class BattleUseCase {
 		Combatant enemy = new AutoCombatant(CombatantType.ENEMY);
 		Battle battle = new Battle(player, enemy);
 		assertTrue(enemy.hasFullHP());
-		battle.advance();
+		while (battle.isOngoing()) {
+		    battle.advance();
+		}
 		assertFalse(enemy.hasFullHP());
 	}
 	
-	//@Test
-	//public void ThePlayerWantsToHitTheEnemyInBattle() 
-	//{
-	//    fail("Not yet implemented");
-	//}
+	@Test
+	public void ThePlayerWantsToKnockTheEnemyUnconscious() 
+	{
+		Combatant player = new AutoCombatant(CombatantType.HERO);
+		Combatant enemy = new AutoCombatant(CombatantType.ENEMY);
+		Battle battle = new Battle(player, enemy);
+		assertTrue(enemy.hasFullHP());
+		while (battle.isOngoing()) {
+		    battle.advance();
+		}
+		assertFalse(enemy.hasFullHP());
+		assertTrue(enemy.isUnconscious());
+	}
 }
