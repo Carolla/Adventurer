@@ -28,13 +28,15 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
 {
-    // CIV Test files
-    // None
+    /** CIV Test files */
+    // BaseCiv.class
+    // DataShuttle.class
 
-    // DMC Test files
+    /** DMC Test files */
     TestDbReadWriter.class,
+    // IRegistryElement.class is an interface, no tests for this
 
-    // PDC Test files
+    /** PDC Test files */
     TestMetaDie.class,
     TestRegistry.class,
     TestUtilities.class,

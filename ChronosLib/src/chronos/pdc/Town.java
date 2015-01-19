@@ -10,7 +10,6 @@
 package chronos.pdc;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import mylib.ApplicationException;
 import mylib.Constants;
@@ -26,204 +25,186 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
  * @author Alan Cline
  * @version Feb 6, 2013 // original <br>
  *          May 4, 2013 // updated and augmented <br>
+ *          Jan 16, 2015  // replaced Building objects with their names only <br>
  */
-public class Town implements IRegistryElement {
-    /** Name of the town */
-    private String _name = null;
-    /** Description of the town when first entererd during the day */
-    private String _descDay = null;
-    /** Description of the town when first entererd during the night */
-    private String _descNight = null;
-    /**
-     * Cost of living factor. All prices in the town are multiplied by this
-     * number: 1.0 is standard.
-     */
-    private double _costOfLiving = 1.0;
+public class Town implements IRegistryElement
+{
+  /** Name of the town */
+  private String _name;
+  /** Description of the town when first entered during the day */
+  private String _descDay;
+  /** Description of the town when first entered during the night */
+  private String _descNight;
+  /** Standard cost of living factor. Multiplier for all prices in town. */
+  private double _costOfLiving = 1.0;
 
-    // Convenience reference to RegistryFactory
-    private BuildingRegistry _bReg = null;
+  /** The name of the Buildings in Town */
+  private ArrayList<String> _buildings;
 
-    // TODO Move this initializer into constructor
-    /** Buildings in town */
-    private List<Building> _buildings = new ArrayList<Building>();
+  
+  /**
+   * Global clock time, in seconds, for the states of the city, arena, buildings, and Hero.
+   */
+  // TODO: Make this clock an object later
+  /*
+   * TODO: The clock is triggered to start based on the Inn, which must always be open when the Hero
+   * starts. The clock will start randomly between 1 hr after the Inn opens, and 1 hr before the Inn
+   * closes.
+   */
+  private long _gameClock = 0L;
+  /** Fixed start time when Town awakes: 6am */
+  private int INIT_TIME = 6;
 
-    /** The Dungeon associated with this town */
-    public static final String DEF_DGN_NAME = "Quasqueton";
+  /*
+   * CONSTRUCTOR(S) AND RELATED METHODS
+   */
 
-    /**
-     * Global clock time, in seconds, for the states of the city, arena,
-     * buildings, and Hero.
-     */
-    // TODO: Make this clock an object later
-    /*
-     * TODO: The clock is triggered to start based on the Inn, which must always
-     * be open when the Hero starts. The clock will start randomly between 1 hr
-     * after the Inn opens, and 1 hr before the Inn closes.
-     */
-    private long _gameClock = 0L;
-    /** Fixed start time when Town awakes: 6am */
-    private int INIT_TIME = 6;
+  /** Default constructor */
+  public Town()
+  {}
 
-    /*
-     * CONSTRUCTOR(S) AND RELATED METHODS
-     */
-
-    /** Default constructor that creates the default Town */
-    public Town() {
-	// Initalize the default town
-	// this(TOWN_NAME, DESC_DAY, DESC_NIGHT);
-	// _bReg = (BuildingRegistry)
-	// RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
-	// for (String s : DEF_BLDGS) {
-	// if (buildingRegContainsName(s)) {
-	// _buildingNames.add(s);
-	// }
-	// else {
-	// String errmsg =
-	// String.format("\nTown(): Invalid building name in default town list. "
-	// +
-	// "Building %s not found in BuildingRegistry", s);
-	// System.err.println(errmsg);
-	// }
-	// }
+  
+  /**
+   * Constructor. If the descNight is null, the descDay value is used. Some rare towns do not have
+   * night time descriptions, so null values are ok.
+   * 
+   * @param name of the town
+   * @param descDay appearance of the town when it is first entered in day
+   * @param descNight appearance of the town when it is first entered in evening; can be null
+   * @throws NullPointerException if name or descDay is null
+   */
+  public Town(String name, String descDay, String descNight) throws NullPointerException
+  {
+    // Guard against null parms
+    if ((name == null) || (descDay == null)) {
+      throw new NullPointerException("Name or daytime description cannot be null");
     }
+    // Set the field data
+    _name = name;
+    _descDay = descDay;
+    _descNight = (descNight == null) ? descDay : descNight;
+    // Initialize running clock to INIT_TIME
+    _gameClock = INIT_TIME * Constants.SECS_PER_HOUR;
+    
+    // Create a place to store in building in town */
+    _buildings = new ArrayList<String>();
+  }
 
-    /**
-     * Constructor. If the descNight is null, the descDay value is used. Some
-     * rare towns do not have night time descriptions or Arenas associated with
-     * them, so null values are ok.
-     * 
-     * @param name
-     *            of the town
-     * @param descDay
-     *            appearance of the town when it is first entered in day
-     * @param descNight
-     *            appearance of the town when it is first entered in evening;
-     *            can be null
-     * @throws NullPointerException
-     *             if name or descDay is null
-     */
-    public Town(String name, String descDay, String descNight)
-	    throws NullPointerException {
-	if ((name == null) || (descDay == null)) {
-	    throw new NullPointerException(
-		    "Name or daytime description cannot be null");
-	}
-	_name = name;
-	_descDay = descDay;
-	_descNight = (descNight == null) ? descDay : descNight;
-	// Initialize running clock to INIT_TIME
-	_gameClock = INIT_TIME * Constants.SECS_PER_HOUR;
-	// _bReg = (BuildingRegistry)
-	// RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
+  /*
+   * PUBLIC METHODS
+   */
+
+  /**
+   * Add the names of {@code Building}s that are in the Town after verifying each one from the
+   * {@code BuildingRegistry}.
+   * 
+   * @param bldgList list of building names to add
+   * @throws ApplicationException if building cannot be found
+   */
+  public void addBuildings(ArrayList<String> bldgList) throws ApplicationException
+  {
+    BuildingRegistry bReg = 
+        (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
+    for (String bName : bldgList) {
+      IRegistryElement b = bReg.getUnique(bName); 
+      if (b == null) {
+        throw new ApplicationException("Cannot find " + bName + " in BuildingRegistry.");
+      } else {
+        Building bldg = (Building) b;
+        _buildings.add(bldg.getName());
+      }
     }
+  }
 
-    /*
-     * PUBLIC METHODS
-     */
+  
+//  /**
+//   * Add a building to the Town list for retrieval for the Building Registry after verifying that
+//   * the Building exists in the Building registry
+//   * 
+//   * @param bldgName of the building to add
+//   * @return true if the add was successful
+//   */
+//  public boolean buildingRegContainsName(String bldgName)
+//  {
+//    Building b = _bReg.getBuilding(bldgName);
+//    return b != null;
+//  }
 
-    /**
-     * Add a list of Buildings to the Town, verifying each one from the
-     * BuildingRegistry
-     * 
-     * @param bldgList
-     *            list of building names to add
-     * @throws ApplicationException
-     *             if building cannot be found
-     */
-    public void addBuildings(String[] bldgList) throws ApplicationException {
+  /** Two Towns are equal if their names are equal */
+  @Override
+  public boolean equals(IRegistryElement targetTown)
+  {
+    Town target = (Town) targetTown;
+    return _name.equalsIgnoreCase(target.getName());
+  }
 
-	_bReg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(
-		RegKey.BLDG);
-	for (String bName : bldgList) {
-	    Building b = _bReg.getBuilding(bName); // Causes unsafe creation;
-						   // cast needed?
-	    if (b == null) {
-		throw new ApplicationException("Cannot find " + bName
-			+ " in BuildingRegistry.");
-	    } else {
-		_buildings.add(b);
-	    }
-	}
-    }
+  /** Get a list of all the Buildings in the town */
+  public ArrayList<String> getAllBuildings()
+  {
+    return _buildings;
+  }
 
-    /**
-     * Add a building to the Town list for retrieval for the Building Registry
-     * after verifying that the Building exists in the Building registry
-     * 
-     * @param bldgName
-     *            of the building to add
-     * @return true if the add was successful
-     */
-    public boolean buildingRegContainsName(String bldgName) {
-	Building b = _bReg.getBuilding(bldgName);
-	return b != null;
-    }
+  /** Get a Building object from the Building Registry */
+  public Building getBuilding(String name)
+  {
+    BuildingRegistry bReg =
+        (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
+    Building bldg = (Building) bReg.getUnique(name);
+    return bldg;
+  }
 
-    /** Two Towns are equal if their names are equal */
-    @Override
-    public boolean equals(IRegistryElement targetTown) {
-	Town target = (Town) targetTown;
-	return _name.equalsIgnoreCase(target.getName());
-    }
+  /** Get the cost of living (price adjustment) for this town */
+  public double getCostOfLiving()
+  {
+    return _costOfLiving;
+  }
 
-    /** Get a list of all the Buildings in the town */
-    public List<Building> getAllBuildings() {
-	return _buildings;
-    }
+  /** Get the appearance of this town during the day */
+  public String getDayDescription()
+  {
+    return _descDay;
+  }
 
-    /** Get a Building object from the Building Registry */
-    public Building getBuilding(String name) {
-	Building bldg = (Building) _bReg.getUnique(name);
-	return bldg;
-    }
+  /*
+   * @see mylib.dmc.IRegistryElement#getKey()
+   */
+  @Override
+  public String getKey()
+  {
+    return _name;
+  }
 
-    /** Get the cost of living (price adjustment) for this town */
-    public double getCostOfLiving() {
-	return _costOfLiving;
-    }
+  /** Get the name of this town */
+  public String getName()
+  {
+    return _name;
+  }
 
-    /** Get the appearance of this town during the day */
-    public String getDayDescription() {
-	return _descDay;
-    }
+  /** Get the appearance of this town at night */
+  public String getNightDescription()
+  {
+    return _descNight;
+  }
 
-    /*
-     * @see mylib.dmc.IRegistryElement#getKey()
-     */
-    @Override
-    public String getKey() {
-	return _name;
-    }
+  /**
+   * Set the standard of living (price factor) for the town
+   * 
+   * @param col multiplier for price adjustment, but at least 0.1
+   */
+  public void setCostOfLiving(double col)
+  {
+    _costOfLiving = col;
+  }
 
-    /** Get the name of this town */
-    public String getName() {
-	return _name;
-    }
+  /** Get the name of the town */
+  public String toString()
+  {
+    return _name;
+  }
 
-    /** Get the appearance of this town at night */
-    public String getNightDescription() {
-	return _descNight;
-    }
-
-    /**
-     * Set the standard of living (price factor) for the town
-     * 
-     * @param col
-     *            multiplier for price adjustment, but at least 0.1
-     */
-    public void setCostOfLiving(double col) {
-	_costOfLiving = col;
-    }
-
-    /** Get the name of the town */
-    public String toString() {
-	return _name;
-    }
-
-    /*
-     * PRIVATE METHODS
-     */
+  /*
+   * PRIVATE METHODS
+   */
 
 } // end of Town class
 

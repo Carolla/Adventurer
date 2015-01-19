@@ -18,6 +18,9 @@ import mylib.MsgCtrl;
 import mylib.pdc.MetaDie;
 import mylib.pdc.MetaDie.MockMetaDie;
 
+import org.junit.After;
+import org.junit.Before;
+
 
 /**
  * Ensure that the MetaDie class is working properly.
@@ -38,9 +41,8 @@ public class TestMetaDie extends TestCase
 
   /**
    * @throws java.lang.Exception
-   * @Before
    */
-
+  @Before
   public void setUp() throws Exception
   {
     // Audit messages are OFF at start of each test
@@ -57,9 +59,8 @@ public class TestMetaDie extends TestCase
 
   /**
    * @throws java.lang.Exception
-   * @After
    */
-
+  @After
   public void tearDown() throws Exception
   {
     _md = null;
@@ -76,9 +77,9 @@ public class TestMetaDie extends TestCase
   /**
    * Test selecting a random Gaussian (normal) multiplier
    * 
-   * @Normal MetaDie.getGaussian(double mean, double low, double high) ok
-   * @Error MetaDie.getGaussian(double mean, double low, double high) ok
-   * @Null MetaDie.getGaussian(double mean, double low, double high) compile error
+   * @Normal.Test MetaDie.getGaussian(double mean, double low, double high) ok
+   * @Error.Test MetaDie.getGaussian(double mean, double low, double high) ok
+   * @Null.Test MetaDie.getGaussian(double mean, double low, double high) compile error
    */
   public void testGetGaussian() throws Exception
   {
@@ -189,9 +190,9 @@ public class TestMetaDie extends TestCase
   /**
    * Test that random numbers summed are calculated as expected
    * 
-   * @Normal MetaDie.getRandom(int minRange, maxRange) ok.
-   * @Error MetaDie.getRandom(int minRange, maxRange) ok
-   * @Null MetaDie.getRandom(int minRange, maxRange) compile error
+   * @Normal.Test MetaDie.getRandom(int minRange, maxRange) ok.
+   * @Error.Test MetaDie.getRandom(int minRange, maxRange) ok
+   * @Null.Test MetaDie.getRandom(int minRange, maxRange) compile error
    */
   public void testGetRandom()
   {
@@ -257,9 +258,9 @@ public class TestMetaDie extends TestCase
   /**
    * Test that random numbers are rolled and summed expected. Error is maintained within 2%
    * 
-   * @Normal MetaDie.roll(int nbrDice, int nbrSides) ok
-   * @Error MetaDie.roll(int nbrDice, int nbrSides) ok
-   * @Null MetaDie.roll(int nbrDice, int nbrSides) compiler error
+   * @Normal.Test MetaDie.roll(int nbrDice, int nbrSides) ok
+   * @Error.Test MetaDie.roll(int nbrDice, int nbrSides) ok
+   * @Null.Test MetaDie.roll(int nbrDice, int nbrSides) compiler error
    */
   public void testRoll()
   {
@@ -335,9 +336,9 @@ public class TestMetaDie extends TestCase
    * Test that roll method the same as above except use String d20 notation instead of ints Only
    * test that the string returns the correct number of dice and sides
    * 
-   * @Normal MetaDie.roll(String notation) ok
-   * @Error MetaDie.roll(String notation) ok
-   * @Null MetaDie.roll(String notation) ok
+   * @Normal.Test MetaDie.roll(String notation) ok
+   * @Error.Test MetaDie.roll(String notation) ok
+   * @Null.Test MetaDie.roll(String notation) ok
    */
   public void testRollString() throws Exception
   {
@@ -427,8 +428,8 @@ public class TestMetaDie extends TestCase
   /**
    * Methods that do not need testing
    * 
-   * @Not_Needed MetaDie.MetaDie() simple constructor calling library method
-   * @Not_Implemented MetaDie.rollPercent() included in roll(int, int)
+   * @Not.Needed MetaDie.MetaDie() simple constructor calling library method
+   * @Not.Implemented MetaDie.rollPercent() included in roll(int, int)
    */
   public void Not_Needed()
   {}

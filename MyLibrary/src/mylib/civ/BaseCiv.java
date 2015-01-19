@@ -12,15 +12,14 @@ package mylib.civ;
 
 import java.awt.Container;
 import java.util.ArrayList;
-import java.util.Observer;
 
 import mylib.Constants;
 import mylib.civ.DataShuttle.ErrorType;
 
 /**
  * An abstract base class that contains common functions for all Civ classes, and supports the MVP
- * (Model-View-Presenter) Stack. This class takes a DataShuttle of ModelKeys M, and a DataShuttle of
- * WidgetFields W.
+ * (Model-View-Presenter) Architecture. This class takes a DataShuttle of ModelKeys M, and a
+ * DataShuttle of WidgetFields W.
  * 
  * @author Alan Cline
  * @version May 28, 2011 // original <br>
@@ -36,7 +35,7 @@ public abstract class BaseCiv<M extends Enum<M>, W extends Enum<W>> // implement
   /** Every Civ is associated with a shuttle for display data. */
   protected DataShuttle<W> _ws = null;
   /** Every Civ is associated with a specific model */
-//  protected ObservableModel<M> _model = null;
+  // protected ObservableModel<M> _model = null;
 
   /**
    * Every Civ is associated with its specific widget, whether JDialog, JPanel, JComponent, or
@@ -307,15 +306,15 @@ public abstract class BaseCiv<M extends Enum<M>, W extends Enum<W>> // implement
       localAction(ws);
 
       // Local action must create a model if it doesn't exist
-//      if (_model == null) {
-//        ws.setErrorType(ErrorType.CREATION_EXCEPTION);
-//        ws.setErrorMessage("Can't find model to update");
-//        return ws;
-//      }
+      // if (_model == null) {
+      // ws.setErrorType(ErrorType.CREATION_EXCEPTION);
+      // ws.setErrorMessage("Can't find model to update");
+      // return ws;
+      // }
 
       // Set the values from the shuttle into the model using the given keys
       // If error, the shuttle will contain the error flags
-//      _ds = _model.unloadShuttle(_ds);
+      // _ds = _model.unloadShuttle(_ds);
 
       // In case the shuttle is of the wrong type
     } catch (ClassCastException ex) {

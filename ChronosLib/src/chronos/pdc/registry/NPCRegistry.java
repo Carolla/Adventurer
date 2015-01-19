@@ -390,7 +390,7 @@ public class NPCRegistry extends Registry
               "\"Sorry, but I am closed right now. My store, I mean.\"",
               "\"Come by my store tomorrow and I should have whatever you need.\"",
       },
-          // The Sherrif, keeper of the Jail
+          // The Sheriff, keeper of the Jail
           {
               "The Sheriff",
               "Jail Master",

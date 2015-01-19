@@ -96,7 +96,7 @@ public class TestDbReadWriter extends TestCase
   /**
    * mylib.dmc.DbReadWriter(String) throws NullPointerException
    * 
-   * @Error Null filename for constructor; force null pointer exception
+   * @Error.Test Null filename for constructor; force null pointer exception
    */
   @Test
   public void testConstructorError()
@@ -124,7 +124,7 @@ public class TestDbReadWriter extends TestCase
   /**
    * mylib.dmc.DbReadWriter(String) throws NullPointerException
    * 
-   * @Normal Confirm that an existing file will reload for new database
+   * @Normal.Test Confirm that an existing file will reload for new database
    */
   @Test
   public void testConstructorReload()
@@ -164,8 +164,8 @@ public class TestDbReadWriter extends TestCase
    * void mylib.dmc.DbReadWriter.add(IRegistryElement) throws NullPointerException,
    * DatabaseClosedException, DatabaseReadOnlyException, ObjectNotStorableException
    * 
-   * @Normal Verify that objects are added to the db correctly
-   * @Normal Verify that objects are updated to the db correctly
+   * @Normal.Test Verify that objects are added to the db correctly
+   * @Normal.Test Verify that objects are updated to the db correctly
    */
   @Test
   public void testAdd()
@@ -208,9 +208,9 @@ public class TestDbReadWriter extends TestCase
    * void mylib.dmc.DbReadWriter.add(IRegistryElement) throws NullPointerException,
    * DatabaseClosedException, DatabaseReadOnlyException, ObjectNotStorableException
    * 
-   * @Error force a NullPointerException object cannot be null
-   * @Error force a DatabaseClosedException db cannot be null (closed)
-   * @Error force a ObjectNotStorableException try to store a String
+   * @Error.Test force a NullPointerException object cannot be null
+   * @Error.Test force a DatabaseClosedException db cannot be null (closed)
+   * @Error.Test force a ObjectNotStorableException try to store a String
    */
   @Test
   public void testAddError()
@@ -244,10 +244,10 @@ public class TestDbReadWriter extends TestCase
   /**
    * void mylib.dmc.DbReadWriter.dbClose()
    * 
-   * @Normal case works because it is part of tearDown(), and runs repeatedly
-   * @Error close db and try to write to it
-   * @Error try to close an already closed db
-   * @Error cannot force a Db4oIOException for a db4o-specific IO exception
+   * @Normal.Test case works because it is part of tearDown(), and runs repeatedly
+   * @Error.Test close db and try to write to it
+   * @Error.Test try to close an already closed db
+   * @Error.Test cannot force a Db4oIOException for a db4o-specific IO exception
    */
   @Test
   public void testDbClose()
@@ -281,7 +281,7 @@ public class TestDbReadWriter extends TestCase
   /**
    * boolean mylib.dmc.DbReadWriter.dbContains(IRegistryElement) throws DatabaseClosedException
    * 
-   * @Normal objects in the db are identified
+   * @Normal.Test objects in the db are identified
    */
   @Test
   public void testDbContains()
@@ -318,10 +318,10 @@ public class TestDbReadWriter extends TestCase
   /**
    * boolean mylib.dmc.DbReadWriter.dbDelete(IRegistryElement)
    * 
-   * @Normal delete a unique object from the database
-   * @Normal attempt to delete the same object twice
-   * @Error force DatabaseClosedException attempt to delete from a closed database
-   * @Error force DatabaseReadOnlyException attempt to delete from a RO database
+   * @Normal.Test delete a unique object from the database
+   * @Normal.Test attempt to delete the same object twice
+   * @Error.Test force DatabaseClosedException attempt to delete from a closed database
+   * @Error.Test force DatabaseReadOnlyException attempt to delete from a RO database
    */
   @Test
   public void testDbDelete()
@@ -376,7 +376,7 @@ public class TestDbReadWriter extends TestCase
   /**
    * DB_ERROR mylib.dmc.DbReadWriter(String)
    * 
-   * @Normal: Write to file, close db, then re-read previously written object
+   * @Normal.Test Write to file, close db, then re-read previously written object
    */
   @Test
   public void testDbOpenExistingFile()
@@ -410,8 +410,8 @@ public class TestDbReadWriter extends TestCase
   /**
    * DB_ERROR mylib.dmc.DbReadWriter.open(String)
    * 
-   * @Error: Ensure that database is already open and try to open it
-   * @Normal: Ensure that database is closed but file exists
+   * @Error.Test Ensure that database is already open and try to open it
+   * @Normal.Test Ensure that database is closed but file exists
    */
   @Test
   public void testDbOpenFileExists()
@@ -434,7 +434,7 @@ public class TestDbReadWriter extends TestCase
 
 
   /**
-   * @Error force a DatabaseReadOnlyException Change the config to RO and try to add
+   * @Error.Test force a DatabaseReadOnlyException Change the config to RO and try to add
    */
   @Test
   public void testDbReadOnly()
@@ -464,7 +464,7 @@ public class TestDbReadWriter extends TestCase
    * List<IRegistryElement> dbQuery(Predicate<IRegistryElement>) throws Db4oIOException,
    * DatabaseClosedException, NullPointerException
    * 
-   * @Normal extract element lists using different kinds of Predicates
+   * @Normal.Test extract element lists using different kinds of Predicates
    */
   @Test
   public void testDbQuery()
@@ -552,7 +552,7 @@ public class TestDbReadWriter extends TestCase
 
 
   /**
-   * @Normal Ensure that the correct number of objects stored in the db is returned
+   * @Normal.Test Ensure that the correct number of objects stored in the db is returned
    */
   @Test
   public void testdbSize()
@@ -609,12 +609,12 @@ public class TestDbReadWriter extends TestCase
   /**
    * 4 There are four methods that do not need to be tested due to their simplistic nature.
    * 
-   * @NotNeeded getDB() -- getter
-   * @NotNeeded dbIsClosed() -- wrapper
-   * @NotNeeded DbOpenError() -- don't know how to trigger the db errors
-   * @NotNeeded dbSave(Object) 
+   * @Not.Needed getDB() -- getter
+   * @Not.Needed dbIsClosed() -- wrapper
+   * @Not.Needed DbOpenError() -- don't know how to trigger the db errors
+   * @Not.Needed dbSave(Object) 
    */
-  void _testsNotNeeded()
+  void NotNeeded()
   {}
 
 

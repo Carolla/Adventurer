@@ -29,24 +29,36 @@ public class RegistryFactory
 
   private HashMap<RegKey, Registry> _regMap = null;
 
-  /** Public list of all possible registries subclasses */
+  /** Public list of all possible registries subclasses, in rough dependency order. */
   public enum RegKey
   {
-    ADV("Adventure"), BLDG("Building"), ITEM("Item"), NPC("NPC"), OCP("Occupation"),
-    SKILL("Skill"), TOWN("Town");
+    SKILL("Skill", 35),     // default:  8 racial, and 27 general Skills
+    OCP("Occupation", 27),  // default: 26 Occupations plus "None"
+    ITEM("Item", 39),       // default  14 Hero, 6 Bank, 11 Inn menu, 5 Rogue, 3 Store
+    BLDG("Building", 8),    // default:  4 Guilds, Inn, Store, Jail, Bank
+    NPC("NPC", 16),         // Default:  8 building masters and 8 Inn patrons
+    TOWN("Town", 1),         // default: Biljur'Baz
+    ADV("Adventure", 1);    // default: "The Quest for Rogahn and Zelligar" (Arena = Quasqueton)
+    
+    private String _name;
+    private int _defSize;
 
-    private String _name = null;
-
-
-    private RegKey(String nm)
+    private RegKey(String nm, int size)
     {
       _name = nm;
+      _defSize = size;
     }
 
     @Override
     public String toString()
     {
       return _name;
+    }
+
+    /** Return the number of default entries in the corresponding Registry */
+    public int getDefaultSize()
+    {
+      return _defSize;
     }
 
   }
@@ -141,10 +153,10 @@ public class RegistryFactory
     } catch (InstantiationException ex) {
       System.err.println("createRegistry(): class cannot be created with newInstance(): "
           + ex.getMessage());
-    } //catch (Exception ex) {
-//      System.err.println("createRegistry(): possible database closed exception thrown: "
-//          + ex.getMessage());
-//    }
+    } // catch (Exception ex) {
+    // System.err.println("createRegistry(): possible database closed exception thrown: "
+    // + ex.getMessage());
+    // }
     return reg;
   }
 

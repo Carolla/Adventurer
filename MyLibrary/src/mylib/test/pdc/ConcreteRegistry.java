@@ -48,7 +48,7 @@ public class ConcreteRegistry extends Registry
   /**
    * Default constructor
    * 
-   * @param name of the file to act as db repository
+   * @param filename of the file to act as db repository
    * @throws ApplicationException if the constructor fails
    */
   public ConcreteRegistry(String filename) throws ApplicationException

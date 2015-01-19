@@ -21,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import mylib.MsgCtrl;
 
@@ -32,7 +32,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.pdc.Town;
-import chronos.pdc.buildings.Building;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.NPCRegistry;
 import chronos.pdc.registry.RegistryFactory;
@@ -61,8 +60,10 @@ public class TestTown
       "The town square was eerily quiet, except for the chirp of evil crickets.";
 
   /** Expected list of buildings to add to Town */
-  private String[] _bldgNames = {"Arcaneum", "Jail", "Monastery", "Rat's Pack General Store",
+  static private String[] _bldgNames = {"Arcaneum", "Jail", "Monastery", "Rat's Pack General Store",
       "Rogues' Den", "Stadium", "The Bank", "Ugly Ogre Inn"};
+
+  static private ArrayList<String> _bldgList;
 
   /** Number of buildings added for this test */
   private int NBR_BUILDINGS = 8;
@@ -94,6 +95,12 @@ public class TestTown
     // _dgn = Arena.getInstance(DGN_NAME);
     // MsgCtrl.msgln("\t Dungeon = \t" + _dgn);
     // / MsgCtrl.auditMsgsOn(false);
+    // Convert string[] to arraylist
+    int bSize = _bldgNames.length;
+    _bldgList = new ArrayList<String>(bSize);
+    for (int k=0; k < bSize; k++) {
+      _bldgList.add(_bldgNames[k]);
+    }
   }
 
   /** Once only */
@@ -116,7 +123,7 @@ public class TestTown
     // Create the target town
     _town = new Town(NAME, DESC_DAY, DESC_NIGHT);
     assertNotNull(_town);
-    _town.addBuildings(_bldgNames);
+    _town.addBuildings(_bldgList);
     // for (int k=0; k < _bldgs.length; k++) {
     // _town.buildingRegContainsName(_bldgs[k]);
     // }
@@ -202,10 +209,10 @@ public class TestTown
     MsgCtrl.msgln("\t Nightime: \t" + town.getNightDescription());
     MsgCtrl.msgln("\t Cost of living: \t" + town.getCostOfLiving());
     // Display all the buildings in town
-    List<Building> bList = _town.getAllBuildings();
+    ArrayList<String> bList = _town.getAllBuildings();
     MsgCtrl.msg("\t Buildings in town:\t ");
-    for (Building b : bList) {
-      MsgCtrl.msg(b.getName() + ",  ");
+    for (String s : bList) {
+      MsgCtrl.msg(s + ",  ");
     }
 
   }

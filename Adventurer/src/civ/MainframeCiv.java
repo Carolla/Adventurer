@@ -132,11 +132,11 @@ public class MainframeCiv
    * 
    * @return the list of Adventures
    */
-  public List<String> getAdventures()
+  public ArrayList<String> getAdventures()
   {
     _advReg = (AdventureRegistry) RegistryFactory.getInstance().getRegistry(RegKey.ADV);
-    List<Adventure> adventures = _advReg.getAdventureList();
-    List<String> results = new ArrayList<String>();
+    ArrayList<Adventure> adventures = _advReg.getAdventureList();
+    ArrayList<String> results = new ArrayList<String>();
     for (Adventure a : adventures) {
       results.add(a.getKey());
     }

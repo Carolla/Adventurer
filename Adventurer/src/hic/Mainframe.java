@@ -349,7 +349,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     button.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e)
       {
-        List<String> adventures = _mfCiv.getAdventures();
+        ArrayList<String> adventures = _mfCiv.getAdventures();
         Object[] adventuresArr = adventures.toArray();
         Object selectedValue = JOptionPane.showInputDialog(
             Mainframe.this, "Select an Adventure", "Adventures",

@@ -103,7 +103,7 @@ public class AdventureRegistry extends Registry
 
 
   /**
-   * Get a particlar Adventure by name
+   * Get a particular Adventure by name
    * 
    * @param name of the desired Adventure
    * @return the Item
@@ -125,13 +125,16 @@ public class AdventureRegistry extends Registry
    */
   public ArrayList<Adventure> getAdventureList()
   {
+    @SuppressWarnings("serial")
     List<IRegistryElement> advSet = get(new Predicate<IRegistryElement>() {
       public boolean match(IRegistryElement candidate)
       {
         return true;
       }
     });
-    ArrayList<Adventure> advList = new ArrayList<Adventure>(advSet.size());
+//    ArrayList<Adventure> advList = new ArrayList<Adventure>(advSet.size());
+    // Create default ArrayList in case the advSet is empty
+    ArrayList<Adventure> advList = new ArrayList<Adventure>();
     for (IRegistryElement e : advSet) {
       advList.add((Adventure) e);
     }

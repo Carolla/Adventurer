@@ -14,11 +14,13 @@ import mylib.test.MyLibraryTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import test.pdc.registry.TestRegistryFactory;
+import test.pdc.buildings.BuildingsSuite;
+import test.pdc.registry.RegistrySuite;
+
 
 /**
- * Regression test suite for all the <code>JUnit</code> test cases for the source code packages of
- * the <i>Chronos</i> library.
+ * Regression test suite for all the {@code JUnit} test cases for the source code packages of
+ * the {@code Chronos} library.
  * 
  * @author Alan Cline
  * @version Jun 4 2009 // original <br>
@@ -34,11 +36,12 @@ import test.pdc.registry.TestRegistryFactory;
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
 {
-    /* MyLibrary test suit */
+    /** MyLibrary test suit */
     MyLibraryTestSuite.class,
 
-    /* CIV test files */
-    // TestHeroDefaults.class,
+    /** CIV test files */
+    // TestDefaultLists.class,
+    // TestHeroDefaults
     // TestMiscKeys.class,
     // TestOccupationsKeys.class,
     // TestSkillKeys.class,
@@ -46,27 +49,11 @@ import test.pdc.registry.TestRegistryFactory;
     /* DMC test files */
     // None
     
-    /* Chronos PDC.Building test files */
-    // TestBank.class,
-    // TestBuilding.class,
-    // TestClericsGuild.class,
-    // TestFightersGuild.class,
-    // TestInn.class,
-    // TestJail.class,
-    // TestRoguesGuild.class,
-    // TestStore.class,
-    // TestWizardsGuild.class,
+    /** chronos.pdc.buildings test files */
+    BuildingsSuite.class,   // all test files in the registry subfolder
 
-    /* Chronos PDC.Registry test files */
-    // TestAdventureRegistry.class,
-    // TestBuildingRegistry.class,
-    // TestHelpTextObject.class,
-    // TestItemRegistry.class,
-    // TestNPCRegistry.class,
-    // TestOccupationRegistry.class,
-    TestRegistryFactory.class
-    // TestSkillRegistry.class,
-    // TestTownRegistry.class,
+    /** chronos.pdc.registry test files */
+    RegistrySuite.class,    // all test files in the registry subfolder
 
     /* Chronos PDC test files */
     // TestAdventure.class,
@@ -80,7 +67,6 @@ import test.pdc.registry.TestRegistryFactory;
     // TestRace.class,
     // TestSkill.class,
     // TestTown.class,
-    // TestUtilities.class,
 
 })
 /** Compilation of all unit tests for regression and integration testing. */
