@@ -3,7 +3,10 @@ package test.battle;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import mylib.MsgCtrl;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import test.battle.AutoCombatant.CombatantType;
@@ -15,6 +18,12 @@ public class TestBattle {
 	private Combatant _enemy;
 	private Combatant _player;
 	private Battle _battle;
+
+    @Before
+    public void setup()
+    {
+        MsgCtrl.auditMsgsOn(true);
+    }
 
 	@Test
 	public void BattleEndsWhenOneCombatantIsDefeated()
@@ -60,6 +69,7 @@ public class TestBattle {
 	@Test
 	public void BattleDoesNotEndWhenNeitherPlayerIsDefeated()
 	{
+        MsgCtrl.msgln("BattleDoesNotEndWhenNeitherPlayerIsDefeated()");
 		Combatant player = new DummyCombatant(false);
 		Combatant enemy = new DummyCombatant(false);
 		Battle battle = new Battle(player, enemy);
@@ -81,6 +91,12 @@ public class TestBattle {
 		battle.advance();
 		assertEquals(1, player.getTurnCount());
 		assertEquals(1, enemy.getTurnCount());
+	}
+	
+	@Test
+	public void BattleEndWhenOneCombatantEscapes()
+	{
+	   fail("Not yet implemented."); 
 	}
 	
 	private Battle SetupBasicBattle() 

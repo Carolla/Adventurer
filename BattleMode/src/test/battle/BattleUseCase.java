@@ -2,7 +2,9 @@ package test.battle;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import mylib.MsgCtrl;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import test.battle.AutoCombatant.CombatantType;
@@ -33,10 +35,16 @@ Notes:
    unconsciousness, death, interruption in some way (flight/retreat, intercession, etc.)*/
 
 public class BattleUseCase {
+    @Before
+    public void setup()
+    {
+        MsgCtrl.auditMsgsOn(true);
+    }
 
 	@Test
 	public void ThePlayerWantsToDoCombatWithTheEnemy()
 	{
+	    MsgCtrl.msgln("ThePlayerWantsToDoCombatWithTheEnemy()");
 		Combatant player = new DummyCombatant(true);
 		Combatant enemy = new DummyCombatant(false);
 		Battle battle = new Battle(player, enemy);
@@ -47,6 +55,7 @@ public class BattleUseCase {
 	@Test
 	public void ThePlayerWantsToDefeatTheEnemyInBattle()
 	{
+	    MsgCtrl.msgln("ThePlayerWantsToDefeatTheEnemyInBattle()");
 		Combatant player = new DummyCombatant(true);
 		Combatant enemy = new DummyCombatant(false);
 		Battle battle = new Battle(player, enemy);
@@ -58,6 +67,7 @@ public class BattleUseCase {
 	@Test
 	public void ThePlayerWantsToDamageTheEnemyInBattle()
 	{
+        MsgCtrl.msgln("ThePlayerWantsToDamageTheEnemyInBattle()");
 		Combatant player = new AutoCombatant(CombatantType.HERO);
 		Combatant enemy = new AutoCombatant(CombatantType.ENEMY);
 		Battle battle = new Battle(player, enemy);
@@ -71,6 +81,7 @@ public class BattleUseCase {
 	@Test
 	public void ThePlayerWantsToKnockTheEnemyUnconscious() 
 	{
+        MsgCtrl.msgln("ThePlayerWantsToKnockTheEnemyUnconscious()");
 		Combatant player = new AutoCombatant(CombatantType.HERO);
 		Combatant enemy = new AutoCombatant(CombatantType.ENEMY);
 		Battle battle = new Battle(player, enemy);
@@ -81,4 +92,11 @@ public class BattleUseCase {
 		assertFalse(enemy.hasFullHP());
 		assertTrue(enemy.isUnconscious());
 	}
+	
+	//@Test
+	//public void TheDMWantsThePlayerToBeDefeatedByTheEnemy() { }
+	//@Test
+	//public void TheDMWantsThePlayerToBeHitByTheEnemy() { }
+	//@Test
+	//public void TheDMWantsThePlayerToBeKnockedOutByTheEnemy() { }
 }

@@ -1,5 +1,6 @@
 package test.battle;
 
+import battle.Attack;
 import battle.Combatant;
 
 /**
@@ -32,7 +33,7 @@ public class DummyCombatant implements Combatant {
     }
 
     @Override
-    public int attack(int attackRoll)
+    public int attack(Attack attack)
     {
         return 0;
     }

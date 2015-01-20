@@ -1,6 +1,7 @@
 package test.battle;
 
 import mylib.pdc.MetaDie;
+import battle.Attack;
 import battle.Combatant;
 
 public class AutoCombatant implements Combatant {
@@ -34,7 +35,7 @@ public class AutoCombatant implements Combatant {
     @Override
     public boolean isUnconscious()
     {
-        return _hp == 0;
+        return _hp <= 0;
     }
 
     @Override
@@ -44,22 +45,23 @@ public class AutoCombatant implements Combatant {
         return opponent.attack(makeAttackRoll());
     }
 
-    private int makeAttackRoll()
+    private Attack makeAttackRoll()
     {
         if (_type == CombatantType.HERO) {
-            return _metadie.getRandom(8, 14);
+            return new Attack(_metadie.getRandom(8, 14), _metadie.getRandom(1,2));
         } else {
-            return _metadie.getRandom(6, 12);
+            return new Attack(_metadie.getRandom(6, 12), _metadie.getRandom(1,3));
         }
     }
 
     @Override
-    public int attack(int attackRoll)
+    public int attack(Attack attack) //AttackRoll attackRoll, DamageRoll damageRoll)
     {
-        if (attackRoll > _ac) {
-            _hp--;
-            displayHit(1);
-            return 1;
+        if (attack.hitRoll() > _ac) {
+            int damage = attack.damageRoll();
+            _hp = _hp - damage;
+            displayHit(damage);
+            return damage;
         } else {
             displayMiss();
         }

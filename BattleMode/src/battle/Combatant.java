@@ -26,10 +26,10 @@ public interface Combatant {
     /**
      * Causes damage to an opponent.  
      * 
-     * @param attackRoll what the attacker rolled
+     * @param attack what the attacker rolled
      * @return the number of HP damage done by the attack
      */
-    int attack(int attackRoll);
+    int attack(Attack attack);
 
     /**
      * Check the status of HP.
