@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 
@@ -23,6 +24,7 @@ import mylib.pdc.Utilities;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 
 /**
  * Test the various and sundry static methods in the Utilities class
@@ -249,6 +251,36 @@ public class TestUtilities
     assertNull(Utilities.formatInches(null));
   }
 
+
+  // TODO Rename formatHeight() to formatDistance()
+  /**
+   * Converts from feet to feet and inches format
+   * @Normal.Test input integer feet <br>
+   * @Normal.Test input floating point value <br>
+   */
+  @Test
+  public void testFormatHeight()
+  {
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.where(this);
+    
+    double[] expected;
+
+    // Normal - input whole number
+    expected = 
+    assertEquals(12.0, Utilities.formatHeight(1.0), 0.1);
+    assertEquals(24.0, Utilities.formatHeight(2.0), 0.1);
+    assertEquals(36.0, Utilities.formatHeight(3.0), 0.1);
+    
+    // Normal - input fractional height
+    assertEquals(6.0, Utilities.formatHeight(0.5), 0.1);
+    assertEquals(18.0, Utilities.formatHeight(1.5), 0.1);
+    assertEquals(7.2, Utilities.formatHeight(0.6), 0.1);
+    
+  }
+  
+  
 
   /**
    * static String formatOunces(String) Converts from ounces to pounds and ounces format
