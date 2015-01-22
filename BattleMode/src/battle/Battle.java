@@ -30,10 +30,10 @@ public class Battle {
 	 */
 	public void advance() {
 		System.out.println("Round " + _round++);
-		BattleAction playerAction = _player.takeTurn();
-		playerAction.Execute(_enemy);
-		BattleAction enemyAction = _enemy.takeTurn();
-		enemyAction.Execute(_player);
+		_player.takeTurn(_enemy);
+		_enemy.displayHP();
+		_enemy.takeTurn(_player);
+		_player.displayHP();
 	}
 
 	public boolean isWinner(Combatant combatant) {

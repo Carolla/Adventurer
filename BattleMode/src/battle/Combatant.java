@@ -18,9 +18,10 @@ public interface Combatant {
     /**
      * Each combtant executes actions during a battle, turn by turn.  Takes
      * the next turn for a combatant.
-     * @return 
+     * @param _enemy the enemy to strike this round
+     * @return the damage done
      */
-    BattleAction takeTurn();
+    int takeTurn(Combatant _enemy);
 
     /**
      * Causes damage to an opponent.  
@@ -29,5 +30,17 @@ public interface Combatant {
      * @return the number of HP damage done by the attack
      */
     int attack(int attackRoll);
+
+    /**
+     * Check the status of HP.
+     * 
+     * @return whether combatant has max HP
+     */
+    boolean hasFullHP();
+
+    /**
+     * Write to the console the HP left for the combatant.
+     */
+    void displayHP();
 
 }
