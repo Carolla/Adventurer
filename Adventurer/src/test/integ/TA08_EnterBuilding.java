@@ -23,9 +23,11 @@ import civ.CommandParser.MockCP;
 
 /**
  * Enter a building from its exterior or from the town, either by name or type. If no name or type
- * is given, then the Hero must be standing outside the "current building". This test enters the
- * program from {@code hic.IOPanel.createCmdLinePanel().actionPerformed()} to
- * {@code civ.CommandParser.receiveCommand()}.
+ * is given, then the Hero must be standing outside the "current building". This test enters the CIV
+ * from {@code hic.IOPanel.createCmdLinePanel().actionPerformed()} and returns through
+ * {@code civ.CommandParser.receiveCommand()}. The methods {@code Enter.init()} and
+ * {@code Enter.exec()} must also be tested from the {@code Scheduler}, which runs on its own
+ * thread.
  * 
  * @author Alan Cline
  * @version Dec 20, 2014 // original <br>
@@ -80,7 +82,7 @@ public class TA08_EnterBuilding
   // ==========================================================
 
   /**
-   * Enter the current building, which means the Hero ispositioned at the exterior of it.
+   * Error case: when no building is current
    */
   @Test
   public void test_EnterCurrentBuilding()

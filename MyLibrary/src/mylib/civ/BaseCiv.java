@@ -91,6 +91,7 @@ public abstract class BaseCiv<M extends Enum<M>, W extends Enum<W>> // implement
    * PUBLIC METHODS
    */
 
+  // TODO: Move to Utilities.java
   /**
    * Formats a String representing height in feet to one representing feet and inches
    * 
@@ -115,7 +116,7 @@ public abstract class BaseCiv<M extends Enum<M>, W extends Enum<W>> // implement
     return fullWt;
   }
 
-
+  // TODO: Move to Utilities.java
   /**
    * Formats a String representing inches to one representing feet and inches
    * 
@@ -141,7 +142,7 @@ public abstract class BaseCiv<M extends Enum<M>, W extends Enum<W>> // implement
     return fullSize;
   }
 
-
+  // TODO: Move to Utilities.java
   /**
    * Formats a String representing ounces to one representing pounds and ounces
    * 
@@ -166,7 +167,7 @@ public abstract class BaseCiv<M extends Enum<M>, W extends Enum<W>> // implement
     return fullWt;
   }
 
-
+  // TODO: Move to Utilities.java
   /**
    * Format a String representing seconds into years and fractional years
    * 
@@ -190,7 +191,7 @@ public abstract class BaseCiv<M extends Enum<M>, W extends Enum<W>> // implement
     return age;
   }
 
-
+  // TODO: Move to Utilities.java
   /**
    * Checks that a string exists (not null) and contains more than white space
    * 

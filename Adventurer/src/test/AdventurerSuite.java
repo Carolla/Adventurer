@@ -36,7 +36,7 @@ import test.integ.TA00b_Quit;
     // ChronosLib test suite (includes MyLibaryTestSuite.class)
     ChronosSuite.class,
 
-    // UnitTestSuite includes all unit tests for all componentns
+    // UnitTestSuite includes all unit tests for all components
     UnitTestSuite.class,
 
     // Individual integration tests for each use case
