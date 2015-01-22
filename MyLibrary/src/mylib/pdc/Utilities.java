@@ -104,15 +104,23 @@ public class Utilities
    * @param height to convert into feet and inches
    * @return the converted input; else null if empty
    */
-  static public double[] formatHeight(double height)
+  static public double[] formatHeight(double heightInFeet)
   {
-//    double[] retVal = {0.0, 0.0};
-    double[] retVal = null;
-    retVal[0] = 0.0;
-    retVal[1] = 0.0;
-//    retVal[0] = height / Constants.INCHES_PER_FOOT;
-//    retVal[1] = height % Constants.INCHES_PER_FOOT;
-    return retVal;
+    //initial values
+    double[] convertedHeight = {0.0, 0.0};
+    //calculate total number of inches
+    double totalInches = heightInFeet*Constants.INCHES_PER_FOOT;
+    //calculate feet
+    double feet = (int)(totalInches/Constants.INCHES_PER_FOOT);
+    //forces calculation to round up
+    double rounder = 0.5;
+    //calculate inches rounded up to the nearest whole number
+    double inches = (int)(totalInches + rounder) % 12;
+    //assign calculated values
+    convertedHeight[0] = feet;
+    convertedHeight[1] = inches;
+    //return
+    return convertedHeight;
   }
   
  

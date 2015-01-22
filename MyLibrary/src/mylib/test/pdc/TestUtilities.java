@@ -255,8 +255,9 @@ public class TestUtilities
   // TODO Rename formatHeight() to formatDistance()
   /**
    * Converts from feet to feet and inches format
-   * @Normal.Test input integer feet <br>
-   * @Normal.Test input floating point value <br>
+   * @Normal.Test zero <br>
+   * @Normal.Test various whole numbers <br>
+   * @Normal.Test various floating-point value <br>
    */
   @Test
   public void testFormatHeight()
@@ -265,18 +266,43 @@ public class TestUtilities
     MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
     
-    double[] expected;
-
-    // Normal - input whole number
-    expected = 
-    assertEquals(12.0, Utilities.formatHeight(1.0), 0.1);
-    assertEquals(24.0, Utilities.formatHeight(2.0), 0.1);
-    assertEquals(36.0, Utilities.formatHeight(3.0), 0.1);
+    double[] expected = {0.0, 0.0};
+    double[] actual = {0.0, 0.0};
+    double numFeet = 0.0;
     
-    // Normal - input fractional height
-    assertEquals(6.0, Utilities.formatHeight(0.5), 0.1);
-    assertEquals(18.0, Utilities.formatHeight(1.5), 0.1);
-    assertEquals(7.2, Utilities.formatHeight(0.6), 0.1);
+    // Normal - zero
+    numFeet = 0.0;
+    actual = Utilities.formatHeight(numFeet);
+    assertEquals(expected[0], actual[0], 0.1);
+
+    // Normal - whole numbers
+    numFeet = 1.0;
+    expected[0] = 1.0;
+    actual = Utilities.formatHeight(numFeet);
+    assertEquals(expected[0], actual[0], 0.1);
+    // 2nd trial
+    numFeet = 2.0;
+    expected[0] = 2.0;
+    actual = Utilities.formatHeight(numFeet);
+    // 3rd trial
+    numFeet = 3.0;
+    expected[0] = 3.0;
+    actual = Utilities.formatHeight(numFeet);
+    
+    // Normal - floating-point numbers
+    numFeet = 0.6;
+    expected[0] = 0.0;
+    
+    expected[1] = 7.1;//TODO HEY, THIS SHOULDN'T WORK!!!
+    fail("hey 7.1 isn't the same as 7.0!!! "
+            + "Is this because of the delta in the assertEquals?");
+    
+    actual = Utilities.formatHeight(numFeet);
+    assertEquals(expected[0], actual[0], 0.1);
+    assertEquals(expected[1], actual[1], 0.1);
+//    assertEquals(6.0, Utilities.formatHeight(0.5), 0.1);
+//    assertEquals(18.0, Utilities.formatHeight(1.5), 0.1);
+//    assertEquals(7.2, Utilities.formatHeight(0.6), 0.1);
     
   }
   
