@@ -72,6 +72,58 @@ public class Utilities
     return result;
   }
 
+  
+  /**
+   * Formats a String representing height in feet to one representing feet and inches
+   * 
+   * @param strHeight to convert into feet and inches
+   * @return the converted input; else null if empty
+   */
+  static public String formatHeight(String strHeight)
+  {
+    // Guard: verify inut parm has data in it
+    if (isEmptyString(strHeight)) {
+      return null;
+    }
+
+    // Get integer and ensure that it is a positive number
+    int total = Integer.parseInt(strHeight);
+    if (total < 0) {
+      return null;
+    }
+    int feet = total / Constants.INCHES_PER_FOOT;
+    int inches = total % Constants.INCHES_PER_FOOT;
+    String fullWt = String.format("%s' %s\"", feet, inches);
+    return fullWt;
+  }
+  
+  
+  /**
+   * Formats a double representing height in feet to one representing feet and inches
+   * 
+   * @param height to convert into feet and inches
+   * @return the converted input; else null if empty
+   */
+  static public double[] formatHeight(double heightInFeet)
+  {
+    //initial values
+    double[] convertedHeight = {0.0, 0.0};
+    //calculate total number of inches
+    double totalInches = heightInFeet*Constants.INCHES_PER_FOOT;
+    //calculate feet
+    double feet = (int)(totalInches/Constants.INCHES_PER_FOOT);
+    //forces calculation to round up
+    double rounder = 0.5;
+    //calculate inches rounded up to the nearest whole number
+    double inches = (int)(totalInches + rounder) % 12;
+    //assign calculated values
+    convertedHeight[0] = feet;
+    convertedHeight[1] = inches;
+    //return
+    return convertedHeight;
+  }
+  
+ 
 
   /**
    * Converts inches to feet and inches format

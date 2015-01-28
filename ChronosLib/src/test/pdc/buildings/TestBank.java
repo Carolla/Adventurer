@@ -226,10 +226,8 @@ public class TestBank
   }
 
 
-
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PRIVATE METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * PRIVATE METHODS
    */
   /**
    * Dump the contents of the Building

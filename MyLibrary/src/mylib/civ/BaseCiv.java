@@ -91,31 +91,7 @@ public abstract class BaseCiv<M extends Enum<M>, W extends Enum<W>> // implement
    * PUBLIC METHODS
    */
 
-  /**
-   * Formats a String representing height in feet to one representing feet and inches
-   * 
-   * @param strHeight to convert into feet and inches
-   * @return the converted input; else null if empty
-   */
-  static public String formatHeight(String strHeight)
-  {
-    // Guard: verify inut parm has data in it
-    if (isEmptyString(strHeight)) {
-      return null;
-    }
-
-    // Get integer and ensure that it is a positive number
-    int total = Integer.parseInt(strHeight);
-    if (total < 0) {
-      return null;
-    }
-    int feet = total / Constants.INCHES_PER_FOOT;
-    int inches = total % Constants.INCHES_PER_FOOT;
-    String fullWt = String.format("%s' %s\"", feet, inches);
-    return fullWt;
-  }
-
-
+  // TODO: Move to Utilities.java
   /**
    * Formats a String representing inches to one representing feet and inches
    * 
@@ -141,7 +117,7 @@ public abstract class BaseCiv<M extends Enum<M>, W extends Enum<W>> // implement
     return fullSize;
   }
 
-
+  // TODO: Move to Utilities.java
   /**
    * Formats a String representing ounces to one representing pounds and ounces
    * 
@@ -166,7 +142,7 @@ public abstract class BaseCiv<M extends Enum<M>, W extends Enum<W>> // implement
     return fullWt;
   }
 
-
+  // TODO: Move to Utilities.java
   /**
    * Format a String representing seconds into years and fractional years
    * 
@@ -190,7 +166,7 @@ public abstract class BaseCiv<M extends Enum<M>, W extends Enum<W>> // implement
     return age;
   }
 
-
+  // TODO: Move to Utilities.java
   /**
    * Checks that a string exists (not null) and contains more than white space
    * 
