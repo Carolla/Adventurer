@@ -2,6 +2,7 @@ package test.battle;
 
 import mylib.pdc.MetaDie;
 import battle.Attack;
+import battle.Battle;
 import battle.Combatant;
 
 public class AutoCombatant implements Combatant {
@@ -11,8 +12,9 @@ public class AutoCombatant implements Combatant {
     private int _ac = 10;
     private CombatantType _type;
     private MetaDie _metadie;
+    private boolean _escapedFromBattle;
 
-    public enum CombatantType {HERO, ENEMY};
+    public enum CombatantType {HERO, ENEMY, STRONG_ENEMY, WEAK_ENEMY, IMMOBILE_HERO};
 
 	/**
 	 */
@@ -29,8 +31,13 @@ public class AutoCombatant implements Combatant {
 
     @Override
 	public boolean isDefeated() {
-		return isUnconscious();
+		return isUnconscious() || escapedFromBattle();
 	}
+
+    private boolean escapedFromBattle()
+    {
+        return _escapedFromBattle;
+    }
 
     @Override
     public boolean isUnconscious()
@@ -39,16 +46,53 @@ public class AutoCombatant implements Combatant {
     }
 
     @Override
-    public int takeTurn(Combatant opponent)
+    public int takeTurn(Combatant opponent, Battle battle)
     {
         _turnCount++;
-        return opponent.attack(makeAttackRoll());
+        if (shouldAttack())
+        {
+            return opponent.attack(makeAttackRoll());
+        } else {
+            tryToEscape(battle);
+            return 0;
+        }
+    }
+
+    private void tryToEscape(Battle battle)
+    {
+        if (_type == CombatantType.HERO || _type == CombatantType.IMMOBILE_HERO)
+        {
+            System.out.print("You try to escape.  ");
+            if (battle.escape(this)) {
+                System.out.println("You escaped!");
+                _escapedFromBattle = true;
+            }
+        } else {
+            System.out.println("Enemies do not flee in battle.");
+        }
+            
+    }
+
+    private boolean shouldAttack()
+    {
+        if (_type == CombatantType.HERO || _type == CombatantType.IMMOBILE_HERO)
+        {
+            return _hp > 1;
+        } else {
+            return true;
+        }
     }
 
     private Attack makeAttackRoll()
     {
         if (_type == CombatantType.HERO) {
             return new Attack(_metadie.getRandom(8, 14), _metadie.getRandom(1,2));
+        } else if (_type == CombatantType.IMMOBILE_HERO) {
+            return new Attack(0,0);
+        } else if (_type == CombatantType.STRONG_ENEMY) {
+            return new Attack(_metadie.getRandom(10, 12), 2);
+        } else if (_type == CombatantType.WEAK_ENEMY) {
+            return new Attack(_metadie.getRandom(4, 11), 1);
         } else {
             return new Attack(_metadie.getRandom(6, 12), _metadie.getRandom(1,3));
         }
@@ -60,7 +104,9 @@ public class AutoCombatant implements Combatant {
         if (attack.hitRoll() > _ac) {
             int damage = attack.damageRoll();
             _hp = _hp - damage;
-            displayHit(damage);
+            if (damage > 0) {
+                displayHit(damage);
+            }
             return damage;
         } else {
             displayMiss();
@@ -70,7 +116,7 @@ public class AutoCombatant implements Combatant {
 
     private void displayMiss()
     {
-        if (_type == CombatantType.HERO) {
+        if (_type == CombatantType.HERO || _type == CombatantType.IMMOBILE_HERO) {
             System.out.print("The enemy missed.  ");
         }
         else {
@@ -80,7 +126,7 @@ public class AutoCombatant implements Combatant {
 
     private void displayHit(int damage)
     {
-        if (_type == CombatantType.HERO) {
+        if (_type == CombatantType.HERO || _type == CombatantType.IMMOBILE_HERO) {
             System.out.print("The enemy hit you for " + damage + " damage.  ");
         }
         else {
@@ -97,7 +143,7 @@ public class AutoCombatant implements Combatant {
     @Override
     public void displayHP()
     {
-        if (_type == CombatantType.HERO) {
+        if (_type == CombatantType.HERO || _type == CombatantType.IMMOBILE_HERO) {
             System.out.println("You have " + _hp + " HP left.");
         } else {
             System.out.println("The enemy has " + _hp + " HP left.");

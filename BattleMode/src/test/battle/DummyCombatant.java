@@ -1,6 +1,7 @@
 package test.battle;
 
 import battle.Attack;
+import battle.Battle;
 import battle.Combatant;
 
 /**
@@ -27,7 +28,7 @@ public class DummyCombatant implements Combatant {
     }
 
     @Override
-    public int takeTurn(Combatant opponent)
+    public int takeTurn(Combatant opponent, Battle battle)
     {
         return 0;
     }

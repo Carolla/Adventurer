@@ -17,4 +17,10 @@ public class TestCombatant
         a.attack(new Attack(20,11));
         assertTrue(a.isUnconscious());
     }
+    
+    @Test
+    public void CombatantIsDefeatedWhenEscapingBattle()
+    {
+        fail("Not yet implemented");
+    }
 }
