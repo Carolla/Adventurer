@@ -104,7 +104,7 @@ public class Utilities
    * @param height to convert into feet and inches
    * @return the converted input; else null if empty
    */
-  static public double[] formatHeight(double heightInFeet)
+  static public double[] formatDistance(double heightInFeet)
   {
     //initial values
     double[] convertedHeight = {0.0, 0.0};

@@ -252,7 +252,6 @@ public class TestUtilities
   }
 
 
-  // TODO Rename formatHeight() to formatDistance()
   /**
    * Converts from feet to feet and inches format
    * @Normal.Test zero <br>
@@ -260,7 +259,7 @@ public class TestUtilities
    * @Normal.Test various floating-point value <br>
    */
   @Test
-  public void testFormatHeight()
+  public void testFormatDistance()
   {
     MsgCtrl.auditMsgsOn(true);
     MsgCtrl.errorMsgsOn(true);
@@ -272,22 +271,22 @@ public class TestUtilities
     
     // Normal - zero
     numFeet = 0.0;
-    actual = Utilities.formatHeight(numFeet);
+    actual = Utilities.formatDistance(numFeet);
     assertEquals(expected[0], actual[0], 0.1);
 
     // Normal - whole numbers
     numFeet = 1.0;
     expected[0] = 1.0;
-    actual = Utilities.formatHeight(numFeet);
+    actual = Utilities.formatDistance(numFeet);
     assertEquals(expected[0], actual[0], 0.1);
     // 2nd trial
     numFeet = 2.0;
     expected[0] = 2.0;
-    actual = Utilities.formatHeight(numFeet);
+    actual = Utilities.formatDistance(numFeet);
     // 3rd trial
     numFeet = 3.0;
     expected[0] = 3.0;
-    actual = Utilities.formatHeight(numFeet);
+    actual = Utilities.formatDistance(numFeet);
     
     // Normal - floating-point numbers
     numFeet = 0.6;
@@ -297,7 +296,7 @@ public class TestUtilities
     fail("hey 7.1 isn't the same as 7.0!!! "
             + "Is this because of the delta in the assertEquals?");
     
-    actual = Utilities.formatHeight(numFeet);
+    actual = Utilities.formatDistance(numFeet);
     assertEquals(expected[0], actual[0], 0.1);
     assertEquals(expected[1], actual[1], 0.1);
 //    assertEquals(6.0, Utilities.formatHeight(0.5), 0.1);
