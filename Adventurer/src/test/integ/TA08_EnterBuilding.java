@@ -9,6 +9,7 @@
 
 package test.integ;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import mylib.MsgCtrl;
 
@@ -20,6 +21,7 @@ import org.junit.Test;
 
 import civ.CommandParser;
 import civ.CommandParser.MockCP;
+import civ.MainframeCiv;
 
 /**
  * Enter a building from its exterior or from the town, either by name or type. If no name or type
@@ -36,6 +38,7 @@ public class TA08_EnterBuilding
 {
   static private CommandParser _cp = null;
   static private MockCP _mock = null;
+  static private MainframeCiv _mfc= null;
 
   /**
    * @throws java.lang.Exception
@@ -43,8 +46,9 @@ public class TA08_EnterBuilding
   @BeforeClass
   public static void setUpBeforeClass() throws Exception
   {
-    // Create the CommandParser object to receive the command
-    _cp = CommandParser.getInstance();
+    _mfc = new MockMFC();
+    assertNotNull(_mfc);
+    _cp = CommandParser.getInstance(_mfc);
     assertNotNull(_cp);
     _mock = _cp.new MockCP();
     assertNotNull(_mock);
@@ -66,7 +70,8 @@ public class TA08_EnterBuilding
    */
   @Before
   public void setUp() throws Exception
-  {}
+  {
+  }
 
 
   /**
@@ -85,16 +90,40 @@ public class TA08_EnterBuilding
    * Error case: when no building is current
    */
   @Test
-  public void test_EnterCurrentBuilding()
+  public void test_EnterReceiveCommand()
   {
     MsgCtrl.auditMsgsOn(true);
     MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
-    _cp.receiveCommand("ENTER");
-    MsgCtrl.msgln("Command entered: " + _mock.getInput());
-    assertNotNull(_mock.getInput());
-
+    String cmd = "Anything at all";
+    _cp.receiveCommand(cmd);
+    String echo = _mock.getInput();
+    MsgCtrl.msgln("Command entered: " + echo);
+    assertNotNull(echo);
+    // Verify error returned to CmdLine display
+    assertEquals(cmd, echo);
+   
   }
+
+  
+//  /**
+//   * Normal: enter building by name
+//   */
+//  @Test
+//  public void test_EnterNamedBuilding()
+//  {
+//    MsgCtrl.auditMsgsOn(true);
+//    MsgCtrl.errorMsgsOn(true);
+//    MsgCtrl.where(this);
+//
+//    MainframeCiv.String[][] DEFAULT_BUILDINGS;
+//    String[]  bldgName = {"Ugly Ogre Inn", "The Bank"};
+//    
+//    String cmd = "ENTER" + bldgName[0];
+//    _cp.receiveCommand(cmd);
+//    MsgCtrl.msgln("Command entered: " + _mock.getInput());
+//    assertNotNull(_mock.getInput());
+//  }
 
 }

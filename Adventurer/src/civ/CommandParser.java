@@ -45,9 +45,9 @@ public class CommandParser
   private final String[][] _cmdTable = {
       {"ENTER", "CmdEnter"}, // Enter into a Building and show its interior description
       {"QUIT", "CmdQuit"}, // End the program.
-  // {"EXIT", "CmdReturn"}, // Leave the building's interior and go to building's exterior
-      // {"RETURN", "CmdReturn"}, // Synonym for Exit
-      // {"TO TOWN", "CmdReturn"}, // Return to Town View
+      {"EXIT", "CmdReturn"}, // Leave the building's interior and go to building's exterior
+      {"RETURN", "CmdReturn"}, // Synonym for Exit
+  // {"TO TOWN", "CmdReturn"}, // Return to Town View
       // { "HELP", "CmdHelp" }, // List the user command names and their descriptions.
       // { "INVENTORY", "CmdInventory" }, // Describe the money the Hero has (later, this will tell
       // the items too)
@@ -85,13 +85,15 @@ public class CommandParser
   /**
    * Creates the singleton CommandParser, and connects to the {@code CommandFactory} and the
    * {@code MainframeCiv} for displaying parser output to {@code IOPanel}.
+   * @param owner the output view for displaying messages
+   * @param owner receives outputs and error messages 
    */
-  private CommandParser()
+  private CommandParser(MainframeCiv owner)
   {
     _names = new ArrayList<String>(20);
     _parms = new ArrayList<String>();
     _cmf = new CommandFactory();
-//    _mfCiv = Mainframe.getInstance().getMainframeCiv();
+    _mfCiv = owner;
 
     // Start the scheduler off on its own thread
     _skedder = Scheduler.createInstance(this);
@@ -100,15 +102,17 @@ public class CommandParser
 
 
   /**
-   * A {@code CommandFactory} is created as part of this class to funnal activity through
+   * A {@code CommandFactory} is created as part of this class to funnel activity through
    * {@code CommandParser}. The {@code Scheduler} is created on its own thread to handle the
    * commands. Also creates an ArrayList for command-specific parms sent to a Command, and a
    * {@code CommandFactory}.
+   * 
+   * @param owner the output view for displaying messages
    */
-  static public CommandParser getInstance()
+  static public CommandParser getInstance(MainframeCiv owner)
   {
     if (_cp == null) {
-      _cp = new CommandParser();
+      _cp = new CommandParser(owner);
     }
     return _cp;
   }
@@ -150,6 +154,8 @@ public class CommandParser
   public void receiveCommand(String cmdIn)
   {
     _userInput = cmdIn;
+//    System.err.println("cmdIn received = " + cmdIn);
+//    System.err.println("_userInput after assignment = " + _userInput);
   }
 
 
@@ -174,6 +180,11 @@ public class CommandParser
     return cmd;
   }
 
+  /** Retrieve the user-entered command, parse it, and clear the input buffer for more commands.
+   * 
+   * @param ip  user-entered command string
+   * @return the command and optional parms that go with it
+   */
   private String extractCommandLine(String ip)
   {
     String cmdString = parse(ip);
@@ -181,6 +192,7 @@ public class CommandParser
     return cmdString;
   }
 
+  
   private String getCommandToken(String s)
   {
     if (s == null) {
@@ -241,10 +253,11 @@ public class CommandParser
   // helpWin.setVisible(true);
   // }
 
-  private boolean hasUserInput(String ip)
-  {
-    return (ip == null) ? false : true;
-  }
+//  private boolean hasUserInput(String ip)
+//  {
+//    System.out.println("CommandPaser.hasUserInput() has been called.");
+//    return (ip == null) ? false : true;
+//  }
 
 
   /**
@@ -300,34 +313,26 @@ public class CommandParser
     return cmdToken;
   }
 
-  
+
   // ============================================================
   // Mock inner class
   // ============================================================
   public class MockCP
   {
-    public MockCP() { }
-    
-    
+    public MockCP()
+    {}
+
+
     /** Get the input command */
     public String getInput()
     {
       return CommandParser.this._userInput;
     }
 
-    
+
   } // end of MockCP inner class
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
 } // end of CommandParser class
 

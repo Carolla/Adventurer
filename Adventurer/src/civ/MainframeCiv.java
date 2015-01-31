@@ -93,6 +93,10 @@ public class MainframeCiv
   // Constructors and constructor helpers
   // ============================================================
 
+  /** Empty constructor is used for mocking this class for testing */
+  public MainframeCiv() {}
+  
+  
   /**
    * Create the Civ associated with the mainframe
    * 
