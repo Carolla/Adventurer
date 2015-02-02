@@ -4,8 +4,8 @@ public class Battle {
 
 	private Combatant _player;
 	private Combatant _enemy;
-	private int _round;
-    private Combatant _escapedCombatant;
+	private int _round = 0;
+    private Combatant _escapedCombatant = null;
 
 	public Battle(Combatant player1, Combatant enemy) {
 		_player = player1;
@@ -23,7 +23,7 @@ public class Battle {
 	}
 
 	public boolean isOngoing() {
-		return !(_player.isDefeated() || _enemy.isDefeated());
+		return (!_player.isDefeated() && !_enemy.isDefeated() && _escapedCombatant == null);
 	}
 
 	/**
@@ -33,7 +33,7 @@ public class Battle {
 		System.out.println("Round " + _round++);
 		_player.takeTurn(_enemy, this);
 
-		if (!_player.isDefeated()) {
+		if (isOngoing()) {
 		    _enemy.displayHP();
 		    _enemy.takeTurn(_player, this);
 		    _player.displayHP();

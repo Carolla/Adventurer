@@ -10,11 +10,10 @@ public class AutoCombatant implements Combatant {
 	private int _hp = 10;
     private int _turnCount = 0;
     private int _ac = 10;
-    private CombatantType _type;
+    private final CombatantType _type;
     private MetaDie _metadie;
-    private boolean _escapedFromBattle;
 
-    public enum CombatantType {HERO, ENEMY, STRONG_ENEMY, WEAK_ENEMY, IMMOBILE_HERO};
+    public enum CombatantType {HERO, ENEMY, STRONG_ENEMY, WEAK_ENEMY, FEEBLE_HERO};
 
 	/**
 	 */
@@ -24,20 +23,15 @@ public class AutoCombatant implements Combatant {
 	    _metadie = new MetaDie();
 	}
 
-    int getTurnCount()
+    public int getTurnCount()
     {
        return _turnCount;
     }
 
     @Override
 	public boolean isDefeated() {
-		return isUnconscious() || escapedFromBattle();
+		return isUnconscious(); 
 	}
-
-    private boolean escapedFromBattle()
-    {
-        return _escapedFromBattle;
-    }
 
     @Override
     public boolean isUnconscious()
@@ -51,7 +45,7 @@ public class AutoCombatant implements Combatant {
         _turnCount++;
         if (shouldAttack())
         {
-            return opponent.attack(makeAttackRoll());
+            return opponent.attacked(makeAttackRoll());
         } else {
             tryToEscape(battle);
             return 0;
@@ -60,12 +54,13 @@ public class AutoCombatant implements Combatant {
 
     private void tryToEscape(Battle battle)
     {
-        if (_type == CombatantType.HERO || _type == CombatantType.IMMOBILE_HERO)
+        if (_type == CombatantType.HERO || _type == CombatantType.FEEBLE_HERO)
         {
             System.out.print("You try to escape.  ");
             if (battle.escape(this)) {
                 System.out.println("You escaped!");
-                _escapedFromBattle = true;
+            } else{
+                System.out.println("You did not escape!");
             }
         } else {
             System.out.println("Enemies do not flee in battle.");
@@ -75,7 +70,7 @@ public class AutoCombatant implements Combatant {
 
     private boolean shouldAttack()
     {
-        if (_type == CombatantType.HERO || _type == CombatantType.IMMOBILE_HERO)
+        if (_type == CombatantType.HERO || _type == CombatantType.FEEBLE_HERO)
         {
             return _hp > 1;
         } else {
@@ -87,7 +82,7 @@ public class AutoCombatant implements Combatant {
     {
         if (_type == CombatantType.HERO) {
             return new Attack(_metadie.getRandom(8, 14), _metadie.getRandom(1,2));
-        } else if (_type == CombatantType.IMMOBILE_HERO) {
+        } else if (_type == CombatantType.FEEBLE_HERO) {
             return new Attack(0,0);
         } else if (_type == CombatantType.STRONG_ENEMY) {
             return new Attack(_metadie.getRandom(10, 12), 2);
@@ -99,14 +94,12 @@ public class AutoCombatant implements Combatant {
     }
 
     @Override
-    public int attack(Attack attack) //AttackRoll attackRoll, DamageRoll damageRoll)
+    public int attacked(Attack attack) //AttackRoll attackRoll, DamageRoll damageRoll)
     {
         if (attack.hitRoll() > _ac) {
             int damage = attack.damageRoll();
             _hp = _hp - damage;
-            if (damage > 0) {
-                displayHit(damage);
-            }
+            displayHit(damage);
             return damage;
         } else {
             displayMiss();
@@ -116,7 +109,7 @@ public class AutoCombatant implements Combatant {
 
     private void displayMiss()
     {
-        if (_type == CombatantType.HERO || _type == CombatantType.IMMOBILE_HERO) {
+        if (_type == CombatantType.HERO || _type == CombatantType.FEEBLE_HERO) {
             System.out.print("The enemy missed.  ");
         }
         else {
@@ -126,7 +119,7 @@ public class AutoCombatant implements Combatant {
 
     private void displayHit(int damage)
     {
-        if (_type == CombatantType.HERO || _type == CombatantType.IMMOBILE_HERO) {
+        if (_type == CombatantType.HERO || _type == CombatantType.FEEBLE_HERO) {
             System.out.print("The enemy hit you for " + damage + " damage.  ");
         }
         else {
@@ -143,7 +136,7 @@ public class AutoCombatant implements Combatant {
     @Override
     public void displayHP()
     {
-        if (_type == CombatantType.HERO || _type == CombatantType.IMMOBILE_HERO) {
+        if (_type == CombatantType.HERO || _type == CombatantType.FEEBLE_HERO) {
             System.out.println("You have " + _hp + " HP left.");
         } else {
             System.out.println("The enemy has " + _hp + " HP left.");

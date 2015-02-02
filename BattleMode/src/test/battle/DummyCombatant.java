@@ -34,7 +34,7 @@ public class DummyCombatant implements Combatant {
     }
 
     @Override
-    public int attack(Attack attack)
+    public int attacked(Attack attack)
     {
         return 0;
     }

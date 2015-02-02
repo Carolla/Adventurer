@@ -14,7 +14,7 @@ public class TestCombatant
     {
         AutoCombatant a = new AutoCombatant(CombatantType.HERO);
         assertFalse(a.isUnconscious());
-        a.attack(new Attack(20,11));
+        a.attacked(new Attack(20,11));
         assertTrue(a.isUnconscious());
     }
     

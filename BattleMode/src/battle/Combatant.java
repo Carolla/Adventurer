@@ -6,7 +6,7 @@ public interface Combatant {
      * 
      * @return whether player is participating in battle anymore
      */
-	boolean isDefeated();
+	public abstract boolean isDefeated();
 
 	/**
 	 * Whether player is able to take actions in the battle
@@ -30,7 +30,7 @@ public interface Combatant {
      * @param attack what the attacker rolled
      * @return the number of HP damage done by the attack
      */
-    int attack(Attack attack);
+    int attacked(Attack attack);
 
     /**
      * Check the status of HP.

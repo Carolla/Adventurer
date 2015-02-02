@@ -97,7 +97,7 @@ public class BattleUseCase {
 	public void TheDMWantsThePlayerToBeDefeatedByTheEnemy() 
 	{
         MsgCtrl.msgln("ThePlayerWantsToKnockTheEnemyUnconscious()");
-		Combatant player = new AutoCombatant(CombatantType.IMMOBILE_HERO);
+		Combatant player = new AutoCombatant(CombatantType.FEEBLE_HERO);
 		Combatant enemy = new AutoCombatant(CombatantType.STRONG_ENEMY);
 		Battle battle = new Battle(player, enemy);
 		assertFalse(player.isDefeated());
@@ -125,7 +125,7 @@ public class BattleUseCase {
 	public void TheDMWantsThePlayerToBeKnockedOutByTheEnemy() 
 	{
         MsgCtrl.msgln("TheDMWantsThePlayerToBeKnockedOutByTheEnemy()");
-		Combatant player = new AutoCombatant(CombatantType.IMMOBILE_HERO);
+		Combatant player = new AutoCombatant(CombatantType.FEEBLE_HERO);
 		Combatant enemy = new AutoCombatant(CombatantType.STRONG_ENEMY);
 		Battle battle = new Battle(player, enemy);
 		assertFalse(player.isUnconscious());
@@ -136,18 +136,19 @@ public class BattleUseCase {
 	}
 	
 	@Test
-	public void ThePlayerWantsToEscapeIfTheDMIsBeingMean()
+	public void ThePlayerWantsToEscapeIfAboutToDie()
 	{
         MsgCtrl.msgln("TheDMWantsThePlayerToBeKnockedOutByTheEnemy()");
-		Combatant player = new AutoCombatant(CombatantType.IMMOBILE_HERO);
+		Combatant player = new AutoCombatant(CombatantType.FEEBLE_HERO);
 		Combatant enemy = new AutoCombatant(CombatantType.WEAK_ENEMY);
 		Battle battle = new Battle(player, enemy);
 		assertFalse(player.isUnconscious());
+		assertFalse(battle.combatantEscaped(player));
 		while (battle.isOngoing()) {
 		    battle.advance();
 		}
 		assertTrue(battle.combatantEscaped(player));
-		assertTrue(player.isDefeated());
+		assertFalse(battle.combatantEscaped(enemy));
 		assertFalse(player.isUnconscious());
 	}
 }
