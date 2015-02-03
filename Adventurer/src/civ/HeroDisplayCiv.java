@@ -18,6 +18,7 @@ import mylib.Constants;
 import mylib.civ.BaseCiv;
 import mylib.civ.DataShuttle;
 import mylib.civ.DataShuttle.ErrorType;
+import mylib.pdc.Utilities;
 import pdc.Inventory;
 import pdc.character.Person;
 import chronos.civ.MiscKeys.PersonFileData;
@@ -275,7 +276,7 @@ public class HeroDisplayCiv
       // Handle manipulations for special keys
       // Converts from inches to "9' 99" format (e.g., 81 in = 6' 9")
       if (key == PersonKeys.HEIGHT) {
-        str = BaseCiv.formatHeight(str);
+        str = Utilities.formatHeight(str);
         ((DataShuttle<PersonKeys>) ds).putField(key, str);
       }
       // Converts from ounces to "999.9 lb." format (e.g,100 oz = 6.25

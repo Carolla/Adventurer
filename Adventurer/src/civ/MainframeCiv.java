@@ -19,7 +19,6 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import pdc.Util;
@@ -51,29 +50,29 @@ public class MainframeCiv
   public static final String[][] DEFAULT_BUILDINGS = { {"Ugly Ogre Inn", "Bork"},
       {"Rat's Pack", "Dewey N. Howe"}, {"The Bank", "Ogden Moneypenny"},
       {"Stadium", "Aragon"}, {"Arcaneum", "Pendergast"}, {"Monastery", "Balthazar"},
-      {"Rogues' Den", "Ripper"}, {"Jail", "The Sheriff"}};
+      {"Rogues' Den", "Ripper"}, {"Jail", "The Sheriff"}, {"Quasqueton", "Unknown"}};
 
   private Map<String, BuildingRectangle> _buildingList = new TreeMap<String, BuildingRectangle>();
 
-  private float[][] buildingLayouts = new float[][] { {0.3f, 0.7f, 0.09f, 0.09f}, // Ugly Ogre Inn
-      {0.4f, 0.7f, 0.09f, 0.09f}, // Rat's Pack General Store
-      {0.5f, 0.7f, 0.09f, 0.09f}, // The Bank
-      {0.6f, 0.7f, 0.09f, 0.09f}, // Stadium
-      {0.35f, 0.8f, 0.09f, 0.09f}, // Arcaneum
-      {0.45f, 0.8f, 0.09f, 0.09f}, // Monastery
-      {0.55f, 0.8f, 0.09f, 0.09f}, // Rouge's Den
-      {0.7f, 0.65f, 0.09f, 0.09f}, // Jail
-      {0.8f, 0.1f, 0.2f, 0.15f}}; // Quasqueton
+  private float[][] buildingLayouts = new float[][] { {0.48f, 0.54f, 0.14f, 0.08f}, // Ugly Ogre Inn
+      {0.79f, 0.43f, 0.14f, 0.08f}, // Rat's Pack General Store
+      {0.60f, 0.45f, 0.07f, 0.07f}, // The Bank
+      {0.5f, 0.37f, 0.25f, 0.09f}, // Stadium
+      {0.61f, 0.73f, 0.37f, 0.20f}, // Arcaneum
+      {0.0f, 0.35f, 0.22f, 0.13f}, // Monastery
+      {0.63f, 0.53f, 0.10f, 0.05f}, // Rouge's Den
+      {0.38f, 0.53f, 0.08f, 0.07f}, // Jail
+      {0.31f, 0.08f, 0.5f, 0.25f}}; // Quasqueton
 
   private Color[] colorArray = new Color[] {Color.red, // Ugly Ogre Inn
-      Color.red, // Rat's Pack General Store
-      Color.red, // The Bank
-      Color.red, // Stadium
-      Color.red, // Arcaneum
-      Color.red, // Monastery
-      Color.red, // Rouge's Den
-      Color.red, // Jail
-      Color.red}; // Quasqueston
+      Color.orange, // Rat's Pack General Store
+      Color.yellow, // The Bank
+      Color.green, // Stadium
+      Color.blue, // Arcaneum
+      Color.magenta, // Monastery
+      Color.black, // Rouge's Den
+      Color.cyan, // Jail
+      Color.white}; // Quasqueston
 
   private Mainframe _frame;
   private Adventure _adv;
@@ -108,7 +107,7 @@ public class MainframeCiv
     _frame.setImageTitle(INITIAL_TITLE);
     // _personRW = new PersonReadWriter();
     // _advReg = (AdventureRegistry) RegistryFactory.getInstance().getRegistry(RegKey.ADV);
-    // createBuildingBoxes();
+    createBuildingBoxes();
   }
 
   private void createBuildingBoxes()
@@ -170,7 +169,7 @@ public class MainframeCiv
   {
     handleClickIfOnTownReturn(p);
     if (_onTown) {
-      handleClickIfOnBuilding(p);
+      //handleClickIfOnBuilding(p);
     }
   }
 
@@ -223,14 +222,12 @@ public class MainframeCiv
     if (_onTown) {
       for (BuildingRectangle rect : _buildingList.values()) {
         if (rect.contains(p)) {
-          _frame.drawBuilding(rect);
-          break;
-        }
+            _frame.setBuilding(rect);
+            break;
+        } 
       }
     }
-    _frame.redraw();
   }
-
 
   /**
    * Is a building displayed, or is the Hero at the Town view?
@@ -296,16 +293,16 @@ public class MainframeCiv
   // Private methods
   // ============================================================
 
-  private void handleClickIfOnBuilding(Point p)
-  {
-    for (Entry<String, BuildingRectangle> entry : _buildingList.entrySet()) {
-      BuildingRectangle rect = entry.getValue();
-      if (rect.contains(p)) {
-        enterBuilding(entry.getKey());
-        return;
-      }
-    }
-  }
+//  private void handleClickIfOnBuilding(Point p)
+//  {
+//    for (Entry<String, BuildingRectangle> entry : _buildingList.entrySet()) {
+//      BuildingRectangle rect = entry.getValue();
+//      if (rect.contains(p)) {
+//        enterBuilding(entry.getKey());
+//        return;
+//      }
+//    }
+//  }
 
 
   private void handleClickIfOnTownReturn(Point p)
