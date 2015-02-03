@@ -276,8 +276,8 @@ public class HeroDisplayCiv
       // Handle manipulations for special keys
       // Converts from inches to "9' 99" format (e.g., 81 in = 6' 9")
       if (key == PersonKeys.HEIGHT) {
-        str = Utilities.formatHeight(str);
-        ((DataShuttle<PersonKeys>) ds).putField(key, str);
+//        Double  strnum = Utilities.formatDistance(Double.parseDouble(str));
+        ((DataShuttle<PersonKeys>) ds).putField(key, 6.0);    // temp until repaired
       }
       // Converts from ounces to "999.9 lb." format (e.g,100 oz = 6.25
       // lb.)

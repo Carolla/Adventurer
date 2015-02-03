@@ -13,7 +13,6 @@ package hic;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.OutputStream;
@@ -69,7 +68,7 @@ public class IOPanel extends JPanel
     setLayout(new MigLayout("", "[grow]", "[][]"));
     _output = new JTextArea();
     _output.setAlignmentY(JTextArea.TOP_ALIGNMENT);
-  
+
     _scrollpane = createOutputPanel();
     this.add(_scrollpane, "cell 0 1");
 
@@ -93,7 +92,7 @@ public class IOPanel extends JPanel
     _cmdWin.setCaretPosition(0);
   }
 
-  
+
   // TODO JTextArea will not change color and font; JTextPane is needed for that.
   /**
    * Display error text, using different Font and color, then return to standard font and color.
@@ -105,14 +104,14 @@ public class IOPanel extends JPanel
     // For now, just call the standard output method
     displayText(msg);
 
-//    Color prevColor = _output.getForeground();
-//    Font prevFont = _output.getFont();
-//    _output.setForeground(Color.RED);
-//    _output.setFont(new Font("Sans Serif", Font.BOLD, 14));
-//    // Write the text
-//    displayText(msg);
-//    _output.setForeground(prevColor);
-//    _output.setFont(prevFont);
+    // Color prevColor = _output.getForeground();
+    // Font prevFont = _output.getFont();
+    // _output.setForeground(Color.RED);
+    // _output.setFont(new Font("Sans Serif", Font.BOLD, 14));
+    // // Write the text
+    // displayText(msg);
+    // _output.setForeground(prevColor);
+    // _output.setFont(prevFont);
   }
 
 
@@ -132,20 +131,20 @@ public class IOPanel extends JPanel
   // Public Methods
   // ============================================================
 
-//  /**
-//   * Set the text into the output pane, then return focus to the command line
-//   * 
-//   * @param text to display
-//   */
-//  public void setDescription(String text)
-//  {
-//    _output.setText(text + "\n");
-//    // Set cursor to top of description on first display
-//    _output.setCaretPosition(0);
-//    // JViewport jv = _output.getViewport();
-//    // jv.setViewPosition(new Point(0,0));
-//    _cmdWin.requestFocusInWindow();
-//  }
+  // /**
+  // * Set the text into the output pane, then return focus to the command line
+  // *
+  // * @param text to display
+  // */
+  // public void setDescription(String text)
+  // {
+  // _output.setText(text + "\n");
+  // // Set cursor to top of description on first display
+  // _output.setCaretPosition(0);
+  // // JViewport jv = _output.getViewport();
+  // // jv.setViewPosition(new Point(0,0));
+  // _cmdWin.requestFocusInWindow();
+  // }
 
 
   // ============================================================
@@ -176,7 +175,7 @@ public class IOPanel extends JPanel
     southPanel.add(_cmdWin, "cell 1 0,alignx left");
 
     // Create the command parser that goes in here
-    final CommandParser cp = CommandParser.getInstance();
+    final CommandParser cp = CommandParser.getInstance(Mainframe.getInstance().getMainframeCiv());
 
     // Add function to send commands to command parser.
     _cmdWin.addActionListener(new ActionListener()
@@ -194,7 +193,6 @@ public class IOPanel extends JPanel
     });
     return southPanel;
   }
-
 
   /**
    * Create the north panel transcript output window: scollable, non-editable output area
