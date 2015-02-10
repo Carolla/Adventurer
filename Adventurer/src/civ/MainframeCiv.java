@@ -64,14 +64,14 @@ public class MainframeCiv
       {0.38f, 0.53f, 0.08f, 0.07f}, // Jail
       {0.31f, 0.08f, 0.5f, 0.25f}}; // Quasqueton
 
-  private Color[] colorArray = new Color[] {Color.red, // Ugly Ogre Inn
-      Color.orange, // Rat's Pack General Store
-      Color.yellow, // The Bank
-      Color.green, // Stadium
-      Color.blue, // Arcaneum
-      Color.magenta, // Monastery
-      Color.black, // Rouge's Den
-      Color.cyan, // Jail
+  private Color[] colorArray = new Color[] {Color.white, // Ugly Ogre Inn
+      Color.white, // Rat's Pack General Store
+      Color.white, // The Bank
+      Color.white, // Stadium
+      Color.white, // Arcaneum
+      Color.white, // Monastery
+      Color.white, // Rouge's Den
+      Color.white, // Jail
       Color.white}; // Quasqueston
 
   private Mainframe _frame;
