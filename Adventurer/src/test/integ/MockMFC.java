@@ -9,6 +9,7 @@
 
 package test.integ;
 
+import mylib.MsgCtrl;
 import civ.MainframeCiv;
 
 
@@ -20,11 +21,56 @@ import civ.MainframeCiv;
  */
 public class MockMFC extends MainframeCiv
 {
+  /** Context state for Hero being at town view (true) or not */
+  private boolean _onTown;
+
   // Create the super constructor without a Mainframe
-  public MockMFC() 
-  { 
+  public MockMFC()
+  {
     super();
   }
 
+  /** Enter the designated building, or the current building if displayed */
+  @Override
+  public void enterBuilding(String bldgName)
+  {
+    // Null is legal parm for this call
+    MsgCtrl.msg(this, "Entering " + bldgName);
+  }
+  
 
-}
+  /**
+   * Is a building displayed, or is the Hero at the Town view?
+   * 
+   * @return true if there is no current building displayed
+   */
+  public boolean isOnTown()
+  {
+    return _onTown;
+  }
+
+
+  /**
+   * Set the building context, as at the town view (true) or not (false)
+   * 
+   * @param isOnTown is true if Hero is not inside or outside a building; else false
+   */
+  public void setTownView(boolean isOnTown)
+  {
+    _onTown = isOnTown;
+  }
+
+
+  /**
+   * Turn on (or off) logging message for this class
+   * 
+   * @param state true turns on logging; false turns it off
+   */
+  public void loggingOn(boolean state)
+  {
+    MsgCtrl.auditMsgsOn(state);
+    MsgCtrl.errorMsgsOn(state);
+  }
+
+
+} // end of MockMFC
