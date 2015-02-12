@@ -159,14 +159,14 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
   /**
    * Creates the initial frame layout: left and right panel holders with buttons, and image panel
-   * showing chronos logo on right.
+   * showing chronos logo on right. Creates the {@code HelpDialog} singleton, ready to receive
+   * context-sensitive help text when requested. Creates the {@code MainframeCiv} which takes
+   * control after an adventure is selected.
    * <P>
-   * Creates the {@code HelpDialog} singleton, ready to receive context-senstitive help text when
-   * requested.
-   * <P>
-   * Creates the {@code MainframeCiv} which takes control after an adventure is selected.
+   * NOTE: The constructor is {@code protected} instead of {@code private} so that JUnit tests can
+   * derive facade classes
    */
-  private Mainframe()
+  protected Mainframe()
   {
     // Create the components of the mainframe
     createFrameAndMenubar(); // contains left and right panel holders
@@ -367,19 +367,19 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private JButton createHeroCreationButton()
   {
     JButton button = createButtonWithTextAndIcon(REGISTRAR_IMAGE, "Create New Heroes");
-//    button.addActionListener(new ActionListener() {
-//      public void actionPerformed(ActionEvent arg0)
-//      {
-//        NewHeroDisplay nhd = null;
-//        try {
-//          nhd = new NewHeroDisplay();
-//        } catch (InstantiationException e) {
-//          e.printStackTrace();
-//          System.exit(0);
-//        }
-//        // changeToLeftPanel(nhd); // This my still be needed
-//      }
-//    });
+    // button.addActionListener(new ActionListener() {
+    // public void actionPerformed(ActionEvent arg0)
+    // {
+    // NewHeroDisplay nhd = null;
+    // try {
+    // nhd = new NewHeroDisplay();
+    // } catch (InstantiationException e) {
+    // e.printStackTrace();
+    // System.exit(0);
+    // }
+    // // changeToLeftPanel(nhd); // This my still be needed
+    // }
+    // });
     return button;
   }
 

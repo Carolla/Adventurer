@@ -11,14 +11,18 @@
 
 package pdc.command;
 
+import hic.Mainframe;
+
 import java.util.List;
+
+import civ.MainframeCiv;
 
 
 /**
  * Moves the Hero from outside the Building (or Town) being displayed to inside, and displays its
  * interior description and image.
  * <P>
- * Format: ENTER (current Building name | current Bulding type) <br>
+ * Format: ENTER (current Building name | current Building type) <br>
  * where:
  * <UL>
  * <LI>Building Name is the actual string name of the Building, and is Adventure specific;</LI>
@@ -64,7 +68,7 @@ public class CmdEnter extends Command
   public CmdEnter()
   {
     super("CmdEnter", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
-    System.out.println("CmdEnter(): creating ENTER command.");
+    System.out.println("\tCmdEnter(): creating ENTER command.");
   }
 
 
@@ -78,16 +82,19 @@ public class CmdEnter extends Command
    * they are all assumed to be part of the name. The word Building is checked with and without the
    * word 'the', in case it is part of the name of the Building.
    * 
-   * @param args if empty, then use current Buiilding; otherwise gets Building specified;
+   * @param args if empty, then use current Building; otherwise gets Building specified;
    * @param mfCiv
    * @return true if all worked, else returns false on input error
    */
   @Override
   public boolean init(List<String> args)
   {
+    System.out.println("\tCmdEnter.init()...");
+    // Get the town status from BuildingDisplayCiv
+    MainframeCiv mfc = Mainframe.getInstance().getMainframeCiv();
     // Get the Building parm, or null
-    if ((args.size() == 0) && (super._mfciv.isOnTown())) {
-      super._mfciv.errorOut(ERRMSG_NOBLDG);
+    if ((args.size() == 0) || (mfc.isOnTown())) {
+      super._cp.errorOut(ERRMSG_NOBLDG);
       return false;
     }
     _targetBldg = convertArgsToString(args);
@@ -98,8 +105,9 @@ public class CmdEnter extends Command
   /** Enter the designated building, or the current building if displayed */
   public boolean exec()
   {
+    System.out.println("\tCmdEnter.exec()...");
     // Null is legal parm for this call
-    super._mfciv.enterBuilding(_targetBldg);
+    super._mfCiv.enterBuilding(_targetBldg);
     return true;
   }
 

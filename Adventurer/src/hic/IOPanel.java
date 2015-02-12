@@ -15,8 +15,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.OutputStream;
-import java.io.PrintStream;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -31,7 +29,7 @@ import civ.CommandParser;
 import civ.MainframeCiv;
 
 /**
- * This class serves as the text output and command line input after and Adventure is selected
+ * This class serves as the text output and command line input after an Adventure is selected
  * 
  * @author Alan Cline
  * @version Feb 18, 2013 // TAA Initial object <br>
@@ -115,6 +113,16 @@ public class IOPanel extends JPanel
   }
 
 
+  /** Retrieve the output viewer
+   * @return the output panel for error and other messages
+   */
+  public JTextArea getOutputArea()
+  {
+    return _output;
+  }
+  
+  
+  
   /**
    * Call the Mainframe's Civ for the building/town status
    * 
@@ -152,7 +160,7 @@ public class IOPanel extends JPanel
   // ============================================================
 
   /**
-   * Create the south panel input window. It must provide data to the backend command parser
+   * Create the south panel input window that provides data to the backend command parser
    * 
    * @return the user input window
    */
@@ -175,7 +183,8 @@ public class IOPanel extends JPanel
     southPanel.add(_cmdWin, "cell 1 0,alignx left");
 
     // Create the command parser that goes in here
-    final CommandParser cp = CommandParser.getInstance(Mainframe.getInstance().getMainframeCiv());
+//    final CommandParser cp = CommandParser.getInstance(Mainframe.getInstance().getMainframeCiv());
+    final CommandParser cp = CommandParser.getInstance(this);
 
     // Add function to send commands to command parser.
     _cmdWin.addActionListener(new ActionListener()
@@ -211,9 +220,9 @@ public class IOPanel extends JPanel
 
     // TODO Is this necessary now?
     // Redirect the System stdout and stderr to the user output window
-    if (_redirectIO) {
-      System.setOut(redirectIO());
-    }
+//    if (_redirectIO) {
+//      System.setOut(redirectIO());
+//    }
 
     // Make text output scrollable-savvy
     JPanel panel = new JPanel();
@@ -227,31 +236,31 @@ public class IOPanel extends JPanel
   }
 
 
-  /**
-   * Redirect System out messages (user output) to the window area. Define a PrintStream that sends
-   * its bytes to the output text area
-   * 
-   * @return reference to output stream
-   */
-  private PrintStream redirectIO()
-  {
-    PrintStream op = new PrintStream(new OutputStream()
-    {
-      public void write(int b)
-      {} // never called
-
-      public void write(byte[] b, int off, int len)
-      {
-        _output.append(new String(b, off, len));
-        // Ensure that the text scrolls as new text is appended
-        _cmdWin.setFocusable(true);
-        _cmdWin.requestFocusInWindow();
-        _cmdWin.setCaretPosition(0);
-      }
-    });
-
-    return op;
-  }
+//  /**
+//   * Redirect System out messages (user output) to the window area. Define a PrintStream that sends
+//   * its bytes to the output text area
+//   * 
+//   * @return reference to output stream
+//   */
+//  private PrintStream redirectIO()
+//  {
+//    PrintStream op = new PrintStream(new OutputStream()
+//    {
+//      public void write(int b)
+//      {} // never called
+//
+//      public void write(byte[] b, int off, int len)
+//      {
+//        _output.append(new String(b, off, len));
+//        // Ensure that the text scrolls as new text is appended
+//        _cmdWin.setFocusable(true);
+//        _cmdWin.requestFocusInWindow();
+//        _cmdWin.setCaretPosition(0);
+//      }
+//    });
+//
+//    return op;
+//  }
 
 
 } // end OutputPanel class

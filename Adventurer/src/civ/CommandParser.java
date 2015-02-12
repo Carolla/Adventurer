@@ -11,6 +11,8 @@
 
 package civ;
 
+import hic.IOPanel;
+
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
@@ -69,10 +71,11 @@ public class CommandParser
   private final String CMD_EMPTY = "";
 
   // Reference to mainframe for info and error messages
-  private MainframeCiv _mfCiv;
+  // static private MainframeCiv _output;
+  // static private JTextArea _output;
 
-  private final ArrayList<String> _names;
-
+  /** Reference to GUI panel for input and output messages, and their interactions */
+  static private IOPanel _ioPanel;
   /** Internal reference to ensure singleton object. */
   static private CommandParser _cp = null;
   /** Start the Scheduler up when the CommandPaarser starts */
@@ -85,15 +88,16 @@ public class CommandParser
   /**
    * Creates the singleton CommandParser, and connects to the {@code CommandFactory} and the
    * {@code MainframeCiv} for displaying parser output to {@code IOPanel}.
-   * @param owner the output view for displaying messages
-   * @param owner receives outputs and error messages 
+   * 
+   * @param ioDevice handles input commands and output and error messages, and the interactions
+   *        between command line input and output messages
    */
-  private CommandParser(MainframeCiv owner)
+  // private CommandParser(MainframeCiv owner)
+  private CommandParser(IOPanel ioPanel)
   {
-    _names = new ArrayList<String>(20);
     _parms = new ArrayList<String>();
     _cmf = new CommandFactory();
-    _mfCiv = owner;
+    _ioPanel = ioPanel;
 
     // Start the scheduler off on its own thread
     _skedder = Scheduler.createInstance(this);
@@ -107,14 +111,33 @@ public class CommandParser
    * commands. Also creates an ArrayList for command-specific parms sent to a Command, and a
    * {@code CommandFactory}.
    * 
-   * @param owner the output view for displaying messages
+   * @param output the output view for displaying messages
    */
-  static public CommandParser getInstance(MainframeCiv owner)
+  static public CommandParser getInstance(IOPanel ioPanel)
   {
     if (_cp == null) {
-      _cp = new CommandParser(owner);
+      _cp = new CommandParser(ioPanel);
+      System.out.println("CommandParser started");
     }
     return _cp;
+  }
+
+  /** Tell the output device to display specially formatted error message
+   * 
+   * @param msg error message
+   */
+  public void errorOut(String msg)
+  {
+    _ioPanel.displayErrorText(msg);
+  }
+
+  /** Tell the output device to display a message
+   * 
+   * @param msg standard text message
+   */
+  public void messageOut(String msg)
+  {
+    _ioPanel.displayText(msg);
   }
 
 
@@ -154,8 +177,6 @@ public class CommandParser
   public void receiveCommand(String cmdIn)
   {
     _userInput = cmdIn;
-//    System.err.println("cmdIn received = " + cmdIn);
-//    System.err.println("_userInput after assignment = " + _userInput);
   }
 
 
@@ -180,9 +201,10 @@ public class CommandParser
     return cmd;
   }
 
-  /** Retrieve the user-entered command, parse it, and clear the input buffer for more commands.
+  /**
+   * Retrieve the user-entered command, parse it, and clear the input buffer for more commands.
    * 
-   * @param ip  user-entered command string
+   * @param ip user-entered command string
    * @return the command and optional parms that go with it
    */
   private String extractCommandLine(String ip)
@@ -192,7 +214,13 @@ public class CommandParser
     return cmdString;
   }
 
-  
+
+  /**
+   * Find command in command table, and return error message if not found
+   * 
+   * @param s the string to lookup in the command table
+   * @return the Command to execute, else null if not found
+   */
   private String getCommandToken(String s)
   {
     if (s == null) {
@@ -202,7 +230,7 @@ public class CommandParser
     String token = lookup(s);
     // If command cannot be found, ask user to try again
     if (token == null) {
-      _mfCiv.errorOut(CMD_ERROR);
+      _ioPanel.displayErrorText(CMD_ERROR);
     }
     return token;
   }
@@ -253,11 +281,11 @@ public class CommandParser
   // helpWin.setVisible(true);
   // }
 
-//  private boolean hasUserInput(String ip)
-//  {
-//    System.out.println("CommandPaser.hasUserInput() has been called.");
-//    return (ip == null) ? false : true;
-//  }
+  // private boolean hasUserInput(String ip)
+  // {
+  // System.out.println("CommandPaser.hasUserInput() has been called.");
+  // return (ip == null) ? false : true;
+  // }
 
 
   /**
@@ -323,10 +351,16 @@ public class CommandParser
     {}
 
 
-    /** Get the input command */
+    /** Get the non-static input command */
     public String getInput()
     {
       return CommandParser.this._userInput;
+    }
+
+    /** Get the static Scheduler currently running */
+    public Scheduler getScheduler()
+    {
+      return CommandParser._skedder;
     }
 
 

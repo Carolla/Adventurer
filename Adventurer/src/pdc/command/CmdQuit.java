@@ -60,7 +60,6 @@ public class CmdQuit extends Command
    * In this case, no parms are needed.
    * 
    * @param args is empty for this command; implemented as required for abstract method
-   * @param mfCiv the particluar civ handling this command's info and error messages
    * 
    * @return true if all worked, else returns false on input error
    */
@@ -84,8 +83,10 @@ public class CmdQuit extends Command
   @Override
   public boolean exec()
   {
-    _mfciv.quit();
+    super._mfCiv.quit();
     return true;
   }
+  
+  
 } // end CmdQuit class
 

@@ -1,6 +1,6 @@
 /**
- * Mainframe.Civ  Copyright (c) 2010, Carolla Development, Inc. All Rights Reserved
- *
+ * Mainframe.Civ Copyright (c) 2010, Carolla Development, Inc. All Rights Reserved
+ * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
  * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
@@ -94,9 +94,10 @@ public class MainframeCiv
   // ============================================================
 
   /** Empty constructor is used for mocking this class for testing */
-  public MainframeCiv() {}
-  
-  
+  public MainframeCiv()
+  {}
+
+
   /**
    * Create the Civ associated with the mainframe
    * 
@@ -115,6 +116,7 @@ public class MainframeCiv
     // createBuildingBoxes();
   }
 
+  /** Create the clickable areas on the town view to indicate a selected Building */
   private void createBuildingBoxes()
   {
     for (int i = 0; i < DEFAULT_BUILDINGS.length; i++) {
@@ -170,6 +172,7 @@ public class MainframeCiv
   }
 
 
+  // TODO Move to GUI object
   public void handleClick(Point p)
   {
     handleClickIfOnTownReturn(p);
@@ -320,4 +323,25 @@ public class MainframeCiv
     _frame.redraw();
   }
 
+  
+  // ============================================================
+  // Inner Classes for Testing
+  // ============================================================
+  
+  public class MockMainframeCiv
+  {
+    /** Default constructor */
+    public MockMainframeCiv() {}
+    
+    /** Set onTown flag
+     * @param onTownView is set if this parm is true
+     */
+    public void setTownView(boolean onTownView)
+    {
+      _onTown = onTownView;
+    }
+    
+  } // end of MockMFC class
+
+  
 } // end of MainframeCiv class
