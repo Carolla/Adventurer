@@ -9,8 +9,6 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 
-import civ.MainframeCiv;
-
 /**
  * The BuildingRectangle class groups the normal Rectangle functionality
  * with the ability to draw the Rectangle on its parent frame.
@@ -28,7 +26,7 @@ public class BuildingRectangle extends Rectangle
     private static final int STROKE_WIDTH = 4;
 
     private final Color _color;
-    private final String _name;
+    public final String _name;
 
     /**
      * A rectangle that hold properties for display

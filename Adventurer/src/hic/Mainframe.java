@@ -12,7 +12,6 @@ package hic;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -104,7 +103,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private final String IOPANEL_TITLE = " Transcript ";
   /** Title of the initial three-button panel on left side */
   private final String INITIAL_OPENING_TITLE = " Actions ";
-
 
   /** Help Title for the mainframe */
   private static final String _helpTitle = "GREETINGS ADVENTURER!";
@@ -199,9 +197,11 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     // Add menu
     setJMenuBar(new Menubar());
 
-    _leftHolder = makePanelHolder(Constants.MY_BROWN, INITIAL_OPENING_TITLE, Color.WHITE);
-    // _rightHolder = makePanelHolder(Constants.MY_BROWN, INITIAL_IMAGE_TITLE, Color.WHITE);
-    _rightHolder = makePanelHolder(Constants.MY_BROWN, "", Color.WHITE);
+    _leftHolder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
+    _leftHolder = makePanelHolder(_leftHolder, Constants.MY_BROWN, INITIAL_OPENING_TITLE, Color.WHITE);
+
+    _rightHolder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
+    _rightHolder = makePanelHolder(_rightHolder, Constants.MY_BROWN, "", Color.WHITE);
 
     _contentPane.add(_leftHolder, "cell 0 0, wmax 50%, grow");
     _contentPane.add(_rightHolder, "cell 1 0, wmax 50%, grow");
@@ -219,9 +219,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
    * 
    * @return the JPanel that is assigned to the left or the right
    */
-  private JPanel makePanelHolder(Color borderColor, String title, Color backColor)
+  private JPanel makePanelHolder(JPanel holder, Color borderColor, String title, Color backColor)
   {
-    JPanel holder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
     Dimension holderSize = new Dimension(USERWIN_WIDTH / 2, USERWIN_HEIGHT);
     holder.setPreferredSize(holderSize);
     holder.setBackground(borderColor);
@@ -634,13 +633,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   }
 
 
-  public void drawBuilding(BuildingRectangle rect)
-  {
-    Graphics2D g = (Graphics2D) _rightHolder.getGraphics();
-    rect.drawBuildingBox(g);
-  }
-
-
   public void mouseClicked(MouseEvent e)
   {
     _mfCiv.handleClick(e.getPoint());
@@ -697,6 +689,11 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     _imagePanel.setImage(image);
   }
 
+  public void setBuilding(BuildingRectangle rect)
+  {
+      _imagePanel.setRectangle(rect);
+      redraw();
+  }
 
   /**
    * Display a title onto the border of the right side image panel. Add one space char on either
