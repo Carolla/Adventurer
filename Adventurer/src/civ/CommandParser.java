@@ -12,6 +12,7 @@
 package civ;
 
 import hic.IOPanel;
+import hic.IOPanelInterface;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -75,7 +76,7 @@ public class CommandParser
   // static private JTextArea _output;
 
   /** Reference to GUI panel for input and output messages, and their interactions */
-  static private IOPanel _ioPanel;
+  static private IOPanelInterface _ioPanel;
   /** Internal reference to ensure singleton object. */
   static private CommandParser _cp = null;
   /** Start the Scheduler up when the CommandPaarser starts */
@@ -93,7 +94,7 @@ public class CommandParser
    *        between command line input and output messages
    */
   // private CommandParser(MainframeCiv owner)
-  private CommandParser(IOPanel ioPanel)
+  private CommandParser(IOPanelInterface ioPanel)
   {
     _parms = new ArrayList<String>();
     _cmf = new CommandFactory();
@@ -113,7 +114,7 @@ public class CommandParser
    * 
    * @param output the output view for displaying messages
    */
-  static public CommandParser getInstance(IOPanel ioPanel)
+  static public CommandParser getInstance(IOPanelInterface ioPanel)
   {
     if (_cp == null) {
       _cp = new CommandParser(ioPanel);

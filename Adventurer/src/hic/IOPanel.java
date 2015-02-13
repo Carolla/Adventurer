@@ -39,7 +39,7 @@ import civ.MainframeCiv;
  *          Aug 18, 2014 // ABC Removed as inner class and made stand-along class <br>
  */
 @SuppressWarnings("serial")
-public class IOPanel extends JPanel
+public class IOPanel extends JPanel implements IOPanelInterface
 {
   private final JTextArea _output;
   private final JScrollPane _scrollpane;

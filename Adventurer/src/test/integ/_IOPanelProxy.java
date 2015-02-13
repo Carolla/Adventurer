@@ -16,9 +16,9 @@ import hic.IOPanel;
  * @author Al Cline
  * @version Feb 7, 2015 // original <br>
  */
-public class IOPanelProxy extends IOPanel
+public class _IOPanelProxy extends IOPanel
 {
     /** Default constructor */
-    public IOPanelProxy() { }
+    public _IOPanelProxy() { }
 
 }

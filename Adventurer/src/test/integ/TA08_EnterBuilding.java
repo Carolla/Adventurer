@@ -12,6 +12,8 @@ package test.integ;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import hic.IOPanel;
+import hic.IOPanelInterface;
 import mylib.MsgCtrl;
 
 import org.junit.After;
@@ -20,6 +22,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import test.hic.IOPanelProxy;
 import civ.CommandParser;
 import civ.CommandParser.MockCP;
 
@@ -41,7 +44,7 @@ import civ.CommandParser.MockCP;
 public class TA08_EnterBuilding
 {
   /** Test facade to send and receive messages meant for the GUI */
-  static private IOPanelProxy _ioProxy = null;
+  static private IOPanelInterface _ioProxy = null;
   // /** Destination that JUnit test module plugs into */
   // static private MainframeCiv _mfCiv= null;
   // /** Internal class to access to the MainframeCiv fields */
