@@ -117,10 +117,11 @@ public class Scheduler implements Runnable
    */
   public void run()
   {
-    // Put on a 0-delay command to trigger collecing user commands
+    System.out.println("Scheduler started");
+    // Put on a 0-delay command to trigger collecting user commands
     sched(makeCmdEnd(0));
 
-    // Unless the system interrrupts this thread for some reason, it continues until the Quit
+    // Unless the system interrupts this thread for some reason, it continues until the Quit
     // command
     try {
       doCommands();

@@ -11,6 +11,8 @@ public class BuildingDisplayCiv
   private final Mainframe _frame;
   private final BuildingRegistry _bReg;
   private Building _bldg;
+  // The building that is currently displayed, either inside or outside
+  private Building _currentBuilding;
 
   private static final String NO_BLDG_FOUND = "Could not find that building.\n";
 
@@ -21,6 +23,7 @@ public class BuildingDisplayCiv
   {
     _frame = mainframe;
     _bReg = bReg;
+    _currentBuilding = null;
   }
 
 
@@ -36,16 +39,18 @@ public class BuildingDisplayCiv
       String description = _bldg.getInteriorDescription();
       String imagePath = _bldg.getIntImagePath();
       displayBuilding(description, imagePath);
+      _currentBuilding = _bldg;
     }
     else {
       _frame.displayText(NO_BLDG_FOUND);
     }
   }
 
-  
+
   public void exitBuilding()
   {
     _bldg = null;
+    _currentBuilding = _bldg; // Hero standing just outside of building he exited
   }
 
   protected Building findAndSetBuilding(String bldName)
@@ -54,6 +59,11 @@ public class BuildingDisplayCiv
       _bldg = _bReg.getBuilding(bldName);
     }
     return _bldg;
+  }
+
+  public Building getCurrentBuilding()
+  {
+    return _currentBuilding;
   }
 
 

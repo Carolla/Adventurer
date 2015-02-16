@@ -16,6 +16,7 @@ import hic.Mainframe;
 import java.util.ArrayList;
 import java.util.List;
 
+import civ.CommandParser;
 import civ.MainframeCiv;
 
 
@@ -84,16 +85,18 @@ public abstract class Command
   /** The syntax of the command, used in the <code>usage()</code> method. */
   protected String _cmdfmt = null;
   /** MainframeCiv handles errors and messages to {@code hic.IOPanel} */
-  protected MainframeCiv _mfciv;
+  protected MainframeCiv _mfCiv;
+  /** CommandParser redirects all errors and messages to {@code hic.IOPanel} */
+  protected CommandParser _cp;
 
   // ============================================================
   // PUBLIC METHODS
   // ============================================================
 
-  /** Default contructor */
+  /** Default constructor */
   public Command()
-  { 
-    _mfciv = Mainframe.getInstance().getMainframeCiv();
+  {
+    _mfCiv = Mainframe.getInstance().getMainframeCiv();
   }
 
   /**
@@ -122,7 +125,7 @@ public abstract class Command
     // Initialize internal attributes
     this._parms = new ArrayList<String>();
     // Set message handling civ
-    _mfciv = Mainframe.getInstance().getMainframeCiv();
+    // _mfCiv = Mainframe.getInstance().getMainframeCiv();
 
   }
 
@@ -226,10 +229,12 @@ public abstract class Command
   protected void usage()
   {
     if (_cmdfmt == null) {
-      _mfciv.errorOut(_name + " command takes no parms");
+      // _mfCiv.errorOut(_name + " command takes no parms");
+      _cp.errorOut(_name + " command takes no parms");
     }
     else {
-      _mfciv.errorOut(_name + " " + _cmdfmt);
+      // _mfCiv.errorOut(_name + " " + _cmdfmt);
+      _cp.errorOut(_name + " " + _cmdfmt);
     }
     // Do not increment the game clock for this command
     _delay = 0;
@@ -238,7 +243,7 @@ public abstract class Command
 
 
   /**
-   * TODO This belings in the Inn, not the Command class // /** // * Gets the Person, including the
+   * TODO This belongs in the Inn, not the Command class // /** // * Gets the Person, including the
    * Innkeeper, requested by name. // * // * @param nameRequested name of the Person to return // * @return
    * the Person, or null if not in current room //
    */

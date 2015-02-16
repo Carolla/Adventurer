@@ -6,7 +6,7 @@ public interface Combatant {
      * 
      * @return whether player is participating in battle anymore
      */
-	boolean isDefeated();
+	public abstract boolean isDefeated();
 
 	/**
 	 * Whether player is able to take actions in the battle
@@ -18,18 +18,19 @@ public interface Combatant {
     /**
      * Each combtant executes actions during a battle, turn by turn.  Takes
      * the next turn for a combatant.
-     * @param _enemy the enemy to strike this round
+     * @param opponent the enemy to strike this round
+     * @param battle the current battle
      * @return the damage done
      */
-    int takeTurn(Combatant _enemy);
+    int takeTurn(Combatant opponent, Battle battle);
 
     /**
      * Causes damage to an opponent.  
      * 
-     * @param attackRoll what the attacker rolled
+     * @param attack what the attacker rolled
      * @return the number of HP damage done by the attack
      */
-    int attack(int attackRoll);
+    int attacked(Attack attack);
 
     /**
      * Check the status of HP.
@@ -42,5 +43,6 @@ public interface Combatant {
      * Write to the console the HP left for the combatant.
      */
     void displayHP();
+
 
 }

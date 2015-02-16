@@ -11,6 +11,7 @@
 package hic;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 
 import javax.swing.JComponent;
@@ -31,6 +32,9 @@ public class ImagePanel extends JComponent
 
   /** The actual image to be displayed */
   private Image _image;
+
+  /** Box to be drawn over the current image */
+  private BuildingRectangle _buildingRectangle;
 
 
   // ============================================================
@@ -72,19 +76,31 @@ public class ImagePanel extends JComponent
     _image = image;
   }
 
-
+  public void setRectangle(BuildingRectangle rect)
+  {
+      _buildingRectangle = rect;
+  }
+  
   /**
    * Required override method to draw on {@code JComponent.ImagePanel}
    */
   @Override
   public void paintComponent(Graphics g)
   {
-    // Find top-left corner to image panel to overlay image onto
-    int pWidth = _imagePanel.getWidth();
-    int pHeight = _imagePanel.getHeight();
+      super.paintComponent(g);
+      System.out.println("ImagePanel.paintComponent");
+      // Find top-left corner to image panel to overlay image onto
+      int pWidth = _imagePanel.getWidth();
+      int pHeight = _imagePanel.getHeight();
 
-    // Draw the image at the top-left corner of the ImagePanel when JComponent gets its turn
-    g.drawImage(_image, 0, 0, pWidth, pHeight, _imagePanel);
+      // Draw the image at the top-left corner of the ImagePanel when JComponent gets its turn
+      g.drawImage(_image, 0, 0, pWidth, pHeight, _imagePanel);
+
+      if (_buildingRectangle != null) {
+          System.out.println("Drawing " + _buildingRectangle._name);
+          _buildingRectangle.drawBuildingBox((Graphics2D) g);
+      }
+ 
   }
 
 

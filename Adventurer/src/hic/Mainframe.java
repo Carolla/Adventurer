@@ -12,7 +12,6 @@ package hic;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -105,7 +104,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   /** Title of the initial three-button panel on left side */
   private final String INITIAL_OPENING_TITLE = " Actions ";
 
-
   /** Help Title for the mainframe */
   private static final String _helpTitle = "GREETINGS ADVENTURER!";
   /** Help Text for the mainframe */
@@ -159,14 +157,14 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
   /**
    * Creates the initial frame layout: left and right panel holders with buttons, and image panel
-   * showing chronos logo on right.
+   * showing chronos logo on right. Creates the {@code HelpDialog} singleton, ready to receive
+   * context-sensitive help text when requested. Creates the {@code MainframeCiv} which takes
+   * control after an adventure is selected.
    * <P>
-   * Creates the {@code HelpDialog} singleton, ready to receive context-senstitive help text when
-   * requested.
-   * <P>
-   * Creates the {@code MainframeCiv} which takes control after an adventure is selected.
+   * NOTE: The constructor is {@code protected} instead of {@code private} so that JUnit tests can
+   * derive facade classes
    */
-  private Mainframe()
+  protected Mainframe()
   {
     // Create the components of the mainframe
     createFrameAndMenubar(); // contains left and right panel holders
@@ -199,9 +197,11 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     // Add menu
     setJMenuBar(new Menubar());
 
-    _leftHolder = makePanelHolder(Constants.MY_BROWN, INITIAL_OPENING_TITLE, Color.WHITE);
-    // _rightHolder = makePanelHolder(Constants.MY_BROWN, INITIAL_IMAGE_TITLE, Color.WHITE);
-    _rightHolder = makePanelHolder(Constants.MY_BROWN, "", Color.WHITE);
+    _leftHolder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
+    _leftHolder = makePanelHolder(_leftHolder, Constants.MY_BROWN, INITIAL_OPENING_TITLE, Color.WHITE);
+
+    _rightHolder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
+    _rightHolder = makePanelHolder(_rightHolder, Constants.MY_BROWN, "", Color.WHITE);
 
     _contentPane.add(_leftHolder, "cell 0 0, wmax 50%, grow");
     _contentPane.add(_rightHolder, "cell 1 0, wmax 50%, grow");
@@ -219,9 +219,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
    * 
    * @return the JPanel that is assigned to the left or the right
    */
-  private JPanel makePanelHolder(Color borderColor, String title, Color backColor)
+  private JPanel makePanelHolder(JPanel holder, Color borderColor, String title, Color backColor)
   {
-    JPanel holder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
     Dimension holderSize = new Dimension(USERWIN_WIDTH / 2, USERWIN_HEIGHT);
     holder.setPreferredSize(holderSize);
     holder.setBackground(borderColor);
@@ -367,19 +366,19 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   private JButton createHeroCreationButton()
   {
     JButton button = createButtonWithTextAndIcon(REGISTRAR_IMAGE, "Create New Heroes");
-//    button.addActionListener(new ActionListener() {
-//      public void actionPerformed(ActionEvent arg0)
-//      {
-//        NewHeroDisplay nhd = null;
-//        try {
-//          nhd = new NewHeroDisplay();
-//        } catch (InstantiationException e) {
-//          e.printStackTrace();
-//          System.exit(0);
-//        }
-//        // changeToLeftPanel(nhd); // This my still be needed
-//      }
-//    });
+    // button.addActionListener(new ActionListener() {
+    // public void actionPerformed(ActionEvent arg0)
+    // {
+    // NewHeroDisplay nhd = null;
+    // try {
+    // nhd = new NewHeroDisplay();
+    // } catch (InstantiationException e) {
+    // e.printStackTrace();
+    // System.exit(0);
+    // }
+    // // changeToLeftPanel(nhd); // This my still be needed
+    // }
+    // });
     return button;
   }
 
@@ -634,13 +633,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   }
 
 
-  public void drawBuilding(BuildingRectangle rect)
-  {
-    Graphics2D g = (Graphics2D) _rightHolder.getGraphics();
-    rect.drawBuildingBox(g);
-  }
-
-
   public void mouseClicked(MouseEvent e)
   {
     _mfCiv.handleClick(e.getPoint());
@@ -697,6 +689,11 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     _imagePanel.setImage(image);
   }
 
+  public void setBuilding(BuildingRectangle rect)
+  {
+      _imagePanel.setRectangle(rect);
+      redraw();
+  }
 
   /**
    * Display a title onto the border of the right side image panel. Add one space char on either

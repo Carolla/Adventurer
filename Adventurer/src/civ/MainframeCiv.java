@@ -1,6 +1,6 @@
 /**
- * Mainframe.Civ  Copyright (c) 2010, Carolla Development, Inc. All Rights Reserved
- *
+ * Mainframe.Civ Copyright (c) 2010, Carolla Development, Inc. All Rights Reserved
+ * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
  * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
@@ -19,7 +19,6 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import pdc.Util;
@@ -51,29 +50,29 @@ public class MainframeCiv
   public static final String[][] DEFAULT_BUILDINGS = { {"Ugly Ogre Inn", "Bork"},
       {"Rat's Pack", "Dewey N. Howe"}, {"The Bank", "Ogden Moneypenny"},
       {"Stadium", "Aragon"}, {"Arcaneum", "Pendergast"}, {"Monastery", "Balthazar"},
-      {"Rogues' Den", "Ripper"}, {"Jail", "The Sheriff"}};
+      {"Rogues' Den", "Ripper"}, {"Jail", "The Sheriff"}, {"Quasqueton", "Unknown"}};
 
   private Map<String, BuildingRectangle> _buildingList = new TreeMap<String, BuildingRectangle>();
 
-  private float[][] buildingLayouts = new float[][] { {0.3f, 0.7f, 0.09f, 0.09f}, // Ugly Ogre Inn
-      {0.4f, 0.7f, 0.09f, 0.09f}, // Rat's Pack General Store
-      {0.5f, 0.7f, 0.09f, 0.09f}, // The Bank
-      {0.6f, 0.7f, 0.09f, 0.09f}, // Stadium
-      {0.35f, 0.8f, 0.09f, 0.09f}, // Arcaneum
-      {0.45f, 0.8f, 0.09f, 0.09f}, // Monastery
-      {0.55f, 0.8f, 0.09f, 0.09f}, // Rouge's Den
-      {0.7f, 0.65f, 0.09f, 0.09f}, // Jail
-      {0.8f, 0.1f, 0.2f, 0.15f}}; // Quasqueton
+  private float[][] buildingLayouts = new float[][] { {0.48f, 0.54f, 0.14f, 0.08f}, // Ugly Ogre Inn
+      {0.79f, 0.43f, 0.14f, 0.08f}, // Rat's Pack General Store
+      {0.60f, 0.45f, 0.07f, 0.07f}, // The Bank
+      {0.5f, 0.37f, 0.25f, 0.09f}, // Stadium
+      {0.61f, 0.73f, 0.37f, 0.20f}, // Arcaneum
+      {0.0f, 0.35f, 0.22f, 0.13f}, // Monastery
+      {0.63f, 0.53f, 0.10f, 0.05f}, // Rouge's Den
+      {0.38f, 0.53f, 0.08f, 0.07f}, // Jail
+      {0.31f, 0.08f, 0.5f, 0.25f}}; // Quasqueton
 
-  private Color[] colorArray = new Color[] {Color.red, // Ugly Ogre Inn
-      Color.red, // Rat's Pack General Store
-      Color.red, // The Bank
-      Color.red, // Stadium
-      Color.red, // Arcaneum
-      Color.red, // Monastery
-      Color.red, // Rouge's Den
-      Color.red, // Jail
-      Color.red}; // Quasqueston
+  private Color[] colorArray = new Color[] {Color.white, // Ugly Ogre Inn
+      Color.white, // Rat's Pack General Store
+      Color.white, // The Bank
+      Color.white, // Stadium
+      Color.white, // Arcaneum
+      Color.white, // Monastery
+      Color.white, // Rouge's Den
+      Color.white, // Jail
+      Color.white}; // Quasqueston
 
   private Mainframe _frame;
   private Adventure _adv;
@@ -93,6 +92,11 @@ public class MainframeCiv
   // Constructors and constructor helpers
   // ============================================================
 
+  /** Empty constructor is used for mocking this class for testing */
+  public MainframeCiv()
+  {}
+
+
   /**
    * Create the Civ associated with the mainframe
    * 
@@ -108,9 +112,10 @@ public class MainframeCiv
     _frame.setImageTitle(INITIAL_TITLE);
     // _personRW = new PersonReadWriter();
     // _advReg = (AdventureRegistry) RegistryFactory.getInstance().getRegistry(RegKey.ADV);
-    // createBuildingBoxes();
+    createBuildingBoxes();
   }
 
+  /** Create the clickable areas on the town view to indicate a selected Building */
   private void createBuildingBoxes()
   {
     for (int i = 0; i < DEFAULT_BUILDINGS.length; i++) {
@@ -166,11 +171,12 @@ public class MainframeCiv
   }
 
 
+  // TODO Move to GUI object
   public void handleClick(Point p)
   {
     handleClickIfOnTownReturn(p);
     if (_onTown) {
-      handleClickIfOnBuilding(p);
+      //handleClickIfOnBuilding(p);
     }
   }
 
@@ -223,14 +229,12 @@ public class MainframeCiv
     if (_onTown) {
       for (BuildingRectangle rect : _buildingList.values()) {
         if (rect.contains(p)) {
-          _frame.drawBuilding(rect);
-          break;
-        }
+            _frame.setBuilding(rect);
+            break;
+        } 
       }
     }
-    _frame.redraw();
   }
-
 
   /**
    * Is a building displayed, or is the Hero at the Town view?
@@ -296,16 +300,16 @@ public class MainframeCiv
   // Private methods
   // ============================================================
 
-  private void handleClickIfOnBuilding(Point p)
-  {
-    for (Entry<String, BuildingRectangle> entry : _buildingList.entrySet()) {
-      BuildingRectangle rect = entry.getValue();
-      if (rect.contains(p)) {
-        enterBuilding(entry.getKey());
-        return;
-      }
-    }
-  }
+//  private void handleClickIfOnBuilding(Point p)
+//  {
+//    for (Entry<String, BuildingRectangle> entry : _buildingList.entrySet()) {
+//      BuildingRectangle rect = entry.getValue();
+//      if (rect.contains(p)) {
+//        enterBuilding(entry.getKey());
+//        return;
+//      }
+//    }
+//  }
 
 
   private void handleClickIfOnTownReturn(Point p)
@@ -316,4 +320,25 @@ public class MainframeCiv
     _frame.redraw();
   }
 
+  
+  // ============================================================
+  // Inner Classes for Testing
+  // ============================================================
+  
+  public class MockMainframeCiv
+  {
+    /** Default constructor */
+    public MockMainframeCiv() {}
+    
+    /** Set onTown flag
+     * @param onTownView is set if this parm is true
+     */
+    public void setTownView(boolean onTownView)
+    {
+      _onTown = onTownView;
+    }
+    
+  } // end of MockMFC class
+
+  
 } // end of MainframeCiv class

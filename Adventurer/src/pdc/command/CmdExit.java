@@ -32,15 +32,15 @@ public class CmdExit extends Command
 {
   // THESE CONSTANTS MUST BE STATIC BECAUSE THEY ARE CALLED IN THE CONSTRUCTOR
   /** The description of what the command does, used in the <code>help()</code> method. */
-  static final String CMD_DESCRIPTION = "Enter into the Building of choice.";
+  static final String CMD_DESCRIPTION = "Exit from the current Building.";
   /** This command starts immediately, requiring no delay. */
   static final int DELAY = 0;
   /** This command takes 10 seconds on the game clock. */
   static final int DURATION = 30;
-  /** Commnand format */
+  /** Command format */
   static private final String CMDFMT = "EXIT";
 
-  /** The building to enter */
+  /** The building to exit */
   private Building _curBldg = null;
   private MainframeCiv _mfCiv;
 

@@ -13,11 +13,8 @@ package hic;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.OutputStream;
-import java.io.PrintStream;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -32,7 +29,7 @@ import civ.CommandParser;
 import civ.MainframeCiv;
 
 /**
- * This class serves as the text output and command line input after and Adventure is selected
+ * This class serves as the text output and command line input after an Adventure is selected
  * 
  * @author Alan Cline
  * @version Feb 18, 2013 // TAA Initial object <br>
@@ -42,7 +39,7 @@ import civ.MainframeCiv;
  *          Aug 18, 2014 // ABC Removed as inner class and made stand-along class <br>
  */
 @SuppressWarnings("serial")
-public class IOPanel extends JPanel
+public class IOPanel extends JPanel implements IOPanelInterface
 {
   private final JTextArea _output;
   private final JScrollPane _scrollpane;
@@ -69,7 +66,7 @@ public class IOPanel extends JPanel
     setLayout(new MigLayout("", "[grow]", "[][]"));
     _output = new JTextArea();
     _output.setAlignmentY(JTextArea.TOP_ALIGNMENT);
-  
+
     _scrollpane = createOutputPanel();
     this.add(_scrollpane, "cell 0 1");
 
@@ -93,7 +90,7 @@ public class IOPanel extends JPanel
     _cmdWin.setCaretPosition(0);
   }
 
-  
+
   // TODO JTextArea will not change color and font; JTextPane is needed for that.
   /**
    * Display error text, using different Font and color, then return to standard font and color.
@@ -105,17 +102,27 @@ public class IOPanel extends JPanel
     // For now, just call the standard output method
     displayText(msg);
 
-//    Color prevColor = _output.getForeground();
-//    Font prevFont = _output.getFont();
-//    _output.setForeground(Color.RED);
-//    _output.setFont(new Font("Sans Serif", Font.BOLD, 14));
-//    // Write the text
-//    displayText(msg);
-//    _output.setForeground(prevColor);
-//    _output.setFont(prevFont);
+    // Color prevColor = _output.getForeground();
+    // Font prevFont = _output.getFont();
+    // _output.setForeground(Color.RED);
+    // _output.setFont(new Font("Sans Serif", Font.BOLD, 14));
+    // // Write the text
+    // displayText(msg);
+    // _output.setForeground(prevColor);
+    // _output.setFont(prevFont);
   }
 
 
+  /** Retrieve the output viewer
+   * @return the output panel for error and other messages
+   */
+  public JTextArea getOutputArea()
+  {
+    return _output;
+  }
+  
+  
+  
   /**
    * Call the Mainframe's Civ for the building/town status
    * 
@@ -132,20 +139,20 @@ public class IOPanel extends JPanel
   // Public Methods
   // ============================================================
 
-//  /**
-//   * Set the text into the output pane, then return focus to the command line
-//   * 
-//   * @param text to display
-//   */
-//  public void setDescription(String text)
-//  {
-//    _output.setText(text + "\n");
-//    // Set cursor to top of description on first display
-//    _output.setCaretPosition(0);
-//    // JViewport jv = _output.getViewport();
-//    // jv.setViewPosition(new Point(0,0));
-//    _cmdWin.requestFocusInWindow();
-//  }
+  // /**
+  // * Set the text into the output pane, then return focus to the command line
+  // *
+  // * @param text to display
+  // */
+  // public void setDescription(String text)
+  // {
+  // _output.setText(text + "\n");
+  // // Set cursor to top of description on first display
+  // _output.setCaretPosition(0);
+  // // JViewport jv = _output.getViewport();
+  // // jv.setViewPosition(new Point(0,0));
+  // _cmdWin.requestFocusInWindow();
+  // }
 
 
   // ============================================================
@@ -153,7 +160,7 @@ public class IOPanel extends JPanel
   // ============================================================
 
   /**
-   * Create the south panel input window. It must provide data to the backend command parser
+   * Create the south panel input window that provides data to the backend command parser
    * 
    * @return the user input window
    */
@@ -176,7 +183,8 @@ public class IOPanel extends JPanel
     southPanel.add(_cmdWin, "cell 1 0,alignx left");
 
     // Create the command parser that goes in here
-    final CommandParser cp = CommandParser.getInstance();
+//    final CommandParser cp = CommandParser.getInstance(Mainframe.getInstance().getMainframeCiv());
+    final CommandParser cp = CommandParser.getInstance(this);
 
     // Add function to send commands to command parser.
     _cmdWin.addActionListener(new ActionListener()
@@ -195,7 +203,6 @@ public class IOPanel extends JPanel
     return southPanel;
   }
 
-
   /**
    * Create the north panel transcript output window: scollable, non-editable output area
    * 
@@ -213,9 +220,9 @@ public class IOPanel extends JPanel
 
     // TODO Is this necessary now?
     // Redirect the System stdout and stderr to the user output window
-    if (_redirectIO) {
-      System.setOut(redirectIO());
-    }
+//    if (_redirectIO) {
+//      System.setOut(redirectIO());
+//    }
 
     // Make text output scrollable-savvy
     JPanel panel = new JPanel();
@@ -229,31 +236,31 @@ public class IOPanel extends JPanel
   }
 
 
-  /**
-   * Redirect System out messages (user output) to the window area. Define a PrintStream that sends
-   * its bytes to the output text area
-   * 
-   * @return reference to output stream
-   */
-  private PrintStream redirectIO()
-  {
-    PrintStream op = new PrintStream(new OutputStream()
-    {
-      public void write(int b)
-      {} // never called
-
-      public void write(byte[] b, int off, int len)
-      {
-        _output.append(new String(b, off, len));
-        // Ensure that the text scrolls as new text is appended
-        _cmdWin.setFocusable(true);
-        _cmdWin.requestFocusInWindow();
-        _cmdWin.setCaretPosition(0);
-      }
-    });
-
-    return op;
-  }
+//  /**
+//   * Redirect System out messages (user output) to the window area. Define a PrintStream that sends
+//   * its bytes to the output text area
+//   * 
+//   * @return reference to output stream
+//   */
+//  private PrintStream redirectIO()
+//  {
+//    PrintStream op = new PrintStream(new OutputStream()
+//    {
+//      public void write(int b)
+//      {} // never called
+//
+//      public void write(byte[] b, int off, int len)
+//      {
+//        _output.append(new String(b, off, len));
+//        // Ensure that the text scrolls as new text is appended
+//        _cmdWin.setFocusable(true);
+//        _cmdWin.requestFocusInWindow();
+//        _cmdWin.setCaretPosition(0);
+//      }
+//    });
+//
+//    return op;
+//  }
 
 
 } // end OutputPanel class
