@@ -198,7 +198,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     setJMenuBar(new Menubar());
 
     _leftHolder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
-    _leftHolder = makePanelHolder(_leftHolder, Constants.MY_BROWN, INITIAL_OPENING_TITLE, Color.WHITE);
+    _leftHolder =
+        makePanelHolder(_leftHolder, Constants.MY_BROWN, INITIAL_OPENING_TITLE, Color.WHITE);
 
     _rightHolder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
     _rightHolder = makePanelHolder(_rightHolder, Constants.MY_BROWN, "", Color.WHITE);
@@ -691,8 +692,8 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
   public void setBuilding(BuildingRectangle rect)
   {
-      _imagePanel.setRectangle(rect);
-      redraw();
+    _imagePanel.setRectangle(rect);
+    redraw();
   }
 
   /**
