@@ -11,11 +11,9 @@
 
 package pdc.command;
 
-import hic.Mainframe;
-
 import java.util.List;
 
-import civ.MainframeCiv;
+import civ.BuildingDisplayCiv;
 
 
 /**
@@ -90,10 +88,9 @@ public class CmdEnter extends Command
   public boolean init(List<String> args)
   {
     System.out.println("\tCmdEnter.init()...");
-    // Get the town status from BuildingDisplayCiv
-    MainframeCiv mfc = Mainframe.getInstance().getMainframeCiv();
+    BuildingDisplayCiv bdciv = BuildingDisplayCiv.getInstance();
     // Get the Building parm, or null
-    if ((args.size() == 0) || (mfc.isOnTown())) {
+      if ((args.size() == 0) || (bdciv.getCurrentBuilding() == null)) {
       super._cp.errorOut(ERRMSG_NOBLDG);
       return false;
     }

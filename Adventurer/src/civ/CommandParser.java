@@ -11,7 +11,6 @@
 
 package civ;
 
-import hic.IOPanel;
 import hic.IOPanelInterface;
 
 import java.util.ArrayList;
@@ -35,6 +34,7 @@ import pdc.command.Scheduler;
  *          May 30 2008 // Added non-modal resizable Help window <br>
  *          Jul 1 2008 // Final commenting for Javadoc compliance <br>
  *          Aug 5 2014 // Linked CmdWindow with {@code Mainframe.StandardLayout} <br>
+ *          Feb 15 2014 // Replaced ctor parm with {@code IOPanelInterface} for testing <br>
  */
 public class CommandParser
 {
@@ -47,9 +47,10 @@ public class CommandParser
    */
   private final String[][] _cmdTable = {
       {"ENTER", "CmdEnter"}, // Enter into a Building and show its interior description
+      {"EXIT", "CmdReturn"}, // Exit the building and go to (display) the building's exterior
+      {"LEAVE", "CmdExit"}, // Synonym for EXIT
       {"QUIT", "CmdQuit"}, // End the program.
-      {"EXIT", "CmdReturn"}, // Leave the building's interior and go to building's exterior
-      {"RETURN", "CmdReturn"}, // Synonym for Exit
+      {"RETURN", "CmdReturn"}, // Synonym for EXT
   // {"TO TOWN", "CmdReturn"}, // Return to Town View
       // { "HELP", "CmdHelp" }, // List the user command names and their descriptions.
       // { "INVENTORY", "CmdInventory" }, // Describe the money the Hero has (later, this will tell
@@ -68,6 +69,8 @@ public class CommandParser
   // Special cases
   /** Error message if command cannot be found. */
   private final String CMD_ERROR = "I don't understand what you want to do.";
+  /** A null or empty string was entered */
+  private final String CMD_NULL = "Nothing was entered. Please try again.";
   /** Identify a command string in which only a return key is entered. */
   private final String CMD_EMPTY = "";
 
@@ -123,7 +126,8 @@ public class CommandParser
     return _cp;
   }
 
-  /** Tell the output device to display specially formatted error message
+  /**
+   * Tell the output device to display specially formatted error message
    * 
    * @param msg error message
    */
@@ -132,7 +136,8 @@ public class CommandParser
     _ioPanel.displayErrorText(msg);
   }
 
-  /** Tell the output device to display a message
+  /**
+   * Tell the output device to display a message
    * 
    * @param msg standard text message
    */
@@ -172,14 +177,20 @@ public class CommandParser
   /**
    * Receives and holds the command string from the command window. It will be retrieved by the
    * {@code Scheduler} when it is ready for another user command.
+   * The method is synchronous so that the Scheduler doesn't null it out before it can be assigned.
    * 
    * @param cmdIn the input the user entered as a command
    */
-  public void receiveCommand(String cmdIn)
+  synchronized public  void receiveCommand(String cmdIn)
   {
-    _userInput = cmdIn;
+    try {
+      _userInput = cmdIn.trim();
+    } catch(NullPointerException ex) {
+      if (_userInput == null) {
+        errorOut(CMD_NULL);
+      }
+    }
   }
-
 
   // ============================================================
   // Private helper methods
@@ -231,7 +242,7 @@ public class CommandParser
     String token = lookup(s);
     // If command cannot be found, ask user to try again
     if (token == null) {
-      _ioPanel.displayErrorText(CMD_ERROR);
+      _ioPanel.displayErrorText(CMD_NULL);
     }
     return token;
   }
@@ -358,13 +369,26 @@ public class CommandParser
       return CommandParser.this._userInput;
     }
 
-    /** Get the static Scheduler currently running */
+    /** Get the static Scheduler currently running:
+     * DO NOT put the 'this' qualifier on CommandParser. */
     public Scheduler getScheduler()
     {
       return CommandParser._skedder;
     }
 
+    /** Get the contents of the CMD_ERROR msg */
+    public String getErrorMsg()
+    {
+      return CommandParser.this.CMD_ERROR;
+    }
 
+    /** Get error msg for null input */
+    public String getNullMsg()
+    {
+      return CommandParser.this.CMD_NULL;
+    }
+
+  
   } // end of MockCP inner class
 
 

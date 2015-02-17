@@ -153,18 +153,18 @@ public class MainframeCiv
   // Public methods
   // ============================================================
 
+
   /**
-   * Enter the Building specified. If the Hero is at the Town level, get the
-   * {@code BuildingRegistry} and {@ocde BuildingCiv}
+   * TODO This is the responsibility of the BuildingDisplayCiv /** Enter the Building specified. If
+   * the Hero is at the Town level, get the {@code BuildingRegistry} and {@ocde BuildingCiv}
    * 
    * @param bldName the name of the building to open
    */
   public void enterBuilding(String bldName)
   {
     if (_onTown) {
-      _bReg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
-      _bdCiv = new BuildingDisplayCiv(_frame, _bReg);
-      _onTown = false;
+      _bdCiv = BuildingDisplayCiv.getInstance();
+      // _onTown = false;
     }
     // Always enter the building on request
     _bdCiv.enterBuilding(bldName);
@@ -176,7 +176,7 @@ public class MainframeCiv
   {
     handleClickIfOnTownReturn(p);
     if (_onTown) {
-      //handleClickIfOnBuilding(p);
+      // handleClickIfOnBuilding(p);
     }
   }
 
@@ -224,14 +224,15 @@ public class MainframeCiv
   }
 
 
+  // TODO: Mouse action belong in the HIC; not in the CIV
   public void handleMouseMovement(Point p)
   {
     if (_onTown) {
       for (BuildingRectangle rect : _buildingList.values()) {
         if (rect.contains(p)) {
-            _frame.setBuilding(rect);
-            break;
-        } 
+          _frame.setBuilding(rect);
+          break;
+        }
       }
     }
   }
@@ -300,16 +301,16 @@ public class MainframeCiv
   // Private methods
   // ============================================================
 
-//  private void handleClickIfOnBuilding(Point p)
-//  {
-//    for (Entry<String, BuildingRectangle> entry : _buildingList.entrySet()) {
-//      BuildingRectangle rect = entry.getValue();
-//      if (rect.contains(p)) {
-//        enterBuilding(entry.getKey());
-//        return;
-//      }
-//    }
-//  }
+  // private void handleClickIfOnBuilding(Point p)
+  // {
+  // for (Entry<String, BuildingRectangle> entry : _buildingList.entrySet()) {
+  // BuildingRectangle rect = entry.getValue();
+  // if (rect.contains(p)) {
+  // enterBuilding(entry.getKey());
+  // return;
+  // }
+  // }
+  // }
 
 
   private void handleClickIfOnTownReturn(Point p)
@@ -320,25 +321,28 @@ public class MainframeCiv
     _frame.redraw();
   }
 
-  
+
   // ============================================================
   // Inner Classes for Testing
   // ============================================================
-  
+
   public class MockMainframeCiv
   {
     /** Default constructor */
-    public MockMainframeCiv() {}
-    
-    /** Set onTown flag
+    public MockMainframeCiv()
+    {}
+
+    /**
+     * Set onTown flag
+     * 
      * @param onTownView is set if this parm is true
      */
     public void setTownView(boolean onTownView)
     {
       _onTown = onTownView;
     }
-    
+
   } // end of MockMFC class
 
-  
+
 } // end of MainframeCiv class
