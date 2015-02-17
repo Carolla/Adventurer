@@ -10,6 +10,7 @@ public interface IOPanelInterface {
 	   * @param msg text block to display
 	   */
 	  public void displayText(String msg);
+	  
 
 	  /**
 	   * Display error text, using different Font and color, then return to standard font and color.

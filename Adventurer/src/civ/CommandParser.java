@@ -93,7 +93,7 @@ public class CommandParser
    * Creates the singleton CommandParser, and connects to the {@code CommandFactory} and the
    * {@code MainframeCiv} for displaying parser output to {@code IOPanel}.
    * 
-   * @param ioDevice handles input commands and output and error messages, and the interactions
+   * @param ioPanel handles input commands and output and error messages, and the interactions
    *        between command line input and output messages
    */
   // private CommandParser(MainframeCiv owner)
