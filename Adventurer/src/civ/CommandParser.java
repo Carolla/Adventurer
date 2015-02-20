@@ -46,11 +46,12 @@ public class CommandParser
    * look-up algorithm is linear).
    */
   private final String[][] _cmdTable = {
-      {"ENTER", "CmdEnter"}, // Enter into a Building and show its interior description
-      {"EXIT", "CmdReturn"}, // Exit the building and go to (display) the building's exterior
-      {"LEAVE", "CmdExit"}, // Synonym for EXIT
-      {"QUIT", "CmdQuit"}, // End the program.
-      {"RETURN", "CmdReturn"}, // Synonym for EXT
+      {"APPROACH", "CmdApproach"}, // Display the description and image of its exterior 
+      {"ENTER",  "CmdEnter"}, // Display the description and image of its interior
+      {"EXIT",   "CmdReturn"}, // Exit the building and go to (display) the building's exterior
+      {"LEAVE",  "CmdExit"}, // Synonym for EXIT
+      {"QUIT",   "CmdQuit"}, // End the program.
+      {"RETURN", "CmdReturn"}, // Synonym for EXIT
   // {"TO TOWN", "CmdReturn"}, // Return to Town View
       // { "HELP", "CmdHelp" }, // List the user command names and their descriptions.
       // { "INVENTORY", "CmdInventory" }, // Describe the money the Hero has (later, this will tell
@@ -79,7 +80,7 @@ public class CommandParser
   // static private JTextArea _output;
 
   /** Reference to GUI panel for input and output messages, and their interactions */
-  static private IOPanelInterface _ioPanel;
+  private IOPanelInterface _ioPanel;
   /** Internal reference to ensure singleton object. */
   static private CommandParser _cp = null;
   /** Start the Scheduler up when the CommandPaarser starts */
@@ -96,15 +97,14 @@ public class CommandParser
    * @param ioPanel handles input commands and output and error messages, and the interactions
    *        between command line input and output messages
    */
-  // private CommandParser(MainframeCiv owner)
   private CommandParser(IOPanelInterface ioPanel)
   {
     _parms = new ArrayList<String>();
-    _cmf = new CommandFactory();
+    _cmf = new CommandFactory(this);
     _ioPanel = ioPanel;
 
     // Start the scheduler off on its own thread
-    _skedder = Scheduler.createInstance(this);
+    _skedder = Scheduler.getInstance(this);
     new Thread(_skedder).start();
   }
 
@@ -176,20 +176,18 @@ public class CommandParser
 
   /**
    * Receives and holds the command string from the command window. It will be retrieved by the
-   * {@code Scheduler} when it is ready for another user command.
-   * The method is synchronous so that the Scheduler doesn't null it out before it can be assigned.
+   * {@code Scheduler} when it is ready for another user command.<br>
+   * The method is synchronous so that it isn't nulled out before it can be assigned.
    * 
    * @param cmdIn the input the user entered as a command
    */
-  synchronized public  void receiveCommand(String cmdIn)
+  synchronized public void receiveCommand(String cmdIn)
   {
-    try {
-      _userInput = cmdIn.trim();
-    } catch(NullPointerException ex) {
-      if (_userInput == null) {
-        errorOut(CMD_NULL);
-      }
+    // Guard
+    if (cmdIn == null) {
+      errorOut(CMD_NULL);
     }
+      _userInput = cmdIn.trim();
   }
 
   // ============================================================

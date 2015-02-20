@@ -13,6 +13,7 @@ package pdc.command;
 
 import java.util.List;
 
+import chronos.pdc.buildings.Building;
 import civ.BuildingDisplayCiv;
 
 
@@ -20,21 +21,22 @@ import civ.BuildingDisplayCiv;
  * Moves the Hero from outside the Building (or Town) being displayed to inside, and displays its
  * interior description and image.
  * <P>
- * Format: ENTER (current Building name | current Building type) <br>
+ * Format: ENTER [current Building name | current Building type] <br>
  * where:
  * <UL>
  * <LI>Building Name is the actual string name of the Building, and is Adventure specific;</LI>
  * <LI>Building Type is the Building class, e.g., Inn, Bank, Jail;</LI>
  * </UL>
- * If no arguments are given, the type of the currently displayed Building is assumed. The command
- * string is case-insensitive. If the user enters 'the' in front of the building name or type, it
- * will check with and without this word; e.g., "ENTER the Jail" is the same as "ENTER Jail". See
- * {@code init()} method, unless the word "the" is part of the building's name.
+ * If no arguments are given, the currently displayed Building is assumed. The command string is
+ * case-insensitive. If the user enters 'the' in front of the building name or type, it will check
+ * with and without this word; e.g., "ENTER the Jail" is the same as "ENTER Jail", unless the word
+ * "the" is part of the building's name.
  * 
  * @author Alan Cline
  * @version Mar 19 2014 // original <br>
  *          Aug 23, 2014 // updated {@code init} method to handle IOPanel for outputs <br>
  *          Aug 30, 2014 // updated {@code exec} method to handle current building <br>
+ *          Feb 18, 2015 // updated to handle common IOPanel for text outputs <br>
  * 
  * @see Command
  */
@@ -50,6 +52,8 @@ public class CmdEnter extends Command
   /** Format for this command */
   static private final String CMDFMT = "ENTER [Building Name | Building Type]";
 
+  /** The building currently displayed, either inside or outside */
+  private Building _currentBuilding = null;
   /** The building to enter */
   private String _targetBldg = null;
 
@@ -89,9 +93,10 @@ public class CmdEnter extends Command
   {
     System.out.println("\tCmdEnter.init()...");
     BuildingDisplayCiv bdciv = BuildingDisplayCiv.getInstance();
+    _currentBuilding = bdciv.getCurrentBuilding();
     // Get the Building parm, or null
-      if ((args.size() == 0) || (bdciv.getCurrentBuilding() == null)) {
-      super._cp.errorOut(ERRMSG_NOBLDG);
+    if ((args.size() == 0) || (_currentBuilding == null)) {
+      super._msgHandler.errorOut(ERRMSG_NOBLDG);
       return false;
     }
     _targetBldg = convertArgsToString(args);
@@ -104,7 +109,7 @@ public class CmdEnter extends Command
   {
     System.out.println("\tCmdEnter.exec()...");
     // Null is legal parm for this call
-    super._mfCiv.enterBuilding(_targetBldg);
+//    super._mfCiv.enterBuilding(_targetBldg);
     return true;
   }
 

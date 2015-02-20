@@ -12,6 +12,8 @@
 
 package pdc.command;
 
+import civ.CommandParser;
+
 
 
 /** 
@@ -20,23 +22,28 @@ package pdc.command;
  * the specific data arguments for the command.
  * 
  * @author		Alan Cline
- * @version 	<DL>
- * <DT>1.0  	Aug 31	2006		// original version <DD>
- * <DT>2.0 	Jun 5 		2007		// updated for new runtime version <DD>
- * <DT>2.1	Jul 5			2008		// Final commenting for Javadoc compliance<DD>
- * </DL>
+ * @version   Aug 31, 2006		// original version <br>
+ *            Jun 5, 2007		// updated for new runtime version <br.
+ *            Jul 5, 2008   // Final commenting for Javadoc compliance <br>
+ *            Feb 18, 2015 // add IOInterface parm for testing and msg outputs <br>
  */
 public class CommandFactory 
 {
-/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++  
- * 								CONSTRUCTOR(S) AND RELATED METHODS
- * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ */  
-
     /** All commands must be in the current package, which is needed for Command creation. */ 
     private Command _curCmd = null;
+    /** Use the |@code civ.CommandParser} for handling command errors and message Texts */ 
+    private CommandParser _msgHandler = null;
+
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++  
+     *                CONSTRUCTOR(S) AND RELATED METHODS
+     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ */  
 
     /** Default constructor. */
-    public CommandFactory() { }
+    public CommandFactory(CommandParser cp) 
+    { 
+      _msgHandler = cp;
+    }
+    
     
     /**
      * Creates a user Command from its canonical name.<br>
@@ -50,6 +57,7 @@ public class CommandFactory
 		try {
 			// Subclass Commands must have empty constructors (no formal input arguments)
       _curCmd = (Command) Class.forName(Command.CMD_PACKAGE + cmdClassName).newInstance();
+      _curCmd.setMsgHandler(_msgHandler);
         } catch (NullPointerException e) {
             System.err.println("Command name or format is illegally null: " + e.getMessage());
         } catch (Exception e) {

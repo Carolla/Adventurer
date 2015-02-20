@@ -61,7 +61,6 @@ public class TA08_EnterBuilding
     assertNotNull(_cp);
     _mock = _cp.new MockCP();
     assertNotNull(_mock);
-
   }
 
   /**
