@@ -9,7 +9,6 @@
 
 package test.integ;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import mylib.MsgCtrl;
@@ -20,6 +19,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import chronos.pdc.buildings.Building;
+import chronos.pdc.registry.BuildingRegistry;
+import chronos.pdc.registry.RegistryFactory;
+import chronos.pdc.registry.RegistryFactory.RegKey;
+import civ.BuildingDisplayCiv;
+import civ.BuildingDisplayCiv.MockBldgCiv;
 import civ.CommandParser;
 import civ.CommandParser.MockCP;
 
@@ -40,27 +45,40 @@ import civ.CommandParser.MockCP;
  */
 public class TA08_EnterBuilding
 {
-  /** Test facade to send and receive messages meant for the GUI */
+  /** Facade to send and receive messages meant for the output panel */
   static private IOPanelProxy _ioProxy = null;
-  /** CommandParser takes in all commands from the CmdLine GUI */
+  /** CommandParser takes in all commands from the CmdLine of the IOPanel */
   static private CommandParser _cp = null;
   /** MockCommandParser allows access to CommandParser fields */
   static private MockCP _mock = null;
+  /** BuildingDisplayCiv controls access and displays of buildings */
+  static private BuildingDisplayCiv _bldgCiv = null;
+  /** MockBuildingDisplayCiv */
+  static private MockBldgCiv _mockBldgCiv = null;
+  /** Mainframe Proxy facades the image panel and iopanel; used by BuildingDisplayCiv */
+  static private MainframeProxy _mfProxy = null;
 
-
+  
   /**
    * @throws java.lang.Exception
    */
   @BeforeClass
   public static void setUpBeforeClass() throws Exception
   {
-    // Replace the GUI object with the proxy
+    // Replace the GUI objects with their test facades
     _ioProxy = new IOPanelProxy();
     assertNotNull(_ioProxy);
+    _mfProxy = new MainframeProxy();
+    assertNotNull(_mfProxy);
     _cp = CommandParser.getInstance(new IOPanelProxy());
     assertNotNull(_cp);
     _mock = _cp.new MockCP();
     assertNotNull(_mock);
+    // This will open the BuildingRegistry, which must be closed before exiting
+    _bldgCiv = BuildingDisplayCiv.getInstance(_mfProxy);
+    assertNotNull(_bldgCiv);
+    _mockBldgCiv = _bldgCiv.new MockBldgCiv();
+    assertNotNull(_mockBldgCiv);
   }
 
   /**
@@ -69,11 +87,18 @@ public class TA08_EnterBuilding
   @AfterClass
   public static void tearDownAfterClass() throws Exception
   {
+    _mockBldgCiv = null;
+    _bldgCiv = null;
     _mock = null;
     _cp = null;
+    _mfProxy = null;
     _ioProxy = null;
+    // Close BuildingRegistry, left open from BuildingDisplayCiv
+    RegistryFactory regFactory = RegistryFactory.getInstance();
+    BuildingRegistry bReg = (BuildingRegistry) regFactory.getRegistry(RegKey.BLDG);
+    bReg.closeRegistry();
   }
-
+  
   /**
    * @throws java.lang.Exception
    */
@@ -96,12 +121,11 @@ public class TA08_EnterBuilding
   // Begin the tests!
   // ==========================================================
 
-  
   /**
-   * Error case: null command entered <br>
+   * Error case: null command <br>
    */
   @Test
-  public void test_EnterNullCommand()
+  public void test_EnterNullCmd()
   {
     MsgCtrl.auditMsgsOn(true);
     MsgCtrl.errorMsgsOn(true);
@@ -115,27 +139,52 @@ public class TA08_EnterBuilding
     assertNull(_ioProxy.msgOut());
   }
 
-
+  
   /**
-   * Error case: invalid command entered <br>
+   * Error case: null parm and no current building <br>
    */
   @Test
-  public void test_EnterInvalidCommand()
+  public void test_EnterNullParm()
   {
     MsgCtrl.auditMsgsOn(true);
     MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
-    // Error: Invalid command
-    String cmd = "SOMETHING invalid";
-    _cp.receiveCommand(cmd);
+    // Error: set current building to null
+    _mockBldgCiv.setCurrentBldg(null);
+    Building _currentBldg = _bldgCiv.getCurrentBuilding();
+    assertNull(_currentBldg);
+    // Try to enter it, get error message
+    _cp.receiveCommand("ENTER");
     String echo = _mock.getInput();
-    MsgCtrl.msgln("Command entered: " + echo);
-    assertNotNull(echo);
-    // Verify error returned to CmdLine display
-    assertEquals(cmd, echo);
-    assertEquals(_mock.getErrorMsg(), _ioProxy.msgOut());
+    MsgCtrl.msgln("\tCommand entered: " + echo);
+//    assertNull(echo);
+//    assertNull(_ioProxy.msgOut());
   }
+
+  
+
+
+  // /**
+  // * Error case: invalid command entered <br>
+  // */
+  // @Test
+  // public void test_EnterInvalidCommand()
+  // {
+  // MsgCtrl.auditMsgsOn(true);
+  // MsgCtrl.errorMsgsOn(true);
+  // MsgCtrl.where(this);
+  //
+  // // Error: Invalid command
+  // String cmd = "SOMETHING invalid";
+  // _cp.receiveCommand(cmd);
+  // String echo = _mock.getInput();
+  // MsgCtrl.msgln("Command entered: " + echo);
+  // assertNotNull(echo);
+  // // Verify error returned to CmdLine display
+  // assertEquals(cmd, echo);
+  // assertEquals(_mock.getErrorMsg(), _ioProxy.msgOut());
+  // }
 
 
 
@@ -172,5 +221,4 @@ public class TA08_EnterBuilding
 
 
 
-}
-/** end of TA08_EnterBuilding integration test case */
+} // end of TA08_EnterBuilding integration test case 

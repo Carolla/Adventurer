@@ -10,7 +10,7 @@
 package civ;
 
 import hic.BuildingRectangle;
-import hic.Mainframe;
+import hic.MainframeInterface;
 
 import java.awt.Color;
 import java.awt.Image;
@@ -24,13 +24,12 @@ import java.util.TreeMap;
 import pdc.Util;
 import chronos.pdc.Adventure;
 import chronos.pdc.registry.AdventureRegistry;
-import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import dmc.PersonReadWriter;
 
 /**
- * The main civ behind the Mainframe screen. It also contains all the initialization state.
+ * The main civ behind the Mainframe screen.
  * 
  * @author Alan Cline
  * @author Tim Armstrong
@@ -38,11 +37,11 @@ import dmc.PersonReadWriter;
  *          Mar 19 2014 // added current Building for ENTER command <br>
  *          Aug 18 2014 // added {@code displayImage} to show Chronos logo on portal page <br>
  */
-public class MainframeCiv
+public class MainframeCiv 
 {
   private AdventureRegistry _advReg;
-  private BuildingDisplayCiv _bdCiv;
-  private BuildingRegistry _bReg;
+  // private BuildingDisplayCiv _bdCiv;
+  // private BuildingRegistry _bReg;
 
   private static final String TOWN_IMAGE = "ext_BiljurBaz.JPG";
 
@@ -54,7 +53,8 @@ public class MainframeCiv
 
   private Map<String, BuildingRectangle> _buildingList = new TreeMap<String, BuildingRectangle>();
 
-  private float[][] buildingLayouts = new float[][] { {0.48f, 0.54f, 0.14f, 0.08f}, // Ugly Ogre Inn
+  private float[][] buildingLayouts = new float[][] {
+      {0.48f, 0.54f, 0.14f, 0.08f}, // Ugly Ogre Inn
       {0.79f, 0.43f, 0.14f, 0.08f}, // Rat's Pack General Store
       {0.60f, 0.45f, 0.07f, 0.07f}, // The Bank
       {0.5f, 0.37f, 0.25f, 0.09f}, // Stadium
@@ -74,7 +74,7 @@ public class MainframeCiv
       Color.white, // Jail
       Color.white}; // Quasqueston
 
-  private Mainframe _frame;
+  private MainframeInterface _frame;
   private Adventure _adv;
   private PersonReadWriter _personRW;
   private boolean _onTown;
@@ -92,9 +92,14 @@ public class MainframeCiv
   // Constructors and constructor helpers
   // ============================================================
 
-  /** Empty constructor is used for mocking this class for testing */
-  public MainframeCiv()
-  {}
+  // /** Empty constructor is used for mocking this class for testing */
+  // public MainframeCiv getInstance(MainframeInterface mf)
+  // {
+  // if (_mfCiv == null) {
+  // _mfCiv = new MainframeCiv(mf);
+  // }
+  // return _mfCiv;
+  // }
 
 
   /**
@@ -104,9 +109,9 @@ public class MainframeCiv
    * @param personRW supports the Summon Hero and Create Hero buttons
    * @param advReg registry to support the Adventures button
    */
-  public MainframeCiv(Mainframe frame)
+  public MainframeCiv(MainframeInterface mf)
   {
-    _frame = frame;
+    _frame = mf;
     _frame.setImage(Util.convertToImage(INITIAL_IMAGE));
     // TODO Why is this in the civ, and not the hic.Mainframe?
     _frame.setImageTitle(INITIAL_TITLE);
@@ -154,21 +159,22 @@ public class MainframeCiv
   // ============================================================
 
 
-  /**
-   * TODO This is the responsibility of the BuildingDisplayCiv /** Enter the Building specified. If
-   * the Hero is at the Town level, get the {@code BuildingRegistry} and {@ocde BuildingCiv}
-   * 
-   * @param bldName the name of the building to open
-   */
-  public void enterBuilding(String bldName)
-  {
-    if (_onTown) {
-      _bdCiv = BuildingDisplayCiv.getInstance();
-      // _onTown = false;
-    }
-    // Always enter the building on request
-    _bdCiv.enterBuilding(bldName);
-  }
+  // /**
+  // * TODO This is the responsibility of the BuildingDisplayCiv Enter the Building specified. If
+  // the
+  // * Hero is at the Town level, get the {@code BuildingRegistry} and {@ocde BuildingCiv}
+  // *
+  // * @param bldName the name of the building to open
+  // */
+  // public void enterBuilding(String bldName)
+  // {
+  // if (_onTown) {
+  // _bdCiv = BuildingDisplayCiv.getInstance();
+  // // _onTown = false;
+  // }
+  // // Always enter the building on request
+  // _bdCiv.enterBuilding(bldName);
+  // }
 
 
   // TODO Move to GUI object
@@ -318,7 +324,7 @@ public class MainframeCiv
     if (_townReturn.contains(p)) {
       openTown();
     }
-    _frame.redraw();
+//    _frame.redraw();
   }
 
 

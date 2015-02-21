@@ -62,7 +62,8 @@ import civ.MainframeCiv;
  */
 // Mainframe serialization unnecessary
 @SuppressWarnings("serial")
-public class Mainframe extends JFrame implements MouseListener, MouseMotionListener, IHelpText
+public class Mainframe extends JFrame implements MainframeInterface, MouseListener,
+    MouseMotionListener, IHelpText
 {
   /** Reference to this singleton */
   static private Mainframe _mainframe = null;
@@ -178,7 +179,6 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
 
     // Create the Civ
     _mfCiv = new MainframeCiv(this);
-
   }
 
 
@@ -522,6 +522,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   {
     _iop.displayText(msg);
     _imagePanel.setImage(image);
+    redraw();
   }
 
 
@@ -532,6 +533,7 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
   {
     return _mfCiv;
   }
+
 
 
   // /**
@@ -690,11 +692,13 @@ public class Mainframe extends JFrame implements MouseListener, MouseMotionListe
     _imagePanel.setImage(image);
   }
 
+
   public void setBuilding(BuildingRectangle rect)
   {
     _imagePanel.setRectangle(rect);
     redraw();
   }
+
 
   /**
    * Display a title onto the border of the right side image panel. Add one space char on either

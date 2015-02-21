@@ -13,6 +13,8 @@ import hic.IOPanelInterface;
 
 import javax.swing.JTextArea;
 
+import mylib.MsgCtrl;
+
 /**
  * Replaces the IOPanel GUI object with this facade to simulate GUI-CommandParser interactions
  * 
@@ -32,14 +34,14 @@ public class IOPanelProxy implements IOPanelInterface
   public void displayText(String msg)
   {
     _msgOut = msg;
-    System.out.println("msg");
+    MsgCtrl.msgln("\t" + msg);
   }
 
   @Override
   public void displayErrorText(String msg)
   {
     _msgOut = msg;
-    System.err.println(msg);
+    MsgCtrl.errMsgln("\t" + msg);
   }
 
   @Override

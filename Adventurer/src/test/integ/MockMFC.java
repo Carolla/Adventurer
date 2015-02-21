@@ -27,16 +27,16 @@ public class MockMFC extends MainframeCiv
   // Create the super constructor without a Mainframe
   public MockMFC()
   {
-    super();
+    super(new MainframeProxy());
   }
 
   /** Enter the designated building, or the current building if displayed */
-  @Override
-  public void enterBuilding(String bldgName)
-  {
-    // Null is legal parm for this call
-    MsgCtrl.msg(this, "Entering " + bldgName);
-  }
+//  @Override
+//  public void enterBuilding(String bldgName)
+//  {
+//    // Null is legal parm for this call
+//    MsgCtrl.msg(this, "Entering " + bldgName);
+//  }
   
 
   /**

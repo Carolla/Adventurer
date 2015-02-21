@@ -187,7 +187,9 @@ public class CommandParser
     if (cmdIn == null) {
       errorOut(CMD_NULL);
     }
+    else {
       _userInput = cmdIn.trim();
+    }
   }
 
   // ============================================================

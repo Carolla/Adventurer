@@ -27,10 +27,9 @@ import java.awt.event.KeyEvent;
  * <P>
  * 
  * @author Alan Cline
- * @version <DL>
- *          <DT> Build 1.0 Jun 6, 2009 // original <DD> <DT> Build 1.1 May 30, 2010 // added Object
- *          parm overloads <DD>
- *          </DL>
+ * @version Jun 6, 2009 // original <br>
+ *          May 30, 2010 // added Object parm overloads <br>
+ *          Feb 21, 2015 // added getState() <br>
  */
 
 public class MsgCtrl
@@ -126,6 +125,11 @@ public class MsgCtrl
     ERROR_SUPPRESS = !state;
   }
 
+//  /** Get the state so other objects may remain consistent with their messaging */
+//  public boolean getState()
+//  {
+//    return state;
+//  }
 
   /**
    * Debug class to see event and source of it
