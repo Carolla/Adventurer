@@ -185,6 +185,7 @@ public class CommandParser
   {
     // Guard
     if (cmdIn == null) {
+      _userInput = null;    // clear so that same input isn't used twice
       errorOut(CMD_NULL);
     }
     else {
@@ -222,6 +223,9 @@ public class CommandParser
   private String extractCommandLine(String ip)
   {
     String cmdString = parse(ip);
+    if (cmdString == null) {
+      errorOut(CMD_NULL);
+    }
     _userInput = null;
     return cmdString;
   }
@@ -362,7 +366,6 @@ public class CommandParser
     public MockCP()
     {}
 
-
     /** Get the non-static input command */
     public String getInput()
     {
@@ -376,17 +379,17 @@ public class CommandParser
       return CommandParser._skedder;
     }
 
-    /** Get the contents of the CMD_ERROR msg */
-    public String getErrorMsg()
-    {
-      return CommandParser.this.CMD_ERROR;
-    }
-
-    /** Get error msg for null input */
-    public String getNullMsg()
-    {
-      return CommandParser.this.CMD_NULL;
-    }
+//    /** Get the contents of the CMD_ERROR msg */
+//    public String getErrorMsg()
+//    {
+//      return CommandParser.this.errName;
+//    }
+//
+//    /** Get error msg for null input */
+//    public String getNullMsg()
+//    {
+//      return CommandParser.this.CMD_NULL;
+//    }
 
   
   } // end of MockCP inner class

@@ -101,13 +101,8 @@ public class CmdEnter extends Command
   public boolean init(List<String> args) throws NullPointerException
   {
     System.out.println("\tCmdEnter.init()...");
-    // THis needs to be a MainframeInterface
-//    _bldgCiv = BuildingDisplayCiv.getInstance(Mainframe.getInstance());
     // The BuildingDisplayCiv must already exist
-    _bldgCiv = BuildingDisplayCiv.getRef();
-    if (_bldgCiv == null) {
-      throw new NullPointerException("BuildingDisplayCiv does not yet exist");
-    }
+    _bldgCiv = BuildingDisplayCiv.getInstance();
     _currentBuilding = _bldgCiv.getCurrentBuilding();
     // If no current building and not specified, error 
     if ((args.size() == 0) && (_currentBuilding == null)) {

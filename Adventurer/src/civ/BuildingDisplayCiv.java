@@ -42,40 +42,39 @@ public class BuildingDisplayCiv
 
 
   /**
-   * Constructor
-   * 
-   * @param takes display and text 
+   * This object takes a MainframeInterface GUI object to receive image and text output. It uses the
+   * command {@setOutput()} because not all callers of this object have or know which one it is. In
+   * almost all cases, the output GUI is {@code hic.Mainframe}, which implements
+   * {@code MainframeInterface}.
    */
-  private BuildingDisplayCiv(MainframeInterface mf)
+  private BuildingDisplayCiv()
   {
-    // Get the Mainframe for display of images and text
-    _frame = mf;
     RegistryFactory regFactory = RegistryFactory.getInstance();
     // Get the BuildingRegistry for retrieving the proper building
     _bReg = (BuildingRegistry) regFactory.getRegistry(RegKey.BLDG);
     _currentBldg = null;
   }
 
+  /**
+   * Set the hic output device (or a test proxy after the object is created
+   * 
+   * @param mf the generic socket for receiving image and text outputs
+   */
+  public void setOutput(MainframeInterface mf)
+  {
+    _frame = mf;
+  }
+
 
   /**
    * Is a singleton so that any command can get to it. All commands occur in the context of some
-   * building
+   * building. The output display object is set through {@code setOutput(MainframeInterface)}.
    */
-  static public BuildingDisplayCiv getInstance(MainframeInterface mf)
+  static public BuildingDisplayCiv getInstance()
   {
     if (_bldgDspCiv == null) {
-      _bldgDspCiv = new BuildingDisplayCiv(mf);
+      _bldgDspCiv = new BuildingDisplayCiv();
     }
-    return _bldgDspCiv;
-  }
-
-  /**
-   * Constructor
-   * 
-   * @param takes display and text 
-   */
-  static public BuildingDisplayCiv getRef()
-  {
     return _bldgDspCiv;
   }
 
@@ -145,24 +144,24 @@ public class BuildingDisplayCiv
   // =============================================================
 
   /**
-     * Display the bulding's image (exterior or interiod) in the frame's image panel and
-     * 
-     * @param description description of the building's interior or exterior
-     * @param imagePath image of the building's exterior or interior room
-     */
-    private void displayBuilding(String description, String imagePath)
-    {
-      if ((description.length() > 0) && (imagePath.length() > 0)) {
-        String bldgName = _bldg.getName();
-  //      _frame.setImage(Util.convertToImage(imagePath));
-        _frame.setImage(Util.convertToImage(imagePath));
-        _frame.setImageTitle(bldgName);
-        _frame.displayText(description);
-      } else {
-        _frame.displayErrorText("Unabled to display building " + _bldg);
-      }
-  //    _frame.redraw(); // this is pure GUI, s.b. in Mainframe, not here
+   * Display the bulding's image (exterior or interiod) in the frame's image panel and
+   * 
+   * @param description description of the building's interior or exterior
+   * @param imagePath image of the building's exterior or interior room
+   */
+  private void displayBuilding(String description, String imagePath)
+  {
+    if ((description.length() > 0) && (imagePath.length() > 0)) {
+      String bldgName = _bldg.getName();
+      // _frame.setImage(Util.convertToImage(imagePath));
+      _frame.setImage(Util.convertToImage(imagePath));
+      _frame.setImageTitle(bldgName);
+      _frame.displayText(description);
+    } else {
+      _frame.displayErrorText("Unabled to display building " + _bldg);
     }
+    // _frame.redraw(); // this is pure GUI, s.b. in Mainframe, not here
+  }
 
 
   public class MockBldgCiv
