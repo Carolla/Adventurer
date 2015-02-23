@@ -78,7 +78,7 @@ public class Scheduler implements Runnable
    *        scheduling.
    * @return Scheduler singleton with link to the {@code CommandParser}.
    */
-  public static synchronized Scheduler createInstance(CommandParser parser)
+  public static synchronized Scheduler getInstance(CommandParser parser)
   {
     if (_sched == null) {
       _sched = new Scheduler();
@@ -88,19 +88,19 @@ public class Scheduler implements Runnable
   }
 
 
-  /**
-   * Gets an existing {@code Scheduler} reference, which will be used to schedule commands triggered
-   * by other commands. If the {@code Scheduler} doesn't exist, an error message is displayed.
-   * 
-   * @return Scheduler reference to singleton object
-   */
-  public static synchronized Scheduler getInstance()
-  {
-    if (_sched == null) {
-      System.err.println("The Scheduler object does not yet exist.");
-    }
-    return _sched;
-  }
+//  /**
+//   * Gets an existing {@code Scheduler} reference, which will be used to schedule commands triggered
+//   * by other commands. If the {@code Scheduler} doesn't exist, an error message is displayed.
+//   * 
+//   * @return Scheduler reference to singleton object
+//   */
+//  public static synchronized Scheduler getInstance()
+//  {
+//    if (_sched == null) {
+//      System.err.println("The Scheduler object does not yet exist.");
+//    }
+//    return _sched;
+//  }
 
 
   /*
@@ -170,7 +170,7 @@ public class Scheduler implements Runnable
         // If CmdEnd, then return to CommandParser to get another User command;
         // then add a CmdEnd to trigger a new user command after newCmd is executed
         if (cmdToDo.getName().equalsIgnoreCase(CMDEND) == true) {
-          Command newUserCmd = _sched._cp.getUserCommand();
+          Command newUserCmd = _cp.getUserCommand();
           // Wait and cycle again if nothing has been input
           if (newUserCmd == null) {
             Thread.sleep(500);

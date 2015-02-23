@@ -83,7 +83,7 @@ public class CmdQuit extends Command
   @Override
   public boolean exec()
   {
-    super._mfCiv.quit();
+//    super._mfCiv.quit();
     return true;
   }
   

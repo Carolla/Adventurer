@@ -11,13 +11,10 @@
 
 package pdc.command; // This package value is needed by the subcommands; see _cmdPackage field
 
-import hic.Mainframe;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import civ.CommandParser;
-import civ.MainframeCiv;
 
 
 /**
@@ -85,19 +82,16 @@ public abstract class Command
   /** The syntax of the command, used in the <code>usage()</code> method. */
   protected String _cmdfmt = null;
   /** MainframeCiv handles errors and messages to {@code hic.IOPanel} */
-  protected MainframeCiv _mfCiv;
+//  protected MainframeCiv _mfCiv;
   /** CommandParser redirects all errors and messages to {@code hic.IOPanel} */
   protected CommandParser _cp;
+  /** CommandParser redirects all errors and messages to {@code hic.IOPanel} */
+  protected CommandParser _msgHandler;
 
   // ============================================================
   // PUBLIC METHODS
   // ============================================================
 
-  /** Default constructor */
-  public Command()
-  {
-    _mfCiv = Mainframe.getInstance().getMainframeCiv();
-  }
 
   /**
    * Creates a Command based on its name, and assigns it a delay and duration of effect; also
@@ -117,16 +111,13 @@ public abstract class Command
       throw new NullPointerException("Invalid parms in Command constructor");
     }
     // Assign formal arg values
-    this._name = name;
-    this._delay = delay;
-    this._duration = duration;
-    this._description = desc;
-    this._cmdfmt = fmt;
+    _name = name;
+    _delay = delay;
+    _duration = duration;
+    _description = desc;
+    _cmdfmt = fmt;
     // Initialize internal attributes
-    this._parms = new ArrayList<String>();
-    // Set message handling civ
-    // _mfCiv = Mainframe.getInstance().getMainframeCiv();
-
+    _parms = new ArrayList<String>();
   }
 
   // ============================================================
@@ -157,6 +148,11 @@ public abstract class Command
   // PUBLIC METHODS
   // ============================================================
 
+  /** Combine multiple args input to single-String parm
+   * 
+   * @param args words that follow the command token
+   * @return a single command parm string
+   */
   public String convertArgsToString(List<String> args)
   {
     StringBuffer parmString = new StringBuffer();
@@ -164,7 +160,7 @@ public abstract class Command
       parmString.append(args.get(k));
       parmString.append(" ");
     }
-    return parmString.toString().trim(); // removing appending space
+    return parmString.toString().trim(); // removing enveloping space
   }
 
   /**
@@ -217,6 +213,18 @@ public abstract class Command
     _delay = newDelay;
   }
 
+
+  /**
+   * Attach the text Handler for messages and text to the command
+   * 
+   * @param newDelay the time that will override the current delay
+   */
+  public void setMsgHandler(CommandParser cp)
+  {
+    _msgHandler = cp;
+  }
+
+  
   // ============================================================
   // PROTECTED METHODS
   // ============================================================

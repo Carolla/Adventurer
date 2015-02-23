@@ -13,6 +13,8 @@ import hic.IOPanelInterface;
 
 import javax.swing.JTextArea;
 
+import mylib.MsgCtrl;
+
 /**
  * Replaces the IOPanel GUI object with this facade to simulate GUI-CommandParser interactions
  * 
@@ -22,7 +24,7 @@ import javax.swing.JTextArea;
 public class IOPanelProxy implements IOPanelInterface
 {
   /** Buffer for holding messages for auditing */
-  private String _msgOut;
+  static private String _msgOut;
 
   /** Default constructor */
   public IOPanelProxy()
@@ -32,14 +34,14 @@ public class IOPanelProxy implements IOPanelInterface
   public void displayText(String msg)
   {
     _msgOut = msg;
-    System.out.println("msg");
+    MsgCtrl.msgln("\t" + msg);
   }
 
   @Override
   public void displayErrorText(String msg)
   {
     _msgOut = msg;
-    System.err.println(msg);
+    MsgCtrl.errMsgln("\t" + msg);
   }
 
   @Override
@@ -59,14 +61,15 @@ public class IOPanelProxy implements IOPanelInterface
   /**
    * Return last message out and clear buffer
    * 
-   * @return whatever msg was last intended for theGUI
+   * @return whatever message was last intended for the GUI
    */
   public String msgOut()
   {
+    return _msgOut;
     // Save msg to return after clearing msg buffer
-    String tmp = _msgOut;
-    _msgOut = null;
-    return tmp;
+//    String tmp = _msgOut;
+//    _msgOut = null;
+//    return tmp;
   }
 
 

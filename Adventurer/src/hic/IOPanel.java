@@ -61,7 +61,7 @@ public class IOPanel extends JPanel implements IOPanelInterface
   /**
    * Creates output test panel and input CommandLine Input panel
    */
-  public IOPanel()
+  public IOPanel() 
   {
     setLayout(new MigLayout("", "[grow]", "[][]"));
     _output = new JTextArea();

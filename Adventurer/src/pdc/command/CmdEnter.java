@@ -13,28 +13,30 @@ package pdc.command;
 
 import java.util.List;
 
+import chronos.pdc.buildings.Building;
 import civ.BuildingDisplayCiv;
 
 
 /**
  * Moves the Hero from outside the Building (or Town) being displayed to inside, and displays its
- * interior description and image.
+ * interior description and image. If no building is specified (no parm), the current building is
+ * assumed; if there is no current building, that is, at the town view, then an error msg. If the
+ * Hero is already in the targeted building, then only an info message is displaed. If the Hero
+ * tries to jump from inside one building to inside another, he gets an error message saying
+ * he has to leave one before he can enter another. <br>
  * <P>
- * Format: ENTER (current Building name | current Building type) <br>
+ * Format: ENTER [current Building name | current Building type] <br>
  * where:
  * <UL>
  * <LI>Building Name is the actual string name of the Building, and is Adventure specific;</LI>
  * <LI>Building Type is the Building class, e.g., Inn, Bank, Jail;</LI>
  * </UL>
- * If no arguments are given, the type of the currently displayed Building is assumed. The command
- * string is case-insensitive. If the user enters 'the' in front of the building name or type, it
- * will check with and without this word; e.g., "ENTER the Jail" is the same as "ENTER Jail". See
- * {@code init()} method, unless the word "the" is part of the building's name.
  * 
  * @author Alan Cline
  * @version Mar 19 2014 // original <br>
  *          Aug 23, 2014 // updated {@code init} method to handle IOPanel for outputs <br>
  *          Aug 30, 2014 // updated {@code exec} method to handle current building <br>
+ *          Feb 18, 2015 // updated to handle common IOPanel for text outputs <br>
  * 
  * @see Command
  */
@@ -42,20 +44,31 @@ public class CmdEnter extends Command
 {
   // THESE CONSTANTS MUST BE STATIC BECAUSE THEY ARE CALLED IN THE CONSTRUCTOR
   /** The description of what the command does, used in the {@code help()} method. */
-  static final String CMD_DESCRIPTION = "Enter into the Building of choice.";
-  /** This command starts immediately, requiring no delay. */
-  static final int DELAY = 0;
-  /** This command takes 10 seconds on the game clock. */
-  static final int DURATION = 30;
-  /** Format for this command */
+  static private final String CMD_DESCRIPTION = "Enter into the Building of choice.";
+  /** Format for this command; null building defaults to current building */
   static private final String CMDFMT = "ENTER [Building Name | Building Type]";
+  /** This command starts immediately, requiring no delay. */
+  static private final int DELAY = 0;
+  /** This command takes 10 seconds on the game clock. */
+  static private final int DURATION = 30;
 
+  /** Building accesses and displays are controlled by the BuildingDisplayCiv */
+  BuildingDisplayCiv _bldgCiv;
+
+  /** The building currently displayed, either inside or outside */
+  private Building _currentBuilding = null;
   /** The building to enter */
-  private String _targetBldg = null;
+  private String _targetBldg;
 
   /** Error message if no current building to enter */
   private final String ERRMSG_NOBLDG =
       "I see no building here. What building did you want to enter?";
+  /** Message if already in designated building */
+  private final String ERRMSG_SAMEBLDG =
+      "You are in that building.";
+  /** Message if trying to jump fron interior to interior of buldings */
+  private final String ERRMSG_JUMPBLDG =
+      "You must leave this building before you enter another.";
 
 
   // ============================================================
@@ -75,23 +88,25 @@ public class CmdEnter extends Command
   // ============================================================
 
   /**
-   * Enters the current building. There can be 0 or many args in the arglist. If an arg is not
-   * specified, then the current Building is assumed. If more than one argument is specified, then
-   * they are all assumed to be part of the name. The word Building is checked with and without the
-   * word 'the', in case it is part of the name of the Building.
+   * There can be 0 or many args in the arglist. If an arg is not specified, then the current
+   * Building is assumed. If more than one argument is specified, then they are all assumed to be
+   * part of the name. The word Building is checked with and without the word 'the', in case it is
+   * part of the name of the Building. If the Hero specified the building he is already in, invokes
+   * on an info message.
    * 
    * @param args if empty, then use current Building; otherwise gets Building specified;
-   * @param mfCiv
    * @return true if all worked, else returns false on input error
    */
   @Override
-  public boolean init(List<String> args)
+  public boolean init(List<String> args) throws NullPointerException
   {
     System.out.println("\tCmdEnter.init()...");
-    BuildingDisplayCiv bdciv = BuildingDisplayCiv.getInstance();
-    // Get the Building parm, or null
-      if ((args.size() == 0) || (bdciv.getCurrentBuilding() == null)) {
-      super._cp.errorOut(ERRMSG_NOBLDG);
+    // The BuildingDisplayCiv must already exist
+    _bldgCiv = BuildingDisplayCiv.getInstance();
+    _currentBuilding = _bldgCiv.getCurrentBuilding();
+    // If no current building and not specified, error 
+    if ((args.size() == 0) && (_currentBuilding == null)) {
+      super._msgHandler.errorOut(ERRMSG_NOBLDG);
       return false;
     }
     _targetBldg = convertArgsToString(args);
@@ -104,10 +119,11 @@ public class CmdEnter extends Command
   {
     System.out.println("\tCmdEnter.exec()...");
     // Null is legal parm for this call
-    super._mfCiv.enterBuilding(_targetBldg);
+    // super._mfCiv.enterBuilding(_targetBldg);
+    _bldgCiv.enterBuilding(_targetBldg);
     return true;
   }
 
 
-} // end CmdQuit class
+} // end CmdEnter class
 
