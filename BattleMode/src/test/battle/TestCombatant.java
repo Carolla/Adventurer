@@ -18,9 +18,9 @@ public class TestCombatant
         assertTrue(a.isUnconscious());
     }
     
-    @Test
-    public void CombatantIsDefeatedWhenEscapingBattle()
-    {
-        fail("Not yet implemented");
-    }
+//    @Test
+//    public void CombatantIsDefeatedWhenEscapingBattle()
+//    {
+//        fail("Not yet implemented");
+//    }
 }

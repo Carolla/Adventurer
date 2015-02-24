@@ -37,7 +37,25 @@ public class Battle {
 		    _enemy.displayHP();
 		    _enemy.takeTurn(_player, this);
 		    _player.displayHP();
+		} else {
+			if (isWinner(_player)) {
+				displayHeroVictory();
+			}
+			return;
 		}
+		
+		if (!isOngoing())
+		{
+			displayEnemyVictory();
+		}
+	}
+
+	private void displayHeroVictory() {
+		System.out.println("You have won!");
+	}
+
+	private void displayEnemyVictory() {
+		System.out.println("The enemy has won...");
 	}
 
 	public boolean isWinner(Combatant combatant) {

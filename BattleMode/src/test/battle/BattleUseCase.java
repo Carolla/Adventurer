@@ -44,7 +44,7 @@ public class BattleUseCase {
 	@Test
 	public void ThePlayerWantsToDoCombatWithTheEnemy()
 	{
-	    MsgCtrl.msgln("ThePlayerWantsToDoCombatWithTheEnemy()");
+	    MsgCtrl.msgln("\n\nThePlayerWantsToDoCombatWithTheEnemy()");
 		Combatant player = new DummyCombatant(true);
 		Combatant enemy = new DummyCombatant(false);
 		Battle battle = new Battle(player, enemy);
@@ -55,7 +55,7 @@ public class BattleUseCase {
 	@Test
 	public void ThePlayerWantsToDefeatTheEnemyInBattle()
 	{
-	    MsgCtrl.msgln("ThePlayerWantsToDefeatTheEnemyInBattle()");
+	    MsgCtrl.msgln("\n\nThePlayerWantsToDefeatTheEnemyInBattle()");
 		Combatant player = new DummyCombatant(true);
 		Combatant enemy = new DummyCombatant(false);
 		Battle battle = new Battle(player, enemy);
@@ -67,7 +67,7 @@ public class BattleUseCase {
 	@Test
 	public void ThePlayerWantsToDamageTheEnemyInBattle()
 	{
-        MsgCtrl.msgln("ThePlayerWantsToDamageTheEnemyInBattle()");
+        MsgCtrl.msgln("\n\nThePlayerWantsToDamageTheEnemyInBattle()");
 		Combatant player = new AutoCombatant(CombatantType.HERO);
 		Combatant enemy = new AutoCombatant(CombatantType.ENEMY);
 		Battle battle = new Battle(player, enemy);
@@ -81,7 +81,7 @@ public class BattleUseCase {
 	@Test
 	public void ThePlayerWantsToKnockTheEnemyUnconscious() 
 	{
-        MsgCtrl.msgln("ThePlayerWantsToKnockTheEnemyUnconscious()");
+        MsgCtrl.msgln("\n\nThePlayerWantsToKnockTheEnemyUnconscious()");
 		Combatant player = new AutoCombatant(CombatantType.HERO);
 		Combatant enemy = new AutoCombatant(CombatantType.WEAK_ENEMY);
 		Battle battle = new Battle(player, enemy);
@@ -96,7 +96,7 @@ public class BattleUseCase {
 	@Test
 	public void TheDMWantsThePlayerToBeDefeatedByTheEnemy() 
 	{
-        MsgCtrl.msgln("ThePlayerWantsToKnockTheEnemyUnconscious()");
+        MsgCtrl.msgln("\n\nThePlayerWantsToKnockTheEnemyUnconscious()");
 		Combatant player = new AutoCombatant(CombatantType.FEEBLE_HERO);
 		Combatant enemy = new AutoCombatant(CombatantType.STRONG_ENEMY);
 		Battle battle = new Battle(player, enemy);
@@ -110,7 +110,7 @@ public class BattleUseCase {
 	@Test
 	public void TheDMWantsThePlayerToBeHitByTheEnemy() { }
 	{
-        MsgCtrl.msgln("TheDMWantsThePlayerToBeHitByTheEnemy()");
+        MsgCtrl.msgln("\n\nTheDMWantsThePlayerToBeHitByTheEnemy()");
 		Combatant player = new AutoCombatant(CombatantType.HERO);
 		Combatant enemy = new AutoCombatant(CombatantType.STRONG_ENEMY);
 		Battle battle = new Battle(player, enemy);
@@ -124,7 +124,7 @@ public class BattleUseCase {
 	@Test
 	public void TheDMWantsThePlayerToBeKnockedOutByTheEnemy() 
 	{
-        MsgCtrl.msgln("TheDMWantsThePlayerToBeKnockedOutByTheEnemy()");
+        MsgCtrl.msgln("\n\nTheDMWantsThePlayerToBeKnockedOutByTheEnemy()");
 		Combatant player = new AutoCombatant(CombatantType.FEEBLE_HERO);
 		Combatant enemy = new AutoCombatant(CombatantType.STRONG_ENEMY);
 		Battle battle = new Battle(player, enemy);
@@ -138,9 +138,9 @@ public class BattleUseCase {
 	@Test
 	public void ThePlayerWantsToEscapeIfAboutToDie()
 	{
-        MsgCtrl.msgln("TheDMWantsThePlayerToBeKnockedOutByTheEnemy()");
+        MsgCtrl.msgln("\n\nTheDMWantsThePlayerToBeKnockedOutByTheEnemy()");
 		Combatant player = new AutoCombatant(CombatantType.FEEBLE_HERO);
-		Combatant enemy = new AutoCombatant(CombatantType.WEAK_ENEMY);
+		Combatant enemy = new AutoCombatant(CombatantType.AUTO_HIT);
 		Battle battle = new Battle(player, enemy);
 		assertFalse(player.isUnconscious());
 		assertFalse(battle.combatantEscaped(player));
