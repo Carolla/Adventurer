@@ -3,7 +3,6 @@ package test.battle;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import mylib.MsgCtrl;
 
 import org.junit.Before;
@@ -96,7 +95,27 @@ public class TestBattle {
 	@Test
 	public void BattleEndWhenOneCombatantEscapes()
 	{
-	   fail("Not yet implemented."); 
+        Combatant player = new AutoCombatant(CombatantType.FEEBLE_HERO);
+        Combatant enemy = new AutoCombatant(CombatantType.WEAK_ENEMY);
+        Battle battle = new Battle(player, enemy);
+        assertFalse(battle.combatantEscaped(player));
+        while (battle.isOngoing()) {
+            battle.advance();
+        }
+        assertTrue(battle.combatantEscaped(player));
+	}
+	
+	@Test
+	public void CombatantsCanStartWithDifferentHP()
+	{
+        Combatant player = new AutoCombatant.CombatantBuilder(CombatantType.AUTO_HIT).withHP(10).build();
+        Combatant enemy = new AutoCombatant.CombatantBuilder(CombatantType.AUTO_HIT).withHP(9).build();
+        Battle battle = new Battle(player, enemy);
+        while (battle.isOngoing()) {
+            battle.advance();
+        }
+        assertFalse(player.isDefeated());
+        assertTrue(enemy.isDefeated());
 	}
 	
 	private Battle SetupBasicBattle() 

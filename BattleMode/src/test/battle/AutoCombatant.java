@@ -13,7 +13,7 @@ public class AutoCombatant implements Combatant {
     private final CombatantType _type;
     private MetaDie _metadie;
 
-    public enum CombatantType {HERO, ENEMY, STRONG_ENEMY, WEAK_ENEMY, FEEBLE_HERO};
+    public enum CombatantType {HERO, ENEMY, STRONG_ENEMY, WEAK_ENEMY, FEEBLE_HERO, AUTO_HIT};
 
 	/**
 	 */
@@ -22,7 +22,30 @@ public class AutoCombatant implements Combatant {
 	    _type = type;
 	    _metadie = new MetaDie();
 	}
-
+	
+	public static class CombatantBuilder
+	{
+		private int withHp;
+		private CombatantType withType;
+		public CombatantBuilder(CombatantType type)
+		{
+			withType = type;
+		}
+		
+		public CombatantBuilder withHP(int hp)
+		{
+			withHp = hp;
+			return this;
+		}
+		
+		public Combatant build()
+		{
+			AutoCombatant auto = new AutoCombatant(withType);
+			auto._hp = withHp;
+			return auto;
+		}
+	}
+	
     public int getTurnCount()
     {
        return _turnCount;
@@ -88,6 +111,8 @@ public class AutoCombatant implements Combatant {
             return new Attack(_metadie.getRandom(10, 12), 2);
         } else if (_type == CombatantType.WEAK_ENEMY) {
             return new Attack(_metadie.getRandom(4, 11), 1);
+        } else if (_type == CombatantType.AUTO_HIT) {
+        	return new Attack(20, 1);
         } else {
             return new Attack(_metadie.getRandom(6, 12), _metadie.getRandom(1,3));
         }
