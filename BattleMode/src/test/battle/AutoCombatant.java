@@ -10,19 +10,83 @@ public class AutoCombatant implements Combatant {
 	private int _hp = 10;
     private int _turnCount = 0;
     private int _ac = 10;
-    private final CombatantType _type;
+	private int _initiative = 10;
+    private CombatantType _type = CombatantType.HERO;
+	private CombatantAttack _attack = CombatantAttack.NORMAL;
+	private CombatantDamage _dmg = CombatantDamage.NORMAL;
     private MetaDie _metadie;
+	private boolean _shouldTryEscaping = false;
 
-    public enum CombatantType {HERO, ENEMY, STRONG_ENEMY, WEAK_ENEMY, FEEBLE_HERO};
-
+    public enum CombatantType {HERO, ENEMY};
+    public enum CombatantAttack {AUTO_MISS, CLUMSY, NORMAL, ACCURATE, AUTO_HIT};
+    public enum CombatantDamage {WEAK, NORMAL, STRONG};
+    
 	/**
 	 */
-	public AutoCombatant(CombatantType type)
+	private AutoCombatant(CombatantType type)
 	{
 	    _type = type;
 	    _metadie = new MetaDie();
 	}
+	
+	public static class CombatantBuilder
+	{
+		private int withHp = 10;
+		private int withInitiative = 10;
+		private boolean withEscape = false;
+		private CombatantAttack withAttack = CombatantAttack.NORMAL;
+		private CombatantDamage withDmg = CombatantDamage.NORMAL;
+		private CombatantType withType = CombatantType.HERO;
+		
+		public CombatantBuilder() { }
+		
+		public CombatantBuilder withType(CombatantType type)
+		{
+			withType = type;
+			return this;
+		}
+		
+		public CombatantBuilder withHP(int hp)
+		{
+			withHp = hp;
+			return this;
+		}
+		
+		public CombatantBuilder shouldTryEscaping()
+		{
+			withEscape = true;
+			return this;
+		}
+		
+		public CombatantBuilder withHit(CombatantAttack attack)
+		{
+			withAttack = attack;
+			return this;
+		}
+		
+		public CombatantBuilder withDamage(CombatantDamage dmg)
+		{
+			withDmg = dmg;
+			return this;
+		}
+		
+		public AutoCombatant build()
+		{
+			AutoCombatant auto = new AutoCombatant(withType);
+			auto._hp = withHp;
+			auto._dmg = withDmg;
+			auto._attack = withAttack;
+			auto._shouldTryEscaping = withEscape;
+			auto._initiative = withInitiative;
+			return auto;
+		}
 
+		public CombatantBuilder withInitiative(int initiative) {
+			withInitiative = initiative;
+			return this;
+		}
+	}
+	
     public int getTurnCount()
     {
        return _turnCount;
@@ -54,7 +118,7 @@ public class AutoCombatant implements Combatant {
 
     private void tryToEscape(Battle battle)
     {
-        if (_type == CombatantType.HERO || _type == CombatantType.FEEBLE_HERO)
+        if (_type == CombatantType.HERO)
         {
             System.out.print("You try to escape.  ");
             if (battle.escape(this)) {
@@ -70,27 +134,53 @@ public class AutoCombatant implements Combatant {
 
     private boolean shouldAttack()
     {
-        if (_type == CombatantType.HERO || _type == CombatantType.FEEBLE_HERO)
-        {
-            return _hp > 1;
-        } else {
-            return true;
-        }
+    	if (_shouldTryEscaping)
+    	{
+    		return _hp > 1;
+    	} else {
+    		return true;
+    	}
     }
 
     private Attack makeAttackRoll()
     {
-        if (_type == CombatantType.HERO) {
-            return new Attack(_metadie.getRandom(8, 14), _metadie.getRandom(1,2));
-        } else if (_type == CombatantType.FEEBLE_HERO) {
-            return new Attack(0,0);
-        } else if (_type == CombatantType.STRONG_ENEMY) {
-            return new Attack(_metadie.getRandom(10, 12), 2);
-        } else if (_type == CombatantType.WEAK_ENEMY) {
-            return new Attack(_metadie.getRandom(4, 11), 1);
-        } else {
-            return new Attack(_metadie.getRandom(6, 12), _metadie.getRandom(1,3));
-        }
+    	int damage = 0;
+    	int attack = 0;
+    	
+    	switch(_dmg)
+    	{
+    	case NORMAL:
+    		damage = _metadie.getRandom(1,4);
+    		break;
+    	case STRONG:
+    		damage = _metadie.getRandom(2,6);
+    		break;
+    	case WEAK:
+    	default:
+    		damage = 1;
+    		break;
+    	}
+    	
+    	switch(_attack)
+    	{
+    	case AUTO_MISS:
+    		attack = 0;
+    		break;
+    	case CLUMSY:
+    		attack = _metadie.getRandom(6,12);
+    		break;
+    	case NORMAL:
+    		attack = _metadie.getRandom(1,20);
+    		break;
+    	case ACCURATE:
+    		attack = _metadie.getRandom(9,20);
+    		break;
+    	case AUTO_HIT:
+    		attack = 20;
+    		break;
+    	}
+    	
+    	return new Attack(attack, damage);
     }
 
     @Override
@@ -109,20 +199,18 @@ public class AutoCombatant implements Combatant {
 
     private void displayMiss()
     {
-        if (_type == CombatantType.HERO || _type == CombatantType.FEEBLE_HERO) {
+        if (_type == CombatantType.HERO) {
             System.out.print("The enemy missed.  ");
-        }
-        else {
+        } else {
             System.out.print("You missed.  ");
         }
     }
 
     private void displayHit(int damage)
     {
-        if (_type == CombatantType.HERO || _type == CombatantType.FEEBLE_HERO) {
+        if (_type == CombatantType.HERO) {
             System.out.print("The enemy hit you for " + damage + " damage.  ");
-        }
-        else {
+        } else {
             System.out.print("You hit the enemy for " + damage + " damage.  ");
         }
     }
@@ -136,10 +224,32 @@ public class AutoCombatant implements Combatant {
     @Override
     public void displayHP()
     {
-        if (_type == CombatantType.HERO || _type == CombatantType.FEEBLE_HERO) {
+        if (_type == CombatantType.HERO) {
             System.out.println("You have " + _hp + " HP left.");
         } else {
             System.out.println("The enemy has " + _hp + " HP left.");
         }        
     }
+
+	@Override
+	public void displayVictory() {
+		// TODO Auto-generated method stub
+
+		switch (_type) 
+		{
+		case HERO:
+			System.out.println("You have won!");
+			break;
+		case ENEMY:
+		default:
+			System.out.println("The enemy has won...");
+			break;
+		}
+		
+	}
+
+	@Override
+	public int rollInitiative() {
+		return _initiative;
+	}
 }

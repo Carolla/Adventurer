@@ -44,5 +44,16 @@ public interface Combatant {
      */
     void displayHP();
 
+    /**
+     * Write to the console when victory is complete
+     */
+	public void displayVictory();
+
+	/**
+	 * At the start of battle, or when surprised, determine order in battle
+	 * @return the number of initiative roll
+	 */
+	public int rollInitiative();
+
 
 }

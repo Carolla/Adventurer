@@ -7,6 +7,8 @@ import mylib.MsgCtrl;
 import org.junit.Before;
 import org.junit.Test;
 
+import test.battle.AutoCombatant.CombatantAttack;
+import test.battle.AutoCombatant.CombatantDamage;
 import test.battle.AutoCombatant.CombatantType;
 import battle.Battle;
 import battle.Combatant;
@@ -44,7 +46,7 @@ public class BattleUseCase {
 	@Test
 	public void ThePlayerWantsToDoCombatWithTheEnemy()
 	{
-	    MsgCtrl.msgln("ThePlayerWantsToDoCombatWithTheEnemy()");
+	    MsgCtrl.msgln("\n\nThePlayerWantsToDoCombatWithTheEnemy()");
 		Combatant player = new DummyCombatant(true);
 		Combatant enemy = new DummyCombatant(false);
 		Battle battle = new Battle(player, enemy);
@@ -55,7 +57,7 @@ public class BattleUseCase {
 	@Test
 	public void ThePlayerWantsToDefeatTheEnemyInBattle()
 	{
-	    MsgCtrl.msgln("ThePlayerWantsToDefeatTheEnemyInBattle()");
+	    MsgCtrl.msgln("\n\nThePlayerWantsToDefeatTheEnemyInBattle()");
 		Combatant player = new DummyCombatant(true);
 		Combatant enemy = new DummyCombatant(false);
 		Battle battle = new Battle(player, enemy);
@@ -67,9 +69,9 @@ public class BattleUseCase {
 	@Test
 	public void ThePlayerWantsToDamageTheEnemyInBattle()
 	{
-        MsgCtrl.msgln("ThePlayerWantsToDamageTheEnemyInBattle()");
-		Combatant player = new AutoCombatant(CombatantType.HERO);
-		Combatant enemy = new AutoCombatant(CombatantType.ENEMY);
+        MsgCtrl.msgln("\n\nThePlayerWantsToDamageTheEnemyInBattle()");
+		Combatant player = new AutoCombatant.CombatantBuilder().build();
+		Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).build();
 		Battle battle = new Battle(player, enemy);
 		assertTrue(enemy.hasFullHP());
 		while (battle.isOngoing()) {
@@ -81,9 +83,9 @@ public class BattleUseCase {
 	@Test
 	public void ThePlayerWantsToKnockTheEnemyUnconscious() 
 	{
-        MsgCtrl.msgln("ThePlayerWantsToKnockTheEnemyUnconscious()");
-		Combatant player = new AutoCombatant(CombatantType.HERO);
-		Combatant enemy = new AutoCombatant(CombatantType.WEAK_ENEMY);
+        MsgCtrl.msgln("\n\nThePlayerWantsToKnockTheEnemyUnconscious()");
+		Combatant player = new AutoCombatant.CombatantBuilder().build();
+		Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withHit(CombatantAttack.AUTO_MISS).build();
 		Battle battle = new Battle(player, enemy);
 		assertTrue(enemy.hasFullHP());
 		while (battle.isOngoing()) {
@@ -96,9 +98,9 @@ public class BattleUseCase {
 	@Test
 	public void TheDMWantsThePlayerToBeDefeatedByTheEnemy() 
 	{
-        MsgCtrl.msgln("ThePlayerWantsToKnockTheEnemyUnconscious()");
-		Combatant player = new AutoCombatant(CombatantType.FEEBLE_HERO);
-		Combatant enemy = new AutoCombatant(CombatantType.STRONG_ENEMY);
+        MsgCtrl.msgln("\n\nThePlayerWantsToKnockTheEnemyUnconscious()");
+		Combatant player = new AutoCombatant.CombatantBuilder().withHP(2).build();
+		Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withHit(CombatantAttack.AUTO_HIT).build();
 		Battle battle = new Battle(player, enemy);
 		assertFalse(player.isDefeated());
 		while (battle.isOngoing()) {
@@ -110,9 +112,9 @@ public class BattleUseCase {
 	@Test
 	public void TheDMWantsThePlayerToBeHitByTheEnemy() { }
 	{
-        MsgCtrl.msgln("TheDMWantsThePlayerToBeHitByTheEnemy()");
-		Combatant player = new AutoCombatant(CombatantType.HERO);
-		Combatant enemy = new AutoCombatant(CombatantType.STRONG_ENEMY);
+        MsgCtrl.msgln("\n\nTheDMWantsThePlayerToBeHitByTheEnemy()");
+		Combatant player = new AutoCombatant.CombatantBuilder().build();
+		Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withHit(CombatantAttack.AUTO_HIT).build();
 		Battle battle = new Battle(player, enemy);
 		assertTrue(player.hasFullHP());
 		while (battle.isOngoing()) {
@@ -124,9 +126,9 @@ public class BattleUseCase {
 	@Test
 	public void TheDMWantsThePlayerToBeKnockedOutByTheEnemy() 
 	{
-        MsgCtrl.msgln("TheDMWantsThePlayerToBeKnockedOutByTheEnemy()");
-		Combatant player = new AutoCombatant(CombatantType.FEEBLE_HERO);
-		Combatant enemy = new AutoCombatant(CombatantType.STRONG_ENEMY);
+        MsgCtrl.msgln("\n\nTheDMWantsThePlayerToBeKnockedOutByTheEnemy()");
+		Combatant player = new AutoCombatant.CombatantBuilder().withHit(CombatantAttack.AUTO_MISS).build();
+		Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withDamage(CombatantDamage.STRONG).build();
 		Battle battle = new Battle(player, enemy);
 		assertFalse(player.isUnconscious());
 		while (battle.isOngoing()) {
@@ -138,9 +140,9 @@ public class BattleUseCase {
 	@Test
 	public void ThePlayerWantsToEscapeIfAboutToDie()
 	{
-        MsgCtrl.msgln("TheDMWantsThePlayerToBeKnockedOutByTheEnemy()");
-		Combatant player = new AutoCombatant(CombatantType.FEEBLE_HERO);
-		Combatant enemy = new AutoCombatant(CombatantType.WEAK_ENEMY);
+        MsgCtrl.msgln("\n\nTheDMWantsThePlayerToBeKnockedOutByTheEnemy()");
+		Combatant player = new AutoCombatant.CombatantBuilder().withHit(CombatantAttack.AUTO_MISS).shouldTryEscaping().build();
+		Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withHit(CombatantAttack.AUTO_HIT).withDamage(CombatantDamage.WEAK).build();
 		Battle battle = new Battle(player, enemy);
 		assertFalse(player.isUnconscious());
 		assertFalse(battle.combatantEscaped(player));

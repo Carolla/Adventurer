@@ -3,12 +3,14 @@ package test.battle;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import mylib.MsgCtrl;
+import mylib.pdc.MetaDie;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import test.battle.AutoCombatant.CombatantAttack;
+import test.battle.AutoCombatant.CombatantDamage;
 import test.battle.AutoCombatant.CombatantType;
 import battle.Battle;
 import battle.Combatant;
@@ -83,8 +85,8 @@ public class TestBattle {
 	@Test
 	public void BattleAllowsPlayersToTakeSuccessiveTurns()
 	{
-		AutoCombatant player = new AutoCombatant(CombatantType.HERO);
-		AutoCombatant enemy = new AutoCombatant(CombatantType.ENEMY);
+        AutoCombatant player = (AutoCombatant) new AutoCombatant.CombatantBuilder().build();
+        AutoCombatant enemy = (AutoCombatant) new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).build();
 		Battle battle = new Battle(player, enemy);
 		assertEquals(0, player.getTurnCount());
 		assertEquals(0, enemy.getTurnCount());
@@ -96,8 +98,62 @@ public class TestBattle {
 	@Test
 	public void BattleEndWhenOneCombatantEscapes()
 	{
-	   fail("Not yet implemented."); 
+        Combatant player = new AutoCombatant.CombatantBuilder().shouldTryEscaping().withHP(2).build();
+        Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withHit(CombatantAttack.AUTO_HIT).withDamage(CombatantDamage.WEAK).withHP(9).build();
+        Battle battle = new Battle(player, enemy);
+        assertFalse(battle.combatantEscaped(player));
+        while (battle.isOngoing()) {
+            battle.advance();
+        }
+        assertTrue(battle.combatantEscaped(player));
 	}
+	
+	@Test
+	public void CombatantsCanStartWithDifferentHP()
+	{
+        Combatant player = new AutoCombatant.CombatantBuilder().withHit(CombatantAttack.AUTO_HIT).withDamage(CombatantDamage.WEAK).withHP(10).build();
+        Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withHit(CombatantAttack.AUTO_HIT).withDamage(CombatantDamage.WEAK).withHP(9).build();
+        Battle battle = new Battle(player, enemy);
+        while (battle.isOngoing()) {
+            battle.advance();
+        }
+        assertFalse(player.isDefeated());
+        assertTrue(enemy.isDefeated());
+	}
+	
+        @Test
+    public void CombatantOrderIsDeterminedByInitiativeRoll()
+    {
+    	boolean heroGoesFirst = false;
+    	//Flip a coin
+    	if (new MetaDie().getRandom(1, 2) == 1)
+    	{
+    		heroGoesFirst = true;
+    	}
+    	
+    	Combatant player = new AutoCombatant.CombatantBuilder().withHit(CombatantAttack.AUTO_HIT).withDamage(CombatantDamage.WEAK).withHP(1).build();
+    	Combatant enemy = new AutoCombatant.CombatantBuilder().withInitiative(11).withType(CombatantType.ENEMY).withHit(CombatantAttack.AUTO_HIT).withDamage(CombatantDamage.WEAK).withHP(1).build();
+    	
+    	if (heroGoesFirst)
+    	{
+    		player = new AutoCombatant.CombatantBuilder().withInitiative(11).withHit(CombatantAttack.AUTO_HIT).withDamage(CombatantDamage.WEAK).withHP(1).build();
+    		enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withHit(CombatantAttack.AUTO_HIT).withDamage(CombatantDamage.WEAK).withHP(1).build();
+    	} 
+    	
+        Battle battle = new Battle(player, enemy);
+        while (battle.isOngoing()) {
+            battle.advance();
+        }
+        
+        if (heroGoesFirst)
+        {
+	        assertFalse(player.isDefeated());
+	        assertTrue(enemy.isDefeated());
+        } else {
+        	assertTrue(player.isDefeated());
+        	assertFalse(enemy.isDefeated());
+        }
+    }
 	
 	private Battle SetupBasicBattle() 
 	{

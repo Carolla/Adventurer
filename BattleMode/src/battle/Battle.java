@@ -1,15 +1,25 @@
 package battle;
 
 public class Battle {
-
-	private Combatant _player;
-	private Combatant _enemy;
-	private int _round = 0;
+	private Combatant _firstCombatant;
+	private Combatant _secondCombatant;
     private Combatant _escapedCombatant = null;
 
-	public Battle(Combatant player1, Combatant enemy) {
-		_player = player1;
-		_enemy = enemy;
+	private int _round = 0;
+
+	public Battle(Combatant combatant1, Combatant combatant2) {
+		rollForInitiative(combatant1, combatant2);
+	}
+
+	private void rollForInitiative(Combatant combatant1, Combatant combatant2) {
+		if (combatant1.rollInitiative() > combatant2.rollInitiative())
+		{
+			_firstCombatant = combatant1;
+			_secondCombatant = combatant2;
+		} else {
+			_firstCombatant = combatant2;
+			_secondCombatant = combatant1;
+		}
 	}
 
 	/**
@@ -19,11 +29,11 @@ public class Battle {
 	 * @return whether the combatant is in the battle
 	 */
 	public boolean isInBattle(Combatant combatant) {
-		return (_player == combatant || _enemy == combatant);
+		return (_firstCombatant == combatant || _secondCombatant == combatant);
 	}
 
 	public boolean isOngoing() {
-		return (!_player.isDefeated() && !_enemy.isDefeated() && _escapedCombatant == null);
+		return (!_firstCombatant.isDefeated() && !_secondCombatant.isDefeated() && _escapedCombatant == null);
 	}
 
 	/**
@@ -31,12 +41,22 @@ public class Battle {
 	 */
 	public void advance() {
 		System.out.println("Round " + _round++);
-		_player.takeTurn(_enemy, this);
+		_firstCombatant.takeTurn(_secondCombatant, this);
 
 		if (isOngoing()) {
-		    _enemy.displayHP();
-		    _enemy.takeTurn(_player, this);
-		    _player.displayHP();
+			_secondCombatant.displayHP();
+			_secondCombatant.takeTurn(_firstCombatant, this);
+			_firstCombatant.displayHP();
+		} else {
+			if (isWinner(_firstCombatant)) {
+				_firstCombatant.displayVictory();
+			}
+			return;
+		}
+		
+		if (isWinner(_secondCombatant))
+		{
+			_secondCombatant.displayVictory();
 		}
 	}
 
