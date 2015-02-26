@@ -24,15 +24,19 @@ import mylib.MsgCtrl;
 public class IOPanelProxy implements IOPanelInterface
 {
   /** Buffer for holding messages for auditing */
-  static private String _msgOut;
+  private String _msgOut;
 
   /** Default constructor */
   public IOPanelProxy()
-  {}
+  {
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+  }
 
   @Override
   public void displayText(String msg)
   {
+    MsgCtrl.where(this);
     _msgOut = msg;
     MsgCtrl.msgln("\t" + msg);
   }
@@ -40,8 +44,9 @@ public class IOPanelProxy implements IOPanelInterface
   @Override
   public void displayErrorText(String msg)
   {
+    MsgCtrl.where(this);
     _msgOut = msg;
-    MsgCtrl.errMsgln("\t" + msg);
+    MsgCtrl.errMsgln("\t" + _msgOut);
   }
 
   @Override
@@ -65,11 +70,11 @@ public class IOPanelProxy implements IOPanelInterface
    */
   public String msgOut()
   {
-    return _msgOut;
+    MsgCtrl.where(this);
     // Save msg to return after clearing msg buffer
-//    String tmp = _msgOut;
-//    _msgOut = null;
-//    return tmp;
+    String tmp = _msgOut;
+    _msgOut = null;
+    return tmp;
   }
 
 

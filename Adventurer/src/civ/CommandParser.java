@@ -69,9 +69,10 @@ public class CommandParser
 
   // Special cases
   /** Error message if command cannot be found. */
-  private final String CMD_ERROR = "I don't understand what you want to do.";
+  private final String ERRMSG_UNKNOWN = "I don't understand what you want to do.";
   /** A null or empty string was entered */
-  private final String CMD_NULL = "Nothing was entered. Please try again.";
+  private final String ERRMSG_CMDNULL = "Nothing was entered. Please try again.";
+
   /** Identify a command string in which only a return key is entered. */
   private final String CMD_EMPTY = "";
 
@@ -186,7 +187,7 @@ public class CommandParser
     // Guard
     if (cmdIn == null) {
       _userInput = null;    // clear so that same input isn't used twice
-      errorOut(CMD_NULL);
+      errorOut(ERRMSG_CMDNULL);
     }
     else {
       _userInput = cmdIn.trim();
@@ -224,7 +225,7 @@ public class CommandParser
   {
     String cmdString = parse(ip);
     if (cmdString == null) {
-      errorOut(CMD_NULL);
+      errorOut(ERRMSG_CMDNULL);
     }
     _userInput = null;
     return cmdString;
@@ -246,7 +247,7 @@ public class CommandParser
     String token = lookup(s);
     // If command cannot be found, ask user to try again
     if (token == null) {
-      _ioPanel.displayErrorText(CMD_NULL);
+      _ioPanel.displayErrorText(ERRMSG_UNKNOWN);
     }
     return token;
   }
@@ -379,17 +380,6 @@ public class CommandParser
       return CommandParser._skedder;
     }
 
-//    /** Get the contents of the CMD_ERROR msg */
-//    public String getErrorMsg()
-//    {
-//      return CommandParser.this.errName;
-//    }
-//
-//    /** Get error msg for null input */
-//    public String getNullMsg()
-//    {
-//      return CommandParser.this.CMD_NULL;
-//    }
 
   
   } // end of MockCP inner class
