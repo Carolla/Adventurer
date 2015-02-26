@@ -7,6 +7,8 @@ import mylib.MsgCtrl;
 import org.junit.Before;
 import org.junit.Test;
 
+import test.battle.AutoCombatant.CombatantAttack;
+import test.battle.AutoCombatant.CombatantDamage;
 import test.battle.AutoCombatant.CombatantType;
 import battle.Battle;
 import battle.Combatant;
@@ -68,8 +70,8 @@ public class BattleUseCase {
 	public void ThePlayerWantsToDamageTheEnemyInBattle()
 	{
         MsgCtrl.msgln("\n\nThePlayerWantsToDamageTheEnemyInBattle()");
-		Combatant player = new AutoCombatant(CombatantType.HERO);
-		Combatant enemy = new AutoCombatant(CombatantType.ENEMY);
+		Combatant player = new AutoCombatant.CombatantBuilder().build();
+		Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).build();
 		Battle battle = new Battle(player, enemy);
 		assertTrue(enemy.hasFullHP());
 		while (battle.isOngoing()) {
@@ -82,8 +84,8 @@ public class BattleUseCase {
 	public void ThePlayerWantsToKnockTheEnemyUnconscious() 
 	{
         MsgCtrl.msgln("\n\nThePlayerWantsToKnockTheEnemyUnconscious()");
-		Combatant player = new AutoCombatant(CombatantType.HERO);
-		Combatant enemy = new AutoCombatant(CombatantType.WEAK_ENEMY);
+		Combatant player = new AutoCombatant.CombatantBuilder().build();
+		Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withHit(CombatantAttack.AUTO_MISS).build();
 		Battle battle = new Battle(player, enemy);
 		assertTrue(enemy.hasFullHP());
 		while (battle.isOngoing()) {
@@ -97,8 +99,8 @@ public class BattleUseCase {
 	public void TheDMWantsThePlayerToBeDefeatedByTheEnemy() 
 	{
         MsgCtrl.msgln("\n\nThePlayerWantsToKnockTheEnemyUnconscious()");
-		Combatant player = new AutoCombatant(CombatantType.FEEBLE_HERO);
-		Combatant enemy = new AutoCombatant(CombatantType.STRONG_ENEMY);
+		Combatant player = new AutoCombatant.CombatantBuilder().withHP(2).build();
+		Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withHit(CombatantAttack.AUTO_HIT).build();
 		Battle battle = new Battle(player, enemy);
 		assertFalse(player.isDefeated());
 		while (battle.isOngoing()) {
@@ -111,8 +113,8 @@ public class BattleUseCase {
 	public void TheDMWantsThePlayerToBeHitByTheEnemy() { }
 	{
         MsgCtrl.msgln("\n\nTheDMWantsThePlayerToBeHitByTheEnemy()");
-		Combatant player = new AutoCombatant(CombatantType.HERO);
-		Combatant enemy = new AutoCombatant(CombatantType.STRONG_ENEMY);
+		Combatant player = new AutoCombatant.CombatantBuilder().build();
+		Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withHit(CombatantAttack.AUTO_HIT).build();
 		Battle battle = new Battle(player, enemy);
 		assertTrue(player.hasFullHP());
 		while (battle.isOngoing()) {
@@ -125,8 +127,8 @@ public class BattleUseCase {
 	public void TheDMWantsThePlayerToBeKnockedOutByTheEnemy() 
 	{
         MsgCtrl.msgln("\n\nTheDMWantsThePlayerToBeKnockedOutByTheEnemy()");
-		Combatant player = new AutoCombatant(CombatantType.FEEBLE_HERO);
-		Combatant enemy = new AutoCombatant(CombatantType.STRONG_ENEMY);
+		Combatant player = new AutoCombatant.CombatantBuilder().withHit(CombatantAttack.AUTO_MISS).build();
+		Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withDamage(CombatantDamage.STRONG).build();
 		Battle battle = new Battle(player, enemy);
 		assertFalse(player.isUnconscious());
 		while (battle.isOngoing()) {
@@ -139,8 +141,8 @@ public class BattleUseCase {
 	public void ThePlayerWantsToEscapeIfAboutToDie()
 	{
         MsgCtrl.msgln("\n\nTheDMWantsThePlayerToBeKnockedOutByTheEnemy()");
-		Combatant player = new AutoCombatant(CombatantType.FEEBLE_HERO);
-		Combatant enemy = new AutoCombatant(CombatantType.AUTO_HIT);
+		Combatant player = new AutoCombatant.CombatantBuilder().withHit(CombatantAttack.AUTO_MISS).shouldTryEscaping().build();
+		Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withHit(CombatantAttack.AUTO_HIT).withDamage(CombatantDamage.WEAK).build();
 		Battle battle = new Battle(player, enemy);
 		assertFalse(player.isUnconscious());
 		assertFalse(battle.combatantEscaped(player));
