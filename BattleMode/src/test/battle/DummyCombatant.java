@@ -47,4 +47,12 @@ public class DummyCombatant implements Combatant {
 
     @Override
     public void displayHP() { }
+
+	@Override
+	public void displayVictory() {	}
+
+	@Override
+	public int rollInitiative() {
+		return 0;
+	}
 }	

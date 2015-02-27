@@ -58,17 +58,16 @@ public class TA08_EnterBuilding
   /** Mainframe Proxy facades the image panel and iopanel; used by BuildingDisplayCiv */
   static private MainframeProxy _mfProxy = null;
 
+//  /** Error message if command cannot be found. */
+//  private final String ERRMSG_UNKNOWN = "I don't understand what you want to do.";
+
   // =================================================================
   // CommandParser error messages to match
   // =================================================================
 
   /** A null or empty string was entered */
-  private final String CMD_NULL = "Nothing was entered. Please try again.";
-  /** Identify a command string in which only a return key is entered. */
-  private final String CMD_EMPTY = "";
-//  /** Error message if command cannot be found. */
-//  private final String CMD_ERROR = "I don't understand what you want to do.";
-
+  private final String ERRMSG_CMDNULL = "Nothing was entered. Please try again.";
+  
   // =================================================================
   // CmdEnter error messages to match
   // =================================================================
@@ -94,7 +93,7 @@ public class TA08_EnterBuilding
     _mfProxy = new MainframeProxy();
     assertNotNull(_mfProxy);
     // Create the parser to receive commands
-    _cp = CommandParser.getInstance(new IOPanelProxy());
+    _cp = CommandParser.getInstance(_ioProxy);
     assertNotNull(_cp);
     _mock = _cp.new MockCP();
     assertNotNull(_mock);
@@ -161,8 +160,8 @@ public class TA08_EnterBuilding
     String echo = _mock.getInput();
     MsgCtrl.msgln("\tCommand entered: " + echo);
     assertNull(echo);
-    MsgCtrl.msgln("\tError message expected: " + CMD_NULL);
-    assertTrue(_ioProxy.msgOut().equals(CMD_NULL));
+    MsgCtrl.msgln("\tError message expected: " + ERRMSG_CMDNULL);
+    assertTrue(_ioProxy.msgOut().equals(ERRMSG_CMDNULL));
   }
 
   
@@ -184,9 +183,9 @@ public class TA08_EnterBuilding
     String echo = _mock.getInput();
     MsgCtrl.msgln("\tCommand entered: " + echo);
     assertTrue(echo.equals(NULL_STRING));
-    MsgCtrl.msgln("\tError message expected: " + CMD_NULL);
+    MsgCtrl.msgln("\tError message expected: " + ERRMSG_CMDNULL);
     MsgCtrl.msgln("\tError message received: " + _ioProxy.msgOut());
-    assertTrue(_ioProxy.msgOut().equals(CMD_NULL));
+    assertTrue(_ioProxy.msgOut().equals(ERRMSG_CMDNULL));
   }
 
   
