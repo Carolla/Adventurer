@@ -29,7 +29,7 @@ public class Bank extends Building
 {
     // Data to initialize the default Bank; must be static because it is used in constructor
     /** Name of this fine establishment */
-    static private final String BANK_NAME = "The Bank";
+    static private final String BANK_NAME = "Bank";
     /** Owner of this fine establishment */
     static private final String OWNER = "J.P. Pennypacker";
     /** Town Bank */

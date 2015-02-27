@@ -123,9 +123,9 @@ public class BuildingDisplayCiv
   /**
    * Show the exterior image and description of the Building
    * 
-   * @param bldName name of the building to enter
+   * @param bldName name of the building to approach
    */
-  private void approachBuilding(String bldName)
+  public void approachBuilding(String bldName)
   {
     _bldg = findAndSetBuilding(bldName);
     if (_bldg != null) {
@@ -153,7 +153,6 @@ public class BuildingDisplayCiv
   {
     if ((description.length() > 0) && (imagePath.length() > 0)) {
       String bldgName = _bldg.getName();
-      // _frame.setImage(Util.convertToImage(imagePath));
       _frame.setImage(Util.convertToImage(imagePath));
       _frame.setImageTitle(bldgName);
       _frame.displayText(description);

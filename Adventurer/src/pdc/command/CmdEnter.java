@@ -50,10 +50,10 @@ public class CmdEnter extends Command
   /** This command starts immediately, requiring no delay. */
   static private final int DELAY = 0;
   /** This command takes 10 seconds on the game clock. */
-  static private final int DURATION = 30;
+  static private final int DURATION = 10;
 
   /** Building accesses and displays are controlled by the BuildingDisplayCiv */
-  BuildingDisplayCiv _bldgCiv;
+  private BuildingDisplayCiv _bldgCiv;
 
   /** The building currently displayed, either inside or outside */
   private Building _currentBuilding = null;
