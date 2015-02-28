@@ -29,7 +29,7 @@ import chronos.pdc.buildings.Store;
 import chronos.pdc.buildings.WizardsGuild;
 
 /**
- * All Town Buildings are collected here. The initlal (default) Registry contains 8 buildings.
+ * All Town Buildings are collected here. The initial (default) Registry contains 8 buildings.
  * 
  * @author Alan Cline
  * @version April 20, 2013 // original <br>

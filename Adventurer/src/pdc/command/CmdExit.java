@@ -18,14 +18,26 @@ import civ.MainframeCiv;
 
 
 /**
- * Moves the Hero from inside the Building being displayed (current Building) to Town View, and
- * displays the Town image and description and image. EXIT has no effect if called from Town View;
- * it will ask if the user meant QUIT instead, to leave the program.
+ * Moves the Hero from ... to ..., and displays its
+ * interior description and image. If no building is specified (no parm), the current building is
+ * assumed; if there is no current building, that is, at the town view, then an error msg. If the
+ * Hero is already in the targeted building, then only an info message is displaed. If the Hero
+ * tries to jump from inside one building to inside another, he gets an error message saying
+ * he has to leave one before he can enter another. <br>
  * <P>
- * Format: EXIT <br>
+ * Format: ENTER [current Building name | current Building type] <br>
+ * where:
+ * <UL>
+ * <LI>Building Name is the actual string name of the Building, and is Adventure specific;</LI>
+ * <LI>Building Type is the Building class, e.g., Inn, Bank, Jail;</LI>
+ * </UL>
  * 
  * @author Alan Cline
- * @version 1.0 Mar 19 2014 // original <br>
+ * @version Mar 19 2014 // original <br>
+ *          Aug 23, 2014 // updated {@code init} method to handle IOPanel for outputs <br>
+ *          Aug 30, 2014 // updated {@code exec} method to handle current building <br>
+ *          Feb 18, 2015 // updated to handle common IOPanel for text outputs <br>
+ * 
  * @see Command
  */
 public class CmdExit extends Command
