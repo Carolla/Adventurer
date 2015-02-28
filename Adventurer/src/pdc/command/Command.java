@@ -28,10 +28,10 @@ import civ.CommandParser;
  * command file must be in the <code>pdc.Command</code> package.</LI>
  * <LI>Implement the required constructor(s), <code>init()</code> and <code>exec()</code> methods to
  * override the abstract <code>Command</code> methods.</LI>
- * <LI>The <code>init()</code> method validates the parms that follow the command string from the
+ * <LI>The <code>init()</code> method validates the parms that follow the command word from the
  * user.</LI>
- * <LI>The <code>exec()</code> method is called by the Scheduler and performs the work of the
- * command.</LI>
+ * <LI>The <code>exec()</code> method is called by the {@code Scheduler} (which runs on its own
+ * Thread), and performs the work of the command.</LI>
  * <LI>Each new command requires certain static attributes, and usually used as defaults in the
  * constructor.
  * <UL>
@@ -40,9 +40,9 @@ import civ.CommandParser;
  * help.</LI>
  * <LI>A <I>delay</I> (time before the command executes).</LI>
  * <LI>A <I>duration</I> (time before command ends).</LI>
- * <LI>Example: The LOOK command has a delay of 0 seconds, and a duration of 4 seconds. It starts
- * immediately on user request, and when it is over, the game clock is incremented 4 seconds.</LI>
  * </UL>
+ * Example: The LOOK command has a delay of 0 seconds, and a duration of 4 seconds. It starts
+ * immediately on user request, and when it is over, the game clock is incremented 4 seconds.
  * <LI>Place any globals into the <code>Chronos</code> class with the other static globals. Some
  * general potential parms, such as current Room, are attributes of the base class Command; others
  * are available through calls that retrieve singleton pointers to the most common objects a new
@@ -72,17 +72,16 @@ public abstract class Command
   protected int _delay = 0;
   /** The amount of time that passes while the command is in effect */
   protected int _duration = 0;
+
   /**
    * The parameters that the subcommand needs must be wrapped in an ArrayList for the subcommand's
-   * <code>init</code> method.
+   * {@code init} method.
    */
   protected List<String> _parms = null;
   /** A short description of the command, used in the general help method. */
   protected String _description = null;
-  /** The syntax of the command, used in the <code>usage()</code> method. */
+  /** The syntax of the command, used in the {@code usage()} method. */
   protected String _cmdfmt = null;
-  /** MainframeCiv handles errors and messages to {@code hic.IOPanel} */
-//  protected MainframeCiv _mfCiv;
   /** CommandParser redirects all errors and messages to {@code hic.IOPanel} */
   protected CommandParser _cp;
   /** CommandParser redirects all errors and messages to {@code hic.IOPanel} */
@@ -91,7 +90,6 @@ public abstract class Command
   // ============================================================
   // PUBLIC METHODS
   // ============================================================
-
 
   /**
    * Creates a Command based on its name, and assigns it a delay and duration of effect; also
@@ -125,9 +123,11 @@ public abstract class Command
   // ============================================================
 
   /**
-   * This abstract method must be implemented by the subcommand to collect whatever references or
-   * initial actions the subcommand needs to do. The non-default parameters to the subcommand are
-   * passed as an ArrayList in the order defined in the Format phrase of the subCommand.
+   * This abstract method must be implemented by the subcommand to validate the parms that follow
+   * the command word. The non-default parameters to the subcommand are passed as an ArrayList in
+   * the order defined in the Format phrase of the subCommand. The arg list contains all words that
+   * follow the command name, so any words that must be combined, such as buildings with multi-word
+   * names, must be combined in this method.
    * 
    * @param args list of parms that apply to the Command
    * @return true if the all parms are valid
@@ -136,8 +136,12 @@ public abstract class Command
 
   /**
    * This abstract method must be implemented by the subcommand to execute whatever specific action
-   * the subcommand needs to perform. It is called by the Scheduler polymorphically (for all
+   * the subcommand needs to perform. It is called by the {@code Scheduler} polymorphically (for all
    * subcommands).
+   * <P>
+   * Warning: Be careful that any data stored in the {@code init()} method is still valid by the
+   * time the {@code exec()} method is called. Defer collecting needed data as long as possible to
+   * avoid mismatching system state.
    * 
    * @return true if the subcomment executed correctly.
    */
@@ -148,7 +152,8 @@ public abstract class Command
   // PUBLIC METHODS
   // ============================================================
 
-  /** Combine multiple args input to single-String parm
+  /**
+   * Combine multiple args input to single-String parm
    * 
    * @param args words that follow the command token
    * @return a single command parm string
@@ -224,7 +229,7 @@ public abstract class Command
     _msgHandler = cp;
   }
 
-  
+
   // ============================================================
   // PROTECTED METHODS
   // ============================================================
