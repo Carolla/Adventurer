@@ -64,11 +64,11 @@ public class Chronos
   public static String ECHRONOS_ROOT = find_eChronosRootDir() + FS;
 
   /** Relative path location of all shared resources */
-  public static String RESOURCES_PATH = ECHRONOS_ROOT + "/resources";
+  public static String RESOURCES_PATH = ECHRONOS_ROOT + "resources";
 
   public static String CHRONOS_LIB_RESOURCES_PATH = ECHRONOS_ROOT + "ChronosLib" + FS +"resources";
   /** Relative path location of Adventurer-specific resources */
-  public static String ADV_RESOURCES_PATH = ECHRONOS_ROOT + "/Adventurer/resources";
+  public static String ADV_RESOURCES_PATH = ECHRONOS_ROOT + "Adventurer" + FS + "resources";
   /** Most registry Classes are located in the ChronosLib shared source package (ChronosLib) */
   public static final String REGISTRY_CLASSPKG = "chronos.pdc.registry.";
 

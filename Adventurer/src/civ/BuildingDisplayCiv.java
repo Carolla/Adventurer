@@ -144,7 +144,7 @@ public class BuildingDisplayCiv
   // =============================================================
 
   /**
-   * Display the bulding's image (exterior or interiod) in the frame's image panel and
+   * Display the bulding's image (exterior or interior) in the frame's image panel and
    * 
    * @param description description of the building's interior or exterior
    * @param imagePath image of the building's exterior or interior room
