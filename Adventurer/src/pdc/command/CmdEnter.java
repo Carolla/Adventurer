@@ -114,8 +114,7 @@ public class CmdEnter extends Command
   public boolean init(List<String> args) throws NullPointerException
   {
     System.out.println("\tCmdEnter.init()...");
-//    String bldgParm_short = null;   // in case 'the' is used
-    
+
     // The BuildingDisplayCiv must already exist
     _bldgCiv = BuildingDisplayCiv.getInstance();
     _currentBuilding = _bldgCiv.getCurrentBuilding();
@@ -124,10 +123,6 @@ public class CmdEnter extends Command
       super._msgHandler.errorOut(ERRMSG_NOBLDG);
       return false;
     }
-    // Check if 'the' is used in the arglist; if so, the Building is queries with and without it
-//    if (args.get(0).equals("the")) {
-//      bldgParm_short = extractArticle(args);
-//    }
     String bldgParm = convertArgsToString(args);
     // Check that the building specified actually exists
     BuildingRegistry breg =
@@ -147,11 +142,7 @@ public class CmdEnter extends Command
   public boolean exec()
   {
     System.out.println("\tCmdEnter.exec()...");
-    // Null is legal parm for this call
-    // super._mfCiv.enterBuilding(_targetBldg);
-    _bldgCiv = BuildingDisplayCiv.getInstance();
     _bldgCiv.enterBuilding(_targetBldg);
-    _currentBuilding = _bldgCiv.getCurrentBuilding();
     return true;
   }
 

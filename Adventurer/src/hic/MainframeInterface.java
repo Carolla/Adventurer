@@ -48,13 +48,11 @@ public interface MainframeInterface
   /** Replace the button panel with the final IOPanel */
   public void addIOPanel();
 
-<<<<<<< HEAD
   /** Redraw the mainframe to re-init the graphics outputs */
   public void redraw();
-=======
+
   /** Set whether town is being displayed */
   public void setOnTown(boolean onTown);
->>>>>>> 4c37a2a2ff4f97d20fdec2856872434e5b444daa
 
   
 } // end of MainframeInterface 

@@ -77,7 +77,7 @@ public class MainframeProxy implements MainframeInterface
     System.out.println("\tMainframeProxy.msgPrompt(): " + msg);
     return true;
   }
-  
+
   /** Return the size of the image space; set here temporarily */
   public Dimension getImagePanelSize()
   {
@@ -86,6 +86,7 @@ public class MainframeProxy implements MainframeInterface
 
   /**
    * Define a bounding rectangle to highlight a building
+   * 
    * @param rect rectangle around the building
    */
   public void setBuilding(BuildingRectangle rect)
@@ -96,12 +97,12 @@ public class MainframeProxy implements MainframeInterface
   /**
    * Display the image into the image panel
    * 
-   * @param image   acutal image file to display
+   * @param image acutal image file to display
    */
   public void setImage(Image image)
   {
     // NOT sure what to put here to audit an image display yet
-     System.out.println("\tMainframeProxy.setImage(): ");
+    System.out.println("\tMainframeProxy.setImage(): ");
   }
 
   /**
@@ -114,22 +115,21 @@ public class MainframeProxy implements MainframeInterface
     System.out.println("MainframeProxy.setImageTitle(): " + title);
   }
 
-<<<<<<< HEAD
-  /* (non-Javadoc)
-   * @see hic.MainframeInterface#redraw()
+  /*
+   * Misplaced redraw commnad in BuildingDisplayCiv
    */
   @Override
   public void redraw()
   {
     System.out.println("MainframeProxy.redraw(): called.");
   }
-=======
-@Override
-public void setOnTown(boolean onTown) {
-	System.out.println("MainframeProxy.ontown set to " + onTown);
-}
->>>>>>> 4c37a2a2ff4f97d20fdec2856872434e5b444daa
 
-  
+  @Override
+  public void setOnTown(boolean onTown)
+  {
+    System.out.println("MainframeProxy.ontown set to " + onTown);
+  }
+
+
 } // end of MainframeProxy class
 
