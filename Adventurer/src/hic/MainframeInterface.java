@@ -48,5 +48,8 @@ public interface MainframeInterface
   /** Replace the button panel with the final IOPanel */
   public void addIOPanel();
 
+  /** Set whether town is being displayed */
+  public void setOnTown(boolean onTown);
+
   
 } // end of MainframeInterface 

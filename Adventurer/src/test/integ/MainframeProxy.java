@@ -114,6 +114,11 @@ public class MainframeProxy implements MainframeInterface
     System.out.println("MainframeProxy.setImageTitle(): " + title);
   }
 
+@Override
+public void setOnTown(boolean onTown) {
+	System.out.println("MainframeProxy.ontown set to " + onTown);
+}
+
   
 } // end of MainframeProxy class
 
