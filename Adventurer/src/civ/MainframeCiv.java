@@ -252,6 +252,11 @@ public class MainframeCiv
   {
     return _onTown;
   }
+  
+  public void setOnTown(boolean onTown)
+  {
+	  _onTown = onTown;
+  }
 
 
   /**

@@ -92,6 +92,7 @@ public class BuildingDisplayCiv
       String imagePath = _bldg.getIntImagePath();
       displayBuilding(description, imagePath);
       _currentBldg = _bldg;
+      _frame.setOnTown(false);
     }
     else {
       _frame.displayText(NO_BLDG_FOUND);

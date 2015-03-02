@@ -114,6 +114,7 @@ public class MainframeProxy implements MainframeInterface
     System.out.println("MainframeProxy.setImageTitle(): " + title);
   }
 
+<<<<<<< HEAD
   /* (non-Javadoc)
    * @see hic.MainframeInterface#redraw()
    */
@@ -122,6 +123,12 @@ public class MainframeProxy implements MainframeInterface
   {
     System.out.println("MainframeProxy.redraw(): called.");
   }
+=======
+@Override
+public void setOnTown(boolean onTown) {
+	System.out.println("MainframeProxy.ontown set to " + onTown);
+}
+>>>>>>> 4c37a2a2ff4f97d20fdec2856872434e5b444daa
 
   
 } // end of MainframeProxy class

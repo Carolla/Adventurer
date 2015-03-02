@@ -128,7 +128,7 @@ public class BattleUseCase {
 	{
         MsgCtrl.msgln("\n\nTheDMWantsThePlayerToBeKnockedOutByTheEnemy()");
 		Combatant player = new AutoCombatant.CombatantBuilder().withHit(CombatantAttack.AUTO_MISS).build();
-		Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withDamage(CombatantDamage.STRONG).build();
+		Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withDamage(CombatantDamage.MORNING_STAR).build();
 		Battle battle = new Battle(player, enemy);
 		assertFalse(player.isUnconscious());
 		while (battle.isOngoing()) {
@@ -142,7 +142,7 @@ public class BattleUseCase {
 	{
         MsgCtrl.msgln("\n\nTheDMWantsThePlayerToBeKnockedOutByTheEnemy()");
 		Combatant player = new AutoCombatant.CombatantBuilder().withHit(CombatantAttack.AUTO_MISS).shouldTryEscaping().build();
-		Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withHit(CombatantAttack.AUTO_HIT).withDamage(CombatantDamage.WEAK).build();
+		Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withHit(CombatantAttack.AUTO_HIT).withDamage(CombatantDamage.FIST).build();
 		Battle battle = new Battle(player, enemy);
 		assertFalse(player.isUnconscious());
 		assertFalse(battle.combatantEscaped(player));
