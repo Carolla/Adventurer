@@ -55,4 +55,9 @@ public class DummyCombatant implements Combatant {
 	public int rollInitiative() {
 		return 0;
 	}
+
+	@Override
+	public int attack(Combatant victim) {
+		return 0;
+	}
 }	

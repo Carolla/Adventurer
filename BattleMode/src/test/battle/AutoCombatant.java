@@ -13,13 +13,13 @@ public class AutoCombatant implements Combatant {
 	private int _initiative = 10;
     private CombatantType _type = CombatantType.HERO;
 	private CombatantAttack _attack = CombatantAttack.NORMAL;
-	private CombatantDamage _dmg = CombatantDamage.NORMAL;
+	private CombatantDamage _dmg = CombatantDamage.DAGGER;
     private MetaDie _metadie;
 	private boolean _shouldTryEscaping = false;
 
     public enum CombatantType {HERO, ENEMY};
     public enum CombatantAttack {AUTO_MISS, CLUMSY, NORMAL, ACCURATE, AUTO_HIT};
-    public enum CombatantDamage {WEAK, NORMAL, STRONG};
+    public enum CombatantDamage {FIST, DAGGER, MORNING_STAR};
     
 	/**
 	 */
@@ -35,7 +35,7 @@ public class AutoCombatant implements Combatant {
 		private int withInitiative = 10;
 		private boolean withEscape = false;
 		private CombatantAttack withAttack = CombatantAttack.NORMAL;
-		private CombatantDamage withDmg = CombatantDamage.NORMAL;
+		private CombatantDamage withDmg = CombatantDamage.DAGGER;
 		private CombatantType withType = CombatantType.HERO;
 		
 		public CombatantBuilder() { }
@@ -109,7 +109,7 @@ public class AutoCombatant implements Combatant {
         _turnCount++;
         if (shouldAttack())
         {
-            return opponent.attacked(makeAttackRoll());
+            return attack(opponent);
         } else {
             tryToEscape(battle);
             return 0;
@@ -149,13 +149,13 @@ public class AutoCombatant implements Combatant {
     	
     	switch(_dmg)
     	{
-    	case NORMAL:
+    	case DAGGER:
     		damage = _metadie.getRandom(1,4);
     		break;
-    	case STRONG:
+    	case MORNING_STAR:
     		damage = _metadie.getRandom(2,6);
     		break;
-    	case WEAK:
+    	case FIST:
     	default:
     		damage = 1;
     		break;
@@ -251,5 +251,10 @@ public class AutoCombatant implements Combatant {
 	@Override
 	public int rollInitiative() {
 		return _initiative;
+	}
+
+	@Override
+	public int attack(Combatant victim) {
+		return victim.attacked(makeAttackRoll());
 	}
 }
