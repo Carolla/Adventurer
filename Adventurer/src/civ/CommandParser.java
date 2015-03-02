@@ -49,9 +49,8 @@ public class CommandParser
       {"APPROACH", "CmdApproach"}, // Display the description and image of its exterior 
       {"ENTER",  "CmdEnter"}, // Display the description and image of its interior
       {"EXIT",   "CmdReturn"}, // Exit the building and go to (display) the building's exterior
-      {"LEAVE",  "CmdExit"}, // Synonym for EXIT
+      {"LEAVE",  "CmdLeave"}, // Leave the Building
       {"QUIT",   "CmdQuit"}, // End the program.
-      {"RETURN", "CmdReturn"}, // Synonym for EXIT
   // {"TO TOWN", "CmdReturn"}, // Return to Town View
       // { "HELP", "CmdHelp" }, // List the user command names and their descriptions.
       // { "INVENTORY", "CmdInventory" }, // Describe the money the Hero has (later, this will tell

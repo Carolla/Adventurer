@@ -48,5 +48,8 @@ public interface MainframeInterface
   /** Replace the button panel with the final IOPanel */
   public void addIOPanel();
 
+  /** Redraw the mainframe to re-init the graphics outputs */
+  public void redraw();
+
   
 } // end of MainframeInterface 

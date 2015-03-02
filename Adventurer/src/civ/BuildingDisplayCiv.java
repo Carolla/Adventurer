@@ -159,7 +159,7 @@ public class BuildingDisplayCiv
     } else {
       _frame.displayErrorText("Unabled to display building " + _bldg);
     }
-    // _frame.redraw(); // this is pure GUI, s.b. in Mainframe, not here
+     _frame.redraw(); // this is pure GUI, s.b. in Mainframe, not here
   }
 
 

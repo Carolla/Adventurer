@@ -67,7 +67,7 @@ public class CmdEnter extends Command
   private BuildingDisplayCiv _bldgCiv;
 
   /** The building currently displayed, either inside or outside */
-  private Building _currentBuilding = null;
+  private Building _currentBuilding;
   /** The building to enter */
   private String _targetBldg;
 
@@ -151,6 +151,7 @@ public class CmdEnter extends Command
     // super._mfCiv.enterBuilding(_targetBldg);
     _bldgCiv = BuildingDisplayCiv.getInstance();
     _bldgCiv.enterBuilding(_targetBldg);
+    _currentBuilding = _bldgCiv.getCurrentBuilding();
     return true;
   }
 

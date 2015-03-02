@@ -117,7 +117,7 @@ public class MainframeCiv
     _frame.setImageTitle(INITIAL_TITLE);
     // _personRW = new PersonReadWriter();
     // _advReg = (AdventureRegistry) RegistryFactory.getInstance().getRegistry(RegKey.ADV);
-    createBuildingBoxes();
+//    createBuildingBoxes();
   }
 
   /** Create the clickable areas on the town view to indicate a selected Building */
