@@ -91,13 +91,12 @@ public class BuildingDisplayCiv
    */
   public void approachBuilding(String bldName)
   {
-    // _bldg = _bReg.getBuilding(bldName);
     Building bldg = _bReg.getBuilding(bldName);
     if (bldg != null) {
+      _currentBldg = bldg;
       String description = bldg.getExteriorDescription();
       String imagePath = bldg.getExtImagePath();
       displayBuilding(description, imagePath);
-      _currentBldg = bldg;
     }
     else {
       _frame.displayText(NO_BLDG_FOUND);
@@ -122,7 +121,7 @@ public class BuildingDisplayCiv
       _frame.setImageTitle(bldgName);
       _frame.displayText(description);
     } else {
-      _frame.displayErrorText("Unabled to display building " + _currentBldg);
+      _frame.displayErrorText("Unable to display building " + _currentBldg);
     }
     _frame.redraw(); // this is pure GUI, s.b. in Mainframe, not here
   }
@@ -136,10 +135,10 @@ public class BuildingDisplayCiv
   {
     Building bldg = _bReg.getBuilding(bldName);
     if (bldg != null) {
+      _currentBldg = bldg;
       String description = bldg.getInteriorDescription();
       String imagePath = bldg.getIntImagePath();
       displayBuilding(description, imagePath);
-      _currentBldg = bldg;
       _frame.setOnTown(false);
     }
     else {
@@ -148,17 +147,15 @@ public class BuildingDisplayCiv
   }
 
 
-  // public void exitBuilding()
-  // {
-  // _currentBldg = _bldg; // Hero standing just outside of building he exited
-  // }
-
-
   public Building getCurrentBuilding()
   {
     return _currentBldg;
   }
 
+  
+  // ======================================================================
+  // Inner Class MockBldgCiv
+  // ======================================================================
 
   public class MockBldgCiv
   {
