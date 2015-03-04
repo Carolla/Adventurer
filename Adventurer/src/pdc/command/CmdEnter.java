@@ -23,7 +23,7 @@ import civ.BuildingDisplayCiv;
 /**
  * Moves the Hero inside a specified Building, displaying its interior image and description.
  * <P>
- * Format: ENTER [current Building name | current Building type] <br>
+ * Format: ENTER [Building name | Building type] <br>
  * where:
  * <UL>
  * <LI>Building Name is the actual string name of the Building;</LI>
@@ -142,6 +142,7 @@ public class CmdEnter extends Command
   public boolean exec()
   {
     System.out.println("\tCmdEnter.exec()...");
+    _bldgCiv = BuildingDisplayCiv.getInstance();
     _bldgCiv.enterBuilding(_targetBldg);
     return true;
   }
