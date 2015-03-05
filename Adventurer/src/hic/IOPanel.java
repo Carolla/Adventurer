@@ -13,6 +13,7 @@ package hic;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -21,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.text.DefaultCaret;
 
 import mylib.Constants;
 import net.miginfocom.swing.MigLayout;
@@ -43,7 +45,7 @@ public class IOPanel extends JPanel implements IOPanelInterface
 {
   private final JTextArea _output;
   private final JScrollPane _scrollpane;
-  private boolean _redirectIO;
+  // private boolean _redirectIO;
 
   private JTextField _cmdWin = null;
 
@@ -61,7 +63,7 @@ public class IOPanel extends JPanel implements IOPanelInterface
   /**
    * Creates output test panel and input CommandLine Input panel
    */
-  public IOPanel() 
+  public IOPanel()
   {
     setLayout(new MigLayout("", "[grow]", "[][]"));
     _output = new JTextArea();
@@ -82,16 +84,16 @@ public class IOPanel extends JPanel implements IOPanelInterface
    */
   public void displayText(String msg)
   {
-    _output.append(msg + Constants.NEWLINE);
+    _output.append(Constants.NEWLINE + msg + Constants.NEWLINE);
 
     // Ensure that the text scrolls as new text is appended
     _cmdWin.setFocusable(true);
     _cmdWin.requestFocusInWindow();
-    _cmdWin.setCaretPosition(0);
   }
 
 
-  // TODO JTextArea will not change color and font; JTextPane is needed for that.
+  // TODO JTextArea will not change color and font for individual text lines, JTextPane is needed for
+  // that.
   /**
    * Display error text, using different Font and color, then return to standard font and color.
    * 
@@ -99,30 +101,30 @@ public class IOPanel extends JPanel implements IOPanelInterface
    */
   public void displayErrorText(String msg)
   {
-    // For now, just call the standard output method
+    Color prevColor = _output.getForeground();
+    Font prevFont = _output.getFont();
+    _output.setForeground(Color.RED);
+    _output.setFont(new Font("Sans Serif", Font.BOLD, 14));
+    // Write the text
     displayText(msg);
-
-    // Color prevColor = _output.getForeground();
-    // Font prevFont = _output.getFont();
-    // _output.setForeground(Color.RED);
-    // _output.setFont(new Font("Sans Serif", Font.BOLD, 14));
-    // // Write the text
-    // displayText(msg);
-    // _output.setForeground(prevColor);
-    // _output.setFont(prevFont);
+    // Reset the original colors
+    _output.setForeground(prevColor);
+    _output.setFont(prevFont);
   }
 
 
-  /** Retrieve the output viewer
+  /**
+   * Retrieve the output viewer
+   * 
    * @return the output panel for error and other messages
    */
   public JTextArea getOutputArea()
   {
     return _output;
   }
-  
-  
-  
+
+
+
   /**
    * Call the Mainframe's Civ for the building/town status
    * 
@@ -183,7 +185,8 @@ public class IOPanel extends JPanel implements IOPanelInterface
     southPanel.add(_cmdWin, "cell 1 0,alignx left");
 
     // Create the command parser that goes in here
-//    final CommandParser cp = CommandParser.getInstance(Mainframe.getInstance().getMainframeCiv());
+    // final CommandParser cp =
+    // CommandParser.getInstance(Mainframe.getInstance().getMainframeCiv());
     final CommandParser cp = CommandParser.getInstance(this);
 
     // Add function to send commands to command parser.
@@ -218,11 +221,9 @@ public class IOPanel extends JPanel implements IOPanelInterface
     _output.setBackground(MY_LIGHT_BROWN); // make the background my version of a nice warm brown
     _output.setForeground(Color.BLACK); // text is colored with the setForeground statement
 
-    // TODO Is this necessary now?
-    // Redirect the System stdout and stderr to the user output window
-//    if (_redirectIO) {
-//      System.setOut(redirectIO());
-//    }
+    // Ensure that the text always autoscrolls as more text is added
+    DefaultCaret caret = (DefaultCaret) _output.getCaret();
+    caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
     // Make text output scrollable-savvy
     JPanel panel = new JPanel();
@@ -236,31 +237,32 @@ public class IOPanel extends JPanel implements IOPanelInterface
   }
 
 
-//  /**
-//   * Redirect System out messages (user output) to the window area. Define a PrintStream that sends
-//   * its bytes to the output text area
-//   * 
-//   * @return reference to output stream
-//   */
-//  private PrintStream redirectIO()
-//  {
-//    PrintStream op = new PrintStream(new OutputStream()
-//    {
-//      public void write(int b)
-//      {} // never called
-//
-//      public void write(byte[] b, int off, int len)
-//      {
-//        _output.append(new String(b, off, len));
-//        // Ensure that the text scrolls as new text is appended
-//        _cmdWin.setFocusable(true);
-//        _cmdWin.requestFocusInWindow();
-//        _cmdWin.setCaretPosition(0);
-//      }
-//    });
-//
-//    return op;
-//  }
+  // /**
+  // * Redirect System out messages (user output) to the window area. Define a PrintStream that
+  // sends
+  // * its bytes to the output text area
+  // *
+  // * @return reference to output stream
+  // */
+  // private PrintStream redirectIO()
+  // {
+  // PrintStream op = new PrintStream(new OutputStream()
+  // {
+  // public void write(int b)
+  // {} // never called
+  //
+  // public void write(byte[] b, int off, int len)
+  // {
+  // _output.append(new String(b, off, len));
+  // // Ensure that the text scrolls as new text is appended
+  // _cmdWin.setFocusable(true);
+  // _cmdWin.requestFocusInWindow();
+  // _cmdWin.setCaretPosition(0);
+  // }
+  // });
+  //
+  // return op;
+  // }
 
 
 } // end OutputPanel class
