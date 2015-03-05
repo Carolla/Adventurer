@@ -83,8 +83,6 @@ public abstract class Command
   /** The syntax of the command, used in the {@code usage()} method. */
   protected String _cmdfmt = null;
   /** CommandParser redirects all errors and messages to {@code hic.IOPanel} */
-  protected CommandParser _cp;
-  /** CommandParser redirects all errors and messages to {@code hic.IOPanel} */
   protected CommandParser _msgHandler;
 
   // ============================================================
@@ -242,12 +240,10 @@ public abstract class Command
   protected void usage()
   {
     if (_cmdfmt == null) {
-      // _mfCiv.errorOut(_name + " command takes no parms");
-      _cp.errorOut(_name + " command takes no parms");
+      _msgHandler.errorOut("USAGE: " + _name + " command takes no parms");
     }
     else {
-      // _mfCiv.errorOut(_name + " " + _cmdfmt);
-      _cp.errorOut(_name + " " + _cmdfmt);
+      _msgHandler.errorOut("USAGE: " +  _cmdfmt);
     }
     // Do not increment the game clock for this command
     _delay = 0;

@@ -46,12 +46,12 @@ public class CommandParser
    * look-up algorithm is linear).
    */
   private final String[][] _cmdTable = {
-      {"APPROACH", "CmdApproach"},// Display the description and image of its exterior
-      {"ENTER", "CmdEnter"}, // Display the description and image of its interior
+      {"APPROACH", "CmdApproach"},// Display the description and image of Building exterior
+      {"ENTER", "CmdEnter"}, // Display the description and image of Building interior
       {"EXIT", "CmdLeave"}, // Synonym for Leave
-      {"GOTO", "CmdGoTo"}, // If parms is a Building, Approaches building; if parm = Town,
-                           // go to Town view; if null parm, info msg
-      {"LEAVE", "CmdLeave"}, // Leave the building and go to (display) the building's exterior
+      {"GOTO", "CmdGoTo"}, // If parm is a Building or Building type, "Approach" building; 
+                            // if parm = Town, goes to Town view; if null parm, info msg
+      {"LEAVE", "CmdLeave"}, // Leave the interior and go to building's exterior
       {"QUIT", "CmdQuit"}, // End the program.
       {"RETURN", "CmdReturn"}, // Return to town view
       // {"TO TOWN", "CmdReturn"}, // Return to Town View
