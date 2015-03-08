@@ -1,5 +1,8 @@
 package test.battle;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 import mylib.pdc.MetaDie;
 import battle.Attack;
 import battle.Battle;
@@ -21,6 +24,7 @@ public class AutoCombatant implements Combatant {
     public enum CombatantType {HERO, ENEMY};
     public enum CombatantAttack {AUTO_MISS, CUSTOM, NORMAL, ACCURATE, AUTO_HIT};
     public enum CombatantDamage {FIST, DAGGER, MORNING_STAR};
+    public enum CombatantArmor {HELMET, SHIELD, CHAIN_MAIL};
     
 	/**
 	 */
@@ -38,8 +42,9 @@ public class AutoCombatant implements Combatant {
 		private CombatantAttack withAttack = CombatantAttack.NORMAL;
 		private CombatantDamage withDmg = CombatantDamage.FIST;
 		private CombatantType withType = CombatantType.HERO;
-		private int withAttackRoll;
-		private int withAc;
+		private int withAttackRoll = 10;
+		private int withAc = 10;
+		private Set<CombatantArmor> withArmors = new TreeSet<CombatantArmor>();
 		
 		public CombatantBuilder() { }
 		
@@ -100,6 +105,24 @@ public class AutoCombatant implements Combatant {
 
 		public CombatantBuilder withInitiative(int initiative) {
 			withInitiative = initiative;
+			return this;
+		}
+
+		public CombatantBuilder withArmor(CombatantArmor armor) {
+			if (withArmors.add(armor)) {
+				switch(armor)
+				{
+				case HELMET:
+					withAc += 1;
+					break;
+				case SHIELD:
+					withAc += 2;
+					break;
+				case CHAIN_MAIL:
+					withAc += 4;
+					break;
+				}
+			}
 			return this;
 		}
 

@@ -85,14 +85,14 @@ public class TestBattle {
 	@Test
 	public void BattleAllowsPlayersToTakeSuccessiveTurns()
 	{
-        AutoCombatant player = (AutoCombatant) new AutoCombatant.CombatantBuilder().build();
-        AutoCombatant enemy = (AutoCombatant) new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).build();
+		Combatant player = new AutoCombatant.CombatantBuilder().build();
+		Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).build();
 		Battle battle = new Battle(player, enemy);
-		assertEquals(0, player.getTurnCount());
-		assertEquals(0, enemy.getTurnCount());
+		assertEquals(0, ((AutoCombatant) player).getTurnCount());
+		assertEquals(0, ((AutoCombatant) enemy).getTurnCount());
 		battle.advance();
-		assertEquals(1, player.getTurnCount());
-		assertEquals(1, enemy.getTurnCount());
+		assertEquals(1, ((AutoCombatant) player).getTurnCount());
+		assertEquals(1, ((AutoCombatant) enemy).getTurnCount());
 	}
 	
 	@Test
