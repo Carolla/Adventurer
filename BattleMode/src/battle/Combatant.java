@@ -1,12 +1,13 @@
 package battle;
 
+
 public interface Combatant {
     /**
      * Status of player in battle - defeated player is out of battle
      * 
      * @return whether player is participating in battle anymore
      */
-	public abstract boolean isDefeated();
+	boolean isDefeated();
 
 	/**
 	 * Whether player is able to take actions in the battle
@@ -47,13 +48,20 @@ public interface Combatant {
     /**
      * Write to the console when victory is complete
      */
-	public void displayVictory();
+	void displayVictory();
 
 	/**
 	 * At the start of battle, or when surprised, determine order in battle
 	 * @return the number of initiative roll
 	 */
-	public int rollInitiative();
+	int rollInitiative();
+
+	/**
+	 * The combatant will attack the victim
+	 * @param victim the Combatant to be attacked
+	 * @return the damage done by the attack
+	 */
+	int attack(Combatant victim);
 
 
 }

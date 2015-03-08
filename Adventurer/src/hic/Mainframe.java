@@ -43,6 +43,7 @@ import mylib.hic.ShuttleList;
 import net.miginfocom.swing.MigLayout;
 import pdc.Util;
 import chronos.Chronos;
+import civ.BuildingDisplayCiv;
 import civ.MainframeCiv;
 
 /**
@@ -96,6 +97,8 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   private ImagePanel _imagePanel;
 
   private MainframeCiv _mfCiv;
+  private BuildingDisplayCiv _bldgCiv;
+  
   private IOPanel _iop;
   private List<String> _partyHeros = new ArrayList<String>();
   private List<String> _summonableHeroes;
@@ -179,6 +182,10 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
 
     // Create the Civ
     _mfCiv = new MainframeCiv(this);
+  
+    // Create the BuildingDisplayCiv to define the output GUI for descriptions and images
+    _bldgCiv = BuildingDisplayCiv.getInstance();
+    _bldgCiv.setOutput(this);
   }
 
 
@@ -713,7 +720,13 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   }
 
 
-  /**
+  @Override
+public void setOnTown(boolean onTown) {
+	_mfCiv.setOnTown(onTown);
+}
+
+
+/**
    * Display a title onto the border of the left side IO Panel
    * 
    * @param title of the panel to set

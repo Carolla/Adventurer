@@ -47,8 +47,8 @@ public class Inn extends Building
             "The patrons notice you, and suddenly it becomes much quieter. ";
     
     /** Paths to the images for this building **/    
-    static private final String EXTERIOR_IMAGE = "raw_ext_Ugly Ogre Inn.JPG";
-    static private final String INTERIOR_IMAGE = "int_inn.jpg";
+    static private final String EXTERIOR_IMAGE = "raw_ext_Ugly Ogre Inn.jpg";
+    static private final String INTERIOR_IMAGE = "int_Inn.jpg";
     
     /** The standard description is saved in the base class, but the busy description is stored here */
     private String _busyDescription = null;

@@ -46,13 +46,15 @@ public class CommandParser
    * look-up algorithm is linear).
    */
   private final String[][] _cmdTable = {
-      {"APPROACH", "CmdApproach"}, // Display the description and image of its exterior 
-      {"ENTER",  "CmdEnter"}, // Display the description and image of its interior
-      {"EXIT",   "CmdReturn"}, // Exit the building and go to (display) the building's exterior
-      {"LEAVE",  "CmdExit"}, // Synonym for EXIT
-      {"QUIT",   "CmdQuit"}, // End the program.
-      {"RETURN", "CmdReturn"}, // Synonym for EXIT
-  // {"TO TOWN", "CmdReturn"}, // Return to Town View
+      {"APPROACH", "CmdApproach"},// Display the description and image of Building exterior
+      {"ENTER", "CmdEnter"}, // Display the description and image of Building interior
+      {"EXIT", "CmdLeave"}, // Synonym for Leave
+      {"GOTO", "CmdGoTo"}, // If parm is a Building or Building type, "Approach" building; 
+                            // if parm = Town, goes to Town view; if null parm, info msg
+      {"LEAVE", "CmdLeave"}, // Leave the interior and go to building's exterior
+      {"QUIT", "CmdQuit"}, // End the program.
+      {"RETURN", "CmdReturn"}, // Return to town view
+      // {"TO TOWN", "CmdReturn"}, // Return to Town View
       // { "HELP", "CmdHelp" }, // List the user command names and their descriptions.
       // { "INVENTORY", "CmdInventory" }, // Describe the money the Hero has (later, this will tell
       // the items too)
@@ -186,7 +188,7 @@ public class CommandParser
   {
     // Guard
     if (cmdIn == null) {
-      _userInput = null;    // clear so that same input isn't used twice
+      _userInput = null; // clear so that same input isn't used twice
       errorOut(ERRMSG_CMDNULL);
     }
     else {
@@ -373,15 +375,16 @@ public class CommandParser
       return CommandParser.this._userInput;
     }
 
-    /** Get the static Scheduler currently running:
-     * DO NOT put the 'this' qualifier on CommandParser. */
+    /**
+     * Get the static Scheduler currently running: DO NOT put the 'this' qualifier on CommandParser.
+     */
     public Scheduler getScheduler()
     {
       return CommandParser._skedder;
     }
 
 
-  
+
   } // end of MockCP inner class
 
 

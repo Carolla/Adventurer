@@ -93,8 +93,8 @@ public class CmdExit extends Command
    */
   public boolean exec()
   {
-    _mfCiv.openTown();
-    return true;
+    _mfCiv.quit();
+    return false;
   }
 
 } // end CmdExit class

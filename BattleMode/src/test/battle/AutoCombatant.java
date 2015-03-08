@@ -1,5 +1,8 @@
 package test.battle;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 import mylib.pdc.MetaDie;
 import battle.Attack;
 import battle.Battle;
@@ -8,25 +11,27 @@ import battle.Combatant;
 public class AutoCombatant implements Combatant {
 
 	private int _hp = 10;
-    private int _turnCount = 0;
     private int _ac = 10;
+    private int _turnCount = 0;
 	private int _initiative = 10;
     private CombatantType _type = CombatantType.HERO;
 	private CombatantAttack _attack = CombatantAttack.NORMAL;
-	private CombatantDamage _dmg = CombatantDamage.NORMAL;
+	private CombatantDamage _dmg = CombatantDamage.FIST;
     private MetaDie _metadie;
 	private boolean _shouldTryEscaping = false;
+	public int _attackRoll;
 
     public enum CombatantType {HERO, ENEMY};
-    public enum CombatantAttack {AUTO_MISS, CLUMSY, NORMAL, ACCURATE, AUTO_HIT};
-    public enum CombatantDamage {WEAK, NORMAL, STRONG};
+    public enum CombatantAttack {AUTO_MISS, CUSTOM, NORMAL, ACCURATE, AUTO_HIT};
+    public enum CombatantDamage {FIST, DAGGER, MORNING_STAR};
+    public enum CombatantArmor {HELMET, SHIELD, CHAIN_MAIL};
     
 	/**
 	 */
 	private AutoCombatant(CombatantType type)
 	{
 	    _type = type;
-	    _metadie = new MetaDie();
+	    _metadie = new MetaDie(System.currentTimeMillis());
 	}
 	
 	public static class CombatantBuilder
@@ -35,8 +40,11 @@ public class AutoCombatant implements Combatant {
 		private int withInitiative = 10;
 		private boolean withEscape = false;
 		private CombatantAttack withAttack = CombatantAttack.NORMAL;
-		private CombatantDamage withDmg = CombatantDamage.NORMAL;
+		private CombatantDamage withDmg = CombatantDamage.FIST;
 		private CombatantType withType = CombatantType.HERO;
+		private int withAttackRoll = 10;
+		private int withAc = 10;
+		private Set<CombatantArmor> withArmors = new TreeSet<CombatantArmor>();
 		
 		public CombatantBuilder() { }
 		
@@ -64,9 +72,21 @@ public class AutoCombatant implements Combatant {
 			return this;
 		}
 		
+		public CombatantBuilder withSpecificHit(int attackRoll)
+		{
+			withAttack = CombatantAttack.CUSTOM;
+			withAttackRoll = attackRoll;
+			return this;
+		}
+		
 		public CombatantBuilder withDamage(CombatantDamage dmg)
 		{
 			withDmg = dmg;
+			return this;
+		}
+
+		public CombatantBuilder withAC(int ac) {
+			withAc = ac;
 			return this;
 		}
 		
@@ -76,6 +96,8 @@ public class AutoCombatant implements Combatant {
 			auto._hp = withHp;
 			auto._dmg = withDmg;
 			auto._attack = withAttack;
+			auto._attackRoll = withAttackRoll;
+			auto._ac = withAc;
 			auto._shouldTryEscaping = withEscape;
 			auto._initiative = withInitiative;
 			return auto;
@@ -85,6 +107,25 @@ public class AutoCombatant implements Combatant {
 			withInitiative = initiative;
 			return this;
 		}
+
+		public CombatantBuilder withArmor(CombatantArmor armor) {
+			if (withArmors.add(armor)) {
+				switch(armor)
+				{
+				case HELMET:
+					withAc += 1;
+					break;
+				case SHIELD:
+					withAc += 2;
+					break;
+				case CHAIN_MAIL:
+					withAc += 4;
+					break;
+				}
+			}
+			return this;
+		}
+
 	}
 	
     public int getTurnCount()
@@ -109,7 +150,7 @@ public class AutoCombatant implements Combatant {
         _turnCount++;
         if (shouldAttack())
         {
-            return opponent.attacked(makeAttackRoll());
+            return attack(opponent);
         } else {
             tryToEscape(battle);
             return 0;
@@ -149,13 +190,13 @@ public class AutoCombatant implements Combatant {
     	
     	switch(_dmg)
     	{
-    	case NORMAL:
+    	case DAGGER:
     		damage = _metadie.getRandom(1,4);
     		break;
-    	case STRONG:
+    	case MORNING_STAR:
     		damage = _metadie.getRandom(2,6);
     		break;
-    	case WEAK:
+    	case FIST:
     	default:
     		damage = 1;
     		break;
@@ -166,8 +207,8 @@ public class AutoCombatant implements Combatant {
     	case AUTO_MISS:
     		attack = 0;
     		break;
-    	case CLUMSY:
-    		attack = _metadie.getRandom(6,12);
+    	case CUSTOM:
+    		attack = _attackRoll;
     		break;
     	case NORMAL:
     		attack = _metadie.getRandom(1,20);
@@ -186,7 +227,7 @@ public class AutoCombatant implements Combatant {
     @Override
     public int attacked(Attack attack) //AttackRoll attackRoll, DamageRoll damageRoll)
     {
-        if (attack.hitRoll() > _ac) {
+        if (attack.hitRoll() >= _ac && attack.hitRoll() > 0) {
             int damage = attack.damageRoll();
             _hp = _hp - damage;
             displayHit(damage);
@@ -233,8 +274,6 @@ public class AutoCombatant implements Combatant {
 
 	@Override
 	public void displayVictory() {
-		// TODO Auto-generated method stub
-
 		switch (_type) 
 		{
 		case HERO:
@@ -251,5 +290,10 @@ public class AutoCombatant implements Combatant {
 	@Override
 	public int rollInitiative() {
 		return _initiative;
+	}
+
+	@Override
+	public int attack(Combatant victim) {
+		return victim.attacked(makeAttackRoll());
 	}
 }

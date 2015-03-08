@@ -58,8 +58,7 @@ public class Bank extends Building
 
 
     /*
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND RELATED METHODS
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     * CONSTRUCTOR(S) AND RELATED METHODS
      */
 
     /**

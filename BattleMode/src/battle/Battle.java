@@ -61,7 +61,11 @@ public class Battle {
 	}
 
 	public boolean isWinner(Combatant combatant) {
-		return !combatant.isDefeated();
+		if (!isOngoing()) {
+			return !combatant.isDefeated();
+		} else {
+			return false;
+		}
 	}
 	
 	public boolean escape(Combatant combatant) {
