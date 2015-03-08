@@ -13,12 +13,22 @@ public class SnottyHelloWorld_Test
     @Test
     public void testSnottyHelloWorld()
     {
-        SnottyHelloWorld imasnot = new SnottyHelloWorld(myArgs);
+        String[] someTestArgs =
+                {"I've got a boogey on my finger!", "I can't get the boogey off my finger!",
+                        "Just lick it off!"};
+        SnottyHelloWorld imasnot = new SnottyHelloWorld(someTestArgs);
 
+        // SnottyHelloWorld object has been properly created
         assertNotNull(imasnot);
         assertTrue(imasnot instanceof SnottyHelloWorld);
-        assertEquals("Mr. Ubersnot sends this message: Fah! I am SOOOOO beyond this exercise!",
-                imasnot.snottyMessage);
+        
+        // Same number of members in each array
+        assertEquals(someTestArgs.length, imasnot.getArgs().length);
+        
+        // Array members contain the same data
+        assertTrue(someTestArgs[0].equals(imasnot.getArgs()[0]));
+        assertTrue(someTestArgs[1].equals(imasnot.getArgs()[1]));
+        assertTrue(someTestArgs[2].equals(imasnot.getArgs()[2]));
     }
 
 }
