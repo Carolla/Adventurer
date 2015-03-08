@@ -8,12 +8,12 @@ import battle.Combatant;
 public class AutoCombatant implements Combatant {
 
 	private int _hp = 10;
-    private int _turnCount = 0;
     private int _ac = 10;
+    private int _turnCount = 0;
 	private int _initiative = 10;
     private CombatantType _type = CombatantType.HERO;
 	private CombatantAttack _attack = CombatantAttack.NORMAL;
-	private CombatantDamage _dmg = CombatantDamage.DAGGER;
+	private CombatantDamage _dmg = CombatantDamage.FIST;
     private MetaDie _metadie;
 	private boolean _shouldTryEscaping = false;
 	public int _attackRoll;
@@ -36,7 +36,7 @@ public class AutoCombatant implements Combatant {
 		private int withInitiative = 10;
 		private boolean withEscape = false;
 		private CombatantAttack withAttack = CombatantAttack.NORMAL;
-		private CombatantDamage withDmg = CombatantDamage.DAGGER;
+		private CombatantDamage withDmg = CombatantDamage.FIST;
 		private CombatantType withType = CombatantType.HERO;
 		private int withAttackRoll;
 		private int withAc;
@@ -204,7 +204,7 @@ public class AutoCombatant implements Combatant {
     @Override
     public int attacked(Attack attack) //AttackRoll attackRoll, DamageRoll damageRoll)
     {
-        if (attack.hitRoll() > _ac) {
+        if (attack.hitRoll() >= _ac && attack.hitRoll() > 0) {
             int damage = attack.damageRoll();
             _hp = _hp - damage;
             displayHit(damage);

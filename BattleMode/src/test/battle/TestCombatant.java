@@ -38,7 +38,7 @@ public class TestCombatant
     {
     	AutoCombatant attacker1 = new AutoCombatant.CombatantBuilder().withSpecificHit(10).build();
     	AutoCombatant attacker2 = new AutoCombatant.CombatantBuilder().withSpecificHit(11).build();
-    	AutoCombatant victim = new AutoCombatant.CombatantBuilder().withAC(10).withHP(1).build();
+    	AutoCombatant victim = new AutoCombatant.CombatantBuilder().withAC(11).withHP(1).build();
     	attacker1.attack(victim);
     	assertFalse(victim.isUnconscious());
     	attacker2.attack(victim);
@@ -48,12 +48,22 @@ public class TestCombatant
     @Test
     public void CombatantCanHaveDifferentArmorClass()
     {
-    	AutoCombatant attacker = new AutoCombatant.CombatantBuilder().withSpecificHit(11).build();
+    	AutoCombatant attacker = new AutoCombatant.CombatantBuilder().withSpecificHit(10).build();
     	AutoCombatant victim1 = new AutoCombatant.CombatantBuilder().withAC(11).withHP(1).build();
     	AutoCombatant victim2 = new AutoCombatant.CombatantBuilder().withAC(10).withHP(1).build();
         attacker.attack(victim1);
     	assertFalse(victim1.isUnconscious());
     	attacker.attack(victim2);
     	assertTrue(victim2.isUnconscious());
+    }
+    
+    @Test
+    public void CombatantAlwaysMissesWithZero()
+    {
+    	AutoCombatant attacker = new AutoCombatant.CombatantBuilder().withSpecificHit(0).build();
+    	AutoCombatant victim = new AutoCombatant.CombatantBuilder().withAC(0).withHP(1).build();
+        attacker.attack(victim);
+    	attacker.attack(victim);
+    	assertFalse(victim.isUnconscious());
     }
 }
