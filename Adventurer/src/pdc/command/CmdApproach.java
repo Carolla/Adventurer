@@ -60,6 +60,7 @@ public class CmdApproach extends Command
     /** Error message if building not found in registry */
     private static final String ERRMSG_NO_BLDG = "We don't seem to have that building in town.";
     
+    /** The building the user wants to approach using this command */
     private Building _buildingToApproach;
     
     // ============================================================
