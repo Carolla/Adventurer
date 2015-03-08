@@ -2,7 +2,9 @@ package test.battle;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import mylib.pdc.MetaDie;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import test.battle.AutoCombatant.CombatantAttack;
@@ -11,6 +13,14 @@ import battle.Attack;
 
 public class TestCombatant
 {
+	private static MetaDie meta;
+
+	@BeforeClass
+	public static void setupClass()
+	{
+		meta = new MetaDie(System.currentTimeMillis());
+	}
+	
     @Test
     public void CombatantIsUnconsciousWhenHpLessThanZero()
     {
@@ -58,6 +68,45 @@ public class TestCombatant
     }
     
     @Test
+    public void CombatantAttackHitsWhenEqualToAC()
+    {
+    	for (int i = 0; i < 20; i++)
+    	{
+	    	int attackAndAc = meta.getRandom(1, 19);
+	    	AutoCombatant attacker = new AutoCombatant.CombatantBuilder().withSpecificHit(attackAndAc).build();
+	    	AutoCombatant victim = new AutoCombatant.CombatantBuilder().withAC(attackAndAc).withHP(1).build();
+	        attacker.attack(victim);
+	    	assertTrue(victim.isUnconscious());
+    	}
+    }
+    
+    @Test
+    public void CombatantAttackMissWhenLessThanAC()
+    {
+    	for (int i = 0; i < 20; i++)
+    	{
+	    	int ac = meta.getRandom(2, 20);
+	    	AutoCombatant attacker = new AutoCombatant.CombatantBuilder().withSpecificHit(ac - 1).build();
+	    	AutoCombatant victim = new AutoCombatant.CombatantBuilder().withAC(ac).withHP(1).build();
+	        attacker.attack(victim);
+	    	assertFalse(victim.isUnconscious());
+    	}
+    }
+    
+    @Test
+    public void CombatantAttackHitsWhenGreaterThanAC()
+    {
+    	for (int i = 0; i < 20; i++)
+    	{
+	    	int ac = meta.getRandom(1, 18);
+	    	AutoCombatant attacker = new AutoCombatant.CombatantBuilder().withSpecificHit(ac + 1).build();
+	    	AutoCombatant victim = new AutoCombatant.CombatantBuilder().withAC(ac).withHP(1).build();
+	        attacker.attack(victim);
+	    	assertTrue(victim.isUnconscious());
+    	}
+    }
+    
+    @Test
     public void CombatantAlwaysMissesWithZero()
     {
     	AutoCombatant attacker = new AutoCombatant.CombatantBuilder().withSpecificHit(0).build();
@@ -65,5 +114,14 @@ public class TestCombatant
         attacker.attack(victim);
     	attacker.attack(victim);
     	assertFalse(victim.isUnconscious());
+    }
+    
+    @Test
+    public void CombatantAlwaysHitsWithTwenty()
+    {
+    	AutoCombatant attacker = new AutoCombatant.CombatantBuilder().withSpecificHit(20).build();
+    	AutoCombatant victim = new AutoCombatant.CombatantBuilder().withAC(20).withHP(1).build();
+        attacker.attack(victim);
+    	assertTrue(victim.isUnconscious());
     }
 }
