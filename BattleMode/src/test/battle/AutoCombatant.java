@@ -16,9 +16,10 @@ public class AutoCombatant implements Combatant {
 	private CombatantDamage _dmg = CombatantDamage.DAGGER;
     private MetaDie _metadie;
 	private boolean _shouldTryEscaping = false;
+	public int _attackRoll;
 
     public enum CombatantType {HERO, ENEMY};
-    public enum CombatantAttack {AUTO_MISS, CLUMSY, NORMAL, ACCURATE, AUTO_HIT};
+    public enum CombatantAttack {AUTO_MISS, CUSTOM, NORMAL, ACCURATE, AUTO_HIT};
     public enum CombatantDamage {FIST, DAGGER, MORNING_STAR};
     
 	/**
@@ -26,7 +27,7 @@ public class AutoCombatant implements Combatant {
 	private AutoCombatant(CombatantType type)
 	{
 	    _type = type;
-	    _metadie = new MetaDie();
+	    _metadie = new MetaDie(System.currentTimeMillis());
 	}
 	
 	public static class CombatantBuilder
@@ -37,6 +38,7 @@ public class AutoCombatant implements Combatant {
 		private CombatantAttack withAttack = CombatantAttack.NORMAL;
 		private CombatantDamage withDmg = CombatantDamage.DAGGER;
 		private CombatantType withType = CombatantType.HERO;
+		private int withAttackRoll;
 		
 		public CombatantBuilder() { }
 		
@@ -64,6 +66,13 @@ public class AutoCombatant implements Combatant {
 			return this;
 		}
 		
+		public CombatantBuilder withSpecificHit(int attackRoll)
+		{
+			withAttack = CombatantAttack.CUSTOM;
+			withAttackRoll = attackRoll;
+			return this;
+		}
+		
 		public CombatantBuilder withDamage(CombatantDamage dmg)
 		{
 			withDmg = dmg;
@@ -76,6 +85,7 @@ public class AutoCombatant implements Combatant {
 			auto._hp = withHp;
 			auto._dmg = withDmg;
 			auto._attack = withAttack;
+			auto._attackRoll = withAttackRoll;
 			auto._shouldTryEscaping = withEscape;
 			auto._initiative = withInitiative;
 			return auto;
@@ -166,8 +176,8 @@ public class AutoCombatant implements Combatant {
     	case AUTO_MISS:
     		attack = 0;
     		break;
-    	case CLUMSY:
-    		attack = _metadie.getRandom(6,12);
+    	case CUSTOM:
+    		attack = _attackRoll;
     		break;
     	case NORMAL:
     		attack = _metadie.getRandom(1,20);

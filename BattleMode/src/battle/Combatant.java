@@ -1,6 +1,5 @@
 package battle;
 
-import test.battle.AutoCombatant;
 
 public interface Combatant {
     /**

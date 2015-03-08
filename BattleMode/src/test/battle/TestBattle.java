@@ -121,12 +121,12 @@ public class TestBattle {
         assertTrue(enemy.isDefeated());
 	}
 	
-        @Test
+    @Test
     public void CombatantOrderIsDeterminedByInitiativeRoll()
     {
     	boolean heroGoesFirst = false;
     	//Flip a coin
-    	if (new MetaDie().getRandom(1, 2) == 1)
+    	if (new MetaDie(System.currentTimeMillis()).getRandom(1, 2) == 1)
     	{
     		heroGoesFirst = true;
     	}
