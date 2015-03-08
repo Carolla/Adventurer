@@ -39,6 +39,7 @@ public class AutoCombatant implements Combatant {
 		private CombatantDamage withDmg = CombatantDamage.DAGGER;
 		private CombatantType withType = CombatantType.HERO;
 		private int withAttackRoll;
+		private int withAc;
 		
 		public CombatantBuilder() { }
 		
@@ -78,6 +79,11 @@ public class AutoCombatant implements Combatant {
 			withDmg = dmg;
 			return this;
 		}
+
+		public CombatantBuilder withAC(int ac) {
+			withAc = ac;
+			return this;
+		}
 		
 		public AutoCombatant build()
 		{
@@ -86,6 +92,7 @@ public class AutoCombatant implements Combatant {
 			auto._dmg = withDmg;
 			auto._attack = withAttack;
 			auto._attackRoll = withAttackRoll;
+			auto._ac = withAc;
 			auto._shouldTryEscaping = withEscape;
 			auto._initiative = withInitiative;
 			return auto;
@@ -95,6 +102,7 @@ public class AutoCombatant implements Combatant {
 			withInitiative = initiative;
 			return this;
 		}
+
 	}
 	
     public int getTurnCount()
@@ -243,8 +251,6 @@ public class AutoCombatant implements Combatant {
 
 	@Override
 	public void displayVictory() {
-		// TODO Auto-generated method stub
-
 		switch (_type) 
 		{
 		case HERO:
