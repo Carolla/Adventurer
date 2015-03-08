@@ -55,11 +55,12 @@ public class CmdApproach extends Command
     private BuildingDisplayCiv _bldgCiv;
     
     /** Error message if no arguments or multiple arguments specified */
-    private final String ERRMSG_NEED_ONE_BLDG =
-        "You must specify one (and only one) building to approach.";
+    private final String ERRMSG_NO_BLDG =
+        "Sure, but you gotta tell me WHICH building to approach.";
     /** Error message if building not found in registry */
-    private static final String ERRMSG_NO_BLDG = "We don't seem to have that building in town.";
-    
+    private final String ERRMSG_WRONG_BLDG =
+            "That some kinda slang, stranger?  WHAT building was that again?";
+
     /** The building the user wants to approach using this command */
     private Building _buildingToApproach;
     
@@ -79,41 +80,46 @@ public class CmdApproach extends Command
     // ============================================================
 
     /**
-     * Verifies the following command format:
-     * {@code APPROACH <Building name | Building type>} <br>
-     * There should only be one argument specified - the name of the building.
+     * Verifies the following command format: {@code APPROACH <Building name | Building type>} <br>
+     * There should only be one argument specified - the name (or type) of the building.
      * 
-     * @param args specify desired building; cannot be empty
+     * @param args specifies desired building; cannot be empty
      * @return true if all worked, else returns false on input error
      */
     @Override
     public boolean init(List<String> args) throws NullPointerException
     {
-      System.out.println("\tCmdApproach.init()...");
-      // The BuildingDisplayCiv must already exist
-//      _currentBuilding = _bldgCiv.getCurrentBuilding();
-      // If no current building and not specified, error 
-//      if ((args.size() == 0) && (_currentBuilding == null)) {
-      if (args.size() != 1) {
-        super._msgHandler.errorOut(ERRMSG_NEED_ONE_BLDG);
+        System.out.println("\tCmdApproach.init()...");
+        
+        // If no building specified, error
+        if (args.size() == 0) {
+            super._msgHandler.errorOut(ERRMSG_NO_BLDG);
+            return false;
+        }
+
+        // Init data for matching the building by type and name
+        RegistryFactory regFact = RegistryFactory.getInstance();
+        BuildingRegistry breg = (BuildingRegistry) regFact.getRegistry(RegKey.BLDG);
+        
+        // Use each separate arg to attempt match of building (match by type)
+        for (String argPhrase : args) {
+            Building myBldg = breg.getBuilding(argPhrase);
+            if (myBldg != null) {
+                _buildingToApproach = myBldg;
+               return true; 
+            }
+        }
+        
+        // Use combined args to attempt match of building (match by name)
+        String bldgParm = convertArgsToString(args);
+        Building bldg = breg.getBuilding(bldgParm);
+        if (bldg != null) {
+            _buildingToApproach = bldg;
+            return true;
+        }
+        // No matches
+        super._msgHandler.errorOut(ERRMSG_WRONG_BLDG);
         return false;
-      } else {
-          String bldgName = args.get(0);
-          RegistryFactory regFact = RegistryFactory.getInstance();
-          BuildingRegistry breg = (BuildingRegistry) regFact.getRegistry(RegKey.BLDG);
-          Building b = breg.getBuilding(bldgName);
-          
-          if (b == null) {
-              super._msgHandler.errorOut(ERRMSG_NO_BLDG);
-              return false;
-          }
-          _buildingToApproach = b;
-          super._msgHandler.messageOut("Params are OK");
-          return true;
-      }
-//      _targetBldg = convertArgsToString(args);
-//      super._msgHandler.errorOut(ERRMSG_NEED_ONE_BLDG);
-//      return false;
     }
 
     @Override
@@ -121,9 +127,16 @@ public class CmdApproach extends Command
     {
         System.out.println("\tCmdApproach.exec()...");
         _bldgCiv = BuildingDisplayCiv.getInstance();
-        _bldgCiv.approachBuilding(_buildingToApproach.getName());
         
+        // Success if target building has been set
+        if (_buildingToApproach != null) {
+            _bldgCiv.approachBuilding(_buildingToApproach.getName());
+            return true;
+        }
+        
+        // Fail by default - Failure to set or no attempt to set target building
+        System.out.println("\t\tCmdApproach.exec()...failed");
         return false;
     }
 
-}
+} // end CmdApproach Class
