@@ -31,10 +31,12 @@ import civ.BuildingDisplayCiv;
 public class CmdLeave extends Command
 {
   // THESE CONSTANTS MUST BE STATIC BECAUSE THEY ARE CALLED IN THE CONSTRUCTOR
+  /** The name of the command, mostly for error messages */
+  static private final String CMD_NAME = "LEAVE";
   /** The description of what the command does, used in the {@code help()} method. */
   static private final String CMD_DESCRIPTION = "Leave the current Building.";
   /** Format for this command; null building defaults to current building */
-  static private final String CMDFMT = "LEAVE";
+  static private final String CMDFMT = null;
   /** This command starts immediately, requiring no delay. */
   static private final int DELAY = 0;
   /** This command takes 10 seconds on the game clock. */
@@ -45,8 +47,6 @@ public class CmdLeave extends Command
 
   /** The building currently displayed, either inside or outside */
   private Building _currentBuilding = null;
-  /** The building to enter */
-  private String _targetBldg;
 
 //  /** Error message if no current building to enter */
 //  private final String ERRMSG_NOBLDG =
@@ -66,7 +66,7 @@ public class CmdLeave extends Command
   /** Constructor called by the CommandFactory. There is no delay but a 10-second duration. */
   public CmdLeave()
   {
-    super("CmdLeave", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
+    super(CMD_NAME, DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
     System.out.println("\tCmdLeave(): creating LEAVE command.");
   }
 
