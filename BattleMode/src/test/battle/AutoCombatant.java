@@ -20,11 +20,8 @@ public class AutoCombatant implements Combatant {
     private MetaDie _metadie;
 	private boolean _shouldTryEscaping = false;
 	public int _attackRoll;
+	private Set<CombatantArmor> _armor = new TreeSet<CombatantArmor>();
 
-    public enum CombatantType {HERO, ENEMY};
-    public enum CombatantAttack {AUTO_MISS, CUSTOM, NORMAL, ACCURATE, AUTO_HIT};
-    public enum CombatantDamage {FIST, DAGGER, MORNING_STAR};
-    public enum CombatantArmor {HELMET, SHIELD, CHAIN_MAIL};
     
 	/**
 	 */
@@ -100,6 +97,9 @@ public class AutoCombatant implements Combatant {
 			auto._ac = withAc;
 			auto._shouldTryEscaping = withEscape;
 			auto._initiative = withInitiative;
+			for (CombatantArmor piece : withArmors) {
+				auto.equip(piece);
+			}
 			return auto;
 		}
 
@@ -109,20 +109,7 @@ public class AutoCombatant implements Combatant {
 		}
 
 		public CombatantBuilder withArmor(CombatantArmor armor) {
-			if (withArmors.add(armor)) {
-				switch(armor)
-				{
-				case HELMET:
-					withAc += 1;
-					break;
-				case SHIELD:
-					withAc += 2;
-					break;
-				case CHAIN_MAIL:
-					withAc += 4;
-					break;
-				}
-			}
+			withArmors.add(armor);
 			return this;
 		}
 
@@ -225,7 +212,7 @@ public class AutoCombatant implements Combatant {
     }
 
     @Override
-    public int attacked(Attack attack) //AttackRoll attackRoll, DamageRoll damageRoll)
+    public int attacked(Attack attack)
     {
         if (attack.hitRoll() >= _ac && attack.hitRoll() > 0) {
             int damage = attack.damageRoll();
@@ -295,5 +282,23 @@ public class AutoCombatant implements Combatant {
 	@Override
 	public int attack(Combatant victim) {
 		return victim.attacked(makeAttackRoll());
+	}
+
+	@Override
+	public void equip(CombatantArmor armor) {
+		if (_armor.add(armor)) {
+			switch(armor)
+			{
+			case HELMET:
+				_ac += 1;
+				break;
+			case SHIELD:
+				_ac += 2;
+				break;
+			case CHAIN_MAIL:
+				_ac += 4;
+				break;
+			}
+		}
 	}
 }

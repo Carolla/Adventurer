@@ -60,4 +60,7 @@ public class DummyCombatant implements Combatant {
 	public int attack(Combatant victim) {
 		return 0;
 	}
+
+	@Override
+	public void equip(CombatantArmor armor) {	}
 }	

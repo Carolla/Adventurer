@@ -9,11 +9,11 @@ import mylib.pdc.MetaDie;
 import org.junit.Before;
 import org.junit.Test;
 
-import test.battle.AutoCombatant.CombatantAttack;
-import test.battle.AutoCombatant.CombatantDamage;
-import test.battle.AutoCombatant.CombatantType;
 import battle.Battle;
 import battle.Combatant;
+import battle.Combatant.CombatantAttack;
+import battle.Combatant.CombatantDamage;
+import battle.Combatant.CombatantType;
 
 public class TestBattle {
 

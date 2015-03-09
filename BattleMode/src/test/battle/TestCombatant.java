@@ -8,11 +8,11 @@ import mylib.pdc.MetaDie;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import test.battle.AutoCombatant.CombatantArmor;
-import test.battle.AutoCombatant.CombatantAttack;
-import test.battle.AutoCombatant.CombatantDamage;
 import battle.Attack;
 import battle.Combatant;
+import battle.Combatant.CombatantArmor;
+import battle.Combatant.CombatantAttack;
+import battle.Combatant.CombatantDamage;
 
 public class TestCombatant
 {
@@ -149,4 +149,21 @@ public class TestCombatant
     	assertFalse(victim2.isUnconscious());
     	assertTrue(victim1.isUnconscious());
     }
+    
+    @Test
+    public void CombatantCanChangeEquippedArmorDuringBattleAndChangeAc()
+    {
+        MsgCtrl.msgln("\n\nCombatantCanEquipArmorAndChangeAc");
+        Combatant attacker = new AutoCombatant.CombatantBuilder().withDamage(CombatantDamage.FIST).withSpecificHit(10).build();
+        Combatant victim1 = new AutoCombatant.CombatantBuilder().withHP(2).build();
+        Combatant victim2 = new AutoCombatant.CombatantBuilder().withHP(2).build();
+    	attacker.attack(victim1);
+    	attacker.attack(victim2);
+    	victim2.equip(CombatantArmor.SHIELD);
+    	attacker.attack(victim1);
+    	attacker.attack(victim2);
+    	assertFalse(victim2.isUnconscious());
+    	assertTrue(victim1.isUnconscious());
+    }
+    
 }

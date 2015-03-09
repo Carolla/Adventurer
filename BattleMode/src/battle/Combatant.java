@@ -1,7 +1,14 @@
 package battle;
 
 
+
 public interface Combatant {
+
+    public enum CombatantType {HERO, ENEMY};
+    public enum CombatantAttack {AUTO_MISS, CUSTOM, NORMAL, ACCURATE, AUTO_HIT};
+    public enum CombatantDamage {FIST, DAGGER, MORNING_STAR};
+    public enum CombatantArmor {HELMET, SHIELD, CHAIN_MAIL};
+    
     /**
      * Status of player in battle - defeated player is out of battle
      * 
@@ -62,6 +69,12 @@ public interface Combatant {
 	 * @return the damage done by the attack
 	 */
 	int attack(Combatant victim);
+
+	/**
+	 * The combatant adds a new piece of armor
+	 * @param armor the armor to be worn
+	 */
+	void equip(CombatantArmor armor);
 
 
 }
