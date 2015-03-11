@@ -16,7 +16,7 @@ public class AutoCombatant implements Combatant {
 	private int _initiative = 10;
     private CombatantType _type = CombatantType.HERO;
 	private CombatantAttack _attack = CombatantAttack.NORMAL;
-	private CombatantDamage _dmg = CombatantDamage.FIST;
+	private CombatantWeapon _weapon = CombatantWeapon.FIST;
     private MetaDie _metadie;
 	private boolean _shouldTryEscaping = false;
 	public int _attackRoll;
@@ -37,7 +37,7 @@ public class AutoCombatant implements Combatant {
 		private int withInitiative = 10;
 		private boolean withEscape = false;
 		private CombatantAttack withAttack = CombatantAttack.NORMAL;
-		private CombatantDamage withDmg = CombatantDamage.FIST;
+		private CombatantWeapon withWeapon = CombatantWeapon.FIST;
 		private CombatantType withType = CombatantType.HERO;
 		private int withAttackRoll = 10;
 		private int withAc = 10;
@@ -76,9 +76,9 @@ public class AutoCombatant implements Combatant {
 			return this;
 		}
 		
-		public CombatantBuilder withDamage(CombatantDamage dmg)
+		public CombatantBuilder withWeapon(CombatantWeapon weapon)
 		{
-			withDmg = dmg;
+			withWeapon = weapon;
 			return this;
 		}
 
@@ -91,7 +91,6 @@ public class AutoCombatant implements Combatant {
 		{
 			AutoCombatant auto = new AutoCombatant(withType);
 			auto._hp = withHp;
-			auto._dmg = withDmg;
 			auto._attack = withAttack;
 			auto._attackRoll = withAttackRoll;
 			auto._ac = withAc;
@@ -100,6 +99,7 @@ public class AutoCombatant implements Combatant {
 			for (CombatantArmor piece : withArmors) {
 				auto.equip(piece);
 			}
+			auto.equip(withWeapon);
 			return auto;
 		}
 
@@ -175,36 +175,29 @@ public class AutoCombatant implements Combatant {
     	int damage = 0;
     	int attack = 0;
     	
-    	switch(_dmg)
+    	switch(_weapon)
     	{
     	case DAGGER:
     		damage = _metadie.getRandom(1,4);
     		break;
     	case MORNING_STAR:
+    		System.out.println("Attacking with morning star");
     		damage = _metadie.getRandom(2,6);
     		break;
     	case FIST:
     	default:
+    		System.out.println("Attacking with fists");
     		damage = 1;
     		break;
     	}
     	
     	switch(_attack)
     	{
-    	case AUTO_MISS:
-    		attack = 0;
-    		break;
     	case CUSTOM:
     		attack = _attackRoll;
     		break;
     	case NORMAL:
     		attack = _metadie.getRandom(1,20);
-    		break;
-    	case ACCURATE:
-    		attack = _metadie.getRandom(9,20);
-    		break;
-    	case AUTO_HIT:
-    		attack = 20;
     		break;
     	}
     	
@@ -214,7 +207,7 @@ public class AutoCombatant implements Combatant {
     @Override
     public int attacked(Attack attack)
     {
-        if (attack.hitRoll() >= _ac && attack.hitRoll() > 0) {
+        if ((attack.hitRoll() >= _ac && attack.hitRoll() > 1) || attack.hitRoll() == 20) {
             int damage = attack.damageRoll();
             _hp = _hp - damage;
             displayHit(damage);
@@ -300,5 +293,22 @@ public class AutoCombatant implements Combatant {
 				break;
 			}
 		}
+	}
+	
+	@Override
+	public void equip(CombatantWeapon weapon) {
+		_weapon = weapon;
+    	switch(_weapon)
+    	{
+    	case DAGGER:
+    		System.out.println("Equipped a dagger");
+    		break;
+    	case MORNING_STAR:
+    		System.out.println("Equipped a morning star!");
+    		break;
+    	case FIST:
+    		System.out.println("No weapon equipped, just using fists");
+    		break;
+    	}
 	}
 }

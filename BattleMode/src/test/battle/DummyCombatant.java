@@ -49,7 +49,7 @@ public class DummyCombatant implements Combatant {
     public void displayHP() { }
 
 	@Override
-	public void displayVictory() {	}
+	public void displayVictory() {}
 
 	@Override
 	public int rollInitiative() {
@@ -62,5 +62,8 @@ public class DummyCombatant implements Combatant {
 	}
 
 	@Override
-	public void equip(CombatantArmor armor) {	}
+	public void equip(CombatantArmor armor) { }
+
+	@Override
+	public void equip(CombatantWeapon weapon) {	}
 }	

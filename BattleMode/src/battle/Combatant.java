@@ -1,12 +1,10 @@
 package battle;
 
-
-
 public interface Combatant {
 
     public enum CombatantType {HERO, ENEMY};
-    public enum CombatantAttack {AUTO_MISS, CUSTOM, NORMAL, ACCURATE, AUTO_HIT};
-    public enum CombatantDamage {FIST, DAGGER, MORNING_STAR};
+    public enum CombatantAttack {CUSTOM, NORMAL};
+    public enum CombatantWeapon {FIST, DAGGER, MORNING_STAR};
     public enum CombatantArmor {HELMET, SHIELD, CHAIN_MAIL};
     
     /**
@@ -75,6 +73,12 @@ public interface Combatant {
 	 * @param armor the armor to be worn
 	 */
 	void equip(CombatantArmor armor);
+
+	/**
+	 * The combatant equips a new weapon
+	 * @param weapon the weapon to be used
+	 */
+	void equip(CombatantWeapon weapon);
 
 
 }

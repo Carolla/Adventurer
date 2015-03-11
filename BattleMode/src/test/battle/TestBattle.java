@@ -11,9 +11,8 @@ import org.junit.Test;
 
 import battle.Battle;
 import battle.Combatant;
-import battle.Combatant.CombatantAttack;
-import battle.Combatant.CombatantDamage;
 import battle.Combatant.CombatantType;
+import battle.Combatant.CombatantWeapon;
 
 public class TestBattle {
 
@@ -99,7 +98,7 @@ public class TestBattle {
 	public void BattleEndWhenOneCombatantEscapes()
 	{
         Combatant player = new AutoCombatant.CombatantBuilder().shouldTryEscaping().withHP(2).build();
-        Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withHit(CombatantAttack.AUTO_HIT).withDamage(CombatantDamage.FIST).withHP(9).build();
+        Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withSpecificHit(20).withWeapon(CombatantWeapon.FIST).withHP(9).build();
         Battle battle = new Battle(player, enemy);
         assertFalse(battle.combatantEscaped(player));
         while (battle.isOngoing()) {
@@ -111,8 +110,8 @@ public class TestBattle {
 	@Test
 	public void CombatantsCanStartWithDifferentHP()
 	{
-        Combatant player = new AutoCombatant.CombatantBuilder().withHit(CombatantAttack.AUTO_HIT).withDamage(CombatantDamage.FIST).withHP(10).build();
-        Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withHit(CombatantAttack.AUTO_HIT).withDamage(CombatantDamage.FIST).withHP(9).build();
+        Combatant player = new AutoCombatant.CombatantBuilder().withSpecificHit(20).withWeapon(CombatantWeapon.FIST).withHP(10).build();
+        Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withSpecificHit(20).withWeapon(CombatantWeapon.FIST).withHP(9).build();
         Battle battle = new Battle(player, enemy);
         while (battle.isOngoing()) {
             battle.advance();
@@ -131,13 +130,13 @@ public class TestBattle {
     		heroGoesFirst = true;
     	}
     	
-    	Combatant player = new AutoCombatant.CombatantBuilder().withHit(CombatantAttack.AUTO_HIT).withDamage(CombatantDamage.FIST).withHP(1).build();
-    	Combatant enemy = new AutoCombatant.CombatantBuilder().withInitiative(11).withType(CombatantType.ENEMY).withHit(CombatantAttack.AUTO_HIT).withDamage(CombatantDamage.FIST).withHP(1).build();
+    	Combatant player = new AutoCombatant.CombatantBuilder().withSpecificHit(20).withWeapon(CombatantWeapon.FIST).withHP(1).build();
+    	Combatant enemy = new AutoCombatant.CombatantBuilder().withInitiative(11).withType(CombatantType.ENEMY).withSpecificHit(20).withWeapon(CombatantWeapon.FIST).withHP(1).build();
     	
     	if (heroGoesFirst)
     	{
-    		player = new AutoCombatant.CombatantBuilder().withInitiative(11).withHit(CombatantAttack.AUTO_HIT).withDamage(CombatantDamage.FIST).withHP(1).build();
-    		enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withHit(CombatantAttack.AUTO_HIT).withDamage(CombatantDamage.FIST).withHP(1).build();
+    		player = new AutoCombatant.CombatantBuilder().withInitiative(11).withSpecificHit(20).withWeapon(CombatantWeapon.FIST).withHP(1).build();
+    		enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withSpecificHit(20).withWeapon(CombatantWeapon.FIST).withHP(1).build();
     	} 
     	
         Battle battle = new Battle(player, enemy);
