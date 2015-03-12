@@ -1,5 +1,6 @@
 package battle;
 
+
 public interface Combatant {
 
     public enum CombatantType {HERO, ENEMY};
@@ -79,6 +80,18 @@ public interface Combatant {
 	 * @param weapon the weapon to be used
 	 */
 	void equip(CombatantWeapon weapon);
+
+	/**
+	 * The combatant removes a piece of armor
+	 * @param armor the armor to be removed
+	 */
+	void unequip(CombatantArmor shield);
+
+	/**
+	 * The combatant unequips a new weapon
+	 * @param weapon the weapon to be unequipped
+	 */
+	void unequip(CombatantWeapon weapon);
 
 
 }

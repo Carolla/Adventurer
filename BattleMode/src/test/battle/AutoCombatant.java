@@ -181,12 +181,10 @@ public class AutoCombatant implements Combatant {
     		damage = _metadie.getRandom(1,4);
     		break;
     	case MORNING_STAR:
-    		System.out.println("Attacking with morning star");
     		damage = _metadie.getRandom(2,6);
     		break;
     	case FIST:
     	default:
-    		System.out.println("Attacking with fists");
     		damage = 1;
     		break;
     	}
@@ -296,6 +294,32 @@ public class AutoCombatant implements Combatant {
 	}
 	
 	@Override
+	public void unequip(CombatantArmor armor) {
+		if (_armor.remove(armor)) {
+			switch(armor)
+			{
+			case HELMET:
+				_ac -= 1;
+				break;
+			case SHIELD:
+				System.out.println("Removing shield");
+				_ac -= 2;
+				break;
+			case CHAIN_MAIL:
+				_ac -= 4;
+				break;
+			}
+		}
+	}
+	
+	@Override
+	public void unequip(CombatantWeapon weapon) {
+		if (_weapon == weapon) {
+			_weapon = CombatantWeapon.FIST;
+		}			
+	}
+	
+	@Override
 	public void equip(CombatantWeapon weapon) {
 		_weapon = weapon;
     	switch(_weapon)
@@ -307,7 +331,6 @@ public class AutoCombatant implements Combatant {
     		System.out.println("Equipped a morning star!");
     		break;
     	case FIST:
-    		System.out.println("No weapon equipped, just using fists");
     		break;
     	}
 	}

@@ -65,5 +65,11 @@ public class DummyCombatant implements Combatant {
 	public void equip(CombatantArmor armor) { }
 
 	@Override
+	public void unequip(CombatantArmor armor) { }
+
+	@Override
 	public void equip(CombatantWeapon weapon) {	}
+	
+	@Override
+	public void unequip(CombatantWeapon weapon) {	}
 }	

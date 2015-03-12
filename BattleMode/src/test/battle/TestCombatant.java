@@ -179,4 +179,68 @@ public class TestCombatant
     	assertFalse(victim1.isUnconscious());
     }
     
+    @Test
+    public void CombatantCanUnequipArmorDuringBattle()
+    {
+        MsgCtrl.msgln("\n\nCombatantCanUnequipArmorDuringBattle");
+        Combatant attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.FIST).withSpecificHit(10).build();
+        Combatant victim = new AutoCombatant.CombatantBuilder().withHP(2).build();
+    	attacker.attack(victim);
+    	victim.equip(CombatantArmor.SHIELD);
+    	attacker.attack(victim);
+    	assertFalse(victim.isUnconscious());
+    	victim.unequip(CombatantArmor.SHIELD);
+    	attacker.attack(victim);
+    	assertTrue(victim.isUnconscious());
+    }
+    
+    @Test
+    public void UnequippingArmorNotEquippedDoesNotChangeAc()
+    {
+        MsgCtrl.msgln("\n\nCombatantCanUnequipArmorDuringBattle");
+        Combatant attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.FIST).withSpecificHit(10).build();
+        Combatant victim = new AutoCombatant.CombatantBuilder().withHP(2).build();
+    	attacker.attack(victim);
+    	victim.equip(CombatantArmor.SHIELD);
+    	attacker.attack(victim);
+    	victim.unequip(CombatantArmor.HELMET);
+    	attacker.attack(victim);
+    	assertFalse(victim.isUnconscious());
+    }
+    
+    @Test
+    public void CombatantCanUnequipWeaponDuringBattle()
+    {
+        MsgCtrl.msgln("\n\nCombatantCanUnequipWeaponDuringBattle");
+        Combatant attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.FIST).withSpecificHit(10).build();
+        Combatant victim1 = new AutoCombatant.CombatantBuilder().withHP(2).build();
+        Combatant victim2 = new AutoCombatant.CombatantBuilder().withHP(2).build();
+        Combatant victim3 = new AutoCombatant.CombatantBuilder().withHP(2).build();
+    	attacker.attack(victim1);
+    	attacker.equip(CombatantWeapon.MORNING_STAR);
+    	attacker.attack(victim2);
+    	attacker.unequip(CombatantWeapon.MORNING_STAR);
+    	attacker.attack(victim3);
+    	assertTrue(victim2.isUnconscious());
+    	assertFalse(victim1.isUnconscious());
+    	assertFalse(victim3.isUnconscious());
+    }
+    
+    @Test
+    public void UnequippingWeaponNotEquippedDoesNotChangeDamage()
+    {
+        MsgCtrl.msgln("\n\nCombatantCanUnequipWeaponDuringBattle");
+        Combatant attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.FIST).withSpecificHit(10).build();
+        Combatant victim1 = new AutoCombatant.CombatantBuilder().withHP(2).build();
+        Combatant victim2 = new AutoCombatant.CombatantBuilder().withHP(2).build();
+        Combatant victim3 = new AutoCombatant.CombatantBuilder().withHP(2).build();
+    	attacker.attack(victim1);
+    	attacker.equip(CombatantWeapon.MORNING_STAR);
+    	attacker.attack(victim2);
+    	attacker.unequip(CombatantWeapon.DAGGER);
+    	attacker.attack(victim3);
+    	assertTrue(victim2.isUnconscious());
+    	assertFalse(victim1.isUnconscious());
+    	assertTrue(victim3.isUnconscious());
+    }
 }
