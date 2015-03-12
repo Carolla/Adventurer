@@ -8,7 +8,6 @@ import mylib.pdc.MetaDie;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import battle.Attack;
 import battle.Combatant;
 import battle.Combatant.CombatantArmor;
 import battle.Combatant.CombatantWeapon;
@@ -27,10 +26,11 @@ public class TestCombatant
     public void CombatantIsUnconsciousWhenHpLessThanZero()
     {
         MsgCtrl.msgln("\n\nCombatantIsUnconsciousWhenHpLessThanZero");
-        AutoCombatant a = new AutoCombatant.CombatantBuilder().build();
-        assertFalse(a.isUnconscious());
-        a.attacked(new Attack(20,11));
-        assertTrue(a.isUnconscious());
+    	Combatant attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.MORNING_STAR).withSpecificHit(20).build();
+    	Combatant victim = new AutoCombatant.CombatantBuilder().withHP(2).build();
+        assertFalse(victim.isUnconscious());
+        attacker.attack(victim);
+        assertTrue(victim.isUnconscious());
     }
 
     @Test
@@ -197,7 +197,7 @@ public class TestCombatant
     @Test
     public void UnequippingArmorNotEquippedDoesNotChangeAc()
     {
-        MsgCtrl.msgln("\n\nCombatantCanUnequipArmorDuringBattle");
+        MsgCtrl.msgln("\n\nUnequippingArmorNotEquippedDoesNotChangeAc");
         Combatant attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.FIST).withSpecificHit(10).build();
         Combatant victim = new AutoCombatant.CombatantBuilder().withHP(2).build();
     	attacker.attack(victim);
@@ -229,7 +229,7 @@ public class TestCombatant
     @Test
     public void UnequippingWeaponNotEquippedDoesNotChangeDamage()
     {
-        MsgCtrl.msgln("\n\nCombatantCanUnequipWeaponDuringBattle");
+        MsgCtrl.msgln("\n\nUnequippingWeaponNotEquippedDoesNotChangeDamage");
         Combatant attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.FIST).withSpecificHit(10).build();
         Combatant victim1 = new AutoCombatant.CombatantBuilder().withHP(2).build();
         Combatant victim2 = new AutoCombatant.CombatantBuilder().withHP(2).build();
@@ -242,5 +242,15 @@ public class TestCombatant
     	assertTrue(victim2.isUnconscious());
     	assertFalse(victim1.isUnconscious());
     	assertTrue(victim3.isUnconscious());
+    }
+    
+    @Test
+    public void WhenAttackRollIsOneAttackerFumblesWeapon()
+    {
+        MsgCtrl.msgln("\n\nWhenAttackRollIsOneAttackerFumblesWeapon");
+        Combatant attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.MORNING_STAR).withSpecificHit(1).build();
+        Combatant victim1 = new AutoCombatant.CombatantBuilder().withHP(1).build();
+        attacker.attack(victim1);
+        assertTrue(attacker.equip(CombatantWeapon.MORNING_STAR));
     }
 }

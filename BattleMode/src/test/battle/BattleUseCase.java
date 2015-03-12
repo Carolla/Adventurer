@@ -46,8 +46,8 @@ public class BattleUseCase {
 	public void ThePlayerWantsToDoCombatWithTheEnemy()
 	{
 	    MsgCtrl.msgln("\n\nThePlayerWantsToDoCombatWithTheEnemy()");
-		Combatant player = new DummyCombatant(true);
-		Combatant enemy = new DummyCombatant(false);
+		Combatant player = new Combatant();
+		Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).build();
 		Battle battle = new Battle(player, enemy);
 		assertTrue(battle.isInBattle(player));
 		assertTrue(battle.isInBattle(enemy));
@@ -57,10 +57,12 @@ public class BattleUseCase {
 	public void ThePlayerWantsToDefeatTheEnemyInBattle()
 	{
 	    MsgCtrl.msgln("\n\nThePlayerWantsToDefeatTheEnemyInBattle()");
-		Combatant player = new DummyCombatant(true);
-		Combatant enemy = new DummyCombatant(false);
+		Combatant player = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.MORNING_STAR).withSpecificHit(20).build();
+		Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).build();
 		Battle battle = new Battle(player, enemy);
-		battle.advance();
+		while (battle.isOngoing()) {
+			battle.advance();
+		}
 		assertFalse(player.isDefeated());
 		assertTrue(enemy.isDefeated());
 	}
