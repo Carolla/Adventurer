@@ -11,9 +11,8 @@ import org.junit.Test;
 
 import battle.Battle;
 import battle.Combatant;
-import battle.Combatant.CombatantAttack;
-import battle.Combatant.CombatantDamage;
 import battle.Combatant.CombatantType;
+import battle.Combatant.CombatantWeapon;
 
 public class TestBattle {
 
@@ -30,50 +29,68 @@ public class TestBattle {
 	@Test
 	public void BattleEndsWhenOneCombatantIsDefeated()
 	{
-		Battle battle = SetupBasicBattle();
-
-		assertFalse(battle.isOngoing());
-		assertTrue(battle.isWinner(_player) || battle.isWinner(_enemy));
+		_player = new AutoCombatant.CombatantBuilder().build();
+		_enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).build();
+		_battle = new Battle(_player, _enemy);
+		while (_battle.isOngoing())
+		{
+			_battle.advance();
+		}
+		
+		assertFalse(_battle.isOngoing());
+		assertTrue(_battle.isWinner(_player) || _battle.isWinner(_enemy));
 	}
 	
 	@Test
 	public void WhenBattleEndsThereIsAWinnerAndALoser()
 	{
-		Battle battle = SetupBasicBattle();
-
-		assertTrue(battle.isWinner(_player) || battle.isWinner(_enemy));
-		assertFalse(battle.isWinner(_player) && battle.isWinner(_enemy));
+		_player = new AutoCombatant.CombatantBuilder().build();
+		_enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).build();
+		_battle = new Battle(_player, _enemy);
+		while (_battle.isOngoing())
+		{
+			_battle.advance();
+		}
+		
+		assertTrue(_battle.isWinner(_player) || _battle.isWinner(_enemy));
+		assertFalse(_battle.isWinner(_player) && _battle.isWinner(_enemy));
 	}
 	
 	@Test
 	public void WhenBattleEndsPlayerWinningMeansEnemyLoses()
 	{
-		Battle battle = SetupBasicBattle();
-
-		assertTrue(battle.isWinner(_player));
-		assertFalse(battle.isWinner(_enemy));
+		_player = new AutoCombatant.CombatantBuilder().withAC(20).build();
+		_enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).build();
+		_battle = new Battle(_player, _enemy);
+		while (_battle.isOngoing())
+		{
+			_battle.advance();
+		}
+		
+		assertTrue(_battle.isWinner(_player));
+		assertFalse(_battle.isWinner(_enemy));
 	}
 
 	@Test
 	public void WhenBattleEndsEnemyWinningMeansPlayerLoses()
 	{
-		Combatant player = new DummyCombatant(false);
-		Combatant enemy = new DummyCombatant(true);
-		Battle battle = new Battle(player, enemy);
+		_player = new AutoCombatant.CombatantBuilder().build();
+		_enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withAC(20).build();
+		Battle battle = new Battle(_player, _enemy);
 		while (battle.isOngoing())
 		{
 			battle.advance();
 		}
-		assertTrue(battle.isWinner(enemy));
-		assertFalse(battle.isWinner(player));	
+		assertTrue(battle.isWinner(_enemy));
+		assertFalse(battle.isWinner(_player));	
 	}
 
 	@Test
 	public void BattleDoesNotEndWhenNeitherPlayerIsDefeated()
 	{
         MsgCtrl.msgln("BattleDoesNotEndWhenNeitherPlayerIsDefeated()");
-		Combatant player = new DummyCombatant(false);
-		Combatant enemy = new DummyCombatant(false);
+        Combatant player = new AutoCombatant.CombatantBuilder().withSpecificHit(0).build();
+        Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withSpecificHit(0).build();
 		Battle battle = new Battle(player, enemy);
 		for (int i = 0; i < 10000 && battle.isOngoing(); i++)
 		{
@@ -99,7 +116,7 @@ public class TestBattle {
 	public void BattleEndWhenOneCombatantEscapes()
 	{
         Combatant player = new AutoCombatant.CombatantBuilder().shouldTryEscaping().withHP(2).build();
-        Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withHit(CombatantAttack.AUTO_HIT).withDamage(CombatantDamage.FIST).withHP(9).build();
+        Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withSpecificHit(20).withWeapon(CombatantWeapon.FIST).withHP(9).build();
         Battle battle = new Battle(player, enemy);
         assertFalse(battle.combatantEscaped(player));
         while (battle.isOngoing()) {
@@ -111,8 +128,8 @@ public class TestBattle {
 	@Test
 	public void CombatantsCanStartWithDifferentHP()
 	{
-        Combatant player = new AutoCombatant.CombatantBuilder().withHit(CombatantAttack.AUTO_HIT).withDamage(CombatantDamage.FIST).withHP(10).build();
-        Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withHit(CombatantAttack.AUTO_HIT).withDamage(CombatantDamage.FIST).withHP(9).build();
+        Combatant player = new AutoCombatant.CombatantBuilder().withSpecificHit(20).withWeapon(CombatantWeapon.FIST).withHP(10).build();
+        Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withSpecificHit(20).withWeapon(CombatantWeapon.FIST).withHP(9).build();
         Battle battle = new Battle(player, enemy);
         while (battle.isOngoing()) {
             battle.advance();
@@ -131,13 +148,13 @@ public class TestBattle {
     		heroGoesFirst = true;
     	}
     	
-    	Combatant player = new AutoCombatant.CombatantBuilder().withHit(CombatantAttack.AUTO_HIT).withDamage(CombatantDamage.FIST).withHP(1).build();
-    	Combatant enemy = new AutoCombatant.CombatantBuilder().withInitiative(11).withType(CombatantType.ENEMY).withHit(CombatantAttack.AUTO_HIT).withDamage(CombatantDamage.FIST).withHP(1).build();
+    	Combatant player = new AutoCombatant.CombatantBuilder().withSpecificHit(20).withWeapon(CombatantWeapon.FIST).withHP(1).build();
+    	Combatant enemy = new AutoCombatant.CombatantBuilder().withInitiative(11).withType(CombatantType.ENEMY).withSpecificHit(20).withWeapon(CombatantWeapon.FIST).withHP(1).build();
     	
     	if (heroGoesFirst)
     	{
-    		player = new AutoCombatant.CombatantBuilder().withInitiative(11).withHit(CombatantAttack.AUTO_HIT).withDamage(CombatantDamage.FIST).withHP(1).build();
-    		enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withHit(CombatantAttack.AUTO_HIT).withDamage(CombatantDamage.FIST).withHP(1).build();
+    		player = new AutoCombatant.CombatantBuilder().withInitiative(11).withSpecificHit(20).withWeapon(CombatantWeapon.FIST).withHP(1).build();
+    		enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withSpecificHit(20).withWeapon(CombatantWeapon.FIST).withHP(1).build();
     	} 
     	
         Battle battle = new Battle(player, enemy);
@@ -154,16 +171,4 @@ public class TestBattle {
         	assertFalse(enemy.isDefeated());
         }
     }
-	
-	private Battle SetupBasicBattle() 
-	{
-		_player = new DummyCombatant(true);
-		_enemy = new DummyCombatant(false);
-		_battle = new Battle(_player, _enemy);
-		while (_battle.isOngoing())
-		{
-			_battle.advance();
-		}
-		return _battle;
-	}
 }
