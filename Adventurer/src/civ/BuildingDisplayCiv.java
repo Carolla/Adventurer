@@ -129,11 +129,10 @@ public class BuildingDisplayCiv
   /**
    * Show the interior image and description of the Building
    * 
-   * @param bldName name of the building to enter
+   * @param bldg  to enter
    */
-  public void enterBuilding(String bldName)
+  public void enterBuilding(Building bldg)
   {
-    Building bldg = _bReg.getBuilding(bldName);
     if (bldg != null) {
       _currentBldg = bldg;
       String description = bldg.getInteriorDescription();

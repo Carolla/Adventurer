@@ -42,6 +42,7 @@ import civ.CommandParser.MockCP;
  * 
  * @author Alan Cline
  * @version Dec 20, 2014 // original <br>
+ *          Mar 5, 2015 // updated for more testing <br>
  */
 public class TA08_EnterBuilding
 {
@@ -50,35 +51,13 @@ public class TA08_EnterBuilding
   /** CommandParser takes in all commands from the CmdLine of the IOPanel */
   static private CommandParser _cp = null;
   /** MockCommandParser allows access to CommandParser fields */
-  static private MockCP _mock = null;
+  static private MockCP _mockCP = null;
   /** BuildingDisplayCiv controls access and displays of buildings */
   static private BuildingDisplayCiv _bldgCiv = null;
   /** MockBuildingDisplayCiv */
   static private MockBldgCiv _mockBldgCiv = null;
   /** Mainframe Proxy facades the image panel and iopanel; used by BuildingDisplayCiv */
   static private MainframeProxy _mfProxy = null;
-
-//  /** Error message if command cannot be found. */
-//  private final String ERRMSG_UNKNOWN = "I don't understand what you want to do.";
-
-  // =================================================================
-  // CommandParser error messages to match
-  // =================================================================
-
-  /** A null or empty string was entered */
-  private final String ERRMSG_CMDNULL = "Nothing was entered. Please try again.";
-  
-  // =================================================================
-  // CmdEnter error messages to match
-  // =================================================================
-
-//  /** Error message if no current building to enter */
-//  private final String ERRMSG_NOBLDG =
-//      "I see no building here. What building did you want to enter?";
-//  /** Message if already in designated building */
-//  private final String ERRMSG_SAMEBLDG = "You are in that building.";
-//  /** Message if trying to jump fron interior to interior of buldings */
-//  private final String ERRMSG_JUMPBLDG = "You must leave this building before you enter another.";
 
 
   /**
@@ -95,8 +74,8 @@ public class TA08_EnterBuilding
     // Create the parser to receive commands
     _cp = CommandParser.getInstance(_ioProxy);
     assertNotNull(_cp);
-    _mock = _cp.new MockCP();
-    assertNotNull(_mock);
+    _mockCP = _cp.new MockCP();
+    assertNotNull(_mockCP);
     // This will open the BuildingRegistry, which must be closed before exiting
     _bldgCiv = BuildingDisplayCiv.getInstance();
     _bldgCiv.setOutput(_mfProxy);
@@ -113,7 +92,7 @@ public class TA08_EnterBuilding
   {
     _mockBldgCiv = null;
     _bldgCiv = null;
-    _mock = null;
+    _mockCP = null;
     _cp = null;
     _mfProxy = null;
     _ioProxy = null;
@@ -157,58 +136,83 @@ public class TA08_EnterBuilding
 
     // Error: null command
     _cp.receiveCommand(null);
-    String echo = _mock.getInput();
+    String echo = _mockCP.getInput();
     MsgCtrl.msgln("\tCommand entered: " + echo);
     assertNull(echo);
-    MsgCtrl.msgln("\tError message expected: " + ERRMSG_CMDNULL);
-    assertTrue(_ioProxy.msgOut().equals(ERRMSG_CMDNULL));
+    String nullMsg = _mockCP.getERRMSG_CMDNULL();
+    String msgOut = _ioProxy.msgOut();
+    MsgCtrl.msgln("\tError message expected: " + nullMsg);
+    assertTrue(msgOut.equals(nullMsg));
   }
 
-  
+
   /**
    * Error case: empty string command should return CMD_NULL error message <br>
    */
   @Test
   public void test_EnterEmptyCmd()
   {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    final String EMPTY = " "; // one space
+    final String NULL_STRING = ""; // no spaces
+
+    // Error: empty command string
+    _cp.receiveCommand(EMPTY);
+    String echo = _mockCP.getInput();
+    MsgCtrl.msgln("\tCommand entered: " + echo);
+//    assertTrue(echo.equals(NULL_STRING));
+    String nullMsg = _mockCP.getERRMSG_CMDNULL();
+    String msgOut = _ioProxy.msgOut();
+    MsgCtrl.msgln("\tError message expected: " + nullMsg);
+    MsgCtrl.msgln("\tError message received: " + msgOut);
+    assertTrue(msgOut.equals(nullMsg));
+  }
+
+
+  /**
+   * Normal case: Enter a valid building from the town
+   */
+  @Test
+  public void test_EnterBuildingFromTown()
+  {
     MsgCtrl.auditMsgsOn(true);
     MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
-    final String EMPTY = " ";       // one space
-    final String NULL_STRING = "";  // no spaces
-    
+    final String bName = "Ugly Ogre Inn";
+
     // Error: empty command string
-    _cp.receiveCommand(EMPTY);
-    String echo = _mock.getInput();
+    _cp.receiveCommand(bName);
+    String echo = _mockCP.getInput();
     MsgCtrl.msgln("\tCommand entered: " + echo);
-    assertTrue(echo.equals(NULL_STRING));
-    MsgCtrl.msgln("\tError message expected: " + ERRMSG_CMDNULL);
-    MsgCtrl.msgln("\tError message received: " + _ioProxy.msgOut());
-    assertTrue(_ioProxy.msgOut().equals(ERRMSG_CMDNULL));
+    assertTrue(echo.equals(bName));
+    String msgOut = _ioProxy.msgOut();
+    MsgCtrl.msgln("\tError message received: " + msgOut);
   }
 
-  
-//  /**
-//   * Error case: null parm and no current building <br>
-//   */
-//  @Test
-//  public void test_EnterNullParm()
-//  {
-//    MsgCtrl.auditMsgsOn(true);
-//    MsgCtrl.errorMsgsOn(true);
-//    MsgCtrl.where(this);
-//
-//    // Error: set current building to null
-//    _mockBldgCiv.setCurrentBldg(null);
-//    Building _currentBldg = _bldgCiv.getCurrentBuilding();
-//    assertNull(_currentBldg);
-//    // Try to enter it, get error message
-//    _cp.receiveCommand("ENTER");
-//    String echo = _mock.getInput();
-//    MsgCtrl.msgln("\tCommand entered: " + echo);
-//    assertTrue(_ioProxy.msgOut().equals(ERRMSG_NOBLDG));
-//  }
+  // /**
+  // * Error case: null parm and no current building <br>
+  // */
+  // @Test
+  // public void test_EnterNullParm()
+  // {
+  // MsgCtrl.auditMsgsOn(true);
+  // MsgCtrl.errorMsgsOn(true);
+  // MsgCtrl.where(this);
+  //
+  // // Error: set current building to null
+  // _mockBldgCiv.setCurrentBldg(null);
+  // Building _currentBldg = _bldgCiv.getCurrentBuilding();
+  // assertNull(_currentBldg);
+  // // Try to enter it, get error message
+  // _cp.receiveCommand("ENTER");
+  // String echo = _mock.getInput();
+  // MsgCtrl.msgln("\tCommand entered: " + echo);
+  // assertTrue(_ioProxy.msgOut().equals(ERRMSG_NOBLDG));
+  // }
 
 
 

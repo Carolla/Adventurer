@@ -69,7 +69,7 @@ public class CmdEnter extends Command
   /** The building currently displayed, either inside or outside */
   private Building _currentBuilding;
   /** The building to enter */
-  private String _targetBldg;
+  private Building _targetBldg;
 
   /** Error message if no current building to enter */
   private final String ERRMSG_NOBLDG =
@@ -77,7 +77,7 @@ public class CmdEnter extends Command
   /** Message if already in designated building */
   private final String ERRMSG_SAMEBLDG =
       "You are in that building.";
-  /** Message if trying to jump fron interior to interior of buldings */
+  /** Message if trying to jump fron interior to interior of buildings */
   private final String ERRMSG_JUMPBLDG =
       "You must leave this building before you enter another.";
 
@@ -133,7 +133,8 @@ public class CmdEnter extends Command
       super._msgHandler.errorOut(ERRMSG_NOBLDG);
       return false;
     }
-    _targetBldg = b.getName();
+//    _targetBldg = b.getName();
+    _targetBldg = b;
     return true;
   }
 

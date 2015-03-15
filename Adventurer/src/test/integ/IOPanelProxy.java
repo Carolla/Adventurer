@@ -24,7 +24,7 @@ import mylib.MsgCtrl;
 public class IOPanelProxy implements IOPanelInterface
 {
   /** Buffer for holding messages for auditing */
-  private String _msgOut;
+  static private String _msgOut;
 
   /** Default constructor */
   public IOPanelProxy()
@@ -72,9 +72,10 @@ public class IOPanelProxy implements IOPanelInterface
   {
     MsgCtrl.where(this);
     // Save msg to return after clearing msg buffer
-    String tmp = _msgOut;
-    _msgOut = null;
-    return tmp;
+//    String tmp = _msgOut;
+//    _msgOut = null;
+//    return tmp;
+    return _msgOut;
   }
 
 

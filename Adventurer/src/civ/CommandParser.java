@@ -180,22 +180,29 @@ public class CommandParser
   /**
    * Receives and holds the command string from the command window. It will be retrieved by the
    * {@code Scheduler} when it is ready for another user command.<br>
-   * The method is synchronous so that it isn't nulled out before it can be assigned.
    * 
-   * @param cmdIn the input the user entered as a command
+   * @param textIn the input the user entered onto the command line
    */
-  synchronized public void receiveCommand(String cmdIn)
+  public void receiveCommand(String textIn)
   {
-    // Guard
-    if (cmdIn == null) {
-      _userInput = null; // clear so that same input isn't used twice
+    String EMPTY = "";
+    // Guard against null parm
+    if (textIn == null) {
       errorOut(ERRMSG_CMDNULL);
     }
     else {
-      _userInput = cmdIn.trim();
+      // Guard against empty string
+      String cmdIn = textIn.trim();
+      if (cmdIn.equals(EMPTY)) {
+        errorOut(ERRMSG_CMDNULL);
+      }
+      else {
+        _userInput = cmdIn; 
+      }
     }
   }
 
+  
   // ============================================================
   // Private helper methods
   // ============================================================
@@ -369,20 +376,27 @@ public class CommandParser
     public MockCP()
     {}
 
-    /** Get the non-static input command */
+    /** Get the input command */
     public String getInput()
     {
       return CommandParser.this._userInput;
     }
 
     /**
-     * Get the static Scheduler currently running: DO NOT put the 'this' qualifier on CommandParser.
+     * Get the static Scheduler currently running
      */
     public Scheduler getScheduler()
     {
-      return CommandParser._skedder;
+      return _skedder;
     }
 
+    
+    /** @return the specified message for testing comparisons
+     */
+    public String getERRMSG_CMDNULL()
+    {
+      return ERRMSG_CMDNULL;
+    }
 
 
   } // end of MockCP inner class
