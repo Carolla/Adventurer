@@ -253,4 +253,32 @@ public class TestCombatant
         attacker.attack(victim1);
         assertTrue(attacker.equip(CombatantWeapon.MORNING_STAR));
     }
+    
+    @Test
+    public void IncreaseStrengthCanCauseAdditionalDamageWhenAttacking()
+    {
+        MsgCtrl.msgln("\n\nIncreaseStrengthCanCauseAdditionalDamageWhenAttacking");
+        Combatant attacker1 = new AutoCombatant.CombatantBuilder().withStrength(16).withSpecificHit(10).build();
+        Combatant attacker2 = new AutoCombatant.CombatantBuilder().withStrength(15).withSpecificHit(10).build();
+        Combatant victim1 = new AutoCombatant.CombatantBuilder().withHP(2).build();
+        Combatant victim2 = new AutoCombatant.CombatantBuilder().withHP(2).build();
+        attacker1.attack(victim1);
+        attacker2.attack(victim2);
+    	assertTrue(victim1.isUnconscious());
+    	assertFalse(victim2.isUnconscious());
+    }
+    
+    @Test
+    public void DecreasedStrengthCanCauseLessDamageWhenAttacking()
+    {
+        MsgCtrl.msgln("\n\nDecreasedStrengthCanCauseLessDamageWhenAttacking");
+        Combatant attacker1 = new AutoCombatant.CombatantBuilder().withStrength(6).withSpecificHit(10).build();
+        Combatant attacker2 = new AutoCombatant.CombatantBuilder().withStrength(5).withSpecificHit(10).build();
+        Combatant victim1 = new AutoCombatant.CombatantBuilder().withHP(1).build();
+        Combatant victim2 = new AutoCombatant.CombatantBuilder().withHP(1).build();
+        attacker1.attack(victim1);
+        attacker2.attack(victim2);
+    	assertTrue(victim1.isUnconscious());
+    	assertFalse(victim2.isUnconscious());
+    }
 }

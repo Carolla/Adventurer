@@ -17,6 +17,7 @@ public class Combatant {
 	protected int _ac = 10;
 	protected int _turnCount = 0;
 	protected int _initiative = 10;
+	protected int _strength = 10;
 	protected final MetaDie _metadie = new MetaDie(System.currentTimeMillis());
 	protected boolean _shouldTryEscaping = false;
 	protected int _attackRoll = 0;
@@ -108,6 +109,8 @@ public class Combatant {
     		break;
     	}
     	
+    	damage += getStrengthDamageBonus();
+    	
     	switch(_attack)
     	{
     	case CUSTOM:
@@ -120,8 +123,19 @@ public class Combatant {
     	return new Attack(_attackRoll, damage);
     }
 
+    private final int MIN_STRENGTH_DAMAGE_BONUS = 16;
+    private final int MAX_STRENGTH_PENALTY = 5;
+    private int getStrengthDamageBonus() {
+    	int bonus = 0;
+    	if (_strength >= MIN_STRENGTH_DAMAGE_BONUS) {
+    		bonus = (_strength - (MIN_STRENGTH_DAMAGE_BONUS - 2)) / 2;
+    	} else if (_strength <= MAX_STRENGTH_PENALTY) {
+    		bonus = (_strength - (MAX_STRENGTH_PENALTY + 2)) / 2;
+    	}
+		return bonus;
+	}
 
-    /**
+	/**
      * Causes damage to an opponent.  
      * 
      * @param attack what the attacker rolled
