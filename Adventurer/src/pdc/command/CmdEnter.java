@@ -133,7 +133,6 @@ public class CmdEnter extends Command
       super._msgHandler.errorOut(ERRMSG_NOBLDG);
       return false;
     }
-//    _targetBldg = b.getName();
     _targetBldg = b;
     return true;
   }

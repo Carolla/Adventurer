@@ -47,6 +47,8 @@ public class CmdLeave extends Command
 
   /** The building currently displayed, either inside or outside */
   private Building _currentBuilding = null;
+  /** The building just exited */
+  private Building _targetBldg;
 
 //  /** Error message if no current building to enter */
 //  private final String ERRMSG_NOBLDG =
@@ -106,7 +108,7 @@ public class CmdLeave extends Command
     System.out.println("\tCmdLeave.exec()...");
     // The BuildingDisplayCiv must already exist
     _bldgCiv = BuildingDisplayCiv.getInstance();
-    _bldgCiv.approachBuilding(_currentBuilding.getName());
+    _bldgCiv.approachBuilding(_targetBuilding);
     return true;
   }
 

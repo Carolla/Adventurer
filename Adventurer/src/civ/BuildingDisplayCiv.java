@@ -141,7 +141,7 @@ public class BuildingDisplayCiv
       _frame.setOnTown(false);
     }
     else {
-      _frame.displayText(NO_BLDG_FOUND);
+      _frame.displayErrorText(NO_BLDG_FOUND);
     }
   }
 

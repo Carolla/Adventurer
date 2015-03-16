@@ -71,12 +71,9 @@ public class IOPanelProxy implements IOPanelInterface
   public String msgOut()
   {
     MsgCtrl.where(this);
-    // Save msg to return after clearing msg buffer
-//    String tmp = _msgOut;
-//    _msgOut = null;
-//    return tmp;
     return _msgOut;
   }
 
 
-} // end of IOProxy
+
+} // end of IOPanelProxy

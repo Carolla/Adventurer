@@ -157,7 +157,6 @@ public class TA08_EnterBuilding
     MsgCtrl.where(this);
 
     final String EMPTY = " "; // one space
-    final String NULL_STRING = ""; // no spaces
 
     // Error: empty command string
     _cp.receiveCommand(EMPTY);
@@ -176,21 +175,32 @@ public class TA08_EnterBuilding
    * Normal case: Enter a valid building from the town
    */
   @Test
-  public void test_EnterBuildingFromTown()
+  public void test_EnterBuildingFromTownOrExterior()
   {
     MsgCtrl.auditMsgsOn(true);
     MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
-    final String bName = "Ugly Ogre Inn";
+    final String[][] bldg = {
+        {"Arcaneum",    "int_Arcaneum.jpg"},
+//        {"Bank",        "int_Bank.jpg"},
+//        {"Rat's Pack",  "int_GeneralStore.jpg"},
+//        {"Ugly Ogre Inn","int_Inn.jpg"},
+//        {"Jail",        "int_Jail.jpg"},
+//        {"Clerics' Guild", "int_Monastery.jpg"},
+//        {"Rouge's Den", "int_RoguesDen.jpg"},
+//        {"Fighters' Guild", "int_Stadium.jpg"}
+        };
 
-    // Error: empty command string
-    _cp.receiveCommand(bName);
-    String echo = _mockCP.getInput();
-    MsgCtrl.msgln("\tCommand entered: " + echo);
-    assertTrue(echo.equals(bName));
-    String msgOut = _ioProxy.msgOut();
-    MsgCtrl.msgln("\tError message received: " + msgOut);
+    // Try entering all buildings
+    for (int k=0; k < bldg.length; k++) {
+      _cp.receiveCommand("Enter " + bldg[k][0]);
+      String echo = _mockCP.getInput();
+      MsgCtrl.msgln("\tCommand: " + echo);
+      String bldgName = _mfProxy.getBldgName();
+      MsgCtrl.msg("\tBuilding name = " + bldgName);
+      assertTrue(bldgName.equals(bldg[k][0]));
+    }
   }
 
   // /**

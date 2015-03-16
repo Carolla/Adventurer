@@ -14,14 +14,11 @@ import mylib.ApplicationException;
 import mylib.dmc.IRegistryElement;
 
 /**
- * Wizards'Guild for spells, magical items, quests, and lodging The default constructor creates the
+ * Wizards'Guild for spells, magical items, quests, and lodging. The default constructor creates the
  * default "Arcaneum".
  * 
  * @author Alan Cline
- * @version <DL>
- *          <DT>Build 1.0 April 17, 2013 // original
- *          <DD>
- *          </DL>
+ * @version April 17, 2013 // original ,br>
  */
 public class WizardsGuild extends Building
 {
@@ -33,17 +30,18 @@ public class WizardsGuild extends Building
   /** Wizards' Guild */
   static private final String HOVERTEXT = "Wizards' Guild for magic, spells, and enchantments";
   /** What appears as one enters the building */
-  static private final String EXTERIOR =
-      "An elaborate white marble edifice on the hillside contains " +
-          "one large wooden door, recessed in shadow. This is an eerie place. ";
-  /** For this case, a non-Guild member cannot enter */
   static private final String INTERIOR =
-      "A tall shrouded figure steps from the shadows as you try to " +
-          "enter. He says, \"Only Guildmembers may enter the Arcaneum.\"";
+      "It is as if you have stepped into another world. The landscape is bathed in a pearl-white " +
+          " luminescence. A white marble orb on the hillside contains a surreal bubble of lights " +
+          "and twisted images. ";
+  /** For this case, a non-Guild member cannot enter */
+  static private final String EXTERIOR =
+      "A tall shrouded figure appears suddenly in front of three doors of colored light as you "
+          + "try to enter. He says, \"Only Guildmembers may enter the Arcaneum.\"";
 
   /** Paths to the images for this building **/
   static private final String EXTERIOR_IMAGE = "ext_Arcaneum.JPG";
-  static private final String INTERIOR_IMAGE = "ext_Arcaneum.jpg";
+  static private final String INTERIOR_IMAGE = "int_Arcaneum.jpg";
 
   /** The Arcaneum opens at noon and closes at 8pm */
   private int OPENTIME = 1200;
@@ -51,8 +49,7 @@ public class WizardsGuild extends Building
 
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND RELATED METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
   /**
@@ -89,7 +86,7 @@ public class WizardsGuild extends Building
    */
 
   /*
-   * Two Guilds are considerd equal if their name and building masters are equal
+   * Two Guilds are considered equal if their name and building masters are equal
    * 
    * @see mylib.dmc.IRegistryElement#equals(mylib.dmc.IRegistryElement)
    */
@@ -123,7 +120,7 @@ public class WizardsGuild extends Building
    * PRIVATE METHODS
    */
 
-  
+
   /*
    * INNER CLASS: MockStore
    */

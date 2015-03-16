@@ -15,6 +15,8 @@ import hic.MainframeInterface;
 import java.awt.Dimension;
 import java.awt.Image;
 
+import mylib.MsgCtrl;
+
 
 
 /**
@@ -25,9 +27,47 @@ import java.awt.Image;
  */
 public class MainframeProxy implements MainframeInterface
 {
+  /** Buffer for holding building name */
+  static private String _bldgName;
+//  /** Buffer for holding image path */
+//  static private String _imagePath;
+
   /** Default constructor */
   public MainframeProxy()
   {}
+  
+  /* (non-Javadoc)
+   * @see hic.IOPanelInterface#setImage(java.lang.String)
+   */
+  @Override
+  public void setImage(Image image)
+  {
+    MsgCtrl.where(this);
+//    _imagePath = image.
+//    MsgCtrl.msgln("\timage path = " + _imagePath);
+  }
+
+  /* (non-Javadoc)
+   * @see hic.IOPanelInterface#setImageTitle(java.lang.String)
+   */
+  @Override
+  public void setImageTitle(String bldgName)
+  {
+    MsgCtrl.where(this);
+    _bldgName = bldgName;
+    MsgCtrl.msgln("\tbuilding name = " + bldgName);
+  }
+
+  /** Returns the name and imagepath in array */
+  public String getBldgName()
+  {
+//    String[] bProp = new String[2];
+//    bProp[0] = _bldgName;
+//    bProp[1] = _imagePath;
+//    return bProp;
+    return _bldgName;
+  }
+
 
   /** Replace the button panel with the final IOPanel */
   public void addIOPanel()
@@ -94,26 +134,6 @@ public class MainframeProxy implements MainframeInterface
     System.out.println("\tMainframeProxy.setBuilding(): " + rect);
   }
 
-  /**
-   * Display the image into the image panel
-   * 
-   * @param image acutal image file to display
-   */
-  public void setImage(Image image)
-  {
-    // NOT sure what to put here to audit an image display yet
-    System.out.println("\tMainframeProxy.setImage(): ");
-  }
-
-  /**
-   * Display the title of the building above the image panel
-   * 
-   * @param imagePath text description of image location
-   */
-  public void setImageTitle(String title)
-  {
-    System.out.println("MainframeProxy.setImageTitle(): " + title);
-  }
 
   /*
    * Misplaced redraw commnad in BuildingDisplayCiv
@@ -127,8 +147,9 @@ public class MainframeProxy implements MainframeInterface
   @Override
   public void setOnTown(boolean onTown)
   {
-    System.out.println("MainframeProxy.ontown set to " + onTown);
+    MsgCtrl.msgln("\tMainframeProxy.ontown set to " + onTown);
   }
+
 
 
 } // end of MainframeProxy class
