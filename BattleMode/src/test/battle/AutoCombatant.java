@@ -7,10 +7,13 @@ import battle.Combatant;
 
 public class AutoCombatant extends Combatant {
    
+	private Combatant _combatant;
+
 	/**
 	 */
 	private AutoCombatant(CombatantType type)
 	{
+		_combatant = new Combatant();
 	    _type = type;
 	}
 	
@@ -20,7 +23,7 @@ public class AutoCombatant extends Combatant {
 		private int withInitiative = 10;
 		private boolean withEscape = false;
 		private CombatantAttack withAttack = CombatantAttack.NORMAL;
-		private CombatantWeapon withWeapon = CombatantWeapon.FIST;
+		private CombatantWeapon withWeapon = CombatantWeapon.ONE_DAMAGE_WEAPON;
 		private CombatantType withType = CombatantType.HERO;
 		private int withAttackRoll = 10;
 		private int withAc = 10;

@@ -143,7 +143,7 @@ public class BattleUseCase {
 	{
         MsgCtrl.msgln("\n\nTheDMWantsThePlayerToBeKnockedOutByTheEnemy()");
 		Combatant player = new AutoCombatant.CombatantBuilder().withSpecificHit(0).shouldTryEscaping().build();
-		Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withSpecificHit(20).withWeapon(CombatantWeapon.FIST).build();
+		Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withSpecificHit(20).withWeapon(CombatantWeapon.ONE_DAMAGE_WEAPON).build();
 		Battle battle = new Battle(player, enemy);
 		assertFalse(player.isUnconscious());
 		assertFalse(battle.combatantEscaped(player));

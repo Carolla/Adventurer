@@ -10,7 +10,7 @@ public class Combatant {
 
     public enum CombatantType {HERO, ENEMY};
     public enum CombatantAttack {CUSTOM, NORMAL};
-    public enum CombatantWeapon {FIST, DAGGER, MORNING_STAR};
+    public enum CombatantWeapon {ONE_DAMAGE_WEAPON, DAGGER, MORNING_STAR};
     public enum CombatantArmor {HELMET, SHIELD, CHAIN_MAIL};
     
 	protected int _hp = 10;
@@ -24,8 +24,8 @@ public class Combatant {
 
 	protected CombatantType _type = CombatantType.HERO;
 	protected CombatantAttack _attack = CombatantAttack.NORMAL;
-	protected CombatantWeapon _weapon = CombatantWeapon.FIST;
-	protected Set<CombatantArmor> _armor = new TreeSet<CombatantArmor>();
+	protected CombatantWeapon _weapon = CombatantWeapon.ONE_DAMAGE_WEAPON;
+	protected Set<CombatantArmor> _armors = new TreeSet<CombatantArmor>();
 
     /**
      * Status of player in battle - defeated player is out of battle
@@ -91,7 +91,7 @@ public class Combatant {
     	}
     }
 
-    private Attack makeAttackRoll()
+    private Attack makeAttackAndDamageRoll()
     {
     	int damage = 0;
     	
@@ -103,7 +103,7 @@ public class Combatant {
     	case MORNING_STAR:
     		damage = _metadie.getRandom(3,6);
     		break;
-    	case FIST:
+    	case ONE_DAMAGE_WEAPON:
     	default:
     		damage = 1;
     		break;
@@ -229,7 +229,7 @@ public class Combatant {
 	 * @return the damage done by the attack
 	 */
 	public int attack(Combatant victim) {
-		Attack attack = makeAttackRoll();
+		Attack attack = makeAttackAndDamageRoll();
 		if (attack.hitRoll() > 1) {
 			return victim.attacked(attack);
 		} else {
@@ -243,7 +243,7 @@ public class Combatant {
 	 * @param armor the armor to be worn
 	 */
 	public boolean equip(CombatantArmor armor) {
-		if (_armor.add(armor)) {
+		if (_armors.add(armor)) {
 			switch(armor)
 			{
 			case HELMET:
@@ -266,14 +266,13 @@ public class Combatant {
 	 * @param armor the armor to be removed
 	 */
 	public boolean unequip(CombatantArmor armor) {
-		if (_armor.remove(armor)) {
+		if (_armors.remove(armor)) {
 			switch(armor)
 			{
 			case HELMET:
 				_ac -= 1;
 				break;
 			case SHIELD:
-				System.out.println("Removing shield");
 				_ac -= 2;
 				break;
 			case CHAIN_MAIL:
@@ -292,7 +291,7 @@ public class Combatant {
 	 */
 	public boolean unequip(CombatantWeapon weapon) {
 		if (_weapon == weapon) {
-			_weapon = CombatantWeapon.FIST;
+			_weapon = CombatantWeapon.ONE_DAMAGE_WEAPON;
 			return true;
 		}			
 		return false;
@@ -304,7 +303,8 @@ public class Combatant {
 	 */
 	public boolean equip(CombatantWeapon weapon) {
 		if (_weapon != weapon) {
-			_weapon = weapon;    	switch(_weapon)
+			_weapon = weapon;    	
+			switch(_weapon)
 	    	{
 	    	case DAGGER:
 	    		System.out.println("Equipped a dagger");
@@ -312,7 +312,7 @@ public class Combatant {
 	    	case MORNING_STAR:
 	    		System.out.println("Equipped a morning star!");
 	    		break;
-	    	case FIST:
+	    	case ONE_DAMAGE_WEAPON:
 	    		break;
 	    	}
 	    	return true;
