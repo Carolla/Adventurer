@@ -3,6 +3,10 @@ package test.battle;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import mylib.MsgCtrl;
 import mylib.pdc.MetaDie;
 
@@ -19,6 +23,7 @@ public class TestBattle {
 	private Combatant _enemy;
 	private Combatant _player;
 	private Battle _battle;
+	private MetaDie _metadie = new MetaDie(System.currentTimeMillis());
 
     @Before
     public void setup()
@@ -128,14 +133,17 @@ public class TestBattle {
 	@Test
 	public void CombatantsCanStartWithDifferentHP()
 	{
-        Combatant player = new AutoCombatant.CombatantBuilder().withSpecificHit(20).withWeapon(CombatantWeapon.ONE_DAMAGE_WEAPON).withHP(10).build();
-        Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withSpecificHit(20).withWeapon(CombatantWeapon.ONE_DAMAGE_WEAPON).withHP(9).build();
-        Battle battle = new Battle(player, enemy);
-        while (battle.isOngoing()) {
-            battle.advance();
-        }
-        assertFalse(player.isDefeated());
-        assertTrue(enemy.isDefeated());
+		for (int round = 0; round < 15; round++) {
+			int startingHp = _metadie.getRandom(5, 25);
+	        Combatant player = new AutoCombatant.CombatantBuilder().withSpecificHit(20).withWeapon(CombatantWeapon.ONE_DAMAGE_WEAPON).withHP(startingHp).build();
+	        Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withSpecificHit(20).withWeapon(CombatantWeapon.ONE_DAMAGE_WEAPON).withHP(startingHp - 1).build();
+	        Battle battle = new Battle(player, enemy);
+	        while (battle.isOngoing()) {
+	            battle.advance();
+	        }
+	        assertFalse(player.isDefeated());
+	        assertTrue(enemy.isDefeated());
+		}
 	}
 	
     @Test
@@ -196,6 +204,31 @@ public class TestBattle {
         assertTrue(battle.isInBattle(enemy1));
         assertTrue(battle.isInBattle(enemy2));
         assertTrue(battle.isInBattle(enemy3));
+    }
+    
+    @Test
+    public void AllCombatantsOnASideAttackEachRound()
+    {
+    	for (int round = 0; round < 25; round++) {
+	    	int numberOfAttackers = _metadie.getRandom(5, 15);
+	    	CombatantType attackerType = CombatantType.HERO;
+	    	CombatantType defenderType = CombatantType.ENEMY;
+	    	if (_metadie.getRandom(1,2) == 2) {
+	    		attackerType = CombatantType.ENEMY;
+	        	defenderType = CombatantType.HERO;
+	    	}
+	    	List<Combatant> battleMembers = new ArrayList<Combatant>(numberOfAttackers + 1);
+	    	for (int i = 0; i < numberOfAttackers; i++) {
+	    		battleMembers.add(i, new AutoCombatant.CombatantBuilder().withSpecificHit(10).withType(attackerType).build());
+	    	}
+			Combatant defender = new AutoCombatant.CombatantBuilder().withType(defenderType).withHP(numberOfAttackers).build();
+	    	battleMembers.add(numberOfAttackers, defender);
+	    	
+	    	Battle battle = new Battle(battleMembers.toArray(new Combatant[numberOfAttackers + 1]));
+	    	battle.advance();
+	    	
+	    	assertTrue(defender.isDefeated());
+    	}
     }
     
     //All combatants from a side must escape to end combat
