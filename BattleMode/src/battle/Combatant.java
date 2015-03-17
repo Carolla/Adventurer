@@ -1,5 +1,7 @@
 package battle;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -49,23 +51,42 @@ public class Combatant {
     /**
      * Each combtant executes actions during a battle, turn by turn.  Takes
      * the next turn for a combatant.
-     * @param opponent the enemy to strike this round
+     * @param selectTarget(_combatants the enemy to strike this round
      * @param battle the current battle
      * @return the damage done
      */
-    public int takeTurn(Combatant opponent, Battle battle)
+    public int takeTurn(List<Combatant> combatants, Battle battle)
     {
         _turnCount++;
         if (shouldAttack())
         {
-            return attack(opponent);
+        	Combatant target = selectTarget(combatants);
+            int damage = attack(target);
+            target.displayHP();
+            return damage;
         } else {
             tryToEscape(battle);
             return 0;
         }
     }
 
-    private void tryToEscape(Battle battle)
+    /**
+     * Target selection method.  Combatant chooses from the list of available
+     * Combatants.
+     * 
+     * @param combatants the targets to select from
+     * @return the chosen combatant
+     */
+    private Combatant selectTarget(List<Combatant> combatants) {
+    	for (Combatant c : combatants) {
+    		if (c._type != _type) {
+    			return c;
+    		}
+    	}
+		return this; //Attack self seems reasonable default...
+	}
+
+	private void tryToEscape(Battle battle)
     {
         if (_type == CombatantType.HERO)
         {
@@ -318,5 +339,23 @@ public class Combatant {
 	    	return true;
 		}
 		return false;
+	}
+
+	private static List<Combatant> findAllCombatantsByType(List<Combatant> combatants, CombatantType type) {
+		List<Combatant> result = new ArrayList<Combatant>();
+		for (Combatant c : combatants) {
+			if (c._type == type) {
+				result.add(c);
+			}
+		}
+		return result;
+	}
+	
+	public static List<Combatant> findAllEnemies(List<Combatant> combatants) {
+		return findAllCombatantsByType(combatants, CombatantType.ENEMY);
+	}
+	
+	public static List<Combatant> findAllHeros(List<Combatant> combatants) {
+		return findAllCombatantsByType(combatants, CombatantType.HERO);
 	}
 }

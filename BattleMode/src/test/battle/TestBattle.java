@@ -171,4 +171,35 @@ public class TestBattle {
         	assertFalse(enemy.isDefeated());
         }
     }
+    
+    @Test
+    public void TwoAttackersCanGangUpOnSingleDefender()
+    {
+    	Combatant player = new AutoCombatant.CombatantBuilder().withSpecificHit(20).withWeapon(CombatantWeapon.ONE_DAMAGE_WEAPON).withHP(1).build();
+    	Combatant enemy1 = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withSpecificHit(20).withWeapon(CombatantWeapon.ONE_DAMAGE_WEAPON).withHP(1).build();
+    	Combatant enemy2 = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withSpecificHit(20).withWeapon(CombatantWeapon.ONE_DAMAGE_WEAPON).withHP(1).build();
+    	Battle battle = new Battle(player, enemy1, enemy2);
+        assertTrue(battle.isInBattle(player));
+        assertTrue(battle.isInBattle(enemy1));
+        assertTrue(battle.isInBattle(enemy2));
+    }
+    
+    @Test
+    public void ThreeAttackersCanGangUpOnSingleDefender()
+    {
+    	Combatant player = new AutoCombatant.CombatantBuilder().withSpecificHit(20).withWeapon(CombatantWeapon.ONE_DAMAGE_WEAPON).withHP(1).build();
+    	Combatant enemy1 = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withSpecificHit(20).withWeapon(CombatantWeapon.ONE_DAMAGE_WEAPON).withHP(1).build();
+    	Combatant enemy2 = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withSpecificHit(20).withWeapon(CombatantWeapon.ONE_DAMAGE_WEAPON).withHP(1).build();
+    	Combatant enemy3 = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).withSpecificHit(20).withWeapon(CombatantWeapon.ONE_DAMAGE_WEAPON).withHP(1).build();
+    	Battle battle = new Battle(new Combatant[] {player, enemy1, enemy2, enemy3});
+        assertTrue(battle.isInBattle(player));
+        assertTrue(battle.isInBattle(enemy1));
+        assertTrue(battle.isInBattle(enemy2));
+        assertTrue(battle.isInBattle(enemy3));
+    }
+    
+    //All combatants from a side must escape to end combat
+    //All combatants from a side must be defeated to end combat
+    //Combatants must be defeated/escape to end combat
+    //Combatant can select with opponent to attack
 }

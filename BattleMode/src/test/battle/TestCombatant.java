@@ -212,7 +212,13 @@ public class TestCombatant
     @Test
     public void CannotEquipSamePieceOfArmorMultipleTimes()
     {
-    	fail("Not yet implemented");
+        MsgCtrl.msgln("\n\nUnequippingArmorNotEquippedDoesNotChangeAc");
+        Combatant attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.ONE_DAMAGE_WEAPON).withSpecificHit(12).build();
+        Combatant victim = new AutoCombatant.CombatantBuilder().withArmor(CombatantArmor.SHIELD).withHP(2).build();
+    	attacker.attack(victim);
+    	victim.equip(CombatantArmor.SHIELD);
+    	attacker.attack(victim);
+    	assertTrue(victim.isUnconscious());
     }
     
     @Test
@@ -287,5 +293,11 @@ public class TestCombatant
         attacker2.attack(victim2);
     	assertTrue(victim1.isUnconscious());
     	assertFalse(victim2.isUnconscious());
+    }
+    
+    @Test
+    public void TestGetCombatantsByType()
+    {
+    	fail("Not yet implemented");
     }
 }
