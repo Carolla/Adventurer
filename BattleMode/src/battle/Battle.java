@@ -9,23 +9,23 @@ import mylib.MsgCtrl;
 public class Battle {
 
 	private int _round = 0;
-	private List<Combatant> _combatants;
-	private List<Combatant> _heros;
-	private List<Combatant> _enemies;
-	private List<Combatant> _firstGroup;
-	private List<Combatant> _secondGroup;
-    private List<Combatant> _escapedCombatants = new ArrayList<Combatant>();
+	private List<CombatantInterface> _combatants;
+	private List<CombatantInterface> _heros;
+	private List<CombatantInterface> _enemies;
+	private List<CombatantInterface> _firstGroup;
+	private List<CombatantInterface> _secondGroup;
+    private List<CombatantInterface> _escapedCombatants = new ArrayList<CombatantInterface>();
 
-	public Battle(Combatant... combatantList) {
+	public Battle(CombatantInterface... combatantList) {
 		if (combatantList.length < 1) {
 			MsgCtrl.msgln("Unable to start Battle with less than 2 Combatants");
 		}
 		
-		_combatants = new ArrayList<Combatant>(Arrays.asList(combatantList));
+		_combatants = new ArrayList<CombatantInterface>(Arrays.asList(combatantList));
 		_heros = Combatant.findAllHeros(_combatants);
 		_enemies = Combatant.findAllEnemies(_combatants);
 		
-		Combatant highestRoller = rollForInitiative(_combatants);
+		CombatantInterface highestRoller = rollForInitiative(_combatants);
 		if (_heros.contains(highestRoller)) {
 			_firstGroup = _heros;
 			_secondGroup = _enemies;
@@ -36,10 +36,10 @@ public class Battle {
 	}
 
 
-	private Combatant rollForInitiative(List<Combatant> combatants) {
+	private CombatantInterface rollForInitiative(List<CombatantInterface> _combatants2) {
 		int highestRoll = 1;
-		Combatant highestRoller = combatants.get(0);
-		for (Combatant c : combatants) {
+		CombatantInterface highestRoller = _combatants2.get(0);
+		for (CombatantInterface c : _combatants2) {
 			int currentRoll = c.rollInitiative();
 			if (currentRoll > highestRoll) {
 				highestRoll = currentRoll;
@@ -55,7 +55,7 @@ public class Battle {
 	 * 
 	 * @return whether the combatant is in the battle
 	 */
-	public boolean isInBattle(Combatant combatant) {
+	public boolean isInBattle(CombatantInterface combatant) {
 		return _combatants.contains(combatant);
 	}
 
@@ -72,8 +72,8 @@ public class Battle {
 		return true;
 	}
 
-	private boolean allOfGroupDefeated(List<Combatant> group) {
-		for (Combatant c : group) {
+	private boolean allOfGroupDefeated(List<CombatantInterface> group) {
+		for (CombatantInterface c : group) {
 			if (!c.isDefeated()) {
 				return false;
 			}
@@ -95,8 +95,8 @@ public class Battle {
 	 */
 	public void advance() {
 		System.out.println("Round " + _round++);
-		Combatant lastCombatant = _firstGroup.get(0);
-		for (Combatant c : _firstGroup) {
+		CombatantInterface lastCombatant = _firstGroup.get(0);
+		for (CombatantInterface c : _firstGroup) {
 			c.takeTurn(_combatants, this);
 			lastCombatant = c;
 		}
@@ -106,7 +106,7 @@ public class Battle {
 			return;
 		}
 		
-		for (Combatant c : _secondGroup) {
+		for (CombatantInterface c : _secondGroup) {
 			c.takeTurn(_combatants, this);
 			lastCombatant = c;
 		}
@@ -117,7 +117,7 @@ public class Battle {
 		}
 	}
 
-	public boolean isWinner(Combatant combatant) {
+	public boolean isWinner(CombatantInterface combatant) {
 		if (isOngoing()) {
 			return false;
 		} else {
@@ -129,7 +129,7 @@ public class Battle {
 	    return _escapedCombatants.add(combatant);
 	}
 
-    public boolean combatantEscaped(Combatant combatant)
+    public boolean combatantEscaped(CombatantInterface combatant)
     {
         return _escapedCombatants.contains(combatant);
     }

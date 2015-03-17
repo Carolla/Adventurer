@@ -4,10 +4,11 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import battle.Combatant;
+import battle.CombatantInterface;
 
 public class AutoCombatant extends Combatant {
    
-	private Combatant _combatant;
+	private CombatantInterface _combatant;
 
 	/**
 	 */

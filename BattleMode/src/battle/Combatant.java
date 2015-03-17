@@ -8,12 +8,8 @@ import java.util.TreeSet;
 import mylib.pdc.MetaDie;
 
 
-public class Combatant {
+public class Combatant implements CombatantInterface {
 
-    public enum CombatantType {HERO, ENEMY};
-    public enum CombatantAttack {CUSTOM, NORMAL};
-    public enum CombatantWeapon {ONE_DAMAGE_WEAPON, DAGGER, MORNING_STAR};
-    public enum CombatantArmor {HELMET, SHIELD, CHAIN_MAIL};
     
 	protected int _hp = 10;
 	protected int _ac = 10;
@@ -29,38 +25,33 @@ public class Combatant {
 	protected CombatantWeapon _weapon = CombatantWeapon.ONE_DAMAGE_WEAPON;
 	protected Set<CombatantArmor> _armors = new TreeSet<CombatantArmor>();
 
-    /**
-     * Status of player in battle - defeated player is out of battle
-     * 
-     * @return whether player is participating in battle anymore
-     */
+    /* (non-Javadoc)
+	 * @see battle.CombatantInterface#isDefeated()
+	 */
+	@Override
 	public boolean isDefeated() {
 		return isUnconscious(); 
 	}
 
-	/**
-	 * Whether player is able to take actions in the battle
-	 * 
-	 * @return players consciousness
+	/* (non-Javadoc)
+	 * @see battle.CombatantInterface#isUnconscious()
 	 */
-    public boolean isUnconscious()
+    @Override
+	public boolean isUnconscious()
     {
         return _hp <= 0;
     }
 
-    /**
-     * Each combtant executes actions during a battle, turn by turn.  Takes
-     * the next turn for a combatant.
-     * @param selectTarget(_combatants the enemy to strike this round
-     * @param battle the current battle
-     * @return the damage done
-     */
-    public int takeTurn(List<Combatant> combatants, Battle battle)
+    /* (non-Javadoc)
+	 * @see battle.CombatantInterface#takeTurn(java.util.List, battle.Battle)
+	 */
+    @Override
+	public int takeTurn(List<CombatantInterface> combatants, Battle battle)
     {
         _turnCount++;
         if (shouldAttack())
         {
-        	Combatant target = selectTarget(combatants);
+        	CombatantInterface target = selectTarget(combatants);
             int damage = attack(target);
             target.displayHP();
             return damage;
@@ -70,16 +61,13 @@ public class Combatant {
         }
     }
 
-    /**
-     * Target selection method.  Combatant chooses from the list of available
-     * Combatants.
-     * 
-     * @param combatants the targets to select from
-     * @return the chosen combatant
-     */
-    private Combatant selectTarget(List<Combatant> combatants) {
-    	for (Combatant c : combatants) {
-    		if (c._type != _type) {
+    /* (non-Javadoc)
+	 * @see battle.CombatantInterface#takeTurn(java.util.List)
+	 */
+    @Override
+    public CombatantInterface selectTarget(List<CombatantInterface> combatants) {
+    	for (CombatantInterface c : combatants) {
+    		if (c.isType(_type)) {
     			return c;
     		}
     	}
@@ -156,13 +144,11 @@ public class Combatant {
 		return bonus;
 	}
 
-	/**
-     * Causes damage to an opponent.  
-     * 
-     * @param attack what the attacker rolled
-     * @return the number of HP damage done by the attack
-     */
-    private int attacked(Attack attack)
+    /* (non-Javadoc)
+	 * @see battle.CombatantInterface#attacked(battle.Attack)
+	 */
+    @Override
+    public int attacked(Attack attack)
     {
         if ((attack.hitRoll() >= _ac && attack.hitRoll() > 1) || attack.hitRoll() == 20) {
             int damage = attack.damageRoll();
@@ -193,21 +179,21 @@ public class Combatant {
         }
     }
 
-    /**
-     * Check the status of HP.
-     * 
-     * @return whether combatant has max HP
-     */
-    public boolean hasFullHP()
+    /* (non-Javadoc)
+	 * @see battle.CombatantInterface#hasFullHP()
+	 */
+    @Override
+	public boolean hasFullHP()
     {
         return (_hp == 10);
     }
 
 
-    /**
-     * Write to the console the HP left for the combatant.
-     */
-    public void displayHP()
+    /* (non-Javadoc)
+	 * @see battle.CombatantInterface#displayHP()
+	 */
+    @Override
+	public void displayHP()
     {
         if (_type == CombatantType.HERO) {
             System.out.println("You have " + _hp + " HP left.");
@@ -218,9 +204,10 @@ public class Combatant {
 
 
 
-    /**
-     * Write to the console when victory is complete
-     */
+    /* (non-Javadoc)
+	 * @see battle.CombatantInterface#displayVictory()
+	 */
+	@Override
 	public void displayVictory() {
 		switch (_type) 
 		{
@@ -235,34 +222,33 @@ public class Combatant {
 		
 	}
 
-	/**
-	 * At the start of battle, or when surprised, determine order in battle
-	 * @return the number of initiative roll
+	/* (non-Javadoc)
+	 * @see battle.CombatantInterface#rollInitiative()
 	 */
+	@Override
 	public int rollInitiative() {
 		return _initiative;
 	}
 
 
-	/**
-	 * The combatant will attack the victim
-	 * @param victim the Combatant to be attacked
-	 * @return the damage done by the attack
+	/* (non-Javadoc)
+	 * @see battle.CombatantInterface#attack(battle.Combatant)
 	 */
-	public int attack(Combatant victim) {
+	@Override
+	public int attack(CombatantInterface target) {
 		Attack attack = makeAttackAndDamageRoll();
 		if (attack.hitRoll() > 1) {
-			return victim.attacked(attack);
+			return target.attacked(attack);
 		} else {
 			unequip(_weapon);
 			return 0;
 		}
 	}
 
-	/**
-	 * The combatant adds a new piece of armor
-	 * @param armor the armor to be worn
+	/* (non-Javadoc)
+	 * @see battle.CombatantInterface#equip(battle.Combatant.CombatantArmor)
 	 */
+	@Override
 	public boolean equip(CombatantArmor armor) {
 		if (_armors.add(armor)) {
 			switch(armor)
@@ -282,10 +268,10 @@ public class Combatant {
 		return false;
 	}
 
-	/**
-	 * The combatant removes a piece of armor
-	 * @param armor the armor to be removed
+	/* (non-Javadoc)
+	 * @see battle.CombatantInterface#unequip(battle.Combatant.CombatantArmor)
 	 */
+	@Override
 	public boolean unequip(CombatantArmor armor) {
 		if (_armors.remove(armor)) {
 			switch(armor)
@@ -306,10 +292,10 @@ public class Combatant {
 	}
 	
 
-	/**
-	 * The combatant unequips a new weapon
-	 * @param weapon the weapon to be unequipped
+	/* (non-Javadoc)
+	 * @see battle.CombatantInterface#unequip(battle.Combatant.CombatantWeapon)
 	 */
+	@Override
 	public boolean unequip(CombatantWeapon weapon) {
 		if (_weapon == weapon) {
 			_weapon = CombatantWeapon.ONE_DAMAGE_WEAPON;
@@ -318,10 +304,10 @@ public class Combatant {
 		return false;
 	}
 	
-	/**
-	 * The combatant equips a new weapon
-	 * @param weapon the weapon to be used
+	/* (non-Javadoc)
+	 * @see battle.CombatantInterface#equip(battle.Combatant.CombatantWeapon)
 	 */
+	@Override
 	public boolean equip(CombatantWeapon weapon) {
 		if (_weapon != weapon) {
 			_weapon = weapon;    	
@@ -341,21 +327,29 @@ public class Combatant {
 		return false;
 	}
 
-	private static List<Combatant> findAllCombatantsByType(List<Combatant> combatants, CombatantType type) {
-		List<Combatant> result = new ArrayList<Combatant>();
-		for (Combatant c : combatants) {
-			if (c._type == type) {
+	/* (non-Javadoc)
+	 * @see battle.CombatantInterface#equip(battle.Combatant.CombatantType)
+	 */
+	@Override
+	public boolean isType(CombatantType type) {
+		return _type == type;
+	}
+
+	private static List<CombatantInterface> findAllCombatantsByType(List<CombatantInterface> _combatants, CombatantType type) {
+		List<CombatantInterface> result = new ArrayList<CombatantInterface>();
+		for (CombatantInterface c : _combatants) {
+			if (c.isType(type)) {
 				result.add(c);
 			}
 		}
 		return result;
 	}
 	
-	public static List<Combatant> findAllEnemies(List<Combatant> combatants) {
-		return findAllCombatantsByType(combatants, CombatantType.ENEMY);
+	public static List<CombatantInterface> findAllEnemies(List<CombatantInterface> _combatants) {
+		return findAllCombatantsByType(_combatants, CombatantType.ENEMY);
 	}
 	
-	public static List<Combatant> findAllHeros(List<Combatant> combatants) {
+	public static List<CombatantInterface> findAllHeros(List<CombatantInterface> combatants) {
 		return findAllCombatantsByType(combatants, CombatantType.HERO);
 	}
 }
