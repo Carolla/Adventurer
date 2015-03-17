@@ -2,7 +2,10 @@ package test.battle;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import mylib.MsgCtrl;
 import mylib.pdc.MetaDie;
 
@@ -11,6 +14,7 @@ import org.junit.Test;
 
 import battle.Combatant;
 import battle.Combatant.CombatantArmor;
+import battle.Combatant.CombatantType;
 import battle.Combatant.CombatantWeapon;
 
 public class TestCombatant
@@ -298,6 +302,34 @@ public class TestCombatant
     @Test
     public void TestGetCombatantsByType()
     {
-    	fail("Not yet implemented");
+    	int numberOfHeros = meta.getRandom(1,20);
+    	int numberOfEnemies = meta.getRandom(1,20);
+    	List<Combatant> list = new ArrayList<Combatant>(numberOfEnemies + numberOfHeros);
+    	List<Combatant> heroList = new ArrayList<Combatant>(numberOfHeros);
+    	List<Combatant> enemyList = new ArrayList<Combatant>(numberOfEnemies);
+    	for (int i = 0; i < numberOfEnemies; i++) {
+    		Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).build();
+    		list.add(enemy);
+    		enemyList.add(enemy);
+    	}
+    	
+    	for (int i = 0; i < numberOfHeros; i++) {
+    		Combatant hero = new AutoCombatant.CombatantBuilder().build();
+    		list.add(hero);
+    		heroList.add(hero);
+    	}
+
+    	List<Combatant> heroTypes = Combatant.findAllHeros(list);
+    	List<Combatant> enemyTypes = Combatant.findAllEnemies(list);
+    	
+    	for (Combatant c : heroTypes) {
+    		assertFalse(enemyList.contains(c));
+    		assertTrue(heroList.contains(c));
+    	}
+    	
+    	for (Combatant c : enemyTypes) {
+    		assertTrue(enemyList.contains(c));
+    		assertFalse(heroList.contains(c));
+    	}
     }
 }
