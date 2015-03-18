@@ -4,19 +4,12 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import battle.Combatant;
-import battle.CombatantInterface;
 
 public class AutoCombatant extends Combatant {
    
-	private CombatantInterface _combatant;
-
 	/**
 	 */
-	private AutoCombatant(CombatantType type)
-	{
-		_combatant = new Combatant();
-	    _type = type;
-	}
+	private AutoCombatant() { }
 	
 	public static class CombatantBuilder
 	{
@@ -77,7 +70,8 @@ public class AutoCombatant extends Combatant {
 		
 		public AutoCombatant build()
 		{
-			AutoCombatant auto = new AutoCombatant(withType);
+			AutoCombatant auto = new AutoCombatant();
+			auto._type = withType;
 			auto._hp = withHp;
 			auto._attack = withAttack;
 			auto._attackRoll = withAttackRoll;
@@ -113,5 +107,4 @@ public class AutoCombatant extends Combatant {
     {
        return _turnCount;
     }
-
 }

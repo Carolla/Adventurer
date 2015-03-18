@@ -67,11 +67,11 @@ public class Combatant implements CombatantInterface {
     @Override
     public CombatantInterface selectTarget(List<CombatantInterface> combatants) {
     	for (CombatantInterface c : combatants) {
-    		if (c.isType(_type)) {
+    		if (!c.isType(_type)) {
     			return c;
     		}
     	}
-		return this; //Attack self seems reasonable default...
+		return null; //Fail fast when there are no combatants
 	}
 
 	private void tryToEscape(Battle battle)
