@@ -329,14 +329,80 @@ public class TestBattle {
 	    }
     }
     
-    //All combatants from a side must escape to end combat
+    @Test
     public void AllCombatantsMustEscapeForCombatToEnd()
     {
-        MsgCtrl.msgln("BattleDoesNotEndWhenNeitherPlayerIsDefeated()");
-    	int numberOfHeros = 0;
+        for (int round = 0; round < 20; round++) {
+            MsgCtrl.msgln("AllCombatantsMustEscapeForCombatToEnd() round " + round);
+	    	int numberOfHeros = _metadie.getRandom(1, 5);
+	    	
+	    	List<CombatantInterface> battleMembers = new ArrayList<CombatantInterface>(numberOfHeros + 1);
+	    	for (int i = 0; i < numberOfHeros; i++) {
+	    		battleMembers.add(new AutoCombatant.CombatantBuilder().withType(CombatantType.HERO).withHP(1).shouldTryEscaping().withInitiative(11).build());
+	    	}
+	    	battleMembers.add(new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).build());
+	    	
+	    	Battle battle = new Battle(battleMembers.toArray(new CombatantInterface[numberOfHeros + 1]));
+	    	battle.advance();
+	    	
+	    	assertFalse(battle.isOngoing());
+	    	for (CombatantInterface c : Combatant.findAllHeros(battleMembers)) {
+	    		assertTrue(battle.combatantEscaped(c));
+	    	}
+        }
     }
     
-    //All combatants from a side must be defeated to end combat
+    @Test
+    public void AllCombatantsFromASideMustBeDefeatedToEndCombat()
+    {
+        for (int round = 0; round < 10; round++) {
+            MsgCtrl.msgln("AllCombatantsFromASideMustBeDefeatedToEndCombat() round " + round);
+
+        	int numberOfAttackers = _metadie.getRandom(1,4);
+        	int numberOfRounds = _metadie.getRandom(1,4);
+        	int numberOfDefenders = numberOfAttackers * numberOfRounds + 1;
+        	
+        	CombatantType attackerType = CombatantType.HERO;
+        	CombatantType defenderType = CombatantType.ENEMY;
+        	if (_metadie.getRandom(1,2) == 1) {
+        		attackerType = CombatantType.ENEMY;
+        		defenderType = CombatantType.HERO;
+        	}
+        		
+	    	List<CombatantInterface> battleMembers = new ArrayList<CombatantInterface>(numberOfAttackers + numberOfDefenders);
+	    	for (int i = 0; i < numberOfAttackers; i++) {
+	    		battleMembers.add(new AutoCombatant.CombatantBuilder().withType(attackerType).withHP(1).withSpecificHit(10).build());
+	    	}
+	    	
+	    	for (int i = 0; i < numberOfDefenders; i++) {
+	    		battleMembers.add(new AutoCombatant.CombatantBuilder().withType(defenderType).withHP(1).withSpecificHit(10).build());
+	    	}
+	    	
+	    	Battle battle = new Battle(battleMembers.toArray(new CombatantInterface[numberOfAttackers + numberOfDefenders]));
+	    	
+	    	for (int i = 0; i < numberOfRounds; i++) {
+	    		battle.advance();
+	    	}
+	    	
+	    	assertFalse(battle.isOngoing());
+	    	battle.advance();
+	    	assertFalse(battle.isOngoing());
+	    	
+	    	for (CombatantInterface c : Combatant.findAllEnemies(battleMembers)) {
+	    		assertTrue(c.isDefeated());
+	    	}
+	    	
+	    	if (attackerType == CombatantType.ENEMY) {
+	    		for (CombatantInterface c : Combatant.findAllHeros(battleMembers)) {
+	    			assertTrue(c.isDefeated());
+	    		}    			
+	    	} else {
+	    		for (CombatantInterface c : Combatant.findAllEnemies(battleMembers)) {
+	    			assertTrue(c.isDefeated());
+	    		}
+	    	}
+        }
+    }
     
     //Combatants must be defeated/escape to end combat
     
