@@ -49,15 +49,18 @@ public class Combatant implements CombatantInterface {
 	public int takeTurn(List<CombatantInterface> combatants, Battle battle)
     {
         _turnCount++;
+        int damage = 0;
         if (shouldAttack())
         {
         	CombatantInterface target = selectTarget(combatants);
-            int damage = attack(target);
-            target.displayHP();
+        	if (target != null) {
+	            damage = attack(target);
+	            target.displayHP();
+        	}
             return damage;
         } else {
             tryToEscape(battle);
-            return 0;
+            return damage;
         }
     }
 
@@ -67,7 +70,7 @@ public class Combatant implements CombatantInterface {
     @Override
     public CombatantInterface selectTarget(List<CombatantInterface> combatants) {
     	for (CombatantInterface c : combatants) {
-    		if (!c.isType(_type)) {
+    		if (!c.isType(_type) && !c.isDefeated()) {
     			return c;
     		}
     	}

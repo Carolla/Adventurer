@@ -3,11 +3,15 @@ package test.battle;
 import java.util.Set;
 import java.util.TreeSet;
 
+import battle.Attack;
 import battle.Combatant;
 
 public class AutoCombatant extends Combatant {
    
+	private int _timesAttacked;
+
 	/**
+	 * Private to prevent construction
 	 */
 	private AutoCombatant() { }
 	
@@ -103,8 +107,18 @@ public class AutoCombatant extends Combatant {
 
 	}
 	
+	@Override
+	public int attacked(Attack attack) {
+		_timesAttacked++;
+		return super.attacked(attack);
+	}
     public int getTurnCount()
     {
        return _turnCount;
+    }
+    
+    public int getAttackCount()
+    {
+    	return _timesAttacked;
     }
 }
