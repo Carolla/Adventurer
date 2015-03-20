@@ -60,16 +60,24 @@ public class Battle {
 	}
 
 	public boolean isOngoing() {
-		if (_escapedCombatants.isEmpty()) {
-			if (allEnemiesDefeated() || allHerosDefeated()) {
+		if (_escapedCombatants.isEmpty() && (allEnemiesDefeated() || allHerosDefeated())) {
 				return false;
-			}
 		} else {
-			if (_escapedCombatants.containsAll(_heros) || _escapedCombatants.containsAll(_enemies)) {
-				return false;
+			int herosOutOfBattle = 0;
+			int enemiesOutOfBattle = 0;
+			for (CombatantInterface c : _heros) {
+				if (c.isDefeated() || _escapedCombatants.contains(c)) {
+					herosOutOfBattle++;
+				}
 			}
+			for (CombatantInterface c : _enemies) {
+				if (c.isDefeated() || _escapedCombatants.contains(c)) {
+					enemiesOutOfBattle++;
+				}
+			}
+
+			return (herosOutOfBattle != _heros.size() && enemiesOutOfBattle != _enemies.size());
 		}
-		return true;
 	}
 
 	private boolean allOfGroupDefeated(List<CombatantInterface> group) {

@@ -88,7 +88,12 @@ public class Combatant implements CombatantInterface {
                 System.out.println("You did not escape!");
             }
         } else {
-            System.out.println("Enemies do not flee in battle.");
+            System.out.print("The enemy tries to escape.  ");
+            if (battle.escape(this)) {
+                System.out.println("The enemy escaped!");
+            } else{
+                System.out.println("The enemy did not escape!");
+            }
         }
             
     }

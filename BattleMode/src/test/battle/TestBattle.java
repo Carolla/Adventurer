@@ -375,22 +375,18 @@ public class TestBattle {
 	    	}
 	    	
 	    	for (int i = 0; i < numberOfDefenders; i++) {
-	    		battleMembers.add(new AutoCombatant.CombatantBuilder().withType(defenderType).withHP(1).withSpecificHit(10).build());
+	    		battleMembers.add(new AutoCombatant.CombatantBuilder().withType(defenderType).withHP(1).withSpecificHit(0).build());
 	    	}
 	    	
 	    	Battle battle = new Battle(battleMembers.toArray(new CombatantInterface[numberOfAttackers + numberOfDefenders]));
 	    	
 	    	for (int i = 0; i < numberOfRounds; i++) {
 	    		battle.advance();
+		    	assertTrue(battle.isOngoing());
 	    	}
 	    	
-	    	assertFalse(battle.isOngoing());
 	    	battle.advance();
 	    	assertFalse(battle.isOngoing());
-	    	
-	    	for (CombatantInterface c : Combatant.findAllEnemies(battleMembers)) {
-	    		assertTrue(c.isDefeated());
-	    	}
 	    	
 	    	if (attackerType == CombatantType.ENEMY) {
 	    		for (CombatantInterface c : Combatant.findAllHeros(battleMembers)) {
@@ -404,7 +400,57 @@ public class TestBattle {
         }
     }
     
-    //Combatants must be defeated/escape to end combat
+    @Test
+    public void AllCombatantsMustBeDefeatedOrEscapeToEndCombat()
+    {
+        for (int round = 0; round < 10; round++) {
+            MsgCtrl.msgln("AllCombatantsMustBeDefeatedOrEscapeToEndCombat() round " + round);
+
+        	int numberOfAttackers = _metadie.getRandom(1,10);
+        	int numberOfDefenders = numberOfAttackers + _metadie.getRandom(1,10);
+        	
+        	CombatantType attackerType = CombatantType.HERO;
+        	CombatantType defenderType = CombatantType.ENEMY;
+        	if (_metadie.getRandom(1,2) == 1) {
+        		attackerType = CombatantType.ENEMY;
+        		defenderType = CombatantType.HERO;
+        	}
+        		
+	    	List<CombatantInterface> battleMembers = new ArrayList<CombatantInterface>(numberOfAttackers + numberOfDefenders);
+	    	for (int i = 0; i < numberOfAttackers; i++) {
+	    		battleMembers.add(new AutoCombatant.CombatantBuilder().withType(attackerType).withHP(1).withSpecificHit(10).build());
+	    	}
+	    	
+	    	for (int i = 0; i < numberOfDefenders; i++) {
+	    		battleMembers.add(new AutoCombatant.CombatantBuilder().withType(defenderType).withHP(1).shouldTryEscaping().build());
+	    	}
+	    	
+	    	Battle battle = new Battle(battleMembers.toArray(new CombatantInterface[numberOfAttackers + numberOfDefenders]));
+    		battle.advance();
+	    	assertFalse(battle.isOngoing());
+
+	    	if (defenderType == CombatantType.ENEMY) {
+	    		for (CombatantInterface c : Combatant.findAllEnemies(battleMembers)) {
+	    			if (!c.isDefeated()) {
+	    				assertTrue(battle.combatantEscaped(c));
+	    			}
+	    		}    			
+	    	} else {
+	    		for (CombatantInterface c : Combatant.findAllHeros(battleMembers)) {
+	    			if (!c.isDefeated()) {
+	    				assertTrue(battle.combatantEscaped(c));
+	    			}
+	    		}
+	    	}
+        }
+    }
     
     //Combatant can select with opponent to attack
+    @Test
+    public void CombatantCanSelectOpponentToAttack()
+    {
+    	CombatantInterface attacker = null;
+    	CombatantInterface defender1 = null;
+    	CombatantInterface defender2 = null;
+    }
 }
