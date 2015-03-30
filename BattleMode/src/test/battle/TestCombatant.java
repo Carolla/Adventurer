@@ -2,6 +2,10 @@ package test.battle;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import mylib.MsgCtrl;
 import mylib.pdc.MetaDie;
 
@@ -9,8 +13,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import battle.Combatant;
-import battle.Combatant.CombatantArmor;
-import battle.Combatant.CombatantWeapon;
+import battle.CombatantInterface;
+import battle.CombatantInterface.CombatantArmor;
+import battle.CombatantInterface.CombatantType;
+import battle.CombatantInterface.CombatantWeapon;
 
 public class TestCombatant
 {
@@ -26,7 +32,7 @@ public class TestCombatant
     public void CombatantIsUnconsciousWhenHpLessThanZero()
     {
         MsgCtrl.msgln("\n\nCombatantIsUnconsciousWhenHpLessThanZero");
-    	Combatant attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.MORNING_STAR).withSpecificHit(20).build();
+    	CombatantInterface attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.MORNING_STAR).withSpecificHit(20).build();
     	Combatant victim = new AutoCombatant.CombatantBuilder().withHP(2).build();
         assertFalse(victim.isUnconscious());
         attacker.attack(victim);
@@ -37,8 +43,8 @@ public class TestCombatant
     public void CombatantDoesVariableDamage()
     {
         MsgCtrl.msgln("\n\nCombatantDoesVariableDamage");
-    	Combatant attacker1 = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.FIST).withSpecificHit(20).build();
-    	Combatant attacker2 = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.MORNING_STAR).withSpecificHit(20).build();
+    	CombatantInterface attacker1 = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.ONE_DAMAGE_WEAPON).withSpecificHit(20).build();
+    	CombatantInterface attacker2 = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.MORNING_STAR).withSpecificHit(20).build();
     	Combatant victim1 = new AutoCombatant.CombatantBuilder().withHP(2).build();
     	Combatant victim2 = new AutoCombatant.CombatantBuilder().withHP(2).build();
     	attacker1.attack(victim1);
@@ -51,8 +57,8 @@ public class TestCombatant
     public void CombatantArmorClassDeterminesHit()
     {
         MsgCtrl.msgln("\n\nCombatantArmorClassDeterminesHit");
-        Combatant attacker1 = new AutoCombatant.CombatantBuilder().withSpecificHit(10).build();
-        Combatant attacker2 = new AutoCombatant.CombatantBuilder().withSpecificHit(11).build();
+        CombatantInterface attacker1 = new AutoCombatant.CombatantBuilder().withSpecificHit(10).build();
+        CombatantInterface attacker2 = new AutoCombatant.CombatantBuilder().withSpecificHit(11).build();
         Combatant victim = new AutoCombatant.CombatantBuilder().withAC(11).withHP(1).build();
     	attacker1.attack(victim);
     	assertFalse(victim.isUnconscious());
@@ -64,7 +70,7 @@ public class TestCombatant
     public void CombatantCanHaveDifferentArmorClass()
     {
         MsgCtrl.msgln("\n\nCombatantCanHaveDifferentArmorClass");
-        Combatant attacker = new AutoCombatant.CombatantBuilder().withSpecificHit(10).build();
+        CombatantInterface attacker = new AutoCombatant.CombatantBuilder().withSpecificHit(10).build();
         Combatant victim1 = new AutoCombatant.CombatantBuilder().withAC(11).withHP(1).build();
         Combatant victim2 = new AutoCombatant.CombatantBuilder().withAC(10).withHP(1).build();
         attacker.attack(victim1);
@@ -80,7 +86,7 @@ public class TestCombatant
     	for (int i = 0; i < 20; i++)
     	{
 	    	int attackAndAc = meta.getRandom(2, 19);
-	    	Combatant attacker = new AutoCombatant.CombatantBuilder().withSpecificHit(attackAndAc).build();
+	    	CombatantInterface attacker = new AutoCombatant.CombatantBuilder().withSpecificHit(attackAndAc).build();
 	    	Combatant victim = new AutoCombatant.CombatantBuilder().withAC(attackAndAc).withHP(1).build();
 	        attacker.attack(victim);
 	    	assertTrue(victim.isUnconscious());
@@ -94,7 +100,7 @@ public class TestCombatant
     	for (int i = 0; i < 20; i++)
     	{
 	    	int attackRoll = meta.getRandom(2, 19);
-	    	Combatant attacker = new AutoCombatant.CombatantBuilder().withSpecificHit(attackRoll).build();
+	    	CombatantInterface attacker = new AutoCombatant.CombatantBuilder().withSpecificHit(attackRoll).build();
 	    	Combatant victim = new AutoCombatant.CombatantBuilder().withAC(attackRoll + 1).withHP(1).build();
 	        attacker.attack(victim);
 	    	assertFalse(victim.isUnconscious());
@@ -108,7 +114,7 @@ public class TestCombatant
     	for (int i = 0; i < 20; i++)
     	{
 	    	int ac = meta.getRandom(2, 18);
-	    	Combatant attacker = new AutoCombatant.CombatantBuilder().withSpecificHit(ac + 1).build();
+	    	CombatantInterface attacker = new AutoCombatant.CombatantBuilder().withSpecificHit(ac + 1).build();
 	    	Combatant victim = new AutoCombatant.CombatantBuilder().withAC(ac).withHP(1).build();
 	        attacker.attack(victim);
 	    	assertTrue(victim.isUnconscious());
@@ -119,7 +125,7 @@ public class TestCombatant
     public void CombatantAlwaysMissesWithOne()
     {
         MsgCtrl.msgln("\n\nCombatantAlwaysMissesWithZero");
-        Combatant attacker = new AutoCombatant.CombatantBuilder().withSpecificHit(1).build();
+        CombatantInterface attacker = new AutoCombatant.CombatantBuilder().withSpecificHit(1).build();
         Combatant victim = new AutoCombatant.CombatantBuilder().withAC(1).withHP(1).build();
         attacker.attack(victim);
     	attacker.attack(victim);
@@ -130,7 +136,7 @@ public class TestCombatant
     public void CombatantAlwaysHitsWithTwenty()
     {
         MsgCtrl.msgln("\n\nCombatantAlwaysHitsWithTwenty");
-        Combatant attacker = new AutoCombatant.CombatantBuilder().withSpecificHit(20).build();
+        CombatantInterface attacker = new AutoCombatant.CombatantBuilder().withSpecificHit(20).build();
         Combatant victim = new AutoCombatant.CombatantBuilder().withAC(21).withHP(1).build();
         attacker.attack(victim);
     	assertTrue(victim.isUnconscious());
@@ -140,7 +146,7 @@ public class TestCombatant
     public void CombatantCanEquipArmorAndChangeAc()
     {
         MsgCtrl.msgln("\n\nCombatantCanEquipArmorAndChangeAc");
-        Combatant attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.FIST).withSpecificHit(10).build();
+        CombatantInterface attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.ONE_DAMAGE_WEAPON).withSpecificHit(10).build();
         Combatant victim1 = new AutoCombatant.CombatantBuilder().withHP(1).build();
         Combatant victim2 = new AutoCombatant.CombatantBuilder().withHP(1).withArmor(CombatantArmor.HELMET).build();
     	attacker.attack(victim1);
@@ -153,7 +159,7 @@ public class TestCombatant
     public void CombatantCanChangeEquippedArmorDuringBattleAndChangeAc()
     {
         MsgCtrl.msgln("\n\nCombatantCanEquipArmorAndChangeAc");
-        Combatant attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.FIST).withSpecificHit(10).build();
+        CombatantInterface attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.ONE_DAMAGE_WEAPON).withSpecificHit(10).build();
         Combatant victim1 = new AutoCombatant.CombatantBuilder().withHP(2).build();
         Combatant victim2 = new AutoCombatant.CombatantBuilder().withHP(2).build();
     	attacker.attack(victim1);
@@ -169,7 +175,7 @@ public class TestCombatant
     public void CombatantCanChangeEquippedWeaponDuringBattleAndChangeDamage()
     {
         MsgCtrl.msgln("\n\nCombatantCanChangeEquippedWeaponDuringBattleAndChangeDamage");
-        Combatant attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.FIST).withSpecificHit(10).build();
+        CombatantInterface attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.ONE_DAMAGE_WEAPON).withSpecificHit(10).build();
         Combatant victim1 = new AutoCombatant.CombatantBuilder().withHP(2).build();
         Combatant victim2 = new AutoCombatant.CombatantBuilder().withHP(2).build();
     	attacker.attack(victim1);
@@ -183,7 +189,7 @@ public class TestCombatant
     public void CombatantCanUnequipArmorDuringBattle()
     {
         MsgCtrl.msgln("\n\nCombatantCanUnequipArmorDuringBattle");
-        Combatant attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.FIST).withSpecificHit(10).build();
+        CombatantInterface attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.ONE_DAMAGE_WEAPON).withSpecificHit(10).build();
         Combatant victim = new AutoCombatant.CombatantBuilder().withHP(2).build();
     	attacker.attack(victim);
     	victim.equip(CombatantArmor.SHIELD);
@@ -198,7 +204,7 @@ public class TestCombatant
     public void UnequippingArmorNotEquippedDoesNotChangeAc()
     {
         MsgCtrl.msgln("\n\nUnequippingArmorNotEquippedDoesNotChangeAc");
-        Combatant attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.FIST).withSpecificHit(10).build();
+        CombatantInterface attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.ONE_DAMAGE_WEAPON).withSpecificHit(10).build();
         Combatant victim = new AutoCombatant.CombatantBuilder().withHP(2).build();
     	attacker.attack(victim);
     	victim.equip(CombatantArmor.SHIELD);
@@ -209,10 +215,22 @@ public class TestCombatant
     }
     
     @Test
+    public void CannotEquipSamePieceOfArmorMultipleTimes()
+    {
+        MsgCtrl.msgln("\n\nUnequippingArmorNotEquippedDoesNotChangeAc");
+        CombatantInterface attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.ONE_DAMAGE_WEAPON).withSpecificHit(12).build();
+        Combatant victim = new AutoCombatant.CombatantBuilder().withArmor(CombatantArmor.SHIELD).withHP(2).build();
+    	attacker.attack(victim);
+    	victim.equip(CombatantArmor.SHIELD);
+    	attacker.attack(victim);
+    	assertTrue(victim.isUnconscious());
+    }
+    
+    @Test
     public void CombatantCanUnequipWeaponDuringBattle()
     {
         MsgCtrl.msgln("\n\nCombatantCanUnequipWeaponDuringBattle");
-        Combatant attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.FIST).withSpecificHit(10).build();
+        CombatantInterface attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.ONE_DAMAGE_WEAPON).withSpecificHit(10).build();
         Combatant victim1 = new AutoCombatant.CombatantBuilder().withHP(2).build();
         Combatant victim2 = new AutoCombatant.CombatantBuilder().withHP(2).build();
         Combatant victim3 = new AutoCombatant.CombatantBuilder().withHP(2).build();
@@ -221,8 +239,8 @@ public class TestCombatant
     	attacker.attack(victim2);
     	attacker.unequip(CombatantWeapon.MORNING_STAR);
     	attacker.attack(victim3);
-    	assertTrue(victim2.isUnconscious());
     	assertFalse(victim1.isUnconscious());
+    	assertTrue(victim2.isUnconscious());
     	assertFalse(victim3.isUnconscious());
     }
     
@@ -230,17 +248,17 @@ public class TestCombatant
     public void UnequippingWeaponNotEquippedDoesNotChangeDamage()
     {
         MsgCtrl.msgln("\n\nUnequippingWeaponNotEquippedDoesNotChangeDamage");
-        Combatant attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.FIST).withSpecificHit(10).build();
-        Combatant victim1 = new AutoCombatant.CombatantBuilder().withHP(2).build();
-        Combatant victim2 = new AutoCombatant.CombatantBuilder().withHP(2).build();
-        Combatant victim3 = new AutoCombatant.CombatantBuilder().withHP(2).build();
+        CombatantInterface attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.ONE_DAMAGE_WEAPON).withSpecificHit(10).build();
+        Combatant victim1 = new AutoCombatant.CombatantBuilder().withHP(3).build();
+        Combatant victim2 = new AutoCombatant.CombatantBuilder().withHP(3).build();
+        Combatant victim3 = new AutoCombatant.CombatantBuilder().withHP(3).build();
     	attacker.attack(victim1);
     	attacker.equip(CombatantWeapon.MORNING_STAR);
     	attacker.attack(victim2);
     	attacker.unequip(CombatantWeapon.DAGGER);
     	attacker.attack(victim3);
-    	assertTrue(victim2.isUnconscious());
     	assertFalse(victim1.isUnconscious());
+    	assertTrue(victim2.isUnconscious());
     	assertTrue(victim3.isUnconscious());
     }
     
@@ -248,9 +266,127 @@ public class TestCombatant
     public void WhenAttackRollIsOneAttackerFumblesWeapon()
     {
         MsgCtrl.msgln("\n\nWhenAttackRollIsOneAttackerFumblesWeapon");
-        Combatant attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.MORNING_STAR).withSpecificHit(1).build();
+        CombatantInterface attacker = new AutoCombatant.CombatantBuilder().withWeapon(CombatantWeapon.MORNING_STAR).withSpecificHit(1).build();
         Combatant victim1 = new AutoCombatant.CombatantBuilder().withHP(1).build();
         attacker.attack(victim1);
         assertTrue(attacker.equip(CombatantWeapon.MORNING_STAR));
+    }
+    
+    @Test
+    public void IncreaseStrengthCanCauseAdditionalDamageWhenAttacking()
+    {
+        MsgCtrl.msgln("\n\nIncreaseStrengthCanCauseAdditionalDamageWhenAttacking");
+        CombatantInterface attacker1 = new AutoCombatant.CombatantBuilder().withStrength(16).withSpecificHit(10).build();
+        CombatantInterface attacker2 = new AutoCombatant.CombatantBuilder().withStrength(15).withSpecificHit(10).build();
+        Combatant victim1 = new AutoCombatant.CombatantBuilder().withHP(2).build();
+        Combatant victim2 = new AutoCombatant.CombatantBuilder().withHP(2).build();
+        attacker1.attack(victim1);
+        attacker2.attack(victim2);
+    	assertTrue(victim1.isUnconscious());
+    	assertFalse(victim2.isUnconscious());
+    }
+    
+    @Test
+    public void DecreasedStrengthCanCauseLessDamageWhenAttacking()
+    {
+        MsgCtrl.msgln("\n\nDecreasedStrengthCanCauseLessDamageWhenAttacking");
+        CombatantInterface attacker1 = new AutoCombatant.CombatantBuilder().withStrength(6).withSpecificHit(10).build();
+        CombatantInterface attacker2 = new AutoCombatant.CombatantBuilder().withStrength(5).withSpecificHit(10).build();
+        Combatant victim1 = new AutoCombatant.CombatantBuilder().withHP(1).build();
+        Combatant victim2 = new AutoCombatant.CombatantBuilder().withHP(1).build();
+        attacker1.attack(victim1);
+        attacker2.attack(victim2);
+    	assertTrue(victim1.isUnconscious());
+    	assertFalse(victim2.isUnconscious());
+    }
+    
+    @Test
+    public void IncreasedDexterityCanIncreaseChanceToHitWhenAttacking()
+    {
+        MsgCtrl.msgln("\n\nIncreasedDexterityCanIncreaseChanceToHitWhenAttacking");
+        CombatantInterface attacker1 = new AutoCombatant.CombatantBuilder().withDexterity(15).withSpecificHit(9).build();
+        CombatantInterface attacker2 = new AutoCombatant.CombatantBuilder().withDexterity(16).withSpecificHit(9).build();
+        Combatant victim1 = new AutoCombatant.CombatantBuilder().withHP(1).build();
+        Combatant victim2 = new AutoCombatant.CombatantBuilder().withHP(1).build();
+        attacker1.attack(victim1);
+        attacker2.attack(victim2);
+    	assertTrue(victim2.isUnconscious());
+    	assertFalse(victim1.isUnconscious());
+    }
+    
+    @Test
+    public void DecreasedDexterityCanDecreaseChanceToHitWhenAttacking()
+    {
+        MsgCtrl.msgln("\n\nDecreasedDexterityCanDecreaseChanceToHitWhenAttacking");
+        CombatantInterface attacker1 = new AutoCombatant.CombatantBuilder().withDexterity(5).withSpecificHit(10).build();
+        CombatantInterface attacker2 = new AutoCombatant.CombatantBuilder().withDexterity(6).withSpecificHit(10).build();
+        Combatant victim1 = new AutoCombatant.CombatantBuilder().withHP(1).build();
+        Combatant victim2 = new AutoCombatant.CombatantBuilder().withHP(1).build();
+        attacker1.attack(victim1);
+        attacker2.attack(victim2);
+    	assertTrue(victim2.isUnconscious());
+    	assertFalse(victim1.isUnconscious());
+    }
+    
+    @Test
+    public void IncreasedDexterityCanIncreaseChanceToDodge()
+    {
+        MsgCtrl.msgln("\n\nIncreasedDexterityCanIncreaseChanceToDodge");
+        CombatantInterface attacker1 = new AutoCombatant.CombatantBuilder().withSpecificHit(10).build();
+        CombatantInterface attacker2 = new AutoCombatant.CombatantBuilder().withSpecificHit(10).build();
+        Combatant victim1 = new AutoCombatant.CombatantBuilder().withHP(1).withDexterity(15).build();
+        Combatant victim2 = new AutoCombatant.CombatantBuilder().withHP(1).withDexterity(16).build();
+        attacker1.attack(victim1);
+        attacker2.attack(victim2);
+    	assertTrue(victim1.isUnconscious());
+    	assertFalse(victim2.isUnconscious());
+    }
+    
+    @Test
+    public void DecreasedDexterityCanDecreaseChanceToDodge()
+    {
+        MsgCtrl.msgln("\n\nDecreasedDexterityCanDecreaseChanceToDodge");
+        CombatantInterface attacker1 = new AutoCombatant.CombatantBuilder().withSpecificHit(9).build();
+        CombatantInterface attacker2 = new AutoCombatant.CombatantBuilder().withSpecificHit(9).build();
+        Combatant victim1 = new AutoCombatant.CombatantBuilder().withHP(1).withDexterity(5).build();
+        Combatant victim2 = new AutoCombatant.CombatantBuilder().withHP(1).withDexterity(6).build();
+        attacker1.attack(victim1);
+        attacker2.attack(victim2);
+    	assertTrue(victim1.isUnconscious());
+    	assertFalse(victim2.isUnconscious());
+    }
+    
+    @Test
+    public void TestGetCombatantsByType()
+    {
+    	int numberOfHeros = meta.getRandom(1,20);
+    	int numberOfEnemies = meta.getRandom(1,20);
+    	List<CombatantInterface> list = new ArrayList<CombatantInterface>(numberOfEnemies + numberOfHeros);
+    	List<CombatantInterface> heroList = new ArrayList<CombatantInterface>(numberOfHeros);
+    	List<CombatantInterface> enemyList = new ArrayList<CombatantInterface>(numberOfEnemies);
+    	for (int i = 0; i < numberOfEnemies; i++) {
+    		Combatant enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).build();
+    		list.add(enemy);
+    		enemyList.add(enemy);
+    	}
+    	
+    	for (int i = 0; i < numberOfHeros; i++) {
+    		Combatant hero = new AutoCombatant.CombatantBuilder().build();
+    		list.add(hero);
+    		heroList.add(hero);
+    	}
+
+    	List<CombatantInterface> heroTypes = Combatant.findAllHeros(list);
+    	List<CombatantInterface> enemyTypes = Combatant.findAllEnemies(list);
+    	
+    	for (CombatantInterface c : heroTypes) {
+    		assertFalse(enemyList.contains(c));
+    		assertTrue(heroList.contains(c));
+    	}
+    	
+    	for (CombatantInterface c : enemyTypes) {
+    		assertTrue(enemyList.contains(c));
+    		assertFalse(heroList.contains(c));
+    	}
     }
 }

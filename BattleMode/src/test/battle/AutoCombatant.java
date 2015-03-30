@@ -3,16 +3,17 @@ package test.battle;
 import java.util.Set;
 import java.util.TreeSet;
 
+import battle.Attack;
 import battle.Combatant;
 
 public class AutoCombatant extends Combatant {
    
+	private int _timesAttacked;
+
 	/**
+	 * Private to prevent construction
 	 */
-	private AutoCombatant(CombatantType type)
-	{
-	    _type = type;
-	}
+	private AutoCombatant() { }
 	
 	public static class CombatantBuilder
 	{
@@ -20,10 +21,12 @@ public class AutoCombatant extends Combatant {
 		private int withInitiative = 10;
 		private boolean withEscape = false;
 		private CombatantAttack withAttack = CombatantAttack.NORMAL;
-		private CombatantWeapon withWeapon = CombatantWeapon.FIST;
+		private CombatantWeapon withWeapon = CombatantWeapon.ONE_DAMAGE_WEAPON;
 		private CombatantType withType = CombatantType.HERO;
 		private int withAttackRoll = 10;
 		private int withAc = 10;
+		private int withStrength = 10;
+		private int withDexterity = 10;
 		private Set<CombatantArmor> withArmors = new TreeSet<CombatantArmor>();
 		
 		public CombatantBuilder() { }
@@ -72,13 +75,16 @@ public class AutoCombatant extends Combatant {
 		
 		public AutoCombatant build()
 		{
-			AutoCombatant auto = new AutoCombatant(withType);
+			AutoCombatant auto = new AutoCombatant();
+			auto._type = withType;
 			auto._hp = withHp;
 			auto._attack = withAttack;
 			auto._attackRoll = withAttackRoll;
 			auto._ac = withAc;
 			auto._shouldTryEscaping = withEscape;
 			auto._initiative = withInitiative;
+			auto._strength = withStrength;
+			auto._dexterity = withDexterity;
 			for (CombatantArmor piece : withArmors) {
 				auto.equip(piece);
 			}
@@ -96,11 +102,30 @@ public class AutoCombatant extends Combatant {
 			return this;
 		}
 
+		public CombatantBuilder withStrength(int strength) {
+			withStrength  = strength;
+			return this;
+		}
+
+		public CombatantBuilder withDexterity(int dexterity) {
+			withDexterity = dexterity;
+			return this;
+		}
+
 	}
 	
+	@Override
+	public int attacked(Attack attack) {
+		_timesAttacked++;
+		return super.attacked(attack);
+	}
     public int getTurnCount()
     {
        return _turnCount;
     }
-
+    
+    public int getAttackCount()
+    {
+    	return _timesAttacked;
+    }
 }

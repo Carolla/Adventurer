@@ -1,70 +1,84 @@
 package battle;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 import mylib.pdc.MetaDie;
 
 
-public class Combatant {
+public class Combatant implements CombatantInterface {
 
-    public enum CombatantType {HERO, ENEMY};
-    public enum CombatantAttack {CUSTOM, NORMAL};
-    public enum CombatantWeapon {FIST, DAGGER, MORNING_STAR};
-    public enum CombatantArmor {HELMET, SHIELD, CHAIN_MAIL};
     
 	protected int _hp = 10;
 	protected int _ac = 10;
 	protected int _turnCount = 0;
 	protected int _initiative = 10;
+	protected int _strength = 10;
+	protected int _dexterity = 10;
 	protected final MetaDie _metadie = new MetaDie(System.currentTimeMillis());
 	protected boolean _shouldTryEscaping = false;
 	protected int _attackRoll = 0;
 
 	protected CombatantType _type = CombatantType.HERO;
 	protected CombatantAttack _attack = CombatantAttack.NORMAL;
-	protected CombatantWeapon _weapon = CombatantWeapon.FIST;
-	protected Set<CombatantArmor> _armor = new TreeSet<CombatantArmor>();
+	protected CombatantWeapon _weapon = CombatantWeapon.ONE_DAMAGE_WEAPON;
+	protected Set<CombatantArmor> _armors = new TreeSet<CombatantArmor>();
 
-    /**
-     * Status of player in battle - defeated player is out of battle
-     * 
-     * @return whether player is participating in battle anymore
-     */
+    /* (non-Javadoc)
+	 * @see battle.CombatantInterface#isDefeated()
+	 */
+	@Override
 	public boolean isDefeated() {
 		return isUnconscious(); 
 	}
 
-	/**
-	 * Whether player is able to take actions in the battle
-	 * 
-	 * @return players consciousness
+	/* (non-Javadoc)
+	 * @see battle.CombatantInterface#isUnconscious()
 	 */
-    public boolean isUnconscious()
+    @Override
+	public boolean isUnconscious()
     {
         return _hp <= 0;
     }
 
-    /**
-     * Each combtant executes actions during a battle, turn by turn.  Takes
-     * the next turn for a combatant.
-     * @param opponent the enemy to strike this round
-     * @param battle the current battle
-     * @return the damage done
-     */
-    public int takeTurn(Combatant opponent, Battle battle)
+    /* (non-Javadoc)
+	 * @see battle.CombatantInterface#takeTurn(java.util.List, battle.Battle)
+	 */
+    @Override
+	public int takeTurn(List<CombatantInterface> combatants, Battle battle)
     {
         _turnCount++;
+        int damage = 0;
         if (shouldAttack())
         {
-            return attack(opponent);
+        	CombatantInterface target = selectTarget(combatants);
+        	if (target != null) {
+	            damage = attack(target);
+	            target.displayHP();
+        	}
+            return damage;
         } else {
             tryToEscape(battle);
-            return 0;
+            return damage;
         }
     }
 
-    private void tryToEscape(Battle battle)
+    /* (non-Javadoc)
+	 * @see battle.CombatantInterface#takeTurn(java.util.List)
+	 */
+    @Override
+    public CombatantInterface selectTarget(List<CombatantInterface> combatants) {
+    	for (CombatantInterface c : combatants) {
+    		if (!c.isType(_type) && !c.isDefeated()) {
+    			return c;
+    		}
+    	}
+		return null; //Fail fast when there are no combatants
+	}
+
+	private void tryToEscape(Battle battle)
     {
         if (_type == CombatantType.HERO)
         {
@@ -75,7 +89,12 @@ public class Combatant {
                 System.out.println("You did not escape!");
             }
         } else {
-            System.out.println("Enemies do not flee in battle.");
+            System.out.print("The enemy tries to escape.  ");
+            if (battle.escape(this)) {
+                System.out.println("The enemy escaped!");
+            } else{
+                System.out.println("The enemy did not escape!");
+            }
         }
             
     }
@@ -90,7 +109,7 @@ public class Combatant {
     	}
     }
 
-    private Attack makeAttackRoll()
+    private Attack makeAttackAndDamageRoll()
     {
     	int damage = 0;
     	
@@ -102,34 +121,58 @@ public class Combatant {
     	case MORNING_STAR:
     		damage = _metadie.getRandom(3,6);
     		break;
-    	case FIST:
+    	case ONE_DAMAGE_WEAPON:
     	default:
     		damage = 1;
     		break;
     	}
     	
+    	damage += getStrengthBonus();
+    	
+    	int attackRoll = 0;
     	switch(_attack)
     	{
     	case CUSTOM:
+    		attackRoll = _attackRoll;
     		break;
     	case NORMAL:
-    		_attackRoll = _metadie.getRandom(1,20);
+    		attackRoll = _metadie.getRandom(1,20);
     		break;
     	}
     	
-    	return new Attack(_attackRoll, damage);
+    	attackRoll += getDexterityBonus();
+    	
+    	return new Attack(attackRoll, damage);
     }
 
+    private int getDexterityBonus() {
+    	return getAttributeBonus(_dexterity);
+	}
 
-    /**
-     * Causes damage to an opponent.  
-     * 
-     * @param attack what the attacker rolled
-     * @return the number of HP damage done by the attack
-     */
-    private int attacked(Attack attack)
+    private int getStrengthBonus() {
+    	return getAttributeBonus(_strength);
+	}
+    
+	private final int MIN_ATTRIBUTE_BONUS = 16;
+    private final int MAX_ATTRIBUTE_PENALTY = 5;
+    private int getAttributeBonus(int attribute) {
+    	int bonus = 0;
+    	if (attribute >= MIN_ATTRIBUTE_BONUS) {
+    		bonus = (attribute - (MIN_ATTRIBUTE_BONUS - 2)) / 2;
+    	} else if (attribute <= MAX_ATTRIBUTE_PENALTY) {
+    		bonus = (attribute - (MAX_ATTRIBUTE_PENALTY + 2)) / 2;
+    	}
+		return bonus;
+	}
+
+    /* (non-Javadoc)
+	 * @see battle.CombatantInterface#attacked(battle.Attack)
+	 */
+    @Override
+    public int attacked(Attack attack)
     {
-        if ((attack.hitRoll() >= _ac && attack.hitRoll() > 1) || attack.hitRoll() == 20) {
+    	int effectiveAc = _ac + getDexterityBonus();
+        if ((attack.hitRoll() >= effectiveAc && attack.hitRoll() > 1) || attack.hitRoll() == 20) {
             int damage = attack.damageRoll();
             _hp = _hp - damage;
             displayHit(damage);
@@ -158,21 +201,21 @@ public class Combatant {
         }
     }
 
-    /**
-     * Check the status of HP.
-     * 
-     * @return whether combatant has max HP
-     */
-    public boolean hasFullHP()
+    /* (non-Javadoc)
+	 * @see battle.CombatantInterface#hasFullHP()
+	 */
+    @Override
+	public boolean hasFullHP()
     {
         return (_hp == 10);
     }
 
 
-    /**
-     * Write to the console the HP left for the combatant.
-     */
-    public void displayHP()
+    /* (non-Javadoc)
+	 * @see battle.CombatantInterface#displayHP()
+	 */
+    @Override
+	public void displayHP()
     {
         if (_type == CombatantType.HERO) {
             System.out.println("You have " + _hp + " HP left.");
@@ -183,9 +226,10 @@ public class Combatant {
 
 
 
-    /**
-     * Write to the console when victory is complete
-     */
+    /* (non-Javadoc)
+	 * @see battle.CombatantInterface#displayVictory()
+	 */
+	@Override
 	public void displayVictory() {
 		switch (_type) 
 		{
@@ -200,36 +244,35 @@ public class Combatant {
 		
 	}
 
-	/**
-	 * At the start of battle, or when surprised, determine order in battle
-	 * @return the number of initiative roll
+	/* (non-Javadoc)
+	 * @see battle.CombatantInterface#rollInitiative()
 	 */
+	@Override
 	public int rollInitiative() {
 		return _initiative;
 	}
 
 
-	/**
-	 * The combatant will attack the victim
-	 * @param victim the Combatant to be attacked
-	 * @return the damage done by the attack
+	/* (non-Javadoc)
+	 * @see battle.CombatantInterface#attack(battle.Combatant)
 	 */
-	public int attack(Combatant victim) {
-		Attack attack = makeAttackRoll();
+	@Override
+	public int attack(CombatantInterface target) {
+		Attack attack = makeAttackAndDamageRoll();
 		if (attack.hitRoll() > 1) {
-			return victim.attacked(attack);
+			return target.attacked(attack);
 		} else {
 			unequip(_weapon);
 			return 0;
 		}
 	}
 
-	/**
-	 * The combatant adds a new piece of armor
-	 * @param armor the armor to be worn
+	/* (non-Javadoc)
+	 * @see battle.CombatantInterface#equip(battle.Combatant.CombatantArmor)
 	 */
+	@Override
 	public boolean equip(CombatantArmor armor) {
-		if (_armor.add(armor)) {
+		if (_armors.add(armor)) {
 			switch(armor)
 			{
 			case HELMET:
@@ -247,19 +290,18 @@ public class Combatant {
 		return false;
 	}
 
-	/**
-	 * The combatant removes a piece of armor
-	 * @param armor the armor to be removed
+	/* (non-Javadoc)
+	 * @see battle.CombatantInterface#unequip(battle.Combatant.CombatantArmor)
 	 */
+	@Override
 	public boolean unequip(CombatantArmor armor) {
-		if (_armor.remove(armor)) {
+		if (_armors.remove(armor)) {
 			switch(armor)
 			{
 			case HELMET:
 				_ac -= 1;
 				break;
 			case SHIELD:
-				System.out.println("Removing shield");
 				_ac -= 2;
 				break;
 			case CHAIN_MAIL:
@@ -272,25 +314,26 @@ public class Combatant {
 	}
 	
 
-	/**
-	 * The combatant unequips a new weapon
-	 * @param weapon the weapon to be unequipped
+	/* (non-Javadoc)
+	 * @see battle.CombatantInterface#unequip(battle.Combatant.CombatantWeapon)
 	 */
+	@Override
 	public boolean unequip(CombatantWeapon weapon) {
 		if (_weapon == weapon) {
-			_weapon = CombatantWeapon.FIST;
+			_weapon = CombatantWeapon.ONE_DAMAGE_WEAPON;
 			return true;
 		}			
 		return false;
 	}
 	
-	/**
-	 * The combatant equips a new weapon
-	 * @param weapon the weapon to be used
+	/* (non-Javadoc)
+	 * @see battle.CombatantInterface#equip(battle.Combatant.CombatantWeapon)
 	 */
+	@Override
 	public boolean equip(CombatantWeapon weapon) {
 		if (_weapon != weapon) {
-			_weapon = weapon;    	switch(_weapon)
+			_weapon = weapon;    	
+			switch(_weapon)
 	    	{
 	    	case DAGGER:
 	    		System.out.println("Equipped a dagger");
@@ -298,11 +341,37 @@ public class Combatant {
 	    	case MORNING_STAR:
 	    		System.out.println("Equipped a morning star!");
 	    		break;
-	    	case FIST:
+	    	case ONE_DAMAGE_WEAPON:
 	    		break;
 	    	}
 	    	return true;
 		}
 		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see battle.CombatantInterface#equip(battle.Combatant.CombatantType)
+	 */
+	@Override
+	public boolean isType(CombatantType type) {
+		return _type == type;
+	}
+
+	private static List<CombatantInterface> findAllCombatantsByType(List<CombatantInterface> _combatants, CombatantType type) {
+		List<CombatantInterface> result = new ArrayList<CombatantInterface>();
+		for (CombatantInterface c : _combatants) {
+			if (c.isType(type)) {
+				result.add(c);
+			}
+		}
+		return result;
+	}
+	
+	public static List<CombatantInterface> findAllEnemies(List<CombatantInterface> _combatants) {
+		return findAllCombatantsByType(_combatants, CombatantType.ENEMY);
+	}
+	
+	public static List<CombatantInterface> findAllHeros(List<CombatantInterface> combatants) {
+		return findAllCombatantsByType(combatants, CombatantType.HERO);
 	}
 }
