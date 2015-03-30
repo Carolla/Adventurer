@@ -108,7 +108,7 @@ public class CmdLeave extends Command
     System.out.println("\tCmdLeave.exec()...");
     // The BuildingDisplayCiv must already exist
     _bldgCiv = BuildingDisplayCiv.getInstance();
-    _bldgCiv.approachBuilding(_targetBuilding);
+    _bldgCiv.approachBuilding(_bldgCiv.getCurrentBuilding());
     return true;
   }
 

@@ -162,7 +162,7 @@ public class TA08_EnterBuilding
     _cp.receiveCommand(EMPTY);
     String echo = _mockCP.getInput();
     MsgCtrl.msgln("\tCommand entered: " + echo);
-//    assertTrue(echo.equals(NULL_STRING));
+    assertNull(echo);
     String nullMsg = _mockCP.getERRMSG_CMDNULL();
     String msgOut = _ioProxy.msgOut();
     MsgCtrl.msgln("\tError message expected: " + nullMsg);
@@ -183,18 +183,23 @@ public class TA08_EnterBuilding
 
     final String[][] bldg = {
         {"Arcaneum",    "int_Arcaneum.jpg"},
-//        {"Bank",        "int_Bank.jpg"},
-//        {"Rat's Pack",  "int_GeneralStore.jpg"},
-//        {"Ugly Ogre Inn","int_Inn.jpg"},
-//        {"Jail",        "int_Jail.jpg"},
-//        {"Clerics' Guild", "int_Monastery.jpg"},
-//        {"Rouge's Den", "int_RoguesDen.jpg"},
-//        {"Fighters' Guild", "int_Stadium.jpg"}
+        {"Bank",        "int_Bank.jpg"},
+        {"Rat's Pack",  "int_GeneralStore.jpg"},
+        {"Ugly Ogre Inn","int_Inn.jpg"},
+        {"Jail",        "int_Jail.jpg"},
+        {"Clerics' Guild", "int_Monastery.jpg"},
+        {"Rouge's Den", "int_RoguesDen.jpg"},
+        {"Fighters' Guild", "int_Stadium.jpg"}
         };
 
     // Try entering all buildings
     for (int k=0; k < bldg.length; k++) {
-      _cp.receiveCommand("Enter " + bldg[k][0]);
+      _cp.receiveCommand("Enter " + bldg[k][0]); 
+      try {
+        Thread.sleep(1000);
+      } catch (Exception ex) {
+        MsgCtrl.errMsgln("Exception thrown");
+      }
       String echo = _mockCP.getInput();
       MsgCtrl.msgln("\tCommand: " + echo);
       String bldgName = _mfProxy.getBldgName();

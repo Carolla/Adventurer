@@ -87,11 +87,10 @@ public class BuildingDisplayCiv
   /**
    * Show the exterior image and description of the Building
    * 
-   * @param bldName name of the building to approach
+   * @param bldg Building object
    */
-  public void approachBuilding(String bldName)
+  public void approachBuilding(Building bldg)
   {
-    Building bldg = _bReg.getBuilding(bldName);
     if (bldg != null) {
       _currentBldg = bldg;
       String description = bldg.getExteriorDescription();
