@@ -26,6 +26,7 @@ public class AutoCombatant extends Combatant {
 		private int withAttackRoll = 10;
 		private int withAc = 10;
 		private int withStrength = 10;
+		private int withDexterity = 10;
 		private Set<CombatantArmor> withArmors = new TreeSet<CombatantArmor>();
 		
 		public CombatantBuilder() { }
@@ -83,6 +84,7 @@ public class AutoCombatant extends Combatant {
 			auto._shouldTryEscaping = withEscape;
 			auto._initiative = withInitiative;
 			auto._strength = withStrength;
+			auto._dexterity = withDexterity;
 			for (CombatantArmor piece : withArmors) {
 				auto.equip(piece);
 			}
@@ -102,6 +104,11 @@ public class AutoCombatant extends Combatant {
 
 		public CombatantBuilder withStrength(int strength) {
 			withStrength  = strength;
+			return this;
+		}
+
+		public CombatantBuilder withDexterity(int dexterity) {
+			withDexterity = dexterity;
 			return this;
 		}
 

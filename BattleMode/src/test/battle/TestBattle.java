@@ -444,13 +444,11 @@ public class TestBattle {
 	    	}
         }
     }
-    
+        
     //Combatant can select with opponent to attack
     @Test
     public void CombatantCanSelectOpponentToAttack()
     {
-    	CombatantInterface attacker = null;
-    	CombatantInterface defender1 = null;
-    	CombatantInterface defender2 = null;
+
     }
 }

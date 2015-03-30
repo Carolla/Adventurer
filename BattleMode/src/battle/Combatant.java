@@ -16,6 +16,7 @@ public class Combatant implements CombatantInterface {
 	protected int _turnCount = 0;
 	protected int _initiative = 10;
 	protected int _strength = 10;
+	protected int _dexterity = 10;
 	protected final MetaDie _metadie = new MetaDie(System.currentTimeMillis());
 	protected boolean _shouldTryEscaping = false;
 	protected int _attackRoll = 0;
@@ -126,28 +127,40 @@ public class Combatant implements CombatantInterface {
     		break;
     	}
     	
-    	damage += getStrengthDamageBonus();
+    	damage += getStrengthBonus();
     	
+    	int attackRoll = 0;
     	switch(_attack)
     	{
     	case CUSTOM:
+    		attackRoll = _attackRoll;
     		break;
     	case NORMAL:
-    		_attackRoll = _metadie.getRandom(1,20);
+    		attackRoll = _metadie.getRandom(1,20);
     		break;
     	}
     	
-    	return new Attack(_attackRoll, damage);
+    	attackRoll += getDexterityBonus();
+    	
+    	return new Attack(attackRoll, damage);
     }
 
-    private final int MIN_STRENGTH_DAMAGE_BONUS = 16;
-    private final int MAX_STRENGTH_PENALTY = 5;
-    private int getStrengthDamageBonus() {
+    private int getDexterityBonus() {
+    	return getAttributeBonus(_dexterity);
+	}
+
+    private int getStrengthBonus() {
+    	return getAttributeBonus(_strength);
+	}
+    
+	private final int MIN_ATTRIBUTE_BONUS = 16;
+    private final int MAX_ATTRIBUTE_PENALTY = 5;
+    private int getAttributeBonus(int attribute) {
     	int bonus = 0;
-    	if (_strength >= MIN_STRENGTH_DAMAGE_BONUS) {
-    		bonus = (_strength - (MIN_STRENGTH_DAMAGE_BONUS - 2)) / 2;
-    	} else if (_strength <= MAX_STRENGTH_PENALTY) {
-    		bonus = (_strength - (MAX_STRENGTH_PENALTY + 2)) / 2;
+    	if (attribute >= MIN_ATTRIBUTE_BONUS) {
+    		bonus = (attribute - (MIN_ATTRIBUTE_BONUS - 2)) / 2;
+    	} else if (attribute <= MAX_ATTRIBUTE_PENALTY) {
+    		bonus = (attribute - (MAX_ATTRIBUTE_PENALTY + 2)) / 2;
     	}
 		return bonus;
 	}
@@ -158,7 +171,8 @@ public class Combatant implements CombatantInterface {
     @Override
     public int attacked(Attack attack)
     {
-        if ((attack.hitRoll() >= _ac && attack.hitRoll() > 1) || attack.hitRoll() == 20) {
+    	int effectiveAc = _ac + getDexterityBonus();
+        if ((attack.hitRoll() >= effectiveAc && attack.hitRoll() > 1) || attack.hitRoll() == 20) {
             int damage = attack.damageRoll();
             _hp = _hp - damage;
             displayHit(damage);

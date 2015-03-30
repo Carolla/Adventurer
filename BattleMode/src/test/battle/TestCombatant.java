@@ -301,6 +301,62 @@ public class TestCombatant
     }
     
     @Test
+    public void IncreasedDexterityCanIncreaseChanceToHitWhenAttacking()
+    {
+        MsgCtrl.msgln("\n\nIncreasedDexterityCanIncreaseChanceToHitWhenAttacking");
+        CombatantInterface attacker1 = new AutoCombatant.CombatantBuilder().withDexterity(15).withSpecificHit(9).build();
+        CombatantInterface attacker2 = new AutoCombatant.CombatantBuilder().withDexterity(16).withSpecificHit(9).build();
+        Combatant victim1 = new AutoCombatant.CombatantBuilder().withHP(1).build();
+        Combatant victim2 = new AutoCombatant.CombatantBuilder().withHP(1).build();
+        attacker1.attack(victim1);
+        attacker2.attack(victim2);
+    	assertTrue(victim2.isUnconscious());
+    	assertFalse(victim1.isUnconscious());
+    }
+    
+    @Test
+    public void DecreasedDexterityCanDecreaseChanceToHitWhenAttacking()
+    {
+        MsgCtrl.msgln("\n\nDecreasedDexterityCanDecreaseChanceToHitWhenAttacking");
+        CombatantInterface attacker1 = new AutoCombatant.CombatantBuilder().withDexterity(5).withSpecificHit(10).build();
+        CombatantInterface attacker2 = new AutoCombatant.CombatantBuilder().withDexterity(6).withSpecificHit(10).build();
+        Combatant victim1 = new AutoCombatant.CombatantBuilder().withHP(1).build();
+        Combatant victim2 = new AutoCombatant.CombatantBuilder().withHP(1).build();
+        attacker1.attack(victim1);
+        attacker2.attack(victim2);
+    	assertTrue(victim2.isUnconscious());
+    	assertFalse(victim1.isUnconscious());
+    }
+    
+    @Test
+    public void IncreasedDexterityCanIncreaseChanceToDodge()
+    {
+        MsgCtrl.msgln("\n\nIncreasedDexterityCanIncreaseChanceToDodge");
+        CombatantInterface attacker1 = new AutoCombatant.CombatantBuilder().withSpecificHit(10).build();
+        CombatantInterface attacker2 = new AutoCombatant.CombatantBuilder().withSpecificHit(10).build();
+        Combatant victim1 = new AutoCombatant.CombatantBuilder().withHP(1).withDexterity(15).build();
+        Combatant victim2 = new AutoCombatant.CombatantBuilder().withHP(1).withDexterity(16).build();
+        attacker1.attack(victim1);
+        attacker2.attack(victim2);
+    	assertTrue(victim1.isUnconscious());
+    	assertFalse(victim2.isUnconscious());
+    }
+    
+    @Test
+    public void DecreasedDexterityCanDecreaseChanceToDodge()
+    {
+        MsgCtrl.msgln("\n\nDecreasedDexterityCanDecreaseChanceToDodge");
+        CombatantInterface attacker1 = new AutoCombatant.CombatantBuilder().withSpecificHit(9).build();
+        CombatantInterface attacker2 = new AutoCombatant.CombatantBuilder().withSpecificHit(9).build();
+        Combatant victim1 = new AutoCombatant.CombatantBuilder().withHP(1).withDexterity(5).build();
+        Combatant victim2 = new AutoCombatant.CombatantBuilder().withHP(1).withDexterity(6).build();
+        attacker1.attack(victim1);
+        attacker2.attack(victim2);
+    	assertTrue(victim1.isUnconscious());
+    	assertFalse(victim2.isUnconscious());
+    }
+    
+    @Test
     public void TestGetCombatantsByType()
     {
     	int numberOfHeros = meta.getRandom(1,20);
