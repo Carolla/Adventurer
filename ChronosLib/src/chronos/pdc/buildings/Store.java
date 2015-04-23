@@ -44,7 +44,7 @@ public class Store extends Building
           + "is arranging items below a counter with a pan balance on it.";
 
   /** Paths to the images for this building **/
-  static private final String EXTERIOR_IMAGE = "raw_ext_Deweys General Store.JPG";
+  static private final String EXTERIOR_IMAGE = "ext_GeneralStore.jpg";
   static private final String INTERIOR_IMAGE = "int_GeneralStore.jpg";
 
   /** The Store opens at 6am and closes at 6pm */
