@@ -40,7 +40,7 @@ public class Util
   {
     Image myImage = null;
     try {
-      System.out.println("\tTrying to find " + Chronos.ADV_IMAGE_PATH + imageName);
+//      System.out.println("\tTrying to find " + Chronos.ADV_IMAGE_PATH + imageName);
       myImage = ImageIO.read(new File(Chronos.ADV_IMAGE_PATH + imageName));
     } catch (IllegalArgumentException iaex) {
       System.err.println("IMagePanel: null image path given");

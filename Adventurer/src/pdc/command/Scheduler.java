@@ -55,7 +55,6 @@ public class Scheduler implements Runnable
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
-
   /** Internal reference to ensure singleton */
   private static Scheduler _sched = null;
 

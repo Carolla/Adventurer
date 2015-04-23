@@ -88,7 +88,7 @@ public class ImagePanel extends JComponent
   public void paintComponent(Graphics g)
   {
       super.paintComponent(g);
-      System.out.println("ImagePanel.paintComponent");
+//      System.out.println("ImagePanel.paintComponent");
       // Find top-left corner to image panel to overlay image onto
       int pWidth = _imagePanel.getWidth();
       int pHeight = _imagePanel.getHeight();
@@ -97,7 +97,7 @@ public class ImagePanel extends JComponent
       g.drawImage(_image, 0, 0, pWidth, pHeight, _imagePanel);
 
       if (_buildingRectangle != null) {
-          System.out.println("Drawing " + _buildingRectangle._name);
+//          System.out.println("Drawing " + _buildingRectangle._name);
           _buildingRectangle.drawBuildingBox((Graphics2D) g);
       }
  

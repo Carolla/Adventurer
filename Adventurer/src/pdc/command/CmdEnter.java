@@ -90,7 +90,7 @@ public class CmdEnter extends Command
   public CmdEnter()
   {
     super("CmdEnter", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
-    System.out.println("\tCmdEnter(): creating ENTER command.");
+//    System.out.println("\tCmdEnter(): creating ENTER command.");
   }
 
 
@@ -113,7 +113,7 @@ public class CmdEnter extends Command
   @Override
   public boolean init(List<String> args) throws NullPointerException
   {
-    System.out.println("\tCmdEnter.init()...");
+//    System.out.println("\tCmdEnter.init()...");
 
     // The BuildingDisplayCiv must already exist
     _bldgCiv = BuildingDisplayCiv.getInstance();
@@ -141,8 +141,7 @@ public class CmdEnter extends Command
   /** Enter the designated building, or the current building if displayed */
   public boolean exec()
   {
-    System.out.println("\tCmdEnter.exec()...");
-    _bldgCiv = BuildingDisplayCiv.getInstance();
+//    System.out.println("\tCmdEnter.exec()...");
     _bldgCiv.enterBuilding(_targetBldg);
     return true;
   }

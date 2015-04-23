@@ -14,6 +14,7 @@ package pdc.command; // This package value is needed by the subcommands; see _cm
 import java.util.ArrayList;
 import java.util.List;
 
+import civ.BuildingDisplayCiv;
 import civ.CommandParser;
 
 
@@ -84,6 +85,7 @@ public abstract class Command
   protected String _cmdfmt = null;
   /** CommandParser redirects all errors and messages to {@code hic.IOPanel} */
   protected CommandParser _msgHandler;
+
 
   // ============================================================
   // PUBLIC METHODS
