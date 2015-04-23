@@ -124,7 +124,7 @@ public class CommandParser
   {
     if (_cp == null) {
       _cp = new CommandParser(ioPanel);
-      System.out.println("CommandParser started");
+//      System.out.println("CommandParser started");
     }
     return _cp;
   }
