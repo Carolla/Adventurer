@@ -47,7 +47,7 @@ public class BattleUseCase {
 	public void ThePlayerWantsToDoCombatWithTheEnemy()
 	{
 	    MsgCtrl.msgln("\n\nThePlayerWantsToDoCombatWithTheEnemy()");
-		Combatant player = new Combatant();
+		Combatant player = new Combatant(null);
 		CombatantInterface enemy = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).build();
 		Battle battle = new Battle(player, enemy);
 		assertTrue(battle.isInBattle(player));

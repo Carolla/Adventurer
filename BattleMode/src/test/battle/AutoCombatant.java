@@ -79,7 +79,7 @@ public class AutoCombatant extends Combatant {
 		
 		public AutoCombatant build()
 		{
-			AutoCombatant auto = new AutoCombatant(new AutoTargetStrategy());
+			AutoCombatant auto = new AutoCombatant(new AutoTargetStrategy(withType));
 			auto._type = withType;
 			auto._hp = withHp;
 			auto._attack = withAttack;
@@ -139,8 +139,13 @@ public class AutoCombatant extends Combatant {
     	return _timesAttacked;
     }
     
-    private class AutoTargetStrategy implements TargetStrategy
+    private static class AutoTargetStrategy implements TargetStrategy
     {
+		private CombatantType _type;
+    	private AutoTargetStrategy(CombatantType type)
+    	{
+			_type = type;
+		}
 	    /* (non-Javadoc)
 		 * @see battle.CombatantInterface#takeTurn(java.util.List)
 		 */

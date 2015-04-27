@@ -111,4 +111,9 @@ public interface CombatantInterface {
 	 */
 	public abstract boolean isType(CombatantType type);
 
+	/**
+	 * @return The name of the combatant
+	 */
+	public abstract String name();
+
 }

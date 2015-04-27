@@ -56,7 +56,7 @@ public class Combatant implements CombatantInterface {
         int damage = 0;
         if (shouldAttack())
         {
-        	CombatantInterface target = targetStrategy.selectTarget(combatants);
+        	CombatantInterface target = selectTarget(combatants);
         	if (target != null) {
 	            damage = attack(target);
 	            target.displayHP();
@@ -367,7 +367,15 @@ public class Combatant implements CombatantInterface {
 
 	@Override
 	public CombatantInterface selectTarget(List<CombatantInterface> combatants) {
-		// TODO Auto-generated method stub
-		return null;
+		return  targetStrategy.selectTarget(combatants);
+	}
+
+	@Override
+	public String name() {
+		if (_type == CombatantType.HERO) {
+			return "HERO";
+		} else {
+			return "ENEMY";
+		}
 	}
 }
