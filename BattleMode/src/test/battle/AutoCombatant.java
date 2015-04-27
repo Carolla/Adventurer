@@ -1,11 +1,13 @@
 package test.battle;
 
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 import battle.Attack;
 import battle.Combatant;
 import battle.CombatantInterface;
+import battle.TargetStrategy;
 
 public class AutoCombatant extends Combatant {
    
@@ -15,7 +17,7 @@ public class AutoCombatant extends Combatant {
 	/**
 	 * Private to prevent construction
 	 */
-	private AutoCombatant() { }
+	private AutoCombatant(TargetStrategy strategy) { super(strategy); }
 	
 	public static class CombatantBuilder
 	{
@@ -77,7 +79,7 @@ public class AutoCombatant extends Combatant {
 		
 		public AutoCombatant build()
 		{
-			AutoCombatant auto = new AutoCombatant();
+			AutoCombatant auto = new AutoCombatant(new AutoTargetStrategy());
 			auto._type = withType;
 			auto._hp = withHp;
 			auto._attack = withAttack;
@@ -135,5 +137,21 @@ public class AutoCombatant extends Combatant {
     public int getAttackCount()
     {
     	return _timesAttacked;
+    }
+    
+    private class AutoTargetStrategy implements TargetStrategy
+    {
+	    /* (non-Javadoc)
+		 * @see battle.CombatantInterface#takeTurn(java.util.List)
+		 */
+	    @Override
+	    public CombatantInterface selectTarget(List<CombatantInterface> combatants) {
+	    	for (CombatantInterface c : combatants) {
+	    		if (!c.isType(_type) && !c.isDefeated()) {
+	    			return c;
+	    		}
+	    	}
+			return null; //Fail fast when there are no combatants
+		}
     }
 }

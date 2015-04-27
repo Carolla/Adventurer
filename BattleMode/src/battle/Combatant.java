@@ -9,6 +9,8 @@ import mylib.pdc.MetaDie;
 
 
 public class Combatant implements CombatantInterface {
+	private TargetStrategy targetStrategy;
+	
 	protected int _hp = 10;
 	protected int _ac = 10;
 	protected int _initiative = 10;
@@ -22,6 +24,11 @@ public class Combatant implements CombatantInterface {
 	protected CombatantAttack _attack = CombatantAttack.NORMAL;
 	protected CombatantWeapon _weapon = CombatantWeapon.ONE_DAMAGE_WEAPON;
 	protected Set<CombatantArmor> _armors = new TreeSet<CombatantArmor>();
+	
+	public Combatant(TargetStrategy strategy)
+	{
+		targetStrategy = strategy;
+	}
 
     /* (non-Javadoc)
 	 * @see battle.CombatantInterface#isDefeated()
@@ -49,7 +56,7 @@ public class Combatant implements CombatantInterface {
         int damage = 0;
         if (shouldAttack())
         {
-        	CombatantInterface target = selectTarget(combatants);
+        	CombatantInterface target = targetStrategy.selectTarget(combatants);
         	if (target != null) {
 	            damage = attack(target);
 	            target.displayHP();
@@ -60,19 +67,6 @@ public class Combatant implements CombatantInterface {
             return damage;
         }
     }
-
-    /* (non-Javadoc)
-	 * @see battle.CombatantInterface#takeTurn(java.util.List)
-	 */
-    @Override
-    public CombatantInterface selectTarget(List<CombatantInterface> combatants) {
-    	for (CombatantInterface c : combatants) {
-    		if (!c.isType(_type) && !c.isDefeated()) {
-    			return c;
-    		}
-    	}
-		return null; //Fail fast when there are no combatants
-	}
 
 	private void tryToEscape(Battle battle)
     {
@@ -369,5 +363,11 @@ public class Combatant implements CombatantInterface {
 	
 	public static List<CombatantInterface> findAllHeros(List<CombatantInterface> combatants) {
 		return findAllCombatantsByType(combatants, CombatantType.HERO);
+	}
+
+	@Override
+	public CombatantInterface selectTarget(List<CombatantInterface> combatants) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
