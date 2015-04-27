@@ -9,11 +9,8 @@ import mylib.pdc.MetaDie;
 
 
 public class Combatant implements CombatantInterface {
-
-    
 	protected int _hp = 10;
 	protected int _ac = 10;
-	protected int _turnCount = 0;
 	protected int _initiative = 10;
 	protected int _strength = 10;
 	protected int _dexterity = 10;
@@ -49,7 +46,6 @@ public class Combatant implements CombatantInterface {
     @Override
 	public int takeTurn(List<CombatantInterface> combatants, Battle battle)
     {
-        _turnCount++;
         int damage = 0;
         if (shouldAttack())
         {

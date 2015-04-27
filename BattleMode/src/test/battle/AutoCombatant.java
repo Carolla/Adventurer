@@ -5,10 +5,12 @@ import java.util.TreeSet;
 
 import battle.Attack;
 import battle.Combatant;
+import battle.CombatantInterface;
 
 public class AutoCombatant extends Combatant {
    
-	private int _timesAttacked;
+	private int _timesAttacked = 0;
+	private int _turnCount = 0;
 
 	/**
 	 * Private to prevent construction
@@ -112,6 +114,12 @@ public class AutoCombatant extends Combatant {
 			return this;
 		}
 
+	}
+	
+	@Override
+	public int attack(CombatantInterface target) {
+		_turnCount++;
+		return super.attack(target);
 	}
 	
 	@Override

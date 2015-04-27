@@ -36,10 +36,10 @@ public class Battle {
 	}
 
 
-	private CombatantInterface rollForInitiative(List<CombatantInterface> _combatants2) {
+	private CombatantInterface rollForInitiative(List<CombatantInterface> _combatants) {
 		int highestRoll = 1;
-		CombatantInterface highestRoller = _combatants2.get(0);
-		for (CombatantInterface c : _combatants2) {
+		CombatantInterface highestRoller = _combatants.get(0);
+		for (CombatantInterface c : _combatants) {
 			int currentRoll = c.rollInitiative();
 			if (currentRoll > highestRoll) {
 				highestRoll = currentRoll;
