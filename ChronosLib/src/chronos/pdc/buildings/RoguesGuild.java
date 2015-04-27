@@ -37,12 +37,10 @@ public class RoguesGuild extends Building
   static private final String INTERIOR = "The grizzled barman opens a secret door behind a large " +
       "cask of wine. He motions you to proceed into the darkness. As you step inside, you " +
       "hear laughter and can make out more seedy characters rolling dice, throwing short " +
-      "daggers at a dart board, and practicing picking locks. The obvious leader of this pack " +
-      "sits on a large wooden chair, almost like a throne. A particularly lovely half-dressed " +
-      "woman sits on his lap. ";
+      "daggers at a dart board, and practicing picking locks. ";
 
   /** Paths to the images for this building **/
-  static private final String EXTERIOR_IMAGE = "raw_ext_Rogues tavern.JPG";
+  static private final String EXTERIOR_IMAGE = "ext_RoguesDen.jpg";
   static private final String INTERIOR_IMAGE = "int_RoguesDen.jpg";
 
   /**

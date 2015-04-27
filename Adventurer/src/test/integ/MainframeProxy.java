@@ -61,10 +61,6 @@ public class MainframeProxy implements MainframeInterface
   /** Returns the name and imagepath in array */
   public String getBldgName()
   {
-//    String[] bProp = new String[2];
-//    bProp[0] = _bldgName;
-//    bProp[1] = _imagePath;
-//    return bProp;
     return _bldgName;
   }
 

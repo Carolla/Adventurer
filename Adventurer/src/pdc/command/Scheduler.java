@@ -55,7 +55,6 @@ public class Scheduler implements Runnable
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
-
   /** Internal reference to ensure singleton */
   private static Scheduler _sched = null;
 
@@ -117,7 +116,7 @@ public class Scheduler implements Runnable
    */
   public void run()
   {
-    System.out.println("Scheduler started");
+//    System.out.println("Scheduler started");
     // Put on a 0-delay command to trigger collecting user commands
     sched(makeCmdEnd(0));
 

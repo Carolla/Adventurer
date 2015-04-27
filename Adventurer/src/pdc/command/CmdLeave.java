@@ -43,12 +43,11 @@ public class CmdLeave extends Command
   static private final int DURATION = 10;
 
   /** Building accesses and displays are controlled by the BuildingDisplayCiv */
-  private BuildingDisplayCiv _bldgCiv;
-
+  protected BuildingDisplayCiv _bldgCiv;
   /** The building currently displayed, either inside or outside */
   private Building _currentBuilding = null;
-  /** The building just exited */
-  private Building _targetBldg;
+//  /** The building just exited */
+//  private Building _targetBldg;
 
 //  /** Error message if no current building to enter */
 //  private final String ERRMSG_NOBLDG =
@@ -60,7 +59,7 @@ public class CmdLeave extends Command
 //  private final String ERRMSG_JUMPBLDG =
 //      "You must leave this building before you enter another.";
 
-
+  
   // ============================================================
   // Constructors and constructor helpers
   // ============================================================
@@ -69,7 +68,9 @@ public class CmdLeave extends Command
   public CmdLeave()
   {
     super(CMD_NAME, DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
-    System.out.println("\tCmdLeave(): creating LEAVE command.");
+//    System.out.println("\tCmdLeave(): creating LEAVE command.");
+    // The BuildingDisplayCiv must already exist
+    _bldgCiv = BuildingDisplayCiv.getInstance();
   }
 
 
@@ -86,29 +87,19 @@ public class CmdLeave extends Command
   @Override
   public boolean init(List<String> args) throws NullPointerException
   {
-    System.out.println("\tCmdLeave.init()...");
+//    System.out.println("\tCmdLeave.init()...");
     
-//    _currentBuilding = _bldgCiv.getCurrentBuilding();
-    // If no current building and not specified, error
-    if (args.size() == 0) {
-      _bldgCiv = BuildingDisplayCiv.getInstance();
-      _currentBuilding = _bldgCiv.getCurrentBuilding();
+    _currentBuilding = _bldgCiv.getCurrentBuilding();
       return true;
-    }
-    else {
-      usage();
-      return false;
-    }
   }
 
 
   /** Enter the designated building, or the current building if displayed */
   public boolean exec()
   {
-    System.out.println("\tCmdLeave.exec()...");
-    // The BuildingDisplayCiv must already exist
-    _bldgCiv = BuildingDisplayCiv.getInstance();
-    _bldgCiv.approachBuilding(_targetBuilding);
+//    System.out.println("\tCmdLeave.exec()...");
+//    _bldgCiv.approachBuilding(_bldgCiv.getCurrentBuilding());
+    _bldgCiv.approachBuilding(_currentBuilding);
     return true;
   }
 

@@ -130,7 +130,7 @@ public class CmdApproach extends Command
         
         // Success if target building has been set
         if (_buildingToApproach != null) {
-            _bldgCiv.approachBuilding(_buildingToApproach.getName());
+            _bldgCiv.approachBuilding(_buildingToApproach);
             return true;
         }
         
