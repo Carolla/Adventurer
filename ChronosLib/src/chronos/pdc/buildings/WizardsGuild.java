@@ -30,12 +30,12 @@ public class WizardsGuild extends Building
   /** Wizards' Guild */
   static private final String HOVERTEXT = "Wizards' Guild for magic, spells, and enchantments";
   /** What appears as one enters the building */
-  static private final String INTERIOR =
-      "It is as if you have stepped into another world. The landscape is bathed in a pearl-white " +
-          "luminescence. A white marble orb on the hillside contains a surreal bubble of light " +
-          "and twisted images. ";
-  /** For this case, a non-Guild member cannot enter */
   static private final String EXTERIOR =
+      "As you round the corner, it is as if you have stepped into another world. The landscape is" +
+          " bathed in a pearl-white luminescence. A white marble orb on the hillside contains a" +
+          " surreal bubble of light and twisted images. ";
+  /** For this case, a non-Guild member cannot enter */
+  static private final String INTERIOR =
       "A tall shrouded figure appears suddenly in front of three doors of colored light as you "
           + "try to enter. He says, \"Only Guildmembers may enter the Arcaneum.\"";
 
