@@ -78,13 +78,14 @@ public class IOPanel extends JPanel implements IOPanelInterface
 
 
   /**
-   * Display a block of text in the output Transcript area
+   * Display a block of text in the output Transcript area.
+   * Isolate the user's command on its own line (or text block).
    * 
    * @param msg text block to display
    */
   public void displayText(String msg)
   {
-    _output.append(Constants.NEWLINE + msg + Constants.NEWLINE);
+    _output.append(Constants.NEWLINE + msg + Constants.NEWLINE + Constants.NEWLINE);
 
     // Ensure that the text scrolls as new text is appended
     _cmdWin.setFocusable(true);
