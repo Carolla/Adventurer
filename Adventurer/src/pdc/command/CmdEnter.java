@@ -90,7 +90,7 @@ public class CmdEnter extends Command
   public CmdEnter()
   {
     super("CmdEnter", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
-//    System.out.println("\tCmdEnter(): creating ENTER command.");
+    // System.out.println("\tCmdEnter(): creating ENTER command.");
   }
 
 
@@ -100,12 +100,11 @@ public class CmdEnter extends Command
 
   /**
    * There can be 0 or 1 arg in the arglist. If an arg is not specified, then the current Building
-   * is assumed. If an argument is specified, then all words are combined into a building name. If
-   * that fails to find a Building, then the name is checked against a Building type.
+   * is assumed. If an argument is specified, then all words are combined into a building name.
    * <P>
-   * The Building name (or type) is checked with and without the word 'the', in case it is part of
-   * the name of the Building. If the Hero specified the building he is already in, then an error
-   * message is displayed.
+   * The Building name is checked with and without the word 'the', in case it is part of the name of
+   * the Building. If the Hero specified the building he is already in, then the image is
+   * redisplayed, which appears to the user as if nothing happened.
    * 
    * @param args if empty, then use current Building; otherwise gets Building specified;
    * @return true if all worked, else returns false on input error
@@ -113,35 +112,46 @@ public class CmdEnter extends Command
   @Override
   public boolean init(List<String> args) throws NullPointerException
   {
-//    System.out.println("\tCmdEnter.init()...");
-
+    // Guard against no building name given and current building does not exist
+//    if ((args.size() == 0) && (_currentBuilding == null)) {
+//      super._msgHandler.errorOut(ERRMSG_NOBLDG);
+//      return false;
+//    }
     // The BuildingDisplayCiv must already exist
     _bldgCiv = BuildingDisplayCiv.getInstance();
+
+    // Case 1: Building name is given
+    if (args.size() != 0) {
+      String bldgParm = convertArgsToString(args);
+      BuildingRegistry breg =
+          (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
+      Building b = breg.getBuilding(bldgParm);
+      // Check that the building specified actually exists
+      if (b == null) {
+        super._msgHandler.errorOut(ERRMSG_NOBLDG);
+        return false;
+      } else {
+        _currentBuilding = b;
+        _targetBldg = _currentBuilding;
+        return true;
+      }
+    }
+
+    // Case 2: Building defaults to current building
     _currentBuilding = _bldgCiv.getCurrentBuilding();
-    // If no current building and not specified, error
-    if ((args.size() == 0) && (_currentBuilding == null)) {
+    if (_currentBuilding == null) {
       super._msgHandler.errorOut(ERRMSG_NOBLDG);
       return false;
+    } else {
+      _targetBldg = _currentBuilding;
+      return true;
     }
-    String bldgParm = convertArgsToString(args);
-    // Check that the building specified actually exists
-    BuildingRegistry breg =
-        (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
-    // First try building name
-    Building b = breg.getBuilding(bldgParm);
-    if (b == null) {
-      super._msgHandler.errorOut(ERRMSG_NOBLDG);
-      return false;
-    }
-    _targetBldg = b;
-    return true;
   }
 
 
   /** Enter the designated building, or the current building if displayed */
   public boolean exec()
   {
-//    System.out.println("\tCmdEnter.exec()...");
     _bldgCiv.enterBuilding(_targetBldg);
     return true;
   }

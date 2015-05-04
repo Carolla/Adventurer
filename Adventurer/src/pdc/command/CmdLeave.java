@@ -87,8 +87,6 @@ public class CmdLeave extends Command
   @Override
   public boolean init(List<String> args) throws NullPointerException
   {
-//    System.out.println("\tCmdLeave.init()...");
-    
     _currentBuilding = _bldgCiv.getCurrentBuilding();
       return true;
   }
@@ -97,8 +95,6 @@ public class CmdLeave extends Command
   /** Enter the designated building, or the current building if displayed */
   public boolean exec()
   {
-//    System.out.println("\tCmdLeave.exec()...");
-//    _bldgCiv.approachBuilding(_bldgCiv.getCurrentBuilding());
     _bldgCiv.approachBuilding(_currentBuilding);
     return true;
   }
