@@ -6,17 +6,18 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import mylib.pdc.MetaDie;
+import battle.ActionSelector.CombatAction;
 
 
 public class Combatant implements CombatantInterface {
-	private TargetStrategy targetStrategy;
+	private TargetStrategy _targetStrategy;
 	
 	protected int _hp = 10;
 	protected int _ac = 10;
 	protected int _initiative = 10;
 	protected int _strength = 10;
 	protected int _dexterity = 10;
-	protected final MetaDie _metadie = new MetaDie(System.currentTimeMillis());
+	protected static final MetaDie _metadie = new MetaDie(System.currentTimeMillis());
 	protected boolean _shouldTryEscaping = false;
 	protected int _attackRoll = 0;
 
@@ -24,10 +25,13 @@ public class Combatant implements CombatantInterface {
 	protected CombatantAttack _attack = CombatantAttack.NORMAL;
 	protected CombatantWeapon _weapon = CombatantWeapon.ONE_DAMAGE_WEAPON;
 	protected Set<CombatantArmor> _armors = new TreeSet<CombatantArmor>();
+
+	private final ActionSelector _actionSelector;
 	
 	public Combatant(TargetStrategy strategy)
 	{
-		targetStrategy = strategy;
+		_targetStrategy = strategy;
+		_actionSelector = new ActionSelector();
 	}
 
     /* (non-Javadoc)
@@ -47,28 +51,45 @@ public class Combatant implements CombatantInterface {
         return _hp <= 0;
     }
 
+    private CombatantInterface lastTarget = null;
+
     /* (non-Javadoc)
 	 * @see battle.CombatantInterface#takeTurn(java.util.List, battle.Battle)
 	 */
     @Override
 	public int takeTurn(List<CombatantInterface> combatants, Battle battle)
     {
-        int damage = 0;
-        if (shouldAttack())
-        {
-        	CombatantInterface target = selectTarget(combatants);
-        	if (target != null) {
-	            damage = attack(target);
-	            target.displayHP();
-        	}
-            return damage;
-        } else {
-            tryToEscape(battle);
-            return damage;
-        }
+    	int damage = 0;
+    	if (!isDefeated()) {
+	    	CombatAction action = _actionSelector.getNextAction();
+	    	switch (action)
+	    	{
+		    	case ATTACK:
+		    		lastTarget = selectTarget(combatants);
+		    		damage = attack(lastTarget);
+		    		if (lastTarget.isDefeated()) {
+		    			lastTarget = null;
+		    		}
+		    		break;
+		    	case FLEE:
+		    		tryToEscape(battle);
+		    		break;
+		    	case EQUIP:
+		    		CombatantWeapon weapon = _actionSelector.selectItem();
+		    		equip(weapon);
+		    		break;
+				case ATTACK_SAME:
+					if (lastTarget == null) {
+			    		lastTarget = selectTarget(combatants);
+					}
+					damage = attack(lastTarget);
+					break;
+	    	}
+    	}
+    	return damage;
     }
 
-	private void tryToEscape(Battle battle)
+	protected void tryToEscape(Battle battle)
     {
         if (_type == CombatantType.HERO)
         {
@@ -86,10 +107,9 @@ public class Combatant implements CombatantInterface {
                 System.out.println("The enemy did not escape!");
             }
         }
-            
     }
 
-    private boolean shouldAttack()
+    protected boolean shouldAttack()
     {
     	if (_shouldTryEscaping)
     	{
@@ -166,6 +186,7 @@ public class Combatant implements CombatantInterface {
             int damage = attack.damageRoll();
             _hp = _hp - damage;
             displayHit(damage);
+            displayHP();
             return damage;
         } else {
             displayMiss();
@@ -176,9 +197,9 @@ public class Combatant implements CombatantInterface {
     private void displayMiss()
     {
         if (_type == CombatantType.HERO) {
-            System.out.print("The enemy missed.  ");
+            System.out.println("The enemy missed.  ");
         } else {
-            System.out.print("You missed.  ");
+            System.out.println("You missed.  ");
         }
     }
 
@@ -332,6 +353,7 @@ public class Combatant implements CombatantInterface {
 	    		System.out.println("Equipped a morning star!");
 	    		break;
 	    	case ONE_DAMAGE_WEAPON:
+	    		System.out.println("You are fighting with nothing but your fists");
 	    		break;
 	    	}
 	    	return true;
@@ -367,7 +389,7 @@ public class Combatant implements CombatantInterface {
 
 	@Override
 	public CombatantInterface selectTarget(List<CombatantInterface> combatants) {
-		return  targetStrategy.selectTarget(combatants);
+		return  _targetStrategy.selectTarget(combatants);
 	}
 
 	@Override

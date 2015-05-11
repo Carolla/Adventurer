@@ -102,7 +102,7 @@ public class Battle {
 	 * Complete a single "turn" of combat
 	 */
 	public void advance() {
-		System.out.println("Round " + _round++);
+		System.out.println("\nRound " + _round++);
 		CombatantInterface lastCombatant = _firstGroup.get(0);
 		for (CombatantInterface c : _firstGroup) {
 			c.takeTurn(_combatants, this);
@@ -114,6 +114,8 @@ public class Battle {
 			return;
 		}
 		
+		removeDefeatedCombatants(_secondGroup);
+		
 		for (CombatantInterface c : _secondGroup) {
 			c.takeTurn(_combatants, this);
 			lastCombatant = c;
@@ -123,7 +125,18 @@ public class Battle {
 			lastCombatant.displayVictory();
 			return;
 		}
+
+		removeDefeatedCombatants(_secondGroup);
 	}
+
+	private void removeDefeatedCombatants(List<CombatantInterface> group) {
+		for (CombatantInterface c : group) {
+			if (c.isDefeated()) {
+				group.remove(c);
+			}
+		}
+	}
+
 
 	public boolean isWinner(CombatantInterface combatant) {
 		if (isOngoing()) {

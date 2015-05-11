@@ -36,6 +36,7 @@ public class BattleMain {
 		} else {
 			System.out.println("You lost...");
 		}
+		System.exit(0);
 	}
 	
 	private static int getNumberOfEnemies() {

@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import battle.Attack;
+import battle.Battle;
 import battle.Combatant;
 import battle.CombatantInterface;
 import battle.TargetStrategy;
@@ -118,6 +119,22 @@ public class AutoCombatant extends Combatant {
 
 	}
 	
+	@Override
+	public int takeTurn(List<CombatantInterface> combatants, Battle battle) {
+        int damage = 0;
+		if (!isDefeated()) {
+	        if (shouldAttack())
+	        {
+	        	CombatantInterface target = selectTarget(combatants);
+	        	if (target != null) {
+		            damage = attack(target);
+	        	}
+	        } else {
+	            tryToEscape(battle);
+	        }
+		}
+		return damage;
+	}
 	@Override
 	public int attack(CombatantInterface target) {
 		_turnCount++;
