@@ -19,11 +19,14 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import pdc.Util;
 import chronos.pdc.Adventure;
+import chronos.pdc.buildings.Building;
 import chronos.pdc.registry.AdventureRegistry;
+import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import dmc.PersonReadWriter;
@@ -40,7 +43,7 @@ import dmc.PersonReadWriter;
 public class MainframeCiv 
 {
   private AdventureRegistry _advReg;
-  // private BuildingDisplayCiv _bdCiv;
+   private BuildingDisplayCiv _bdCiv;
   // private BuildingRegistry _bReg;
 
   private static final String TOWN_IMAGE = "ext_BiljurBaz.JPG";
@@ -117,7 +120,7 @@ public class MainframeCiv
     _frame.setImageTitle(INITIAL_TITLE);
     // _personRW = new PersonReadWriter();
     // _advReg = (AdventureRegistry) RegistryFactory.getInstance().getRegistry(RegKey.ADV);
-//    createBuildingBoxes();
+    createBuildingBoxes();
   }
 
   /** Create the clickable areas on the town view to indicate a selected Building */
@@ -159,22 +162,30 @@ public class MainframeCiv
   // ============================================================
 
 
-  // /**
-  // * TODO This is the responsibility of the BuildingDisplayCiv Enter the Building specified. If
-  // the
-  // * Hero is at the Town level, get the {@code BuildingRegistry} and {@ocde BuildingCiv}
-  // *
-  // * @param bldName the name of the building to open
-  // */
-  // public void enterBuilding(String bldName)
-  // {
-  // if (_onTown) {
-  // _bdCiv = BuildingDisplayCiv.getInstance();
-  // // _onTown = false;
-  // }
-  // // Always enter the building on request
-  // _bdCiv.enterBuilding(bldName);
-  // }
+   /**
+   * TODO This is the responsibility of the BuildingDisplayCiv Enter the Building specified. If
+   the
+   * Hero is at the Town level, get the {@code BuildingRegistry} and {@ocde BuildingCiv}
+   *
+   * @param bldName the name of the building to open
+   */
+   public void enterBuilding(String bldName)
+   {
+	   if (_onTown) {
+		   _bdCiv = BuildingDisplayCiv.getInstance();
+		   _onTown = false;
+		   
+		   // Always enter the building on request
+		    BuildingRegistry breg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
+		    
+		    // First try building name
+		    Building b = breg.getBuilding(bldName);
+		    if (b != null) {
+		    	_bdCiv.enterBuilding(b);	
+		    }
+	   }
+
+   }
 
 
   // TODO Move to GUI object
@@ -182,7 +193,7 @@ public class MainframeCiv
   {
     handleClickIfOnTownReturn(p);
     if (_onTown) {
-      // handleClickIfOnBuilding(p);
+       handleClickIfOnBuilding(p);
     }
   }
 
@@ -312,16 +323,16 @@ public class MainframeCiv
   // Private methods
   // ============================================================
 
-  // private void handleClickIfOnBuilding(Point p)
-  // {
-  // for (Entry<String, BuildingRectangle> entry : _buildingList.entrySet()) {
-  // BuildingRectangle rect = entry.getValue();
-  // if (rect.contains(p)) {
-  // enterBuilding(entry.getKey());
-  // return;
-  // }
-  // }
-  // }
+   private void handleClickIfOnBuilding(Point p)
+   {
+   for (Entry<String, BuildingRectangle> entry : _buildingList.entrySet()) {
+	   BuildingRectangle rect = entry.getValue();
+	   if (rect.contains(p)) {
+		   enterBuilding(entry.getKey());
+		   return;
+		   }
+	   }
+   }
 
 
   private void handleClickIfOnTownReturn(Point p)
@@ -329,7 +340,7 @@ public class MainframeCiv
     if (_townReturn.contains(p)) {
       openTown();
     }
-//    _frame.redraw();
+    _frame.redraw();
   }
 
 

@@ -253,7 +253,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     setSize(USERWIN_WIDTH, USERWIN_HEIGHT);
     setLocationByPlatform(true); // Operating System specific windowing
     setExtendedState(Frame.MAXIMIZED_BOTH);
-    setResizable(false);
+    //setResizable(false);
   }
 
 

@@ -116,6 +116,7 @@ public class BuildingDisplayCiv
   {
     if ((description.length() > 0) && (imagePath.length() > 0)) {
       String bldgName = _currentBldg.getName();
+      _frame.setBuilding(null); //Confusing, I know.  This sets the building RECTANGLE
       _frame.setImage(Util.convertToImage(imagePath));
       _frame.setImageTitle(bldgName);
       _frame.displayText(description);
