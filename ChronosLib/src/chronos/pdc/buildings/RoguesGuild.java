@@ -24,7 +24,7 @@ public class RoguesGuild extends Building
 {
   // Data to initialize the default Store; must be static because it is used in constructor
   /** Name of this fine establishment */
-  static private final String GUILD_NAME = "Rouge's Den";
+  static private final String GUILD_NAME = "Rouge's Tavern";
   /** Owner of this fine establishment */
   static private final String OWNER = "Ripper";
   /** Thieve's Guild */
