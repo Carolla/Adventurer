@@ -2,6 +2,7 @@ package battle;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import mylib.MsgCtrl;
@@ -130,9 +131,10 @@ public class Battle {
 	}
 
 	private void removeDefeatedCombatants(List<CombatantInterface> group) {
-		for (CombatantInterface c : group) {
+		for (Iterator<CombatantInterface> iterator = group.iterator(); iterator.hasNext();) {
+			CombatantInterface c = iterator.next();
 			if (c.isDefeated()) {
-				group.remove(c);
+				iterator.remove();
 			}
 		}
 	}
