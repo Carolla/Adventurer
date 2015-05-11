@@ -23,14 +23,11 @@ import civ.BuildingDisplayCiv;
 /**
  * Moves the Hero inside a specified Building, displaying its interior image and description.
  * <P>
- * Format: ENTER [Building name | Building type] <br>
- * where:
- * <UL>
- * <LI>Building Name is the actual string name of the Building;</LI>
- * <LI>Building Type is the Building class, e.g., Inn, Bank, Jail;</LI>
- * </UL>
+ * Format: ENTER [Building name] <br>
+ * where: <br>
+ * Building Name is the actual string name of the Building;
  * <P>
- * The Building name (and type) is checked with and without 'the' in the parm list. For example,
+ * The Building name is checked with and without 'the' in the parm list. For example,
  * this command will check for "The Ugly Ogre Inn" and "Ugly Ogre Inn" before trying "Ugly Ogre Inn"
  * as a type. Conversely, if ENTER Inn is entered, it will try try to find a Building with the name
  * "Inn" before trying the type "Inn".
@@ -38,7 +35,8 @@ import civ.BuildingDisplayCiv;
  * <LI>If the Hero is at the Town view, a Building must be specified else an error message.</LI>
  * <LI>If the Hero is outside a Building, then no name is needed; the currently displayed building
  * is assumed.</LI>
- * <LI>If the Hero is already in the targeted building, then only an info message is displayed.</LI>
+ * <LI>If the Hero is already in the targeted building, then interior is redisplayed, and nothing
+ * different appears to the user.</LI>
  * <LI>If the Hero tries to ENTER from inside one building to inside another, he gets an error
  * message saying he has to LEAVE (or EXIT) one Building before he can enter another. <br>
  * </UL>
@@ -112,11 +110,6 @@ public class CmdEnter extends Command
   @Override
   public boolean init(List<String> args) throws NullPointerException
   {
-    // Guard against no building name given and current building does not exist
-//    if ((args.size() == 0) && (_currentBuilding == null)) {
-//      super._msgHandler.errorOut(ERRMSG_NOBLDG);
-//      return false;
-//    }
     // The BuildingDisplayCiv must already exist
     _bldgCiv = BuildingDisplayCiv.getInstance();
 
@@ -136,15 +129,16 @@ public class CmdEnter extends Command
         return true;
       }
     }
-
-    // Case 2: Building defaults to current building
-    _currentBuilding = _bldgCiv.getCurrentBuilding();
-    if (_currentBuilding == null) {
-      super._msgHandler.errorOut(ERRMSG_NOBLDG);
-      return false;
-    } else {
-      _targetBldg = _currentBuilding;
-      return true;
+    else {
+      // Case 2: Building defaults to current building
+      _currentBuilding = _bldgCiv.getCurrentBuilding();
+      if (_currentBuilding == null) {
+        super._msgHandler.errorOut(ERRMSG_NOBLDG);
+        return false;
+      } else {
+        _targetBldg = _currentBuilding;
+        return true;
+      }
     }
   }
 
