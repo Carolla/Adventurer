@@ -63,6 +63,8 @@ public class CmdEnter extends Command
 
   /** Building accesses and displays are controlled by the BuildingDisplayCiv */
   private BuildingDisplayCiv _bldgCiv;
+  /** BuildingRegistry from which to retrieve buildings and properties */
+  private BuildingRegistry _breg = null;
 
   /** The building currently displayed, either inside or outside */
   private Building _currentBuilding;
@@ -88,7 +90,8 @@ public class CmdEnter extends Command
   public CmdEnter()
   {
     super("CmdEnter", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
-    // System.out.println("\tCmdEnter(): creating ENTER command.");
+    _breg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
+
   }
 
 
@@ -116,9 +119,7 @@ public class CmdEnter extends Command
     // Case 1: Building name is given
     if (args.size() != 0) {
       String bldgParm = convertArgsToString(args);
-      BuildingRegistry breg =
-          (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
-      Building b = breg.getBuilding(bldgParm);
+      Building b = _breg.getBuilding(bldgParm);
       // Check that the building specified actually exists
       if (b == null) {
         super._msgHandler.errorOut(ERRMSG_NOBLDG);
@@ -158,6 +159,16 @@ public class CmdEnter extends Command
     public MockCmdEnter()
     {}
 
+    public void clearCurrentBldg()
+    {
+      _currentBuilding = null;
+    }
+
+    public void clearTargetBldg()
+    {
+      _targetBuilding = null;
+    }
+
     public Building getCurrentBldg()
     {
       return _currentBuilding;
@@ -178,6 +189,12 @@ public class CmdEnter extends Command
       return CmdEnter.DURATION;
     }
 
+    public void setCurrentBldg(String bldgName)
+    {
+      _currentBuilding = _breg.getBuilding(bldgName);
+    }
+
+    
   } // end MockCmdEnter class
 
 

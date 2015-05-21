@@ -11,11 +11,12 @@ package test.pdc.command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -39,26 +40,31 @@ import civ.CommandParser;
  */
 public class TestCmdEnter
 {
-   private static CommandParser _cp = null; 
-   private static IOPanelProxy _iopx = null;
-   private static CommandFactory _cmdFac = null;
-   
-   private CmdEnter _cmdEnter = null;
-   private MockCmdEnter _mock = null;
-   
-   /**
+  private static CommandParser _cp = null;
+  private static IOPanelProxy _iopx = null;
+  private static CommandFactory _cmdFac = null;
+
+  private CmdEnter _cmdEnter = null;
+  private MockCmdEnter _mock = null;
+
+  private static RegistryFactory _regfac = null;
+  private static BuildingRegistry _breg = null;
+  private static List<Building> _bList = null;
+
+
+  /**
    * @throws java.lang.Exception
    */
   @BeforeClass
   public static void setUpBeforeClass() throws Exception
   {
     _iopx = new IOPanelProxy();
-    assertNotNull(_iopx);
     _cp = CommandParser.getInstance(_iopx);
-    assertNotNull(_cp);
-    _cmdFac = new CommandFactory(_cp); 
-    assertNotNull(_cmdFac);
-        
+    _cmdFac = new CommandFactory(_cp);
+    // Get a list of all buildings to enter
+    _regfac = RegistryFactory.getInstance();
+    _breg = (BuildingRegistry) _regfac.getRegistry(RegKey.BLDG);
+    _bList = _breg.getBuildingList();
   }
 
   /**
@@ -67,6 +73,9 @@ public class TestCmdEnter
   @AfterClass
   public static void tearDownAfterClass() throws Exception
   {
+    _bList = null;
+    _breg = null;
+    _regfac = null;
     _cmdFac = null;
     _cp = null;
     _iopx = null;
@@ -78,10 +87,11 @@ public class TestCmdEnter
   @Before
   public void setUp() throws Exception
   {
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+
     _cmdEnter = (CmdEnter) _cmdFac.createCommand("CmdEnter");
-    assertNotNull(_cmdEnter);
     _mock = _cmdEnter.new MockCmdEnter();
-    assertNotNull(_mock);
   }
 
   /**
@@ -92,44 +102,87 @@ public class TestCmdEnter
   {
     _mock = null;
     _cmdEnter = null;
+    // Clear context from CmdEnter: currentBldg and targetBldg
+    _mock.clearCurrentBldg();
+    _mock.clearTargetBldg();
+    
     // Shutdown building registry created by CmdEnter
-    RegistryFactory regfac = RegistryFactory.getInstance();
-    BuildingRegistry breg = (BuildingRegistry) regfac.getRegistry(RegKey.BLDG);
-    breg.closeRegistry();
+    _breg.closeRegistry();
+
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
   }
 
-  
-  //=================================================
-  //  BEGIN TESTING
-  //=================================================
-      
+
+  // =================================================
+  // BEGIN TESTING
+  // =================================================
+
   /** Normal verify CmdEnter constructor */
   @Test
   public void CtorVerifiedn()
   {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
     int delay = 0;
     int duration = 10;
-    
+
     assertEquals(delay, _mock.getDelay());
     assertEquals(duration, _mock.getDuration());
   }
 
-  /** Normal CmdEnter given building */
+
+  /** Normal CmdEnter given building(s) */
   @Test
   public void initBuildingGiven()
   {
-    List<String> bName = new ArrayList<String>();
-    bName.add("Jail");
-    
-    Building tBldg = _mock.getTargetBldg();
-    assertNull(tBldg);
-    assertTrue(_cmdEnter.init(bName));
-    // Verify target and current building
-    tBldg = _mock.getTargetBldg();
-    assertEquals(tBldg.getName(), bName.get(0));
-    Building curBldg = _mock.getCurrentBldg();
-    assertEquals(curBldg.getName(), bName.get(0));
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    List<String> bNames = new ArrayList<String>();
+
+    // For each building, enter it and check its attributes
+    for (int k = 0; k < _bList.size(); k++) {
+      String name = _bList.get(k).getName();
+      bNames.add(0, name);
+      MsgCtrl.msgln("\tEntering Building:\t" + bNames.get(0));
+      assertTrue(_cmdEnter.init(bNames));
+
+      // Verify target and current building
+      Building tBldg = _mock.getTargetBldg();
+      assertEquals(tBldg, _bList.get(k));
+      Building curBldg = _mock.getCurrentBldg();
+      assertEquals(curBldg, _bList.get(k));
+      // Clear out arglist
+      bNames.remove(0);
+    }
+    MsgCtrl.msgln("\tAll buildings entered successfully.");
   }
+
+
+  /** Normal CmdEnter default (current) building */
+  @Test
+  public void initCurrentBuilding()
+  {
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.where(this);
+
+    List<String> bNames = new ArrayList<String>();
+
+    // Set current building to Jail
+    String name = "Jail";
+    _mock.setCurrentBldg(name);
+
+    // Now try to enter jail without a parm
+    bNames.add(0,"");
+    MsgCtrl.msgln("\tEntering Building:\t" + bNames.get(0));
+    assertTrue(_cmdEnter.init(bNames));
+  }
+
 
 
 }
