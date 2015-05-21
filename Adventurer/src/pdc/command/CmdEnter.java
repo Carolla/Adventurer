@@ -27,10 +27,10 @@ import civ.BuildingDisplayCiv;
  * where: <br>
  * Building Name is the actual string name of the Building;
  * <P>
- * The Building name is checked with and without 'the' in the parm list. For example,
- * this command will check for "The Ugly Ogre Inn" and "Ugly Ogre Inn" before trying "Ugly Ogre Inn"
- * as a type. Conversely, if ENTER Inn is entered, it will try try to find a Building with the name
- * "Inn" before trying the type "Inn".
+ * The Building name is checked with and without 'the' in the parm list. For example, this command
+ * will check for "The Ugly Ogre Inn" and "Ugly Ogre Inn" before trying "Ugly Ogre Inn" as a type.
+ * Conversely, if ENTER Inn is entered, it will try try to find a Building with the name "Inn"
+ * before trying the type "Inn".
  * <UL>
  * <LI>If the Hero is at the Town view, a Building must be specified else an error message.</LI>
  * <LI>If the Hero is outside a Building, then no name is needed; the currently displayed building
@@ -55,7 +55,7 @@ public class CmdEnter extends Command
   /** The description of what the command does, used in the {@code help()} method. */
   static private final String CMD_DESCRIPTION = "Enter into the Building of choice.";
   /** Format for this command; null building defaults to current building */
-  static private final String CMDFMT = "ENTER [Building Name | Building Type]";
+  static private final String CMDFMT = "ENTER [Building Name]";
   /** This command starts immediately, requiring no delay. */
   static private final int DELAY = 0;
   /** This command takes 10 seconds on the game clock. */
@@ -67,7 +67,7 @@ public class CmdEnter extends Command
   /** The building currently displayed, either inside or outside */
   private Building _currentBuilding;
   /** The building to enter */
-  private Building _targetBldg;
+  private Building _targetBuilding;
 
   /** Error message if no current building to enter */
   private final String ERRMSG_NOBLDG =
@@ -125,7 +125,7 @@ public class CmdEnter extends Command
         return false;
       } else {
         _currentBuilding = b;
-        _targetBldg = _currentBuilding;
+        _targetBuilding = _currentBuilding;
         return true;
       }
     }
@@ -136,7 +136,7 @@ public class CmdEnter extends Command
         super._msgHandler.errorOut(ERRMSG_NOBLDG);
         return false;
       } else {
-        _targetBldg = _currentBuilding;
+        _targetBuilding = _currentBuilding;
         return true;
       }
     }
@@ -146,9 +146,40 @@ public class CmdEnter extends Command
   /** Enter the designated building, or the current building if displayed */
   public boolean exec()
   {
-    _bldgCiv.enterBuilding(_targetBldg);
+    _bldgCiv.enterBuilding(_targetBuilding);
     return true;
   }
+
+
+  /** INNER CLASS: MOCK */
+  public class MockCmdEnter
+  {
+    /** Ctor */
+    public MockCmdEnter()
+    {}
+
+    public Building getCurrentBldg()
+    {
+      return _currentBuilding;
+    }
+
+    public Building getTargetBldg()
+    {
+      return _targetBuilding;
+    }
+
+    public int getDelay()
+    {
+      return CmdEnter.DELAY;
+    }
+
+    public int getDuration()
+    {
+      return CmdEnter.DURATION;
+    }
+
+  } // end MockCmdEnter class
+
 
 
 } // end CmdEnter class
