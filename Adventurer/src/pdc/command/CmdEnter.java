@@ -66,8 +66,6 @@ public class CmdEnter extends Command
   /** BuildingRegistry from which to retrieve buildings and properties */
   private BuildingRegistry _breg = null;
 
-  /** The building currently displayed, either inside or outside */
-  private Building _currentBuilding;
   /** The building to enter */
   private Building _targetBuilding;
 
@@ -125,19 +123,18 @@ public class CmdEnter extends Command
         super._msgHandler.errorOut(ERRMSG_NOBLDG);
         return false;
       } else {
-        _currentBuilding = b;
-        _targetBuilding = _currentBuilding;
+        _targetBuilding = b;
         return true;
       }
     }
     else {
       // Case 2: Building defaults to current building
-      _currentBuilding = _bldgCiv.getCurrentBuilding();
-      if (_currentBuilding == null) {
+      Building currentBuilding = _bldgCiv.getCurrentBuilding();
+      if (currentBuilding == null) {
         super._msgHandler.errorOut(ERRMSG_NOBLDG);
         return false;
       } else {
-        _targetBuilding = _currentBuilding;
+        _targetBuilding = currentBuilding;
         return true;
       }
     }
@@ -159,19 +156,9 @@ public class CmdEnter extends Command
     public MockCmdEnter()
     {}
 
-    public void clearCurrentBldg()
-    {
-      _currentBuilding = null;
-    }
-
     public void clearTargetBldg()
     {
       _targetBuilding = null;
-    }
-
-    public Building getCurrentBldg()
-    {
-      return _currentBuilding;
     }
 
     public Building getTargetBldg()
@@ -187,11 +174,6 @@ public class CmdEnter extends Command
     public int getDuration()
     {
       return CmdEnter.DURATION;
-    }
-
-    public void setCurrentBldg(String bldgName)
-    {
-      _currentBuilding = _breg.getBuilding(bldgName);
     }
 
     

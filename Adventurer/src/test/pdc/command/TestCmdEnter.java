@@ -10,7 +10,6 @@
 package test.pdc.command;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -32,6 +31,8 @@ import chronos.pdc.buildings.Building;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
+import civ.BuildingDisplayCiv;
+import civ.BuildingDisplayCiv.MockBldgCiv;
 import civ.CommandParser;
 
 /**
@@ -43,6 +44,7 @@ public class TestCmdEnter
   private static CommandParser _cp = null;
   private static IOPanelProxy _iopx = null;
   private static CommandFactory _cmdFac = null;
+  private static BuildingDisplayCiv _bdciv = null;
 
   private CmdEnter _cmdEnter = null;
   private MockCmdEnter _mock = null;
@@ -61,6 +63,8 @@ public class TestCmdEnter
     _iopx = new IOPanelProxy();
     _cp = CommandParser.getInstance(_iopx);
     _cmdFac = new CommandFactory(_cp);
+    _bdciv = BuildingDisplayCiv.getInstance(); // for CmdEnter context
+
     // Get a list of all buildings to enter
     _regfac = RegistryFactory.getInstance();
     _breg = (BuildingRegistry) _regfac.getRegistry(RegKey.BLDG);
@@ -76,9 +80,14 @@ public class TestCmdEnter
     _bList = null;
     _breg = null;
     _regfac = null;
+    _bdciv = null;
     _cmdFac = null;
     _cp = null;
     _iopx = null;
+
+    // Shutdown building registry created by CmdEnter
+    _breg.closeRegistry();
+
   }
 
   /**
@@ -100,14 +109,14 @@ public class TestCmdEnter
   @After
   public void tearDown() throws Exception
   {
+    // Clear context from CmdEnter: currentBldg and targetBldg
+    // _mock.clearCurrentBldg();
+    _mock.clearTargetBldg();
     _mock = null;
     _cmdEnter = null;
-    // Clear context from CmdEnter: currentBldg and targetBldg
-    _mock.clearCurrentBldg();
-    _mock.clearTargetBldg();
-    
-    // Shutdown building registry created by CmdEnter
-    _breg.closeRegistry();
+
+//    // Shutdown building registry created by CmdEnter
+//    _breg.closeRegistry();
 
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
@@ -138,8 +147,8 @@ public class TestCmdEnter
   @Test
   public void initBuildingGiven()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
     List<String> bNames = new ArrayList<String>();
@@ -154,7 +163,7 @@ public class TestCmdEnter
       // Verify target and current building
       Building tBldg = _mock.getTargetBldg();
       assertEquals(tBldg, _bList.get(k));
-      Building curBldg = _mock.getCurrentBldg();
+      Building curBldg = _bdciv.getCurrentBuilding();
       assertEquals(curBldg, _bList.get(k));
       // Clear out arglist
       bNames.remove(0);
@@ -167,20 +176,25 @@ public class TestCmdEnter
   @Test
   public void initCurrentBuilding()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     List<String> bNames = new ArrayList<String>();
+    MockBldgCiv _mockBDisp = _bdciv.new MockBldgCiv();
 
-    // Set current building to Jail
-    String name = "Jail";
-    _mock.setCurrentBldg(name);
+    // Set first building in registry to the current building (in context object)
+    Building b = _bList.get(0);
+    _mockBDisp.setCurrentBldg(b);
 
-    // Now try to enter jail without a parm
-    bNames.add(0,"");
-    MsgCtrl.msgln("\tEntering Building:\t" + bNames.get(0));
+    // Now try to enter current Building without a parm
+    bNames.clear();
+    MsgCtrl.msgln("\tEntering current Building (target Building) " + b.getName());
     assertTrue(_cmdEnter.init(bNames));
+    // Verify
+    Building tBldg = _mock.getTargetBldg();
+    assertTrue(_cmdEnter.init(bNames));
+    assertEquals(b.getName(), tBldg.getName());
   }
 
 
