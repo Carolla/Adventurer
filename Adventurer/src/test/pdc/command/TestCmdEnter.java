@@ -10,6 +10,7 @@
 package test.pdc.command;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -32,7 +33,6 @@ import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.BuildingDisplayCiv;
-import civ.BuildingDisplayCiv.MockBldgCiv;
 import civ.CommandParser;
 
 /**
@@ -78,7 +78,6 @@ public class TestCmdEnter
   public static void tearDownAfterClass() throws Exception
   {
     _bList = null;
-    _breg = null;
     _regfac = null;
     _bdciv = null;
     _cmdFac = null;
@@ -87,7 +86,7 @@ public class TestCmdEnter
 
     // Shutdown building registry created by CmdEnter
     _breg.closeRegistry();
-
+    _breg = null;
   }
 
   /**
@@ -101,6 +100,9 @@ public class TestCmdEnter
 
     _cmdEnter = (CmdEnter) _cmdFac.createCommand("CmdEnter");
     _mock = _cmdEnter.new MockCmdEnter();
+    
+    // Ensure that current building is null to start
+    _bdciv.setCurrentBuilding(null);
   }
 
   /**
@@ -109,11 +111,13 @@ public class TestCmdEnter
   @After
   public void tearDown() throws Exception
   {
-    // Clear context from CmdEnter: currentBldg and targetBldg
-    // _mock.clearCurrentBldg();
+    // Clear targetBldg from CmdEnter
     _mock.clearTargetBldg();
     _mock = null;
     _cmdEnter = null;
+
+    // Ensure that current building is null to end
+    _bdciv.setCurrentBuilding(null);
 
 //    // Shutdown building registry created by CmdEnter
 //    _breg.closeRegistry();
@@ -131,8 +135,8 @@ public class TestCmdEnter
   @Test
   public void CtorVerifiedn()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
     int delay = 0;
@@ -160,11 +164,9 @@ public class TestCmdEnter
       MsgCtrl.msgln("\tEntering Building:\t" + bNames.get(0));
       assertTrue(_cmdEnter.init(bNames));
 
-      // Verify target and current building
+      // Verify target building
       Building tBldg = _mock.getTargetBldg();
       assertEquals(tBldg, _bList.get(k));
-      Building curBldg = _bdciv.getCurrentBuilding();
-      assertEquals(curBldg, _bList.get(k));
       // Clear out arglist
       bNames.remove(0);
     }
@@ -176,16 +178,16 @@ public class TestCmdEnter
   @Test
   public void initCurrentBuilding()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
     List<String> bNames = new ArrayList<String>();
-    MockBldgCiv _mockBDisp = _bdciv.new MockBldgCiv();
 
     // Set first building in registry to the current building (in context object)
     Building b = _bList.get(0);
-    _mockBDisp.setCurrentBldg(b);
+    assertNotNull(b);
+    _bdciv.setCurrentBuilding(b);
 
     // Now try to enter current Building without a parm
     bNames.clear();

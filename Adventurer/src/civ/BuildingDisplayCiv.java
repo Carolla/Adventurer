@@ -14,9 +14,6 @@ package civ;
 import hic.MainframeInterface;
 import pdc.Util;
 import chronos.pdc.buildings.Building;
-import chronos.pdc.registry.BuildingRegistry;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 
 /**
  * Maintain displays and text descriptions of all Buildings, both interior and exterior. It shows
@@ -32,9 +29,9 @@ public class BuildingDisplayCiv
   static private BuildingDisplayCiv _bldgDspCiv = null;
   /** Reference to socket for Mainframe or test proxy */
   private MainframeInterface _frame = null;
-  /** All buildings are stored in this registry */
-  private final BuildingRegistry _bReg;
-  // The building that is currently displayed, either inside or outside
+  // /** All buildings are stored in this registry */
+  // private BuildingRegistry _bReg;
+  /** The building that is currently displayed, either inside or outside */
   private Building _currentBldg;
 
   private static final String NO_BLDG_FOUND = "Could not find that building.\n";
@@ -51,9 +48,9 @@ public class BuildingDisplayCiv
    */
   private BuildingDisplayCiv()
   {
-    RegistryFactory regFactory = RegistryFactory.getInstance();
-    // Get the BuildingRegistry for retrieving the proper building
-    _bReg = (BuildingRegistry) regFactory.getRegistry(RegKey.BLDG);
+    // RegistryFactory regFactory = RegistryFactory.getInstance();
+    // // Get the BuildingRegistry for retrieving the proper building
+    // _bReg = (BuildingRegistry) regFactory.getRegistry(RegKey.BLDG);
     _currentBldg = null;
   }
 
@@ -117,7 +114,7 @@ public class BuildingDisplayCiv
   {
     if ((description.length() > 0) && (imagePath.length() > 0)) {
       String bldgName = _currentBldg.getName();
-      _frame.setBuilding(null); //Confusing, I know.  This sets the building RECTANGLE
+      _frame.setBuilding(null); // Confusing, I know. This sets the building RECTANGLE
       _frame.setImage(Util.convertToImage(imagePath));
       _frame.setImageTitle(bldgName);
       _frame.displayText(description);
@@ -130,7 +127,7 @@ public class BuildingDisplayCiv
   /**
    * Show the interior image and description of the Building
    * 
-   * @param bldg  to enter
+   * @param bldg to enter
    */
   public void enterBuilding(Building bldg)
   {
@@ -152,7 +149,16 @@ public class BuildingDisplayCiv
     return _currentBldg;
   }
 
-  
+  /**
+   * Provides a way to clear the current Building
+   * 
+   * @param b the Building that this currently displayed, exterior or interior; may be null
+   */
+  public void setCurrentBuilding(Building b)
+  {
+    _currentBldg = b;
+  }
+
   // ======================================================================
   // Inner Class MockBldgCiv
   // ======================================================================
@@ -163,10 +169,10 @@ public class BuildingDisplayCiv
     public MockBldgCiv()
     {}
 
-    public void setCurrentBldg(Building b)
-    {
-      BuildingDisplayCiv.this._currentBldg = b;
-    }
+//    public void setCurrentBldg(Building b)
+//    {
+//      BuildingDisplayCiv.this._currentBldg = b;
+//    }
 
 
   } // end of MockBldgCiv class
