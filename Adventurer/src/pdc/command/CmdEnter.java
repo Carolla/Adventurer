@@ -72,10 +72,9 @@ public class CmdEnter extends Command
   /** Error message if no current building to enter */
   private final String ERRMSG_NOBLDG =
       "I see no building here. What building did you want to enter?";
-  /** Message if already in designated building */
-  private final String ERRMSG_SAMEBLDG =
-      "You are in that building.";
-  /** Message if trying to jump fron interior to interior of buildings */
+//  /** Message if already in designated building */
+//  private final String ERRMSG_SAMEBLDG = "You are in that building.";
+  /** Message if trying to jump from interior to interior of buildings */
   private final String ERRMSG_JUMPBLDG =
       "You must leave this building before you enter another.";
 
@@ -114,7 +113,13 @@ public class CmdEnter extends Command
     // The BuildingDisplayCiv must already exist
     _bldgCiv = BuildingDisplayCiv.getInstance();
 
-    // Case 1: Building name is given
+    // The Hero cannot be inside a building already
+    if (_bldgCiv.isInside() == true) {
+      super._msgHandler.errorOut(ERRMSG_JUMPBLDG);
+      return false;
+    }
+    
+    // Case 1: Building name is given 
     if (args.size() != 0) {
       String bldgParm = convertArgsToString(args);
       Building b = _breg.getBuilding(bldgParm);

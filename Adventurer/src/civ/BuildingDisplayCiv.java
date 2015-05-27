@@ -29,10 +29,10 @@ public class BuildingDisplayCiv
   static private BuildingDisplayCiv _bldgDspCiv = null;
   /** Reference to socket for Mainframe or test proxy */
   private MainframeInterface _frame = null;
-  // /** All buildings are stored in this registry */
-  // private BuildingRegistry _bReg;
   /** The building that is currently displayed, either inside or outside */
   private Building _currentBldg;
+  /** Flag to indicate whether here is inside the building (ENTER) or outside (APPROACH) */
+  private boolean _insideBldg = false;
 
   private static final String NO_BLDG_FOUND = "Could not find that building.\n";
 
@@ -48,20 +48,7 @@ public class BuildingDisplayCiv
    */
   private BuildingDisplayCiv()
   {
-    // RegistryFactory regFactory = RegistryFactory.getInstance();
-    // // Get the BuildingRegistry for retrieving the proper building
-    // _bReg = (BuildingRegistry) regFactory.getRegistry(RegKey.BLDG);
     _currentBldg = null;
-  }
-
-  /**
-   * Set the hic output device (or a test proxy after the object is created
-   * 
-   * @param mf the generic socket for receiving image and text outputs
-   */
-  public void setOutput(MainframeInterface mf)
-  {
-    _frame = mf;
   }
 
   /**
@@ -75,6 +62,10 @@ public class BuildingDisplayCiv
     }
     return _bldgDspCiv;
   }
+
+  
+
+  
 
 
   // ======================================================================
@@ -90,6 +81,7 @@ public class BuildingDisplayCiv
   {
     if (bldg != null) {
       _currentBldg = bldg;
+      _insideBldg = false;
       String description = bldg.getExteriorDescription();
       String imagePath = bldg.getExtImagePath();
       displayBuilding(description, imagePath);
@@ -104,6 +96,66 @@ public class BuildingDisplayCiv
   // Mock inner class for testing
   // =============================================================
 
+  /**
+   * Show the interior image and description of the Building
+   * 
+   * @param bldg to enter
+   */
+  public void enterBuilding(Building bldg)
+  {
+    if (bldg != null) {
+      _currentBldg = bldg;
+      _insideBldg = true;
+      String description = bldg.getInteriorDescription();
+      String imagePath = bldg.getIntImagePath();
+      displayBuilding(description, imagePath);
+      _frame.setOnTown(false);
+    }
+    else {
+      _frame.displayErrorText(NO_BLDG_FOUND);
+    }
+  }
+
+
+  public Building getCurrentBuilding()
+  {
+    return _currentBldg;
+  }
+
+  /** Is Hero is inside a Building? */
+  public boolean isInside()
+  {
+    return _insideBldg;
+  }
+
+  /**
+   * Provides a way to clear the current Building
+   * 
+   * @param b the Building that this currently displayed, exterior or interior; may be null
+   */
+  public void setCurrentBuilding(Building b)
+  {
+    _currentBldg = b;
+  }
+
+  // ======================================================================
+  // Inner Class MockBldgCiv
+  // ======================================================================
+
+  /**
+   * Set the hic output device (or a test proxy after the object is created
+   * 
+   * @param mf the generic socket for receiving image and text outputs
+   */
+  public void setOutput(MainframeInterface mf)
+  {
+    _frame = mf;
+  }
+
+  // =============================================================
+  // Mock inner class for testing
+  // =============================================================
+  
   /**
    * Display the bulding's image (exterior or interior) in the frame's image panel and
    * 
@@ -124,55 +176,16 @@ public class BuildingDisplayCiv
     _frame.redraw(); // this is pure GUI, s.b. in Mainframe, not here
   }
 
-  /**
-   * Show the interior image and description of the Building
-   * 
-   * @param bldg to enter
-   */
-  public void enterBuilding(Building bldg)
-  {
-    if (bldg != null) {
-      _currentBldg = bldg;
-      String description = bldg.getInteriorDescription();
-      String imagePath = bldg.getIntImagePath();
-      displayBuilding(description, imagePath);
-      _frame.setOnTown(false);
-    }
-    else {
-      _frame.displayErrorText(NO_BLDG_FOUND);
-    }
-  }
-
-
-  public Building getCurrentBuilding()
-  {
-    return _currentBldg;
-  }
-
-  /**
-   * Provides a way to clear the current Building
-   * 
-   * @param b the Building that this currently displayed, exterior or interior; may be null
-   */
-  public void setCurrentBuilding(Building b)
-  {
-    _currentBldg = b;
-  }
-
-  // ======================================================================
-  // Inner Class MockBldgCiv
-  // ======================================================================
-
   public class MockBldgCiv
   {
 
     public MockBldgCiv()
     {}
 
-//    public void setCurrentBldg(Building b)
-//    {
-//      BuildingDisplayCiv.this._currentBldg = b;
-//    }
+    public void setInsideBldg(boolean state)
+    {
+      _insideBldg = state;
+    }
 
 
   } // end of MockBldgCiv class

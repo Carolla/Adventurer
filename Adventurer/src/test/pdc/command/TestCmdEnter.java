@@ -10,6 +10,7 @@
 package test.pdc.command;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -33,6 +34,7 @@ import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.BuildingDisplayCiv;
+import civ.BuildingDisplayCiv.MockBldgCiv;
 import civ.CommandParser;
 
 /**
@@ -45,6 +47,7 @@ public class TestCmdEnter
   private static IOPanelProxy _iopx = null;
   private static CommandFactory _cmdFac = null;
   private static BuildingDisplayCiv _bdciv = null;
+  private static MockBldgCiv _mockbdciv = null;
 
   private CmdEnter _cmdEnter = null;
   private MockCmdEnter _mock = null;
@@ -64,6 +67,7 @@ public class TestCmdEnter
     _cp = CommandParser.getInstance(_iopx);
     _cmdFac = new CommandFactory(_cp);
     _bdciv = BuildingDisplayCiv.getInstance(); // for CmdEnter context
+    _mockbdciv = _bdciv.new MockBldgCiv();
 
     // Get a list of all buildings to enter
     _regfac = RegistryFactory.getInstance();
@@ -79,10 +83,12 @@ public class TestCmdEnter
   {
     _bList = null;
     _regfac = null;
-    _bdciv = null;
     _cmdFac = null;
     _cp = null;
     _iopx = null;
+
+    _mockbdciv = null;
+    _bdciv = null;
 
     // Shutdown building registry created by CmdEnter
     _breg.closeRegistry();
@@ -118,9 +124,7 @@ public class TestCmdEnter
 
     // Ensure that current building is null to end
     _bdciv.setCurrentBuilding(null);
-
-//    // Shutdown building registry created by CmdEnter
-//    _breg.closeRegistry();
+    _mockbdciv.setInsideBldg(false);
 
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
@@ -133,10 +137,10 @@ public class TestCmdEnter
 
   /** Normal verify CmdEnter constructor */
   @Test
-  public void CtorVerifiedn()
+  public void CtorVerified()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     int delay = 0;
@@ -149,10 +153,10 @@ public class TestCmdEnter
 
   /** Normal CmdEnter given building(s) */
   @Test
-  public void initBuildingGiven()
+  public void initValidBuilding()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     List<String> bNames = new ArrayList<String>();
@@ -176,10 +180,10 @@ public class TestCmdEnter
 
   /** Normal CmdEnter default (current) building */
   @Test
-  public void initCurrentBuilding()
+  public void initWithoutParms()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     List<String> bNames = new ArrayList<String>();
@@ -200,5 +204,43 @@ public class TestCmdEnter
   }
 
 
+  /** Error: Enter invalid building for ERR_NOBLDG*/
+  @Test
+  public void initInvalidBuilding()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
 
-}
+    List<String> bNames = new ArrayList<String>();
+    // Place an invalid building as the parm
+    bNames.add("Winery");
+    MsgCtrl.errMsg("\tExpected error: ");
+    assertFalse(_cmdEnter.init(bNames));
+  }    
+
+  /** Error: Trying to enter one building from inside another gives ERRMSG_JUMPBLDG */
+  @Test
+  public void initJumpBuilding()
+  {
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.where(this);
+
+    // Set context to be inside valid building: Jail
+    List<String> bNames = new ArrayList<String>();
+    
+    Building b = _breg.getBuilding("Jail");
+    bNames.add("Jail");
+
+    _bdciv.setCurrentBuilding(b);
+    _mockbdciv.setInsideBldg(true);
+    
+    MsgCtrl.errMsg("\tExpected error: ");
+    assertFalse(_cmdEnter.init(bNames));
+   
+  }    
+
+
+}   // end of TestCmdEnter class
+
