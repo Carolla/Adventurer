@@ -44,25 +44,31 @@ public class CmdApproach extends Command
     /** The description of what the command does, used in the {@code help()} method. */
     static private final String CMD_DESCRIPTION = "Approach the Building of choice.";
     /** Format for this command */
-    static private final String CMDFMT = "APPROACH <Building Name | Building Type>";
+    static private final String CMDFMT = "APPROACH <Building Name>";
     /** This command starts immediately, requiring no delay. */
     static private final int DELAY = 0;
     /** This command takes 30 seconds on the game clock. */
     static private final int DURATION = 30;
 
-    
     /** Building accesses and displays are controlled by the BuildingDisplayCiv */
     private BuildingDisplayCiv _bldgCiv;
+    /** BuildingRegistry from which to retrieve buildings */
+    private BuildingRegistry _breg;
+    
+    /** The building to approach */
+    private Building _targetBuilding;
     
     /** Error message if no arguments or multiple arguments specified */
-    private final String ERRMSG_NO_BLDG =
-        "Sure, but you gotta tell me WHICH building to approach.";
+    private final String ERRMSG_NOBLDG =
+        "Sure, but you've gotta say WHICH building to approach.";
     /** Error message if building not found in registry */
     private final String ERRMSG_WRONG_BLDG =
             "That some kinda slang, stranger?  WHAT building was that again?";
+    
+    /** Message if trying to jump from interior to exterior of buildings */
+    private final String ERRMSG_JUMPBLDG =
+        "You must leave this building before you approach another.";
 
-    /** The building the user wants to approach using this command */
-    private Building _buildingToApproach;
     
     // ============================================================
     // Constructors and constructor helpers
@@ -72,7 +78,7 @@ public class CmdApproach extends Command
     public CmdApproach()
     {
       super("CmdApproach", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
-      System.out.println("\tCmdApproach(): creating APPROACH command.");
+      _breg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
     }
 
     // ============================================================
@@ -80,63 +86,87 @@ public class CmdApproach extends Command
     // ============================================================
 
     /**
-     * Verifies the following command format: {@code APPROACH <Building name | Building type>} <br>
-     * There should only be one argument specified - the name (or type) of the building.
+     * There must be 1 arg in the arglist. Argument tokens will be combined into a building name.
+     * <P>
+     * The Building name is checked with and without the word 'the', in case it is part of the name of
+     * the Building. If the Hero specified the building he is already in, then the image is
+     * redisplayed, which appears to the user as if nothing happened.
      * 
-     * @param args specifies desired building; cannot be empty
+     * @param args gets Building specified;
      * @return true if all worked, else returns false on input error
      */
     @Override
-    public boolean init(List<String> args) throws NullPointerException
+    public boolean init(List<String> args)
     {
-        System.out.println("\tCmdApproach.init()...");
-        
-        // If no building specified, error
-        if (args.size() == 0) {
-            super._msgHandler.errorOut(ERRMSG_NO_BLDG);
-            return false;
-        }
+      // The BuildingDisplayCiv must already exist
+      _bldgCiv = BuildingDisplayCiv.getInstance();
 
-        // Init data for matching the building by type and name
-        RegistryFactory regFact = RegistryFactory.getInstance();
-        BuildingRegistry breg = (BuildingRegistry) regFact.getRegistry(RegKey.BLDG);
-        
-        // Use each separate arg to attempt match of building (match by type)
-        for (String argPhrase : args) {
-            Building myBldg = breg.getBuilding(argPhrase);
-            if (myBldg != null) {
-                _buildingToApproach = myBldg;
-               return true; 
-            }
-        }
-        
-        // Use combined args to attempt match of building (match by name)
-        String bldgParm = convertArgsToString(args);
-        Building bldg = breg.getBuilding(bldgParm);
-        if (bldg != null) {
-            _buildingToApproach = bldg;
-            return true;
-        }
-        // No matches
-        super._msgHandler.errorOut(ERRMSG_WRONG_BLDG);
+      // The Hero cannot be inside a building already
+      if (_bldgCiv.isInside() == true) {
+        super._msgHandler.errorOut(ERRMSG_JUMPBLDG);
         return false;
+      }
+      
+      // Case 1: Building name is given 
+      if (args.size() != 0) {
+        String bldgParm = convertArgsToString(args);
+        Building b = _breg.getBuilding(bldgParm);
+        // Check that the building specified actually exists
+        if (b == null) {
+          super._msgHandler.errorOut(ERRMSG_WRONG_BLDG);
+          return false;
+        } else {
+          _targetBuilding = b;
+          return true;
+        }
+      }
+      else {
+        // Case 2: No building specified
+          super._msgHandler.errorOut(ERRMSG_NOBLDG);
+          return false;
+      }
     }
 
     @Override
     public boolean exec()
     {
-        System.out.println("\tCmdApproach.exec()...");
-        _bldgCiv = BuildingDisplayCiv.getInstance();
-        
-        // Success if target building has been set
-        if (_buildingToApproach != null) {
-            _bldgCiv.approachBuilding(_buildingToApproach);
-            return true;
-        }
-        
-        // Fail by default - Failure to set or no attempt to set target building
-        System.out.println("\t\tCmdApproach.exec()...failed");
-        return false;
+        _bldgCiv.approachBuilding(_targetBuilding);
+        return true;
     }
+    
+    /** INNER CLASS: MOCK */
+    public class MockCmdApproach
+    {
+      /** Ctor */
+      public MockCmdApproach()
+      {}
+
+      public void clearTargetBldg()
+      {
+        _targetBuilding = null;
+      }
+
+      public Building getTargetBldg()
+      {
+        return _targetBuilding;
+      }
+
+      public int getDelay()
+      {
+        return CmdApproach.DELAY;
+      }
+
+      public int getDuration()
+      {
+        return CmdApproach.DURATION;
+      }
+      
+      public String getCmdFormat()
+      {
+          return CmdApproach.CMDFMT;
+      }
+
+      
+    } // end MockCmdEnter class
 
 } // end CmdApproach Class
