@@ -71,12 +71,10 @@ public class CmdEnter extends Command
 
   /** Error message if no current building to enter */
   private final String ERRMSG_NOBLDG =
-      "I see no building here. What building did you want to enter?";
-//  /** Message if already in designated building */
-//  private final String ERRMSG_SAMEBLDG = "You are in that building.";
+      "I don't know that building. What building did you want to enter?";
   /** Message if trying to jump from interior to interior of buildings */
   private final String ERRMSG_JUMPBLDG =
-      "You must leave this building before you enter another.";
+      "You must leave (exit) one building before you enter another.";
 
 
   // ============================================================
@@ -88,7 +86,6 @@ public class CmdEnter extends Command
   {
     super("CmdEnter", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
     _breg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
-
   }
 
 
@@ -108,7 +105,7 @@ public class CmdEnter extends Command
    * @return true if all worked, else returns false on input error
    */
   @Override
-  public boolean init(List<String> args) throws NullPointerException
+  public boolean init(List<String> args) 
   {
     // The BuildingDisplayCiv must already exist
     _bldgCiv = BuildingDisplayCiv.getInstance();
@@ -118,8 +115,8 @@ public class CmdEnter extends Command
       super._msgHandler.errorOut(ERRMSG_JUMPBLDG);
       return false;
     }
-    
-    // Case 1: Building name is given 
+
+    // Case 1: Building name is given
     if (args.size() != 0) {
       String bldgParm = convertArgsToString(args);
       Building b = _breg.getBuilding(bldgParm);
@@ -147,6 +144,7 @@ public class CmdEnter extends Command
 
 
   /** Enter the designated building, or the current building if displayed */
+  @Override
   public boolean exec()
   {
     _bldgCiv.enterBuilding(_targetBuilding);
@@ -181,7 +179,11 @@ public class CmdEnter extends Command
       return CmdEnter.DURATION;
     }
 
-    
+    public String getCmdFormat()
+    {
+      return CmdEnter.CMDFMT;
+    }
+
   } // end MockCmdEnter class
 
 

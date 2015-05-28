@@ -137,7 +137,7 @@ public class TestCmdEnter
 
   /** Normal verify CmdEnter constructor */
   @Test
-  public void CtorVerified()
+  public void ctorVerified()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
@@ -145,9 +145,12 @@ public class TestCmdEnter
 
     int delay = 0;
     int duration = 10;
-
+    String cmdfmt = "ENTER [Building Name]";
+    MsgCtrl.msgln("\tCommand format: " + _mock.getCmdFormat());
+    
     assertEquals(delay, _mock.getDelay());
     assertEquals(duration, _mock.getDuration());
+    assertEquals(cmdfmt, _mock.getCmdFormat());
   }
 
 
