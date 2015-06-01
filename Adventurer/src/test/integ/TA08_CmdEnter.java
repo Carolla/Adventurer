@@ -44,7 +44,7 @@ import civ.CommandParser.MockCP;
  * @version Dec 20, 2014 // original <br>
  *          Mar 5, 2015 // updated for more testing <br>
  */
-public class TA08_EnterBuilding
+public class TA08_CmdEnter
 {
   /** Facade to send and receive messages meant for the output panel */
   static private IOPanelProxy _ioProxy = null;

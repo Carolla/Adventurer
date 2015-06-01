@@ -23,22 +23,20 @@ import civ.BuildingDisplayCiv;
 /**
  * Moves the Hero inside a specified Building, displaying its interior image and description.
  * <P>
- * Format: ENTER [Building name | Building type] <br>
- * where:
- * <UL>
- * <LI>Building Name is the actual string name of the Building;</LI>
- * <LI>Building Type is the Building class, e.g., Inn, Bank, Jail;</LI>
- * </UL>
+ * Format: ENTER [Building name] <br>
+ * where: <br>
+ * Building Name is the actual string name of the Building;
  * <P>
- * The Building name (and type) is checked with and without 'the' in the parm list. For example,
- * this command will check for "The Ugly Ogre Inn" and "Ugly Ogre Inn" before trying "Ugly Ogre Inn"
- * as a type. Conversely, if ENTER Inn is entered, it will try try to find a Building with the name
- * "Inn" before trying the type "Inn".
+ * The Building name is checked with and without 'the' in the parm list. For example, this command
+ * will check for "The Ugly Ogre Inn" and "Ugly Ogre Inn" before trying "Ugly Ogre Inn" as a type.
+ * Conversely, if ENTER Inn is entered, it will try try to find a Building with the name "Inn"
+ * before trying the type "Inn".
  * <UL>
  * <LI>If the Hero is at the Town view, a Building must be specified else an error message.</LI>
  * <LI>If the Hero is outside a Building, then no name is needed; the currently displayed building
  * is assumed.</LI>
- * <LI>If the Hero is already in the targeted building, then only an info message is displayed.</LI>
+ * <LI>If the Hero is already in the targeted building, then interior is redisplayed, and nothing
+ * different appears to the user.</LI>
  * <LI>If the Hero tries to ENTER from inside one building to inside another, he gets an error
  * message saying he has to LEAVE (or EXIT) one Building before he can enter another. <br>
  * </UL>
@@ -57,7 +55,7 @@ public class CmdEnter extends Command
   /** The description of what the command does, used in the {@code help()} method. */
   static private final String CMD_DESCRIPTION = "Enter into the Building of choice.";
   /** Format for this command; null building defaults to current building */
-  static private final String CMDFMT = "ENTER [Building Name | Building Type]";
+  static private final String CMDFMT = "ENTER [Building Name]";
   /** This command starts immediately, requiring no delay. */
   static private final int DELAY = 0;
   /** This command takes 10 seconds on the game clock. */
@@ -65,21 +63,18 @@ public class CmdEnter extends Command
 
   /** Building accesses and displays are controlled by the BuildingDisplayCiv */
   private BuildingDisplayCiv _bldgCiv;
+  /** BuildingRegistry from which to retrieve buildings and properties */
+  private BuildingRegistry _breg = null;
 
-  /** The building currently displayed, either inside or outside */
-  private Building _currentBuilding;
   /** The building to enter */
-  private Building _targetBldg;
+  private Building _targetBuilding;
 
   /** Error message if no current building to enter */
   private final String ERRMSG_NOBLDG =
-      "I see no building here. What building did you want to enter?";
-  /** Message if already in designated building */
-  private final String ERRMSG_SAMEBLDG =
-      "You are in that building.";
-  /** Message if trying to jump fron interior to interior of buildings */
+      "I don't know that building. What building did you want to enter?";
+  /** Message if trying to jump from interior to interior of buildings */
   private final String ERRMSG_JUMPBLDG =
-      "You must leave this building before you enter another.";
+      "You must leave (exit) one building before you enter another.";
 
 
   // ============================================================
@@ -90,7 +85,7 @@ public class CmdEnter extends Command
   public CmdEnter()
   {
     super("CmdEnter", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
-    // System.out.println("\tCmdEnter(): creating ENTER command.");
+    _breg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
   }
 
 
@@ -110,51 +105,87 @@ public class CmdEnter extends Command
    * @return true if all worked, else returns false on input error
    */
   @Override
-  public boolean init(List<String> args) throws NullPointerException
+  public boolean init(List<String> args) 
   {
-    // Guard against no building name given and current building does not exist
-//    if ((args.size() == 0) && (_currentBuilding == null)) {
-//      super._msgHandler.errorOut(ERRMSG_NOBLDG);
-//      return false;
-//    }
     // The BuildingDisplayCiv must already exist
     _bldgCiv = BuildingDisplayCiv.getInstance();
+
+    // The Hero cannot be inside a building already
+    if (_bldgCiv.isInside() == true) {
+      super._msgHandler.errorOut(ERRMSG_JUMPBLDG);
+      return false;
+    }
 
     // Case 1: Building name is given
     if (args.size() != 0) {
       String bldgParm = convertArgsToString(args);
-      BuildingRegistry breg =
-          (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
-      Building b = breg.getBuilding(bldgParm);
+      Building b = _breg.getBuilding(bldgParm);
       // Check that the building specified actually exists
       if (b == null) {
         super._msgHandler.errorOut(ERRMSG_NOBLDG);
         return false;
       } else {
-        _currentBuilding = b;
-        _targetBldg = _currentBuilding;
+        _targetBuilding = b;
         return true;
       }
     }
-
-    // Case 2: Building defaults to current building
-    _currentBuilding = _bldgCiv.getCurrentBuilding();
-    if (_currentBuilding == null) {
-      super._msgHandler.errorOut(ERRMSG_NOBLDG);
-      return false;
-    } else {
-      _targetBldg = _currentBuilding;
-      return true;
+    else {
+      // Case 2: Building defaults to current building
+      Building currentBuilding = _bldgCiv.getCurrentBuilding();
+      if (currentBuilding == null) {
+        super._msgHandler.errorOut(ERRMSG_NOBLDG);
+        return false;
+      } else {
+        _targetBuilding = currentBuilding;
+        return true;
+      }
     }
   }
 
 
   /** Enter the designated building, or the current building if displayed */
+  @Override
   public boolean exec()
   {
-    _bldgCiv.enterBuilding(_targetBldg);
+    _bldgCiv.enterBuilding(_targetBuilding);
     return true;
   }
+
+
+  /** INNER CLASS: MOCK */
+  public class MockCmdEnter
+  {
+    /** Ctor */
+    public MockCmdEnter()
+    {}
+
+    public void clearTargetBldg()
+    {
+      _targetBuilding = null;
+    }
+
+    public Building getTargetBldg()
+    {
+      return _targetBuilding;
+    }
+
+    public int getDelay()
+    {
+      return CmdEnter.DELAY;
+    }
+
+    public int getDuration()
+    {
+      return CmdEnter.DURATION;
+    }
+
+    public String getCmdFormat()
+    {
+      return CmdEnter.CMDFMT;
+    }
+
+  } // end MockCmdEnter class
+
 
 
 } // end CmdEnter class
