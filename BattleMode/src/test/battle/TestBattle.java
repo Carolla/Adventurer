@@ -444,7 +444,13 @@ public class TestBattle {
 	    	}
         }
     }
-        
+     
+    @Test
+    public void WhenCombatantIsDefeatedCanNoLongerBeAttacked()
+    {
+    	
+    }
+    
     //Combatant can select with opponent to attack
     @Test
     public void CombatantCanSelectOpponentToAttack()

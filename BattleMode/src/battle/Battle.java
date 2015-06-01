@@ -106,7 +106,7 @@ public class Battle {
 		System.out.println("\nRound " + _round++);
 		CombatantInterface lastCombatant = _firstGroup.get(0);
 		for (CombatantInterface c : _firstGroup) {
-			c.takeTurn(_combatants, this);
+			c.takeTurn(_secondGroup, this);
 			lastCombatant = c;
 		}
 
@@ -118,7 +118,7 @@ public class Battle {
 		removeDefeatedCombatants(_secondGroup);
 		
 		for (CombatantInterface c : _secondGroup) {
-			c.takeTurn(_combatants, this);
+			c.takeTurn(_firstGroup, this);
 			lastCombatant = c;
 		}
 		
@@ -127,10 +127,10 @@ public class Battle {
 			return;
 		}
 
-		removeDefeatedCombatants(_secondGroup);
+		removeDefeatedCombatants(_firstGroup);
 	}
 
-	private void removeDefeatedCombatants(List<CombatantInterface> group) {
+	public static void removeDefeatedCombatants(List<CombatantInterface> group) {
 		for (Iterator<CombatantInterface> iterator = group.iterator(); iterator.hasNext();) {
 			CombatantInterface c = iterator.next();
 			if (c.isDefeated()) {

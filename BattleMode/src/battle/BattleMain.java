@@ -31,11 +31,6 @@ public class BattleMain {
 			battle.advance();
 		}
 		
-		if (battle.isWinner(hero)) {
-			System.out.println("You won!");
-		} else {
-			System.out.println("You lost...");
-		}
 		System.exit(0);
 	}
 	
@@ -52,23 +47,25 @@ public class BattleMain {
 		@Override
 		public CombatantInterface selectTarget(List<CombatantInterface> combatants) {
 			CombatantInterface target = null;
-			List<CombatantInterface> enemies = Combatant.findAllEnemies(combatants);
-			if (enemies.size() == 0) {
+
+			if (combatants.size() == 0) {
 				return null;
 			}
 			
 			while (target == null) {
 				int i = 1;
-				for (CombatantInterface c : enemies) {
-					System.out.println("Monster " + i + ": " + c.name());
-					i++;
+				for (CombatantInterface c : combatants) {
+					if (!c.isDefeated()) {
+						System.out.println("Monster " + i + ": " + c.name());
+						i++;
+					}
 				}
 				System.out.print("Select a target: ");
 	
 				if (in.hasNextInt()) {
 					int position = in.nextInt() - 1;
-					if (position < enemies.size()) {
-						target = enemies.get(position);
+					if (position < combatants.size()) {
+						target = combatants.get(position);  //This targets incorrectly.
 					} else {
 						System.out.println("Invalid target.\n");
 					}
