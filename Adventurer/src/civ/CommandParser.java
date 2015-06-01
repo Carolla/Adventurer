@@ -11,8 +11,6 @@
 
 package civ;
 
-import hic.IOPanelInterface;
-
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
@@ -76,18 +74,15 @@ public class CommandParser
   private final String ERRMSG_CMDNULL = "Nothing was entered. Please try again.";
 
   /** Identify a command string in which only a return key is entered. */
-  private final String CMD_EMPTY = "";
-
-  // Reference to mainframe for info and error messages
-  // static private MainframeCiv _output;
-  // static private JTextArea _output;
+  private final String EMPTY_STRING = "";
 
   /** Reference to GUI panel for input and output messages, and their interactions */
-  private IOPanelInterface _ioPanel;
-  /** Internal reference to ensure singleton object. */
-  static private CommandParser _cp = null;
+  private MainframeCiv _mfCiv;
+
   /** Start the Scheduler up when the CommandPaarser starts */
   static private Scheduler _skedder = null;
+  
+  private static int count = 0;
 
   // ============================================================
   // Constructors and constructor helpers
@@ -100,55 +95,19 @@ public class CommandParser
    * @param ioPanel handles input commands and output and error messages, and the interactions
    *        between command line input and output messages
    */
-  private CommandParser(IOPanelInterface ioPanel)
+  public CommandParser(MainframeCiv mfCiv)
   {
+	 if (count++ > 1) {
+		 System.err.println("Multiple CommandParsers have been created\n");
+	 }
     _parms = new ArrayList<String>();
-    _cmf = new CommandFactory(this);
-    _ioPanel = ioPanel;
+    _mfCiv = mfCiv;
+    _cmf = new CommandFactory(_mfCiv);
 
     // Start the scheduler off on its own thread
     _skedder = Scheduler.getInstance(this);
     new Thread(_skedder).start();
   }
-
-
-  /**
-   * A {@code CommandFactory} is created as part of this class to funnel activity through
-   * {@code CommandParser}. The {@code Scheduler} is created on its own thread to handle the
-   * commands. Also creates an ArrayList for command-specific parms sent to a Command, and a
-   * {@code CommandFactory}.
-   * 
-   * @param output the output view for displaying messages
-   */
-  static public CommandParser getInstance(IOPanelInterface ioPanel)
-  {
-    if (_cp == null) {
-      _cp = new CommandParser(ioPanel);
-//      System.out.println("CommandParser started");
-    }
-    return _cp;
-  }
-
-  /**
-   * Tell the output device to display specially formatted error message
-   * 
-   * @param msg error message
-   */
-  public void errorOut(String msg)
-  {
-    _ioPanel.displayErrorText(msg);
-  }
-
-  /**
-   * Tell the output device to display a message
-   * 
-   * @param msg standard text message
-   */
-  public void messageOut(String msg)
-  {
-    _ioPanel.displayText(msg);
-  }
-
 
   // ============================================================
   // Public Methods
@@ -164,15 +123,9 @@ public class CommandParser
    */
   public Command getUserCommand()
   {
-    Command cmd = null; // Command to pass to Scheduler
-    String cmdToken = null; // name of the command from the command table
-    String cmdString = null; // contains the name of the command as first token
-
-    if (_userInput != null) {
-      cmdString = extractCommandLine(_userInput);
-      cmdToken = getCommandToken(cmdString);
-      cmd = createCommand(cmdToken);
-    }
+    String cmdString = extractCommandLine(_userInput);
+    String cmdToken = getCommandToken(cmdString);
+    Command cmd = createCommand(cmdToken);
     return cmd;
   }
 
@@ -185,21 +138,9 @@ public class CommandParser
    */
   public void receiveCommand(String textIn)
   {
-    String EMPTY = "";
-    // Guard against null parm
-    if (textIn == null) {
-      errorOut(ERRMSG_CMDNULL);
-    }
-    else {
-      // Guard against empty string
-      String cmdIn = textIn.trim();
-      if (cmdIn.equals(EMPTY)) {
-        errorOut(ERRMSG_CMDNULL);
-      }
-      else {
-        _userInput = cmdIn; 
-      }
-    }
+	// Guard against empty string
+	String cmdIn = textIn.trim();
+    _userInput = cmdIn; 
   }
 
   
@@ -233,9 +174,6 @@ public class CommandParser
   private String extractCommandLine(String ip)
   {
     String cmdString = parse(ip);
-    if (cmdString == null) {
-      errorOut(ERRMSG_CMDNULL);
-    }
     _userInput = null;
     return cmdString;
   }
@@ -256,7 +194,7 @@ public class CommandParser
     String token = lookup(s);
     // If command cannot be found, ask user to try again
     if (token == null) {
-      _ioPanel.displayErrorText(ERRMSG_UNKNOWN);
+      _mfCiv.errorOut(ERRMSG_UNKNOWN);
     }
     return token;
   }
@@ -353,7 +291,7 @@ public class CommandParser
     _parms.clear();
     // Check for an empty carriage return entered first;
     // StringTokenizer throws exception on it
-    if (ipLine.equalsIgnoreCase(CMD_EMPTY)) {
+    if (ipLine.equalsIgnoreCase(EMPTY_STRING)) {
       return null;
     }
     // StringTokenizer class defaults to whitespace as delimiter

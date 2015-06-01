@@ -14,8 +14,7 @@ package pdc.command; // This package value is needed by the subcommands; see _cm
 import java.util.ArrayList;
 import java.util.List;
 
-import civ.BuildingDisplayCiv;
-import civ.CommandParser;
+import civ.MainframeCiv;
 
 
 /**
@@ -84,7 +83,7 @@ public abstract class Command
   /** The syntax of the command, used in the {@code usage()} method. */
   protected String _cmdfmt = null;
   /** CommandParser redirects all errors and messages to {@code hic.IOPanel} */
-  protected CommandParser _msgHandler;
+  protected MainframeCiv _msgHandler;
 
 
   // ============================================================
@@ -224,9 +223,9 @@ public abstract class Command
    * 
    * @param newDelay the time that will override the current delay
    */
-  public void setMsgHandler(CommandParser cp)
+  public void setMsgHandler(MainframeCiv msgHandler)
   {
-    _msgHandler = cp;
+    _msgHandler = msgHandler;
   }
 
 

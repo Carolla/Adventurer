@@ -43,7 +43,7 @@ import dmc.PersonReadWriter;
 public class MainframeCiv 
 {
   private AdventureRegistry _advReg;
-   private BuildingDisplayCiv _bdCiv;
+  private BuildingDisplayCiv _bdCiv;
   // private BuildingRegistry _bReg;
 
   private static final String TOWN_IMAGE = "ext_BiljurBaz.JPG";
@@ -172,6 +172,7 @@ public class MainframeCiv
    public void enterBuilding(String bldName)
    {
 	   if (_onTown) {
+		   System.out.println("On town, trying to open building");
 		   _bdCiv = BuildingDisplayCiv.getInstance();
 		   _onTown = false;
 		   
@@ -181,7 +182,10 @@ public class MainframeCiv
 		    // First try building name
 		    Building b = breg.getBuilding(bldName);
 		    if (b != null) {
+			    System.out.println("Opening building " + b.getName());
 		    	_bdCiv.enterBuilding(b);	
+		    } else {
+		    	System.out.println("Can't open null building");
 		    }
 	   }
 

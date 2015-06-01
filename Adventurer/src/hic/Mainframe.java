@@ -472,7 +472,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   public void addIOPanel()
   {
     _leftHolder.removeAll();
-    _iop = new IOPanel();
+    _iop = new IOPanel(_mfCiv);
     setTranscriptTitle(IOPANEL_TITLE);
     _leftHolder.add(_iop);
     redraw();
@@ -697,6 +697,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   public void setImage(Image image)
   {
     _imagePanel.setImage(image);
+    redraw();
   }
 
 

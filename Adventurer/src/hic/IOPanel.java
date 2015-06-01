@@ -54,6 +54,7 @@ public class IOPanel extends JPanel implements IOPanelInterface
    * for values 0-255, kicked up one notch of brightness
    */
   private final Color MY_LIGHT_BROWN = new Color(130, 100, 90).brighter();
+  private MainframeCiv _mfCiv;
 
 
   // ============================================================
@@ -63,8 +64,9 @@ public class IOPanel extends JPanel implements IOPanelInterface
   /**
    * Creates output test panel and input CommandLine Input panel
    */
-  public IOPanel()
+  public IOPanel(MainframeCiv mfCiv)
   {
+	_mfCiv = mfCiv;
     setLayout(new MigLayout("", "[grow]", "[][]"));
     _output = new JTextArea();
     _output.setAlignmentY(JTextArea.TOP_ALIGNMENT);
@@ -133,9 +135,7 @@ public class IOPanel extends JPanel implements IOPanelInterface
    */
   public boolean isOnTown()
   {
-    Mainframe mf = Mainframe.getInstance();
-    MainframeCiv mfciv = mf.getMainframeCiv();
-    return mfciv.isOnTown();
+    return _mfCiv.isOnTown();
   }
 
   // ============================================================
@@ -186,9 +186,7 @@ public class IOPanel extends JPanel implements IOPanelInterface
     southPanel.add(_cmdWin, "cell 1 0,alignx left");
 
     // Create the command parser that goes in here
-    // final CommandParser cp =
-    // CommandParser.getInstance(Mainframe.getInstance().getMainframeCiv());
-    final CommandParser cp = CommandParser.getInstance(this);
+    final CommandParser cp = new CommandParser(_mfCiv);
 
     // Add function to send commands to command parser.
     _cmdWin.addActionListener(new ActionListener()

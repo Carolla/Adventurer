@@ -14,7 +14,6 @@ package pdc.command;
 import java.util.List;
 
 import chronos.pdc.buildings.Building;
-import civ.MainframeCiv;
 
 
 /**
@@ -43,9 +42,6 @@ public class CmdReturn extends Command
 
   /** The building to enter */
   private Building _curBldg = null;
-  /** mainframe reference to get buildings */
-  private MainframeCiv _mfCiv = null;
-
   /*
    * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND RELATED METHODS
    * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -85,7 +81,7 @@ public class CmdReturn extends Command
    */
   public boolean exec()
   {
-    _mfCiv.openTown();
+    _msgHandler.openTown();
     return true;
   }
 

@@ -12,7 +12,7 @@
 
 package pdc.command;
 
-import civ.CommandParser;
+import civ.MainframeCiv;
 
 
 
@@ -32,16 +32,16 @@ public class CommandFactory
     /** All commands must be in the current package, which is needed for Command creation. */ 
     private Command _curCmd = null;
     /** Use the |@code civ.CommandParser} for handling command errors and message Texts */ 
-    private CommandParser _msgHandler = null;
+    private MainframeCiv _msgHandler = null;
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++  
      *                CONSTRUCTOR(S) AND RELATED METHODS
      * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ */  
 
     /** Default constructor. */
-    public CommandFactory(CommandParser cp) 
+    public CommandFactory(MainframeCiv mfCiv) 
     { 
-      _msgHandler = cp;
+      _msgHandler = mfCiv;
     }
     
     

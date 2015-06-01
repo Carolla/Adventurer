@@ -43,9 +43,9 @@ public class Util
 //      System.out.println("\tTrying to find " + Chronos.ADV_IMAGE_PATH + imageName);
       myImage = ImageIO.read(new File(Chronos.ADV_IMAGE_PATH + imageName));
     } catch (IllegalArgumentException iaex) {
-      System.err.println("IMagePanel: null image path given");
+      System.err.println("ImagePanel: null image path given");
     } catch (IOException ioex) {
-      System.err.println("IMagePanel: problems reading the image file");
+      System.err.println("ImagePanel: problems reading the image file" + imageName);
     }
     return myImage;
   }
