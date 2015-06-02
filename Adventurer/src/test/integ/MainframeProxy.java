@@ -28,13 +28,19 @@ import mylib.MsgCtrl;
 public class MainframeProxy implements MainframeInterface
 {
   /** Buffer for holding building name */
-  static private String _bldgName;
+  private String _bldgName;
 //  /** Buffer for holding image path */
 //  static private String _imagePath;
+  /** Buffer for holding messages for auditing */
+  private String _msg;
+  private String _errMsg;
 
   /** Default constructor */
   public MainframeProxy()
-  {}
+  {
+	 MsgCtrl.auditMsgsOn(true);
+	 MsgCtrl.errorMsgsOn(true);
+  }
   
   /* (non-Javadoc)
    * @see hic.IOPanelInterface#setImage(java.lang.String)
@@ -55,7 +61,7 @@ public class MainframeProxy implements MainframeInterface
   {
     MsgCtrl.where(this);
     _bldgName = bldgName;
-    MsgCtrl.msgln("\tbuilding name = " + bldgName);
+    MsgCtrl.msgln("\tbuilding name = " + bldgName + "\n");
   }
 
   /** Returns the name and imagepath in array */
@@ -78,7 +84,9 @@ public class MainframeProxy implements MainframeInterface
    */
   public void displayErrorText(String errText)
   {
-    System.err.println("\tMainframeProxy.displayErrorText(): " + errText);
+	  MsgCtrl.where(this);
+	  _errMsg = errText;
+      MsgCtrl.msgln("\t" + errText);
   }
 
   /**
@@ -88,7 +96,9 @@ public class MainframeProxy implements MainframeInterface
    */
   public void displayText(String text)
   {
-    System.out.println("\tMainframeProxy.displayText(): " + text);
+	  MsgCtrl.where(this);
+	  _msg = text;
+      MsgCtrl.msgln("\t" + text);
   }
 
   /**
@@ -146,6 +156,22 @@ public class MainframeProxy implements MainframeInterface
     MsgCtrl.msgln("\tMainframeProxy.ontown set to " + onTown);
   }
 
+  /**
+   * Return last message out and clear buffer
+   * 
+   * @return whatever message was last intended for the GUI
+   */
+  public String msgOut()
+  {
+    MsgCtrl.where(this);
+    return _msg;
+  }
+  
+  public String errMsgOut()
+  {
+	 MsgCtrl.where(this);
+	 return _errMsg;
+  }
 
 
 } // end of MainframeProxy class

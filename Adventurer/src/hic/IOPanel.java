@@ -186,7 +186,7 @@ public class IOPanel extends JPanel implements IOPanelInterface
     southPanel.add(_cmdWin, "cell 1 0,alignx left");
 
     // Create the command parser that goes in here
-    final CommandParser cp = new CommandParser(_mfCiv);
+    final CommandParser cp = CommandParser.getInstance(_mfCiv);
 
     // Add function to send commands to command parser.
     _cmdWin.addActionListener(new ActionListener()

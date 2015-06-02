@@ -81,7 +81,7 @@ public class CmdReturn extends Command
    */
   public boolean exec()
   {
-    _msgHandler.openTown();
+    _mfCiv.openTown();
     return true;
   }
 

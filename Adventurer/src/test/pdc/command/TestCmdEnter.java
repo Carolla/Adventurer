@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import hic.MainframeInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,7 @@ import pdc.command.CmdEnter;
 import pdc.command.CmdEnter.MockCmdEnter;
 import pdc.command.CommandFactory;
 import test.integ.IOPanelProxy;
+import test.integ.MainframeProxy;
 import chronos.pdc.buildings.Building;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
@@ -36,6 +38,7 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.BuildingDisplayCiv;
 import civ.BuildingDisplayCiv.MockBldgCiv;
 import civ.CommandParser;
+import civ.MainframeCiv;
 
 /**
  * @author Al Cline
@@ -64,9 +67,14 @@ public class TestCmdEnter
   public static void setUpBeforeClass() throws Exception
   {
     _iopx = new IOPanelProxy();
-    _cp = CommandParser.getInstance(_iopx);
-    _cmdFac = new CommandFactory(_cp);
+    MainframeInterface mfInterface = new MainframeProxy();
+    MainframeCiv mfCiv = new MainframeCiv(mfInterface);
+    _cp = CommandParser.getInstance(mfCiv);
+    _cmdFac = new CommandFactory(mfCiv);
+    //_cp = CommandParser.getInstance(_iopx);
+    //_cmdFac = new CommandFactory(_cp);
     _bdciv = BuildingDisplayCiv.getInstance(); // for CmdEnter context
+    _bdciv.setOutput(mfInterface);
     _mockbdciv = _bdciv.new MockBldgCiv();
 
     // Get a list of all buildings to enter
