@@ -2,7 +2,9 @@ package battle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import mylib.pdc.MetaDie;
@@ -11,7 +13,9 @@ import battle.ActionSelector.CombatAction;
 
 public class Combatant implements CombatantInterface {
 	private TargetStrategy _targetStrategy;
+	private static Map<CombatantType, Integer> _typeCounts = new TreeMap<CombatantType, Integer>();
 	
+	protected String _name = null;
 	protected int _hp = 10;
 	protected int _ac = 10;
 	protected int _initiative = 10;
@@ -394,10 +398,16 @@ public class Combatant implements CombatantInterface {
 
 	@Override
 	public String name() {
-		if (_type == CombatantType.HERO) {
-			return "HERO";
-		} else {
-			return "ENEMY";
+		//TODO(tarmst03) need test for name
+		if (_name == null) {
+			int num = _typeCounts.containsKey(_type) ? _typeCounts.get(_type) : 0;
+			_typeCounts.put(_type, ++num);
+			if (_type == CombatantType.HERO) {
+				_name = "HERO" + num;
+			} else {
+				_name = "ENEMY" + num;
+			}
 		}
+		return _name;
 	}
 }
