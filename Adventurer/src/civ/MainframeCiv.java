@@ -240,7 +240,7 @@ public class MainframeCiv
   public void quit()
   {
     if (msgPrompt("Quit Adventurer?") == true) {
-      Adventurer.approvedQuit();
+      _frame.approvedQuit();
     }
   }
 

@@ -43,6 +43,7 @@ import mylib.hic.ShuttleList;
 import net.miginfocom.swing.MigLayout;
 import pdc.Util;
 import chronos.Chronos;
+import civ.Adventurer;
 import civ.BuildingDisplayCiv;
 import civ.MainframeCiv;
 
@@ -311,6 +312,11 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   // Public Methods
   // ============================================================
 
+  public boolean approvedQuit()
+  {
+      new Adventurer().approvedQuit();
+      return true;
+  }
 
 
   // ============================================================

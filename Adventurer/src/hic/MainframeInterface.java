@@ -54,5 +54,8 @@ public interface MainframeInterface
   /** Set whether town is being displayed */
   public void setOnTown(boolean onTown);
 
+  /** Exit the system */
+  public boolean approvedQuit();
+
   
 } // end of MainframeInterface 

@@ -14,9 +14,7 @@ import hic.Mainframe;
 import java.awt.EventQueue;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.List;
 
-import mylib.dmc.IRegistryElement;
 import mylib.pdc.Registry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
@@ -65,12 +63,14 @@ public class Adventurer
    */
   public static void main(String[] args)
   {
+      final Adventurer adv = new Adventurer();
+      
     /** All Swing processing occurs from the single EventQueue thread. */
     EventQueue.invokeLater(new Runnable() {
       public void run()
       {
         try {
-          initRegistries();
+          adv.initRegistries();
 //          dumpAllRegistries();
           final Mainframe frame = Mainframe.getInstance();
           frame.setVisible(true);
@@ -79,7 +79,7 @@ public class Adventurer
             public void windowClosing(WindowEvent e)
             {
               super.windowClosing(e);
-              approvedQuit();
+              adv.approvedQuit();
             }
           });
         } catch (Exception e) {
@@ -93,7 +93,7 @@ public class Adventurer
 
 
   /** Close all registries and shutdown the system */
-  public static void approvedQuit()
+  public void approvedQuit()
   {
     closeRegistries();
     System.exit(0);
@@ -108,20 +108,20 @@ public class Adventurer
     _rf.closeAllRegistries();
   }
 
-  /**
-   * Dump the contents of all the registries for viewing
-   */
-  static private void dumpAllRegistries()
-  {
-    _rf = RegistryFactory.getInstance();
-    for (RegKey key : RegKey.values()) {
-      Registry reg = _rf.getRegistry(key);
-      List<IRegistryElement> reglist = reg.getAll();
-      System.out.print("Registry " + key.name());
-      System.out.println("\t" + reglist.size() + " elements");
-      System.out.println("\t" + reglist.toString());
-    }
-  }
+//  /**
+//   * Dump the contents of all the registries for viewing
+//   */
+//  static private void dumpAllRegistries()
+//  {
+//    _rf = RegistryFactory.getInstance();
+//    for (RegKey key : RegKey.values()) {
+//      Registry reg = _rf.getRegistry(key);
+//      List<IRegistryElement> reglist = reg.getAll();
+//      System.out.print("Registry " + key.name());
+//      System.out.println("\t" + reglist.size() + " elements");
+//      System.out.println("\t" + reglist.toString());
+//    }
+//  }
 
   // ============================================================
   // Inner class for testing
@@ -130,7 +130,7 @@ public class Adventurer
   /**
    * Open all database Registries (singletons) for convenience and performance
    */
-  private static void initRegistries()
+  private void initRegistries()
   {
     _rf = RegistryFactory.getInstance();
     for (RegKey key : RegKey.values()) {
@@ -175,12 +175,12 @@ public class Adventurer
 
     public void initRegistries()
     {
-      Adventurer.initRegistries();
+      this.initRegistries();
     }
 
     public void closeRegistries()
     {
-      Adventurer.closeRegistries();
+      this.closeRegistries();
     }
 
 
