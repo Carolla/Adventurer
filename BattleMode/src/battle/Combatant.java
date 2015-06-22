@@ -78,9 +78,13 @@ public class Combatant implements CombatantInterface {
 		    	case FLEE:
 		    		tryToEscape(battle);
 		    		break;
-		    	case EQUIP:
-		    		CombatantWeapon weapon = _actionSelector.selectItem();
+		    	case EQUIP_WEAPON:
+		    		CombatantWeapon weapon = _actionSelector.selectWeapon();
 		    		equip(weapon);
+		    		break;
+		    	case EQUIP_ARMOR:
+		    		CombatantArmor armor= _actionSelector.selectArmor();
+		    		equip(armor);
 		    		break;
 				case ATTACK_SAME:
 					if (lastTarget == null) {
