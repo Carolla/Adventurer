@@ -38,8 +38,15 @@ public class MainframeProxy implements MainframeInterface
   /** Default constructor */
   public MainframeProxy()
   {
-	 MsgCtrl.auditMsgsOn(true);
-	 MsgCtrl.errorMsgsOn(true);
+//	 MsgCtrl.auditMsgsOn(true);
+//	 MsgCtrl.errorMsgsOn(true);
+  }
+  
+  /** Simulate quitting the system */
+  @Override
+  public boolean approvedQuit()
+  {
+      return true;
   }
   
   /* (non-Javadoc)
@@ -74,7 +81,7 @@ public class MainframeProxy implements MainframeInterface
   /** Replace the button panel with the final IOPanel */
   public void addIOPanel()
   {
-    System.out.println("\tMainframeProxy.addIOPanel(): ");
+      MsgCtrl.msgln("\tMainframeProxy.addIOPanel(): ");
   }
 
   /**
@@ -106,9 +113,10 @@ public class MainframeProxy implements MainframeInterface
    * 
    * @param text to be displayed
    */
+  @Override
   public boolean displayPrompt(String text)
   {
-    System.out.println("\tMainframeProxy.displayPrompt(): " + text);
+    MsgCtrl.msgln("\tMainframeProxy.displayPrompt(): " + text);
     return true;
   }
 

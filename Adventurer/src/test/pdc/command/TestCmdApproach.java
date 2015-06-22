@@ -76,10 +76,10 @@ public class TestCmdApproach
     @Before
     public void setUp() throws Exception
     {
-//        _cmdApproach = new CmdApproach();
+        // Create the command and mock objects
         _cmdApproach = (CmdApproach) _cmdFac.createCommand("CmdApproach");
-        
         _mock = _cmdApproach.new MockCmdApproach();
+        
         // Error messages are ON at start of each test 
         MsgCtrl.errorMsgsOn(true);
         // Audit messages are OFF at start of each test
@@ -112,13 +112,15 @@ public class TestCmdApproach
         MsgCtrl.errorMsgsOn(false);
         MsgCtrl.where(this);
         
-        // Normal Tests
+        // Normal Test - expected Class name
         assertTrue(_cmdApproach.getClass().getSimpleName().equals("CmdApproach"));
         
+        // Vars for tests
         int delay = 0;
         int duration = 30;
         String cmdFormat = "APPROACH <Building Name>";
         
+        // Tests
         MsgCtrl.msgln("\t" + _mock.getCmdFormat());
         assertEquals(delay, _mock.getDelay());
         assertEquals(duration, _mock.getDuration());

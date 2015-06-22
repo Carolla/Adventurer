@@ -14,6 +14,8 @@ package pdc.command;
 
 import java.util.List;
 
+import chronos.pdc.buildings.Building;
+
 
 /**
  * Stops the user command dialogue and triggers the shutdown methods to end the program.
@@ -39,6 +41,10 @@ public class CmdQuit extends Command
   static final int DURATION = 0;
   /** Format for usage string on input error */
 //  static final String FMT = "[takes no parameters]";
+  
+  /** Error message if args are input with command */
+  private final String ERRMSG_OMIT_ARGS = 
+          "If you want to exit the program, type \"Quit\" without any additional characters.";
 
 
   // ============================================================
@@ -65,15 +71,19 @@ public class CmdQuit extends Command
    */
   @Override
   public boolean init(List<String> args)
+<<<<<<< HEAD
   {
     return (args.size() == 0) ? true : false;
-//    if (ok) {
-//      usage();
-//      return false;
-//    }
-//    return true;
+=======
+  {    
+    if (args.size() == 0) {
+        return true;
+    } else {
+        super._mfCiv.errorOut(ERRMSG_OMIT_ARGS);
+        return false;
+    }
+>>>>>>> 6addb1086ba8655eba32d7aa6de202828efa90d5
   }
-
 
   /**
    * Forces the program to end.
@@ -83,9 +93,37 @@ public class CmdQuit extends Command
   @Override
   public boolean exec()
   {
+<<<<<<< HEAD
+    super._mfCiv.quit();
+=======
     _mfCiv.quit();
+>>>>>>> 6addb1086ba8655eba32d7aa6de202828efa90d5
     return true;
   }
+  
+  /** INNER CLASS: MOCK */
+  public class MockCmdQuit
+  {
+    /** Ctor */
+    public MockCmdQuit()
+    {}
+
+    public int getDelay()
+    {
+      return CmdQuit.DELAY;
+    }
+
+    public int getDuration()
+    {
+      return CmdQuit.DURATION;
+    }
+    
+    public String getDescription() {
+        return CmdQuit.CMD_DESCRIPTION;
+    }
+
+    
+  } // end MockCmdQuit class
   
   
 } // end CmdQuit class
