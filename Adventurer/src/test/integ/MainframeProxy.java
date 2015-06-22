@@ -29,8 +29,6 @@ public class MainframeProxy implements MainframeInterface
 {
   /** Buffer for holding building name */
   private String _bldgName;
-//  /** Buffer for holding image path */
-//  static private String _imagePath;
   /** Buffer for holding messages for auditing */
   private String _msg;
   private String _errMsg;
@@ -38,8 +36,6 @@ public class MainframeProxy implements MainframeInterface
   /** Default constructor */
   public MainframeProxy()
   {
-//	 MsgCtrl.auditMsgsOn(true);
-//	 MsgCtrl.errorMsgsOn(true);
   }
   
   /** Simulate quitting the system */
@@ -71,7 +67,7 @@ public class MainframeProxy implements MainframeInterface
     MsgCtrl.msgln("\tbuilding name = " + bldgName + "\n");
   }
 
-  /** Returns the name and imagepath in array */
+  /** Returns the name and image path in array */
   public String getBldgName()
   {
     return _bldgName;
@@ -93,7 +89,7 @@ public class MainframeProxy implements MainframeInterface
   {
 	  MsgCtrl.where(this);
 	  _errMsg = errText;
-      MsgCtrl.msgln("\t" + errText);
+    MsgCtrl.errMsgln("\t" + errText);
   }
 
   /**
@@ -105,7 +101,7 @@ public class MainframeProxy implements MainframeInterface
   {
 	  MsgCtrl.where(this);
 	  _msg = text;
-      MsgCtrl.msgln("\t" + text);
+    MsgCtrl.msgln("\t" + text);
   }
 
   /**

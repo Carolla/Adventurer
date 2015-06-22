@@ -10,7 +10,6 @@
 package test.integ;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import mylib.MsgCtrl;
 
@@ -20,6 +19,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import chronos.pdc.buildings.Building;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
@@ -30,14 +30,17 @@ import civ.CommandParser.MockCP;
 import civ.MainframeCiv;
 
 /**
- * Enter a building from its exterior or from the town.
- * If in the Town or outside a Building, the Building Name is required.
- * If currently outside a building, ENTER with no parms, witll put the Hero inside the current Building
+ * Enter a specified building from the building's exterior or from the town. If the Hero is outside
+ * a particular Building, no name is required.
+ * <P>
+ * Format: {@code ENTER <BuildingName>} enter the specified Building if not already in one <br>
+ * Format: {@code ENTER < >} enters the Building Hero is currently outside of <br>
  * <P>
  * Implementation Note: The {@code MainFrameProxy}, which implements {@code MainframeInterface},
- * intervenes between the {@code civ.CommandParser} and the {@code hic.Mainframe}.
- * All inputs are sent from the {@code test.integ.CmdLineProxy} and outputs are received from the
- * {@code test.integ.IOPanelProxy}.
+ * intervenes between the {@code civ.CommandParser} and the {@code hic.Mainframe}. All inputs are
+ * sent directly to the {@code civ.CmdParser} and outputs are received by the
+ * {@code test.integ.MainframeProxy}, which replaces the {@code hic.IOPanel} to writes output
+ * messages.
  * 
  * @author Alan Cline
  * @version Dec 20, 2014 // original <br>
@@ -46,8 +49,6 @@ import civ.MainframeCiv;
  */
 public class TA08_CmdEnter
 {
-  /** Facade to send and receive messages meant for the output panel */
-  static private IOPanelProxy _ioProxy = null;
   /** CommandParser takes in all commands from the CmdLine of the IOPanel */
   static private CommandParser _cp = null;
   /** MockCommandParser allows access to CommandParser fields */
@@ -56,7 +57,7 @@ public class TA08_CmdEnter
   static private BuildingDisplayCiv _bldgCiv = null;
   /** MockBuildingDisplayCiv */
   static private MockBldgCiv _mockBldgCiv = null;
-  /** Mainframe Proxy facades the image panel and iopanel; used by BuildingDisplayCiv */
+  /** MainframeProxy controls inputs and outputs; used by BuildingDisplayCiv */
   static private MainframeProxy _mfProxy = null;
   static private MainframeCiv _mfCiv;
 
@@ -68,8 +69,6 @@ public class TA08_CmdEnter
   public static void setUpBeforeClass() throws Exception
   {
     // Replace the GUI objects with their test facades
-    _ioProxy = new IOPanelProxy();
-    assertNotNull(_ioProxy);
     _mfProxy = new MainframeProxy();
     assertNotNull(_mfProxy);
     // Create the parser to receive commands
@@ -97,7 +96,6 @@ public class TA08_CmdEnter
     _mockCP = null;
     _cp = null;
     _mfProxy = null;
-    _ioProxy = null;
     // Close BuildingRegistry, left open from BuildingDisplayCiv
     RegistryFactory regFactory = RegistryFactory.getInstance();
     BuildingRegistry bReg = (BuildingRegistry) regFactory.getRegistry(RegKey.BLDG);
@@ -126,57 +124,11 @@ public class TA08_CmdEnter
   // Begin the tests!
   // ==========================================================
 
-  /**
-   * Error case: null command should return CMD_NULL error message <br>
-   */
-  @Test
-  public void test_EnterNullCmd()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    // Error: null command
-    _cp.receiveCommand(null);
-    String echo = _mockCP.getInput();
-    MsgCtrl.msgln("\tCommand entered: " + echo);
-    assertNull(echo);
-    String nullMsg = _mockCP.getERRMSG_CMDNULL();
-    String msgOut = _mfProxy.errMsgOut();
-    MsgCtrl.msgln("\tError message expected: " + nullMsg);
-    assertTrue(msgOut.equals(nullMsg));
-  }
-
-
-  /**
-   * Error case: empty string command should return CMD_NULL error message <br>
- * @throws InterruptedException 
-   */
-  @Test
-  public void test_EnterEmptyCmd() throws InterruptedException
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    final String EMPTY = " "; // one space
-
-    // Error: empty command string
-    _cp.receiveCommand(EMPTY);
-    String echo = _mockCP.getInput();
-    MsgCtrl.msgln("\tCommand entered: " + echo);
-    assertNull(_mockCP.getInput());
-    String nullMsg = _mockCP.getERRMSG_CMDNULL();
-    String msgOut = _mfProxy.errMsgOut();
-    MsgCtrl.msgln("\tError message expected: " + nullMsg);
-    MsgCtrl.msgln("\tError message received: " + msgOut);
-    assertTrue(msgOut.equals(nullMsg));
-  }
-
 
   /**
    * Normal case: Enter a valid building from the town
- * @throws InterruptedException 
+   * 
+   * @throws InterruptedException
    */
   @Test
   public void test_EnterBuildingFromTownOrExterior() throws InterruptedException
@@ -186,32 +138,59 @@ public class TA08_CmdEnter
     MsgCtrl.where(this);
 
     final String[][] bldg = {
-        {"Arcaneum",    "int_Arcaneum.jpg"},
-        {"Bank",        "int_Bank.jpg"},
-        {"Rat's Pack",  "int_GeneralStore.jpg"},
-        {"Ugly Ogre Inn","int_Inn.jpg"},
-        {"Jail",        "int_Jail.jpg"},
+        {"Arcaneum", "int_Arcaneum.jpg"},
+        {"Bank", "int_Bank.jpg"},
         {"Clerics' Guild", "int_Monastery.jpg"},
+        {"Fighters' Guild", "int_Stadium.jpg"},
+        {"Jail", "int_Jail.jpg"},
+        {"Rat's Pack", "int_GeneralStore.jpg"},
         {"Rouge's Den", "int_RoguesDen.jpg"},
-        {"Fighters' Guild", "int_Stadium.jpg"}
-        };
+        {"Ugly Ogre Inn", "int_Inn.jpg"}
+    };
 
     // Try entering all buildings
-    for (int k=0; k < bldg.length; k++) {
-      _cp.receiveCommand("Enter " + bldg[k][0]); 
-      Thread.sleep(500);
-      
+    for (int k = 0; k < bldg.length; k++) {
+      _cp.receiveCommand("Enter " + bldg[k][0]);
       String echo = _mockCP.getInput();
       MsgCtrl.msgln("\tCommand: " + echo);
-      String bldgName = _mfProxy.getBldgName();
-      MsgCtrl.msg("\tBuilding name = " + bldgName);
-      assertTrue("Expected " + bldg[k][0] + ", got " + bldgName, bldgName.equals(bldg[k][0]));
-      
-      _cp.receiveCommand("Return"); 
+
+      // After Cmd is executed
       Thread.sleep(500);
+      String bName = _bldgCiv.getCurrentBuilding().getName();
+      MsgCtrl.msg("\tBuilding name = " + bName);
+      assertTrue("Expected " + bldg[k][0] + ", got " + bName, bName.equals(bldg[k][0]));
+
+      _cp.receiveCommand("Return");
     }
   }
 
+
+
+  // /**
+  // * Error case: empty string command should return CMD_NULL error message <br>
+  // * @throws InterruptedException
+  // */
+  // @Test
+  // public void test_EnterEmptyCmd() throws InterruptedException
+  // {
+  // MsgCtrl.auditMsgsOn(false);
+  // MsgCtrl.errorMsgsOn(false);
+  // MsgCtrl.where(this);
+  //
+  // final String EMPTY = " "; // one space
+  //
+  // // Error: empty command string
+  // _cp.receiveCommand(EMPTY);
+  // String echo = _mockCP.getInput();
+  // MsgCtrl.msgln("\tCommand entered: " + echo);
+  // assertNull(_mockCP.getInput());
+  // String nullMsg = _mockCP.getERRMSG_CMDNULL();
+  // String msgOut = _mfProxy.errMsgOut();
+  // MsgCtrl.msgln("\tError message expected: " + nullMsg);
+  // MsgCtrl.msgln("\tError message received: " + msgOut);
+  // assertTrue(msgOut.equals(nullMsg));
+  // }
+  //
   // /**
   // * Error case: null parm and no current building <br>
   // */

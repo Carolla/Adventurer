@@ -45,7 +45,6 @@ public class IOPanel extends JPanel implements IOPanelInterface
 {
   private final JTextArea _output;
   private final JScrollPane _scrollpane;
-  // private boolean _redirectIO;
 
   private JTextField _cmdWin = null;
 

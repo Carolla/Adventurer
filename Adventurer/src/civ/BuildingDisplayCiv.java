@@ -147,10 +147,10 @@ public class BuildingDisplayCiv
     if (bldg != null) {
       _currentBldg = bldg;
       _insideBldg = true;
+      _frame.setOnTown(false);
       String description = bldg.getInteriorDescription();
       String imagePath = bldg.getIntImagePath();
       displayBuilding(description, imagePath);
-      _frame.setOnTown(false);
     }
     else {
       _frame.displayErrorText(NO_BLDG_FOUND);
