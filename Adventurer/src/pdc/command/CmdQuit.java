@@ -67,11 +67,6 @@ public class CmdQuit extends Command
   public boolean init(List<String> args)
   {
     return (args.size() == 0) ? true : false;
-//    if (ok) {
-//      usage();
-//      return false;
-//    }
-//    return true;
   }
 
 
@@ -83,7 +78,7 @@ public class CmdQuit extends Command
   @Override
   public boolean exec()
   {
-//    super._mfCiv.quit();
+    super._mfCiv.quit();
     return true;
   }
   
