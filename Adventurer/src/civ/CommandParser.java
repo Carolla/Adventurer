@@ -74,15 +74,15 @@ public class CommandParser
   private final String ERRMSG_CMDNULL = "Nothing was entered. Please try again.";
 
   /** Identify a command string in which only a return key is entered. */
-  private final String EMPTY_STRING = "";
+  private final String CMD_EMPTY = "";
 
   /** Reference to GUI panel for input and output messages, and their interactions */
   private MainframeCiv _mfCiv;
 
   /** Start the Scheduler up when the CommandPaarser starts */
   static private Scheduler _skedder = null;
-  
-  private static int count = 0;
+
+private static CommandParser _this;
 
   // ============================================================
   // Constructors and constructor helpers
@@ -95,11 +95,8 @@ public class CommandParser
    * @param ioPanel handles input commands and output and error messages, and the interactions
    *        between command line input and output messages
    */
-  public CommandParser(MainframeCiv mfCiv)
+  private CommandParser(MainframeCiv mfCiv)
   {
-	 if (count++ > 1) {
-		 System.err.println("Multiple CommandParsers have been created\n");
-	 }
     _parms = new ArrayList<String>();
     _mfCiv = mfCiv;
     _cmf = new CommandFactory(_mfCiv);
@@ -107,6 +104,14 @@ public class CommandParser
     // Start the scheduler off on its own thread
     _skedder = Scheduler.getInstance(this);
     new Thread(_skedder).start();
+  }
+  
+  public static CommandParser getInstance(MainframeCiv mfCiv)
+  {
+    if (_this == null) {
+    	_this = new CommandParser(mfCiv);
+      }
+      return _this;
   }
 
   // ============================================================
@@ -138,9 +143,20 @@ public class CommandParser
    */
   public void receiveCommand(String textIn)
   {
-	// Guard against empty string
-	String cmdIn = textIn.trim();
-    _userInput = cmdIn; 
+	// Guard against null parm
+	  if (textIn == null) {
+	    _mfCiv.errorOut(ERRMSG_CMDNULL);
+	  }
+	  else {
+	    // Guard against empty string
+	    String cmdIn = textIn.trim();
+	    if (cmdIn.length() == 0) {
+	      _mfCiv.errorOut(ERRMSG_CMDNULL);
+	    }
+	    else {
+	      _userInput = cmdIn; 
+	    }
+	  }
   }
 
   
@@ -291,7 +307,7 @@ public class CommandParser
     _parms.clear();
     // Check for an empty carriage return entered first;
     // StringTokenizer throws exception on it
-    if (ipLine.equalsIgnoreCase(EMPTY_STRING)) {
+    if (ipLine.equalsIgnoreCase(CMD_EMPTY)) {
       return null;
     }
     // StringTokenizer class defaults to whitespace as delimiter

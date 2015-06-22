@@ -69,12 +69,6 @@ public class CmdEnter extends Command
   /** The building to enter */
   private Building _targetBuilding;
 
-  /** Error message if no current building to enter */
-  private final String ERRMSG_NOBLDG =
-      "I don't know that building. What building did you want to enter?";
-  /** Message if trying to jump from interior to interior of buildings */
-  private final String ERRMSG_JUMPBLDG =
-      "You must leave (exit) one building before you enter another.";
 
 
   // ============================================================
@@ -107,38 +101,19 @@ public class CmdEnter extends Command
   @Override
   public boolean init(List<String> args) 
   {
+    String bldgParm = convertArgsToString(args);
+      
     // The BuildingDisplayCiv must already exist
     _bldgCiv = BuildingDisplayCiv.getInstance();
-
-    // The Hero cannot be inside a building already
-    if (_bldgCiv.isInside() == true) {
-      super._msgHandler.errorOut(ERRMSG_JUMPBLDG);
-      return false;
-    }
-
-    // Case 1: Building name is given
-    if (args.size() != 0) {
-      String bldgParm = convertArgsToString(args);
-      Building b = _breg.getBuilding(bldgParm);
-      // Check that the building specified actually exists
-      if (b == null) {
-        super._msgHandler.errorOut(ERRMSG_NOBLDG);
-        return false;
-      } else {
-        _targetBuilding = b;
-        return true;
-      }
-    }
-    else {
-      // Case 2: Building defaults to current building
-      Building currentBuilding = _bldgCiv.getCurrentBuilding();
-      if (currentBuilding == null) {
-        super._msgHandler.errorOut(ERRMSG_NOBLDG);
-        return false;
-      } else {
-        _targetBuilding = currentBuilding;
-        return true;
-      }
+    if (_bldgCiv.canEnter(bldgParm)) {
+    	if (bldgParm.length() > 0) {
+        	_targetBuilding = _breg.getBuilding(bldgParm);
+    	} else {
+    		_targetBuilding = _bldgCiv.getCurrentBuilding();
+    	}
+    	return true;
+    } else {
+    	return false;
     }
   }
 

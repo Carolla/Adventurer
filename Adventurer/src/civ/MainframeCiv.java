@@ -118,6 +118,7 @@ public class MainframeCiv
     _frame.setImage(Util.convertToImage(INITIAL_IMAGE));
     // TODO Why is this in the civ, and not the hic.Mainframe?
     _frame.setImageTitle(INITIAL_TITLE);
+	_bdCiv = BuildingDisplayCiv.getInstance();
     // _personRW = new PersonReadWriter();
     // _advReg = (AdventureRegistry) RegistryFactory.getInstance().getRegistry(RegKey.ADV);
     createBuildingBoxes();
@@ -173,7 +174,6 @@ public class MainframeCiv
    {
 	   if (_onTown) {
 		   System.out.println("On town, trying to open building");
-		   _bdCiv = BuildingDisplayCiv.getInstance();
 		   _onTown = false;
 		   
 		   // Always enter the building on request
@@ -183,7 +183,7 @@ public class MainframeCiv
 		    Building b = breg.getBuilding(bldName);
 		    if (b != null) {
 			    System.out.println("Opening building " + b.getName());
-		    	_bdCiv.enterBuilding(b);	
+		    	_bdCiv.approachBuilding(b);	
 		    } else {
 		    	System.out.println("Can't open null building");
 		    }
@@ -240,7 +240,7 @@ public class MainframeCiv
   public void quit()
   {
     if (msgPrompt("Quit Adventurer?") == true) {
-      Adventurer.approvedQuit();
+      _frame.approvedQuit();
     }
   }
 
@@ -315,11 +315,14 @@ public class MainframeCiv
   public void openTown()
   {
     _onTown = true;
+    _bdCiv.setCurrentBuilding(null);
     Image townImage = Util.convertToImage(TOWN_IMAGE);
     _frame.setImage(townImage);
-    String townTitle = " The Town of " + _adv.getTownName();
-    _frame.setImageTitle(townTitle);
-    _frame.displayText(_adv.getOverview());
+    if (_adv != null) {
+      String townTitle = " The Town of " + _adv.getTownName();
+      _frame.setImageTitle(townTitle);
+      _frame.displayText(_adv.getOverview());
+    }
   }
 
 

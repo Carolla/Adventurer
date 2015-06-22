@@ -2,16 +2,11 @@ package test.pdc.command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import hic.IOPanelInterface;
+import hic.MainframeInterface;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
-import javax.swing.JTextArea;
 
 import mylib.MsgCtrl;
 
@@ -22,18 +17,18 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import pdc.command.CmdApproach;
-import pdc.command.CmdEnter;
-import pdc.command.CommandFactory;
 import pdc.command.CmdApproach.MockCmdApproach;
-import pdc.command.Command;
+import pdc.command.CommandFactory;
 import test.integ.IOPanelProxy;
+import test.integ.MainframeProxy;
 import chronos.pdc.buildings.Building;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.BuildingDisplayCiv;
-import civ.CommandParser;
 import civ.BuildingDisplayCiv.MockBldgCiv;
+import civ.CommandParser;
+import civ.MainframeCiv;
 
 public class TestCmdApproach
 {
@@ -55,9 +50,12 @@ public class TestCmdApproach
     public static void setUpBeforeClass() throws Exception
     {
         _iopx = new IOPanelProxy();
-        _cp = CommandParser.getInstance(_iopx);
-        _cmdFac = new CommandFactory(_cp);
+        MainframeInterface mfInterface = new MainframeProxy();
+        MainframeCiv mfCiv = new MainframeCiv(mfInterface);
+        _cp = CommandParser.getInstance(mfCiv);
+        _cmdFac = new CommandFactory(mfCiv);
         _bdciv = BuildingDisplayCiv.getInstance(); // for CmdApproach context
+        _bdciv.setOutput(mfInterface);
         _mockbdciv = _bdciv.new MockBldgCiv();
         
         // Get a list of all buildings to enter
@@ -78,10 +76,10 @@ public class TestCmdApproach
     @Before
     public void setUp() throws Exception
     {
-//        _cmdApproach = new CmdApproach();
+        // Create the command and mock objects
         _cmdApproach = (CmdApproach) _cmdFac.createCommand("CmdApproach");
-        
         _mock = _cmdApproach.new MockCmdApproach();
+        
         // Error messages are ON at start of each test 
         MsgCtrl.errorMsgsOn(true);
         // Audit messages are OFF at start of each test
@@ -114,13 +112,15 @@ public class TestCmdApproach
         MsgCtrl.errorMsgsOn(false);
         MsgCtrl.where(this);
         
-        // Normal Tests
+        // Normal Test - expected Class name
         assertTrue(_cmdApproach.getClass().getSimpleName().equals("CmdApproach"));
         
+        // Vars for tests
         int delay = 0;
         int duration = 30;
         String cmdFormat = "APPROACH <Building Name>";
         
+        // Tests
         MsgCtrl.msgln("\t" + _mock.getCmdFormat());
         assertEquals(delay, _mock.getDelay());
         assertEquals(duration, _mock.getDuration());

@@ -14,6 +14,9 @@ package civ;
 import hic.MainframeInterface;
 import pdc.Util;
 import chronos.pdc.buildings.Building;
+import chronos.pdc.registry.BuildingRegistry;
+import chronos.pdc.registry.RegistryFactory;
+import chronos.pdc.registry.RegistryFactory.RegKey;
 
 /**
  * Maintain displays and text descriptions of all Buildings, both interior and exterior. It shows
@@ -33,9 +36,17 @@ public class BuildingDisplayCiv
   private Building _currentBldg;
   /** Flag to indicate whether here is inside the building (ENTER) or outside (APPROACH) */
   private boolean _insideBldg = false;
+  /** BuildingDisplayCiv knows about buildings */
+  private BuildingRegistry _breg;
 
   private static final String NO_BLDG_FOUND = "Could not find that building.\n";
 
+  /** Error message if no current building to enter */
+  private final String ERRMSG_NOBLDG =
+      "I don't know that building. What building did you want to enter?";
+  /** Message if trying to jump from interior to interior of buildings */
+  private final String ERRMSG_JUMPBLDG =
+      "You must leave (exit) one building before you enter another.";
   // ======================================================================
   // Constructors and constructor helpers
   // ======================================================================
@@ -47,11 +58,41 @@ public class BuildingDisplayCiv
    * {@code MainframeInterface}.
    */
   private BuildingDisplayCiv()
-  {
+  {		    
+	_breg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
     _currentBldg = null;
   }
 
-  /**
+  public boolean canEnter(String bldgParm) {
+	// The Hero cannot be inside a building already
+    if (isInside()) {
+      _frame.displayErrorText(ERRMSG_JUMPBLDG);
+      return false;
+    }
+
+    // Case 1: Building name is given
+    if (bldgParm.length() > 0) {
+      // Check that the building specified actually exists
+      Building b = _breg.getBuilding(bldgParm);
+      boolean bldgFound = b != null;
+      if (!bldgFound) {
+   	    _frame.displayErrorText(ERRMSG_NOBLDG);
+   	    return false;
+  	  } else  {
+        return true;
+      }
+    } else {
+      // Case 2: Building defaults to current building
+      if (_currentBldg == null) {
+        _frame.displayErrorText(ERRMSG_NOBLDG);
+        return false;
+      } else  {
+        return true;
+      }
+    }
+  }
+
+/**
    * Is a singleton so that any command can get to it. All commands occur in the context of some
    * building. The output display object is set through {@code setOutput(MainframeInterface)}.
    */

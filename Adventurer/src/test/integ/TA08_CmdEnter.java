@@ -27,6 +27,7 @@ import civ.BuildingDisplayCiv;
 import civ.BuildingDisplayCiv.MockBldgCiv;
 import civ.CommandParser;
 import civ.CommandParser.MockCP;
+import civ.MainframeCiv;
 
 /**
  * Enter a building from its exterior or from the town, by giving either the Building name or type.
@@ -58,6 +59,7 @@ public class TA08_CmdEnter
   static private MockBldgCiv _mockBldgCiv = null;
   /** Mainframe Proxy facades the image panel and iopanel; used by BuildingDisplayCiv */
   static private MainframeProxy _mfProxy = null;
+  static private MainframeCiv _mfCiv;
 
 
   /**
@@ -72,7 +74,8 @@ public class TA08_CmdEnter
     _mfProxy = new MainframeProxy();
     assertNotNull(_mfProxy);
     // Create the parser to receive commands
-    _cp = CommandParser.getInstance(_ioProxy);
+    _mfCiv = new MainframeCiv(_mfProxy);
+    _cp = CommandParser.getInstance(_mfCiv);
     assertNotNull(_cp);
     _mockCP = _cp.new MockCP();
     assertNotNull(_mockCP);
@@ -140,7 +143,7 @@ public class TA08_CmdEnter
     MsgCtrl.msgln("\tCommand entered: " + echo);
     assertNull(echo);
     String nullMsg = _mockCP.getERRMSG_CMDNULL();
-    String msgOut = _ioProxy.msgOut();
+    String msgOut = _mfProxy.errMsgOut();
     MsgCtrl.msgln("\tError message expected: " + nullMsg);
     assertTrue(msgOut.equals(nullMsg));
   }
@@ -148,9 +151,10 @@ public class TA08_CmdEnter
 
   /**
    * Error case: empty string command should return CMD_NULL error message <br>
+ * @throws InterruptedException 
    */
   @Test
-  public void test_EnterEmptyCmd()
+  public void test_EnterEmptyCmd() throws InterruptedException
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
@@ -162,9 +166,9 @@ public class TA08_CmdEnter
     _cp.receiveCommand(EMPTY);
     String echo = _mockCP.getInput();
     MsgCtrl.msgln("\tCommand entered: " + echo);
-    assertNull(echo);
+    assertNull(_mockCP.getInput());
     String nullMsg = _mockCP.getERRMSG_CMDNULL();
-    String msgOut = _ioProxy.msgOut();
+    String msgOut = _mfProxy.errMsgOut();
     MsgCtrl.msgln("\tError message expected: " + nullMsg);
     MsgCtrl.msgln("\tError message received: " + msgOut);
     assertTrue(msgOut.equals(nullMsg));
@@ -173,9 +177,10 @@ public class TA08_CmdEnter
 
   /**
    * Normal case: Enter a valid building from the town
+ * @throws InterruptedException 
    */
   @Test
-  public void test_EnterBuildingFromTownOrExterior()
+  public void test_EnterBuildingFromTownOrExterior() throws InterruptedException
   {
     MsgCtrl.auditMsgsOn(true);
     MsgCtrl.errorMsgsOn(true);
@@ -195,16 +200,16 @@ public class TA08_CmdEnter
     // Try entering all buildings
     for (int k=0; k < bldg.length; k++) {
       _cp.receiveCommand("Enter " + bldg[k][0]); 
-      try {
-        Thread.sleep(1000);
-      } catch (Exception ex) {
-        MsgCtrl.errMsgln("Exception thrown");
-      }
+      Thread.sleep(500);
+      
       String echo = _mockCP.getInput();
       MsgCtrl.msgln("\tCommand: " + echo);
       String bldgName = _mfProxy.getBldgName();
       MsgCtrl.msg("\tBuilding name = " + bldgName);
-      assertTrue(bldgName.equals(bldg[k][0]));
+      assertTrue("Expected " + bldg[k][0] + ", got " + bldgName, bldgName.equals(bldg[k][0]));
+      
+      _cp.receiveCommand("Return"); 
+      Thread.sleep(500);
     }
   }
 

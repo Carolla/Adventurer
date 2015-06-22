@@ -103,7 +103,7 @@ public class CmdApproach extends Command
 
       // The Hero cannot be inside a building already
       if (_bldgCiv.isInside() == true) {
-        super._msgHandler.errorOut(ERRMSG_JUMPBLDG);
+        _mfCiv.errorOut(ERRMSG_JUMPBLDG);
         return false;
       }
       
@@ -113,7 +113,7 @@ public class CmdApproach extends Command
         Building b = _breg.getBuilding(bldgParm);
         // Check that the building specified actually exists
         if (b == null) {
-          super._msgHandler.errorOut(ERRMSG_WRONG_BLDG);
+          _mfCiv.errorOut(ERRMSG_WRONG_BLDG);
           return false;
         } else {
           _targetBuilding = b;
@@ -122,7 +122,7 @@ public class CmdApproach extends Command
       }
       else {
         // Case 2: No building specified
-          super._msgHandler.errorOut(ERRMSG_NOBLDG);
+          _mfCiv.errorOut(ERRMSG_NOBLDG);
           return false;
       }
     }
