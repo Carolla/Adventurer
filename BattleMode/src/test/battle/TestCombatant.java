@@ -1,5 +1,6 @@
 package test.battle;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -388,5 +389,37 @@ public class TestCombatant
     		assertTrue(enemyList.contains(c));
     		assertFalse(heroList.contains(c));
     	}
+    }
+    
+    @Test
+    public void NameIsSetAccordingToType()
+    {
+    	int numberOfHeros = meta.getRandom(1,20);
+    	int numberOfEnemies = meta.getRandom(1,20);
+    	boolean herosGoFirst = true;
+    	if (meta.getRandom(1, 2) > 1) {
+    		herosGoFirst = false;
+    	}
+
+    	if (herosGoFirst) {
+	    	for (int i = 1; i <= numberOfHeros; i++) {
+	    		Combatant hero = new AutoCombatant.CombatantBuilder().build();
+	    		assertEquals(hero.name(), "HERO" + i);
+	    	}
+	    	for (int i = 1; i <= numberOfEnemies; i++) {
+	    		Combatant hero = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).build();
+	    		assertEquals(hero.name(), "ENEMY" + i);
+	    	}
+    	} else {
+	    	for (int i = 1; i <= numberOfEnemies; i++) {
+	    		Combatant hero = new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).build();
+	    		assertEquals(hero.name(), "ENEMY" + i);
+	    	}
+	    	for (int i = 1; i <= numberOfHeros; i++) {
+	    		Combatant hero = new AutoCombatant.CombatantBuilder().build();
+	    		assertEquals(hero.name(), "HERO" + i);
+	    	}
+    	}
+
     }
 }
