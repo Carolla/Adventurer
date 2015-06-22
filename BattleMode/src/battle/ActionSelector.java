@@ -9,17 +9,12 @@ public class ActionSelector
 {
     public enum CombatAction {ATTACK, FLEE, EQUIP_WEAPON, ATTACK_SAME, EQUIP_ARMOR};
     private final Scanner in = new Scanner(System.in);
-	private CombatAction _lastAction = null;
     
 	public CombatAction getNextAction() {
 		boolean goodInput = false;
 		CombatAction action = CombatAction.ATTACK;
 		while (!goodInput) {
-			if (_lastAction == CombatAction.ATTACK || _lastAction == CombatAction.ATTACK_SAME) {
-				System.out.println("What would you like to do? [s]ame, [a]ttack, [f]lee, [e]quip weapon, equip a[r]mor");
-			} else {
-				System.out.println("What would you like to do? [a]ttack, [f]lee, [e]quip weapon, equip a[r]mor");
-			}
+			System.out.println("What would you like to do? [a]ttack, [f]lee, [e]quip weapon, equip a[r]mor");
 			String line = in.nextLine().trim();
 			
 			if (line.equalsIgnoreCase("a")) {
@@ -39,7 +34,6 @@ public class ActionSelector
 				goodInput = true;				
 			}
 		}
-		_lastAction = action;
 		return action;
 	}
 
