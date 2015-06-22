@@ -30,20 +30,19 @@ import civ.CommandParser.MockCP;
 import civ.MainframeCiv;
 
 /**
- * Enter a building from its exterior or from the town, by giving either the Building name or type.
- * If no name or type is given, then the Hero will Enter the "current building". If Hero is at the
- * town view.i.e., no current building, then an error is returned.
+ * Enter a building from its exterior or from the town.
+ * If in the Town or outside a Building, the Building Name is required.
+ * If currently outside a building, ENTER with no parms, witll put the Hero inside the current Building
  * <P>
- * The methods {@code Enter.init()} and {@code Enter.exec()} must also be tested from the
- * {@code Scheduler}, which runs on its own thread.
- * <P>
- * Implementation Note: This JUnit module intervenes between the {@code civ.CommandParser} and the
- * {@code hic.IOPanel} with {@code test.integ.IOPanelProxy}, which orchestrates between command
- * string sent, and command outputs received.
+ * Implementation Note: The {@code MainFrameProxy}, which implements {@code MainframeInterface},
+ * intervenes between the {@code civ.CommandParser} and the {@code hic.Mainframe}.
+ * All inputs are sent from the {@code test.integ.CmdLineProxy} and outputs are received from the
+ * {@code test.integ.IOPanelProxy}.
  * 
  * @author Alan Cline
  * @version Dec 20, 2014 // original <br>
  *          Mar 5, 2015 // updated for more testing <br>
+ *          Jun 22, 2015 // replaced {@code hic.integ.IOProxy} with {@code hic.integ.MainframeProxy} <br>
  */
 public class TA08_CmdEnter
 {
