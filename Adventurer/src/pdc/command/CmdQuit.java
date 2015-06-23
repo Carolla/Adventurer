@@ -14,8 +14,6 @@ package pdc.command;
 
 import java.util.List;
 
-import chronos.pdc.buildings.Building;
-
 
 /**
  * Stops the user command dialogue and triggers the shutdown methods to end the program.
@@ -71,18 +69,8 @@ public class CmdQuit extends Command
    */
   @Override
   public boolean init(List<String> args)
-<<<<<<< HEAD
   {
     return (args.size() == 0) ? true : false;
-=======
-  {    
-    if (args.size() == 0) {
-        return true;
-    } else {
-        super._mfCiv.errorOut(ERRMSG_OMIT_ARGS);
-        return false;
-    }
->>>>>>> 6addb1086ba8655eba32d7aa6de202828efa90d5
   }
 
   /**
@@ -93,11 +81,7 @@ public class CmdQuit extends Command
   @Override
   public boolean exec()
   {
-<<<<<<< HEAD
     super._mfCiv.quit();
-=======
-    _mfCiv.quit();
->>>>>>> 6addb1086ba8655eba32d7aa6de202828efa90d5
     return true;
   }
   

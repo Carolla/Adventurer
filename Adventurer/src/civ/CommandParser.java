@@ -82,7 +82,7 @@ public class CommandParser
   /** Start the Scheduler up when the CommandPaarser starts */
   static private Scheduler _skedder = null;
 
-private static CommandParser _this;
+  private static CommandParser _this;
 
   // ============================================================
   // Constructors and constructor helpers

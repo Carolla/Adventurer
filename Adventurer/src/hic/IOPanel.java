@@ -61,6 +61,7 @@ public class IOPanel extends JPanel implements IOPanelInterface
    */
   private final Color MY_LIGHT_BROWN = new Color(130, 100, 90).brighter();
   private MainframeCiv _mfCiv;
+  private SimpleAttributeSet _errorAttributes;
 
 
   // ============================================================
@@ -77,6 +78,12 @@ public class IOPanel extends JPanel implements IOPanelInterface
     _pane = new JTextPane();
     _pane.setAlignmentY(JTextArea.TOP_ALIGNMENT);
     _output = _pane.getStyledDocument();
+    
+    _errorAttributes = new SimpleAttributeSet();
+	StyleConstants.setForeground(_errorAttributes, Color.RED);
+	StyleConstants.setFontFamily(_errorAttributes, "Sans Serif");
+	StyleConstants.setFontSize(_errorAttributes, 14);
+	StyleConstants.setBold(_errorAttributes, true);
 
     _scrollpane = createOutputPanel();
     this.add(_scrollpane, "cell 0 1");
@@ -86,8 +93,6 @@ public class IOPanel extends JPanel implements IOPanelInterface
   }
 
 
-  // TODO JTextArea will not change color and font for individual text lines, JTextPane is needed for
-  // that.
   /**
    * Display error text, using different Font and color, then return to standard font and color.
    * 
@@ -95,18 +100,7 @@ public class IOPanel extends JPanel implements IOPanelInterface
    */
   public void displayErrorText(String msg)
   {	
-	SimpleAttributeSet keyWord = new SimpleAttributeSet();
-	StyleConstants.setForeground(keyWord, Color.RED);
-	StyleConstants.setFontFamily(keyWord, "Sans Serif");
-	StyleConstants.setFontSize(keyWord, 14);
-	StyleConstants.setBold(keyWord, true);
-
-	try {
-	  _output.insertString(_output.getLength(), msg + Constants.NEWLINE, keyWord);
-    } catch (BadLocationException e) {
-      //Shouldn't happen
-	  e.printStackTrace();
-    }
+	displayText(msg + Constants.NEWLINE, _errorAttributes);
   }
 
 

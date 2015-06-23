@@ -12,6 +12,8 @@ package test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import test.pdc.command.TestCmdApproach;
+import test.pdc.command.TestCmdEnter;
 import test.pdc.registry.TestAdventureRegistry;
 
 /**
@@ -36,7 +38,9 @@ import test.pdc.registry.TestAdventureRegistry;
 // TestNewHeroFields.class,
 
 /** PDC test files */
-  TestAdventureRegistry.class
+  TestAdventureRegistry.class,
+  TestCmdApproach.class,
+  TestCmdEnter.class
 // TestDwarf.class
 // TestHuman.class
 // TestHunger.class
