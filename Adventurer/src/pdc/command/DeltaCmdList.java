@@ -85,9 +85,29 @@ public class DeltaCmdList
     {
         // Extract the first node from the list
         Event evt = _dlist.poll();
-        _clock.increment(evt.getDelta());
+        int deltaTime = evt.getDelta();
+        _clock.increment(deltaTime);
+        for (Event e : _dlist) {
+        	e.setDelta(e.getDelta() - deltaTime);
+        }
         Command cmd = evt.getCommand();
         return cmd;
+    }
+    
+    public boolean isEmpty()
+    {
+    	return _dlist.isEmpty();
+    }
+    
+    /**
+     * How long until next Command should run.  Will block if called on an
+     * empty queue.
+     * 
+     * @return how long
+     */
+    public int timeToNextCmd()
+    {
+    	return _dlist.peek().getDelta();
     }
 
     /** 
