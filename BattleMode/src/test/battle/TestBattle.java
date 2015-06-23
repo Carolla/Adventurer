@@ -49,7 +49,7 @@ public class TestBattle {
 	}
 	
 	@Test
-	public void WhenBattleEndsThereIsAWinnerAndALoser()
+	public void WhenBattleEndsByDefeatThereIsAWinnerAndALoser()
 	{
         MsgCtrl.msgln("WhenBattleEndsThereIsAWinnerAndALoser()");
 		_player = new AutoCombatant.CombatantBuilder().build();
@@ -65,7 +65,7 @@ public class TestBattle {
 	}
 	
 	@Test
-	public void WhenBattleEndsPlayerWinningMeansEnemyLoses()
+	public void WhenBattleEndsByDefeatPlayerWinningMeansEnemyLoses()
 	{
         MsgCtrl.msgln("WhenBattleEndsPlayerWinningMeansEnemyLoses()");
 		_player = new AutoCombatant.CombatantBuilder().withAC(20).build();
@@ -81,7 +81,7 @@ public class TestBattle {
 	}
 
 	@Test
-	public void WhenBattleEndsEnemyWinningMeansPlayerLoses()
+	public void WhenBattleEndsByDefeatEnemyWinningMeansPlayerLoses()
 	{
         MsgCtrl.msgln("WhenBattleEndsEnemyWinningMeansPlayerLoses()");
 		_player = new AutoCombatant.CombatantBuilder().build();
@@ -107,6 +107,27 @@ public class TestBattle {
 			battle.advance();
 		}
 		assertFalse(battle.isWinner(enemy) || battle.isWinner(player));
+	}
+	
+	@Test
+	public void BattleHasNoWinnerIfOneSideEscapes()
+	{
+        MsgCtrl.msgln("BattleHasNoWinnerIfOneSideEscapes()");
+    	int numberOfHeros = _metadie.getRandom(1, 5);
+    	
+    	List<CombatantInterface> battleMembers = new ArrayList<CombatantInterface>(numberOfHeros + 1);
+    	for (int i = 0; i < numberOfHeros; i++) {
+    		battleMembers.add(new AutoCombatant.CombatantBuilder().withType(CombatantType.HERO).withHP(1).shouldTryEscaping().withInitiative(11).build());
+    	}
+    	battleMembers.add(new AutoCombatant.CombatantBuilder().withType(CombatantType.ENEMY).build());
+    	
+    	Battle battle = new Battle(battleMembers.toArray(new CombatantInterface[numberOfHeros + 1]));
+    	battle.advance();
+    	
+    	assertFalse(battle.isOngoing());
+    	for (CombatantInterface c : Combatant.findAllHeros(battleMembers)) {
+    		assertFalse(battle.isWinner(c));
+    	}
 	}
 	
 	@Test

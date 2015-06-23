@@ -252,13 +252,13 @@ public class Combatant implements CombatantInterface {
 	public void displayVictory() {
 		switch (_type) 
 		{
-		case HERO:
-			System.out.println("You have won!");
-			break;
-		case ENEMY:
-		default:
-			System.out.println("The enemy has won...");
-			break;
+			case HERO:
+				System.out.println("You have won!");
+				break;
+			case ENEMY:
+			default:
+				System.out.println("The enemy has won...");
+				break;
 		}
 		
 	}
