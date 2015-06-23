@@ -42,8 +42,13 @@ public class CmdReturn extends Command
 
   /** The building to enter */
   private Building _curBldg = null;
+  
+  
+  
+  
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND RELATED METHODS
+   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   *  CONSTRUCTOR(S) AND RELATED METHODS
    * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
    */
 
@@ -55,7 +60,8 @@ public class CmdReturn extends Command
 
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PUBLIC METHODS
+   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   *  PUBLIC METHODS
    * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
    */
 

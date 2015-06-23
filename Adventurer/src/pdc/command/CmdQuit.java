@@ -15,6 +15,7 @@ package pdc.command;
 import java.util.List;
 
 import chronos.pdc.buildings.Building;
+import civ.BuildingDisplayCiv;
 
 
 /**
@@ -41,10 +42,13 @@ public class CmdQuit extends Command
   static final int DURATION = 0;
   /** Format for usage string on input error */
 //  static final String FMT = "[takes no parameters]";
+
   
-  /** Error message if args are input with command */
-  private final String ERRMSG_OMIT_ARGS = 
-          "If you want to exit the program, type \"Quit\" without any additional characters.";
+    /** Error message if args are input with command */
+    private final String ERRMSG_OMIT_ARGS =
+            "If you want to exit the program, type \"Quit\" without any additional characters.";
+    /** Error message if hero inside when command initialized */
+    private final String ERRMSG_IN_BLDG = "To quit, you must be outside.";
 
 
   // ============================================================
@@ -62,18 +66,27 @@ public class CmdQuit extends Command
   // PUBLIC METHODS
   // ============================================================
 
-  /**
-   * In this case, no parms are needed.
-   * 
-   * @param args is empty for this command; implemented as required for abstract method
-   * 
-   * @return true if all worked, else returns false on input error
-   */
-  @Override
-  public boolean init(List<String> args)
-  {
-    return (args.size() == 0) ? true : false;
-  }
+    /**
+     * In this case, no parms are needed.
+     * 
+     * @param args is empty for this command; implemented as required for abstract method
+     * 
+     * @return true if all worked and hero is outside, else returns false on input error
+     */
+    @Override
+    public boolean init(List<String> args)
+    {
+        BuildingDisplayCiv bdCiv = BuildingDisplayCiv.getInstance();
+        if ((args.size() == 0) && (bdCiv.isInside() == false)) {
+            return true;
+        } else if ((args.size() == 0) && (bdCiv.isInside() == true)) {
+            super._mfCiv.errorOut(ERRMSG_IN_BLDG);
+            return false;
+        } else {
+            super._mfCiv.errorOut(ERRMSG_OMIT_ARGS);
+            return false;
+        }
+    }
 
   /**
    * Forces the program to end.

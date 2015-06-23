@@ -31,6 +31,7 @@ public class BattleMain {
 			battle.advance();
 		}
 		
+		System.out.println("The battle has ended");
 		System.exit(0);
 	}
 	

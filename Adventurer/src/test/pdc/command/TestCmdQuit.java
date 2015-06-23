@@ -16,6 +16,8 @@ import org.junit.Test;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
+import civ.BuildingDisplayCiv;
+import civ.BuildingDisplayCiv.MockBldgCiv;
 import civ.MainframeCiv;
 import pdc.command.CmdQuit;
 import pdc.command.CmdQuit.MockCmdQuit;
@@ -98,21 +100,32 @@ public class TestCmdQuit
         MsgCtrl.errorMsgsOn(false);
         MsgCtrl.where(this);
         
-        // Vars for Test 1
+        // Setup for Test 1
         ArrayList<String> emptyArgs = new ArrayList<String>();
         
         // Test 1 - Normal
         assertTrue(_cmdQuit.init(emptyArgs));
         
-        // Vars for Test 2
+        // Setup for Test 2
         ArrayList<String> addedSpace = new ArrayList<String>();
         addedSpace.add(" ");
         ArrayList<String> addedWord = new ArrayList<String>();
         addedWord.add(" now");
         
-        // Test 2 - Error
+        // Test 2 - Error - args present
         assertFalse(_cmdQuit.init(addedSpace));
         assertFalse(_cmdQuit.init(addedWord));
+        
+        // Setup for Test 3
+        BuildingDisplayCiv bdCiv = BuildingDisplayCiv.getInstance();
+        MockBldgCiv mock_bdCiv = bdCiv.new MockBldgCiv();
+        // Pre-test - show normal first
+        assertTrue(_cmdQuit.init(emptyArgs));
+        // Set failing condition
+        mock_bdCiv.setInsideBldg(true);
+        
+        // Test 3 - Error - inside building
+        assertFalse(_cmdQuit.init(emptyArgs));
     }
 
     @Test
