@@ -154,11 +154,6 @@ public class MainframeProxy implements MainframeInterface
     System.out.println("MainframeProxy.redraw(): called.");
   }
 
-  @Override
-  public void setOnTown(boolean onTown)
-  {
-    MsgCtrl.msgln("\tMainframeProxy.ontown set to " + onTown);
-  }
 
   /**
    * Return last message out and clear buffer

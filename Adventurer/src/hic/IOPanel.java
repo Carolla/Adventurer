@@ -41,7 +41,7 @@ import civ.MainframeCiv;
  *          Aug 18, 2014 // ABC Removed as inner class and made stand-along class <br>
  */
 @SuppressWarnings("serial")
-public class IOPanel extends JPanel implements IOPanelInterface
+public class IOPanel extends JPanel // implements IOPanelInterface
 {
   private final JTextArea _output;
   private final JScrollPane _scrollpane;
@@ -125,17 +125,6 @@ public class IOPanel extends JPanel implements IOPanelInterface
     return _output;
   }
 
-
-
-  /**
-   * Call the Mainframe's Civ for the building/town status
-   * 
-   * @return true if there are no buildings displayed and hero is at town level
-   */
-  public boolean isOnTown()
-  {
-    return _mfCiv.isOnTown();
-  }
 
   // ============================================================
   // Public Methods

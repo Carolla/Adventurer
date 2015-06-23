@@ -258,21 +258,6 @@ public class MainframeCiv
     }
   }
 
-  /**
-   * Is a building displayed, or is the Hero at the Town view?
-   * 
-   * @return true if there is no current building displayed
-   */
-  public boolean isOnTown()
-  {
-    return _onTown;
-  }
-  
-  public void setOnTown(boolean onTown)
-  {
-	  _onTown = onTown;
-  }
-
 
   /**
    * Load the selected adventure from the Adventure registry. Replace the opening button panel with
