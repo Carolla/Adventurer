@@ -56,7 +56,7 @@ public class BattleMain {
 				int i = 1;
 				for (CombatantInterface c : combatants) {
 					if (!c.isDefeated()) {
-						System.out.println("Monster " + i + ": " + c.name());
+						System.out.println(i + ": " + c.name());
 						i++;
 					}
 				}

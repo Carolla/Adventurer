@@ -71,7 +71,7 @@ public class CmdQuit extends Command
      * 
      * @param args is empty for this command; implemented as required for abstract method
      * 
-     * @return true if all worked, else returns false on input error
+     * @return true if all worked and hero is outside, else returns false on input error
      */
     @Override
     public boolean init(List<String> args)
@@ -96,7 +96,7 @@ public class CmdQuit extends Command
   @Override
   public boolean exec()
   {
-    _mfCiv.quit();
+    super._mfCiv.quit();
     return true;
   }
   
