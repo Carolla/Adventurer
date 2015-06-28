@@ -45,8 +45,6 @@ public class Scheduler implements Runnable
 
     /** Internal references: command events are queued here */
     private DeltaCmdList _dq = null;
-    /** Internal references: list for command parms to be passed */
-    private ArrayList<String> _parms = null;
     /** Internal references: get next user commands */
     private CommandParser _cp = null; // needed to get next User Command
 
@@ -64,7 +62,6 @@ public class Scheduler implements Runnable
     private Scheduler()
     {
         _dq = new DeltaCmdList();
-        _parms = new ArrayList<String>();
     }
 
 
@@ -106,14 +103,17 @@ public class Scheduler implements Runnable
 
         // Unless the system interrupts this thread for some reason, it continues until the Quit
         // command
-        try {
-            doCommands();
 
-            // If the thread is interrupted for some reason, we want to return and exit
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            System.err.println("Interrupted exception thrown while trying to doCommands "
-                    + e.getMessage());
+        while (true) {
+            try {
+                doOneCommand();
+    
+                // If the thread is interrupted for some reason, we want to return and exit
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.err.println("Interrupted exception thrown while trying to doCommands "
+                        + e.getMessage());
+            }
         }
     }
 
@@ -141,34 +141,24 @@ public class Scheduler implements Runnable
      * 
      * @throws InterruptedException required because a Thread sleeps here
      */
-    private void doCommands() throws InterruptedException
+    private void doOneCommand() throws InterruptedException
     {
-        // Loop through the deltaQ, retrieving commands and calling their exec() method.
-        while (true) {
-            Command cmdToDo = null;
-            // Retrieve next Command in queue
-            cmdToDo = _dq.getNextCmd();
+        Command cmdToDo = _dq.getNextCmd();
 
-            // If CmdEnd, then return to CommandParser to get another User command;
-            // then add a CmdEnd to trigger a new user command after newCmd is executed
-            if (cmdToDo.getName().equalsIgnoreCase(CMDEND) == true) {
-                Command newUserCmd = _cp.getUserCommand();
-                // Wait and cycle again if nothing has been input
-                if (newUserCmd == null) {
-                    Thread.sleep(500);
-                    sched(makeCmdEnd(0));
-                    continue;
-                }
-                sched(newUserCmd);
-                sched(makeCmdEnd(newUserCmd.getDuration() + newUserCmd.getDelay()));
-                // dump();
-            } else {
-                System.out.println("Running command cmdToDo: " + cmdToDo.getName());
-                cmdToDo.exec();
+        if (cmdToDo.getName().equalsIgnoreCase(CMDEND) == true) {
+            Command newUserCmd = _cp.getUserCommand();
+
+            if (newUserCmd == null) {
+                Thread.sleep(500);
+                sched(makeCmdEnd(0));
+                return;
             }
-        } // end of while loop
-    }
-
+            sched(newUserCmd);
+            sched(makeCmdEnd(newUserCmd.getDuration() + newUserCmd.getDelay()));
+        } else {
+            cmdToDo.exec();
+        }
+    } // end of while loop
 
     /**
      * Make an {@code intCmdEnd} to trigger a new user command. {@code intCmdEnd}s are used as
@@ -182,20 +172,7 @@ public class Scheduler implements Runnable
     {
         // Create endCmd to signal to get another user command
         Command endCmd = new intCmdEnd(delay);
-        _parms.clear();
-        endCmd.init(_parms);
+        endCmd.init(new ArrayList<String>());
         return endCmd;
     }
-
-
-    /**
-     * Dump the delta list for debugging purposes.
-     */
-    public void dump()
-    {
-        System.err.println("\nScheduler DQ snapshot: ");
-        _dq.dump();
-    }
-
-
 } // end Scheduler class
