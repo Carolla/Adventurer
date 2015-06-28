@@ -41,7 +41,7 @@ public class Event
     /** Builds an Event around the command being encapsulated, and the command's delay. 
      * @param  cmd		the Command to be wrapped into the Event and enqueued.
      */
-    Event(Command cmd)
+    public Event(Command cmd)
     {
         _delta = cmd.getDelay();
         _cmd = cmd;
