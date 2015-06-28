@@ -142,7 +142,7 @@ public class TA08_CmdEnter
     String echo = _mockCP.getInput();
     MsgCtrl.msgln("\tCommand entered: " + echo);
     assertNull(echo);
-    String nullMsg = _mockCP.getERRMSG_CMDNULL();
+    String nullMsg = CommandParser.ERRMSG_UNKNOWN;
     String msgOut = _mfProxy.errMsgOut();
     MsgCtrl.msgln("\tError message expected: " + nullMsg);
     assertTrue(msgOut.equals(nullMsg));
@@ -167,7 +167,7 @@ public class TA08_CmdEnter
     String echo = _mockCP.getInput();
     MsgCtrl.msgln("\tCommand entered: " + echo);
     assertNull(_mockCP.getInput());
-    String nullMsg = _mockCP.getERRMSG_CMDNULL();
+    String nullMsg = CommandParser.ERRMSG_UNKNOWN;
     String msgOut = _mfProxy.errMsgOut();
     MsgCtrl.msgln("\tError message expected: " + nullMsg);
     MsgCtrl.msgln("\tError message received: " + msgOut);
