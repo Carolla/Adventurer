@@ -14,7 +14,6 @@ package pdc.command;
 import java.util.ArrayList;
 
 import pdc.GameClock;
-import civ.CommandParser;
 
 
 /**
@@ -45,41 +44,22 @@ public class Scheduler implements Runnable
 
     /** Internal references: command events are queued here */
     private DeltaCmdList _dq = null;
-    /** Internal references: get next user commands */
-    private CommandParser _cp = null; // needed to get next User Command
-
 
     /*
      * CONSTRUCTOR(S) AND RELATED METHODS
      */
-    /** Internal reference to ensure singleton */
-    private static Scheduler _sched = null;
-
-
-    /**
-     * Creates its component delta list and an ArrayList of Strings to handle command parameters.
-     */
-    private Scheduler()
-    {
-        _dq = new DeltaCmdList();
-    }
-
 
     /**
      * Creates the {@code Scheduler} and its components. However, if a {@code Scheduler} does not
      * exist, it cannot be created without a {@code CommandParser} (parm), so null is returned.
      * 
-     * @param parser bidirectional association for callbacks to get a user {@code Command} object
+     * @param deltaCmdList bidirectional association for callbacks to get a user {@code Command} object
      *        for scheduling.
      * @return Scheduler singleton with link to the {@code CommandParser}.
      */
-    public static synchronized Scheduler getInstance(CommandParser parser)
+    public Scheduler(DeltaCmdList deltaCmdList)
     {
-        if (_sched == null) {
-            _sched = new Scheduler();
-            _sched._cp = parser;
-        }
-        return _sched;
+        _dq = deltaCmdList;
     }
 
 
@@ -97,18 +77,12 @@ public class Scheduler implements Runnable
      */
     public void run()
     {
-        // System.out.println("Scheduler started");
-        // Put on a 0-delay command to trigger collecting user commands
-        sched(makeCmdEnd(0));
-
         // Unless the system interrupts this thread for some reason, it continues until the Quit
         // command
-
+        // If the thread is interrupted for some reason, we want to return and exit
         while (true) {
             try {
                 doOneCommand();
-    
-                // If the thread is interrupted for some reason, we want to return and exit
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 System.err.println("Interrupted exception thrown while trying to doCommands "
@@ -141,20 +115,12 @@ public class Scheduler implements Runnable
      * 
      * @throws InterruptedException required because a Thread sleeps here
      */
-    private void doOneCommand() throws InterruptedException
+    public void doOneCommand() throws InterruptedException
     {
         Command cmdToDo = _dq.getNextCmd();
 
         if (cmdToDo.getName().equalsIgnoreCase(CMDEND) == true) {
-            Command newUserCmd = _cp.getUserCommand();
-
-            if (newUserCmd == null) {
-                Thread.sleep(500);
-                sched(makeCmdEnd(0));
-                return;
-            }
-            sched(newUserCmd);
-            sched(makeCmdEnd(newUserCmd.getDuration() + newUserCmd.getDelay()));
+            sched(makeCmdEnd(1));
         } else {
             cmdToDo.exec();
         }

@@ -16,6 +16,7 @@ import java.util.StringTokenizer;
 
 import pdc.command.Command;
 import pdc.command.CommandFactory;
+import pdc.command.DeltaCmdList;
 import pdc.command.Scheduler;
 
 /**
@@ -102,7 +103,7 @@ public class CommandParser
     _cmf = new CommandFactory(_mfCiv);
 
     // Start the scheduler off on its own thread
-    _skedder = Scheduler.getInstance(this);
+    _skedder = new Scheduler(new DeltaCmdList());
     new Thread(_skedder).start();
   }
   
