@@ -1,14 +1,16 @@
 package test.pdc.command;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+import pdc.command.DeltaCmdList;
+import pdc.command.Scheduler;
 
 public class TestScheduler {
 
 	@Test
 	public void test() {
-		fail("Not yet implemented");
+	    Scheduler s = new Scheduler(new DeltaCmdList());
+	    s.doOneCommand();
 	}
 
 }

@@ -81,13 +81,7 @@ public class Scheduler implements Runnable
         // command
         // If the thread is interrupted for some reason, we want to return and exit
         while (true) {
-            try {
-                doOneCommand();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                System.err.println("Interrupted exception thrown while trying to doCommands "
-                        + e.getMessage());
-            }
+            doOneCommand();
         }
     }
 
@@ -112,10 +106,8 @@ public class Scheduler implements Runnable
      * Process a single loop of Scheduler and Command parsing activity, sleeping between each cycle.
      * Generally, loop through the deltaQ, retrieving commands and calling each
      * {@code Command.exec()} method.
-     * 
-     * @throws InterruptedException required because a Thread sleeps here
      */
-    public void doOneCommand() throws InterruptedException
+    public void doOneCommand()
     {
         Command cmdToDo = _dq.getNextCmd();
 
