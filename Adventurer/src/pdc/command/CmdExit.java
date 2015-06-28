@@ -13,7 +13,6 @@ package pdc.command;
 
 import java.util.List;
 
-import chronos.pdc.buildings.Building;
 import civ.MainframeCiv;
 
 
@@ -52,8 +51,6 @@ public class CmdExit extends Command
   /** Command format */
   static private final String CMDFMT = "EXIT";
 
-  /** The building to exit */
-  private Building _curBldg = null;
   private MainframeCiv _mfCiv;
 
   /*

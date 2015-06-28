@@ -38,12 +38,6 @@ public class CmdQuit extends Command
   /** This command takes no time on the game clock. */
   static final int DURATION = 0;
   /** Format for usage string on input error */
-//  static final String FMT = "[takes no parameters]";
-  
-  /** Error message if args are input with command */
-  private final String ERRMSG_OMIT_ARGS = 
-          "If you want to exit the program, type \"Quit\" without any additional characters.";
-
 
   // ============================================================
   // CONSTRUCTOR(S) AND RELATED METHODS

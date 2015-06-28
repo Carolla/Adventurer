@@ -13,8 +13,6 @@ package pdc.command;
 
 import java.util.List;
 
-import chronos.pdc.buildings.Building;
-
 
 /**
  * Moves the Hero from outside the Building to the Town view again. Format: RETURN [to Town] <br>
@@ -40,8 +38,6 @@ public class CmdReturn extends Command
   /** Format for this command */
   static private final String CMDFMT = "RETURN [to Town]";
 
-  /** The building to enter */
-  private Building _curBldg = null;
   /*
    * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND RELATED METHODS
    * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
