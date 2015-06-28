@@ -87,21 +87,6 @@ public class Scheduler implements Runnable
   }
 
 
-//  /**
-//   * Gets an existing {@code Scheduler} reference, which will be used to schedule commands triggered
-//   * by other commands. If the {@code Scheduler} doesn't exist, an error message is displayed.
-//   * 
-//   * @return Scheduler reference to singleton object
-//   */
-//  public static synchronized Scheduler getInstance()
-//  {
-//    if (_sched == null) {
-//      System.err.println("The Scheduler object does not yet exist.");
-//    }
-//    return _sched;
-//  }
-
-
   /*
    * PUBLIC METHODS
    */

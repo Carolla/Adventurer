@@ -83,14 +83,14 @@ public class DeltaCmdList
      */
     public Command getNextCmd()
     {
-        // Extract the first node from the list
         Event evt = _dlist.poll();
         int deltaTime = evt.getDelta();
+        Command cmd = evt.getCommand();
+        
         _clock.increment(deltaTime);
         for (Event e : _dlist) {
         	e.setDelta(e.getDelta() - deltaTime);
         }
-        Command cmd = evt.getCommand();
         return cmd;
     }
     

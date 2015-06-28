@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
 import java.util.Random;
 
 import org.junit.Before;
@@ -32,7 +31,7 @@ public class TestDeltaCmdList {
 
 	@Test
 	public void InsertedItemComesBackOut() {
-		Command testCmd = new TestCommand();
+		Command testCmd = new SimpleCommand();
 		dcl.insert(testCmd);
 		Command c = dcl.getNextCmd();
 		assertEquals(testCmd, c);
@@ -40,8 +39,8 @@ public class TestDeltaCmdList {
 	
 	@Test
 	public void InsertedItemDoesntMatchIdenticalCommand() {
-		Command testCmd = new TestCommand();
-		Command testCmd2 = new TestCommand();
+		Command testCmd = new SimpleCommand();
+		Command testCmd2 = new SimpleCommand();
 		dcl.insert(testCmd);
 		Command c = dcl.getNextCmd();
 		assertTrue(c != testCmd2);
@@ -49,8 +48,8 @@ public class TestDeltaCmdList {
 	
 	@Test
 	public void InsertedCommandWithSmallerDelayComesOutFirst() {
-		Command fastOne = new TestCommand(1);
-		Command slowOne = new TestCommand(2);
+		Command fastOne = new SimpleCommand(1);
+		Command slowOne = new SimpleCommand(2);
 		dcl.insert(slowOne);
 		dcl.insert(fastOne);
 		Command c = dcl.getNextCmd();
@@ -60,8 +59,8 @@ public class TestDeltaCmdList {
 	
 	@Test
 	public void InsertedCommandWithSmallerDelayComesOutFirstOrderIndependent() {
-		Command fastOne = new TestCommand(1);
-		Command slowOne = new TestCommand(2);
+		Command fastOne = new SimpleCommand(1);
+		Command slowOne = new SimpleCommand(2);
 		dcl.insert(fastOne);
 		dcl.insert(slowOne);
 		Command c = dcl.getNextCmd();
@@ -71,12 +70,12 @@ public class TestDeltaCmdList {
 
 	@Test
 	public void InsertedCommandWithSmallerDelayComesOutFirstWithManyEntries() {
-		Command fastOne = new TestCommand(1);
-		Command slowOne = new TestCommand(2);
-		Command slowOne2 = new TestCommand(2);
-		Command slowOne3 = new TestCommand(2);
-		Command slowOne4 = new TestCommand(2);
-		Command slowOne5 = new TestCommand(2);
+		Command fastOne = new SimpleCommand(1);
+		Command slowOne = new SimpleCommand(2);
+		Command slowOne2 = new SimpleCommand(2);
+		Command slowOne3 = new SimpleCommand(2);
+		Command slowOne4 = new SimpleCommand(2);
+		Command slowOne5 = new SimpleCommand(2);
 		dcl.insert(slowOne);
 		dcl.insert(slowOne2);
 		dcl.insert(slowOne3);
@@ -89,7 +88,7 @@ public class TestDeltaCmdList {
 	
 	@Test
 	public void TimeToNextCommandMatchesSingleCommand() {
-		Command slowOne = new TestCommand();
+		Command slowOne = new SimpleCommand();
 		dcl.insert(slowOne);
 		assertEquals(0, dcl.timeToNextCmd());
 	}
@@ -98,8 +97,8 @@ public class TestDeltaCmdList {
 	public void TimeToNextCommandMatchesLowerOfInsertedCommands() {
 		int delay1 = 1;
 		int delay2 = 2;
-		Command fastOne = new TestCommand(delay1);
-		Command slowOne = new TestCommand(delay2);
+		Command fastOne = new SimpleCommand(delay1);
+		Command slowOne = new SimpleCommand(delay2);
 		dcl.insert(slowOne);
 		dcl.insert(fastOne);
 		assertEquals(delay1, dcl.timeToNextCmd());	
@@ -109,8 +108,8 @@ public class TestDeltaCmdList {
 	public void RemainingCommandsAreUpdatedToShowTimePassed() {
 		int delay1 = 1;
 		int delay2 = 2;
-		Command fastOne = new TestCommand(delay1);
-		Command slowOne = new TestCommand(delay2);
+		Command fastOne = new SimpleCommand(delay1);
+		Command slowOne = new SimpleCommand(delay2);
 		dcl.insert(fastOne);
 		dcl.insert(slowOne);
 		dcl.getNextCmd();
@@ -124,7 +123,7 @@ public class TestDeltaCmdList {
 	
 	@Test
 	public void IsNotEmptyWhenSomethingInserted() {
-		dcl.insert(new TestCommand());
+		dcl.insert(new SimpleCommand());
 		assertFalse(dcl.isEmpty());
 	}
 	
@@ -132,7 +131,7 @@ public class TestDeltaCmdList {
 	public void IsEmptyWhenLastItemRemoved() {
 		int numCommands = rng.nextInt(20);
 		for (int i = 0; i < numCommands; i++) {
-			dcl.insert(new TestCommand());
+			dcl.insert(new SimpleCommand());
 		}
 		
 		for (int i = 0; i < numCommands; i++) {
@@ -141,24 +140,5 @@ public class TestDeltaCmdList {
 		}
 		
 		assertTrue(dcl.isEmpty());
-	}
-	
-	private class TestCommand extends Command 
-	{
-		public TestCommand() { this(0); }
-		
-		public TestCommand(int delay) {
-			super("", delay, 0, "", "");
-		}
-
-		@Override
-		public boolean init(List<String> args) {
-			return true;
-		}
-
-		@Override
-		public boolean exec() {
-			return true;
-		}
 	}
 }
