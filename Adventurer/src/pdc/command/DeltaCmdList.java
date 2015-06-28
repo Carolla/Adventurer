@@ -128,55 +128,15 @@ public class DeltaCmdList
     /** Dump the delta list. For debugging only. */
     public void dump()
     {
-        Command cmd = null;
-        int nbrNodes = _dlist.size();
-        Event[] evlist = new Event[nbrNodes];
-        _dlist.toArray(evlist);
-
         int pos = 0;
         for (Event e : _dlist)
         {
-            cmd = e.getCommand();
+            Command cmd = e.getCommand();
             System.err.println(cmd.getName() + "(" + cmd.getDelay() + ", " +
                     cmd.getDuration() + "); delta = " + e.getDelta() + ", pos = " + pos++);
         }
         System.err.println("-------------------------\n");
     }
-
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++  
-     * 								PRIVATE METHODS
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-//
-//    /**
-//     * Inserts the new delta in front of the current node, and decrements that node's delta in place.
-//     * This private method implements Step 2 of the algorithm described in the class description.
-//     * 
-//     * @param newEvent 	the new Event to be inserted in the DQ
-//     * @param curEvent 		the current Event to be displaced and delta-adjusted by the insertion
-//     * @param index 			the position of the node containing the curEvent on the list
-//     * @return true if new delta < current node's delta and insertion took place; else return false
-//     */
-//    private boolean insertLocal(Event newEvent, Event curEvent, int index)
-//    {
-//        // Guard: new.delta < curNode.delta
-//        int newDelta = newEvent.getDelta();
-//        int curDelta = curEvent.getDelta();
-//        // Insert sooner Event at front of list
-//        if (newDelta < curDelta) {
-//            // Calc and reset the current delta
-//            curEvent.setDelta(curDelta - newDelta);
-//            // Update the old Event in the DQ
-//            _dlist.set(index, curEvent);
-//            // Add the new Event, which pushes the current Node back one
-//            _dlist.add(index, newEvent);
-//            return true;
-//        }
-//        else {
-//            // Else decrement the newEvent by curEvent.delay and return
-//            newEvent.setDelta(newDelta - curDelta);
-//            return false;
-//        }
-//    }
 
 }	// end DeltaCmdList class
 

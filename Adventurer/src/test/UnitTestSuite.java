@@ -17,6 +17,7 @@ import test.pdc.command.TestCmdEnter;
 import test.pdc.command.TestCmdQuit;
 import test.pdc.command.TestDeltaCmdList;
 import test.pdc.command.TestEvent;
+import test.pdc.command.TestScheduler;
 import test.pdc.registry.TestAdventureRegistry;
 
 /**
@@ -46,6 +47,7 @@ import test.pdc.registry.TestAdventureRegistry;
   TestCmdEnter.class,
   TestCmdQuit.class,
   TestDeltaCmdList.class,
+  TestScheduler.class,
   TestEvent.class
 // TestDwarf.class
 // TestHuman.class
