@@ -18,8 +18,6 @@ import org.junit.Test;
 
 import pdc.command.CmdApproach;
 import pdc.command.CmdApproach.MockCmdApproach;
-import pdc.command.CommandFactory;
-import test.integ.IOPanelProxy;
 import test.integ.MainframeProxy;
 import chronos.pdc.buildings.Building;
 import chronos.pdc.registry.BuildingRegistry;
@@ -27,7 +25,6 @@ import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.BuildingDisplayCiv;
 import civ.BuildingDisplayCiv.MockBldgCiv;
-import civ.CommandParser;
 import civ.MainframeCiv;
 
 public class TestCmdApproach
@@ -36,24 +33,20 @@ public class TestCmdApproach
     private CmdApproach _cmdApproach;
     private MockCmdApproach _mock;
     
-    private static CommandParser _cp = null;
-    private static IOPanelProxy _iopx = null;
-    private static CommandFactory _cmdFac = null;
     private static BuildingDisplayCiv _bdciv = null;
     private static MockBldgCiv _mockbdciv = null;
     
     private static RegistryFactory _regfac = null;
     private static BuildingRegistry _breg = null;
     private static List<Building> _bList = null;
+    private static MainframeCiv _mfCiv = null;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception
     {
-        _iopx = new IOPanelProxy();
         MainframeInterface mfInterface = new MainframeProxy();
-        MainframeCiv mfCiv = new MainframeCiv(mfInterface);
-        _cp = CommandParser.getInstance(mfCiv);
-        _cmdFac = new CommandFactory(mfCiv);
+        _mfCiv  = new MainframeCiv(mfInterface);
+        
         _bdciv = BuildingDisplayCiv.getInstance(); // for CmdApproach context
         _bdciv.setOutput(mfInterface);
         _mockbdciv = _bdciv.new MockBldgCiv();
@@ -77,7 +70,8 @@ public class TestCmdApproach
     public void setUp() throws Exception
     {
         // Create the command and mock objects
-        _cmdApproach = (CmdApproach) _cmdFac.createCommand("CmdApproach");
+        _cmdApproach = new CmdApproach();
+        _cmdApproach.setMsgHandler(_mfCiv);
         _mock = _cmdApproach.new MockCmdApproach();
         
         // Error messages are ON at start of each test 

@@ -18,6 +18,7 @@ import pdc.command.Command;
 import pdc.command.CommandFactory;
 import pdc.command.DeltaCmdList;
 import pdc.command.Scheduler;
+import pdc.command.intCmdEnd;
 
 /**
  * Receives a user input string from the command window and converts it to a command object, which
@@ -64,17 +65,12 @@ public class CommandParser
 
     /** Internal reference: command-specific data arguments */
     private ArrayList<String> _parms = null;
-    /** Internal reference: the factory that creates {@code Command} objects. */
-    private CommandFactory _cmf = null;
 
     private String _userInput = null; // buffer to hold user input string
 
     // Special cases
     /** Error message if command cannot be found. */
     public static final String ERRMSG_UNKNOWN = "I don't understand what you want to do.";
-
-    /** Identify a command string in which only a return key is entered. */
-    private final String CMD_EMPTY = "";
 
     /** Reference to GUI panel for input and output messages, and their interactions */
     private MainframeCiv _mfCiv;
@@ -83,6 +79,7 @@ public class CommandParser
     static private Scheduler _skedder = null;
 
     private static CommandParser _this;
+    private final Command _commandEnd = new intCmdEnd();
 
     // ============================================================
     // Constructors and constructor helpers
@@ -99,7 +96,6 @@ public class CommandParser
     {
         _parms = new ArrayList<String>();
         _mfCiv = mfCiv;
-        _cmf = new CommandFactory(_mfCiv);
 
         // Start the scheduler off on its own thread
         _skedder = new Scheduler(new DeltaCmdList());
@@ -129,9 +125,8 @@ public class CommandParser
     public Command getUserCommand(String s)
     {
         String cmdString = parse(s);
-        String cmdToken = getCommandToken(cmdString);
-        Command cmd = createCommand(cmdToken);
-        return cmd;
+        String cmdToken = lookup(cmdString);
+        return createCommand(cmdToken, _parms);
     }
 
 
@@ -143,20 +138,8 @@ public class CommandParser
      */
     public void receiveCommand(String textIn)
     {
-        // // Guard against null parm
-        // if (textIn == null) {
-        // _mfCiv.errorOut(ERRMSG_CMDNULL);
-        // } else {
-        // // Guard against empty string
-        // String cmdIn = textIn.trim();
-        // if (cmdIn.length() == 0) {
-        // _mfCiv.errorOut(ERRMSG_CMDNULL);
-        // }
-        // else {
-        // _userInput = cmdIn;
-        // }
-        // }
         Command cmd = getUserCommand(textIn);
+
         _skedder.sched(cmd);
     }
 
@@ -165,40 +148,21 @@ public class CommandParser
     // Private helper methods
     // ============================================================
 
-    private Command createCommand(String token)
+    private Command createCommand(String token, ArrayList<String> commandParams)
     {
-        if (token == null) {
-            return null;
+        Command cmd = CommandFactory.createCommand(token);
+
+        if (cmd != null) {
+            if (cmd.init(commandParams) == false) {
+                cmd = _commandEnd;
+            }
+        } else {
+            _mfCiv.errorOut(ERRMSG_UNKNOWN);
+            cmd = _commandEnd;
         }
-        Command cmd = _cmf.createCommand(token);
-        if (cmd == null) {
-            System.err.println(token + " command could not be created.");
-            cmd = _cmf.createCommand("intCmdEnd");
-        }
-        // Each command takes care of their own parm-error message
-        if (cmd.init(_parms) == false) {
-            cmd = _cmf.createCommand("intCmdEnd");
-        }
+        cmd.setMsgHandler(_mfCiv);
         return cmd;
     }
-
-
-    /**
-     * Find command in command table, and return error message if not found
-     * 
-     * @param s the string to lookup in the command table
-     * @return the Command to execute, else null if not found
-     */
-    private String getCommandToken(String s)
-    {
-        String token = lookup(s);
-        // If command cannot be found, ask user to try again
-        if (token == null) {
-            _mfCiv.errorOut(ERRMSG_UNKNOWN);
-        }
-        return token;
-    }
-
 
 
     /**
@@ -221,27 +185,19 @@ public class CommandParser
     /**
      * Tokenizes the input line into its tokens and parms list.
      * 
-     * @param ipLine String taken in from command window
+     * @param input String taken in from command window
      * @return @code Command} token, which is always the first token, and saves parms list (if any)
      *         for later.
      */
-    private String parse(String ipLine)
+    private String parse(String input)
     {
         String cmdToken = null;
-        if (ipLine == null) {
-            return null;
-        }
-        // Clear out parms from command line before adding new ones.
         _parms.clear();
-        // Check for an empty carriage return entered first;
-        // StringTokenizer throws exception on it
-        if (ipLine.equalsIgnoreCase(CMD_EMPTY)) {
-            return null;
+        
+        StringTokenizer line = new StringTokenizer(input);
+        if (line.hasMoreTokens()) {   
+            cmdToken = line.nextToken();
         }
-        // StringTokenizer class defaults to whitespace as delimiter
-        StringTokenizer line = new StringTokenizer(ipLine);
-        // Get first token and store for later return
-        cmdToken = line.nextToken();
 
         while (line.hasMoreTokens()) {
             _parms.add(line.nextToken());
@@ -299,21 +255,10 @@ public class CommandParser
     // ============================================================
     public class MockCP
     {
-        public MockCP()
-        {}
-
         /** Get the input command */
         public String getInput()
         {
             return CommandParser.this._userInput;
-        }
-
-        /**
-         * Get the static Scheduler currently running
-         */
-        public Scheduler getScheduler()
-        {
-            return _skedder;
         }
 
     } // end of MockCP inner class

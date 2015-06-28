@@ -1,10 +1,12 @@
 package test.pdc.command;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import hic.MainframeInterface;
 
 import java.util.ArrayList;
 
-import hic.MainframeInterface;
 import mylib.MsgCtrl;
 
 import org.junit.After;
@@ -13,14 +15,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import pdc.command.CmdQuit;
+import pdc.command.CmdQuit.MockCmdQuit;
+import test.integ.MainframeProxy;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.MainframeCiv;
-import pdc.command.CmdQuit;
-import pdc.command.CmdQuit.MockCmdQuit;
-import pdc.command.CommandFactory;
-import test.integ.MainframeProxy;
 
 public class TestCmdQuit
 {
@@ -28,15 +29,13 @@ public class TestCmdQuit
     //iVars
     private CmdQuit _cmdQuit;
     private MockCmdQuit _mock;
+    private static MainframeCiv _mfCiv;
     
-    private static CommandFactory _cmdFac = null;
-
     @BeforeClass
     public static void setUpBeforeClass() throws Exception
     {
         MainframeInterface mfInterface = new MainframeProxy();
-        MainframeCiv mfCiv = new MainframeCiv(mfInterface);
-        _cmdFac = new CommandFactory(mfCiv);
+        _mfCiv = new MainframeCiv(mfInterface);
     }
 
     @AfterClass
@@ -51,7 +50,8 @@ public class TestCmdQuit
     @Before
     public void setUp() throws Exception
     {
-        _cmdQuit = (CmdQuit) _cmdFac.createCommand("CmdQuit");
+        _cmdQuit = new CmdQuit();
+        _cmdQuit.setMsgHandler(_mfCiv);
         _mock = _cmdQuit.new MockCmdQuit();
     }
 
