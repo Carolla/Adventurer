@@ -12,6 +12,7 @@
 package civ;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import pdc.command.Command;
@@ -63,9 +64,6 @@ public class CommandParser
             // { "WAIT", "CmdWait" }, // Wait a specific amount of time, in hours or minutes.
     };
 
-    /** Internal reference: command-specific data arguments */
-    private ArrayList<String> _parms = null;
-
     private String _userInput = null; // buffer to hold user input string
 
     // Special cases
@@ -92,9 +90,8 @@ public class CommandParser
      * @param ioPanel handles input commands and output and error messages, and the interactions
      *        between command line input and output messages
      */
-    private CommandParser(MainframeCiv mfCiv)
+    public CommandParser(MainframeCiv mfCiv)
     {
-        _parms = new ArrayList<String>();
         _mfCiv = mfCiv;
 
         // Start the scheduler off on its own thread
@@ -124,9 +121,8 @@ public class CommandParser
      */
     public Command getUserCommand(String s)
     {
-        String cmdString = parse(s);
-        String cmdToken = lookup(cmdString);
-        return createCommand(cmdToken, _parms);
+        CommandInput cmdInput = parse(s);
+        return createCommand(cmdInput);
     }
 
 
@@ -138,8 +134,8 @@ public class CommandParser
      */
     public void receiveCommand(String textIn)
     {
+        _userInput = textIn;
         Command cmd = getUserCommand(textIn);
-
         _skedder.sched(cmd);
     }
 
@@ -148,12 +144,12 @@ public class CommandParser
     // Private helper methods
     // ============================================================
 
-    private Command createCommand(String token, ArrayList<String> commandParams)
+    public Command createCommand(CommandInput commandInput)
     {
-        Command cmd = CommandFactory.createCommand(token);
+        Command cmd = CommandFactory.createCommand(commandInput.commandToken);
 
         if (cmd != null) {
-            if (cmd.init(commandParams) == false) {
+            if (cmd.init(commandInput.parameters) == false) {
                 cmd = _commandEnd;
             }
         } else {
@@ -172,7 +168,7 @@ public class CommandParser
      * @return canonical name of the {@code Command} (concrete subCommand) to {@code Schedule}, or
      *         null.
      */
-    private String lookup(String cmdString)
+    public String lookup(String cmdString)
     {
         for (int k = 0; k < _cmdTable.length; k++) {
             if (cmdString.equalsIgnoreCase(_cmdTable[k][0])) {
@@ -189,20 +185,31 @@ public class CommandParser
      * @return @code Command} token, which is always the first token, and saves parms list (if any)
      *         for later.
      */
-    private String parse(String input)
+    public CommandInput parse(String input)
     {
-        String cmdToken = null;
-        _parms.clear();
-        
+        String cmdName = null;
         StringTokenizer line = new StringTokenizer(input);
+        
         if (line.hasMoreTokens()) {   
-            cmdToken = line.nextToken();
+            String cmdToken = line.nextToken();
+            cmdName = lookup(cmdToken);
         }
 
+        List<String> parms = new ArrayList<String>(line.countTokens());
         while (line.hasMoreTokens()) {
-            _parms.add(line.nextToken());
+            parms.add(line.nextToken());
         }
-        return cmdToken;
+        
+        return new CommandInput(cmdName, parms);
+    }
+    
+    private class CommandInput {
+        public final String commandToken;
+        public final List<String> parameters;
+        CommandInput(String command, List<String> params) {
+            commandToken = command;
+            parameters = params;
+        }
     }
 
 
