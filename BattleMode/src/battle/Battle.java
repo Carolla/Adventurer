@@ -144,7 +144,7 @@ public class Battle {
 		if (isOngoing()) {
 			return false;
 		} else {
-			return !combatant.isDefeated();
+			return !combatant.isDefeated() && !_escapedCombatants.contains(combatant);
 		}
 	}
 	

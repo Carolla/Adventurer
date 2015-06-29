@@ -10,9 +10,6 @@
 package test.integ;
 
 import hic.IOPanelInterface;
-
-import javax.swing.JTextArea;
-
 import mylib.MsgCtrl;
 
 /**
@@ -48,20 +45,6 @@ public class IOPanelProxy implements IOPanelInterface
     _msgOut = msg;
     MsgCtrl.errMsgln("\t" + _msgOut);
   }
-
-  @Override
-  public JTextArea getOutputArea()
-  {
-    return null;
-  }
-
-  @Override
-  public boolean isOnTown()
-  {
-    System.out.println("This method should be replaced with BldgDisplayCiv.currentBldg check.");
-    return false;
-  }
-
 
   /**
    * Return last message out and clear buffer

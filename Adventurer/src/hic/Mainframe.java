@@ -522,6 +522,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   public void displayText(String msg)
   {
     _iop.displayText(msg);
+    _iop.setFocusOnCommandWindow();
   }
 
 
@@ -533,7 +534,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
    */
   public void displayImageAndText(String msg, Image image)
   {
-    _iop.displayText(msg);
+	displayText(msg);
     _imagePanel.setImage(image);
     redraw();
   }
@@ -725,12 +726,6 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     TitledBorder border = (TitledBorder) _rightHolder.getBorder();
     border.setTitle(" " + title + " ");
   }
-
-
-  @Override
-public void setOnTown(boolean onTown) {
-	_mfCiv.setOnTown(onTown);
-}
 
 
 /**
