@@ -78,8 +78,7 @@ public class BuildingDisplayCiv
     if (bldgParm.length() > 0) {
       // Check that the building specified actually exists
       Building b = _breg.getBuilding(bldgParm);
-      boolean bldgFound = b != null;
-      if (!bldgFound) {
+      if (b == null) {
         _frame.displayErrorText(ERRMSG_NOBLDG);
         return false;
       } else {
@@ -156,6 +155,7 @@ public class BuildingDisplayCiv
     }
     else {
       _frame.displayErrorText(NO_BLDG_FOUND);
+      System.err.println("error case of enterBuilding");
     }
   }
 
@@ -204,7 +204,7 @@ public class BuildingDisplayCiv
   // =============================================================
 
   /**
-   * Display the bulding's image (exterior or interior) in the frame's image panel and
+   * Display the bulding's image (exterior or interior) in the frame's image panel
    * 
    * @param description description of the building's interior or exterior
    * @param imagePath image of the building's exterior or interior room
@@ -232,6 +232,11 @@ public class BuildingDisplayCiv
     public void setInsideBldg(boolean state)
     {
       _insideBldg = state;
+    }
+
+    public void setOnTown(boolean state)
+    {
+      _onTown = state;
     }
 
 

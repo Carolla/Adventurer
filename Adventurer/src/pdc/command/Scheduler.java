@@ -168,6 +168,7 @@ public class Scheduler implements Runnable
         }
         // If CmdEnd, then return to CommandParser to get another User command;
         // then add a CmdEnd to trigger a new user command after newCmd is executed
+        System.out.println("Running command: " + cmdToDo.getName());
         if (cmdToDo.getName().equalsIgnoreCase(CMDEND) == true) {
           Command newUserCmd = _cp.getUserCommand();
           // Wait and cycle again if nothing has been input
@@ -180,7 +181,7 @@ public class Scheduler implements Runnable
           sched(makeCmdEnd(newUserCmd.getDuration() + newUserCmd.getDelay()));
           // dump();
         } else {
-//          System.out.println("Running command: " + cmdToDo.getName());
+          System.out.println("About to exec: " + cmdToDo.getName());
           cmdToDo.exec();
         }
       } catch (NoSuchElementException e) {

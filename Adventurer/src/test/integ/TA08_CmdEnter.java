@@ -9,6 +9,7 @@
 
 package test.integ;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import mylib.MsgCtrl;
@@ -99,6 +100,9 @@ public class TA08_CmdEnter
     RegistryFactory regFactory = RegistryFactory.getInstance();
     BuildingRegistry bReg = (BuildingRegistry) regFactory.getRegistry(RegKey.BLDG);
     bReg.closeRegistry();
+    // Close NPCRegistry, left open from BuildingDisplayCiv
+    bReg = (BuildingRegistry) regFactory.getRegistry(RegKey.NPC);
+    bReg.closeRegistry();
   }
 
   /**
@@ -139,27 +143,35 @@ public class TA08_CmdEnter
     final String[][] bldg = {
         {"Arcaneum", "int_Arcaneum.jpg"},
         {"Bank", "int_Bank.jpg"},
-        {"Clerics' Guild", "int_Monastery.jpg"},
-        {"Fighters' Guild", "int_Stadium.jpg"},
+        {"Monastery", "int_Monastery.jpg"},
+        {"Stadium", "int_Stadium.jpg"},
         {"Jail", "int_Jail.jpg"},
-        {"Rat's Pack", "int_GeneralStore.jpg"},
-        {"Rouge's Den", "int_RoguesDen.jpg"},
+        {"General Store", "int_GeneralStore.jpg"},
+        {"Rouge's Tavern", "int_RoguesDen.jpg"},
         {"Ugly Ogre Inn", "int_Inn.jpg"}
     };
-
+   
     // Try entering all buildings
     for (int k = 0; k < bldg.length; k++) {
+      // Setup: onTown must be true, and inBuilding flag must be false
+      _mockBldgCiv.setOnTown(true);
+      _mockBldgCiv.setInsideBldg(false);
+      
+      // TEST
       _cp.receiveCommand("Enter " + bldg[k][0]);
       String echo = _mockCP.getInput();
-      MsgCtrl.msgln("\tCommand: " + echo);
+      MsgCtrl.msgln("\nCommand: " + echo);
 
-      // After Cmd is executed
-      Thread.sleep(500);
+      // After Cmd is executed...
+      Thread.sleep(1000);
+      // Confirm Hero is no longer on town, but is inside a building
+      assertFalse(_bldgCiv.isOnTown());
+      assertTrue(_bldgCiv.isInside());
+
+
       String bName = _bldgCiv.getCurrentBuilding().getName();
       MsgCtrl.msg("\tBuilding name = " + bName);
       assertTrue("Expected " + bldg[k][0] + ", got " + bName, bName.equals(bldg[k][0]));
-
-      _cp.receiveCommand("Return");
     }
   }
 
