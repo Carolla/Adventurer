@@ -46,12 +46,8 @@ public class TownRegistry extends Registry
 
   /** List of 8 buildings to add to default Town (Guilds listed first) */
   static private final String[] DEF_BUILDING_LIST = {"Arcaneum", "Jail", "Monastery",
-      "Rat's Pack", "Rouge's Den", "Stadium", "The Bank", "Ugly Ogre Inn"};
+      "Rat's Pack", "Rouge's Tavern", "Stadium", "The Bank", "Ugly Ogre Inn"};
 
-
-  // INFO: Types that correspond to the above names: Wizard's Guild, Jail,
-  // Cleric's Guild,
-  // General Store, Thieves' Guild, Fighter's Guild, Bank, Inn
 
   // ==============================================================================
   // CONSTRUCTOR(S) AND RELATED METHODS
