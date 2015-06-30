@@ -21,6 +21,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.pdc.registry.BuildingRegistry;
+import chronos.pdc.registry.NPCRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.BuildingDisplayCiv;
@@ -101,8 +102,8 @@ public class TA08_CmdEnter
     BuildingRegistry bReg = (BuildingRegistry) regFactory.getRegistry(RegKey.BLDG);
     bReg.closeRegistry();
     // Close NPCRegistry, left open from BuildingDisplayCiv
-    bReg = (BuildingRegistry) regFactory.getRegistry(RegKey.NPC);
-    bReg.closeRegistry();
+    NPCRegistry npcReg = (NPCRegistry) regFactory.getRegistry(RegKey.NPC);
+    npcReg.closeRegistry();
   }
 
   /**
@@ -163,7 +164,7 @@ public class TA08_CmdEnter
       MsgCtrl.msgln("\nCommand: " + echo);
 
       // After Cmd is executed...
-      Thread.sleep(1000);
+       Thread.sleep(600);
       // Confirm Hero is no longer on town, but is inside a building
       assertFalse(_bldgCiv.isOnTown());
       assertTrue(_bldgCiv.isInside());
