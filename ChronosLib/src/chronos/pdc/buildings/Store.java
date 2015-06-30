@@ -24,7 +24,7 @@ public class Store extends Building
 {
   // Data to initialize the default Store; must be static because it is used in constructor
   /** Name of this fine establishment */
-  static private final String STORE_NAME = "General Store";
+  static private final String STORE_NAME = "Rat's Pack";
   /** Owner of the store */
   static private final String OWNER = "Dewey N. Howe";
   /** General Store */

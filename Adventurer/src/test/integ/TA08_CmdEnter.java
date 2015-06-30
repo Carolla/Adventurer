@@ -12,6 +12,9 @@ package test.integ;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
 import mylib.MsgCtrl;
 
 import org.junit.After;
@@ -20,6 +23,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import chronos.pdc.buildings.Building;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.NPCRegistry;
 import chronos.pdc.registry.RegistryFactory;
@@ -47,6 +51,7 @@ import civ.MainframeCiv;
  * @version Dec 20, 2014 // original <br>
  *          Mar 5, 2015 // updated for more testing <br>
  *          Jun 22, 2015 // replaced {@code hic.integ.IOProxy} with {@code hic.integ.MainframeProxy} <br>
+ *          Jul 30, 2015 // adding in remainder of {@code CmdEnter} integration tests <br>
  */
 public class TA08_CmdEnter
 {
@@ -62,6 +67,26 @@ public class TA08_CmdEnter
   static private MainframeProxy _mfProxy = null;
   static private MainframeCiv _mfCiv;
 
+  /** List of valid Buildings that can be entered */
+  static private List<String> _bldgs = null;
+  
+  /** Support class for obtaining all registries */
+  static private RegistryFactory _regFactory = null;
+  /** Support class for obtaining particular building */
+  static private BuildingRegistry _bReg = null;
+
+  /** List of all possible buildings; does not contain Arena */
+//  final private String[][] _bldgs = {
+//      {"Arcaneum", "int_Arcaneum.jpg"},
+//      {"Bank", "int_Bank.jpg"},
+//      {"Monastery", "int_Monastery.jpg"},
+//      {"Stadium", "int_Stadium.jpg"},
+//      {"Jail", "int_Jail.jpg"},
+//      {"Rat's Pack", "int_GeneralStore.jpg"},
+//      {"Rouge's Tavern", "int_RoguesDen.jpg"},
+//      {"Ugly Ogre Inn", "int_Inn.jpg"}
+//  };
+ 
 
   /**
    * @throws java.lang.Exception
@@ -84,6 +109,20 @@ public class TA08_CmdEnter
     assertNotNull(_bldgCiv);
     _mockBldgCiv = _bldgCiv.new MockBldgCiv();
     assertNotNull(_mockBldgCiv);
+
+    // Start up the support classes
+    _regFactory = RegistryFactory.getInstance();
+    _bReg = (BuildingRegistry) _regFactory.getRegistry(RegKey.BLDG);
+
+    // Get list of names for all buildings that can be entered
+    _bldgs = _bReg.getElementNames();
+//    MsgCtrl.auditMsgsOn(true);
+//    MsgCtrl.msgln("\tLoading Building names...");
+    for (String s : _bldgs) {
+      MsgCtrl.msg("\t" + s);
+    }
+//    MsgCtrl.auditMsgsOn(false);
+      
   }
 
   /**
@@ -98,11 +137,9 @@ public class TA08_CmdEnter
     _cp = null;
     _mfProxy = null;
     // Close BuildingRegistry, left open from BuildingDisplayCiv
-    RegistryFactory regFactory = RegistryFactory.getInstance();
-    BuildingRegistry bReg = (BuildingRegistry) regFactory.getRegistry(RegKey.BLDG);
-    bReg.closeRegistry();
+    _bReg.closeRegistry();
     // Close NPCRegistry, left open from BuildingDisplayCiv
-    NPCRegistry npcReg = (NPCRegistry) regFactory.getRegistry(RegKey.NPC);
+    NPCRegistry npcReg = (NPCRegistry) _regFactory.getRegistry(RegKey.NPC);
     npcReg.closeRegistry();
   }
 
@@ -130,36 +167,25 @@ public class TA08_CmdEnter
 
 
   /**
-   * Normal case: Enter a valid building from the town
+   * Normal case: Enter a valid building from the town (no current building)
    * 
    * @throws InterruptedException
    */
   @Test
   public void test_EnterBuildingFromTownOrExterior() throws InterruptedException
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    final String[][] bldg = {
-        {"Arcaneum", "int_Arcaneum.jpg"},
-        {"Bank", "int_Bank.jpg"},
-        {"Monastery", "int_Monastery.jpg"},
-        {"Stadium", "int_Stadium.jpg"},
-        {"Jail", "int_Jail.jpg"},
-        {"General Store", "int_GeneralStore.jpg"},
-        {"Rouge's Tavern", "int_RoguesDen.jpg"},
-        {"Ugly Ogre Inn", "int_Inn.jpg"}
-    };
-   
     // Try entering all buildings
-    for (int k = 0; k < bldg.length; k++) {
+    for (int k = 0; k < _bldgs.size(); k++) {
       // Setup: onTown must be true, and inBuilding flag must be false
       _mockBldgCiv.setOnTown(true);
       _mockBldgCiv.setInsideBldg(false);
       
       // TEST
-      _cp.receiveCommand("Enter " + bldg[k][0]);
+      _cp.receiveCommand("Enter " + _bldgs.get(k));
       String echo = _mockCP.getInput();
       MsgCtrl.msgln("\nCommand: " + echo);
 
@@ -172,10 +198,49 @@ public class TA08_CmdEnter
 
       String bName = _bldgCiv.getCurrentBuilding().getName();
       MsgCtrl.msg("\tBuilding name = " + bName);
-      assertTrue("Expected " + bldg[k][0] + ", got " + bName, bName.equals(bldg[k][0]));
+      assertTrue("Expected " + _bldgs.get(k) + ", got " + bName, bName.equals(_bldgs.get(k)));
     }
   }
 
+
+  /**
+   * Normal case: Enter a valid building from outside the current Building (no parms)
+   * 
+   * @throws InterruptedException
+   */
+  @Test
+  public void test_EnterCurrentBuilding() throws InterruptedException
+  {
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.where(this);
+
+    for (int k = 0; k < _bldgs.size(); k++) {
+      // Setup: Hero must be outside a defined currentBuilding, and not OnTown
+      _mockBldgCiv.setOnTown(false);
+      _mockBldgCiv.setInsideBldg(false);
+      String bName = _bldgs.get(k);
+      Building b = _bReg.getBuilding(bName);
+      _bldgCiv.setCurrentBuilding(b);
+      
+      // TEST
+      _cp.receiveCommand("Enter");
+      String echo = _mockCP.getInput();
+      MsgCtrl.msg("\nCommand: " + echo);
+
+      // After Cmd is executed...
+       Thread.sleep(600);
+       
+      // VERIFY
+      // Confirm Hero is no longer on town, but is inside a building
+      assertFalse(_bldgCiv.isOnTown());
+      assertTrue(_bldgCiv.isInside());
+      // Hero is inside the correct building, now the current building
+      String newCurrent = _bldgCiv.getCurrentBuilding().getName();
+      MsgCtrl.msg("\tCurrent Building = " + newCurrent);
+      assertTrue("Expected " + _bldgs.get(k) + ", got " + bName, bName.equals(newCurrent));
+    }
+  }
 
 
   // /**

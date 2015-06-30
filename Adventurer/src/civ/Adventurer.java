@@ -63,15 +63,15 @@ public class Adventurer
    */
   public static void main(String[] args)
   {
-      final Adventurer adv = new Adventurer();
-      
+    final Adventurer adv = new Adventurer();
+
     /** All Swing processing occurs from the single EventQueue thread. */
     EventQueue.invokeLater(new Runnable() {
       public void run()
       {
         try {
           adv.initRegistries();
-//          dumpAllRegistries();
+          // dumpAllRegistries();
           final Mainframe frame = Mainframe.getInstance();
           frame.setVisible(true);
           frame.addWindowListener(new WindowAdapter() {
@@ -108,20 +108,20 @@ public class Adventurer
     _rf.closeAllRegistries();
   }
 
-//  /**
-//   * Dump the contents of all the registries for viewing
-//   */
-//  static private void dumpAllRegistries()
-//  {
-//    _rf = RegistryFactory.getInstance();
-//    for (RegKey key : RegKey.values()) {
-//      Registry reg = _rf.getRegistry(key);
-//      List<IRegistryElement> reglist = reg.getAll();
-//      System.out.print("Registry " + key.name());
-//      System.out.println("\t" + reglist.size() + " elements");
-//      System.out.println("\t" + reglist.toString());
-//    }
-//  }
+  // /**
+  // * Dump the contents of all the registries for viewing
+  // */
+  // static private void dumpAllRegistries()
+  // {
+  // _rf = RegistryFactory.getInstance();
+  // for (RegKey key : RegKey.values()) {
+  // Registry reg = _rf.getRegistry(key);
+  // List<IRegistryElement> reglist = reg.getAll();
+  // System.out.print("Registry " + key.name());
+  // System.out.println("\t" + reglist.size() + " elements");
+  // System.out.println("\t" + reglist.toString());
+  // }
+  // }
 
   // ============================================================
   // Inner class for testing
