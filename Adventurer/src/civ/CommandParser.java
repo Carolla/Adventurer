@@ -11,15 +11,14 @@
 
 package civ;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.StringTokenizer;
+import java.util.Map;
+import java.util.TreeMap;
 
 import pdc.command.Command;
 import pdc.command.CommandFactory;
-import pdc.command.DeltaCmdList;
 import pdc.command.Scheduler;
-import pdc.command.intCmdEnd;
 
 /**
  * Receives a user input string from the command window and converts it to a command object, which
@@ -46,7 +45,7 @@ public class CommandParser
      * NOTE: If the command table gets long, then sort in order of probablity for efficiency
      * (current look-up algorithm is linear).
      */
-    private final String[][] _cmdTable = {
+    private final static String[][] _cmdTable = {
             {"APPROACH", "CmdApproach"},// Display the description and image of Building exterior
             {"ENTER", "CmdEnter"}, // Display the description and image of Building interior
             {"EXIT", "CmdLeave"}, // Synonym for Leave
@@ -63,21 +62,27 @@ public class CommandParser
             // { "LOOK", "CmdLook" }, // Give a description of the Room and any People inside it.
             // { "WAIT", "CmdWait" }, // Wait a specific amount of time, in hours or minutes.
     };
+    
+    /** List of commands that we can look up */
+    private static final Map<String, String> _commandMap = new TreeMap<String, String>();
+    static {
+        for (String[] s : _cmdTable) {
+            _commandMap.put(s[0], s[1]);
+        }
+    }
 
-    private String _userInput = null; // buffer to hold user input string
+    private String _userInput = ""; // buffer to hold user input string
 
-    // Special cases
     /** Error message if command cannot be found. */
     public static final String ERRMSG_UNKNOWN = "I don't understand what you want to do.";
-
+    /** Error message if command cannot be found. */
+    public static final String ERRMSG_INIT_FAILURE = "Failed to initialize command from user input";
+    
     /** Reference to GUI panel for input and output messages, and their interactions */
     private MainframeCiv _mfCiv;
 
     /** Start the Scheduler up when the CommandPaarser starts */
     static private Scheduler _skedder = null;
-
-    private static CommandParser _this;
-    private final Command _commandEnd = new intCmdEnd();
 
     // ============================================================
     // Constructors and constructor helpers
@@ -90,41 +95,15 @@ public class CommandParser
      * @param ioPanel handles input commands and output and error messages, and the interactions
      *        between command line input and output messages
      */
-    public CommandParser(MainframeCiv mfCiv)
+    public CommandParser(MainframeCiv mfCiv, Scheduler skedder)
     {
         _mfCiv = mfCiv;
-
-        // Start the scheduler off on its own thread
-        _skedder = new Scheduler(new DeltaCmdList());
-        new Thread(_skedder).start();
-    }
-
-    public static CommandParser getInstance(MainframeCiv mfCiv)
-    {
-        if (_this == null) {
-            _this = new CommandParser(mfCiv);
-        }
-        return _this;
+        _skedder = skedder;
     }
 
     // ============================================================
     // Public Methods
     // ============================================================
-
-    /**
-     * Collects user input and converts the first token into a {@code Command} token. Sends the
-     * {@code Command} token to the {@code CommandFactory } to create the specific {@code Command}
-     * subclass, and passes the remainder of the parms to the command for further parsing. This
-     * method is called as part of the {@code Scheduler}'s loop.
-     * 
-     * @return one of the many user command subclasses available
-     */
-    public Command getUserCommand(String s)
-    {
-        CommandInput cmdInput = parse(s);
-        return createCommand(cmdInput);
-    }
-
 
     /**
      * Receives and holds the command string from the command window. It will be retrieved by the
@@ -135,7 +114,9 @@ public class CommandParser
     public void receiveCommand(String textIn)
     {
         _userInput = textIn;
-        Command cmd = getUserCommand(textIn);
+        CommandInput cmdInput = createCommandInput(textIn);
+        Command cmd = createCommand(cmdInput);
+
         _skedder.sched(cmd);
     }
 
@@ -149,14 +130,13 @@ public class CommandParser
         Command cmd = CommandFactory.createCommand(commandInput.commandToken);
 
         if (cmd != null) {
-            if (cmd.init(commandInput.parameters) == false) {
-                cmd = _commandEnd;
+            cmd.setMsgHandler(_mfCiv);
+            if (cmd.init(commandInput.parameters) == false) {            
+                _mfCiv.errorOut(ERRMSG_INIT_FAILURE);
             }
         } else {
             _mfCiv.errorOut(ERRMSG_UNKNOWN);
-            cmd = _commandEnd;
         }
-        cmd.setMsgHandler(_mfCiv);
         return cmd;
     }
 
@@ -178,36 +158,26 @@ public class CommandParser
         return null;
     }
 
-    /**
-     * Tokenizes the input line into its tokens and parms list.
-     * 
-     * @param input String taken in from command window
-     * @return @code Command} token, which is always the first token, and saves parms list (if any)
-     *         for later.
-     */
-    public CommandInput parse(String input)
+    public CommandInput createCommandInput(String textIn)
     {
-        String cmdName = null;
-        StringTokenizer line = new StringTokenizer(input);
+        List<String> tokens = Arrays.asList(textIn.split(" "));
+        String commandToken = null;
         
-        if (line.hasMoreTokens()) {   
-            String cmdToken = line.nextToken();
-            cmdName = lookup(cmdToken);
+        if (tokens.size() > 0) {
+            String s = tokens.remove(0).toUpperCase();
+            commandToken = _commandMap.get(s);
         }
-
-        List<String> parms = new ArrayList<String>(line.countTokens());
-        while (line.hasMoreTokens()) {
-            parms.add(line.nextToken());
-        }
-        
-        return new CommandInput(cmdName, parms);
+        return new CommandInput(commandToken, tokens);
     }
     
-    private class CommandInput {
+    private class CommandInput
+    {
         public final String commandToken;
         public final List<String> parameters;
-        CommandInput(String command, List<String> params) {
-            commandToken = command;
+
+        CommandInput(String cmdToken, List<String> params)
+        {
+            commandToken = cmdToken;
             parameters = params;
         }
     }
