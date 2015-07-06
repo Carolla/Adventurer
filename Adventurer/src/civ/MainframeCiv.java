@@ -80,7 +80,7 @@ public class MainframeCiv
   private MainframeInterface _frame;
   private Adventure _adv;
   private PersonReadWriter _personRW;
-  private boolean _onTown;
+//  private boolean _onTown;
 
   /** Current Building being displayed, and can be entered */
   private final Rectangle _townReturn = new Rectangle(0, 0, 100, 100);
@@ -172,9 +172,9 @@ public class MainframeCiv
    */
    public void enterBuilding(String bldName)
    {
-	   if (_onTown) {
+	   if (_bdCiv.isOnTown()) {
 		   System.out.println("On town, trying to open building");
-		   _onTown = false;
+		   _bdCiv.setOnTown(false);
 		   
 		   // Always enter the building on request
 		    BuildingRegistry breg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
@@ -196,7 +196,7 @@ public class MainframeCiv
   public void handleClick(Point p)
   {
     handleClickIfOnTownReturn(p);
-    if (_onTown) {
+    if (_bdCiv.isOnTown()) {
        handleClickIfOnBuilding(p);
     }
   }
@@ -248,7 +248,7 @@ public class MainframeCiv
   // TODO: Mouse action belong in the HIC; not in the CIV
   public void handleMouseMovement(Point p)
   {
-    if (_onTown) {
+    if (_bdCiv.isOnTown()) {
       for (BuildingRectangle rect : _buildingList.values()) {
         if (rect.contains(p)) {
           _frame.setBuilding(rect);
@@ -299,7 +299,7 @@ public class MainframeCiv
   /** Creates the standard layout to display the town image and description */
   public void openTown()
   {
-    _onTown = true;
+    _bdCiv.setOnTown(true);
     _bdCiv.setCurrentBuilding(null);
     Image townImage = Util.convertToImage(TOWN_IMAGE);
     _frame.setImage(townImage);
@@ -346,15 +346,6 @@ public class MainframeCiv
     public MockMainframeCiv()
     {}
 
-    /**
-     * Set onTown flag
-     * 
-     * @param onTownView is set if this parm is true
-     */
-    public void setTownView(boolean onTownView)
-    {
-      _onTown = onTownView;
-    }
 
   } // end of MockMFC class
 

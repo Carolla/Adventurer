@@ -70,6 +70,7 @@ public class BuildingDisplayCiv
   {
     // The Hero cannot be inside a building already
     if (isInside()) {
+      System.err.println("Expected message: " + ERRMSG_JUMPBLDG);
       _frame.displayErrorText(ERRMSG_JUMPBLDG);
       return false;
     }
@@ -185,6 +186,17 @@ public class BuildingDisplayCiv
     _currentBldg = b;
   }
 
+  /**
+   * Set the Hero to no building, but at the town view
+   * 
+   * @param state = true if Hero is on town, else false is Hero is inside or outside a current building
+   */
+  public void setOnTown(boolean state)
+  {
+    _onTown = state;
+  }
+
+  
   // ======================================================================
   // Inner Class MockBldgCiv
   // ======================================================================
