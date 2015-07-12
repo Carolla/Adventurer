@@ -46,7 +46,7 @@ import civ.MainframeCiv;
  *          Aug 18, 2014 // ABC Removed as inner class and made stand-along class <br>
  */
 @SuppressWarnings("serial")
-public class IOPanel extends JPanel implements IOPanelInterface
+public class IOPanel extends JPanel // implements IOPanelInterface
 {
   private final StyledDocument _output;
   private final JTextPane _pane;
@@ -71,7 +71,7 @@ public class IOPanel extends JPanel implements IOPanelInterface
    */
   public IOPanel(MainframeCiv mfCiv)
   {
-	_mfCiv = mfCiv;
+    _mfCiv = mfCiv;
     setLayout(new MigLayout("", "[grow]", "[][]"));
     _pane = new JTextPane();
     _pane.setAlignmentY(JTextArea.TOP_ALIGNMENT);
@@ -85,7 +85,8 @@ public class IOPanel extends JPanel implements IOPanelInterface
   }
 
 
-  // TODO JTextArea will not change color and font for individual text lines, JTextPane is needed for
+  // TODO JTextArea will not change color and font for individual text lines, JTextPane is needed
+  // for
   // that.
   /**
    * Display error text, using different Font and color, then return to standard font and color.
@@ -93,58 +94,57 @@ public class IOPanel extends JPanel implements IOPanelInterface
    * @param msg text block to display
    */
   public void displayErrorText(String msg)
-  {	
-	SimpleAttributeSet keyWord = new SimpleAttributeSet();
-	StyleConstants.setForeground(keyWord, Color.RED);
-	StyleConstants.setFontFamily(keyWord, "Sans Serif");
-	StyleConstants.setFontSize(keyWord, 14);
-	StyleConstants.setBold(keyWord, true);
+  {
+    SimpleAttributeSet keyWord = new SimpleAttributeSet();
+    StyleConstants.setForeground(keyWord, Color.RED);
+    StyleConstants.setFontFamily(keyWord, "Sans Serif");
+    StyleConstants.setFontSize(keyWord, 14);
+    StyleConstants.setBold(keyWord, true);
 
-	try {
-	  _output.insertString(_output.getLength(), msg + Constants.NEWLINE, keyWord);
+    try {
+      _output.insertString(_output.getLength(), msg + Constants.NEWLINE, keyWord);
     } catch (BadLocationException e) {
-      //Shouldn't happen
-	  e.printStackTrace();
+      // Shouldn't happen
+      e.printStackTrace();
     }
   }
 
 
-/**
-   * Display a block of text in the output Transcript area.
-   * Isolate the user's command on its own line (or text block).
+  /**
+   * Display a block of text in the output Transcript area. Isolate the user's command on its own
+   * line (or text block).
    * 
    * @param msg text block to display
    */
   public void displayText(String msg)
   {
-	displayText(Constants.NEWLINE + msg + Constants.NEWLINE, null);
+    displayText(Constants.NEWLINE + msg + Constants.NEWLINE, null);
   }
-  
+
   /**
    * Wrapper method for StyledDocument insertString
    * 
    * @param string the message to be displayed
    * @param attributes attributes for this text, can be null
    */
-  private void displayText(String string, AttributeSet attributes) {
-	try {
-	  _output.insertString(_output.getLength(), string + Constants.NEWLINE, attributes);
-	} catch (BadLocationException e) {
-	  //Shouldn't happen
-	  e.printStackTrace();
-	}	
+  private void displayText(String string, AttributeSet attributes)
+  {
+    try {
+      _output.insertString(_output.getLength(), string + Constants.NEWLINE, attributes);
+    } catch (BadLocationException e) {
+      // Shouldn't happen
+      e.printStackTrace();
+    }
   }
 
 
-public void setFocusOnCommandWindow()
+  public void setFocusOnCommandWindow()
   {
     // Ensure that the text scrolls as new text is appended
     _cmdWin.setFocusable(true);
     _cmdWin.requestFocusInWindow();
   }
 
-
-  
 
   // ============================================================
   // Public Methods

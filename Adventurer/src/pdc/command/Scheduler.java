@@ -180,7 +180,6 @@ public class Scheduler implements Runnable
           sched(makeCmdEnd(newUserCmd.getDuration() + newUserCmd.getDelay()));
           // dump();
         } else {
-//          System.out.println("Running command: " + cmdToDo.getName());
           cmdToDo.exec();
         }
       } catch (NoSuchElementException e) {

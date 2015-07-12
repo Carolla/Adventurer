@@ -20,9 +20,7 @@ import mylib.dmc.IRegistryElement;
  *    The default constructor creates "Ugly Ogre Inn".     
  *
  * @author Alan Cline
- * @version <DL>
- * <DT> Build 1.0		Jan 28, 2013   // original <DD>
- * </DL>
+ * @version Jan 28, 2013   // original <br>
  */
 public class Inn extends Building
 {
@@ -58,7 +56,7 @@ public class Inn extends Building
     private int CLOSETIME = 2400;
 
     /** Minimum number of patrons that indicate if the Inn is busy or not */
-    private int NBR_PATRONS_TO_BE_BUSY = 4;
+    private int NBR_PATRONS_TO_BE_BUSY = 3;
 
     /** Current number of patrons in the Inn plus the Innkeeper */
     private int _patronsNow = 1;

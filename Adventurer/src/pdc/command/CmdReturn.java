@@ -22,10 +22,7 @@ import chronos.pdc.buildings.Building;
  * the building only. The command string is case-insensitive. See <code>init()</code> method.
  * 
  * @author Alan Cline
- * @version <DL>
- *          <DT>1.0 Mar 29 2014 // original
- *          <DD>
- *          </DL>
+ * @version Mar 29 2014 // original <br>
  * @see Command
  */
 public class CmdReturn extends Command
@@ -87,6 +84,7 @@ public class CmdReturn extends Command
    */
   public boolean exec()
   {
+    System.err.println("\nExiting to town view");
     _mfCiv.openTown();
     return true;
   }

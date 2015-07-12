@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Extended Date Object</title>
+    <script>
+      Date.prototype.yester = function() {
+        var yesterday = this.getDate() - 1;
+        return yesterday;
+      }
+      Date.prototype.dayName = function() {
+        var name = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        var yesterName = name[this.getDay()-1];
+        return yesterName;
+      }
+      Date.prototype.properMonth = function() {
+        var month = this.getMonth() + 1;
+        return month;
+      }
+      Date.prototype.showInfo = function() {
+        var info1 = this.dayName() + ", ";
+        var info2 = this.properMonth() + " " + this.yester() + " " + this.getFullYear());
+        return info1;
+      }
+  </script>
+</head>
+<body>
+  <script>
+    var day = new Date();
+    document.write("Yesterday was " + "<br>");
+    document.write(day.showInfo());
+  </script>
+</body>
+</html>
+
