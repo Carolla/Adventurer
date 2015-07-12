@@ -11,13 +11,13 @@
 
 package civ;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import pdc.command.Command;
 import pdc.command.CommandFactory;
+import pdc.command.CommandInput;
 import pdc.command.Scheduler;
 
 /**
@@ -38,48 +38,9 @@ import pdc.command.Scheduler;
  */
 public class CommandParser
 {
-    /**
-     * Command lexicon is sorted alphabetically by command string for easier user readability. The
-     * first entry is the (case-insensitive) command String from the user, the second entry is the
-     * {@code CmdToken} that creates the {@code Command} object. <br>
-     * NOTE: If the command table gets long, then sort in order of probablity for efficiency
-     * (current look-up algorithm is linear).
-     */
-    private final static String[][] _cmdTable = {
-            {"APPROACH", "CmdApproach"},// Display the description and image of Building exterior
-            {"ENTER", "CmdEnter"}, // Display the description and image of Building interior
-            {"EXIT", "CmdLeave"}, // Synonym for Leave
-            {"GOTO", "CmdGoTo"}, // If parm is a Building or Building type, "Approach" building;
-                                 // if parm = Town, goes to Town view; if null parm, info msg
-            {"LEAVE", "CmdLeave"}, // Leave the interior and go to building's exterior
-            {"QUIT", "CmdQuit"}, // End the program.
-            {"RETURN", "CmdReturn"}, // Return to town view
-    // {"TO TOWN", "CmdReturn"}, // Return to Town View
-            // { "HELP", "CmdHelp" }, // List the user command names and their descriptions.
-            // { "INVENTORY", "CmdInventory" }, // Describe the money the Hero has (later, this will
-            // tell
-            // the items too)
-            // { "LOOK", "CmdLook" }, // Give a description of the Room and any People inside it.
-            // { "WAIT", "CmdWait" }, // Wait a specific amount of time, in hours or minutes.
-    };
-    
-    /** List of commands that we can look up */
-    private static final Map<String, String> _commandMap = new TreeMap<String, String>();
-    static {
-        for (String[] s : _cmdTable) {
-            _commandMap.put(s[0], s[1]);
-        }
-    }
-
     private String _userInput = ""; // buffer to hold user input string
 
-    /** Error message if command cannot be found. */
-    public static final String ERRMSG_UNKNOWN = "I don't understand what you want to do.";
-    /** Error message if command cannot be found. */
-    public static final String ERRMSG_INIT_FAILURE = "Failed to initialize command from user input";
-    
-    /** Reference to GUI panel for input and output messages, and their interactions */
-    private MainframeCiv _mfCiv;
+    private final CommandFactory _factory;
 
     /** Start the Scheduler up when the CommandPaarser starts */
     static private Scheduler _skedder = null;
@@ -92,13 +53,15 @@ public class CommandParser
      * Creates the singleton CommandParser, and connects to the {@code CommandFactory} and the
      * {@code MainframeCiv} for displaying parser output to {@code IOPanel}.
      * 
+     * @param factory the CommandFactory for creating commands
+     * 
      * @param ioPanel handles input commands and output and error messages, and the interactions
      *        between command line input and output messages
      */
-    public CommandParser(MainframeCiv mfCiv, Scheduler skedder)
+    public CommandParser(Scheduler skedder, CommandFactory factory)
     {
-        _mfCiv = mfCiv;
         _skedder = skedder;
+        _factory = factory;
     }
 
     // ============================================================
@@ -115,73 +78,22 @@ public class CommandParser
     {
         _userInput = textIn;
         CommandInput cmdInput = createCommandInput(textIn);
-        Command cmd = createCommand(cmdInput);
+        Command cmd = _factory.createCommand(cmdInput);
 
         _skedder.sched(cmd);
     }
 
-
-    // ============================================================
-    // Private helper methods
-    // ============================================================
-
-    public Command createCommand(CommandInput commandInput)
-    {
-        Command cmd = CommandFactory.createCommand(commandInput.commandToken);
-
-        if (cmd != null) {
-            cmd.setMsgHandler(_mfCiv);
-            if (cmd.init(commandInput.parameters) == false) {            
-                _mfCiv.errorOut(ERRMSG_INIT_FAILURE);
-            }
-        } else {
-            _mfCiv.errorOut(ERRMSG_UNKNOWN);
-        }
-        return cmd;
-    }
-
-
-    /**
-     * Searches through the command table for the first word in the user input string and returns
-     * the canonical {@code Command } name associated with it.
-     * 
-     * @return canonical name of the {@code Command} (concrete subCommand) to {@code Schedule}, or
-     *         null.
-     */
-    public String lookup(String cmdString)
-    {
-        for (int k = 0; k < _cmdTable.length; k++) {
-            if (cmdString.equalsIgnoreCase(_cmdTable[k][0])) {
-                return _cmdTable[k][1];
-            }
-        }
-        return null;
-    }
-
     public CommandInput createCommandInput(String textIn)
     {
-        List<String> tokens = Arrays.asList(textIn.split(" "));
+        List<String> tokens = new ArrayList<String>(Arrays.asList(textIn.split(" ")));
         String commandToken = null;
         
         if (tokens.size() > 0) {
-            String s = tokens.remove(0).toUpperCase();
-            commandToken = _commandMap.get(s);
+            commandToken = tokens.remove(0).toUpperCase();
         }
+        
         return new CommandInput(commandToken, tokens);
     }
-    
-    private class CommandInput
-    {
-        public final String commandToken;
-        public final List<String> parameters;
-
-        CommandInput(String cmdToken, List<String> params)
-        {
-            commandToken = cmdToken;
-            parameters = params;
-        }
-    }
-
 
 
     // /**

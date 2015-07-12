@@ -32,8 +32,11 @@ import javax.swing.text.StyledDocument;
 import mylib.Constants;
 import net.miginfocom.swing.MigLayout;
 import pdc.Util;
+import pdc.command.CommandFactory;
+import pdc.command.DeltaCmdList;
+import pdc.command.Scheduler;
+import civ.ChronosLogger;
 import civ.CommandParser;
-import civ.MainframeCiv;
 
 /**
  * This class serves as the text output and command line input after an Adventure is selected
@@ -60,7 +63,6 @@ public class IOPanel extends JPanel implements IOPanelInterface
    * for values 0-255, kicked up one notch of brightness
    */
   private final Color MY_LIGHT_BROWN = new Color(130, 100, 90).brighter();
-  private MainframeCiv _mfCiv;
   private SimpleAttributeSet _errorAttributes;
 
 
@@ -71,9 +73,8 @@ public class IOPanel extends JPanel implements IOPanelInterface
   /**
    * Creates output test panel and input CommandLine Input panel
    */
-  public IOPanel(MainframeCiv mfCiv)
+  public IOPanel(ChronosLogger mfCiv)
   {
-	_mfCiv = mfCiv;
     setLayout(new MigLayout("", "[grow]", "[][]"));
     _pane = new JTextPane();
     _pane.setAlignmentY(JTextArea.TOP_ALIGNMENT);
@@ -189,7 +190,7 @@ public void setFocusOnCommandWindow()
     southPanel.add(_cmdWin, "cell 1 0,alignx left");
 
     // Create the command parser that goes in here
-    final CommandParser cp = CommandParser.getInstance(_mfCiv);
+    final CommandParser cp = new CommandParser(new Scheduler(new DeltaCmdList()), new CommandFactory());
 
     // Add function to send commands to command parser.
     _cmdWin.addActionListener(new ActionListener()

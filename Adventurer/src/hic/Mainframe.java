@@ -549,7 +549,6 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   }
 
 
-
   // /**
   // * Create menu, mouse options, right panel image
   // */

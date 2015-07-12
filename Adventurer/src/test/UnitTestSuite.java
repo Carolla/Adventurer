@@ -15,6 +15,7 @@ import org.junit.runners.Suite;
 import test.pdc.command.TestCmdApproach;
 import test.pdc.command.TestCmdEnter;
 import test.pdc.command.TestCmdQuit;
+import test.pdc.command.TestCommandFactory;
 import test.pdc.command.TestCommandParser;
 import test.pdc.command.TestDeltaCmdList;
 import test.pdc.command.TestEvent;
@@ -50,6 +51,7 @@ import test.pdc.registry.TestAdventureRegistry;
   TestDeltaCmdList.class,
   TestScheduler.class,
   TestCommandParser.class,
+  TestCommandFactory.class,
   TestEvent.class
 // TestDwarf.class
 // TestHuman.class

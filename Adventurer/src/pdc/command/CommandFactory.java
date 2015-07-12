@@ -11,6 +11,11 @@
 
 package pdc.command;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+
 
 
 
@@ -27,27 +32,58 @@ package pdc.command;
  */
 public class CommandFactory
 {
+    /** Error message if command cannot be found. */
+    public static final String ERRMSG_INIT_FAILURE = "Failed to initialize command from user input";
+    
+    /** List of commands that we can look up */
+    private static Map<String, Class<? extends Command>> _commandMap = new HashMap<String, Class<? extends Command>>();
+    static {
+        _commandMap.put("APPROACH", CmdApproach.class); // Display the description and image of Building exterior
+        _commandMap.put("ENTER", CmdEnter.class);       // Display the description and image of Building interior
+        _commandMap.put("EXIT", CmdLeave.class);        // Synonym for Leave
+
+        _commandMap.put("LEAVE", CmdLeave.class);       // Leave the interior and go to building's exterior
+        _commandMap.put("QUIT", CmdQuit.class);         // End the program.
+        _commandMap.put("RETURN", CmdReturn.class);     // Return to town view
+        
+        // _commandMap.put("GOTO", CmdGoTo.class);         // If parm is a Building or Building type, "Approach" building;
+        // if parm = Town, goes to Town view; if null parm, info msg
+        // {"TO TOWN", "CmdReturn"}, // Return to Town View
+        // { "HELP", "CmdHelp" }, // List the user command names and their descriptions.
+        // { "INVENTORY", "CmdInventory" }, // Describe the money the Hero has (later, this will
+        // tell
+        // the items too)
+        // { "LOOK", "CmdLook" }, // Give a description of the Room and any People inside it.
+        // { "WAIT", "CmdWait" }, // Wait a specific amount of time, in hours or minutes.
+        _commandMap = Collections.unmodifiableMap(_commandMap);
+    }
+    
     /**
      * Creates a user Command from its canonical name.<br>
      * NOTE: The subclass command must be in the same package as the Command class.
      * 
-     * @param cmdClassName the name of the subclass to be created
+     * @param cmdInput the name of the subclass to be created
      * @return Command, the subclass Command created, but referenced polymorphically
      */
-    public static Command createCommand(String cmdClassName)
+    public Command createCommand(CommandInput cmdInput)
     {
-        Command command = null;
-        if (cmdClassName != null) {
+        Class<? extends Command> className = _commandMap.get(cmdInput.commandToken);
+        Command command = new NullCommand();
+        if (className != null) {
             try {
-                // Subclass Commands must have empty constructors (no formal input arguments)
-                command = (Command) Class.forName(Command.CMD_PACKAGE + cmdClassName).newInstance();
-            } catch (Exception e) {
+                command = (Command) className.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
                 System.err.println("Can't find Class to load: " + e.getMessage());
+                e.printStackTrace();
             }
-        } 
+        }
+        
+        if (command.init(cmdInput.parameters) == false) {
+            System.err.println(ERRMSG_INIT_FAILURE);
+        }
+        
         return command;
     }
-
 
 } // end of CommandFactory class
 

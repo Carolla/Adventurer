@@ -20,6 +20,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import pdc.command.CommandFactory;
+import pdc.command.DeltaCmdList;
+import pdc.command.NullCommand;
+import pdc.command.Scheduler;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
@@ -59,9 +63,6 @@ public class TA08_CmdEnter
   static private MockBldgCiv _mockBldgCiv = null;
   /** Mainframe Proxy facades the image panel and iopanel; used by BuildingDisplayCiv */
   static private MainframeProxy _mfProxy = null;
-  static private MainframeCiv _mfCiv;
-
-
   /**
    * @throws java.lang.Exception
    */
@@ -73,9 +74,8 @@ public class TA08_CmdEnter
     assertNotNull(_ioProxy);
     _mfProxy = new MainframeProxy();
     assertNotNull(_mfProxy);
-    // Create the parser to receive commands
-    _mfCiv = new MainframeCiv(_mfProxy);
-    _cp = CommandParser.getInstance(_mfCiv);
+    new MainframeCiv(_mfProxy);
+    _cp = new CommandParser(new Scheduler(new DeltaCmdList()), new CommandFactory());
     assertNotNull(_cp);
     _mockCP = _cp.new MockCP();
     assertNotNull(_mockCP);
@@ -142,7 +142,7 @@ public class TA08_CmdEnter
     String echo = _mockCP.getInput();
     MsgCtrl.msgln("\tCommand entered: " + echo);
     assertNull(echo);
-    String nullMsg = CommandParser.ERRMSG_UNKNOWN;
+    String nullMsg = NullCommand.ERRMSG_UNKNOWN;
     String msgOut = _mfProxy.errMsgOut();
     MsgCtrl.msgln("\tError message expected: " + nullMsg);
     assertTrue(msgOut.equals(nullMsg));
@@ -167,7 +167,7 @@ public class TA08_CmdEnter
     String echo = _mockCP.getInput();
     MsgCtrl.msgln("\tCommand entered: " + echo);
     assertNull(_mockCP.getInput());
-    String nullMsg = CommandParser.ERRMSG_UNKNOWN;
+    String nullMsg = NullCommand.ERRMSG_UNKNOWN;
     String msgOut = _mfProxy.errMsgOut();
     MsgCtrl.msgln("\tError message expected: " + nullMsg);
     MsgCtrl.msgln("\tError message received: " + msgOut);

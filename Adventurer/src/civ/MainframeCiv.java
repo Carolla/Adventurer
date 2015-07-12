@@ -40,11 +40,11 @@ import dmc.PersonReadWriter;
  *          Mar 19 2014 // added current Building for ENTER command <br>
  *          Aug 18 2014 // added {@code displayImage} to show Chronos logo on portal page <br>
  */
-public class MainframeCiv 
+public class MainframeCiv implements ChronosLogger 
 {
+    private static ChronosLogger _logger = new DefaultLogger();
   private AdventureRegistry _advReg;
   private BuildingDisplayCiv _bdCiv;
-  // private BuildingRegistry _bReg;
 
   private static final String TOWN_IMAGE = "ext_BiljurBaz.JPG";
 
@@ -95,16 +95,6 @@ public class MainframeCiv
   // Constructors and constructor helpers
   // ============================================================
 
-  // /** Empty constructor is used for mocking this class for testing */
-  // public MainframeCiv getInstance(MainframeInterface mf)
-  // {
-  // if (_mfCiv == null) {
-  // _mfCiv = new MainframeCiv(mf);
-  // }
-  // return _mfCiv;
-  // }
-
-
   /**
    * Create the Civ associated with the mainframe
    * 
@@ -122,6 +112,7 @@ public class MainframeCiv
     // _personRW = new PersonReadWriter();
     // _advReg = (AdventureRegistry) RegistryFactory.getInstance().getRegistry(RegKey.ADV);
     createBuildingBoxes();
+    _logger = this;
   }
 
   /** Create the clickable areas on the town view to indicate a selected Building */
@@ -201,40 +192,37 @@ public class MainframeCiv
     }
   }
 
-
-  /**
-   * Display an error message in a different font color than normal messages
-   * 
-   * @param msg the error message to display
-   */
-  public void errorOut(String msg)
-  {
-    _frame.displayErrorText(msg);
-  }
+  
 
 
-  /**
-   * Display a prompt message asking for confirmation
-   * 
-   * @param mesg question to ask for confirmation
-   * @return true if the user seleted YES
-   */
-  public boolean msgPrompt(String msg)
-  {
-    return _frame.displayPrompt(msg);
-  }
+   public static ChronosLogger getLogger()
+   {
+       return _logger;
+   }
 
+   @Override
+   public void errorOut(String msg)
+   {
+     _frame.displayErrorText(msg);
+   }
 
-  /**
-   * Close down the application
-   * 
-   * @param msg text to display
-   */
-  public void msgOut(String msg)
-  {
-    _frame.displayText(msg);
-  }
+   /**
+    * Display a prompt message asking for confirmation
+    * 
+    * @param mesg question to ask for confirmation
+    * @return true if the user seleted YES
+    */
+   public boolean msgPrompt(String msg)
+   {
+     return _frame.displayPrompt(msg);
+   }
 
+   @Override
+   public void msgOut(String msg)
+   {
+     _frame.displayText(msg);
+   }
+   
 
   /** Close down the application */
   public void quit()
@@ -355,7 +343,25 @@ public class MainframeCiv
   // Inner Classes for Testing
   // ============================================================
 
-  public class MockMainframeCiv
+  private static class DefaultLogger implements ChronosLogger
+{
+
+    @Override
+    public void errorOut(String msg)
+    {
+        System.err.println(msg);
+    }
+
+    @Override
+    public void msgOut(String msg)
+    {
+        System.out.println(msg);
+    }
+
+}
+
+
+public class MockMainframeCiv
   {
     /** Default constructor */
     public MockMainframeCiv()
@@ -372,6 +378,5 @@ public class MainframeCiv
     }
 
   } // end of MockMFC class
-
 
 } // end of MainframeCiv class

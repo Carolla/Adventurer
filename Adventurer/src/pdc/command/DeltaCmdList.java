@@ -13,7 +13,8 @@
 package pdc.command;
 
 import java.util.Comparator;
-import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.concurrent.PriorityBlockingQueue;
 
 import pdc.GameClock;
 
@@ -52,9 +53,10 @@ import pdc.GameClock;
 public class DeltaCmdList
 {
     /** Internal reference */
-    private PriorityQueue<Event> _dlist = null;
+    private Queue<Event> _dlist = null;
     /** Internal reference */
     private GameClock _clock = null;
+    private int DEFAULT_QUEUE_SIZE = 10;
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++  
      * 								CONSTRUCTOR(S) AND RELATED METHODS
@@ -63,7 +65,7 @@ public class DeltaCmdList
     /** Default constuctor creates the DQ, currently implemented as a LinkedList. */
     public DeltaCmdList()
     {
-        _dlist = new PriorityQueue<Event>(new Comparator<Event>() {
+        _dlist = new PriorityBlockingQueue<Event>(DEFAULT_QUEUE_SIZE , new Comparator<Event>() {
 			@Override
 			public int compare(Event first, Event second) {
 				return first.getDelta() - second.getDelta();
