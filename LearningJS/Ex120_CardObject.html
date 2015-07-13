@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Card Object></title>
+  <script>
+   function Card(suit, face) {
+     this.suit = suit;
+     this.face = face;
+     this.showInfo = function() {
+       alert(this.face + " of " + this.suit);
+     }
+     this.shuffle = function() {
+       var suitList = ['Clubs', 'Spades', 'Diamonds', 'Hearts'];
+       var faceList = ['Ace', '2', '3', '4', '5', '6','7','8','9','10','Jack','Queen','King'];
+       this.suit = suitList[Math.round(Math.random() * suitList.length)];   
+       this.face = faceList[Math.round(Math.random() * faceList.length)];
+     } 
+  }
+  var myCard = new Card("Spades", "Ace");
+  </script>
+</head>
+<body>
+    <input type="button" value="Show Card" onclick="myCard.showInfo()" />
+    <input type="button" value="Redraw Card" onclick="myCard.shuffle()" />
+</body>
+</html>
+

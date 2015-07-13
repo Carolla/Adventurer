@@ -111,8 +111,10 @@ public class CmdEnter extends Command
     	} else {
     		_targetBuilding = _bldgCiv.getCurrentBuilding();
     	}
+      System.err.println("CmdEnter.init returns true");
     	return true;
     } else {
+      System.err.println("CmdEnter.init returns false: " + args);
     	return false;
     }
   }
@@ -122,6 +124,7 @@ public class CmdEnter extends Command
   @Override
   public boolean exec()
   {
+    System.err.println("CmdEnter.exec: Trying to enter " + _targetBuilding);
     _bldgCiv.enterBuilding(_targetBuilding);
     return true;
   }

@@ -20,10 +20,7 @@ import java.util.List;
  * the building only. The command string is case-insensitive. See <code>init()</code> method.
  * 
  * @author Alan Cline
- * @version <DL>
- *          <DT>1.0 Mar 29 2014 // original
- *          <DD>
- *          </DL>
+ * @version Mar 29 2014 // original <br>
  * @see Command
  */
 public class CmdReturn extends Command
@@ -39,7 +36,8 @@ public class CmdReturn extends Command
   static private final String CMDFMT = "RETURN [to Town]";
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND RELATED METHODS
+   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   *  CONSTRUCTOR(S) AND RELATED METHODS
    * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
    */
 
@@ -51,7 +49,8 @@ public class CmdReturn extends Command
 
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PUBLIC METHODS
+   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   *  PUBLIC METHODS
    * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
    */
 
@@ -77,6 +76,7 @@ public class CmdReturn extends Command
    */
   public boolean exec()
   {
+    System.err.println("\nExiting to town view");
     _mfCiv.openTown();
     return true;
   }

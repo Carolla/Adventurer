@@ -49,12 +49,11 @@ import civ.CommandParser;
  *          Aug 18, 2014 // ABC Removed as inner class and made stand-along class <br>
  */
 @SuppressWarnings("serial")
-public class IOPanel extends JPanel implements IOPanelInterface
+public class IOPanel extends JPanel // implements IOPanelInterface
 {
   private final StyledDocument _output;
   private final JTextPane _pane;
   private final JScrollPane _scrollpane;
-  // private boolean _redirectIO;
 
   private JTextField _cmdWin = null;
 
@@ -63,7 +62,7 @@ public class IOPanel extends JPanel implements IOPanelInterface
    * for values 0-255, kicked up one notch of brightness
    */
   private final Color MY_LIGHT_BROWN = new Color(130, 100, 90).brighter();
-  private SimpleAttributeSet _errorAttributes;
+  private final SimpleAttributeSet _errorAttributes;
 
 
   // ============================================================
@@ -105,42 +104,41 @@ public class IOPanel extends JPanel implements IOPanelInterface
   }
 
 
-/**
-   * Display a block of text in the output Transcript area.
-   * Isolate the user's command on its own line (or text block).
+  /**
+   * Display a block of text in the output Transcript area. Isolate the user's command on its own
+   * line (or text block).
    * 
    * @param msg text block to display
    */
   public void displayText(String msg)
   {
-	displayText(Constants.NEWLINE + msg + Constants.NEWLINE, null);
+    displayText(Constants.NEWLINE + msg + Constants.NEWLINE, null);
   }
-  
+
   /**
    * Wrapper method for StyledDocument insertString
    * 
    * @param string the message to be displayed
    * @param attributes attributes for this text, can be null
    */
-  private void displayText(String string, AttributeSet attributes) {
-	try {
-	  _output.insertString(_output.getLength(), string + Constants.NEWLINE, attributes);
-	} catch (BadLocationException e) {
-	  //Shouldn't happen
-	  e.printStackTrace();
-	}	
+  private void displayText(String string, AttributeSet attributes)
+  {
+    try {
+      _output.insertString(_output.getLength(), string + Constants.NEWLINE, attributes);
+    } catch (BadLocationException e) {
+      // Shouldn't happen
+      e.printStackTrace();
+    }
   }
 
 
-public void setFocusOnCommandWindow()
+  public void setFocusOnCommandWindow()
   {
     // Ensure that the text scrolls as new text is appended
     _cmdWin.setFocusable(true);
     _cmdWin.requestFocusInWindow();
   }
 
-
-  
 
   // ============================================================
   // Public Methods

@@ -51,9 +51,6 @@ public interface MainframeInterface
   /** Redraw the mainframe to re-init the graphics outputs */
   public void redraw();
 
-  /** Set whether town is being displayed */
-  public void setOnTown(boolean onTown);
-
   /** Exit the system */
   public boolean approvedQuit();
 

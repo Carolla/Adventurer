@@ -82,14 +82,12 @@ public abstract class Building implements IRegistryElement
       String interior, String extImagePath, String intImagePath)
   {
     this(name, master, hoverText, exterior, interior);
-
     _externalImagePath = extImagePath;
     _internalImagePath = intImagePath;
   }
 
   protected Building(String name, String masterName, String hoverText, String exterior,
-      String interior)
-      throws ApplicationException
+      String interior) throws ApplicationException
   {
     if ((name == null) || (masterName == null) || (exterior == null) || (interior == null)) {
       throw new ApplicationException("Null parms in Building ctor");
@@ -102,7 +100,8 @@ public abstract class Building implements IRegistryElement
     if (setBusinessHours(DEFAULT_OPENHOURS, DEFAULT_CLOSINGHOURS) == false) {
       throw new ApplicationException("Business hours are invalid.");
     }
-    _buildingMaster = findBuildingMaster(masterName);
+    // Probably not desired: Converts string to NPC object, stored with Building
+//    _buildingMaster = findBuildingMaster(masterName);
   }
 
   protected NPC findBuildingMaster(String masterName)

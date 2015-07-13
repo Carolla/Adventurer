@@ -32,6 +32,8 @@ public class BuildingDisplayCiv
   static private BuildingDisplayCiv _bldgDspCiv = null;
   /** Reference to socket for Mainframe or test proxy */
   private MainframeInterface _frame = null;
+  /** The Hero is on town, not at any particular building */
+  private boolean _onTown;
   /** The building that is currently displayed, either inside or outside */
   private Building _currentBldg;
   /** Flag to indicate whether here is inside the building (ENTER) or outside (APPROACH) */
@@ -47,6 +49,7 @@ public class BuildingDisplayCiv
   /** Message if trying to jump from interior to interior of buildings */
   private final String ERRMSG_JUMPBLDG =
       "You must leave (exit) one building before you enter another.";
+
   // ======================================================================
   // Constructors and constructor helpers
   // ======================================================================
@@ -58,14 +61,16 @@ public class BuildingDisplayCiv
    * {@code MainframeInterface}.
    */
   private BuildingDisplayCiv()
-  {		    
-	_breg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
+  {
+    _breg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
     _currentBldg = null;
   }
 
-  public boolean canEnter(String bldgParm) {
-	// The Hero cannot be inside a building already
+  public boolean canEnter(String bldgParm)
+  {
+    // The Hero cannot be inside a building already
     if (isInside()) {
+      System.err.println("BuildingDisplayCiv.canenter(): Expected message: " + ERRMSG_JUMPBLDG);
       _frame.displayErrorText(ERRMSG_JUMPBLDG);
       return false;
     }
@@ -74,11 +79,10 @@ public class BuildingDisplayCiv
     if (bldgParm.length() > 0) {
       // Check that the building specified actually exists
       Building b = _breg.getBuilding(bldgParm);
-      boolean bldgFound = b != null;
-      if (!bldgFound) {
-   	    _frame.displayErrorText(ERRMSG_NOBLDG);
-   	    return false;
-  	  } else  {
+      if (b == null) {
+        _frame.displayErrorText(ERRMSG_NOBLDG);
+        return false;
+      } else {
         return true;
       }
     } else {
@@ -86,13 +90,13 @@ public class BuildingDisplayCiv
       if (_currentBldg == null) {
         _frame.displayErrorText(ERRMSG_NOBLDG);
         return false;
-      } else  {
+      } else {
         return true;
       }
     }
   }
 
-/**
+  /**
    * Is a singleton so that any command can get to it. All commands occur in the context of some
    * building. The output display object is set through {@code setOutput(MainframeInterface)}.
    */
@@ -104,9 +108,6 @@ public class BuildingDisplayCiv
     return _bldgDspCiv;
   }
 
-  
-
-  
 
 
   // ======================================================================
@@ -123,6 +124,7 @@ public class BuildingDisplayCiv
     if (bldg != null) {
       _currentBldg = bldg;
       _insideBldg = false;
+      _onTown = false;
       String description = bldg.getExteriorDescription();
       String imagePath = bldg.getExtImagePath();
       displayBuilding(description, imagePath);
@@ -147,16 +149,21 @@ public class BuildingDisplayCiv
     if (bldg != null) {
       _currentBldg = bldg;
       _insideBldg = true;
+      _onTown = false;
       String description = bldg.getInteriorDescription();
       String imagePath = bldg.getIntImagePath();
       displayBuilding(description, imagePath);
-      _frame.setOnTown(false);
     }
     else {
       _frame.displayErrorText(NO_BLDG_FOUND);
+      System.err.println("error case of enterBuilding");
     }
   }
 
+  public boolean isOnTown()
+  {
+    return _onTown;
+  }
 
   public Building getCurrentBuilding()
   {
@@ -176,8 +183,25 @@ public class BuildingDisplayCiv
    */
   public void setCurrentBuilding(Building b)
   {
+    if (b == null) {
+      System.err.println("BuildingDisplayCiv.setCurrentBuilding to " + b);
+    } else {
+      System.err.println("BuildingDisplayCiv.setCurrentBuilding to " + b.getName());
+    }
     _currentBldg = b;
   }
+
+  /**
+   * Set the Hero to no building, but at the town view
+   * 
+   * @param state = true if Hero is on town, else false is Hero is inside or outside a current
+   *        building
+   */
+  public void setOnTown(boolean state)
+  {
+    _onTown = state;
+  }
+
 
   // ======================================================================
   // Inner Class MockBldgCiv
@@ -196,9 +220,9 @@ public class BuildingDisplayCiv
   // =============================================================
   // Mock inner class for testing
   // =============================================================
-  
+
   /**
-   * Display the bulding's image (exterior or interior) in the frame's image panel and
+   * Display the bulding's image (exterior or interior) in the frame's image panel
    * 
    * @param description description of the building's interior or exterior
    * @param imagePath image of the building's exterior or interior room
@@ -226,6 +250,11 @@ public class BuildingDisplayCiv
     public void setInsideBldg(boolean state)
     {
       _insideBldg = state;
+    }
+
+    public void setOnTown(boolean state)
+    {
+      _onTown = state;
     }
 
 

@@ -727,12 +727,6 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   }
 
 
-  @Override
-public void setOnTown(boolean onTown) {
-	_mfCiv.setOnTown(onTown);
-}
-
-
 /**
    * Display a title onto the border of the left side IO Panel
    * 
