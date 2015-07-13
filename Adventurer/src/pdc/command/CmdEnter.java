@@ -13,10 +13,6 @@ package pdc.command;
 
 import java.util.List;
 
-import chronos.pdc.buildings.Building;
-import chronos.pdc.registry.BuildingRegistry;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.BuildingDisplayCiv;
 
 
@@ -63,11 +59,9 @@ public class CmdEnter extends Command
 
   /** Building accesses and displays are controlled by the BuildingDisplayCiv */
   private BuildingDisplayCiv _bldgCiv;
-  /** BuildingRegistry from which to retrieve buildings and properties */
-  private BuildingRegistry _breg = null;
 
   /** The building to enter */
-  private Building _targetBuilding;
+  private String _targetBuilding;
 
 
 
@@ -79,7 +73,6 @@ public class CmdEnter extends Command
   public CmdEnter()
   {
     super("CmdEnter", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
-    _breg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
   }
 
 
@@ -106,15 +99,9 @@ public class CmdEnter extends Command
     // The BuildingDisplayCiv must already exist
     _bldgCiv = BuildingDisplayCiv.getInstance();
     if (_bldgCiv.canEnter(bldgParm)) {
-    	if (bldgParm.length() > 0) {
-        	_targetBuilding = _breg.getBuilding(bldgParm);
-    	} else {
-    		_targetBuilding = _bldgCiv.getCurrentBuilding();
-    	}
-      System.err.println("CmdEnter.init returns true");
+        _targetBuilding = bldgParm;
     	return true;
     } else {
-      System.err.println("CmdEnter.init returns false: " + args);
     	return false;
     }
   }
@@ -142,7 +129,7 @@ public class CmdEnter extends Command
       _targetBuilding = null;
     }
 
-    public Building getTargetBldg()
+    public String getTargetBldg()
     {
       return _targetBuilding;
     }

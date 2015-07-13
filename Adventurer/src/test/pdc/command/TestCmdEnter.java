@@ -169,8 +169,8 @@ public class TestCmdEnter
             assertTrue(_cmdEnter.init(bNames));
 
             // Verify target building
-            Building tBldg = _mock.getTargetBldg();
-            assertEquals(tBldg, _bList.get(k));
+            String tBldg = _mock.getTargetBldg();
+            assertEquals(tBldg, name);
             // Clear out arglist
             bNames.remove(0);
         }
@@ -198,9 +198,9 @@ public class TestCmdEnter
         MsgCtrl.msgln("\tEntering current Building (target Building) " + b.getName());
         assertTrue(_cmdEnter.init(bNames));
         // Verify
-        Building tBldg = _mock.getTargetBldg();
+        String  tBldg = _mock.getTargetBldg();
         assertTrue(_cmdEnter.init(bNames));
-        assertEquals(b.getName(), tBldg.getName());
+        assertEquals(b.getName(), tBldg);
     }
 
 
