@@ -8,7 +8,7 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
-import pdc.command.CmdLeave;
+import pdc.command.CmdExit;
 import pdc.command.Command;
 import pdc.command.CommandFactory;
 import pdc.command.CommandInput;
@@ -82,9 +82,9 @@ public class TestCommandParser
     @Test
     public void CommandIsScheduledWhenFound()
     {
-        _cp = new CommandParser(_fakeSkedder, new CommandFactory());
-        _cp.receiveCommand("Leave");
-        assertEquals(new CmdLeave().getName(), _fakeSkedder.command.getName());
+        _cp = new CommandParser(_fakeSkedder, new CommandFactory(null));
+        _cp.receiveCommand("Exit");
+        assertEquals(new CmdExit().getName(), _fakeSkedder.command.getName());
     }
     
     @Test
@@ -93,6 +93,7 @@ public class TestCommandParser
         _cp.receiveCommand("Don't do anything");
         assertEquals(new NullCommand().getName(), _fakeSkedder.command.getName());
     }
+    
     public class FakeScheduler extends Scheduler
     {
         public Command command;
@@ -114,6 +115,11 @@ public class TestCommandParser
 
     public class FakeCommandFactory extends CommandFactory
     {
+        public FakeCommandFactory()
+        {
+            super(null);
+        }
+
         @Override
         public Command createCommand(CommandInput cmdInput)
         {

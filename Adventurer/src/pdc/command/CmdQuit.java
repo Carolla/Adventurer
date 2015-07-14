@@ -49,15 +49,17 @@ public class CmdQuit extends Command
 
     /** Error message if hero inside when command initialized */
     private final String ERRMSG_IN_BLDG = "To quit, you must be outside.";
+    private final BuildingDisplayCiv _bdCiv;
 
     // ============================================================
     // CONSTRUCTOR(S) AND RELATED METHODS
     // ============================================================
 
     /** Constructor called by the CommandFactory. There is no delay nor duration. */
-    public CmdQuit()
+    public CmdQuit(BuildingDisplayCiv bdCiv)
     {
         super("CmdQuit", DELAY, DURATION, CMD_DESCRIPTION, null);
+        _bdCiv = bdCiv;
     }
 
 
@@ -75,10 +77,9 @@ public class CmdQuit extends Command
     @Override
     public boolean init(List<String> args)
     {
-        BuildingDisplayCiv bdCiv = BuildingDisplayCiv.getInstance();
-        if ((args.size() == 0) && (bdCiv.isInside() == false)) {
+        if ((args.size() == 0) && (_bdCiv.isInside() == false)) {
             return true;
-        } else if ((args.size() == 0) && (bdCiv.isInside() == true)) {
+        } else if ((args.size() == 0) && (_bdCiv.isInside() == true)) {
             super._mfCiv.errorOut(ERRMSG_IN_BLDG);
             return false;
         } else {

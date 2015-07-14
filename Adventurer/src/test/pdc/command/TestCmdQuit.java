@@ -32,12 +32,14 @@ public class TestCmdQuit
     private CmdQuit _cmdQuit;
     private MockCmdQuit _mock;
     private static MainframeCiv _mfCiv;
+    private static BuildingDisplayCiv _bdciv;
     
     @BeforeClass
     public static void setUpBeforeClass() throws Exception
     {
         MainframeInterface mfInterface = new MainframeProxy();
         _mfCiv = new MainframeCiv(mfInterface);
+        _bdciv = BuildingDisplayCiv.getInstance();
     }
 
     @AfterClass
@@ -52,7 +54,7 @@ public class TestCmdQuit
     @Before
     public void setUp() throws Exception
     {
-        _cmdQuit = new CmdQuit();
+        _cmdQuit = new CmdQuit(_bdciv);
         _cmdQuit.setMsgHandler(_mfCiv);
         _mock = _cmdQuit.new MockCmdQuit();
     }

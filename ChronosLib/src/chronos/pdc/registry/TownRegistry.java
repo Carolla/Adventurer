@@ -17,7 +17,6 @@ import mylib.dmc.IRegistryElement;
 import mylib.pdc.Registry;
 import chronos.Chronos;
 import chronos.pdc.Town;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 
 /**
  * Contains a collection of all Town objects
@@ -45,7 +44,7 @@ public class TownRegistry extends Registry
           + "largest grey building near the center of town--probably the town's Inn. ";
 
   /** List of 8 buildings to add to default Town (Guilds listed first) */
-  static private final String[] DEF_BUILDING_LIST = {"Arcaneum", "Jail", "Monastery",
+  public static final String[] DEF_BUILDING_LIST = {"Arcaneum", "Jail", "Monastery",
       "Rat's Pack", "Rouge's Tavern", "Stadium", "The Bank", "Ugly Ogre Inn"};
 
 

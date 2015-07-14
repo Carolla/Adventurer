@@ -42,9 +42,13 @@ import mylib.hic.IHelpText;
 import mylib.hic.ShuttleList;
 import net.miginfocom.swing.MigLayout;
 import pdc.Util;
+import pdc.command.CommandFactory;
+import pdc.command.DeltaCmdList;
+import pdc.command.Scheduler;
 import chronos.Chronos;
 import civ.Adventurer;
 import civ.BuildingDisplayCiv;
+import civ.CommandParser;
 import civ.MainframeCiv;
 
 /**
@@ -478,7 +482,10 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   public void addIOPanel()
   {
     _leftHolder.removeAll();
-    _iop = new IOPanel(_mfCiv);
+    // Create the command parser that goes in here
+    BuildingDisplayCiv bdCiv = BuildingDisplayCiv.getInstance();
+    CommandParser cp = new CommandParser(new Scheduler(new DeltaCmdList()), new CommandFactory(bdCiv));
+    _iop = new IOPanel(_mfCiv, cp);
     setTranscriptTitle(IOPANEL_TITLE);
     _leftHolder.add(_iop);
     redraw();

@@ -24,9 +24,7 @@ import java.util.TreeMap;
 
 import pdc.Util;
 import chronos.pdc.Adventure;
-import chronos.pdc.buildings.Building;
 import chronos.pdc.registry.AdventureRegistry;
-import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import dmc.PersonReadWriter;
@@ -166,15 +164,10 @@ public class MainframeCiv implements ChronosLogger
 	   if (_bdCiv.isOnTown()) {
 		   System.out.println("On town, trying to open building");
 		   _bdCiv.setOnTown(false);
-		   
-		   // Always enter the building on request
-		    BuildingRegistry breg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
-		    
-		    // First try building name
-		    Building b = breg.getBuilding(bldName);
-		    if (b != null) {
-			    System.out.println("Opening building " + b.getName());
-		    	_bdCiv.approachBuilding(b);	
+
+		    if (!bldName.isEmpty()) {
+			    System.out.println("Opening building " + bldName);
+		    	_bdCiv.approachBuilding(bldName);	
 		    } else {
 		    	System.out.println("Can't open null building");
 		    }

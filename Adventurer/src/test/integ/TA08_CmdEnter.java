@@ -91,13 +91,13 @@ public class TA08_CmdEnter
     _mfProxy = new MainframeProxy();
     assertNotNull(_mfProxy);
     new MainframeCiv(_mfProxy);
-    _cp = new CommandParser(new Scheduler(new DeltaCmdList()), new CommandFactory());
-    assertNotNull(_cp);
-    _mockCP = _cp.new MockCP();
-    assertNotNull(_mockCP);
     // This will open the BuildingRegistry, which must be closed before exiting
     _bldgCiv = BuildingDisplayCiv.getInstance();
     _bldgCiv.setOutput(_mfProxy);
+    _cp = new CommandParser(new Scheduler(new DeltaCmdList()), new CommandFactory(_bldgCiv));
+    assertNotNull(_cp);
+    _mockCP = _cp.new MockCP();
+    assertNotNull(_mockCP);
     assertNotNull(_bldgCiv);
     _mockBldgCiv = _bldgCiv.new MockBldgCiv();
     assertNotNull(_mockBldgCiv);
@@ -193,7 +193,7 @@ public class TA08_CmdEnter
       assertFalse(_bldgCiv.isOnTown());
       assertTrue(_bldgCiv.isInside());
 
-      String bName = _bldgCiv.getCurrentBuilding().getName();
+      String bName = _bldgCiv.getCurrentBuilding();
       MsgCtrl.msg("\tBuilding name = " + bName);
       assertTrue("Expected " + _bldgs.get(k) + ", got " + bName, bName.equals(_bldgs.get(k)));
 
@@ -250,7 +250,7 @@ public class TA08_CmdEnter
       assertFalse(_bldgCiv.isOnTown());
 //      assertTrue(_bldgCiv.isInside());
       // Hero is inside the correct building, now the current building
-      String newCurrent = _bldgCiv.getCurrentBuilding().getName();
+      String newCurrent = _bldgCiv.getCurrentBuilding();
       MsgCtrl.msgln("\tCurrent Building = " + newCurrent);
       assertEquals("Expected " + _bldgs.get(k) + ", got " + newCurrent, bName, newCurrent);
       
@@ -285,7 +285,7 @@ public class TA08_CmdEnter
     _cp.receiveCommand("Enter " + bName1);
     // Wait for setup command to execute
     Thread.sleep(1000);
-    String newCurrent = _bldgCiv.getCurrentBuilding().getName();
+    String newCurrent = _bldgCiv.getCurrentBuilding();
     MsgCtrl.msgln("\tCurrent Building = " + newCurrent);
     assertFalse(_bldgCiv.isOnTown());
     assertTrue(_bldgCiv.isInside());
@@ -300,7 +300,7 @@ public class TA08_CmdEnter
     // VERIFY that Hero is still inside building
     assertFalse(_bldgCiv.isOnTown());
     assertTrue(_bldgCiv.isInside());
-    newCurrent = _bldgCiv.getCurrentBuilding().getName();
+    newCurrent = _bldgCiv.getCurrentBuilding();
     MsgCtrl.msgln("\tExpected error: Same building state for " + newCurrent);
 
     // Test2: Try to enter a different building
@@ -312,7 +312,7 @@ public class TA08_CmdEnter
     // VERIFY Test 2 results
     assertFalse(_bldgCiv.isOnTown());
     assertTrue(_bldgCiv.isInside());
-    newCurrent = _bldgCiv.getCurrentBuilding().getName();
+    newCurrent = _bldgCiv.getCurrentBuilding();
     MsgCtrl.msgln("\tExpected error: Same building state for " + newCurrent);
 
   }

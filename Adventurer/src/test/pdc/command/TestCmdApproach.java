@@ -70,7 +70,7 @@ public class TestCmdApproach
     public void setUp() throws Exception
     {
         // Create the command and mock objects
-        _cmdApproach = new CmdApproach();
+        _cmdApproach = new CmdApproach(_bdciv);
         _cmdApproach.setMsgHandler(_mfCiv);
         _mock = _cmdApproach.new MockCmdApproach();
         
@@ -143,8 +143,8 @@ public class TestCmdApproach
         assertTrue(_cmdApproach.init(bNames));
 
         // Verify target building
-        Building tBldg = _mock.getTargetBldg();
-        assertEquals(tBldg, _bList.get(k));
+        String tBldg = _mock.getTargetBldg();
+        assertTrue(tBldg.isEmpty());
         // Clear out arglist
         bNames.remove(0);
       }

@@ -13,29 +13,23 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import hic.MainframeInterface;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import mylib.MsgCtrl;
+import mylib.dmc.IRegistryElement;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import pdc.command.CmdEnter;
 import pdc.command.CmdEnter.MockCmdEnter;
-import test.integ.MainframeProxy;
 import chronos.pdc.buildings.Building;
-import chronos.pdc.registry.BuildingRegistry;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
+import chronos.pdc.registry.TownRegistry;
 import civ.BuildingDisplayCiv;
-import civ.BuildingDisplayCiv.MockBldgCiv;
-import civ.MainframeCiv;
 
 /**
  * @author Al Cline
@@ -43,53 +37,50 @@ import civ.MainframeCiv;
  */
 public class TestCmdEnter
 {
-    private static BuildingDisplayCiv _bdciv = null;
-    private static MockBldgCiv _mockbdciv = null;
+    public class CheckingBuildingDisplayCiv extends BuildingDisplayCiv
+    {
+        private String _currentBuilding;
+
+        @Override
+        public void setCurrentBuilding(Building b)
+        {
+            _currentBuilding = b.getName();
+        }
+        
+        @Override
+        public boolean canEnter(String bldgName)
+        {
+            return _currentBuilding.equals(bldgName);
+        }
+    }
+
+    public class FakeBuilding extends Building
+    {
+
+        public FakeBuilding(String name)
+        {
+            super(name, "", "", "", "");
+        }
+
+        @Override
+        public boolean equals(IRegistryElement target)
+        {
+            return false;
+        }
+
+        @Override
+        public String getName()
+        {
+            return _name;
+        }
+    }
+
+    private static FakeBuildingDisplayCiv _bdciv = null;
 
     private CmdEnter _cmdEnter = null;
     private MockCmdEnter _mock = null;
 
-    private static RegistryFactory _regfac = null;
-    private static BuildingRegistry _breg = null;
-    private static List<Building> _bList = null;
-    private static MainframeCiv _mfCiv;
-
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception
-    {
-        MainframeInterface mfInterface = new MainframeProxy();
-        _mfCiv = new MainframeCiv(mfInterface);
-
-        _bdciv = BuildingDisplayCiv.getInstance(); // for CmdEnter context
-        _bdciv.setOutput(mfInterface);
-        _mockbdciv = _bdciv.new MockBldgCiv();
-
-        // Get a list of all buildings to enter
-        _regfac = RegistryFactory.getInstance();
-        _breg = (BuildingRegistry) _regfac.getRegistry(RegKey.BLDG);
-        _bList = _breg.getBuildingList();
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception
-    {
-        _bList = null;
-        _regfac = null;
-
-        _mockbdciv = null;
-        _bdciv = null;
-
-        // Shutdown building registry created by CmdEnter
-        _breg.closeRegistry();
-        _breg = null;
-    }
+    private static List<String> _bList = Arrays.asList(TownRegistry.DEF_BUILDING_LIST);
 
     /**
      * @throws java.lang.Exception
@@ -97,15 +88,12 @@ public class TestCmdEnter
     @Before
     public void setUp() throws Exception
     {
-        MsgCtrl.auditMsgsOn(true);
-        MsgCtrl.errorMsgsOn(true);
-
-        _cmdEnter = new CmdEnter();
-        _cmdEnter.setMsgHandler(_mfCiv);
+        _bdciv = new FakeBuildingDisplayCiv();
+        _cmdEnter = new CmdEnter(_bdciv);
         _mock = _cmdEnter.new MockCmdEnter();
 
         // Ensure that current building is null to start
-        _bdciv.setCurrentBuilding(null);
+        _bdciv.setCurrentBuilding(new FakeBuilding(""));
     }
 
     /**
@@ -114,15 +102,6 @@ public class TestCmdEnter
     @After
     public void tearDown() throws Exception
     {
-        // Clear targetBldg from CmdEnter
-        _mock.clearTargetBldg();
-        _mock = null;
-        _cmdEnter = null;
-
-        // Ensure that current building is null to end
-        _bdciv.setCurrentBuilding(null);
-        _mockbdciv.setInsideBldg(false);
-
         MsgCtrl.auditMsgsOn(false);
         MsgCtrl.errorMsgsOn(false);
     }
@@ -136,8 +115,6 @@ public class TestCmdEnter
     @Test
     public void ctorVerified()
     {
-        MsgCtrl.auditMsgsOn(false);
-        MsgCtrl.errorMsgsOn(false);
         MsgCtrl.where(this);
 
         int delay = 0;
@@ -155,17 +132,15 @@ public class TestCmdEnter
     @Test
     public void initValidBuilding()
     {
-        MsgCtrl.auditMsgsOn(false);
-        MsgCtrl.errorMsgsOn(false);
         MsgCtrl.where(this);
 
         List<String> bNames = new ArrayList<String>();
 
         // For each building, enter it and check its attributes
         for (int k = 0; k < _bList.size(); k++) {
-            String name = _bList.get(k).getName();
+            String name = _bList.get(k);
             bNames.add(0, name);
-            MsgCtrl.msgln("\tEntering Building:\t" + bNames.get(0));
+            MsgCtrl.msgln("\tEntering Building:\t" + name);
             assertTrue(_cmdEnter.init(bNames));
 
             // Verify target building
@@ -182,14 +157,12 @@ public class TestCmdEnter
     @Test
     public void initWithoutParms()
     {
-        MsgCtrl.auditMsgsOn(false);
-        MsgCtrl.errorMsgsOn(false);
         MsgCtrl.where(this);
 
         List<String> bNames = new ArrayList<String>();
 
         // Set first building in registry to the current building (in context object)
-        Building b = _bList.get(0);
+        Building b = new FakeBuilding(_bList.get(0));
         assertNotNull(b);
         _bdciv.setCurrentBuilding(b);
 
@@ -200,7 +173,7 @@ public class TestCmdEnter
         // Verify
         String  tBldg = _mock.getTargetBldg();
         assertTrue(_cmdEnter.init(bNames));
-        assertEquals(b.getName(), tBldg);
+        assertTrue(tBldg.isEmpty());
     }
 
 
@@ -208,14 +181,13 @@ public class TestCmdEnter
     @Test
     public void initInvalidBuilding()
     {
-        MsgCtrl.auditMsgsOn(false);
-        MsgCtrl.errorMsgsOn(false);
         MsgCtrl.where(this);
 
         List<String> bNames = new ArrayList<String>();
         // Place an invalid building as the parm
         bNames.add("Winery");
         MsgCtrl.errMsg("\tExpected error: ");
+        _bdciv._canEnter = false;
         assertFalse(_cmdEnter.init(bNames));
     }
 
@@ -226,17 +198,15 @@ public class TestCmdEnter
         MsgCtrl.auditMsgsOn(true);
         MsgCtrl.errorMsgsOn(true);
         MsgCtrl.where(this);
+        
+        CheckingBuildingDisplayCiv bdCiv = new CheckingBuildingDisplayCiv();
+        _cmdEnter = new CmdEnter(bdCiv);
 
         // Set context to be inside valid building: Jail
         List<String> bNames = new ArrayList<String>();
-
-        Building b = _breg.getBuilding("Jail");
         bNames.add("Jail");
 
-        _bdciv.setCurrentBuilding(b);
-        _mockbdciv.setInsideBldg(true);
-
-        MsgCtrl.errMsg("\tExpected error: ");
+        bdCiv.setCurrentBuilding(new FakeBuilding("NotTheJail"));
         assertFalse(_cmdEnter.init(bNames));
 
     }

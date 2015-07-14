@@ -32,9 +32,6 @@ import javax.swing.text.StyledDocument;
 import mylib.Constants;
 import net.miginfocom.swing.MigLayout;
 import pdc.Util;
-import pdc.command.CommandFactory;
-import pdc.command.DeltaCmdList;
-import pdc.command.Scheduler;
 import civ.ChronosLogger;
 import civ.CommandParser;
 
@@ -63,6 +60,7 @@ public class IOPanel extends JPanel // implements IOPanelInterface
    */
   private final Color MY_LIGHT_BROWN = new Color(130, 100, 90).brighter();
   private final SimpleAttributeSet _errorAttributes;
+private final CommandParser _commandParser;
 
 
   // ============================================================
@@ -72,8 +70,9 @@ public class IOPanel extends JPanel // implements IOPanelInterface
   /**
    * Creates output test panel and input CommandLine Input panel
    */
-  public IOPanel(ChronosLogger mfCiv)
+  public IOPanel(ChronosLogger mfCiv, CommandParser cp)
   {
+      _commandParser = cp;
     setLayout(new MigLayout("", "[grow]", "[][]"));
     _pane = new JTextPane();
     _pane.setAlignmentY(JTextArea.TOP_ALIGNMENT);
@@ -187,9 +186,6 @@ public class IOPanel extends JPanel // implements IOPanelInterface
     southPanel.add(cmdPrompt, "cell 0 0,alignx center");
     southPanel.add(_cmdWin, "cell 1 0,alignx left");
 
-    // Create the command parser that goes in here
-    final CommandParser cp = new CommandParser(new Scheduler(new DeltaCmdList()), new CommandFactory());
-
     // Add function to send commands to command parser.
     _cmdWin.addActionListener(new ActionListener()
     {
@@ -198,7 +194,7 @@ public class IOPanel extends JPanel // implements IOPanelInterface
         // Save the user's input to be retrieved by the command parser
         _cmdWin.requestFocusInWindow();
         String in = _cmdWin.getText();
-        cp.receiveCommand(in);
+        _commandParser.receiveCommand(in);
         // Echo the text and clear the command line
         displayText(in, null);
         _cmdWin.setText("");

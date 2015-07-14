@@ -1,5 +1,6 @@
 package pdc.command;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CommandInput
@@ -10,6 +11,6 @@ public class CommandInput
     public CommandInput(String cmdToken, List<String> params)
     {
         commandToken = cmdToken;
-        parameters = params;
+        parameters = params != null ? params : new ArrayList<String>();
     }
 }

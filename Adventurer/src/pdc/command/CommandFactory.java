@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-
+import civ.BuildingDisplayCiv;
 
 
 
@@ -34,19 +34,25 @@ public class CommandFactory
 {
     /** Error message if command cannot be found. */
     public static final String ERRMSG_INIT_FAILURE = "Failed to initialize command from user input";
-    
-    /** List of commands that we can look up */
-    private static Map<String, Class<? extends Command>> _commandMap = new HashMap<String, Class<? extends Command>>();
-    static {
-        _commandMap.put("APPROACH", CmdApproach.class); // Display the description and image of Building exterior
-        _commandMap.put("ENTER", CmdEnter.class);       // Display the description and image of Building interior
-        _commandMap.put("EXIT", CmdLeave.class);        // Synonym for Leave
 
-        _commandMap.put("LEAVE", CmdLeave.class);       // Leave the interior and go to building's exterior
-        _commandMap.put("QUIT", CmdQuit.class);         // End the program.
-        _commandMap.put("RETURN", CmdReturn.class);     // Return to town view
-        
-        // _commandMap.put("GOTO", CmdGoTo.class);         // If parm is a Building or Building type, "Approach" building;
+    private static enum COMMAND {
+        APPROACH, ENTER, EXIT, LEAVE, QUIT, RETURN
+    };
+
+    /** List of commands that we can look up */
+    private static Map<String, COMMAND> _commandMap = new HashMap<String, COMMAND>();
+    static {
+        _commandMap.put("APPROACH", COMMAND.APPROACH); // Display the description and image of
+                                                       // Building exterior
+        _commandMap.put("ENTER", COMMAND.ENTER); // Display the description and image of Building
+                                                 // interior
+        _commandMap.put("EXIT", COMMAND.EXIT); // Synonym for Leave
+        _commandMap.put("LEAVE", COMMAND.LEAVE); // Leave the interior and go to building's exterior
+        _commandMap.put("QUIT", COMMAND.QUIT); // End the program.
+        _commandMap.put("RETURN", COMMAND.RETURN); // Return to town view
+
+        // _commandMap.put("GOTO", CmdGoTo.class); // If parm is a Building or Building type,
+        // "Approach" building;
         // if parm = Town, goes to Town view; if null parm, info msg
         // {"TO TOWN", "CmdReturn"}, // Return to Town View
         // { "HELP", "CmdHelp" }, // List the user command names and their descriptions.
@@ -57,7 +63,14 @@ public class CommandFactory
         // { "WAIT", "CmdWait" }, // Wait a specific amount of time, in hours or minutes.
         _commandMap = Collections.unmodifiableMap(_commandMap);
     }
-    
+
+    private BuildingDisplayCiv _bdCiv;
+
+    public CommandFactory(BuildingDisplayCiv bdCiv)
+    {
+        _bdCiv = bdCiv;
+    }
+
     /**
      * Creates a user Command from its canonical name.<br>
      * NOTE: The subclass command must be in the same package as the Command class.
@@ -67,22 +80,32 @@ public class CommandFactory
      */
     public Command createCommand(CommandInput cmdInput)
     {
-        Class<? extends Command> className = _commandMap.get(cmdInput.commandToken);
         Command command = new NullCommand();
-        if (className != null) {
-            try {
-                command = (Command) className.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                System.err.println("Can't find Class to load: " + e.getMessage());
-                e.printStackTrace();
+        if (!canCreateCommand(cmdInput)) {
+            command.init(cmdInput.parameters);
+            return command;
+        } else {
+            COMMAND commandEnum = _commandMap.get(cmdInput.commandToken);
+            switch (commandEnum) {
+                case APPROACH: command = new CmdApproach(_bdCiv); break;
+                case ENTER:    command = new CmdEnter(_bdCiv); break;
+                case EXIT:     command = new CmdExit(); break;
+                case LEAVE:    command = new CmdLeave(_bdCiv); break;
+                case QUIT:     command = new CmdQuit(_bdCiv); break;
+                case RETURN:   command = new CmdReturn(); break;
             }
+
+            if (command.init(cmdInput.parameters) == false) {
+                System.err.println(ERRMSG_INIT_FAILURE);
+            }
+
+            return command;
         }
-        
-        if (command.init(cmdInput.parameters) == false) {
-            System.err.println(ERRMSG_INIT_FAILURE);
-        }
-        
-        return command;
+    }
+
+    public boolean canCreateCommand(CommandInput ci)
+    {
+        return _commandMap.get(ci.commandToken) != null;
     }
 
 } // end of CommandFactory class

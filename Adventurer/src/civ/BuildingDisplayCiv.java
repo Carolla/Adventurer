@@ -43,12 +43,16 @@ public class BuildingDisplayCiv
 
     private static final String NO_BLDG_FOUND = "Could not find that building.\n";
 
-    /** Error message if no current building to enter */
+    /** Error message if no arguments or multiple arguments specified */
     private final String ERRMSG_NOBLDG =
-            "I don't know that building. What building did you want to enter?";
-    /** Message if trying to jump from interior to interior of buildings */
+            "Sure, but you've gotta say WHICH building to approach.";
+    /** Error message if building not found in registry */
+    private final String ERRMSG_WRONG_BLDG =
+            "That some kinda slang, stranger?  WHAT building was that again?";
+
+    /** Message if trying to jump from interior to exterior of buildings */
     private final String ERRMSG_JUMPBLDG =
-            "You must leave (exit) one building before you enter another.";
+            "You must leave this building before you approach another.";
 
     // ======================================================================
     // Constructors and constructor helpers
@@ -60,10 +64,39 @@ public class BuildingDisplayCiv
      * is. In almost all cases, the output GUI is {@code hic.Mainframe}, which implements
      * {@code MainframeInterface}.
      */
-    private BuildingDisplayCiv()
+    public BuildingDisplayCiv()
     {
         _breg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
         _currentBldg = null;
+    }
+
+    // end of MockBldgCiv class
+
+    public boolean canApproach(String bldgParm)
+    {
+        // The Hero cannot be inside a building already
+        if (isInside() == true) {
+            _frame.displayErrorText(ERRMSG_JUMPBLDG);
+            return false;
+        }
+
+        // Case 1: Building name is given
+        if (!bldgParm.isEmpty()) {
+            Building b = _breg.getBuilding(bldgParm);
+
+            // Check that the building specified actually exists
+            if (b == null) {
+                _frame.displayErrorText(ERRMSG_WRONG_BLDG);
+                return false;
+            } else {
+                return true;
+            }
+        }
+        else {
+            // Case 2: No building specified
+            _frame.displayErrorText(ERRMSG_NOBLDG);
+            return false;
+        }
     }
 
     public boolean canEnter(String bldgParm)
@@ -118,16 +151,22 @@ public class BuildingDisplayCiv
     /**
      * Show the exterior image and description of the Building
      * 
-     * @param bldg Building object
+     * @param _targetBuilding Building object
      */
-    public void approachBuilding(Building bldg)
+    public void approachBuilding(String bldg)
     {
-        if (bldg != null) {
-            _currentBldg = bldg;
+        if (bldg.isEmpty()) {
+            bldg = _currentBldg.getName();
+        }
+        
+        Building _targetBuilding = _breg.getBuilding(bldg);
+        
+        if (_targetBuilding != null) {
+            _currentBldg = _targetBuilding;
             _insideBldg = false;
             _onTown = false;
-            String description = bldg.getExteriorDescription();
-            String imagePath = bldg.getExtImagePath();
+            String description = _targetBuilding.getExteriorDescription();
+            String imagePath = _targetBuilding.getExtImagePath();
             displayBuilding(description, imagePath);
         }
         else {
@@ -143,10 +182,14 @@ public class BuildingDisplayCiv
     /**
      * Show the interior image and description of the Building
      * 
-     * @param name of building to enter
+     * @param name of building to enter, if not provided, will attempt to open current building
      */
     public void enterBuilding(String name)
     {
+        if (name.isEmpty()) {
+            name = _currentBldg.getName();
+        }
+
         Building bldg = _breg.getBuilding(name);
         if (bldg != null) {
             _currentBldg = bldg;
@@ -167,9 +210,9 @@ public class BuildingDisplayCiv
         return _onTown;
     }
 
-    public Building getCurrentBuilding()
+    public String getCurrentBuilding()
     {
-        return _currentBldg;
+        return _currentBldg.getName();
     }
 
     /** Is Hero is inside a Building? */
@@ -185,11 +228,6 @@ public class BuildingDisplayCiv
      */
     public void setCurrentBuilding(Building b)
     {
-        if (b == null) {
-            System.err.println("BuildingDisplayCiv.setCurrentBuilding to " + b);
-        } else {
-            System.err.println("BuildingDisplayCiv.setCurrentBuilding to " + b.getName());
-        }
         _currentBldg = b;
     }
 
@@ -261,7 +299,4 @@ public class BuildingDisplayCiv
 
 
     } // end of MockBldgCiv class
-
-
-
 } // end of BuildingDisplayCiv class
