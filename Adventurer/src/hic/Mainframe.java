@@ -116,6 +116,8 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   /** Title of the initial three-button panel on left side */
   private final String INITIAL_OPENING_TITLE = " Actions ";
 
+private CommandParser _cp;
+
   /** Help Title for the mainframe */
   private static final String _helpTitle = "GREETINGS ADVENTURER!";
   /** Help Text for the mainframe */
@@ -188,7 +190,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     // Create the one time help dialog
     prepareHelpDialog();
 
-  
+
     // Create the BuildingDisplayCiv to define the output GUI for descriptions and images
     BuildingRegistry breg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
     _bldgCiv = new BuildingDisplayCiv(this, breg);
@@ -196,6 +198,8 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     
     // Create the Civ
     _mfCiv = new MainframeCiv(this, _bldgCiv);
+    
+    _cp = new CommandParser(new Scheduler(new DeltaCmdList()), new CommandFactory(_mfCiv, _bldgCiv));
   }
 
 
@@ -488,8 +492,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   {
     _leftHolder.removeAll();
 
-    CommandParser cp = new CommandParser(new Scheduler(new DeltaCmdList()), new CommandFactory(_bldgCiv));
-    _iop = new IOPanel(_mfCiv, cp);
+    _iop = new IOPanel(_mfCiv, _cp);
     setTranscriptTitle(IOPANEL_TITLE);
     _leftHolder.add(_iop);
     redraw();

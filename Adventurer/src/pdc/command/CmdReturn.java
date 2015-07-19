@@ -13,6 +13,8 @@ package pdc.command;
 
 import java.util.List;
 
+import civ.MainframeCiv;
+
 
 /**
  * Moves the Hero from outside the Building to the Town view again. Format: RETURN [to Town] <br>
@@ -34,6 +36,8 @@ public class CmdReturn extends Command
   static final int DURATION = 60;
   /** Format for this command */
   static private final String CMDFMT = "RETURN [to Town]";
+  
+private final MainframeCiv _mfCiv;
 
   /*
    * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -42,9 +46,10 @@ public class CmdReturn extends Command
    */
 
   /** Constructor called by the CommandFactory. There is no delay nor duration. */
-  public CmdReturn()
+  public CmdReturn(MainframeCiv mfCiv)
   {
     super("CmdReturn", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
+    _mfCiv = mfCiv;
   }
 
 

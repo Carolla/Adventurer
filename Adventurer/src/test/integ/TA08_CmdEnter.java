@@ -98,7 +98,7 @@ public class TA08_CmdEnter
     // This will open the BuildingRegistry, which must be closed before exiting
     _bldgCiv = new BuildingDisplayCiv(_mfProxy, _bReg);
     _bldgCiv.setOutput(_mfProxy);
-    _cp = new CommandParser(new Scheduler(new DeltaCmdList()), new CommandFactory(_bldgCiv));
+    _cp = new CommandParser(new Scheduler(new DeltaCmdList()), new CommandFactory(_mfCiv, _bldgCiv));
     assertNotNull(_cp);
     _mockCP = _cp.new MockCP();
     assertNotNull(_mockCP);

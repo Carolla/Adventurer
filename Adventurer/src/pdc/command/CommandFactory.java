@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import civ.BuildingDisplayCiv;
+import civ.MainframeCiv;
 
 
 
@@ -64,10 +65,12 @@ public class CommandFactory
         _commandMap = Collections.unmodifiableMap(_commandMap);
     }
 
-    private BuildingDisplayCiv _bdCiv;
+    private final BuildingDisplayCiv _bdCiv;
+    private final MainframeCiv _mfCiv;
 
-    public CommandFactory(BuildingDisplayCiv bdCiv)
+    public CommandFactory(MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
     {
+        _mfCiv = mfCiv;
         _bdCiv = bdCiv;
     }
 
@@ -91,8 +94,8 @@ public class CommandFactory
                 case ENTER:    command = new CmdEnter(_bdCiv); break;
                 case EXIT:     command = new CmdExit(); break;
                 case LEAVE:    command = new CmdLeave(_bdCiv); break;
-                case QUIT:     command = new CmdQuit(_bdCiv); break;
-                case RETURN:   command = new CmdReturn(); break;
+                case QUIT:     command = new CmdQuit(_mfCiv, _bdCiv); break;
+                case RETURN:   command = new CmdReturn(_mfCiv); break;
             }
 
             if (command.init(cmdInput.parameters) == false) {

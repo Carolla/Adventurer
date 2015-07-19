@@ -14,17 +14,21 @@ import pdc.command.Command;
 import pdc.command.CommandFactory;
 import pdc.command.CommandInput;
 import pdc.command.NullCommand;
+import test.integ.MainframeProxy;
+import civ.MainframeCiv;
 
 public class TestCommandFactory
 {
     private CommandFactory _commandFactory;
     private FakeBuildingDisplayCiv _fakeBdCiv;
+    private FakeMainframeCiv _fakeMfCiv;
 
     @Before
     public void setup()
     {
-        _fakeBdCiv = new FakeBuildingDisplayCiv(); 
-        _commandFactory = new CommandFactory(_fakeBdCiv);
+        _fakeBdCiv = new FakeBuildingDisplayCiv();
+        _fakeMfCiv = new FakeMainframeCiv();
+        _commandFactory = new CommandFactory(_fakeMfCiv, _fakeBdCiv);
     }
 
     private static final String[] commandNames = { "APPROACH", "ENTER", "LEAVE", "EXIT", "RETURN", "QUIT" };

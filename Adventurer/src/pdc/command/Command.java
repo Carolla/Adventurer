@@ -14,6 +14,7 @@ package pdc.command; // This package value is needed by the subcommands; see _cm
 import java.util.ArrayList;
 import java.util.List;
 
+import civ.ChronosLogger;
 import civ.MainframeCiv;
 
 
@@ -77,13 +78,11 @@ public abstract class Command
    * The parameters that the subcommand needs must be wrapped in an ArrayList for the subcommand's
    * {@code init} method.
    */
-  protected List<String> _parms = null;
+  protected final List<String> _parms;
   /** A short description of the command, used in the general help method. */
-  protected String _description = null;
+  protected final String _description;
   /** The syntax of the command, used in the {@code usage()} method. */
-  protected String _cmdfmt = null;
-  /** CommandParser redirects all errors and messages to {@code hic.IOPanel} */
-  protected MainframeCiv _mfCiv;
+  protected final String _cmdfmt;
 
 
   // ============================================================
@@ -217,18 +216,6 @@ public abstract class Command
     _delay = newDelay;
   }
 
-
-  /**
-   * Attach the text Handler for messages and text to the command
-   * 
-   * @param newDelay the time that will override the current delay
-   */
-  public void setMsgHandler(MainframeCiv msgHandler)
-  {
-    _mfCiv = msgHandler;
-  }
-
-
   // ============================================================
   // PROTECTED METHODS
   // ============================================================
@@ -240,11 +227,12 @@ public abstract class Command
    */
   protected void usage()
   {
+      ChronosLogger logger = MainframeCiv.getLogger();
     if (_cmdfmt == null) {
-      _mfCiv.errorOut("USAGE: " + _name + " command takes no parms");
+        logger.errorOut("USAGE: " + _name + " command takes no parms");
     }
     else {
-      _mfCiv.errorOut("USAGE: " +  _cmdfmt);
+        logger.errorOut("USAGE: " +  _cmdfmt);
     }
     // Do not increment the game clock for this command
     _delay = 0;

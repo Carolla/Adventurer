@@ -82,7 +82,7 @@ public class TestCommandParser
     @Test
     public void CommandIsScheduledWhenFound()
     {
-        _cp = new CommandParser(_fakeSkedder, new CommandFactory(null));
+        _cp = new CommandParser(_fakeSkedder, new CommandFactory(null, null));
         _cp.receiveCommand("Exit");
         assertEquals(new CmdExit().getName(), _fakeSkedder.command.getName());
     }
@@ -117,7 +117,7 @@ public class TestCommandParser
     {
         public FakeCommandFactory()
         {
-            super(null);
+            super(null, null);
         }
 
         @Override

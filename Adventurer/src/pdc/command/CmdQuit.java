@@ -15,6 +15,7 @@ package pdc.command;
 import java.util.List;
 
 import civ.BuildingDisplayCiv;
+import civ.MainframeCiv;
 
 
 /**
@@ -49,16 +50,19 @@ public class CmdQuit extends Command
 
     /** Error message if hero inside when command initialized */
     private final String ERRMSG_IN_BLDG = "To quit, you must be outside.";
+    
     private final BuildingDisplayCiv _bdCiv;
+    private final MainframeCiv _mfCiv;
 
     // ============================================================
     // CONSTRUCTOR(S) AND RELATED METHODS
     // ============================================================
 
     /** Constructor called by the CommandFactory. There is no delay nor duration. */
-    public CmdQuit(BuildingDisplayCiv bdCiv)
+    public CmdQuit(MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
     {
         super("CmdQuit", DELAY, DURATION, CMD_DESCRIPTION, null);
+        _mfCiv = mfCiv;
         _bdCiv = bdCiv;
     }
 
@@ -80,10 +84,10 @@ public class CmdQuit extends Command
         if ((args.size() == 0) && (_bdCiv.isInside() == false)) {
             return true;
         } else if ((args.size() == 0) && (_bdCiv.isInside() == true)) {
-            super._mfCiv.errorOut(ERRMSG_IN_BLDG);
+            _mfCiv.errorOut(ERRMSG_IN_BLDG);
             return false;
         } else {
-            super._mfCiv.errorOut(ERRMSG_OMIT_ARGS);
+            _mfCiv.errorOut(ERRMSG_OMIT_ARGS);
             return false;
         }
     }
@@ -96,35 +100,9 @@ public class CmdQuit extends Command
     @Override
     public boolean exec()
     {
-        super._mfCiv.quit();
+        _mfCiv.quit();
         return true;
     }
-
-    /** INNER CLASS: MOCK */
-    public class MockCmdQuit
-    {
-        /** Ctor */
-        public MockCmdQuit()
-        {}
-
-        public int getDelay()
-        {
-            return CmdQuit.DELAY;
-        }
-
-        public int getDuration()
-        {
-            return CmdQuit.DURATION;
-        }
-
-        public String getDescription()
-        {
-            return CmdQuit.CMD_DESCRIPTION;
-        }
-
-
-    } // end MockCmdQuit class
-
 
 } // end CmdQuit class
 
