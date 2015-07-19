@@ -124,6 +124,7 @@ public class ConcreteRegistry extends Registry
 
 
     /** Get all the elements in the Registry */
+    @SuppressWarnings("serial")
     public List<IRegistryElement> getAll()
     {
       // Run the query using the equals method

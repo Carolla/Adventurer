@@ -25,9 +25,7 @@ import org.junit.Test;
 
 import chronos.pdc.buildings.FightersGuild;
 import chronos.pdc.buildings.FightersGuild.MockFightersGuild;
-import chronos.pdc.registry.NPCRegistry;
 import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 
 /**
  *    Tests the various Guild-specific methods.

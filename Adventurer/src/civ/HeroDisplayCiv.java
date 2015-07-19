@@ -18,7 +18,6 @@ import mylib.Constants;
 import mylib.civ.BaseCiv;
 import mylib.civ.DataShuttle;
 import mylib.civ.DataShuttle.ErrorType;
-import mylib.pdc.Utilities;
 import pdc.Inventory;
 import pdc.character.Person;
 import chronos.civ.MiscKeys.PersonFileData;

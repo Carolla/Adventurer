@@ -34,9 +34,7 @@ import chronos.pdc.registry.NPCRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.BuildingDisplayCiv;
-import civ.BuildingDisplayCiv.MockBldgCiv;
 import civ.CommandParser;
-import civ.CommandParser.MockCP;
 import civ.MainframeCiv;
 
 /**
@@ -62,12 +60,10 @@ public class TA08_CmdEnter
 {
   /** CommandParser takes in all commands from the CmdLine of the IOPanel */
   static private CommandParser _cp = null;
-  /** MockCommandParser allows access to CommandParser fields */
-  static private MockCP _mockCP = null;
+
   /** BuildingDisplayCiv controls access and displays of buildings */
   static private BuildingDisplayCiv _bldgCiv = null;
-  /** MockBuildingDisplayCiv */
-  static private MockBldgCiv _mockBldgCiv = null;
+
   /** MainframeProxy controls inputs and outputs; used by BuildingDisplayCiv */
   static private MainframeProxy _mfProxy = null;
 
@@ -100,12 +96,7 @@ public class TA08_CmdEnter
     _bldgCiv.setOutput(_mfProxy);
     _cp = new CommandParser(new Scheduler(new DeltaCmdList()), new CommandFactory(_mfCiv, _bldgCiv));
     assertNotNull(_cp);
-    _mockCP = _cp.new MockCP();
-    assertNotNull(_mockCP);
     assertNotNull(_bldgCiv);
-    _mockBldgCiv = _bldgCiv.new MockBldgCiv();
-    assertNotNull(_mockBldgCiv);
-
 
     // Get list of names for all buildings that can be entered
     _bldgs = _bReg.getElementNames();
@@ -118,11 +109,6 @@ public class TA08_CmdEnter
   @AfterClass
   public static void tearDownAfterClass() throws Exception
   {
-    _mockBldgCiv = null;
-    _bldgCiv = null;
-    _mockCP = null;
-    _cp = null;
-    _mfProxy = null;
     // Close BuildingRegistry, left open from BuildingDisplayCiv
     _bReg.closeRegistry();
     // Close NPCRegistry, left open from BuildingDisplayCiv
@@ -185,8 +171,8 @@ public class TA08_CmdEnter
 
       // TEST
       _cp.receiveCommand("Enter " + _bldgs.get(k));
-      String echo = _mockCP.getInput();
-      MsgCtrl.msgln("\nCommand: " + echo);
+//      String echo = _mockCP.getInput();
+//      MsgCtrl.msgln("\nCommand: " + echo);
 
       // After Cmd is executed...
       Thread.sleep(1000);
@@ -232,16 +218,16 @@ public class TA08_CmdEnter
     // Loop for each Building in the BuildingRegistry
     for (int k = 0; k < _bldgs.size(); k++) {
       // Setup: Hero must be outside a defined currentBuilding, and not OnTown
-      _mockBldgCiv.setOnTown(false);
-      _mockBldgCiv.setInsideBldg(false);
+//      _mockBldgCiv.setOnTown(false);
+//      _mockBldgCiv.setInsideBldg(false);
       String bName = _bldgs.get(k);
       Building b = _bReg.getBuilding(bName);
       _bldgCiv.setCurrentBuilding(b);
 
       // TEST
       _cp.receiveCommand("Enter");
-      String echo = _mockCP.getInput();
-      MsgCtrl.msgln("\n\tCommand: " + echo);
+//      String echo = _mockCP.getInput();
+//      MsgCtrl.msgln("\n\tCommand: " + echo);
 
       // After Cmd is executed...
       Thread.sleep(1000);
@@ -328,7 +314,7 @@ public class TA08_CmdEnter
   {
     _bldgCiv.setOnTown(true);
     _bldgCiv.setCurrentBuilding(null);
-    _mockBldgCiv.setInsideBldg(false);
+//    _mockBldgCiv.setInsideBldg(false);
   }
 
 

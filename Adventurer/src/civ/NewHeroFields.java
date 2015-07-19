@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.lang.model.type.ErrorType;
-
 import chronos.pdc.Occupation;
 import chronos.pdc.Race;
 import chronos.pdc.registry.OccupationRegistry;

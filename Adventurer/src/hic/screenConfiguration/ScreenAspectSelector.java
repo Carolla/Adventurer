@@ -17,6 +17,7 @@ import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
 
+@SuppressWarnings("serial")
 public class ScreenAspectSelector extends JFrame {
 
   private JPanel contentPane;

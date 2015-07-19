@@ -11,24 +11,22 @@
 
 package test.pdc;
 
-import pdc.character.Dwarf;
-import pdc.character.Dwarf.MockDwarf;
-import chronos.pdc.Age;
-import chronos.pdc.AttributeList;
-import chronos.pdc.Skill;
+import java.util.ArrayList;
+
+import junit.framework.TestCase;
 import mylib.ApplicationException;
 import mylib.Constants;
 import mylib.MsgCtrl;
 import mylib.pdc.MetaDie;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-
-import junit.framework.TestCase;
-
 import org.junit.After;
 import org.junit.Before;
+
+import pdc.character.Dwarf;
+import pdc.character.Dwarf.MockDwarf;
+import chronos.pdc.Age;
+import chronos.pdc.AttributeList;
+import chronos.pdc.Skill;
 
 /**
  * Tests only the derived methods of the Dwarf class, using an empty

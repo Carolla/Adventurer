@@ -27,9 +27,7 @@ import org.junit.Test;
 
 import chronos.pdc.buildings.Inn;
 import chronos.pdc.buildings.Inn.MockInn;
-import chronos.pdc.registry.NPCRegistry;
 import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 
 /**
  *    Verify that the Inn exists as a meeting place for Heroes, allows conversation with the
