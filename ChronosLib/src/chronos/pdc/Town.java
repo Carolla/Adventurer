@@ -12,7 +12,6 @@ package chronos.pdc;
 import java.util.ArrayList;
 
 import mylib.ApplicationException;
-import mylib.Constants;
 import mylib.dmc.IRegistryElement;
 import chronos.pdc.buildings.Building;
 import chronos.pdc.registry.BuildingRegistry;
@@ -51,9 +50,9 @@ public class Town implements IRegistryElement
    * starts. The clock will start randomly between 1 hr after the Inn opens, and 1 hr before the Inn
    * closes.
    */
-  private long _gameClock = 0L;
-  /** Fixed start time when Town awakes: 6am */
-  private int INIT_TIME = 6;
+//  private long _gameClock = 0L;
+//  /** Fixed start time when Town awakes: 6am */
+//  private int INIT_TIME = 6;
 
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
@@ -84,7 +83,7 @@ public class Town implements IRegistryElement
     _descDay = descDay;
     _descNight = (descNight == null) ? descDay : descNight;
     // Initialize running clock to INIT_TIME
-    _gameClock = INIT_TIME * Constants.SECS_PER_HOUR;
+//    _gameClock = INIT_TIME * Constants.SECS_PER_HOUR;
     
     // Create a place to store in building in town */
     _buildings = new ArrayList<String>();

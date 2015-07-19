@@ -20,7 +20,6 @@ import mylib.civ.DataShuttle;
 import mylib.civ.DataShuttle.ErrorType;
 import pdc.Inventory;
 import pdc.character.Person;
-import chronos.civ.MiscKeys.PersonFileData;
 import chronos.pdc.AttributeList;
 import chronos.pdc.Item;
 import chronos.pdc.Occupation;
@@ -47,8 +46,6 @@ public class HeroDisplayCiv
 
   /** Associated Inventory of the Person */
   private Inventory _inventory = null;
-  /** File-oriented references needed for the JFileChoosers */
-  private List<PersonFileData> _fileData = null;
 
   /** The categories for hunger, to convert Satiety points into a hunger state */
   enum hungerStage {
@@ -113,27 +110,27 @@ public class HeroDisplayCiv
     return _inventory.getNbrItems();
   }
 
-  // /**
-  // * Save the Person to a new file. This method pops up a file chooser so the user can select a
-  // * filename; else the Hero's name is used. If the Person is newly created, then the Person is
-  // * saved to a new file. If the Person already existed, then no file writes are written because
-  // the
-  // * <code>HeroDislay</code> panel does not allow edits; Save As options are disabled.
-  // *
-  // * @return true if the save worked correctly
-  // */
-  // public List<PersonFileData> getPersonFileData()
-  // {
-  // MsgCtrl.msgln(this, "\tsavePerson(): ");
-  //
-  // Get the requested key data map needed for the chooser from the CIV
-  // _fileData = new List<PersonFileData>(PersonFileData.class);
-  // _fileData.assignKey(PersonFileData.RESOURCE_DIR);
-  // _fileData.assignKey(PersonFileData.DEFAULT_FILENAME);
-  // _fileData.assignKey(PersonFileData.PERSON_EXT);
-  // _fileData.assignKey(PersonFileData.CHOOSER_LABEL);
-  // return _person.getFileData(_fileData);
-  // }
+//   /**
+//   * Save the Person to a new file. This method pops up a file chooser so the user can select a
+//   * filename; else the Hero's name is used. If the Person is newly created, then the Person is
+//   * saved to a new file. If the Person already existed, then no file writes are written because
+//   the
+//   * <code>HeroDislay</code> panel does not allow edits; Save As options are disabled.
+//   *
+//   * @return true if the save worked correctly
+//   */
+//   public List<PersonFileData> getPersonFileData()
+//   {
+//   MsgCtrl.msgln(this, "\tsavePerson(): ");
+//  
+//   //Get the requested key data map needed for the chooser from the CIV
+//   _fileData = new List<PersonFileData>();
+//   _fileData.assignKey(PersonFileData.RESOURCE_DIR);
+//   _fileData.assignKey(PersonFileData.DEFAULT_FILENAME);
+//   _fileData.assignKey(PersonFileData.PERSON_EXT);
+//   _fileData.assignKey(PersonFileData.CHOOSER_LABEL);
+//   return _person.getFileData(_fileData);
+//   }
 
   public boolean populateAbilityScores(AttributeList attribs)
   {
@@ -152,9 +149,7 @@ public class HeroDisplayCiv
   {
     // Create a shuttle to contain the data and convert to widget String format
     DataShuttle<PersonKeys> fieldShuttle = convertAttributes(ds);
-    // if (!Constants.IN_TEST) {
-    // _widget.displayAttributes(fieldShuttle);
-    // }
+    _widget.displayAttributes(fieldShuttle);
     return true;
   }
 
@@ -169,9 +164,7 @@ public class HeroDisplayCiv
     // Create a shuttle to contain the data and convert to widget String
     // format
     ArrayList<String> items = convertItems(itemList);
-    // if (!Constants.IN_TEST) {
-    // _widget.displayInventory(items);
-    // }
+    _widget.displayInventory(items);
     return true;
   }
 
@@ -322,9 +315,8 @@ public class HeroDisplayCiv
       String lbWt = String.valueOf(lbs);
       String ozWt = String.valueOf(ozs);
       // Build displayable string
-      // String itemStr = cat + BaseCiv.DELIM + name + BaseCiv.DELIM + qty
-      // + BaseCiv.DELIM + lbWt + BaseCiv.DELIM + ozWt;
-      // itemList.add(k, itemStr);
+      String itemStr = cat + BaseCiv.DELIM + name + BaseCiv.DELIM + qty + BaseCiv.DELIM + lbWt + BaseCiv.DELIM + ozWt;
+      itemList.add(k, itemStr);
     }
     return itemList;
   }
@@ -347,9 +339,8 @@ public class HeroDisplayCiv
       // String race = skill.getRace();
       // String klass = skill.getKlass();
       String description = skill.getDescription();
-      // String skillStr = name + BaseCiv.DELIM + description; // race + BaseCiv.DELIM
-      // + klass + BaseCiv.DELIM + description;
-      // skillList.add(k, skillStr);
+      String skillStr = name + BaseCiv.DELIM + description; // race + BaseCiv.DELIM + klass + BaseCiv.DELIM + description;
+      skillList.add(k, skillStr);
     }
     return skillList;
   }

@@ -130,7 +130,7 @@ public class TestHunger extends TestCase {
 
         // Null: create hunger with null weight
         MsgCtrl.msgln("Null hunger: ");
-        Hunger nullHunger = new Hunger((Double) null);
+        Hunger nullHunger = new Hunger(0.0);
         assertNull(nullHunger);
         MsgCtrl.msgln("");
 	}

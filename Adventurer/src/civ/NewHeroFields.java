@@ -112,10 +112,7 @@ public enum NewHeroFields {
         }
     }, // end of Racename key
     
-    ABILITY_SCORES("") {
-    	/** Max Number of Spent Points */
-    	private final int MAX_POINTS = 24;
-    	
+    ABILITY_SCORES("") {    	
     	/** Verify that all points have been spent */
     	public boolean isValid(Object obj)
     	{

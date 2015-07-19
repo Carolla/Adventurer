@@ -25,8 +25,6 @@ import java.awt.Image;
  */
 public class MainframeProxy implements MainframeInterface
 {
-  /** Display title over image, set as name of the building being displayed */
-  private String _imageTitle;
   /** Buffer for holding messages for auditing */
   private String _msg;
   private String _errMsg;
@@ -166,7 +164,6 @@ public class MainframeProxy implements MainframeInterface
   {
 //    MsgCtrl.where(this);
 //    MsgCtrl.msgln("\tbuilding name = " + bldgName + "\n");
-    _imageTitle = bldgName;
   }
 
 

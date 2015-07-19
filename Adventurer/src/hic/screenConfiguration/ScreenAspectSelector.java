@@ -1,10 +1,7 @@
 package hic.screenConfiguration;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.Frame;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -22,13 +19,18 @@ public class ScreenAspectSelector extends JFrame {
 
   private JPanel contentPane;
   private JPanel appPanel;
-  private int userWinWidth;
-  private int userWinHeight;
+//  private int userWinWidth;
+//  private int userWinHeight;
   private int screenAspect;
-  private double contentSize;
   private int appPanWidth = 80;
   private int appPanHeight = 80;
 
+  /* Private Constants */
+  // over target is wide screen, under is standard screen
+//  private final double TARGET_ASPECT = 1.7;
+  private final int WIDE_ASPECT = 1;
+  private final int STANDARD_ASPECT = 2;
+  
   /**
    * Launch the application.
    */
@@ -36,7 +38,7 @@ public class ScreenAspectSelector extends JFrame {
     EventQueue.invokeLater(new Runnable() {
       public void run() {
         try {
-          ScreenAspectSelector frame = new ScreenAspectSelector();
+          new ScreenAspectSelector();
         } catch (Exception e) {
           e.printStackTrace();
         }
@@ -51,7 +53,7 @@ public class ScreenAspectSelector extends JFrame {
 
     /* Create dummyMainFrame to mimic Adventurer Mainframe and
      * set frame defaults */
-    JFrame dummyMainFrame = createMainFrame();
+//    JFrame dummyMainFrame = createMainFrame();
     
     // Creates the main menu bar at the top of the frame
     createMenuBar();
@@ -81,47 +83,47 @@ public class ScreenAspectSelector extends JFrame {
   }
 
   
-  /**
-   * Creates and displays the underlying application frame and
-   * initializes it's defaults
-   * @return 
-   */
-  private JFrame createMainFrame() {
-    
-    // Set frame defaults
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    setExtendedState(Frame.MAXIMIZED_BOTH);
-    setResizable(false);
-    
-    // Get height and width of user screen
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    userWinWidth = screenSize.width;
-    userWinHeight = screenSize.height;
-    setSize(userWinWidth, userWinHeight);
-    
-    // Get aspect ratio of user screen
-    screenAspect = getScreenAspect();
-
-    // Set frame to visible
-    setVisible(true);
-    
-    return this;
-  }
-
-  /**
-   * Calculates aspect ratio of user screen and decides whether it
-   * is closer to "wide" or "standard" screen
-   * @return the aspect ratio
-   */
-  private int getScreenAspect() {
-    int aspect = 0;
-    if (((userWinWidth / (double) userWinHeight) < TARGET_ASPECT)) {
-      aspect = STANDARD_ASPECT;
-    } else {
-      aspect = WIDE_ASPECT;
-    }
-    return aspect;
-  }
+//  /**
+//   * Creates and displays the underlying application frame and
+//   * initializes it's defaults
+//   * @return 
+//   */
+//  private JFrame createMainFrame() {
+//    
+//    // Set frame defaults
+//    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//    setExtendedState(Frame.MAXIMIZED_BOTH);
+//    setResizable(false);
+//    
+//    // Get height and width of user screen
+//    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+//    userWinWidth = screenSize.width;
+//    userWinHeight = screenSize.height;
+//    setSize(userWinWidth, userWinHeight);
+//    
+//    // Get aspect ratio of user screen
+//    screenAspect = getScreenAspect();
+//
+//    // Set frame to visible
+//    setVisible(true);
+//    
+//    return this;
+//  }
+//
+//  /**
+//   * Calculates aspect ratio of user screen and decides whether it
+//   * is closer to "wide" or "standard" screen
+//   * @return the aspect ratio
+//   */
+//  private int getScreenAspect() {
+//    int aspect = 0;
+//    if (((userWinWidth / (double) userWinHeight) < TARGET_ASPECT)) {
+//      aspect = STANDARD_ASPECT;
+//    } else {
+//      aspect = WIDE_ASPECT;
+//    }
+//    return aspect;
+//  }
 
   /**
    * Creates the menu bar at the top of the frame
@@ -206,10 +208,5 @@ public class ScreenAspectSelector extends JFrame {
 
   }
 
-  /* Private Constants */
-  // over target is wide screen, under is standard screen
-  private final double TARGET_ASPECT = 1.7;
-  private final int WIDE_ASPECT = 1;
-  private final int STANDARD_ASPECT = 2;
 
 }

@@ -20,8 +20,6 @@ import mylib.pdc.Registry;
 import pdc.character.Person;
 import chronos.Chronos;
 
-import com.db4o.query.Predicate;
-
 /**
  * Contains all Persons in the game. {@code PersonRegistry} is a singleton and is only
  * initialized once.
@@ -108,21 +106,21 @@ public class PersonRegistry extends Registry
    */
 
 
-  @SuppressWarnings("serial")
-  private final class PersonPredicate extends Predicate<Person>
-  {
-    private final String name;
-
-    private PersonPredicate(String name)
-    {
-      this.name = name;
-    }
-
-    public boolean match(Person candidate)
-    {
-      return candidate.getName().equals(name);
-    }
-  }
+//  @SuppressWarnings("serial")
+//  private final class PersonPredicate extends Predicate<Person>
+//  {
+//    private final String name;
+//
+//    private PersonPredicate(String name)
+//    {
+//      this.name = name;
+//    }
+//
+//    public boolean match(Person candidate)
+//    {
+//      return candidate.getName().equals(name);
+//    }
+//  }
 
   // /** Load a table of Persons into the PersonRegistry
   // *

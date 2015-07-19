@@ -12,9 +12,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
@@ -33,6 +36,7 @@ import javax.swing.border.EmptyBorder;
 import mylib.MsgCtrl;
 import mylib.civ.DataShuttle;
 import net.miginfocom.swing.MigLayout;
+import chronos.Chronos;
 import civ.HeroDisplayCiv;
 import civ.MiscKeys.ItemCategory;
 import civ.PersonKeys;
@@ -270,24 +274,24 @@ public class HeroDisplay extends JPanel
     // mftitle, TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION);
     // setBorder(titledBorder);
     //
-    // // ADD HELP MESSAGE TO INSTRUCT HOW TO SHIFT FOCUS
-    // add(new JLabel(HELP_LABEL), "span");
+     // ADD HELP MESSAGE TO INSTRUCT HOW TO SHIFT FOCUS
+     add(new JLabel(HELP_LABEL), "span");
     //
     // // Use a larger special font for the Hero's name. Extract the label font
     // // size from the cell
-    // Font nameFont = null;
-    // try {
-    // // Returned font is of pt size 1
-    // Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(
-    // Chronos.RUNIC_ENGLISH_FONT_FILE));
-    //
-    // // Derive a 30 pt version:
-    // nameFont = newFont.deriveFont(NAME_HT);
-    // } catch (FontFormatException e) {
-    // MsgCtrl.errMsgln("Could not format font: " + e.getMessage());
-    // } catch (IOException e) {
-    // MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
-    // }
+     Font nameFont = null;
+     try {
+     // Returned font is of pt size 1
+     Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(
+     Chronos.RUNIC_ENGLISH_FONT_FILE));
+    
+     // Derive a 30 pt version:
+     nameFont = newFont.deriveFont(NAME_HT);
+        } catch (FontFormatException e) {
+            MsgCtrl.errMsgln("Could not format font: " + e.getMessage());
+        } catch (IOException e) {
+            MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
+        }
     // // NamePlate before Attribute grid: Name, gender, Race, Klass
     // String namePlate = _ds.getField(PersonKeys.NAME) + ": "
     // + _ds.getField(PersonKeys.GENDER) + " "
@@ -300,7 +304,7 @@ public class HeroDisplay extends JPanel
     // // GraphicsEnvironment.getLocalGraphicsEnvironment();
     // // String[] fontNames = env.getAvailableFontFamilyNames();
     //
-    // _charName.setFont(nameFont);
+    _charName.setFont(nameFont);
     // // TODO: Update this to change the size Tim
     // while (_charName.getPreferredSize().width > DATA_WIDTH) {
     // // Edit name font down a notch or two
@@ -349,20 +353,16 @@ public class HeroDisplay extends JPanel
     // add(scorePanel, "span");
     //
     // // CREATE THE ATTRIBUTE GRID PANEL AND SIZE IT FOR DISPLAY
-    // _attribPanel = buildAttributePanel();
-    // // Ensure that the attribute panel does not exceed the HeroDisplay panel
-    // // width
-    // _attribPanel.setPreferredSize(new Dimension(DATA_WIDTH, _attribPanel
-    // .getHeight()));
-    // // attribPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK,
-    // // 1));
-    // add(_attribPanel, "span, center, gapbottom 0");// , span, growx");
+     _attribPanel = buildAttributePanel();
+     // Ensure that the attribute panel does not exceed the HeroDisplay panel width
+     _attribPanel.setPreferredSize(new Dimension(DATA_WIDTH, _attribPanel.getHeight()));
+     // attribPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+     add(_attribPanel, "span, center, gapbottom 0");// , span, growx");
     //
     // // ADD SAVE & CANCEL BUTTONS TO THE BOTTOM OF THE PANEL
-    // _buttonPanel = buildButtonPanel();
-    // _buttonPanel.setPreferredSize(new Dimension(DATA_WIDTH, _buttonPanel
-    // .getHeight()));
-    // add(_buttonPanel, "span, center, gapbottom 5");
+     _buttonPanel = buildButtonPanel();
+     _buttonPanel.setPreferredSize(new Dimension(DATA_WIDTH, _buttonPanel.getHeight()));
+     add(_buttonPanel, "span, center, gapbottom 5");
     //
     // Mainframe frame = Mainframe.getInstance();
     // // frame.changeToLeftPanel(this);
@@ -703,7 +703,7 @@ public class HeroDisplay extends JPanel
         // Remove this panel and ignore any changes in either case
         // Mainframe.getInstance().
         setVisible(false);
-        Mainframe frame = Mainframe.getInstance();
+//        Mainframe frame = Mainframe.getInstance();
         // frame.resetPanels();
       }
     });
@@ -735,7 +735,7 @@ public class HeroDisplay extends JPanel
         // Reset menu options to original
         // MenuBar.getInstance().resetMenus();
         // Remove this panel
-        Mainframe frame = Mainframe.getInstance();
+//        Mainframe frame = Mainframe.getInstance();
         // frame.resetPanels();
         hd.setVisible(false);
       }
@@ -755,7 +755,7 @@ public class HeroDisplay extends JPanel
         MsgCtrl.traceEvent(event);
         // Collect all the attributes and save to a new Hero file
         setVisible(false);
-        Mainframe frame = Mainframe.getInstance();
+//        Mainframe frame = Mainframe.getInstance();
         // frame.resetPanels();
         // int response = mf.confirmQuit();
         // if (response == Mainframe.NOSAVE) {

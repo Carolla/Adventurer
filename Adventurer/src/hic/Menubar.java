@@ -107,18 +107,18 @@ public class Menubar extends JMenuBar
   }
 
 
-  /**
-   * Create a menu item that is disabled--until it is implemented
-   * 
-   * @param string the name of the menu item
-   * @return a menu item
-   */
-  private JMenuItem createMenuItemWithNoAction(String string)
-  {
-    JMenuItem item = new JMenuItem(string);
-    item.setEnabled(false);
-    return item;
-  }
+//  /**
+//   * Create a menu item that is disabled--until it is implemented
+//   * 
+//   * @param string the name of the menu item
+//   * @return a menu item
+//   */
+//  private JMenuItem createMenuItemWithNoAction(String string)
+//  {
+//    JMenuItem item = new JMenuItem(string);
+//    item.setEnabled(false);
+//    return item;
+//  }
 
 
   // ============================================================
@@ -130,7 +130,7 @@ public class Menubar extends JMenuBar
   // // Populate the Enter menu
   // JMenu mnEnter = new JMenu("Enter");
   // this.add(mnEnter);
-  // // mnEnter.add(createMenuItemWithNoAction("Registrar"));
+  // mnEnter.add(createMenuItemWithNoAction("Registrar"));
   // mnEnter.add(createMenuItemWithNoAction("Arena"));
   // mnEnter.add(new JMenuItem("---"));
   // mnEnter.add(createMenuItemWithNoAction("Inn"));

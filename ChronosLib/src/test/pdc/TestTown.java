@@ -32,8 +32,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.pdc.Town;
-import chronos.pdc.registry.BuildingRegistry;
-import chronos.pdc.registry.NPCRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 
@@ -69,8 +67,8 @@ public class TestTown
   private int NBR_BUILDINGS = 8;
 
   /** Registries to open and close before and after testing */
-  static private BuildingRegistry _bldgReg = null;
-  static private NPCRegistry _patrons = null;
+//  static private BuildingRegistry _bldgReg = null;
+//  static private NPCRegistry _patrons = null;
 
 
   // ===========================================================================
@@ -134,7 +132,7 @@ public class TestTown
   {
     _town = null;
     RegistryFactory rf = RegistryFactory.getInstance();
-    BuildingRegistry bReg = (BuildingRegistry) rf.getRegistry(RegKey.BLDG);
+    rf.getRegistry(RegKey.BLDG);
     rf.closeRegistry(RegKey.BLDG);
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
