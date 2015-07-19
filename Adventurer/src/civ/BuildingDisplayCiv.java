@@ -15,8 +15,6 @@ import hic.MainframeInterface;
 import pdc.Util;
 import chronos.pdc.buildings.Building;
 import chronos.pdc.registry.BuildingRegistry;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 
 /**
  * Maintain displays and text descriptions of all Buildings, both interior and exterior. It shows
@@ -28,8 +26,6 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
  */
 public class BuildingDisplayCiv
 {
-    /** Reference to self singleton */
-    static private BuildingDisplayCiv _bldgDspCiv = null;
     /** Reference to socket for Mainframe or test proxy */
     private MainframeInterface _frame = null;
     /** The Hero is on town, not at any particular building */
@@ -63,10 +59,12 @@ public class BuildingDisplayCiv
      * the command {@setOutput()} because not all callers of this object have or know which one it
      * is. In almost all cases, the output GUI is {@code hic.Mainframe}, which implements
      * {@code MainframeInterface}.
+     * @param mainframe 
      */
-    public BuildingDisplayCiv()
+    public BuildingDisplayCiv(MainframeInterface mainframe, BuildingRegistry breg)
     {
-        _breg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
+        _frame = mainframe;
+        _breg = breg;
         _currentBldg = null;
     }
 
@@ -129,20 +127,6 @@ public class BuildingDisplayCiv
             }
         }
     }
-
-    /**
-     * Is a singleton so that any command can get to it. All commands occur in the context of some
-     * building. The output display object is set through {@code setOutput(MainframeInterface)}.
-     */
-    static public BuildingDisplayCiv getInstance()
-    {
-        if (_bldgDspCiv == null) {
-            _bldgDspCiv = new BuildingDisplayCiv();
-        }
-        return _bldgDspCiv;
-    }
-
-
 
     // ======================================================================
     // Public methods

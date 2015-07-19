@@ -87,12 +87,16 @@ public class TA08_CmdEnter
   @BeforeClass
   public static void setUpBeforeClass() throws Exception
   {
+      // Start up the support classes
+      _regFactory = RegistryFactory.getInstance();
+      _bReg = (BuildingRegistry) _regFactory.getRegistry(RegKey.BLDG);
+      
     // Replace the GUI objects with their test facades
     _mfProxy = new MainframeProxy();
     assertNotNull(_mfProxy);
-    new MainframeCiv(_mfProxy);
+    //new MainframeCiv(_mfProxy, _bReg);
     // This will open the BuildingRegistry, which must be closed before exiting
-    _bldgCiv = BuildingDisplayCiv.getInstance();
+    _bldgCiv = new BuildingDisplayCiv(_mfProxy, _bReg);
     _bldgCiv.setOutput(_mfProxy);
     _cp = new CommandParser(new Scheduler(new DeltaCmdList()), new CommandFactory(_bldgCiv));
     assertNotNull(_cp);
@@ -102,9 +106,6 @@ public class TA08_CmdEnter
     _mockBldgCiv = _bldgCiv.new MockBldgCiv();
     assertNotNull(_mockBldgCiv);
 
-    // Start up the support classes
-    _regFactory = RegistryFactory.getInstance();
-    _bReg = (BuildingRegistry) _regFactory.getRegistry(RegKey.BLDG);
 
     // Get list of names for all buildings that can be entered
     _bldgs = _bReg.getElementNames();

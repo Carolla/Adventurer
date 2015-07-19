@@ -46,6 +46,9 @@ import pdc.command.CommandFactory;
 import pdc.command.DeltaCmdList;
 import pdc.command.Scheduler;
 import chronos.Chronos;
+import chronos.pdc.registry.BuildingRegistry;
+import chronos.pdc.registry.RegistryFactory;
+import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.Adventurer;
 import civ.BuildingDisplayCiv;
 import civ.CommandParser;
@@ -185,12 +188,14 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     // Create the one time help dialog
     prepareHelpDialog();
 
-    // Create the Civ
-    _mfCiv = new MainframeCiv(this);
   
     // Create the BuildingDisplayCiv to define the output GUI for descriptions and images
-    _bldgCiv = BuildingDisplayCiv.getInstance();
+    BuildingRegistry breg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
+    _bldgCiv = new BuildingDisplayCiv(this, breg);
     _bldgCiv.setOutput(this);
+    
+    // Create the Civ
+    _mfCiv = new MainframeCiv(this, _bldgCiv);
   }
 
 
@@ -482,9 +487,8 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   public void addIOPanel()
   {
     _leftHolder.removeAll();
-    // Create the command parser that goes in here
-    BuildingDisplayCiv bdCiv = BuildingDisplayCiv.getInstance();
-    CommandParser cp = new CommandParser(new Scheduler(new DeltaCmdList()), new CommandFactory(bdCiv));
+
+    CommandParser cp = new CommandParser(new Scheduler(new DeltaCmdList()), new CommandFactory(_bldgCiv));
     _iop = new IOPanel(_mfCiv, cp);
     setTranscriptTitle(IOPANEL_TITLE);
     _leftHolder.add(_iop);

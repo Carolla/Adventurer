@@ -115,42 +115,5 @@ public class CmdEnter extends Command
         return true;
     }
 
-
-    /** INNER CLASS: MOCK */
-    public class MockCmdEnter
-    {
-        /** Ctor */
-        public MockCmdEnter()
-        {}
-
-        public void clearTargetBldg()
-        {
-            _targetBuilding = null;
-        }
-
-        public String getTargetBldg()
-        {
-            return _targetBuilding;
-        }
-
-        public int getDelay()
-        {
-            return CmdEnter.DELAY;
-        }
-
-        public int getDuration()
-        {
-            return CmdEnter.DURATION;
-        }
-
-        public String getCmdFormat()
-        {
-            return CmdEnter.CMDFMT;
-        }
-
-    } // end MockCmdEnter class
-
-
-
 } // end CmdEnter class
 

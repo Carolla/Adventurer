@@ -94,40 +94,4 @@ public class CmdApproach extends Command
         _bldgCiv.approachBuilding(_targetBuilding);
         return true;
     }
-    
-    /** INNER CLASS: MOCK */
-    public class MockCmdApproach
-    {
-      /** Ctor */
-      public MockCmdApproach()
-      {}
-
-      public void clearTargetBldg()
-      {
-        _targetBuilding = "";
-      }
-
-      public String getTargetBldg()
-      {
-        return _targetBuilding;
-      }
-
-      public int getDelay()
-      {
-        return CmdApproach.DELAY;
-      }
-
-      public int getDuration()
-      {
-        return CmdApproach.DURATION;
-      }
-      
-      public String getCmdFormat()
-      {
-          return CmdApproach.CMDFMT;
-      }
-
-      
-    } // end MockCmdEnter class
-
 } // end CmdApproach Class

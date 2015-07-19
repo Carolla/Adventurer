@@ -100,15 +100,13 @@ public class MainframeCiv implements ChronosLogger
    * @param personRW supports the Summon Hero and Create Hero buttons
    * @param advReg registry to support the Adventures button
    */
-  public MainframeCiv(MainframeInterface mf)
+  public MainframeCiv(MainframeInterface mf, BuildingDisplayCiv bdCiv)
   {
     _frame = mf;
     _frame.setImage(Util.convertToImage(INITIAL_IMAGE));
     // TODO Why is this in the civ, and not the hic.Mainframe?
     _frame.setImageTitle(INITIAL_TITLE);
-	_bdCiv = BuildingDisplayCiv.getInstance();
-    // _personRW = new PersonReadWriter();
-    // _advReg = (AdventureRegistry) RegistryFactory.getInstance().getRegistry(RegKey.ADV);
+	_bdCiv = bdCiv;
     createBuildingBoxes();
     _logger = this;
   }

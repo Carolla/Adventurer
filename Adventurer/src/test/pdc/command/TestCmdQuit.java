@@ -21,8 +21,6 @@ import test.integ.MainframeProxy;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
-import civ.BuildingDisplayCiv;
-import civ.BuildingDisplayCiv.MockBldgCiv;
 import civ.MainframeCiv;
 
 public class TestCmdQuit
@@ -32,14 +30,14 @@ public class TestCmdQuit
     private CmdQuit _cmdQuit;
     private MockCmdQuit _mock;
     private static MainframeCiv _mfCiv;
-    private static BuildingDisplayCiv _bdciv;
+    private static FakeBuildingDisplayCiv _bdciv;
     
     @BeforeClass
     public static void setUpBeforeClass() throws Exception
     {
         MainframeInterface mfInterface = new MainframeProxy();
-        _mfCiv = new MainframeCiv(mfInterface);
-        _bdciv = BuildingDisplayCiv.getInstance();
+        _bdciv = new FakeBuildingDisplayCiv();
+        _mfCiv = new MainframeCiv(mfInterface, _bdciv);
     }
 
     @AfterClass
@@ -119,12 +117,11 @@ public class TestCmdQuit
         assertFalse(_cmdQuit.init(addedWord));
         
         // Setup for Test 3
-        BuildingDisplayCiv bdCiv = BuildingDisplayCiv.getInstance();
-        MockBldgCiv mock_bdCiv = bdCiv.new MockBldgCiv();
         // Pre-test - show normal first
         assertTrue(_cmdQuit.init(emptyArgs));
+        
         // Set failing condition
-        mock_bdCiv.setInsideBldg(true);
+        _bdciv.setInside(true);
         
         // Test 3 - Error - inside building
         assertFalse(_cmdQuit.init(emptyArgs));
