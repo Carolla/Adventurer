@@ -15,8 +15,6 @@ import hic.MainframeInterface;
 import java.awt.Dimension;
 import java.awt.Image;
 
-import mylib.MsgCtrl;
-
 
 
 /**

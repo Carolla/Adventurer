@@ -20,6 +20,7 @@ import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import pdc.command.CmdEnter;
@@ -36,8 +37,14 @@ public class TestCmdEnter
 
     private CmdEnter _cmdEnter = null;
 
-    private static List<String> _bList = Arrays.asList(TownRegistry.DEF_BUILDING_LIST);
+    private static List<String> _bList;
 
+    @BeforeClass
+    public static void doOne()
+    {
+        _bList = Arrays.asList(TownRegistry.DEF_BUILDING_LIST);
+    }
+    
     /**
      * @throws java.lang.Exception
      */
@@ -46,9 +53,7 @@ public class TestCmdEnter
     {
         _bdciv = new FakeBuildingDisplayCiv();
         _cmdEnter = new CmdEnter(_bdciv);
-
-        // Ensure that current building is null to start
-        _bdciv.setCurrentBuilding(new FakeBuilding(""));
+        _bdciv.setCurrentBuilding("");
     }
 
     /**
@@ -60,7 +65,6 @@ public class TestCmdEnter
         MsgCtrl.auditMsgsOn(false);
         MsgCtrl.errorMsgsOn(false);
     }
-
 
     // =================================================
     // BEGIN TESTING

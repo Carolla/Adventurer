@@ -91,8 +91,6 @@ public class TestCmdApproach
     @Test
     public void initJumpBuilding()
     {
-      MsgCtrl.auditMsgsOn(true);
-      MsgCtrl.errorMsgsOn(true);
       MsgCtrl.where(this);
       
       CheckingBuildingDisplayCiv bdCiv = new CheckingBuildingDisplayCiv();

@@ -110,7 +110,6 @@ public class CmdEnter extends Command
     @Override
     public boolean exec()
     {
-        System.err.println("CmdEnter.exec: Trying to enter " + _targetBuilding);
         _bldgCiv.enterBuilding(_targetBuilding);
         return true;
     }
