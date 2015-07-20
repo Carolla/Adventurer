@@ -194,7 +194,6 @@ private CommandParser _cp;
     // Create the BuildingDisplayCiv to define the output GUI for descriptions and images
     BuildingRegistry breg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
     _bldgCiv = new BuildingDisplayCiv(this, breg);
-    _bldgCiv.setOutput(this);
     
     // Create the Civ
     _mfCiv = new MainframeCiv(this, _bldgCiv);

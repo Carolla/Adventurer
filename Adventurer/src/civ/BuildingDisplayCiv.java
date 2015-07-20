@@ -227,20 +227,6 @@ public class BuildingDisplayCiv
     }
 
 
-    // ======================================================================
-    // Inner Class MockBldgCiv
-    // ======================================================================
-
-    /**
-     * Set the hic output device (or a test proxy after the object is created
-     * 
-     * @param mf the generic socket for receiving image and text outputs
-     */
-    public void setOutput(MainframeInterface mf)
-    {
-        _frame = mf;
-    }
-
     // =============================================================
     // Mock inner class for testing
     // =============================================================

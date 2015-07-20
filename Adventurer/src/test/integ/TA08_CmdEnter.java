@@ -89,14 +89,11 @@ public class TA08_CmdEnter
       
     // Replace the GUI objects with their test facades
     _mfProxy = new MainframeProxy();
-    assertNotNull(_mfProxy);
-    //new MainframeCiv(_mfProxy, _bReg);
     // This will open the BuildingRegistry, which must be closed before exiting
     _bldgCiv = new BuildingDisplayCiv(_mfProxy, _bReg);
-    _bldgCiv.setOutput(_mfProxy);
+
+    _mfCiv = new MainframeCiv(_mfProxy, _bldgCiv);
     _cp = new CommandParser(new Scheduler(new DeltaCmdList()), new CommandFactory(_mfCiv, _bldgCiv));
-    assertNotNull(_cp);
-    assertNotNull(_bldgCiv);
 
     // Get list of names for all buildings that can be entered
     _bldgs = _bReg.getElementNames();
