@@ -39,7 +39,7 @@ public class FakeBuildingDisplayCiv extends BuildingDisplayCiv
     }
     
     @Override
-    public void setCurrentBuilding(Building b)
+    public void returnToTown(Building b)
     {
         _currentBuilding = b.getName();
     }

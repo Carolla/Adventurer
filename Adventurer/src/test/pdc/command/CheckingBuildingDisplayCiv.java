@@ -15,7 +15,7 @@ public class CheckingBuildingDisplayCiv extends BuildingDisplayCiv
     private String _currentBuilding;
 
     @Override
-    public void setCurrentBuilding(Building b)
+    public void returnToTown(Building b)
     {
         _currentBuilding = b.getName();
     }

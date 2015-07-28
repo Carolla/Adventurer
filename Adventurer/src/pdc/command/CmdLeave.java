@@ -44,22 +44,6 @@ public class CmdLeave extends Command
 
     /** Building accesses and displays are controlled by the BuildingDisplayCiv */
     protected BuildingDisplayCiv _bldgCiv;
-    /** The building currently displayed, either inside or outside */
-    private String _currentBuilding = null;
-
-    // /** The building just exited */
-    // private Building _targetBldg;
-
-    // /** Error message if no current building to enter */
-    // private final String ERRMSG_NOBLDG =
-    // "I see no building here. What building did you want to enter?";
-    // /** Message if already in designated building */
-    // private final String ERRMSG_SAMEBLDG =
-    // "You are in that building.";
-    // /** Message if trying to jump fron interior to interior of buldings */
-    // private final String ERRMSG_JUMPBLDG =
-    // "You must leave this building before you enter another.";
-
 
     // ============================================================
     // Constructors and constructor helpers

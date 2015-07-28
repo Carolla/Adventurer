@@ -275,7 +275,7 @@ public class MainframeCiv implements ChronosLogger
     /** Creates the standard layout to display the town image and description */
     public void openTown()
     {
-        _bdCiv.setCurrentBuilding(null);
+        _bdCiv.returnToTown();
         Image townImage = Util.convertToImage(TOWN_IMAGE);
         _frame.setImage(townImage);
         if (_adv != null) {

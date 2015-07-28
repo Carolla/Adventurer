@@ -138,27 +138,24 @@ public class BuildingDisplayCiv
      */
     public boolean approachBuilding(String bldg)
     {
-        Building _targetBuilding = _breg.getBuilding(bldg);
+        Building targetBuilding = _breg.getBuilding(bldg);
+        if (targetBuilding == null) {
+            targetBuilding = _currentBldg;
+        }
 
-        if (_targetBuilding != null) {
-            _currentBldg = _targetBuilding;
+        if (targetBuilding != null) {
+            _currentBldg = targetBuilding;
             _insideBldg = false;
             _onTown = false;
-            String description = _targetBuilding.getExteriorDescription();
-            String imagePath = _targetBuilding.getExtImagePath();
+            String description = targetBuilding.getExteriorDescription();
+            String imagePath = targetBuilding.getExtImagePath();
             displayBuilding(description, imagePath);
             return true;
-        }
-        else {
+        } else {
             _frame.displayText(NO_BLDG_FOUND);
             return false;
         }
     }
-
-
-    // =============================================================
-    // Mock inner class for testing
-    // =============================================================
 
     /**
      * Show the interior image and description of the Building
@@ -167,14 +164,15 @@ public class BuildingDisplayCiv
      */
     public void enterBuilding(String name)
     {
-        Building bldg = _breg.getBuilding(name);
-        if (bldg != null) {
-            _currentBldg = bldg;
+        Building targetBuilding = _breg.getBuilding(name);
+        if (targetBuilding == null) {
+            targetBuilding = _currentBldg;
+        }
+        if (targetBuilding != null) {
+            _currentBldg = targetBuilding;
             _insideBldg = true;
             _onTown = false;
-            String description = bldg.getInteriorDescription();
-            String imagePath = bldg.getIntImagePath();
-            displayBuilding(description, imagePath);
+            displayBuilding(targetBuilding);
         }
         else {
             _frame.displayErrorText(NO_BLDG_FOUND);
@@ -198,18 +196,20 @@ public class BuildingDisplayCiv
         return _insideBldg;
     }
 
+    /** Go to the outside of the building */
+    public void leaveBuilding()
+    {
+        _insideBldg = false;        
+    }
+    
     /**
      * Provides a way to clear the current Building
-     * 
-     * @param b the Building that this currently displayed, exterior or interior; may be null
      */
-    public void setCurrentBuilding(Building b)
+    public void returnToTown()
     {
-        _currentBldg = b;
-        if (b == null) {
-            _onTown = true;
-            _insideBldg = false;
-        }
+        _currentBldg = null;
+        _onTown = true;
+        _insideBldg = false;
     }
 
     /**
@@ -218,23 +218,20 @@ public class BuildingDisplayCiv
      * @param description description of the building's interior or exterior
      * @param imagePath image of the building's exterior or interior room
      */
-    private void displayBuilding(String description, String imagePath)
+    private void displayBuilding(Building building)
     {
-        if ((description.length() > 0) && (imagePath.length() > 0)) {
-            String bldgName = _currentBldg.getName();
+        if (building != null) {
+            String description = building.getInteriorDescription();
+            String imagePath = building.getIntImagePath();
+            String bldgName = building.getName();
+            
             _frame.setBuilding(null); // Confusing, I know. This sets the building RECTANGLE
             _frame.setImage(Util.convertToImage(imagePath));
             _frame.setImageTitle(bldgName);
             _frame.displayText(description);
-        } else {
-            _frame.displayErrorText("Unable to display building " + _currentBldg);
+            _frame.redraw(); // this is pure GUI, s.b. in Mainframe, not here
         }
-        _frame.redraw(); // this is pure GUI, s.b. in Mainframe, not here
     }
 
-    public void leaveBuilding()
-    {
-        _insideBldg = false;        
-    }
     
 } // end of BuildingDisplayCiv class

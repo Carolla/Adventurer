@@ -95,7 +95,7 @@ public class TestCmdApproach
       CheckingBuildingDisplayCiv bdCiv = new CheckingBuildingDisplayCiv();
       _cmdApproach = new CmdApproach(bdCiv);
       Building b = new FakeBuilding("Jail");
-      bdCiv.setCurrentBuilding(b);
+      bdCiv.returnToTown(b);
 
       // Set context to be inside valid building: Jail
       List<String> bNames = new ArrayList<String>();

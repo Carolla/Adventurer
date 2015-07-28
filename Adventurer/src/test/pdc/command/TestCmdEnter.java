@@ -99,7 +99,7 @@ public class TestCmdEnter
 
         // Set first building in registry to the current building (in context object)
         Building b = new FakeBuilding(_bList.get(0));
-        _bdciv.setCurrentBuilding(b);
+        _bdciv.returnToTown(b);
 
         // Now try to enter current Building without a parm
         MsgCtrl.msgln("\tEntering current Building (target Building) " + b.getName());
@@ -137,7 +137,7 @@ public class TestCmdEnter
         List<String> bNames = new ArrayList<String>();
         bNames.add("Jail");
 
-        bdCiv.setCurrentBuilding(new FakeBuilding("NotTheJail"));
+        bdCiv.returnToTown(new FakeBuilding("NotTheJail"));
         assertFalse(_cmdEnter.init(bNames));
 
     }
