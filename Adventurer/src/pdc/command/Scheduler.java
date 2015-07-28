@@ -32,7 +32,7 @@ package pdc.command;
 public class Scheduler implements Runnable
 {
     /** Internal references: command events are queued here */
-    private DeltaCmdList _dq = null;
+    private DeltaCmdList _dq;
 
     /**
      * Creates the {@code Scheduler} and its components. However, if a {@code Scheduler} does not
@@ -41,9 +41,9 @@ public class Scheduler implements Runnable
      * @param deltaCmdList bidirectional association for callbacks to get a user {@code Command} object
      *        for scheduling.
      */
-    public Scheduler(DeltaCmdList deltaCmdList)
+    public Scheduler()
     {
-        _dq = deltaCmdList;
+        _dq = new DeltaCmdList();
     }
 
 

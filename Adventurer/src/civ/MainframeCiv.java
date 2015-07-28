@@ -166,18 +166,9 @@ public class MainframeCiv implements ChronosLogger
      */
     public void enterBuilding(String bldName)
     {
-        if (_bdCiv.isOnTown()) {
-            System.out.println("On town, trying to open building");
-            _bdCiv.setOnTown(false);
-
-            if (!bldName.isEmpty()) {
-                System.out.println("Opening building " + bldName);
-                _bdCiv.approachBuilding(bldName);
-            } else {
-                System.out.println("Can't open null building");
-            }
+        if (_bdCiv.canApproach(bldName)) {
+            _bdCiv.approachBuilding(bldName);
         }
-
     }
 
 
@@ -284,7 +275,6 @@ public class MainframeCiv implements ChronosLogger
     /** Creates the standard layout to display the town image and description */
     public void openTown()
     {
-        _bdCiv.setOnTown(true);
         _bdCiv.setCurrentBuilding(null);
         Image townImage = Util.convertToImage(TOWN_IMAGE);
         _frame.setImage(townImage);
@@ -341,15 +331,4 @@ public class MainframeCiv implements ChronosLogger
         }
 
     }
-
-
-    public class MockMainframeCiv
-    {
-        /** Default constructor */
-        public MockMainframeCiv()
-        {}
-
-
-    } // end of MockMFC class
-
 } // end of MainframeCiv class

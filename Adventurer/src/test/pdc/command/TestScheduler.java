@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import pdc.command.DeltaCmdList;
 import pdc.command.Scheduler;
 
 public class TestScheduler
@@ -14,14 +13,14 @@ public class TestScheduler
     @Test(expected = NullPointerException.class)
     public void RunningEmptyCommandThrowsException()
     {
-        Scheduler s = new Scheduler(new DeltaCmdList());
+        Scheduler s = new Scheduler();
         s.doOneCommand();
     }
 
     @Test
     public void RunCommandIsCommandInserted()
     {
-        Scheduler s = new Scheduler(new DeltaCmdList());
+        Scheduler s = new Scheduler();
         CheckingCommand c = new CheckingCommand();
         s.sched(c);
         s.doOneCommand();
@@ -31,7 +30,7 @@ public class TestScheduler
     @Test
     public void DoOneCommandOnlyDoesOneCommand()
     {
-        Scheduler s = new Scheduler(new DeltaCmdList());
+        Scheduler s = new Scheduler();
         CheckingCommand c = new CheckingCommand();
         CheckingCommand c2 = new CheckingCommand();
         s.sched(c);

@@ -12,6 +12,8 @@ package hic;
 import java.awt.Dimension;
 import java.awt.Image;
 
+import javax.swing.JComponent;
+
 
 /**
  * Used as socket for production and testing code to allow civ classes to support both.
@@ -53,6 +55,11 @@ public interface MainframeInterface
 
   /** Exit the system */
   public boolean approvedQuit();
+
+  /** Redraws the view */
+  public void repaint();
+
+public void add(JComponent comonent, String location);
 
   
 } // end of MainframeInterface 

@@ -72,7 +72,8 @@ public class Adventurer
         try {
           adv.initRegistries();
           // dumpAllRegistries();
-          final Mainframe frame = Mainframe.getInstance();
+          final Mainframe frame = new Mainframe();
+          
           frame.setVisible(true);
           frame.addWindowListener(new WindowAdapter() {
             @Override

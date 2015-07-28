@@ -12,7 +12,6 @@ import pdc.command.CmdExit;
 import pdc.command.Command;
 import pdc.command.CommandFactory;
 import pdc.command.CommandInput;
-import pdc.command.DeltaCmdList;
 import pdc.command.NullCommand;
 import pdc.command.Scheduler;
 import civ.CommandParser;
@@ -100,7 +99,7 @@ public class TestCommandParser
 
         public FakeScheduler()
         {
-            super(new DeltaCmdList());
+            super();
         }
         
         @Override

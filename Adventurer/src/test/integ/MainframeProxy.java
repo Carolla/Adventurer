@@ -15,6 +15,8 @@ import hic.MainframeInterface;
 import java.awt.Dimension;
 import java.awt.Image;
 
+import javax.swing.JComponent;
+
 
 
 /**
@@ -44,7 +46,14 @@ public class MainframeProxy implements MainframeInterface
 //    MsgCtrl.where(this);
   }
 
-  /** Simulate quitting the system */
+  @Override
+public void add(JComponent comonent, String location)
+{
+//    MsgCtrl.where(this);
+}
+
+
+/** Simulate quitting the system */
   @Override
   public boolean approvedQuit()
   {
@@ -165,6 +174,11 @@ public class MainframeProxy implements MainframeInterface
 //    MsgCtrl.where(this);
 //    MsgCtrl.msgln("\tbuilding name = " + bldgName + "\n");
   }
+
+
+@Override
+public void repaint()
+{}
 
 
 } // end of MainframeProxy class

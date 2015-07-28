@@ -29,7 +29,7 @@ public class BuildingDisplayCiv
     /** Reference to socket for Mainframe or test proxy */
     private MainframeInterface _frame = null;
     /** The Hero is on town, not at any particular building */
-    private boolean _onTown;
+    private boolean _onTown = true;
     /** The building that is currently displayed, either inside or outside */
     private Building _currentBldg;
     /** Flag to indicate whether here is inside the building (ENTER) or outside (APPROACH) */
@@ -59,7 +59,8 @@ public class BuildingDisplayCiv
      * the command {@setOutput()} because not all callers of this object have or know which one it
      * is. In almost all cases, the output GUI is {@code hic.Mainframe}, which implements
      * {@code MainframeInterface}.
-     * @param mainframe 
+     * 
+     * @param mainframe
      */
     public BuildingDisplayCiv(MainframeInterface mainframe, BuildingRegistry breg)
     {
@@ -101,8 +102,6 @@ public class BuildingDisplayCiv
     {
         // The Hero cannot be inside a building already
         if (isInside()) {
-            System.err.println("BuildingDisplayCiv.canenter(): Expected message: "
-                    + ERRMSG_JUMPBLDG);
             _frame.displayErrorText(ERRMSG_JUMPBLDG);
             return false;
         }
@@ -137,14 +136,10 @@ public class BuildingDisplayCiv
      * 
      * @param _targetBuilding Building object
      */
-    public void approachBuilding(String bldg)
+    public boolean approachBuilding(String bldg)
     {
-        if (bldg.isEmpty()) {
-            bldg = _currentBldg.getName();
-        }
-        
         Building _targetBuilding = _breg.getBuilding(bldg);
-        
+
         if (_targetBuilding != null) {
             _currentBldg = _targetBuilding;
             _insideBldg = false;
@@ -152,9 +147,11 @@ public class BuildingDisplayCiv
             String description = _targetBuilding.getExteriorDescription();
             String imagePath = _targetBuilding.getExtImagePath();
             displayBuilding(description, imagePath);
+            return true;
         }
         else {
             _frame.displayText(NO_BLDG_FOUND);
+            return false;
         }
     }
 
@@ -170,10 +167,6 @@ public class BuildingDisplayCiv
      */
     public void enterBuilding(String name)
     {
-        if (name.isEmpty()) {
-            name = _currentBldg.getName();
-        }
-
         Building bldg = _breg.getBuilding(name);
         if (bldg != null) {
             _currentBldg = bldg;
@@ -213,23 +206,11 @@ public class BuildingDisplayCiv
     public void setCurrentBuilding(Building b)
     {
         _currentBldg = b;
+        if (b == null) {
+            _onTown = true;
+            _insideBldg = false;
+        }
     }
-
-    /**
-     * Set the Hero to no building, but at the town view
-     * 
-     * @param state = true if Hero is on town, else false is Hero is inside or outside a current
-     *        building
-     */
-    public void setOnTown(boolean state)
-    {
-        _onTown = state;
-    }
-
-
-    // =============================================================
-    // Mock inner class for testing
-    // =============================================================
 
     /**
      * Display the bulding's image (exterior or interior) in the frame's image panel
@@ -251,22 +232,9 @@ public class BuildingDisplayCiv
         _frame.redraw(); // this is pure GUI, s.b. in Mainframe, not here
     }
 
-    public class MockBldgCiv
+    public void leaveBuilding()
     {
-
-        public MockBldgCiv()
-        {}
-
-        public void setInsideBldg(boolean state)
-        {
-            _insideBldg = state;
-        }
-
-        public void setOnTown(boolean state)
-        {
-            _onTown = state;
-        }
-
-
-    } // end of MockBldgCiv class
+        _insideBldg = false;        
+    }
+    
 } // end of BuildingDisplayCiv class

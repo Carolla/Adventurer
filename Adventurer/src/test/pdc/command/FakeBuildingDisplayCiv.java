@@ -22,9 +22,15 @@ public class FakeBuildingDisplayCiv extends BuildingDisplayCiv
     }
     
     @Override
-    public void approachBuilding(String bldg)
+    public boolean approachBuilding(String bldg)
     {
-        _currentBuilding = bldg;
+        if (_currentBuilding.isEmpty()) {
+            _currentBuilding = bldg;
+            return true;
+        } else {
+            _currentBuilding = bldg;
+            return _currentBuilding.equals(bldg);
+        }
     }
     
     public void setCurrentBuilding(String name)
@@ -66,4 +72,5 @@ public class FakeBuildingDisplayCiv extends BuildingDisplayCiv
     {
         return _canEnter;
     }
+    
 }

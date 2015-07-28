@@ -234,6 +234,8 @@ public class HeroDisplay extends JPanel
   /** JLabel to hold character's name */
   private JLabel _charName;
 
+private MainframeInterface _mainframe;
+
 
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
@@ -249,11 +251,12 @@ public class HeroDisplay extends JPanel
    * 
    * @param hdCiv the intermediary between this GUI and the Person
    */
-  public HeroDisplay(HeroDisplayCiv hdCiv)
+  public HeroDisplay(HeroDisplayCiv hdCiv, MainframeInterface mainframe)
   {
     _hdCiv = hdCiv;
+    _mainframe = mainframe;
     // _hdCiv.resetLoadState();
-    Mainframe.getInstance().add(this, BorderLayout.WEST);
+    _mainframe.add(this, BorderLayout.WEST);
     setupDisplay();
   }
 
@@ -545,7 +548,7 @@ public class HeroDisplay extends JPanel
 
     add(_tab, "span, grow, push, center");
 
-    Mainframe.getInstance().repaint();
+    _mainframe.repaint();
 
     return true;
   }
@@ -562,9 +565,8 @@ public class HeroDisplay extends JPanel
     JScrollPane heroScroll = makeScrollable();
 
     // Add the non-static scrolling panel to the main JFrame
-    Mainframe mf = Mainframe.getInstance();
-    mf.add(heroScroll, BorderLayout.WEST);
-    mf.repaint();
+    _mainframe.add(heroScroll, BorderLayout.WEST);
+    _mainframe.repaint();
     // Get the focus so the arrow keys will work
     requestFocusInWindow();
     return heroScroll;

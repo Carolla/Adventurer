@@ -1,7 +1,6 @@
 package test.pdc.command;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -115,5 +114,7 @@ public class TestCmdApproach
         _cmdApproach.init(bNames);
         
         assertTrue(_cmdApproach.exec());
+        assertFalse(_bdciv.isInside());
+        assertEquals("Jail", _bdciv.getCurrentBuilding());
     }
 }

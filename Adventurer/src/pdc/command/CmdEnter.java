@@ -97,12 +97,11 @@ public class CmdEnter extends Command
     {
         String bldgParm = convertArgsToString(args);
 
-        if (_bldgCiv.canEnter(bldgParm)) {
+        boolean canEnter = _bldgCiv.canEnter(bldgParm);
+        if (canEnter) {
             _targetBuilding = bldgParm;
-            return true;
-        } else {
-            return false;
         }
+        return canEnter;
     }
 
 

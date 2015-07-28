@@ -80,12 +80,8 @@ public class CmdApproach extends Command
     @Override
     public boolean init(List<String> args)
     {
-      String bldgParm = convertArgsToString(args);
-      if (_bldgCiv.canApproach(bldgParm)) {
-          return true;
-      } else {
-          return false;
-      }
+      _targetBuilding = convertArgsToString(args);
+      return _bldgCiv.canApproach(_targetBuilding);
     }
 
     @Override

@@ -86,7 +86,6 @@ public class CmdLeave extends Command
     @Override
     public boolean init(List<String> args) throws NullPointerException
     {
-        _currentBuilding = _bldgCiv.getCurrentBuilding();
         return true;
     }
 
@@ -94,7 +93,9 @@ public class CmdLeave extends Command
     /** Enter the designated building, or the current building if displayed */
     public boolean exec()
     {
-        _bldgCiv.approachBuilding(_currentBuilding);
+        if (_bldgCiv.isInside()) {
+            _bldgCiv.leaveBuilding();
+        }
         return true;
     }
 

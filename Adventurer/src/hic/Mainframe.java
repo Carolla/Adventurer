@@ -29,6 +29,7 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -43,7 +44,6 @@ import mylib.hic.ShuttleList;
 import net.miginfocom.swing.MigLayout;
 import pdc.Util;
 import pdc.command.CommandFactory;
-import pdc.command.DeltaCmdList;
 import pdc.command.Scheduler;
 import chronos.Chronos;
 import chronos.pdc.registry.BuildingRegistry;
@@ -74,9 +74,6 @@ import civ.MainframeCiv;
 public class Mainframe extends JFrame implements MainframeInterface, MouseListener,
     MouseMotionListener, IHelpText
 {
-  /** Reference to this singleton */
-  static private Mainframe _mainframe = null;
-
   /** Singleton Help Dialog for all help text */
   private HelpDialog _helpdlg;
 
@@ -154,21 +151,6 @@ private CommandParser _cp;
     return new Dimension(USERWIN_WIDTH, USERWIN_HEIGHT);
   }
 
-
-  /**
-   * Create Mainframe as singleton so other mainframes are not created concurrently.
-   * 
-   * @return Mainframe instance
-   */
-  static public Mainframe getInstance()
-  {
-    if (_mainframe == null) {
-      _mainframe = new Mainframe();
-    }
-    return _mainframe;
-  }
-
-
   /**
    * Creates the initial frame layout: left and right panel holders with buttons, and image panel
    * showing chronos logo on right. Creates the {@code HelpDialog} singleton, ready to receive
@@ -178,7 +160,7 @@ private CommandParser _cp;
    * NOTE: The constructor is {@code protected} instead of {@code private} so that JUnit tests can
    * derive facade classes
    */
-  protected Mainframe()
+  public Mainframe()
   {
     // Create the components of the mainframe
     createFrameAndMenubar(); // contains left and right panel holders
@@ -197,10 +179,10 @@ private CommandParser _cp;
     
     // Create the Civ
     _mfCiv = new MainframeCiv(this, _bldgCiv);
-    
-    _cp = new CommandParser(new Scheduler(new DeltaCmdList()), new CommandFactory(_mfCiv, _bldgCiv));
-  }
 
+    _iop = new IOPanel(_mfCiv, _cp);
+    _cp = new CommandParser(new Scheduler(), new CommandFactory(_mfCiv, _bldgCiv));
+  }
 
   /**
    * Create mainframe layout and menubar; add left and right panel holders, which have titled
@@ -215,7 +197,7 @@ private CommandParser _cp;
     addWindowListener(new Terminator());
 
     // Add menu
-    setJMenuBar(new Menubar());
+    setJMenuBar(new Menubar(this, _mfCiv));
 
     _leftHolder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
     _leftHolder =
@@ -491,7 +473,6 @@ private CommandParser _cp;
   {
     _leftHolder.removeAll();
 
-    _iop = new IOPanel(_mfCiv, _cp);
     setTranscriptTitle(IOPANEL_TITLE);
     _leftHolder.add(_iop);
     redraw();
@@ -551,96 +532,6 @@ private CommandParser _cp;
     _imagePanel.setImage(image);
     redraw();
   }
-
-
-  /**
-   * Retrieve the MainframeCiv
-   */
-  public MainframeCiv getMainframeCiv()
-  {
-    return _mfCiv;
-  }
-
-
-  // /**
-  // * Create menu, mouse options, right panel image
-  // */
-  // private void createPanelsLayout()
-  // {
-  // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-  // setJMenuBar(new Menubar());
-  //
-  // setImageToBeDisplayed(PORTAL_IMAGE);
-  //
-  // _rightHolder.addMouseListener(this);
-  // _rightHolder.addMouseMotionListener(this);
-  //
-  // _buttonPanel = setupLeftPanel();
-  // _leftPanel = _buttonPanel;
-  //
-  // createButtons();
-  //
-  // _leftHolder.add(_buttonPanel);
-  // }
-
-
-
-  // private JTextPane createHeroListTextArea()
-  // {
-  // JTextPane pane = new JTextPane();
-  // pane.setText(HEROLIST_TEXT);
-  // pane.setFont(new Font("Serif", Font.PLAIN, 24));
-  // pane.setBackground(Color.WHITE);
-  // return pane;
-  // }
-
-  // private void setHeroPartyText()
-  // {
-  // StringBuilder sb = new StringBuilder(HEROLIST_TEXT);
-  // for (String s : _partyHeros) {
-  // sb.append(s + ", ");
-  // }
-  // sb.deleteCharAt(sb.length() - 1);
-  // sb.append("\n");
-  // // _heroList.setText(sb.toString());
-  // }
-
-
-  // /**
-  // * Create the Left Holder to contain the buttons, output panel, and command line
-  // *
-  // * @return the leftside panel
-  // */
-  // private JPanel createLeftPanel()
-  // {
-  // _leftHolder = new JPanel();
-  // _buttonPanel = setupEmptyLeftPanel();
-  // createButtons();
-  // leftHolder.add(_buttonPanel);
-  // return leftHolder;
-
-  // JPanel leftHolder = new JPanel();
-  // _buttonPanel = setupEmptyLeftPanel();
-  // createButtons();
-  // leftHolder.add(_buttonPanel);
-  // return leftHolder;
-  // }
-
-
-  // /**
-  // * Create the right Panel to contain the Images
-  // *
-  // * @return the right side panel
-  // */
-  // private JPanel createDisplayPanelr()
-  // {
-  // JPanel rightHolder = new JPanel();
-  // rightHolder.addMouseListener(this);
-  // rightHolder.addMouseMotionListener(this);
-  // setImageToBeDisplayed(PORTAL_IMAGE);
-  // return rightHolder;
-  // }
-
 
   // /**
   // * Display the image and text of a Building or the Town
@@ -807,6 +698,13 @@ private CommandParser _cp;
     }
 
   } // end of MockMF inner class
+
+
+@Override
+public void add(JComponent component, String location)
+{
+    add(component, location);
+}
 
 
 } // end of Mainframe outer class
