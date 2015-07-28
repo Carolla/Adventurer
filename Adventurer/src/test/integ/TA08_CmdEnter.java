@@ -24,7 +24,6 @@ import org.junit.Test;
 
 import pdc.command.CommandFactory;
 import pdc.command.Scheduler;
-import chronos.pdc.buildings.Building;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.NPCRegistry;
 import chronos.pdc.registry.RegistryFactory;
@@ -168,12 +167,12 @@ public class TA08_CmdEnter
         // Loop for each Building in the BuildingRegistry
         for (int k = 0; k < _bldgs.size(); k++) {
             resetBuildingState();
-            assertTrue(_bldgCiv.isOnTown());
-            assertFalse(_bldgCiv.isInside());
             
             String bName = _bldgs.get(k);
-            Building b = _bReg.getBuilding(bName);
-            _bldgCiv.returnToTown(b);
+            _cp.receiveCommand("Approach " + bName);
+            _skedder.doOneCommand();
+            assertFalse(_bldgCiv.isOnTown());
+            assertFalse(_bldgCiv.isInside());
 
             // TEST
             _cp.receiveCommand("Enter");

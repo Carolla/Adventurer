@@ -1,6 +1,5 @@
 package test.pdc.command;
 
-import chronos.pdc.buildings.Building;
 import civ.BuildingDisplayCiv;
 
 public class FakeBuildingDisplayCiv extends BuildingDisplayCiv
@@ -39,9 +38,9 @@ public class FakeBuildingDisplayCiv extends BuildingDisplayCiv
     }
     
     @Override
-    public void returnToTown(Building b)
+    public void returnToTown()
     {
-        _currentBuilding = b.getName();
+        _currentBuilding = null;
     }
     
     @Override

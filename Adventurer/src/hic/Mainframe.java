@@ -537,20 +537,6 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
         redraw();
     }
 
-    // /**
-    // * Display the image and text of a Building or the Town
-    // *
-    // * @param description - the description to display in the output panel
-    // * @param image - the image to display in the right-side image panel
-    // */
-    // public void displayTextAndImage(String description, String image)
-    // {
-    // displayText(description);
-    // _imagePanel.setDisplay(image);
-    // // _mfCiv.displayImage(image);
-    // }
-
-
     public Dimension getImagePanelSize()
     {
         return _rightHolder.getSize();

@@ -1,6 +1,8 @@
 package test.pdc.command;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,7 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import pdc.command.CmdApproach;
-import chronos.pdc.buildings.Building;
 import chronos.pdc.registry.TownRegistry;
 
 public class TestCmdApproach
@@ -93,11 +94,9 @@ public class TestCmdApproach
       MsgCtrl.where(this);
       
       CheckingBuildingDisplayCiv bdCiv = new CheckingBuildingDisplayCiv();
+      bdCiv.enterBuilding("Jail");
+      
       _cmdApproach = new CmdApproach(bdCiv);
-      Building b = new FakeBuilding("Jail");
-      bdCiv.returnToTown(b);
-
-      // Set context to be inside valid building: Jail
       List<String> bNames = new ArrayList<String>();
       bNames.add("Jail");
       

@@ -24,7 +24,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import pdc.command.CmdEnter;
-import chronos.pdc.buildings.Building;
 import chronos.pdc.registry.TownRegistry;
 
 /**
@@ -98,11 +97,11 @@ public class TestCmdEnter
         List<String> bNames = new ArrayList<String>();
 
         // Set first building in registry to the current building (in context object)
-        Building b = new FakeBuilding(_bList.get(0));
-        _bdciv.returnToTown(b);
+        String name = _bList.get(0);
+        _bdciv.enterBuilding(name);
 
         // Now try to enter current Building without a parm
-        MsgCtrl.msgln("\tEntering current Building (target Building) " + b.getName());
+        MsgCtrl.msgln("\tEntering current Building (target Building) " + name);
         assertTrue(_cmdEnter.init(bNames));
         
         // Verify
@@ -131,13 +130,14 @@ public class TestCmdEnter
         MsgCtrl.where(this);
         
         CheckingBuildingDisplayCiv bdCiv = new CheckingBuildingDisplayCiv();
+        bdCiv.enterBuilding("NotTheJail");
+        
         _cmdEnter = new CmdEnter(bdCiv);
 
         // Set context to be inside valid building: Jail
         List<String> bNames = new ArrayList<String>();
         bNames.add("Jail");
 
-        bdCiv.returnToTown(new FakeBuilding("NotTheJail"));
         assertFalse(_cmdEnter.init(bNames));
 
     }

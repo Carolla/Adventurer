@@ -12,6 +12,9 @@
 package civ;
 
 import hic.MainframeInterface;
+
+import java.awt.Image;
+
 import pdc.Util;
 import chronos.pdc.buildings.Building;
 import chronos.pdc.registry.BuildingRegistry;
@@ -149,7 +152,9 @@ public class BuildingDisplayCiv
             _onTown = false;
             String description = targetBuilding.getExteriorDescription();
             String imagePath = targetBuilding.getExtImagePath();
-            displayBuilding(description, imagePath);
+            Image image = Util.convertToImage(imagePath);
+            _frame.setImage(image);
+            _frame.displayText(description);
             return true;
         } else {
             _frame.displayText(NO_BLDG_FOUND);

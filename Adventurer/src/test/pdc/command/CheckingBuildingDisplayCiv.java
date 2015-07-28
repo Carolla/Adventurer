@@ -1,6 +1,5 @@
 package test.pdc.command;
 
-import chronos.pdc.buildings.Building;
 import civ.BuildingDisplayCiv;
 
 
@@ -15,9 +14,15 @@ public class CheckingBuildingDisplayCiv extends BuildingDisplayCiv
     private String _currentBuilding;
 
     @Override
-    public void returnToTown(Building b)
+    public void enterBuilding(String name)
     {
-        _currentBuilding = b.getName();
+        _currentBuilding = name;
+    }
+    
+    @Override
+    public void returnToTown()
+    {
+        _currentBuilding = null;
     }
     
     @Override
