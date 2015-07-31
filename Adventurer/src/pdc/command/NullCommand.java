@@ -2,6 +2,7 @@ package pdc.command;
 
 import java.util.List;
 
+import mylib.MsgCtrl;
 import civ.ChronosLogger;
 import civ.MainframeCiv;
 
@@ -28,7 +29,7 @@ public class NullCommand extends Command
     @Override
     public boolean init(List<String> args)
     {
-        System.err.println("NullCommand::Init called with " + args);
+        MsgCtrl.msgln("NullCommand::Init called with " + args);
         _isInitialized  = true;
         return true;
     }
