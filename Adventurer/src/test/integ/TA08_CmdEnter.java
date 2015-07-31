@@ -71,6 +71,9 @@ public class TA08_CmdEnter
     @BeforeClass
     public static void setUpBeforeClass() throws Exception
     {
+        MsgCtrl.auditMsgsOn(false);
+        MsgCtrl.errorMsgsOn(false);
+        
         // Start up the support classes
         _regFactory = RegistryFactory.getInstance();
         _bReg = (BuildingRegistry) _regFactory.getRegistry(RegKey.BLDG);

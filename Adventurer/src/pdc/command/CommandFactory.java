@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import mylib.MsgCtrl;
 import civ.BuildingDisplayCiv;
 import civ.MainframeCiv;
 
@@ -99,7 +100,7 @@ public class CommandFactory
             }
 
             if (command.init(cmdInput.parameters) == false) {
-                System.err.println(ERRMSG_INIT_FAILURE);
+                MsgCtrl.errMsg(ERRMSG_INIT_FAILURE);
             }
 
             return command;
