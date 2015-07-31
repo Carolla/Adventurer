@@ -174,6 +174,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
         prepareHelpDialog();
 
         constructMembers();
+        System.out.println("Mainframe is constructed");
     }
 
     protected void constructMembers()
@@ -186,9 +187,9 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
         // Create the Civ
         _mfCiv = new MainframeCiv(this, _bldgCiv);
 
-        _iop = new IOPanel(_mfCiv, _cp);
         _skedder = new Scheduler();
         _cp = new CommandParser(_skedder, new CommandFactory(_mfCiv, _bldgCiv));
+        _iop = new IOPanel(_mfCiv, _cp);
     }
 
     /**
@@ -685,7 +686,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
 
     public void start()
     {
-        _skedder.run();        
+        new Thread(_skedder).start();        
     }
 
 

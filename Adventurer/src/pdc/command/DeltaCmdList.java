@@ -95,6 +95,7 @@ public class DeltaCmdList
             for (Event e : _dlist) {
                 e.setDelta(e.getDelta() - deltaTime);
             }
+            System.out.println("Got command");
             return cmd;
         } catch (InterruptedException e1) {
             e1.printStackTrace();
