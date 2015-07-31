@@ -100,11 +100,13 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     private JPanel _rightHolder;
     /** JPanel to hold various images; this panel resides in the _rightHolder */
     private ImagePanel _imagePanel;
-
+    
     private MainframeCiv _mfCiv;
     private BuildingDisplayCiv _bldgCiv;
-
+    private CommandParser _cp;
+    private Scheduler _skedder;
     private IOPanel _iop;
+    
     private List<String> _partyHeros = new ArrayList<String>();
     private List<String> _summonableHeroes;
 
@@ -113,7 +115,6 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     /** Title of the initial three-button panel on left side */
     private final String INITIAL_OPENING_TITLE = " Actions ";
 
-    private CommandParser _cp;
 
     /** Help Title for the mainframe */
     private static final String _helpTitle = "GREETINGS ADVENTURER!";
@@ -172,7 +173,11 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
         // Create the one time help dialog
         prepareHelpDialog();
 
+        constructMembers();
+    }
 
+    protected void constructMembers()
+    {
         // Create the BuildingDisplayCiv to define the output GUI for descriptions and images
         BuildingRegistry breg =
                 (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
@@ -182,7 +187,8 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
         _mfCiv = new MainframeCiv(this, _bldgCiv);
 
         _iop = new IOPanel(_mfCiv, _cp);
-        _cp = new CommandParser(new Scheduler(), new CommandFactory(_mfCiv, _bldgCiv));
+        _skedder = new Scheduler();
+        _cp = new CommandParser(_skedder, new CommandFactory(_mfCiv, _bldgCiv));
     }
 
     /**
@@ -675,6 +681,11 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     public void add(JComponent component, String location)
     {
         add(component, location);
+    }
+
+    public void start()
+    {
+        _skedder.run();        
     }
 
 
