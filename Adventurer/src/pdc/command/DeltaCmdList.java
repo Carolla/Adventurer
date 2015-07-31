@@ -13,7 +13,7 @@
 package pdc.command;
 
 import java.util.Comparator;
-import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import pdc.GameClock;
@@ -53,7 +53,7 @@ import pdc.GameClock;
 public class DeltaCmdList
 {
     /** Internal reference */
-    private Queue<Event> _dlist = null;
+    private BlockingQueue<Event> _dlist = null;
     /** Internal reference */
     private GameClock _clock = null;
     private int DEFAULT_QUEUE_SIZE = 10;
@@ -85,15 +85,22 @@ public class DeltaCmdList
      */
     public Command getNextCmd()
     {
-        Event evt = _dlist.poll();
-        int deltaTime = evt.getDelta();
-        Command cmd = evt.getCommand();
-        
-        _clock.increment(deltaTime);
-        for (Event e : _dlist) {
-        	e.setDelta(e.getDelta() - deltaTime);
+        Event evt;
+        try {
+            evt = _dlist.take();
+            int deltaTime = evt.getDelta();
+            Command cmd = evt.getCommand();
+            
+            _clock.increment(deltaTime);
+            for (Event e : _dlist) {
+                e.setDelta(e.getDelta() - deltaTime);
+            }
+            return cmd;
+        } catch (InterruptedException e1) {
+            e1.printStackTrace();
+            return new NullCommand();
         }
-        return cmd;
+
     }
     
     public boolean isEmpty()
