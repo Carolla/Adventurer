@@ -76,6 +76,8 @@ public class TestAdventureRegistry
   @Before
   public void setUp() throws Exception
   {
+      MsgCtrl.auditMsgsOn(false);
+      MsgCtrl.errorMsgsOn(false);
     _rf = RegistryFactory.getInstance();
   }
 
@@ -85,8 +87,6 @@ public class TestAdventureRegistry
   @After
   public void tearDown() throws Exception
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
     _rf.closeAllRegistries();
     _rf = null;
   }
@@ -102,8 +102,6 @@ public class TestAdventureRegistry
   @Test
   public void testRegistryList()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // DO
@@ -147,8 +145,6 @@ public class TestAdventureRegistry
   @Test
   public void testNewInstance()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // SETUP None
@@ -173,8 +169,6 @@ public class TestAdventureRegistry
   @Test
   public void testNewInstance_Dup()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // SETUP None
@@ -211,8 +205,6 @@ public class TestAdventureRegistry
   @Test
   public void testGetAdventure()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // SETUP None
@@ -242,8 +234,6 @@ public class TestAdventureRegistry
   @Test
   public void testGetAdventure_Nonexisting()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // SETUP None
@@ -268,8 +258,6 @@ public class TestAdventureRegistry
   @Test
   public void testGetAdventure_EmptyKey()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // SETUP None
@@ -293,8 +281,6 @@ public class TestAdventureRegistry
   @Test
   public void testGetAdventureList()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
     // SETUP None
