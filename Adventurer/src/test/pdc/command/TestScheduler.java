@@ -10,12 +10,13 @@ import pdc.command.Scheduler;
 
 public class TestScheduler
 {
-    @Test(expected = NullPointerException.class)
-    public void RunningEmptyCommandThrowsException()
-    {
-        Scheduler s = new Scheduler();
-        s.doOneCommand();
-    }
+//    TODO(timothyarm) This method is blocking, and SHOULD block rather than complete
+//    @Test(timeout=1000,expected = Exception.class)
+//    public void RunningWithoutCommandBlocks()
+//    {
+//        Scheduler s = new Scheduler();
+//        s.doOneCommand();
+//    }
 
     @Test
     public void RunCommandIsCommandInserted()
