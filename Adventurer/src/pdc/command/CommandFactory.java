@@ -14,6 +14,7 @@ package pdc.command;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import mylib.MsgCtrl;
 import civ.BuildingDisplayCiv;
@@ -37,22 +38,31 @@ public class CommandFactory
     /** Error message if command cannot be found. */
     public static final String ERRMSG_INIT_FAILURE = "Failed to initialize command from user input";
 
-    private static enum COMMAND {
-        APPROACH, ENTER, EXIT, LEAVE, QUIT, RETURN
-    };
+    /** Use Java 8 supplier interface to avoid verbose reflection */
+    private Map<String, Supplier<Command>> _commandMap = new HashMap<String, Supplier<Command>>();
+    
+    private final BuildingDisplayCiv _bdCiv;
+    private final MainframeCiv _mfCiv;
 
-    /** List of commands that we can look up */
-    private static Map<String, COMMAND> _commandMap = new HashMap<String, COMMAND>();
-    static {
-        _commandMap.put("APPROACH", COMMAND.APPROACH); // Display the description and image of
-                                                       // Building exterior
-        _commandMap.put("ENTER", COMMAND.ENTER); // Display the description and image of Building
-                                                 // interior
-        _commandMap.put("EXIT", COMMAND.EXIT); // Synonym for Leave
-        _commandMap.put("LEAVE", COMMAND.LEAVE); // Leave the interior and go to building's exterior
-        _commandMap.put("QUIT", COMMAND.QUIT); // End the program.
-        _commandMap.put("RETURN", COMMAND.RETURN); // Return to town view
+    public CommandFactory(MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
+    {
+        _mfCiv = mfCiv;
+        _bdCiv = bdCiv;
+        initMap();
+    }
 
+    /**
+     * Provide initial values for the commandMap. This can be set up differently as needed for test.
+     */
+    protected void initMap()
+    {
+        _commandMap.put("APPROACH", () -> new CmdApproach(_bdCiv)); // Display the description and image of Building exterior
+        _commandMap.put("ENTER", () -> new CmdEnter(_bdCiv)); // Display the description and image of Building interior
+        _commandMap.put("EXIT", () -> new CmdLeave(_bdCiv)); // Synonym for Leave
+        _commandMap.put("LEAVE", () -> new CmdLeave(_bdCiv)); // Leave the interior and go to building's exterior
+        _commandMap.put("QUIT", () -> new CmdQuit(_mfCiv, _bdCiv)); // End the program.
+        _commandMap.put("RETURN", () -> new CmdReturn(_mfCiv)); // Return to town view
+        
         // _commandMap.put("GOTO", CmdGoTo.class); // If parm is a Building or Building type,
         // "Approach" building;
         // if parm = Town, goes to Town view; if null parm, info msg
@@ -64,15 +74,6 @@ public class CommandFactory
         // { "LOOK", "CmdLook" }, // Give a description of the Room and any People inside it.
         // { "WAIT", "CmdWait" }, // Wait a specific amount of time, in hours or minutes.
         _commandMap = Collections.unmodifiableMap(_commandMap);
-    }
-
-    private final BuildingDisplayCiv _bdCiv;
-    private final MainframeCiv _mfCiv;
-
-    public CommandFactory(MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
-    {
-        _mfCiv = mfCiv;
-        _bdCiv = bdCiv;
     }
 
     /**
@@ -89,16 +90,11 @@ public class CommandFactory
             command.init(cmdInput.parameters);
             return command;
         } else {
-            COMMAND commandEnum = _commandMap.get(cmdInput.commandToken);
-            switch (commandEnum) {
-                case APPROACH: command = new CmdApproach(_bdCiv); break;
-                case ENTER:    command = new CmdEnter(_bdCiv); break;
-                case EXIT:     command = new CmdExit(); break;
-                case LEAVE:    command = new CmdLeave(_bdCiv); break;
-                case QUIT:     command = new CmdQuit(_mfCiv, _bdCiv); break;
-                case RETURN:   command = new CmdReturn(_mfCiv); break;
-            }
-
+            Supplier<Command> supplier = _commandMap.get(cmdInput.commandToken);
+            if (supplier != null) {
+                command = supplier.get();
+            } 
+            
             if (command.init(cmdInput.parameters) == false) {
                 MsgCtrl.errMsg(ERRMSG_INIT_FAILURE);
             }
