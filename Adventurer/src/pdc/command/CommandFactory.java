@@ -38,7 +38,7 @@ public class CommandFactory
     public static final String ERRMSG_INIT_FAILURE = "Failed to initialize command from user input";
 
     private static enum COMMAND {
-        APPROACH, ENTER, EXIT, LEAVE, QUIT, RETURN
+        APPROACH, ENTER, LEAVE, QUIT, RETURN
     };
 
     /** List of commands that we can look up */
@@ -48,7 +48,7 @@ public class CommandFactory
                                                        // Building exterior
         _commandMap.put("ENTER", COMMAND.ENTER); // Display the description and image of Building
                                                  // interior
-        _commandMap.put("EXIT", COMMAND.EXIT); // Synonym for Leave
+        _commandMap.put("EXIT", COMMAND.LEAVE); // Synonym for Leave
         _commandMap.put("LEAVE", COMMAND.LEAVE); // Leave the interior and go to building's exterior
         _commandMap.put("QUIT", COMMAND.QUIT); // End the program.
         _commandMap.put("RETURN", COMMAND.RETURN); // Return to town view
@@ -84,28 +84,31 @@ public class CommandFactory
      */
     public Command createCommand(CommandInput cmdInput)
     {
-        Command command = new NullCommand();
-        if (!canCreateCommand(cmdInput)) {
-            command.init(cmdInput.parameters);
-            return command;
-        } else {
+      // Use Null Command as default in case cmd.init() fails
+//        Command command = new NullCommand();
+//        if (!canCreateCommand(cmdInput)) {
+//            command.init(cmdInput.parameters);
+//            return command;
+//        } else {
+            Command command = null;
             COMMAND commandEnum = _commandMap.get(cmdInput.commandToken);
             switch (commandEnum) {
                 case APPROACH: command = new CmdApproach(_bdCiv); break;
                 case ENTER:    command = new CmdEnter(_bdCiv); break;
-                case EXIT:     command = new CmdExit(); break;
                 case LEAVE:    command = new CmdLeave(_bdCiv); break;
                 case QUIT:     command = new CmdQuit(_mfCiv, _bdCiv); break;
                 case RETURN:   command = new CmdReturn(_mfCiv); break;
+                default: command = new NullCommand(); break;
             }
-
+            
+            // If good command fails for bad parms, return the NullCommand
             if (command.init(cmdInput.parameters) == false) {
                 MsgCtrl.errMsg(ERRMSG_INIT_FAILURE);
             }
 
             return command;
         }
-    }
+
 
     public boolean canCreateCommand(CommandInput ci)
     {

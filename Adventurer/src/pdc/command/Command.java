@@ -83,6 +83,8 @@ public abstract class Command
   protected final String _description;
   /** The syntax of the command, used in the {@code usage()} method. */
   protected final String _cmdfmt;
+  /** Whether params are correct */
+  protected boolean _isInitialized = false;
 
 
   // ============================================================
@@ -237,6 +239,14 @@ public abstract class Command
     // Do not increment the game clock for this command
     _delay = 0;
     _duration = 0;
+  }
+
+  /**
+   * @return
+   */
+  public boolean isInitialized()
+  {
+    return _isInitialized;
   }
 
 

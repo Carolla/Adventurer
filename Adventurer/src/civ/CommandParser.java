@@ -74,13 +74,18 @@ public class CommandParser
      * 
      * @param textIn the input the user entered onto the command line
      */
-    public void receiveCommand(String textIn)
+    public boolean receiveCommand(String textIn)
     {
         _userInput = textIn;
         CommandInput cmdInput = createCommandInput(textIn);
         Command cmd = _factory.createCommand(cmdInput);
+        
+        boolean isInit = cmd.isInitialized();
+        if (isInit) {
+          _skedder.sched(cmd);
+        }
 
-        _skedder.sched(cmd);
+        return isInit;
     }
 
     public CommandInput createCommandInput(String textIn)
