@@ -37,7 +37,7 @@ public class CommandFactory
     public static final String ERRMSG_INIT_FAILURE = "Failed to initialize command from user input";
 
     private static enum COMMAND {
-        APPROACH, ENTER, LEAVE, QUIT, RETURN
+        APPROACH, ENTER, EXIT, LEAVE, QUIT, RETURN
     };
 
     /** List of commands that we can look up */
@@ -47,11 +47,11 @@ public class CommandFactory
                                                        // Building exterior
         _commandMap.put("ENTER", COMMAND.ENTER); // Display the description and image of Building
                                                  // interior
-        _commandMap.put("EXIT", COMMAND.LEAVE); // Synonym for Leave
+        _commandMap.put("EXIT", COMMAND.EXIT); // Synonym for LEAVE then Quit
         _commandMap.put("LEAVE", COMMAND.LEAVE); // Leave the interior and go to building's exterior
         _commandMap.put("QUIT", COMMAND.QUIT); // End the program.
         _commandMap.put("RETURN", COMMAND.RETURN); // Return to town view
-=======
+
     /** Use Java 8 supplier interface to avoid verbose reflection */
     private Map<String, Supplier<Command>> _commandMap = new HashMap<String, Supplier<Command>>();
     
@@ -64,7 +64,6 @@ public class CommandFactory
         _bdCiv = bdCiv;
         initMap();
     }
->>>>>>> a6dd14c8e31ccdae383630263d0d203a4db4af29
 
     /**
      * Provide initial values for the commandMap. This can be set up differently as needed for test.
