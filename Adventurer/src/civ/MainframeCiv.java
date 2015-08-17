@@ -78,7 +78,6 @@ public class MainframeCiv implements ChronosLogger
     private MainframeInterface _frame;
     private Adventure _adv;
     private PersonReadWriter _personRW;
-    // private boolean _onTown;
 
     /** Current Building being displayed, and can be entered */
     private final Rectangle _townReturn = new Rectangle(0, 0, 100, 100);
@@ -182,7 +181,11 @@ public class MainframeCiv implements ChronosLogger
     }
 
 
-
+    public BuildingDisplayCiv getBuildingDisplayCiv()
+    {
+      return _bdCiv;
+    }
+    
     public static ChronosLogger getLogger()
     {
         return _logger;
