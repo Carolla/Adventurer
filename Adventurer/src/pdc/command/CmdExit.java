@@ -13,6 +13,7 @@ package pdc.command;
 
 import java.util.List;
 
+import civ.BuildingDisplayCiv;
 import civ.MainframeCiv;
 
 
@@ -43,11 +44,11 @@ public class CmdExit extends Command
 {
   // THESE CONSTANTS MUST BE STATIC BECAUSE THEY ARE CALLED IN THE CONSTRUCTOR
   /** The description of what the command does, used in the <code>help()</code> method. */
-  static final String CMD_DESCRIPTION = "Exit from the current Building.";
+  static final String CMD_DESCRIPTION = "Exit prompts user to leaves the game.";
   /** This command starts immediately, requiring no delay. */
   static final int DELAY = 0;
   /** This command takes 10 seconds on the game clock. */
-  static final int DURATION = 30;
+  static final int DURATION = 0;
   /** Command format */
   static private final String CMDFMT = "EXIT";
 
@@ -90,6 +91,8 @@ public class CmdExit extends Command
    */
   public boolean exec()
   {
+    BuildingDisplayCiv bdCiv = _mfCiv.getBuildingDisplayCiv();
+    bdCiv.leaveBuilding();
     _mfCiv.quit();
     return false;
   }

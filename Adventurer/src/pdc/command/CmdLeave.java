@@ -70,7 +70,9 @@ public class CmdLeave extends Command
     @Override
     public boolean init(List<String> args) throws NullPointerException
     {
-        return true;
+      // set good parms state
+      _isInitialized = _bldgCiv.isInside();
+      return _isInitialized;    
     }
 
 
