@@ -11,12 +11,15 @@
 
 package pdc.command;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import mylib.MsgCtrl;
 import civ.BuildingDisplayCiv;
 import civ.MainframeCiv;
+
+import mylib.MsgCtrl;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
 
 
 
@@ -53,7 +56,7 @@ public class CommandFactory
         _commandMap.put("RETURN", COMMAND.RETURN); // Return to town view
 
     /** Use Java 8 supplier interface to avoid verbose reflection */
-    private Map<String, Supplier<Command>> _commandMap = new HashMap<String, Supplier<Command>>();
+ //   private Map<String, Supplier<Command>> _commandMap = new HashMap<String, Supplier<Command>>();
     
     private final BuildingDisplayCiv _bdCiv;
     private final MainframeCiv _mfCiv;
@@ -105,7 +108,7 @@ public class CommandFactory
 //            command.init(cmdInput.parameters);
 //            return command;
 //        } else {
-            Command command = null;
+        Command command = new NullCommand();
             COMMAND commandEnum = _commandMap.get(cmdInput.commandToken);
             switch (commandEnum) {
                 case APPROACH: command = new CmdApproach(_bdCiv); break;
@@ -117,7 +120,7 @@ public class CommandFactory
             }
             
             // If good command fails for bad parms, return the NullCommand
-        Command command = new NullCommand();
+//        Command command = new NullCommand();
         if (!canCreateCommand(cmdInput)) {
             command.init(cmdInput.parameters);
             return command;
