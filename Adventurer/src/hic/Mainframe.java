@@ -177,6 +177,11 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
         System.out.println("Mainframe is constructed");
     }
 
+    /**
+     * Perform construction act. This wires together all the "single instance variables"
+     * for the Adventurer application. None of these constructors should ever be called
+     * anywhere outside of this method and in testing.
+     */
     protected void constructMembers()
     {
         // Create the BuildingDisplayCiv to define the output GUI for descriptions and images

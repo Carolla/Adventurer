@@ -90,6 +90,7 @@ public class CommandFactory
             command.init(cmdInput.parameters);
             return command;
         } else {
+            // If map contains the command as typed, Supplier<Command> will give new Instance of that
             Supplier<Command> supplier = _commandMap.get(cmdInput.commandToken);
             if (supplier != null) {
                 command = supplier.get();
