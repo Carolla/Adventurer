@@ -11,14 +11,15 @@
 
 package pdc.command;
 
+import civ.BuildingDisplayCiv;
+import civ.MainframeCiv;
+
+import mylib.MsgCtrl;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
-
-import mylib.MsgCtrl;
-import civ.BuildingDisplayCiv;
-import civ.MainframeCiv;
 
 
 
@@ -87,6 +88,7 @@ public class CommandFactory
     {
         // If good command fails for bad parms, return the NullCommand
         Command command = new NullCommand();
+
         if (!canCreateCommand(cmdInput)) {
             command.init(cmdInput.parameters);
             return command;
@@ -110,5 +112,5 @@ public class CommandFactory
         return _commandMap.get(ci.commandToken) != null;
     }
 
-} // end of CommandFactory class
+}   // end of CommandFactory class
 
