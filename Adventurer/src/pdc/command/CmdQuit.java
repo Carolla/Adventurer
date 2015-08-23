@@ -82,6 +82,7 @@ public class CmdQuit extends Command
     public boolean init(List<String> args)
     {
         if ((args.size() == 0) && (_bdCiv.isInside() == false)) {
+            _isInitialized = true;
             return true;
         } else if ((args.size() == 0) && (_bdCiv.isInside() == true)) {
             _mfCiv.errorOut(ERRMSG_IN_BLDG);

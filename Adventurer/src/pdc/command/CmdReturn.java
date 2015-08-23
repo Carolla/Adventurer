@@ -27,64 +27,63 @@ import civ.MainframeCiv;
  */
 public class CmdReturn extends Command
 {
-  // THESE CONSTANTS MUST BE STATIC BECAUSE THEY ARE CALLED IN THE CONSTRUCTOR
-  /** The description of what the command does, used in the <code>help()</code> method. */
-  static final String CMD_DESCRIPTION = "Return to the Town view.";
-  /** This command starts immediately, requiring no delay. */
-  static final int DELAY = 0;
-  /** This command takes 10 seconds on the game clock. */
-  static final int DURATION = 60;
-  /** Format for this command */
-  static private final String CMDFMT = "RETURN [to Town]";
-  
-private final MainframeCiv _mfCiv;
+    // THESE CONSTANTS MUST BE STATIC BECAUSE THEY ARE CALLED IN THE CONSTRUCTOR
+    /** The description of what the command does, used in the <code>help()</code> method. */
+    static final String CMD_DESCRIPTION = "Return to the Town view.";
+    /** This command starts immediately, requiring no delay. */
+    static final int DELAY = 0;
+    /** This command takes 10 seconds on the game clock. */
+    static final int DURATION = 60;
+    /** Format for this command */
+    static private final String CMDFMT = "RETURN [to Town]";
 
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   *  CONSTRUCTOR(S) AND RELATED METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
+    private final MainframeCiv _mfCiv;
 
-  /** Constructor called by the CommandFactory. There is no delay nor duration. */
-  public CmdReturn(MainframeCiv mfCiv)
-  {
-    super("CmdReturn", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
-    _mfCiv = mfCiv;
-  }
+    /*
+     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND RELATED METHODS
+     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
 
-
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   *  PUBLIC METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
-
-  /**
-   * Enters the current building. There can be 0 or many args in the arglist. If an arg is not
-   * specified, then the current Building is assumed. If more than one argument is specified, then
-   * they are all assumed to be part of the name.
-   * 
-   * @param args if empty, then use current Buiilding; otherwise gets Building specified
-   * @param mfCiv
-   * @return true if all worked, else returns false on input error
-   */
-  public boolean init(List<String> args)
-  {
-    return true;
-  }
+    /** Constructor called by the CommandFactory. There is no delay nor duration. */
+    public CmdReturn(MainframeCiv mfCiv)
+    {
+        super("CmdReturn", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
+        _mfCiv = mfCiv;
+    }
 
 
-  /**
-   * Forces the program to end.
-   * 
-   * @return false always to break out of the Scheduler loop
-   */
-  public boolean exec()
-  {
-    System.err.println("\nExiting to town view");
-    _mfCiv.openTown();
-    return true;
-  }
+    /*
+     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PUBLIC METHODS
+     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+
+    /**
+     * Enters the current building. There can be 0 or many args in the arglist. If an arg is not
+     * specified, then the current Building is assumed. If more than one argument is specified, then
+     * they are all assumed to be part of the name.
+     * 
+     * @param args if empty, then use current Buiilding; otherwise gets Building specified
+     * @param mfCiv
+     * @return true if all worked, else returns false on input error
+     */
+    public boolean init(List<String> args)
+    {
+        _isInitialized = true;
+        return true;
+    }
+
+
+    /**
+     * Forces the program to end.
+     * 
+     * @return false always to break out of the Scheduler loop
+     */
+    public boolean exec()
+    {
+        System.err.println("\nExiting to town view");
+        _mfCiv.openTown();
+        return true;
+    }
 
 } // end CmdReturn class
 
