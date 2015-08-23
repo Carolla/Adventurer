@@ -218,18 +218,22 @@ public class TA08_CmdEnter
 
         // Test1: Try to enter the same building
         _cp.receiveCommand("Enter " + bName1);
-        _skedder.doOneCommand();
+        // This command fails to initialize, meaning it doesn't get scheduled
+        // Don't run the skedder for it.
 
         // VERIFY that Hero is still inside building
+        assertTrue(_skedder.empty());
         assertFalse(_bldgCiv.isOnTown());
         assertTrue(_bldgCiv.isInside());
         assertEquals(bName1, _bldgCiv.getCurrentBuilding());
 
         // Test2: Try to enter a different building
         _cp.receiveCommand("Enter " + bName2);
-        _skedder.doOneCommand();
+        // This command fails to initialize, meaning it doesn't get scheduled
+        // Don't run the skedder for it.
 
         // VERIFY Test 2 results
+        assertTrue(_skedder.empty());
         assertFalse(_bldgCiv.isOnTown());
         assertTrue(_bldgCiv.isInside());
         assertEquals(bName1, _bldgCiv.getCurrentBuilding());

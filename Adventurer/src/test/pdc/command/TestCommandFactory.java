@@ -71,5 +71,4 @@ public class TestCommandFactory
         NullCommand c = (NullCommand) _commandFactory.createCommand(ci);
         assertTrue(c.isInitialized());   
     }
-
 }
