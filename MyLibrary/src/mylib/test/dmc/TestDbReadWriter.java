@@ -101,8 +101,6 @@ public class TestDbReadWriter extends TestCase
   @Test
   public void testConstructorError()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // Delete the database created by setUp()
@@ -129,8 +127,6 @@ public class TestDbReadWriter extends TestCase
   @Test
   public void testConstructorReload()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // NORMAL: Setup has created db, container, and file
@@ -170,8 +166,6 @@ public class TestDbReadWriter extends TestCase
   @Test
   public void testAdd()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // Get current number of elements in db, even if 0
@@ -215,8 +209,6 @@ public class TestDbReadWriter extends TestCase
   @Test
   public void testAddError()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // Create a target object to save
@@ -252,8 +244,6 @@ public class TestDbReadWriter extends TestCase
   @Test
   public void testDbClose()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // Create a target object to save
@@ -286,8 +276,6 @@ public class TestDbReadWriter extends TestCase
   @Test
   public void testDbContains()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // Normal Add a few objects and check that they are known
@@ -326,8 +314,6 @@ public class TestDbReadWriter extends TestCase
   @Test
   public void testDbDelete()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     SomeObject so1 = new SomeObject(12.2, "soon to be dead");
@@ -381,8 +367,6 @@ public class TestDbReadWriter extends TestCase
   @Test
   public void testDbOpenExistingFile()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // Create object to write
@@ -416,8 +400,6 @@ public class TestDbReadWriter extends TestCase
   @Test
   public void testDbOpenFileExists()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // // ERROR: Reopening an open db throws a db locked exception
@@ -439,8 +421,6 @@ public class TestDbReadWriter extends TestCase
   @Test
   public void testDbReadOnly()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // Create a target object to save
@@ -470,8 +450,6 @@ public class TestDbReadWriter extends TestCase
   @SuppressWarnings("serial")
   public void testDbQuery()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // Populate the database with some objects
@@ -558,8 +536,6 @@ public class TestDbReadWriter extends TestCase
   @Test
   public void testdbSize()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // Create objects to write

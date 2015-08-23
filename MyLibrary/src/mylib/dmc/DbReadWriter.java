@@ -10,22 +10,15 @@
 package mylib.dmc;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
-
-import mylib.MsgCtrl;
 
 import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
 import com.db4o.config.Configuration;
-import com.db4o.ext.DatabaseClosedException;
-import com.db4o.ext.DatabaseFileLockedException;
-import com.db4o.ext.DatabaseReadOnlyException;
 import com.db4o.ext.Db4oIOException;
 import com.db4o.ext.ExtObjectContainer;
-import com.db4o.ext.IncompatibleFileFormatException;
-import com.db4o.ext.ObjectNotStorableException;
-import com.db4o.ext.OldFormatException;
 import com.db4o.query.Predicate;
 
 /**
@@ -48,30 +41,6 @@ public class DbReadWriter
   /** The path of the database file */
   private String _regPath = null;
 
-  /** Invalid filename error message */
-  private final String DBERR_FILENAME = "Invalid filename given for Registry resources";
-
-  /** Database file locked error */
-  private final String DBERR_FILE_LOCKED = "Database file locked (already open)";
-  /** DB Closed error */
-  private final String DBERR_CLOSED = "Tried to read from a closed database";
-  /** DB ReadOnly error */
-  private final String DBERR_RO_DB = "Database in readOnly mode";
-  /** Attempted to delete a null object from the db */
-  private final String DBERR_NULL_PREDICATE = "dbQuery must have a non-null Predicate object";
-  /** Attempted to delete a null object from the db */
-  private final String DBERR_NULL_OBJECT = "Attempted to delete a null object from the db";
-  /** Incompatible File format error */
-  private final String DBERR_FILE_FORMAT = "Incompatible file format encountered";
-  /** Old format File error */
-  private final String DBERR_OLD_FORMAT = "Old file format encountered by db";
-
-  /** Error code for db4o possibilities */
-  static public enum DB_ERROR {
-    OK, FILE_LOCKED, CLOSED, RO_DB, NULL_PREDICATE, NULL_OBJECT, FILENAME, DB4OIO, FILE_FORMAT, 
-    OLD_FORMAT
-  }
-
   // ================================================================================
   // CONSTRUCTOR(S) AND RELATED METHODS
   // ================================================================================
@@ -80,16 +49,11 @@ public class DbReadWriter
    * Creates the read writer for a particular registry and opens the database
    * 
    * @param filepath absolute path name for the file associated with the db
-   * @throws NullPointerException if the filename is null
    */
   public DbReadWriter(String filepath) throws NullPointerException
   {
-    if (filepath == null) {
-      throw new NullPointerException("DbReadWriter(): " + DBERR_FILENAME + " set to null");
-    }
-    if (dbOpen(filepath) == DB_ERROR.OK) {
+      dbOpen(filepath);
       _regPath = filepath;
-    }
   }
 
   // ================================================================================
@@ -101,19 +65,12 @@ public class DbReadWriter
    * be handled by the caller
    * 
    * @param obj object to add
-   * @throws NullPointerException registry should not try to save a null
-   * @throws DatabaseClosedException db needs to be in correct state
-   * @throws DatabaseReadOnlyException DBregistry does not use RO state in QM
-   * @throws ObjectNotStorableException strange objects should be screened by DBRegistry
    */
-  public void dbAdd(IRegistryElement obj) throws NullPointerException,
-      DatabaseClosedException, DatabaseReadOnlyException,
-      ObjectNotStorableException
+  public void dbAdd(IRegistryElement obj) 
   {
-    // Do not allow null objects to be stored
     if (obj == null) {
-      throw new NullPointerException("DbReadWriter(): "
-          + DBERR_FILE_FORMAT);
+        // Do not allow null objects to be stored
+        return;
     } else {
       _db.store(obj);
       _db.commit();
@@ -125,15 +82,10 @@ public class DbReadWriter
    */
   public void dbClose()
   {
-    try {
       // Close the db file and remove the object container
       if (!_db.isClosed()) {
         _db.close();
       }
-    } catch (Db4oIOException ex) {
-      MsgCtrl.where(this);
-      System.err.println("Cannot close database " + ex.getMessage());
-    }
   }
 
   /**
@@ -142,11 +94,9 @@ public class DbReadWriter
    * @param target name of the object with specific fields to find
    * @return true if it exists in the db, else false
    * 
-   * @throws DatabaseClosedException trying to delete from a closed (null) db
    */
   @SuppressWarnings("serial")
 public boolean dbContains(final IRegistryElement target)
-      throws DatabaseClosedException
   {
     // return _db.isStored(target); // this db4o call doesn't seem to work
     // Run the query using the equals method
@@ -165,36 +115,25 @@ public boolean dbContains(final IRegistryElement target)
    * 
    * @param target object to delete
    * @return true if delete was successful, else false
-   * @throws DatabaseClosedException if trying to delete from a closed (null) db
-   * @throws DatabaseReadOnlyException if trying to delete from a RO db
-   * @throws NullPointerException if target object is null
    */
   @SuppressWarnings("serial")
   public boolean dbDelete(final IRegistryElement target)
-      throws DatabaseClosedException, DatabaseReadOnlyException,
-      NullPointerException
   {
     // Guards: Illegal to delete via null: entire database content would be
     // deleted
     if (target == null) {
-      throw new NullPointerException(DBERR_NULL_OBJECT);
+      return true;
     }
-    if (_db.isClosed()) {
-      throw new DatabaseClosedException();
-    }
+
     boolean retval = false;
     ObjectSet<IRegistryElement> obSet = null;
-    try {
       obSet = _db.query(new Predicate<IRegistryElement>() {
         public boolean match(IRegistryElement candidate)
         {
           return candidate.equals(target);
         }
       });
-    } catch (DatabaseClosedException ex1) {
-      System.err.println("\tDbReadWriter.contains(): " + DBERR_CLOSED
-          + ex1.getMessage());
-    }
+      
     // If object was found, delete it...
     if (obSet.size() != 0) {
       IRegistryElement found = obSet.next(); // get first object in result
@@ -229,30 +168,9 @@ public boolean dbContains(final IRegistryElement target)
    * 
    * @return enum error code (OK) if all worked, else some other error code
    */
-  public DB_ERROR dbOpen(String filepath)
+  public void dbOpen(String filepath)
   {
-    try {
-//      System.err.println("dbOpen(): attepting to open/create file at " + filepath);
       _db = (ExtObjectContainer) Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), filepath);
-    } catch (Db4oIOException ex) {
-      System.err.println("DbReadWriter ctor: " + ex.getMessage());
-      return DB_ERROR.DB4OIO;
-    } catch (DatabaseFileLockedException ex) {
-      System.err.print("DbReadWriter ctor: " + DBERR_FILE_LOCKED + ": "
-          + _regPath);
-      return DB_ERROR.FILE_LOCKED;
-    } catch (IncompatibleFileFormatException ex) {
-      System.err.println("DbReadWriter ctor: " + DBERR_FILE_FORMAT + ": "
-          + _regPath);
-      return DB_ERROR.FILE_FORMAT;
-    } catch (OldFormatException ex) {
-      System.err.println("DbReadWriter ctor: " + DBERR_OLD_FORMAT);
-      return DB_ERROR.OLD_FORMAT;
-    } catch (DatabaseReadOnlyException ex) {
-      System.err.println("DbReadWriter ctor: " + DBERR_RO_DB);
-      return DB_ERROR.RO_DB;
-    }
-    return DB_ERROR.OK;
   }
 
   /**
@@ -260,23 +178,16 @@ public boolean dbContains(final IRegistryElement target)
    * 
    * @param pred predicate objet containing the comparison function to match for retrieval
    * @return the list of elements that match the predicate provided; else returns null.
-   * @throws Db4oIOException for internal db problem
-   * @throws DatabaseClosedException is the database does not exist or is closed
-   * @throws NullPointerException if the predicate is null
    */
   public List<IRegistryElement> dbQuery(Predicate<IRegistryElement> pred)
-      throws Db4oIOException, DatabaseClosedException, NullPointerException
   {
-    List<IRegistryElement> elementList = null;
+    List<IRegistryElement> elementList = new ArrayList<IRegistryElement>();
     // Guards: db and predicate must exist
     // if (_db == null) {
-    if (_db.isClosed()) {
-      throw new DatabaseClosedException();
+    if (_db.isClosed() || pred == null) {
+      return elementList;
     }
-    if (pred == null) {
-      throw new NullPointerException("DbReadWriter.query(): "
-          + DBERR_NULL_PREDICATE);
-    }
+    
     // Use predicate to call match() method to select element
     elementList = _db.query(pred);
     return elementList;
