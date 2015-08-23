@@ -19,13 +19,12 @@ import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import pdc.command.CommandFactory;
 import pdc.command.Scheduler;
 import chronos.pdc.registry.BuildingRegistry;
-import chronos.pdc.registry.NPCRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.BuildingDisplayCiv;
@@ -53,23 +52,23 @@ import civ.MainframeCiv;
  */
 public class TA08_CmdEnter
 {
-    static private CommandParser _cp = null;
-    static private BuildingDisplayCiv _bldgCiv = null;
-    static private MainframeProxy _mfProxy = null;
-    static private MainframeCiv _mfCiv;
-    static private RegistryFactory _regFactory = null;
-    static private BuildingRegistry _bReg = null;
+    private CommandParser _cp = null;
+    private BuildingDisplayCiv _bldgCiv = null;
+    private MainframeProxy _mfProxy = null;
+    private MainframeCiv _mfCiv;
+    private RegistryFactory _regFactory = null;
+    private BuildingRegistry _bReg = null;
 
     /** List of valid Buildings that can be entered */
-    static private List<String> _bldgs = null;
-    private static Scheduler _skedder;
+    private List<String> _bldgs = null;
+    private Scheduler _skedder;
 
 
     /**
      * @throws java.lang.Exception
      */
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception
+    @Before
+    public void setUpBeforeClass() throws Exception
     {
         MsgCtrl.auditMsgsOn(false);
         MsgCtrl.errorMsgsOn(false);
@@ -98,11 +97,11 @@ public class TA08_CmdEnter
     @AfterClass
     public static void tearDownAfterClass() throws Exception
     {
+        RegistryFactory regFactory = RegistryFactory.getInstance();
         // Close BuildingRegistry, left open from BuildingDisplayCiv
-        _bReg.closeRegistry();
+        regFactory.getRegistry(RegKey.BLDG).closeRegistry();
         // Close NPCRegistry, left open from BuildingDisplayCiv
-        NPCRegistry npcReg = (NPCRegistry) _regFactory.getRegistry(RegKey.NPC);
-        npcReg.closeRegistry();
+        regFactory.getRegistry(RegKey.NPC).closeRegistry();
     }
 
     /**
