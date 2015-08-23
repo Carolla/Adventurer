@@ -11,8 +11,10 @@
 
 package pdc.command;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import mylib.MsgCtrl;
 import civ.BuildingDisplayCiv;
@@ -35,22 +37,6 @@ public class CommandFactory
 {
     /** Error message if command cannot be found. */
     public static final String ERRMSG_INIT_FAILURE = "Failed to initialize command from user input";
-
-    private static enum COMMAND {
-        APPROACH, ENTER, EXIT, LEAVE, QUIT, RETURN
-    };
-
-    /** List of commands that we can look up */
-    private static Map<String, COMMAND> _commandMap = new HashMap<String, COMMAND>();
-    static {
-        _commandMap.put("APPROACH", COMMAND.APPROACH); // Display the description and image of
-                                                       // Building exterior
-        _commandMap.put("ENTER", COMMAND.ENTER); // Display the description and image of Building
-                                                 // interior
-        _commandMap.put("EXIT", COMMAND.EXIT); // Synonym for LEAVE then Quit
-        _commandMap.put("LEAVE", COMMAND.LEAVE); // Leave the interior and go to building's exterior
-        _commandMap.put("QUIT", COMMAND.QUIT); // End the program.
-        _commandMap.put("RETURN", COMMAND.RETURN); // Return to town view
 
     /** Use Java 8 supplier interface to avoid verbose reflection */
     private Map<String, Supplier<Command>> _commandMap = new HashMap<String, Supplier<Command>>();
@@ -99,24 +85,7 @@ public class CommandFactory
      */
     public Command createCommand(CommandInput cmdInput)
     {
-      // Use Null Command as default in case cmd.init() fails
-//        Command command = new NullCommand();
-//        if (!canCreateCommand(cmdInput)) {
-//            command.init(cmdInput.parameters);
-//            return command;
-//        } else {
-            Command command = null;
-            COMMAND commandEnum = _commandMap.get(cmdInput.commandToken);
-            switch (commandEnum) {
-                case APPROACH: command = new CmdApproach(_bdCiv); break;
-                case ENTER:    command = new CmdEnter(_bdCiv); break;
-                case LEAVE:    command = new CmdLeave(_bdCiv); break;
-                case QUIT:     command = new CmdQuit(_mfCiv, _bdCiv); break;
-                case RETURN:   command = new CmdReturn(_mfCiv); break;
-                default: command = new NullCommand(); break;
-            }
-            
-            // If good command fails for bad parms, return the NullCommand
+        // If good command fails for bad parms, return the NullCommand
         Command command = new NullCommand();
         if (!canCreateCommand(cmdInput)) {
             command.init(cmdInput.parameters);
@@ -133,6 +102,7 @@ public class CommandFactory
             }
             return command;
         }
+    }
 
 
     public boolean canCreateCommand(CommandInput ci)
