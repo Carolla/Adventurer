@@ -11,7 +11,6 @@
 package test.pdc.registry;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -107,7 +106,7 @@ public class TestAdventureRegistry
     // DO
     AdventureRegistry areg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
     assertNotNull(areg);
-    assertFalse(areg.isClosed());
+    assertTrue(areg.isOpen());
 
     BuildingRegistry breg = (BuildingRegistry) _rf.getRegistry(RegKey.BLDG);
     assertNotNull(breg);
@@ -152,7 +151,7 @@ public class TestAdventureRegistry
     // DO
     // Add a new Adventure to the AdventureRegistry
     AdventureRegistry areg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
-    assertFalse(areg.isClosed());
+    assertTrue(areg.isOpen());
     assertNotNull(areg);
 
     // VERIFY AdvReg contains single element
@@ -176,7 +175,7 @@ public class TestAdventureRegistry
     // DO
     // Add a new Adventure to the AdventureRegistry
     AdventureRegistry areg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
-    assertFalse(areg.isClosed());
+    assertTrue(areg.isOpen());
     assertNotNull(areg);
     MsgCtrl.msgln("Registry " + areg + " open and stored");
 
@@ -186,7 +185,7 @@ public class TestAdventureRegistry
 
     // Try to add another AdventureRegistry
     AdventureRegistry areg2 = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
-    assertFalse(areg2.isClosed());
+    assertTrue(areg2.isOpen());
     assertNotNull(areg2);
     MsgCtrl.msgln("Registry " + areg2 + " open and stored");
 

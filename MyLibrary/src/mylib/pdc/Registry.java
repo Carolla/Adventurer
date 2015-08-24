@@ -276,9 +276,9 @@ public abstract class Registry
    * 
    * @return true if registry is closed
    */
-  public boolean isClosed()
+  public boolean isOpen()
   {
-    return _regRW.dbIsClosed();
+    return _regRW.isOpen();
   }
 
 

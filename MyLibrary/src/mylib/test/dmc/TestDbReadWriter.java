@@ -61,7 +61,7 @@ public class TestDbReadWriter extends TestCase
    * @throws java.lang.Exception to catch unexpected things
    */
   @Before
-  public void setUp() throws Exception
+  public void setUp()
   {
     MsgCtrl.auditMsgsOn(true);
     MsgCtrl.errorMsgsOn(true);
@@ -78,11 +78,9 @@ public class TestDbReadWriter extends TestCase
    * @throws java.lang.Exception to catch unexcepted things
    */
   @After
-  public void tearDown() throws Exception
+  public void tearDown()
   {
     _mock.dbDelete(); // closes the db and deletes its filer
-    _regRW = null;
-    _mock = null;
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
   }
@@ -110,11 +108,9 @@ public class TestDbReadWriter extends TestCase
     assertFalse(_regFile.exists());
 
     // Exception for null filename expected
-    try {
-      _regRW = new DbReadWriter(null);
-    } catch (NullPointerException ex) {
-      MsgCtrl.errMsgln("\tException expected: " + ex.getMessage());
-    }
+    _regRW = new DbReadWriter(null);
+
+    assertFalse(_regRW.isOpen());
     assertFalse(_regFile.exists());
   }
 
