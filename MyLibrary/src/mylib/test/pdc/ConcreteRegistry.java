@@ -128,7 +128,7 @@ public class ConcreteRegistry extends Registry
     public List<IRegistryElement> getAll()
     {
       // Run the query using the equals method
-      List<IRegistryElement> obSet = _regRW.dbQuery(new Predicate<IRegistryElement>() {
+      List<IRegistryElement> obSet = _regRW.query(new Predicate<IRegistryElement>() {
         public boolean match(IRegistryElement candidate)
         {
           return true;

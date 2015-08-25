@@ -100,7 +100,7 @@ public class Arena
      */
     public void close()
     {
-        _dbi.dbClose();
+        _dbi.close();
         _thisArena = null;
     }
 

@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.db4o.Db4oEmbedded;
-import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
 import com.db4o.config.Configuration;
 import com.db4o.ext.Db4oIOException;
@@ -39,7 +38,7 @@ public class DbReadWriter
     /** The instance of the database in memory */
     private ExtObjectContainer _db;
     /** The path of the database file */
-    private String _regPath = null;
+    private final String _regPath;
 
     // ================================================================================
     // CONSTRUCTOR(S) AND RELATED METHODS
@@ -50,11 +49,13 @@ public class DbReadWriter
      * 
      * @param filepath absolute path name for the file associated with the db
      */
-    public DbReadWriter(String filepath) throws NullPointerException
+    public DbReadWriter(String filepath)
     {
-        if (filepath != null) {
-            dbOpen(filepath);
+        if (filepath == null) {
+            throw new NullPointerException();
         }
+
+        open(filepath);
         _regPath = filepath;
     }
 
@@ -68,7 +69,7 @@ public class DbReadWriter
      * 
      * @param obj object to add
      */
-    public void dbAdd(IRegistryElement obj)
+    public void addElement(IRegistryElement obj)
     {
         if (obj == null) {
             // Do not allow null objects to be stored
@@ -80,14 +81,31 @@ public class DbReadWriter
     }
 
     /**
+     * Deletes all elements in the registry. This method is only used for testing.
+     * <p>
+     * WARNING: This method is for testing only. An application should never have a need to
+     * clear the database, file, and DbReadWriter.
+     */
+    @SuppressWarnings("serial")
+    public void dbClear()
+    {
+        ObjectSet<IRegistryElement> obSet = _db.query(new Predicate<IRegistryElement>() {
+            public boolean match(IRegistryElement candidate)
+            {
+                return true;
+            }
+        });
+        for (IRegistryElement elem : obSet) {
+            _db.delete(elem);
+        }
+    }
+
+    /**
      * Closes down the database but keeps its file
      */
-    public void dbClose()
+    public void close()
     {
-        // Close the db file and remove the object container
-        if (!_db.isClosed()) {
-            _db.close();
-        }
+        _db.close();
     }
 
     /**
@@ -98,9 +116,8 @@ public class DbReadWriter
      * 
      */
     @SuppressWarnings("serial")
-    public boolean dbContains(final IRegistryElement target)
+    public boolean containsElement(final IRegistryElement target)
     {
-        // return _db.isStored(target); // this db4o call doesn't seem to work
         // Run the query using the equals method
         List<IRegistryElement> obSet = _db.query(new Predicate<IRegistryElement>() {
             public boolean match(IRegistryElement candidate)
@@ -112,6 +129,18 @@ public class DbReadWriter
     }
 
     /**
+     * Close down the database and delete its file
+     * 
+     * @throws Db4oIOException on a db4o-specific IO exception
+     */
+    public void dbDelete() throws Db4oIOException
+    {
+        close();
+        File regfile = new File(_regPath);
+        regfile.delete();
+    }
+
+    /**
      * Delete an object from the database. The object must be retrieved before being deleted. The
      * caller must handle exceptions if the database is closed or Read-Only.
      * 
@@ -119,7 +148,7 @@ public class DbReadWriter
      * @return true if delete was successful, else false
      */
     @SuppressWarnings("serial")
-    public boolean dbDelete(final IRegistryElement target)
+    public boolean deleteElement(final IRegistryElement target)
     {
         // Guards: Illegal to delete via null: entire database content would be
         // deleted
@@ -128,8 +157,7 @@ public class DbReadWriter
         }
 
         boolean retval = false;
-        ObjectSet<IRegistryElement> obSet = null;
-        obSet = _db.query(new Predicate<IRegistryElement>() {
+        ObjectSet<IRegistryElement> obSet = _db.query(new Predicate<IRegistryElement>() {
             public boolean match(IRegistryElement candidate)
             {
                 return candidate.equals(target);
@@ -148,6 +176,16 @@ public class DbReadWriter
         return retval;
     }
 
+    /**
+     * Get the physical file location of the registry
+     * 
+     * @return absolute path name
+     */
+    public String getPath()
+    {
+        return _regPath;
+    }
+
     public boolean isOpen()
     {
         return !_db.isClosed();
@@ -162,7 +200,7 @@ public class DbReadWriter
      * NOTE: The folder structure must exist before a db file within it can be created. db4o will
      * not create folders: db4o will throw an enigmatic System IO error.
      */
-    public void dbOpen(String filepath)
+    public void open(String filepath)
     {
         _db = (ExtObjectContainer) Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), filepath);
     }
@@ -173,7 +211,7 @@ public class DbReadWriter
      * @param pred predicate objet containing the comparison function to match for retrieval
      * @return the list of elements that match the predicate provided; else returns null.
      */
-    public List<IRegistryElement> dbQuery(Predicate<IRegistryElement> pred)
+    public List<IRegistryElement> query(Predicate<IRegistryElement> pred)
     {
         List<IRegistryElement> elementList = new ArrayList<IRegistryElement>();
         // Guards: db and predicate must exist
@@ -194,7 +232,7 @@ public class DbReadWriter
      * 
      * @param roFlag true for readOnly, false for the default ReadWrite
      */
-    public void dbReadOnly(boolean roFlag)
+    public void setReadOnly(boolean roFlag)
     {
         // Get the current configuration; needs Extended services for this
         Configuration config = _db.configure();
@@ -211,88 +249,25 @@ public class DbReadWriter
     // Inner Class: MockDBRW
     // ================================================================================
 
+    /** Finds all elements in the given Registry ReadWriter */
+    @SuppressWarnings("serial")
+    public int dbSize()
+    {
+        ObjectSet<IRegistryElement> obSet = _db.query(new Predicate<IRegistryElement>() {
+            public boolean match(IRegistryElement candidate)
+            {
+                return true;
+            }
+        });
+        return obSet.size();
+    }
+
+
     /** Mock registry read writer to access private methods */
     public class MockDBRW
     {
         public MockDBRW()
         {}
-
-        /**
-         * Close down the database and delete its file
-         * 
-         * @throws Db4oIOException on a db4o-specific IO exception
-         */
-        public void dbDelete() throws Db4oIOException
-        {
-            dbClose();
-            File regfile = new File(_regPath);
-            regfile.delete();
-        }
-
-
-        /**
-         * Deletes all elements in the registry. This method is only used for testing.
-         * <p>
-         * WARNING: This method is for testing only. An application should never have a need to
-         * clear the database, file, and DbReadWriter.
-         */
-        @SuppressWarnings("serial")
-        public void dbClear()
-        {
-            ObjectSet<IRegistryElement> obSet = _db.query(new Predicate<IRegistryElement>() {
-                public boolean match(IRegistryElement candidate)
-                {
-                    return true;
-                }
-            });
-            for (IRegistryElement elem : obSet) {
-                _db.delete(elem);
-            }
-        }
-
-
-        /** Finds all elements in the given Registry ReadWriter */
-        @SuppressWarnings("serial")
-        public int dbSize()
-        {
-            ObjectSet<IRegistryElement> obSet = _db.query(new Predicate<IRegistryElement>() {
-                public boolean match(IRegistryElement candidate)
-                {
-                    return true;
-                }
-            });
-            return obSet.size();
-        }
-
-        /** Returns returns the database container */
-        public ExtObjectContainer getContainer()
-        {
-            return _db;
-        }
-
-        /**
-         * Get the physical file location of the registry
-         * 
-         * @return absolute path name
-         */
-        public String getPath()
-        {
-            return _regPath;
-        }
-
-        /** Wraps outer method, returns an existing database container */
-        public ObjectContainer openDB()
-        {
-            DbReadWriter.this.dbOpen(_regPath);
-            return _db;
-        }
-
-        /** Set the container to the db field */
-        public void setContainer(ExtObjectContainer oc)
-        {
-            _db = oc;
-        }
-
     } // end of MockDbReadWriter inner class
 } // end of RegistryReadWriter class
 

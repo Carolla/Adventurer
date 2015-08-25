@@ -12,9 +12,6 @@ package test.integ;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-
 import mylib.MsgCtrl;
 
 import org.junit.After;
@@ -50,7 +47,6 @@ public class TA09_CmdLeave
   static private BuildingRegistry _bReg = null;
 
   /** List of valid Buildings that can be entered */
-  static private List<String> _bldgs = null;
   private static Scheduler _skedder;
 
 
