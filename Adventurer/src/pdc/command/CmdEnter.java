@@ -101,6 +101,8 @@ public class CmdEnter extends Command
         if (canEnter) {
             _targetBuilding = bldgParm;
         }
+        
+        _isInitialized = canEnter;
         return canEnter;
     }
 

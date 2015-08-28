@@ -8,7 +8,7 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
-import pdc.command.CmdLeave;
+import pdc.command.CmdReturn;
 import pdc.command.Command;
 import pdc.command.CommandFactory;
 import pdc.command.CommandInput;
@@ -82,8 +82,8 @@ public class TestCommandParser
     public void CommandIsScheduledWhenFound()
     {
         _cp = new CommandParser(_fakeSkedder, new CommandFactory(null, null));
-        _cp.receiveCommand("Leave");
-        assertEquals(new CmdLeave(null).getName(), _fakeSkedder.command.getName());
+        _cp.receiveCommand("Return");
+        assertEquals(new CmdReturn(null).getName(), _fakeSkedder.command.getName());
     }
     
     @Test
@@ -122,7 +122,9 @@ public class TestCommandParser
         @Override
         public Command createCommand(CommandInput cmdInput)
         {
-            return new NullCommand();
+            Command command = new NullCommand();
+            command.init(null);
+            return command;
         }
     }
 

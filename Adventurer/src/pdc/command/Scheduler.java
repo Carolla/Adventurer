@@ -84,4 +84,10 @@ public class Scheduler implements Runnable
         cmdToDo.exec();
     }
 
+
+    public boolean empty()
+    {
+        return _dq.isEmpty();
+    }
+
 } // end Scheduler class
