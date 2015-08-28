@@ -38,12 +38,8 @@ import dmc.PersonReadWriter;
  *          Mar 19 2014 // added current Building for ENTER command <br>
  *          Aug 18 2014 // added {@code displayImage} to show Chronos logo on portal page <br>
  */
-public class MainframeCiv implements ChronosLogger
+public class MainframeCiv implements UserMsg
 {
-    private static ChronosLogger _logger = new DefaultLogger();
-    private AdventureRegistry _advReg;
-    private BuildingDisplayCiv _bdCiv;
-
     private static final String TOWN_IMAGE = "ext_BiljurBaz.JPG";
 
     /** Default Buildings to initialize registry with */
@@ -76,8 +72,10 @@ public class MainframeCiv implements ChronosLogger
             Color.white}; // Quasqueston
 
     private MainframeInterface _frame;
-    private Adventure _adv;
-    private PersonReadWriter _personRW;
+    private Adventure               _adv;
+    private PersonReadWriter  _personRW;
+    private AdventureRegistry  _advReg;
+    private BuildingDisplayCiv  _bdCiv;
 
     /** Current Building being displayed, and can be entered */
     private final Rectangle _townReturn = new Rectangle(0, 0, 100, 100);
@@ -92,19 +90,17 @@ public class MainframeCiv implements ChronosLogger
     // Constructors and constructor helpers
     // ============================================================
 
+
     /**
      * Create the Civ associated with the mainframe
      * 
-     * @param frame owner of the widget for which this civ applies
-     * @param personRW supports the Summon Hero and Create Hero buttons
-     * @param advReg registry to support the Adventures button
+     * @param mf    link to HIC display
+     * @param bdCiv link to Building control civ
      */
     public MainframeCiv(MainframeInterface mf, BuildingDisplayCiv bdCiv)
     {
         _frame = mf;
         _bdCiv = bdCiv;
-        _logger = this;
-
         doConstructorWork();
     }
 
@@ -186,11 +182,6 @@ public class MainframeCiv implements ChronosLogger
       return _bdCiv;
     }
     
-    public static ChronosLogger getLogger()
-    {
-        return _logger;
-    }
-
     @Override
     public void errorOut(String msg)
     {
@@ -200,7 +191,7 @@ public class MainframeCiv implements ChronosLogger
     /**
      * Display a prompt message asking for confirmation
      * 
-     * @param mesg question to ask for confirmation
+     * @param msg question to ask for confirmation
      * @return true if the user seleted YES
      */
     public boolean msgPrompt(String msg)
@@ -318,7 +309,7 @@ public class MainframeCiv implements ChronosLogger
     // Inner Classes for Testing
     // ============================================================
 
-    private static class DefaultLogger implements ChronosLogger
+    private static class DefaultLogger implements UserMsg
     {
 
         @Override

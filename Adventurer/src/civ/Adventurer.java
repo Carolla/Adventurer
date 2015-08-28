@@ -148,6 +148,8 @@ public class Adventurer
     /**
      * Validate the creation of all the registries for default sizes. Later, this method will have
      * to be modified for any new material added beyond the defaults.
+     * 
+     * @return true if registries are consistent
      */
     static private boolean verifyRegistries()
     {

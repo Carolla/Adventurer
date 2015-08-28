@@ -53,10 +53,9 @@ public class CommandParser
      * Creates the singleton CommandParser, and connects to the {@code CommandFactory} and the
      * {@code MainframeCiv} for displaying parser output to {@code IOPanel}.
      * 
+     * @param skedder Command Scheduler executes the commands
      * @param factory the CommandFactory for creating commands
      * 
-     * @param ioPanel handles input commands and output and error messages, and the interactions
-     *        between command line input and output messages
      */
     public CommandParser(Scheduler skedder, CommandFactory factory)
     {
@@ -73,16 +72,17 @@ public class CommandParser
      * {@code Scheduler} when it is ready for another user command.<br>
      * 
      * @param textIn the input the user entered onto the command line
+     * @return true if the command is properly initialized
      */
     public boolean receiveCommand(String textIn)
     {
         _userInput = textIn;
         CommandInput cmdInput = createCommandInput(textIn);
         Command cmd = _factory.createCommand(cmdInput);
-        
+
         boolean isInit = cmd.isInitialized();
         if (isInit) {
-          _skedder.sched(cmd);
+            _skedder.sched(cmd);
         }
 
         return isInit;
@@ -92,11 +92,11 @@ public class CommandParser
     {
         List<String> tokens = new ArrayList<String>(Arrays.asList(textIn.split(" ")));
         String commandToken = null;
-        
+
         if (tokens.size() > 0) {
             commandToken = tokens.remove(0).toUpperCase();
         }
-        
+
         return new CommandInput(commandToken, tokens);
     }
 
@@ -132,7 +132,7 @@ public class CommandParser
     // String desc = cmd.getDescription();
     // longestDesc = longestDesc > desc.length() ? longestDesc : desc.length();
     // nbrCmds++;
-    // helpWin.append("  " + cmdString + "\t" + desc + "\n");
+    // helpWin.append(" " + cmdString + "\t" + desc + "\n");
     // }
     // helpWin.append("\n ");
     // helpWin.lockText(true); // Lock the window to disallow redundant messaging

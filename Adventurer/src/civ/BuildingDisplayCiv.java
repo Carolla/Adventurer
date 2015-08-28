@@ -40,13 +40,13 @@ public class BuildingDisplayCiv
     /** BuildingDisplayCiv knows about buildings */
     private BuildingRegistry _breg;
 
-    private static final String NO_BLDG_FOUND = "Could not find that building.\n";
-
+    
+//    private static final String NO_BLDG_FOUND = "Could not find that building.\n";
     /** Error message if no arguments or multiple arguments specified */
     private final String ERRMSG_NOBLDG =
             "Sure, but you've gotta say WHICH building to approach.";
     /** Error message if building not found in registry */
-    private final String ERRMSG_WRONG_BLDG =
+    private final String ERRMSG_UNKNOWN_BLDG =
             "That some kinda slang, stranger?  WHAT building was that again?";
 
     /** Message if trying to jump from interior to exterior of buildings */
@@ -88,7 +88,7 @@ public class BuildingDisplayCiv
 
             // Check that the building specified actually exists
             if (b == null) {
-                _frame.displayErrorText(ERRMSG_WRONG_BLDG);
+                _frame.displayErrorText(ERRMSG_UNKNOWN_BLDG);
                 return false;
             } else {
                 return true;
@@ -157,7 +157,7 @@ public class BuildingDisplayCiv
             _frame.displayText(description);
             return true;
         } else {
-            _frame.displayText(NO_BLDG_FOUND);
+            _frame.displayText(ERRMSG_NOBLDG);
             return false;
         }
     }
@@ -180,7 +180,7 @@ public class BuildingDisplayCiv
             displayBuilding(targetBuilding);
         }
         else {
-            _frame.displayErrorText(NO_BLDG_FOUND);
+            _frame.displayErrorText(ERRMSG_NOBLDG);
             System.err.println("error case of enterBuilding");
         }
     }
