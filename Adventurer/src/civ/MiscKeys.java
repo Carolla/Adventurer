@@ -14,11 +14,8 @@ package civ;
 
 
 /**
- *
  * @author Alan Cline
- * @version <DL>
- * <DT> Build 1.0		Oct 1, 2011   // original <DD>
- * </DL>
+ * @version Oct 1, 2011   // original <br>
  */
 public class MiscKeys
 {

@@ -37,14 +37,6 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
-import mylib.Constants;
-import mylib.hic.HelpDialog;
-import mylib.hic.IHelpText;
-import mylib.hic.ShuttleList;
-import net.miginfocom.swing.MigLayout;
-import pdc.Util;
-import pdc.command.CommandFactory;
-import pdc.command.Scheduler;
 import chronos.Chronos;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
@@ -53,6 +45,14 @@ import civ.Adventurer;
 import civ.BuildingDisplayCiv;
 import civ.CommandParser;
 import civ.MainframeCiv;
+import mylib.Constants;
+import mylib.hic.HelpDialog;
+import mylib.hic.IHelpText;
+import mylib.hic.ShuttleList;
+import net.miginfocom.swing.MigLayout;
+import pdc.Util;
+import pdc.command.CommandFactory;
+import pdc.command.Scheduler;
 
 /**
  * Initial frame displays three buttons and Chronos logo.<br>

@@ -11,14 +11,14 @@
 
 package pdc.command;
 
-import civ.BuildingDisplayCiv;
-import civ.MainframeCiv;
-import civ.UserMsg;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
+
+import civ.BuildingDisplayCiv;
+import civ.MainframeCiv;
+import civ.UserMsg;
 
 
 /**
@@ -34,84 +34,83 @@ import java.util.function.Supplier;
  */
 public class CommandFactory
 {
-    /** Error message if command cannot be found. */
-    public static final String ERRMSG_INIT_FAILURE = "Invalid parms for command";
-    public static final String ERRMSG_UNKNOWN = "I don't undestand what you want to do";
+  /** Error message if command cannot be found. */
+  public static final String ERRMSG_INIT_FAILURE = "Invalid parms for command";
+  public static final String ERRMSG_UNKNOWN = "I don't undestand what you want to do";
 
-    /** Use Java 8 supplier interface to avoid reflection */
-    private Map<String, Supplier<Command>> _commandMap = new HashMap<String, Supplier<Command>>();
+  /** Use Java 8 supplier interface to avoid reflection */
+  private Map<String, Supplier<Command>> _commandMap = new HashMap<String, Supplier<Command>>();
 
-    private final BuildingDisplayCiv _bdCiv;
-    private final MainframeCiv _mfCiv;
-    private UserMsg _userOut;
+  private final BuildingDisplayCiv _bdCiv;
+  private final MainframeCiv _mfCiv;
+  private UserMsg _userOut;
 
-    public CommandFactory(MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
-    {
-        _mfCiv = mfCiv;
-        _bdCiv = bdCiv;
-        initMap();
+  public CommandFactory(MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
+  {
+    _mfCiv = mfCiv;
+    _bdCiv = bdCiv;
+    initMap();
+  }
+
+  /**
+   * Provide initial values for the commandMap. This can be set up differently as needed for test.
+   */
+  protected void initMap()
+  {
+    // Display the description and image of Building exterior
+    _commandMap.put("APPROACH", () -> new CmdApproach(_bdCiv));
+    // Enter the interior of the Building
+    _commandMap.put("ENTER", () -> new CmdEnter(_bdCiv));
+    // Synonym for Leave and then Quit the program
+    _commandMap.put("EXIT", () -> new CmdExit(_mfCiv, _bdCiv));
+    // Leave the inside of the Building and go outside
+    _commandMap.put("LEAVE", () -> new CmdLeave(_bdCiv));
+    // End the program.
+    _commandMap.put("QUIT", () -> new CmdQuit(_mfCiv, _bdCiv));
+    // Return to town view
+    _commandMap.put("RETURN", () -> new CmdReturn(_mfCiv));
+
+    // Locks the command map as read-only
+    _commandMap = Collections.unmodifiableMap(_commandMap);
+  }
+
+  /**
+   * Creates a user Command from its canonical name.<br>
+   * NOTE: The subclass command must be in the same package as the Command class.
+   * 
+   * @param cmdInput the name of the subclass to be created
+   * @return Command, the subclass Command created, but referenced polymorphically
+   */
+  public Command createCommand(CommandInput cmdInput)
+  {
+    // If a good Command cannot be used, this dummy command is run
+    Command command = new NullCommand();
+
+    // If the command cannot be found, then run the Null command
+    if (!canCreateCommand(cmdInput)) {
+      // Display the invalid command error to user
+      _mfCiv.errorOut(ERRMSG_UNKNOWN);
+      return command;
+    } else {
+      // If map contains the command as typed, Supplier<Command> will give new Instance of
+      // that
+      Supplier<Command> supplier = _commandMap.get(cmdInput.commandToken);
+      if (supplier != null) {
+        command = supplier.get();
+      }
+      // Check that the parms are valid for this command
+      if (command.init(cmdInput.parameters) == false) {
+        _mfCiv.errorOut(command.usage());
+      }
+      return command;
     }
-
-    /**
-     * Provide initial values for the commandMap. This can be set up differently as needed for test.
-     */
-    protected void initMap()
-    {
-        // Display the description and image of Building exterior
-        _commandMap.put("APPROACH", () -> new CmdApproach(_bdCiv));
-        // Enter the interior of the Building
-        _commandMap.put("ENTER", () -> new CmdEnter(_bdCiv));
-        // Synonym for Leave and then Quit the program
-        _commandMap.put("EXIT", () -> new CmdExit(_mfCiv, _bdCiv));
-        // Leave the inside of the Building and go outside
-        _commandMap.put("LEAVE", () -> new CmdLeave(_bdCiv));
-        // End the program.
-        _commandMap.put("QUIT", () -> new CmdQuit(_mfCiv, _bdCiv));
-        // Return to town view
-        _commandMap.put("RETURN", () -> new CmdReturn(_mfCiv));
-
-        // Locks the command map as read-only
-        _commandMap = Collections.unmodifiableMap(_commandMap);
-    }
-
-    /**
-     * Creates a user Command from its canonical name.<br>
-     * NOTE: The subclass command must be in the same package as the Command class.
-     * 
-     * @param cmdInput the name of the subclass to be created
-     * @return Command, the subclass Command created, but referenced polymorphically
-     */
-    public Command createCommand(CommandInput cmdInput)
-    {
-        // If a good Command cannot be used, this dummy command is run
-        Command command = new NullCommand();
-
-        // If the command cannot be found, then run the Null command
-        if (!canCreateCommand(cmdInput)) {
-            // command.init(cmdInput.parameters);
-            // Display the invalid command error to user
-            _mfCiv.errorOut(ERRMSG_UNKNOWN);
-            return command;
-        } else {
-            // If map contains the command as typed, Supplier<Command> will give new Instance of
-            // that
-            Supplier<Command> supplier = _commandMap.get(cmdInput.commandToken);
-            if (supplier != null) {
-                command = supplier.get();
-            }
-            // Check that the parms are valid for this command
-            if (command.init(cmdInput.parameters) == false) {
-                _mfCiv.errorOut(command.usage());
-            }
-            return command;
-        }
-    }
+  }
 
 
-    public boolean canCreateCommand(CommandInput ci)
-    {
-        return (_commandMap.get(ci.commandToken) == null) ? false : true;
-    }
+  public boolean canCreateCommand(CommandInput ci)
+  {
+    return (_commandMap.get(ci.commandToken) == null) ? false : true;
+  }
 
 } // end of CommandFactory class
 

@@ -71,7 +71,7 @@ public class TestHuman extends TestCase {
 		MsgCtrl.auditMsgsOn(true);
 		// Error messages are ON at start of each test
 		MsgCtrl.errorMsgsOn(true);
-		// Pass both objects to Person constructor to create beginning Kharacter
+		// Pass both objects to Person constructor to create beginning Character
 		_hero = new Human();
 		assertNotNull(_hero);
 		_mock = _hero.new MockHuman();

@@ -21,7 +21,7 @@ import java.util.ArrayList;
  * The <code>Innkeeper</code> never leaves, so has more messages than the Patrons, and 
  * cycles messages when his list of messages are exhausted. <br>
  * This class is implemented as two separate <code>String ArrayLists</code>; there is no
- * limit on how many messages each Patron may have. .
+ * limit on how many messages each Patron may have.
  * 
  * @author 	Al Cline
  * @version <DL>
