@@ -7,16 +7,17 @@
  * by email: acline@carolla.com
  */
 
-package pdc;
+
+package pdc.character;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import chronos.Chronos;
+import mylib.pdc.MetaDie;
 
 /**
  * Defines the common methods and attributes for all Klasses. Peasant is the default Klass.
- * <P>
- * NOTE: This class is serializable, so contains transients that will not be stored.
  * 
  * @author Alan Cline
  * @version Sept 4 2015 // rewrite to support Hero rewrite <br>
@@ -27,10 +28,23 @@ public abstract class Klass implements Serializable
   /** Recommended serialization constant. */
   static final long serialVersionUID = 1100L;
 
-  // KLASS-SPECIFIC ATTRIBUTES
+  // KLASS-SPECIFIC ATTRIBUTES and METHODS
   /** Name of the subclass of Klass, e.g, Peasant or Fighter */
   protected String _klassName = null;
+  /** The specific prime trait for the sub-klass */
+  protected int _primeNdx = -1;
 
+  /** Each klass has a specific amount of HP they start with */
+  protected String _hpDie = null;
+  /** All Heroes get a free max value of hit points on their on hit die */
+  protected int _initialHP = 0;
+  /** Starting gold is rolled from klass-specific dice notation */
+  protected String _goldDice = null;
+
+  /** Special klass-specific table of items */
+  protected String[] _klassItems = null; 
+  
+  
   /**
    * Create a specific subclass of Klass based on its klass name. <br>
    * NOTE: The subclass must be in the same package as the Klass class.
@@ -51,6 +65,141 @@ public abstract class Klass implements Serializable
     return newKlass;
   }
 
+
+  // Assign initial inventory to Hero (8 gpw = 1 lb)
+  public ArrayList<String> assignBasicInventory(ArrayList<String> inven)
+  {
+    // Basic inventory items: name | weight
+    String[] basics = {
+        "backpack | 56", // 7.00 lb
+        "tinderbox | 4", // 0.50 lb
+        "torch | 8", // 1.00 lb
+        "rations | 4", // 0.50 lb
+        "water skein (empty) | 4", // 0.50 lb
+        "small belt pouch | 2", // 0.25 lb
+        "leather boots | 32", // 4.00 lb
+        "belt | 2", // 0.25 lb
+        "breeches | 4", // 0.50 lb
+        "shirt | 4", // 0.50 lb
+        "cloak | 16" // 2.00 lb
+    };
+    // total weight = 136 gpw (17.00 lb)
+
+    // Load up on common basics
+    for (int k = 0; k < basics.length; k++) {
+      inven.add(basics[k]);
+    }
+    return inven;
+  }
+
+  /** Add klass-specific items into their inventory */
+  public ArrayList<String> addKlassItems(ArrayList<String> inven )
+  {
+    for (int k=0; k < _klassItems.length; k++) {
+      inven.add(_klassItems[k]);
+   }
+    return inven;
+  }
+
+  
+  
+  
+//  // Add an element to an array
+//  protected ArrayList<String> addItem(inven, item) {
+//    inven.add(item);
+//    return inven;
+//  }
+
+  // // Now klass specific items
+  // switch(klass) {
+  // case("Cleric"):
+  // addItem(inven, "holy symbol, wooden | 4"); // 0.50 lb
+  // addItem(inven, "sacred satchel | 2"); // 0.25 lb
+  // addItem(inven, "quarterstaff | 24"); // 3.00 lb
+  // break;
+  // case("Wizard"):
+  // addItem(inven, "magic spell book | 32"); // 4.00 lb
+  // addItem(inven, "magic bag | 2"); // 0.25 lb
+  // addItem(inven, "walking stick | 24"); // 3.00 lb
+  // break;
+  // case("Thief"):
+  // addItem(inven, "thieves' kit | 8"); // 1.00 lb
+  // addItem(inven, "dagger | 24"); // 3.00 lb
+  // break;
+  // case("Fighter"):
+  // addItem(inven, "short sword w/scabberd | 80"); // 10 lb
+  // break;
+  // default:
+  // alert("Could not find klass when assigning inventory: " + klass);
+  // break;
+  // }
+  // return inven;
+  // }
+
+  /**
+   * Roll the klass-specific money dice
+   * 
+   * @return the starting gold
+   */
+  public double rollGold()
+  {
+    MetaDie md = new MetaDie();
+    double gold = md.roll(_goldDice) * 10.0;
+    return gold;
+  }
+
+  /**
+   * Roll the HP Die for the specific Klass, plus the mod, plus an initial number for all Level 1
+   * Heroes
+   * 
+   * @param mod the HP mod for the Hero, a CON-based attribute
+   * @return the initial Hit Points
+   */
+  public int rollHP(int mod)
+  {
+    MetaDie md = new MetaDie();
+    int HP = md.roll(_hpDie) + mod + _initialHP;
+    return HP;
+  }
+
+
+  /**
+   * Swap the largest trait for the prime trait of the klass: <br>
+   * Fighter (STR), Cleric (WIS), Wizard (INT), and Thief (DEX)
+   * 
+   * @param _traits raw traits to rearrange
+   * @return traits after klass adjusted
+   */
+  public int[] adjustTraitsForKlass(int[] _traits)
+  {
+    // Walk the list and find the largest trait
+    int largest = -1;
+    int ndx = -1;
+    for (int k = 0; k < _traits.length; k++) {
+      if (largest < _traits[k]) {
+        largest = _traits[k];
+        ndx = k;
+      }
+    }
+    // Swap the prime trait
+    _traits = swapPrime(_traits, ndx, _primeNdx);
+    return _traits;
+  }
+
+  /**
+   * Swap the largest raw trait for the prime trait with the specific klass
+   * 
+   * @param traits the list of traits for the Hero
+   * @param largest the index of the largest trait to swap
+   * @param primeNdx the index of the klass-specific trait to receive the largest trait
+   */
+  private int[] swapPrime(int[] traits, int largest, int primeNdx)
+  {
+    int tmp = traits[primeNdx];
+    traits[primeNdx] = traits[largest];
+    traits[largest] = tmp;
+    return traits;
+  }
 
 
   // ====================================================

@@ -289,7 +289,7 @@ public class Hero implements Serializable // IRegistryElement
     _hairColor = hairColor;
     _racename = raceName;
     _klassname = klassName;
-    displayHero();
+    auditOutHero();
 
     // 2. SET PRIME TRAITS for Peasant (base is same for all Klasses and Races)
     MetaDie md = new MetaDie();
@@ -475,6 +475,7 @@ public class Hero implements Serializable // IRegistryElement
       oList.add(obj);
     }
   }
+    
     
   // Assign a random occupation to the Hero
   private String assignOccupation()
@@ -746,9 +747,9 @@ public class Hero implements Serializable // IRegistryElement
     final int[] dmgTbl = {-3, -3, -2, -2, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5};
 
     // STR values 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-    final int[] wtTbl = {80, 120, 160, 200, 280, 400, 480, 560, 640, 720, 880, 1040, 1200,
+    final int[] wtTbl = {80, 120, 160, 200, 280, 360, 440, 520, 600, 700, 800, 900, 1000,
         // STR values 16, 17, 18, 19, 20, 21
-        1440, 1680, 2000, 2400, 2800, 3200};
+        1200, 1500, 1800, 2100, 2300, 2600};
 
     // Internal check
     if ((toHitTbl.length != dmgTbl.length) && (toHitTbl.length != wtTbl.length)) {
@@ -774,7 +775,7 @@ public class Hero implements Serializable // IRegistryElement
   }
 
   /** Display the Hero's key characteristics */
-  private void displayHero()
+  private void auditOutHero()
   {
     StringBuilder out = new StringBuilder();
     out.append(_name + " ");
@@ -795,7 +796,7 @@ public class Hero implements Serializable // IRegistryElement
   {
     // TODO Make this list depend on PrimeTraits order, and not these constants
     final String[] ndx = {"STR", "INT", "WIS", "DEX", "CON", "CHR"};
-    System.out.println("\n" + msg);
+    System.out.println(msg);
     for (int k = 0; k < 6; k++) {
       System.out.print("\t" + ndx[k] + " = " + traits[k] + "\t");
     }

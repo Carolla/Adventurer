@@ -35,7 +35,6 @@ public enum PersonKeys
         
         // This group contains the remaining displayable set of key values for the Person
         AC ,
-        AGE ,
         DESCRIPTION  ,
         GOLD , 
         GOLD_BANKED ,

@@ -230,8 +230,8 @@ public class MainframeCiv implements UserMsg
 
 
     /**
-     * Load the selected adventure from the Adventure registry. Replace the opening button panel
-     * with the IOPanel (text and command line)
+     * Load the selected adventure from the Adventure registry. 
+     * Replace the opening button panel with the IOPanel (text and command line)
      * 
      * @param adventureName selected from the Adventure by the user
      */
