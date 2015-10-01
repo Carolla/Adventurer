@@ -13,7 +13,9 @@ package pdc.character;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.EnumMap;
 
+import civ.PersonKeys;
 import mylib.pdc.MetaDie;
 import pdc.character.Thief.TSKILL;
 
@@ -289,7 +291,7 @@ public class Hero implements Serializable // IRegistryElement
     _hairColor = hairColor;
     _racename = raceName;
     _klassname = klassName;
-    displayHero();
+    auditOutHero();
 
     // 2. SET PRIME TRAITS for Peasant (base is same for all Klasses and Races)
     MetaDie md = new MetaDie();
@@ -356,7 +358,7 @@ public class Hero implements Serializable // IRegistryElement
       addUnique(_spellBook, "Read Magic");
       _spellsKnown = _spellBook.size();
       // displayWizardMods();
-       displayList(String.format("Spell book contains: %s spells: ", _spellsKnown), _spellBook);
+      displayList(String.format("Spell book contains: %s spells: ", _spellsKnown), _spellBook);
     }
 
     // 8a. ASSIGN THE WISDOM MODIFIERS: Magic Attack Mod
@@ -444,38 +446,41 @@ public class Hero implements Serializable // IRegistryElement
     _occupation = assignOccupation();
     _ocpSkills = new ArrayList<String>();
     _ocpSkills = assignOcpSkills();
-//    displayList("Skills for occupation " + _occupation + ":", _ocpSkills);
-//    displayList("Inventory in backpack: ", _inventory);
+    // displayList("Skills for occupation " + _occupation + ":", _ocpSkills);
+    // displayList("Inventory in backpack: ", _inventory);
 
-    // 21. ASSIGN SPELLS TO CLERICS (WIZARDS ALREADY WERE ASSIgned 'READ MAGIC') 
+    // 21. ASSIGN SPELLS TO CLERICS (WIZARDS ALREADY WERE ASSIgned 'READ MAGIC')
     if (_klassname.equalsIgnoreCase("Cleric")) {
       _spellBook = new ArrayList<String>();
       _spellBook = ((Cleric) _klass).addClericalSpells(_spellBook);
       _spellsKnown = _spellBook.size();
-//      displayList(String.format("Clerical spells knowns: %s spells: ", _spellsKnown), _spellBook);
+      // displayList(String.format("Clerical spells knowns: %s spells: ", _spellsKnown),
+      // _spellBook);
     }
     // 22. Assign initial inventory
     _inventory = new ArrayList<String>();
     _inventory = _klass.assignBasicInventory(_inventory);
     _inventory = _klass.addKlassItems(_inventory);
-//    displayList("Inventory in backpack: ", _inventory);
+    // displayList("Inventory in backpack: ", _inventory);
 
 
   } // end of Hero constructor
 
 
-  /** Adds the object to the ArrayList, but does not add duplicated 
-   *  
-   * @param oList   list to add object to
-   * @param obj     to add to list if it isn't in the list already
+  /**
+   * Adds the object to the ArrayList, but does not add duplicated
+   * 
+   * @param oList list to add object to
+   * @param obj to add to list if it isn't in the list already
    */
-  private void addUnique(ArrayList<String> oList, String obj) 
+  private void addUnique(ArrayList<String> oList, String obj)
   {
     if (!oList.contains(obj)) {
       oList.add(obj);
     }
   }
-    
+
+
   // Assign a random occupation to the Hero
   private String assignOccupation()
   {
@@ -548,14 +553,19 @@ public class Hero implements Serializable // IRegistryElement
 
 
 
-  public String getName()
-  {
-    return _name;
-  }
-
   public String getGender()
   {
     return _gender;
+  }
+
+  public String getHairColor()
+  {
+    return _hairColor;
+  }
+
+  public String getName()
+  {
+    return _name;
   }
 
   public String getRaceName()
@@ -567,6 +577,102 @@ public class Hero implements Serializable // IRegistryElement
   {
     return _klassname;
   }
+
+
+  /**
+   * Load all the Hero attriutes into a single output map, keyed by the {@code PersonKeys} enum
+   * 
+   * @param map the keyed map of Hero data attributes
+   * @return the EnumMap with attribute data
+   */
+  public EnumMap<PersonKeys, String> loadAttributeMap(EnumMap<PersonKeys, String> map)
+  {
+    // Now load the attributes in display order (values in parens are derived)
+    // Row 1: Name
+    map.put(PersonKeys.NAME, _name);
+    
+    // Row 2: Race and Klass
+    map.put(PersonKeys.RACENAME, _racename);
+    map.put(PersonKeys.KLASSNAME, _klassname);
+
+    // Row 3: Level, Current HP, Max HP, AC, (AC with Magic adj)
+    map.put(PersonKeys.LEVEL, String.format("%s", _level));
+    map.put(PersonKeys.HP, String.format("%s", _HP));
+    map.put(PersonKeys.HP_MAX, String.format("%s", _HP));
+    map.put(PersonKeys.AC, String.format("%s", _AC));
+
+    // Row 4: XP, Speed, Gold (gp.sp), Gold Banked
+    map.put(PersonKeys.XP, String.format("%s", _XP));
+    map.put(PersonKeys.SPEED, String.format("%s", _speed));
+    map.put(PersonKeys.GOLD, String.format("%s", _gold));
+    map.put(PersonKeys.GOLD_BANKED, String.format("%s", _goldBanked));
+
+    // Row 5: Occupation, Description
+    map.put(PersonKeys.OCCUPATION, _occupation);
+    map.put(PersonKeys.DESCRIPTION, _description);
+
+    // Row 6: STR and STR mods: ToHit, StrDamage, Wt Allowance, Load Carried
+    map.put(PersonKeys.STR, String.format("%s", _traits[PrimeTraits.STR.ordinal()]));
+    map.put(PersonKeys.TO_HIT_MELEE, String.format("%s", _toHitStr));
+    map.put(PersonKeys.DAMAGE, String.format("%s", _damage));
+    map.put(PersonKeys.WT_ALLOW, String.format("%s", _wtAllow));
+
+    // Row 7: INT and INT mods: percent to know spell, current MSP, max MSP, MSPs/Level,
+    //    spells known (in book), and max languages
+    map.put(PersonKeys.INT, String.format("%s", _traits[PrimeTraits.INT.ordinal()]));
+    map.put(PersonKeys.TO_KNOW, String.format("%s", _percentToKnow));
+    map.put(PersonKeys.CURRENT_MSP, String.format("%s", _MSPs));
+    map.put(PersonKeys.MAX_MSP, String.format("%s", _MSPs));
+    map.put(PersonKeys.MSP_PER_LEVEL, String.format("%s", _MSPsPerLevel));
+    map.put(PersonKeys.SPELLS_KNOWN, String.format("%s", _spellsKnown));
+    map.put(PersonKeys.MAX_LANGS, String.format("%s", _maxLangs));
+    
+    // Row 8: WIS and WIS mods: Magic Attack Mod, Current CSP, Max CSPs, CSPs/Level, Turn Undead
+    map.put(PersonKeys.WIS, String.format("%s", _traits[PrimeTraits.WIS.ordinal()]));
+    map.put(PersonKeys.MAM, String.format("%s", _magicAttackMod));
+    map.put(PersonKeys.CURRENT_CSP, String.format("%s", _CSPs));
+    map.put(PersonKeys.MAX_CSP, String.format("%s", _CSPs));
+    map.put(PersonKeys.CSP_PER_LEVEL, String.format("%s", _CSPsPerLevel));
+    map.put(PersonKeys.TURN_UNDEAD, String.format("%s", _turnUndead));
+
+    // Row 9: CON and HP Mod
+    map.put(PersonKeys.CON, String.format("%s", _traits[PrimeTraits.CON.ordinal()]));
+    map.put(PersonKeys.HP_MOD, String.format("%s", _HPMod));
+    map.put(PersonKeys.RMR, String.format("%s", _racialPoisonResist));
+
+    // Row 10: DEX and DEX mods: ToHit Missile, AC Mod 
+    map.put(PersonKeys.DEX, String.format("%s", _traits[PrimeTraits.DEX.ordinal()]));
+    map.put(PersonKeys.TO_HIT_MISSLE, String.format("%s", _toHitDex));
+    map.put(PersonKeys.AC_MOD, String.format("%s", _ACMod));
+    
+    // Row 11: CHR, then Weight and Height of Hero
+    map.put(PersonKeys.CHR, String.format("%s", _traits[PrimeTraits.CHR.ordinal()]));
+    map.put(PersonKeys.WEIGHT, String.format("%s", _weight));
+    map.put(PersonKeys.HEIGHT, String.format("%s", _height));
+ 
+    // Row 12: AP and non-lethal combat values
+    map.put(PersonKeys.AP, String.format("%s", _AP));
+    map.put(PersonKeys.OVERBEARING, String.format("%s", _apMods[OVERBEAR]));
+    map.put(PersonKeys.PUMMELING, String.format("%s", _apMods[PUMMEL]));
+    map.put(PersonKeys.GRAPPLING, String.format("%s", _apMods[GRAPPLE]));
+    map.put(PersonKeys.SHIELD_BASH, String.format("%s", _apMods[BASH]));
+
+    // Row 13: Maximum languages 
+    map.put(PersonKeys.MAX_LANGS, String.format("%s", _maxLangs));
+    
+    // Row 14: All known languages as single string
+    StringBuilder sb = new StringBuilder();
+    for (int k=0; k < _knownLangs.size(); k++) {
+      sb.append(_knownLangs.get(k));
+      sb.append(", ");
+    }
+    String langList = new String(sb);
+    map.put(PersonKeys.LANGUAGES, langList);
+    
+    return map;
+  }
+
+
 
   // ====================================================
   // Private helper methods
@@ -710,7 +816,7 @@ public class Hero implements Serializable // IRegistryElement
     langs.add("Common");
     String s = _race.getRacialLanguage();
     if (s != null) {
-//      langs.add(s);
+      // langs.add(s);
       addUnique(langs, s);
     }
     return langs;
@@ -746,9 +852,9 @@ public class Hero implements Serializable // IRegistryElement
     final int[] dmgTbl = {-3, -3, -2, -2, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5};
 
     // STR values 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-    final int[] wtTbl = {80, 120, 160, 200, 280, 400, 480, 560, 640, 720, 880, 1040, 1200,
+    final int[] wtTbl = {80, 120, 160, 200, 280, 360, 440, 520, 600, 700, 800, 900, 1000,
         // STR values 16, 17, 18, 19, 20, 21
-        1440, 1680, 2000, 2400, 2800, 3200};
+        1200, 1500, 1800, 2100, 2300, 2600};
 
     // Internal check
     if ((toHitTbl.length != dmgTbl.length) && (toHitTbl.length != wtTbl.length)) {
@@ -774,7 +880,7 @@ public class Hero implements Serializable // IRegistryElement
   }
 
   /** Display the Hero's key characteristics */
-  private void displayHero()
+  private void auditOutHero()
   {
     StringBuilder out = new StringBuilder();
     out.append(_name + " ");
@@ -795,7 +901,7 @@ public class Hero implements Serializable // IRegistryElement
   {
     // TODO Make this list depend on PrimeTraits order, and not these constants
     final String[] ndx = {"STR", "INT", "WIS", "DEX", "CON", "CHR"};
-    System.out.println("\n" + msg);
+    System.out.println(msg);
     for (int k = 0; k < 6; k++) {
       System.out.print("\t" + ndx[k] + " = " + traits[k] + "\t");
     }
@@ -826,7 +932,8 @@ public class Hero implements Serializable // IRegistryElement
     CHR = 17;
 
     // Get all conditional skills for each occupation
-    switch (_occupation) {
+    switch (_occupation)
+    {
       case ("Academic"): {
         ocpDesc = "Knows diverse information, court politics and bureaucrats.";
         if (INT > 14) {

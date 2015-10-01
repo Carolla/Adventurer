@@ -139,7 +139,7 @@ public class Chronos
    * Default package name for class files. Package names differ from the directories in that they
    * have a dot (.) separator instead of a slash (/) separator
    */
-  public static String DEFAULT_PKG = "pdc.";
+  public static String DEFAULT_PKG = "pdc.character.";
 
   /** Generic font folder */
   public static final String FONT_PATH = CHRONOS_LIB_RESOURCES_PATH + FS +"fonts" + FS;
@@ -162,7 +162,7 @@ public class Chronos
   /** No normal character can be below this low range */
   static public int LOW_TRAIT = 8;
   /** No normal character can be above this high range */
-  static public int HIGH_TRAIT = 19;
+  static public int HIGH_TRAIT = 18;
   /** If Person reaches this value for any trait, he is unconscious */
   static public int COMA_TRAIT_VALUE = 3;
   /** Breakpoint trait for positive mods */
@@ -178,8 +178,7 @@ public class Chronos
   static public final int SPW = GPW / 2;
 
   /**
-   * Age and Race and Person constants that should not be defined in one project when needed in a
-   * library
+   * Race and Person constants that should not be defined in one project when needed in a library
    */
   public static enum ATTRIBUTE {
     /**

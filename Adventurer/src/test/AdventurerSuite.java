@@ -34,7 +34,7 @@ import test.integ.TA00b_Quit;
 @Suite.SuiteClasses({
 
     // ChronosLib test suite (includes MyLibaryTestSuite.class)
-    ChronosSuite.class,
+    // ChronosSuite.class,
 
     // UnitTestSuite includes all unit tests for all components
     UnitTestSuite.class,

@@ -7,7 +7,9 @@
  * by email: acline@carolla.com
  */
 
-package pdc;
+package pdc.character;
+
+import pdc.character.Hero.PrimeTraits;
 
 /**
  * @author Al Cline
@@ -15,13 +17,26 @@ package pdc;
  */
 public class Fighter extends Klass
 {
+  /** Starting die and initial free HP for klass */
+  private String _hitDie = "d10";
+  private int _freeHP = 10;
+  private String _startingGold = "5d4";
 
+  protected final String[] _fighterStuff = {"short sword w/scabberd | 80"};
+
+  
   /**
    * Default constructor, called reflectively by Klass
    */
   public Fighter() 
   {
-    // TODO Auto-generated constructor stub
-  }
+    _klassName = "Fighter";
+    _primeNdx = PrimeTraits.STR.ordinal();
+    _hpDie = _hitDie;
+    _initialHP = _freeHP;
+    _goldDice = _startingGold;
+    _klassItems = _fighterStuff;
+  } 
+
 
 }

@@ -10,6 +10,9 @@
 package test.pdc.character;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -27,46 +30,57 @@ import pdc.character.Hero.MockHero;
  */
 public class TestHero
 {
-  private Hero _hero;
-  private MockHero _mock;
+  private static Hero _hero;
+  private static MockHero _mock;
+
+  private final static int NBR_TRAITS = 6;
+  private static ArrayList<Integer> _traits = null;
+
+
+  private final String[] _klasses = {"Fighter", "Cleric", "Wizard", "Thief"};
+
+  private final String[] _races =
+      {"Human", "Dwarf", "Elf", "Gnome", "Half-Elf", "Half-Orc", "Hobbit"};
 
   /* Test Data */
-  private String NAME = "Falsoon";
-  private String GENDER = "male";
-  private String HAIR = "black";
-  private String RACE = "Human";
-  private String KLASS = "Fighter";
+  private static String NAME = "Falsoon";
+  private static String GENDER = "male";
+  private static String HAIR = "black";
+  private static String RACE = "Human";
+  private static String KLASS = "Cleric";
 
   /**
    * @throws java.lang.Exception
    */
   @BeforeClass
   public static void setUpBeforeClass() throws Exception
-  {}
+  {
+    // Create a new Hero
+    _hero = new Hero(NAME, GENDER, HAIR, RACE, KLASS);
+    assertNotNull(_hero);
+    _mock = _hero.new MockHero();
+    assertNotNull(_mock);
+    _traits = new ArrayList<Integer>(NBR_TRAITS);
+    assertNotNull(_traits);
+  }
 
   /**
    * @throws java.lang.Exception
    */
   @AfterClass
   public static void tearDownAfterClass() throws Exception
-  {}
+  {
+    _hero = null;
+    _mock = null;
+    _traits = null;
+  }
 
   /**
    * @throws java.lang.Exception
    */
   @Before
   public void setUp() throws Exception
-  {
-    // Audit messages are OFF at start of each test
-    MsgCtrl.auditMsgsOn(false);
-    // Error messages are ON at start of each test
-    MsgCtrl.errorMsgsOn(true);
-    // Create a new Hero
-    _hero = new Hero(NAME, GENDER, HAIR, RACE, KLASS);
-    assertNotNull(_hero);
-    _mock = _hero.new MockHero();
-    assertNotNull(_mock);
-  }
+  {}
 
   /**
    * @throws java.lang.Exception
@@ -74,52 +88,134 @@ public class TestHero
   @After
   public void tearDown() throws Exception
   {
-    _hero = null;
-    _mock = null;
     MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
   }
 
-
-  /**
-   * Generate the first rolled (unadjusted) traits
-   */
-  @Test
-  public void testHeroRawTraits() throws InstantiationException
-  {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
-    MsgCtrl.where(this);
-
-    int[] traits = _mock.getTraits();
-    assertNotNull(traits);
-    displayTraits(traits);
-  }
-
-  /**
-   * Generate the first rolled (unadjusted) traits
-   */
-  @Test
-  public void testKlassTraitAdj() throws InstantiationException
-  {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
-    MsgCtrl.where(this);
-
-    int[] traits = _mock.getTraits();
-    assertNotNull(traits);
-    displayTraits(traits);
-  }
-
+  
   // ====================================================
-  // INNER CLASS MockHero
+  // Tests Begin Here
   // ====================================================
 
-  /** Display the Hero's prime traits */
-  private void displayTraits(int[] traits)
+  /**
+   * Generate the Hero and examine the Hero.java output 
+   */
+  @Test
+  public void testHeroCtor() throws InstantiationException
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+    displayHero(_hero);
+  }
+  
+  
+  /**
+   * Generate the Hero klass generation. 
+   * Note: This test does not use the one created in setUpBeforeClass
+   */
+// @Test
+  public void testHeroKlasses() throws InstantiationException
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // Create a bunch of new heroes of the right klass
+    for (int k = 0; k < _klasses.length; k++) {
+      Hero aHero = new Hero(NAME, GENDER, HAIR, RACE, _klasses[k]);
+      MockHero aMock = aHero.new MockHero();
+      String name = aMock.getKlassName();
+      assertTrue(_klasses[k] == name);
+      MsgCtrl.msgln("Klass created: " + name);
+    }
+  }
+
+  /**
+   * Generate the Hero race generation.
+   * Note: This test does not use the one created in setUpBeforeClass
+   */
+//  @Test
+  public void testHeroRaces() throws InstantiationException
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // Create a bunch of new heroes of the right klass
+    for (int k = 0; k < _races.length; k++) {
+      Hero aHero = new Hero(NAME, GENDER, HAIR, _races[k], KLASS);
+      MockHero aMock = aHero.new MockHero();
+      String name = aMock.getRaceName();
+      assertTrue(_races[k] == name);
+      MsgCtrl.msgln("Race created: " + name);
+    }
+  }
+
+
+//  /**
+//   * Adjust traits for Klass
+//   */
+//  @Test
+//  public void testKlassTraitAdj() throws InstantiationException
+//  {
+//    MsgCtrl.auditMsgsOn(true);
+//    MsgCtrl.errorMsgsOn(true);
+//    MsgCtrl.where(this);
+//
+//    int FIGHTER = 0;
+//
+//    _traits = _mock.getTraits();
+//    assertNotNull(_traits);
+//
+//    Klass myKlass = _mock.getKlass();
+//    int prime = myKlass.getPrimeNdx();
+//    assertTrue(prime == FIGHTER);
+//    displayTraits("After Klass adjustment:", _traits);
+//  }
+//
+//  public void testRaceTraitAdj() throws InstantiationException
+//  {
+//    MsgCtrl.auditMsgsOn(false);
+//    MsgCtrl.errorMsgsOn(false);
+//    MsgCtrl.where(this);
+//
+//    _traits = _mock.getTraits();
+//    assertNotNull(_traits);
+//
+//    Race myRace = _mock.getRace();
+//    assertTrue(myRace.getRaceName() == "Human");
+//    displayTraits("After Race adjustment:", _traits);
+//  }
+
+  
+  // ====================================================
+  // Support Methods
+  // ====================================================
+
+  /** Display the Hero's key characteristics */
+  private void displayHero(Hero hero)
+  {
+    StringBuilder out = new StringBuilder();
+    out.append(hero.getName() + " ");
+    out.append(hero.getGender() + " ");
+    out.append(hero.getRaceName() + " ");
+    out.append(hero.getKlassName() + " ");
+    MsgCtrl.msg("Hero " + out);
+  }
+
+  /**
+   * Display the Hero's prime traits
+   * 
+   * @param msg header message before traits display
+   * @param _traits2 traits for display
+   */
+  private void displayTraits(String msg, ArrayList<Integer> _traits2)
   {
     String[] ndx = {"STR", "INT", "WIS", "CON", "DEX", "CHR"};
+    MsgCtrl.msgln("\n" + msg);
     for (int k = 0; k < 6; k++) {
-      MsgCtrl.msg(ndx[k] + " = " + traits[k] + "\t");
+      MsgCtrl.msg("\t" + ndx[k] + " = " + _traits2.get(k) + "\t");
     }
   }
 

@@ -7,10 +7,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import test.mock.AdvObjectMother;
-import test.mock.AdvObjectMother.MockBuilding;
-import test.mock.AdvObjectMother.MockBuildingRegistry;
-import test.mock.AdvObjectMother.MockMainframe;
 import civ.BuildingDisplayCiv;
 
 public class TestBuildingDisplayCiv

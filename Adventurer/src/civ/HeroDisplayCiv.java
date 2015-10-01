@@ -9,40 +9,36 @@
 
 package civ;
 
-import hic.HeroDisplay;
-
+import java.awt.BorderLayout;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.EnumMap;
 
-import mylib.Constants;
-import mylib.civ.BaseCiv;
-import mylib.civ.DataShuttle;
-import mylib.civ.DataShuttle.ErrorType;
-import pdc.Inventory;
-import pdc.character.Person;
 import chronos.pdc.AttributeList;
 import chronos.pdc.Item;
-import chronos.pdc.Occupation;
 import chronos.pdc.Skill;
+import hic.HeroDisplay;
+import hic.Mainframe;
+import mylib.Constants;
+import mylib.civ.BaseCiv;
+import pdc.Inventory;
+import pdc.character.Hero;
 
 /**
  * Output Civ: Creates the GUI widget <code>HeroDisplay</code>, passing output data to it, which
- * then formats and displays the Person data because the GUI has no knowledge of PDC objects.
+ * then formats and displays the Hero because the GUI has no knowledge of PDC objects.
  * 
  * @author Alan Cline
  * @version May 31 2010 // original <br>
  *          Jul 4 2010 // segregated HIC from PDC <br>
  *          Jan 4 2011 // removed Observer MVP model approach <br>
+ *          Oct 1 2015 // revised for new Hero generation rules <br>
  */
 public class HeroDisplayCiv
 {
-  /** Associated Person */
-  private Person _person = null;
+  /** Associated Hero */
+  private Hero _hero = null;
   /** Associated GUI */
   private HeroDisplay _widget = null;
-
-  /** Data Shuttle for attribute data */
-  private List<PersonKeys> _ds = null;
 
   /** Associated Inventory of the Person */
   private Inventory _inventory = null;
@@ -57,99 +53,120 @@ public class HeroDisplayCiv
   /** Whether character is being created. */
   public static boolean NEW_CHAR = false;
 
+  /** Hero data are converted and sent to the GUI in this EnumMap */
+  private EnumMap<PersonKeys, String> _outputMap;
+
+
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
   /**
-   * Creates the Civ and its associated output HeroDisplay widget Do not display the GUI if this is
-   * in JUnit test
+   * Displays a newly created Hero before it is saved in the Dormitory
    * 
-   * @param person the model object from which to get the display data
+   * @param hero the model object from which to get the display data
    */
-  public HeroDisplayCiv(Person person)
+  public HeroDisplayCiv()
   {
     if (!HeroDisplayCiv.LOADING_CHAR) {
       HeroDisplayCiv.NEW_CHAR = true;
     }
-
-    _person = person;
-    // if (!Constants.IN_TEST) {
-    // // Create the output display, passing this civ for later callbacks
-    // _widget = new HeroDisplay(this);
-    // }
+    _outputMap = new EnumMap<PersonKeys, String>(PersonKeys.class);
   }
+
+  /** Display the Hero the HeroDisplay widget
+   * 
+   * @param hero to display
+   */
+  public void displayHero(Hero hero)
+  {
+    _hero = hero;
+//    _widget = new HeroDisplay(this, Mainframe.getInstance());
+//    _widget = new HeroDisplay();
+    _outputMap = convertAttributes(_hero);
+//    _widget.displayAttributes(_outputMap);
+    
+  }
+
+
+  /** Convert the data in the Hero object to stringified data fields for widget display
+   * 
+   * @param hero to display
+   * @return the output map of all hero data fields
+   */
+  private EnumMap<PersonKeys, String> convertAttributes(Hero hero)
+  {
+    _outputMap = hero.loadAttributeMap(_outputMap);
+    return _outputMap;    
+    
+  }
+  
+//  /**
+//   * Creates the Civ and its associated output HeroDisplay widget. Do not display the GUI if this is
+//   * in JUnit test
+//   *
+//   * @param name the name of the person to be summoned
+//   */
+//  public HeroDisplayCiv(String name)
+//  {
+//    HeroDisplayCiv.LOADING_CHAR = true;
+//
+//    // Make a null person to run the summon method
+//    _hero = new Hero();
+//
+//    // Now load the person from the registry and display it
+//    _hero = _hero.load(name);
+//    _hero.display();
+//    this.resetLoadState();
+//  }
+
 
   /**
-   * Creates the Civ and its associated output HeroDisplay widget Do not display the GUI if this is
-   * in JUnit test
-   * 
-   * @param name the name of the person to be summoned
+   * @return the length of the inventory (number of Items)
    */
-  public HeroDisplayCiv(String name)
-  {
-    HeroDisplayCiv.LOADING_CHAR = true;
-
-    // Make a null person to run the summon method
-    _person = new Person();
-
-    // Now load the person from the registry
-    _person = _person.load(name);
-
-    // if (!Constants.IN_TEST) {
-    // // Create the output display, passing this civ for later callbacks
-    // _widget = new HeroDisplay(this);
-    // }
-    _person.display();
-    this.resetLoadState();
-  }
-
-  /** @return the length of the inventory (number of Items) */
   public int getInventorySize()
   {
     return _inventory.getNbrItems();
   }
 
-//   /**
-//   * Save the Person to a new file. This method pops up a file chooser so the user can select a
-//   * filename; else the Hero's name is used. If the Person is newly created, then the Person is
-//   * saved to a new file. If the Person already existed, then no file writes are written because
-//   the
-//   * <code>HeroDislay</code> panel does not allow edits; Save As options are disabled.
-//   *
-//   * @return true if the save worked correctly
-//   */
-//   public List<PersonFileData> getPersonFileData()
-//   {
-//   MsgCtrl.msgln(this, "\tsavePerson(): ");
-//  
-//   //Get the requested key data map needed for the chooser from the CIV
-//   _fileData = new List<PersonFileData>();
-//   _fileData.assignKey(PersonFileData.RESOURCE_DIR);
-//   _fileData.assignKey(PersonFileData.DEFAULT_FILENAME);
-//   _fileData.assignKey(PersonFileData.PERSON_EXT);
-//   _fileData.assignKey(PersonFileData.CHOOSER_LABEL);
-//   return _person.getFileData(_fileData);
-//   }
+  // /**
+  // * Save the Person to a new file. This method pops up a file chooser so the user can select a
+  // * filename; else the Hero's name is used. If the Person is newly created, then the Person is
+  // * saved to a new file. If the Person already existed, then no file writes are written because
+  // the
+  // * <code>HeroDislay</code> panel does not allow edits; Save As options are disabled.
+  // *
+  // * @return true if the save worked correctly
+  // */
+  // public List<PersonFileData> getPersonFileData()
+  // {
+  // MsgCtrl.msgln(this, "\tsavePerson(): ");
+  //
+  // //Get the requested key data map needed for the chooser from the CIV
+  // _fileData = new List<PersonFileData>();
+  // _fileData.assignKey(PersonFileData.RESOURCE_DIR);
+  // _fileData.assignKey(PersonFileData.DEFAULT_FILENAME);
+  // _fileData.assignKey(PersonFileData.PERSON_EXT);
+  // _fileData.assignKey(PersonFileData.CHOOSER_LABEL);
+  // return _person.getFileData(_fileData);
+  // }
 
   public boolean populateAbilityScores(AttributeList attribs)
   {
-
-
     return true;
   }
 
   /**
    * Format the model data and tell the widget to display it
    * 
-   * @param ds shuttle containing internally formatted key values
+   * @param ds map containing internally formatted key values
    * @return false is an error occurs
    */
-  public boolean populateAttributes(DataShuttle<PersonKeys> ds)
+  public boolean populateAttributes(EnumMap<PersonKeys, String> ds)
   {
     // Create a shuttle to contain the data and convert to widget String format
-    DataShuttle<PersonKeys> fieldShuttle = convertAttributes(ds);
-    _widget.displayAttributes(fieldShuttle);
+    _outputMap = convertAttributes(ds);
+    _widget.displayAttributes(_outputMap);
     return true;
   }
 
@@ -192,7 +209,8 @@ public class HeroDisplayCiv
    */
   public boolean deletePerson()
   {
-    return _person.delete();
+    // return _hero.delete();
+    return false;
   }
 
   /**
@@ -212,7 +230,8 @@ public class HeroDisplayCiv
    */
   public boolean savePerson(boolean overwrite)
   {
-    return _person.save(overwrite);
+    // return _hero.save(overwrite);
+    return false;
   }
 
   /**
@@ -223,71 +242,66 @@ public class HeroDisplayCiv
    */
   public boolean renamePerson(String name)
   {
-    return _person.rename(name);
+    // return _hero.rename(name);
+    return false;
   }
 
-  /**
-   * Load all person names from the database Method made static because in order to create a
-   * HeroDisplayCiv, a person or person name is needed, which is currently being loaded
-   * 
-   * @return list of people in the dorimtory
-   */
-  public static List<String> openDormitory()
-  {
-    Person tmp = new Person();
-    return tmp.wake();
-  }
+  // /**
+  // * Load all person names from the database Method made static because in order to create a
+  // * HeroDisplayCiv, a person or person name is needed, which is currently being loaded
+  // *
+  // * @return list of people in the dorimtory
+  // */
+  // public static List<String> openDormitory()
+  // {
+  // Person tmp = new Person();
+  // return tmp.wake();
+  // }
 
   /**
-   * Convert the attribute shuttle to an all-String shuttle for display. Each key value is a single
-   * field
+   * Convert the attributes in the map to an all-String shuttle for display. Each key value is a
+   * single field
    * 
    * @param ds model data shuttle
    * @return the string map of output data
    */
-  private DataShuttle<PersonKeys> convertAttributes(DataShuttle<PersonKeys> ds)
+  private EnumMap<PersonKeys, String> convertAttributes(EnumMap<PersonKeys, String> ds)
   {
     // Guard against null shuttle
     if (ds == null) {
       return null;
     }
-    // Guard: against invalid data in shuttle, but pass it to the GUI for
-    // error messaging
-    if (ds.getErrorType() != ErrorType.OK) {
-      return ds;
-    }
     // Guard: in case of null shuttles
     if (ds.size() == 0) {
-      ((DataShuttle<PersonKeys>) ds).setErrorType(ErrorType.EMPTY_SHUTTLE);
       return null;
     }
-    // Convert each value to a String en masse
-    for (PersonKeys key : ds.getKeys()) {
-      Object obj = ds.getField(key);
-      String str = BaseCiv.toString(obj);
-      // Handle manipulations for special keys
-      // Converts from inches to "9' 99" format (e.g., 81 in = 6' 9")
-      if (key == PersonKeys.HEIGHT) {
-//        Double  strnum = Utilities.formatDistance(Double.parseDouble(str));
-        ((DataShuttle<PersonKeys>) ds).putField(key, 6.0);    // temp until repaired
-      }
-      // Converts from ounces to "999.9 lb." format (e.g,100 oz = 6.25
-      // lb.)
-      else if (key == PersonKeys.LOAD) {
-        int load = ((Integer) obj).intValue();
-        double num = load / Constants.OUNCES_PER_POUND;
-        str = Double.toString(num);
-        ((DataShuttle<PersonKeys>) ds).putField(key, str);
-      } else if (key == PersonKeys.OCCUPATION) {
-        str = ((Occupation) obj).getName();
-        ((DataShuttle<PersonKeys>) ds).putField(key, str);
-      } else if (key == PersonKeys.ABILITY_SCORES) {
-        List<Integer> scores = ((AttributeList) obj).getList();
-        ((DataShuttle<PersonKeys>) ds).putField(key, scores);
-      } else {
-        ((DataShuttle<PersonKeys>) ds).putField(key, str);
-      }
-    }
+    // // Convert each value to a String en masse
+    // for (PersonKeys key : ds.getKeys()) {
+    // Object obj = ds.getField(key);
+    // String str = BaseCiv.toString(obj);
+    // // Handle manipulations for special keys
+    // // Converts from inches to "9' 99" format (e.g., 81 in = 6' 9")
+    // if (key == PersonKeys.HEIGHT) {
+    // // Double strnum = Utilities.formatDistance(Double.parseDouble(str));
+    // ((DataShuttle<PersonKeys>) ds).putField(key, 6.0); // temp until repaired
+    // }
+    // // Converts from ounces to "999.9 lb." format (e.g,100 oz = 6.25
+    // // lb.)
+    // else if (key == PersonKeys.LOAD) {
+    // int load = ((Integer) obj).intValue();
+    // double num = load / Constants.OUNCES_PER_POUND;
+    // str = Double.toString(num);
+    // ((DataShuttle<PersonKeys>) ds).putField(key, str);
+    // } else if (key == PersonKeys.OCCUPATION) {
+    // str = ((Occupation) obj).getName();
+    // ((DataShuttle<PersonKeys>) ds).putField(key, str);
+    // } else if (key == PersonKeys.ABILITY_SCORES) {
+    // List<Integer> scores = ((AttributeList) obj).getList();
+    // ((DataShuttle<PersonKeys>) ds).putField(key, scores);
+    // } else {
+    // ((DataShuttle<PersonKeys>) ds).putField(key, str);
+    // }
+    // }
     return ds;
   }
 
@@ -315,7 +329,8 @@ public class HeroDisplayCiv
       String lbWt = String.valueOf(lbs);
       String ozWt = String.valueOf(ozs);
       // Build displayable string
-      String itemStr = cat + BaseCiv.DELIM + name + BaseCiv.DELIM + qty + BaseCiv.DELIM + lbWt + BaseCiv.DELIM + ozWt;
+      String itemStr = cat + BaseCiv.DELIM + name + BaseCiv.DELIM + qty + BaseCiv.DELIM + lbWt
+          + BaseCiv.DELIM + ozWt;
       itemList.add(k, itemStr);
     }
     return itemList;
@@ -339,7 +354,8 @@ public class HeroDisplayCiv
       // String race = skill.getRace();
       // String klass = skill.getKlass();
       String description = skill.getDescription();
-      String skillStr = name + BaseCiv.DELIM + description; // race + BaseCiv.DELIM + klass + BaseCiv.DELIM + description;
+      String skillStr = name + BaseCiv.DELIM + description; // race + BaseCiv.DELIM + klass +
+                                                            // BaseCiv.DELIM + description;
       skillList.add(k, skillStr);
     }
     return skillList;
@@ -422,10 +438,10 @@ public class HeroDisplayCiv
   // return deltaStr;
   // }
 
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ Inner Class: MockHeroDisplayCiv
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
+
+  // ==================================================================
+  // INNER CLASS: MockHeroDisplayCiv
+  // ==================================================================
 
   /** Inner class used for testing private methods */
   public class MockHeroDisplayCiv
@@ -434,15 +450,15 @@ public class HeroDisplayCiv
     public MockHeroDisplayCiv()
     {}
 
-    /**
-     * Get the data shuttle for this civ
-     * 
-     * @return data shutle
-     */
-    public List<PersonKeys> getList()
-    {
-      return HeroDisplayCiv.this._ds;
-    }
+    // /**
+    // * Get the data shuttle for this civ
+    // *
+    // * @return data shutle
+    // */
+    // public List<PersonKeys> getList()
+    // {
+    // return HeroDisplayCiv.this._ds;
+    // }
 
     // // TODO: Move to MockCiv
     // /* Verify correct adjective for given height
