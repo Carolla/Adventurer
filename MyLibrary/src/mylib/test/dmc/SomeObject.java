@@ -85,6 +85,7 @@ public class SomeObject implements IRegistryElement
    * 
    * @return the Predicate object
    */
+  @SuppressWarnings("serial")
   public Predicate<IRegistryElement> getPredicate()
   {
     Predicate<IRegistryElement> pred = new Predicate<IRegistryElement>() {

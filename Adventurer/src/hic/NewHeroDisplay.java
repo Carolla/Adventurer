@@ -19,7 +19,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +31,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
@@ -129,17 +127,16 @@ public class NewHeroDisplay extends JPanel
   // private final String INT = "Intelligence";
   // private final String WIS = "Wisdom";
 
-  private Map _abilityScoreFields = new HashMap(6);
-  private Map _abilityUpButtons = new HashMap(6);
-  private Map _abilityDownButtons = new HashMap(6);
-  private Map _abilityMaxLabel = new HashMap(6);
-  private Map _abilityMinLabel = new HashMap(6);
-  private Map _abilityAttribUpButtonRef = new HashMap(6);
-  private Map _abilityAttribDownButtonRef = new HashMap(6);
+  private Map<String, JTextField> _abilityScoreFields = new HashMap<String, JTextField>();
+  private Map<String, JButton> _abilityUpButtons = new HashMap<String, JButton>();
+  private Map<String, JButton> _abilityDownButtons = new HashMap<String, JButton>();
+  private Map<String, JLabel> _abilityMaxLabel = new HashMap<String, JLabel>();
+  private Map<String, JLabel> _abilityMinLabel = new HashMap<String, JLabel>();
+  private Map<JButton, String> _abilityAttribUpButtonRef = new HashMap<JButton, String>();
+  private Map<JButton, String> _abilityAttribDownButtonRef = new HashMap<JButton, String>();
 
   private final int _SCORE_MIN = 8;
   private final int _SCORE_MAX = 18;
-  private ArrayList<JSlider> _allSliders = new ArrayList<JSlider>();
   private List<String> _attributes;
   private JLabel _totalPointsSpentLabel = new JLabel("Total points remaining:");
   private JTextField _totalPointsValueTextField = new JTextField();
@@ -306,7 +303,7 @@ public class NewHeroDisplay extends JPanel
         // Collect all the attributes and save to a new Hero file
         setEditFlag(false);
         // Remove this panel and ignore any changes
-        Mainframe frame = Mainframe.getInstance();
+//        Mainframe frame = Mainframe.getInstance();
 //        frame.resetPanels();
         setVisible(false);
       }
@@ -696,7 +693,7 @@ public class NewHeroDisplay extends JPanel
    */
   private void setEditFlag(boolean editState)
   {
-    Mainframe mf = Mainframe.getInstance();
+//    Mainframe mf = Mainframe.getInstance();
     // mf.setEditFlag(editState);
   }
 
@@ -761,14 +758,14 @@ public class NewHeroDisplay extends JPanel
    */
   private DataShuttle<NewHeroFields> packFields()
   {
-//    // Package each of these into the data shuttle
-//    _shuttle.putField(NewHeroFields.NAME, _name);
-//    _shuttle.putField(NewHeroFields.GENDER, _gender);
-//    _shuttle.putField(NewHeroFields.HAIR_COLOR, _hairColor);
-//    _shuttle.putField(NewHeroFields.OCCUPATION, _occup);
-//    _shuttle.putField(NewHeroFields.RACENAME, _raceName);
-//    _shuttle.putField(NewHeroFields.KLASSNAME, NewHeroFields.KLASSNAME.getDefault());
-//    _shuttle.putField(NewHeroFields.ABILITY_SCORES, _nhCiv.getAllScores());
+    // Package each of these into the data shuttle
+    _shuttle.putField(NewHeroFields.NAME, _name);
+    _shuttle.putField(NewHeroFields.GENDER, _gender);
+    _shuttle.putField(NewHeroFields.HAIR_COLOR, _hairColor);
+    _shuttle.putField(NewHeroFields.OCCUPATION, _occup);
+    _shuttle.putField(NewHeroFields.RACENAME, _raceName);
+    _shuttle.putField(NewHeroFields.KLASSNAME, NewHeroFields.KLASSNAME.getDefault());
+    _shuttle.putField(NewHeroFields.ABILITY_SCORES, _nhCiv.getAllScores());
 //
 //    _shuttle.removeKey(NewHeroFields.HAIR_COLOR_OPTIONS);
 //    _shuttle.removeKey(NewHeroFields.OCCUPATION_OPTIONS);

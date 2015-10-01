@@ -14,16 +14,17 @@ package test.pdc.buildings;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+
+import chronos.pdc.buildings.Bank;
+import chronos.pdc.buildings.Bank.MockBank;
+import chronos.pdc.registry.RegistryFactory;
+
 import mylib.ApplicationException;
 import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import chronos.pdc.buildings.Bank;
-import chronos.pdc.buildings.Bank.MockBank;
-import chronos.pdc.registry.RegistryFactory;
 
 /**
  * Test the Bank methods
@@ -81,7 +82,7 @@ public class TestBank
   @Before
   public void setUp() throws Exception
   {
-    RegistryFactory _rf = RegistryFactory.getInstance();
+    _rf = RegistryFactory.getInstance();
     assertNotNull(_rf);
     _bank = new Bank(NAME, OWNER, HOVERTEXT, INTRO, DESC);
     assertNotNull(_bank);

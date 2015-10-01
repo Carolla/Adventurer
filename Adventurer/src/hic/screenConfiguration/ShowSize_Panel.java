@@ -4,6 +4,7 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class ShowSize_Panel extends JPanel {
 
 	@Override

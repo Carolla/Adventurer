@@ -144,7 +144,8 @@ public class DbReadWriter
    * 
    * @throws DatabaseClosedException trying to delete from a closed (null) db
    */
-  public boolean dbContains(final IRegistryElement target)
+  @SuppressWarnings("serial")
+public boolean dbContains(final IRegistryElement target)
       throws DatabaseClosedException
   {
     // return _db.isStored(target); // this db4o call doesn't seem to work
@@ -168,6 +169,7 @@ public class DbReadWriter
    * @throws DatabaseReadOnlyException if trying to delete from a RO db
    * @throws NullPointerException if target object is null
    */
+  @SuppressWarnings("serial")
   public boolean dbDelete(final IRegistryElement target)
       throws DatabaseClosedException, DatabaseReadOnlyException,
       NullPointerException
@@ -329,6 +331,7 @@ public class DbReadWriter
      * WARNING: This method is for testing only. An application should never have a need to clear
      * the database, file, and DbReadWriter.
      */
+    @SuppressWarnings("serial")
     public void dbClear()
     {
       ObjectSet<IRegistryElement> obSet = _db.query(new Predicate<IRegistryElement>() {
@@ -344,6 +347,7 @@ public class DbReadWriter
 
 
     /** Finds all elements in the given Registry ReadWriter */
+    @SuppressWarnings("serial")
     public int dbSize()
     {
       ObjectSet<IRegistryElement> obSet = _db.query(new Predicate<IRegistryElement>() {

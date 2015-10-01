@@ -11,12 +11,8 @@ package test.pdc;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-
-import java.util.List;
-
 import mylib.ApplicationException;
 import mylib.MsgCtrl;
-import mylib.pdc.Registry;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -195,21 +191,5 @@ public class TestAdventure
   {
     _rf.closeAllRegistries();
   }
-
-
-  /**
-   * dump the contents of the given registry
-   * 
-   * @param reg registry from which to list all keys
-   */
-  private void dump(Registry reg)
-  {
-    List<String> elist = reg.getElementNames();
-    for (String elem : elist) {
-      MsgCtrl.msgln(elem);
-    }
-  }
-
-
 
 }

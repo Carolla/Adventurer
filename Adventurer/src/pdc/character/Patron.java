@@ -27,6 +27,7 @@ package pdc.character;
  * @see Innkeeper
  * @see Hero
  */
+@SuppressWarnings("serial")
 public class Patron extends Person
 {
 	/** Internal: Indicates if <code>Patron</code> left after a rumor, or if they rebuked the 
@@ -78,9 +79,9 @@ public class Patron extends Person
 //        String msg = _msgTbl.viewCurrentMsg(polarity);
 //        // Set rebuke flag if all negative messages are given
 //        if ((msg == null) && (polarity == false)) {
-//        	setRebuke();
+//            setRebuke();
 //        }
-        // TODO placeholder for now
+//        // TODO placeholder for now
         String msg = "Fix this soon";
         return msg;
     }
@@ -101,14 +102,14 @@ public class Patron extends Person
  * 								PRIVATE METHODS
  * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ */  
 
-    /** Sets the flag to indicate the <code>Patron</code> is annoyed and leaving. 
-     * The <code>Innkeeper</code> will eject the <code>Hero</code> from the game when 
-     * the rebuke count is high enough.
-     */
-    private void setRebuke() 
-    {
-    	_rebuke = true;
-    }
+//    /** Sets the flag to indicate the <code>Patron</code> is annoyed and leaving. 
+//     * The <code>Innkeeper</code> will eject the <code>Hero</code> from the game when 
+//     * the rebuke count is high enough.
+//     */
+//    private void setRebuke() 
+//    {
+//    	_rebuke = true;
+//    }
 
     
 }   // end Patron class

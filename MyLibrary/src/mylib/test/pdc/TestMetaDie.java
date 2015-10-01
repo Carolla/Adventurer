@@ -13,13 +13,14 @@ package mylib.test.pdc;
 
 import java.util.Arrays;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import junit.framework.TestCase;
 import mylib.MsgCtrl;
 import mylib.pdc.MetaDie;
 import mylib.pdc.MetaDie.MockMetaDie;
-
-import org.junit.After;
-import org.junit.Before;
 
 
 /**
@@ -74,6 +75,49 @@ public class TestMetaDie extends TestCase
   // Let the Testing Begin!
   // --------------------------------------------------------------------------------------------------------------
 
+  /** Test that rollTrait is returning the proper range and randomness */
+  public void testRollTraits()
+  {
+    // Audit messages are OFF at start of each test
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    double COUNT = 100000;
+    int trait = 0;
+    double sum = 0;
+    double avg = 0.0;
+    int min = 99;
+    int max = -1;
+
+    // Roll a lot of prime traits and check for min, max, and average
+    for (int k = 0; k < COUNT; k++) {
+      trait = rollSingleTrait();   // returns a single prime trait between 3 and 18
+      assertTrue("Trait out of range", ((trait >= 1) && (trait <= 18)));
+      sum += trait;
+      min = Math.min(min, trait);
+      max = Math.max(max, trait);
+    }
+    avg = sum / COUNT;
+    MsgCtrl.msg("\tMin rolled = " + min + "; \t Max rolled = " + max);
+    MsgCtrl.msgln("\tSum of traits = " + sum);
+    MsgCtrl.msgln("\tAverage = " + avg);
+  }
+
+  // private support
+  /** Roll a single trait */
+  private int rollSingleTrait()
+  {
+    int NBR_TRAITS = 6;
+    int value = 0;
+
+    for (int k = 0; k < NBR_TRAITS; k++) {
+      value = _md.rollTrait(); // rolls 4d6 - lowest d6
+    }
+    return value;
+  }
+
+
   /**
    * Test selecting a random Gaussian (normal) multiplier
    * 
@@ -81,12 +125,13 @@ public class TestMetaDie extends TestCase
    * @Error.Test MetaDie.getGaussian(double mean, double low, double high) ok
    * @Null.Test MetaDie.getGaussian(double mean, double low, double high) compile error
    */
+  @Test
   public void testGetGaussian() throws Exception
   {
     // Audit messages are OFF at start of each test
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\ttestGetGaussian()");
+    MsgCtrl.where(this);
 
     // Generate a sufficiently large population so that averages are closer to expected averages
     // int NBR_LOOPS = 1000;
@@ -267,7 +312,7 @@ public class TestMetaDie extends TestCase
     // Audit messages are OFF at start of each test
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\ttestRoll()");
+    MsgCtrl.where(this);
 
     // Generate a sufficiently large population so that averages are closer to expected averages
     int NBR_LOOPS = 10000; // ten thousand rolls

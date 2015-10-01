@@ -12,9 +12,11 @@
 
 package pdc.command;
 
-import pdc.GameClock;
+import java.util.Comparator;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 
-import java.util.LinkedList;
+import pdc.GameClock;
 
 /**
  *	Puts Events on an insertion list in the order in which the 
@@ -51,9 +53,10 @@ import java.util.LinkedList;
 public class DeltaCmdList
 {
     /** Internal reference */
-    private LinkedList<Event> _dlist = null;
+    private BlockingQueue<Event> _dlist = null;
     /** Internal reference */
     private GameClock _clock = null;
+    private int DEFAULT_QUEUE_SIZE = 10;
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++  
      * 								CONSTRUCTOR(S) AND RELATED METHODS
@@ -62,7 +65,11 @@ public class DeltaCmdList
     /** Default constuctor creates the DQ, currently implemented as a LinkedList. */
     public DeltaCmdList()
     {
-        _dlist = new LinkedList<Event>();
+        _dlist = new PriorityBlockingQueue<Event>(DEFAULT_QUEUE_SIZE , new Comparator<Event>() {
+			@Override
+			public int compare(Event first, Event second) {
+				return first.getDelta() - second.getDelta();
+			}});
         _clock = GameClock.getInstance();
     }
 
@@ -78,20 +85,39 @@ public class DeltaCmdList
      */
     public Command getNextCmd()
     {
-        // Extract the first node from the list
-        Event evt = (Event) _dlist.getFirst();
-        _dlist.removeFirst();
-        _clock.increment(evt.getDelta());
-        Command cmd = evt.getCommand();
-        //        Dgn.debugMsg("Command = " + cmd.getName() + ": delay = " + cmd.getDelay() + "; duration = "+ cmd.getDuration());
-        // Wait until the main windowing system is created and then get its reference
-        // Don't make this an internal attribute because DeltaCmdList is created first, and mf is null 
-        //        MainFrame mf = MainFrame.getInstance(); TODO: hook up to Adventurer
-        //        if (mf != null) {
-        //        	mf.updateStatus();
-        //        }
-        //        Dgn.auditMsg("CmdList Clock: " + _clock.getTime());
-        return cmd;
+        Event evt;
+        try {
+            evt = _dlist.take();
+            int deltaTime = evt.getDelta();
+            Command cmd = evt.getCommand();
+            
+            _clock.increment(deltaTime);
+            for (Event e : _dlist) {
+                e.setDelta(e.getDelta() - deltaTime);
+            }
+
+            return cmd;
+        } catch (InterruptedException e1) {
+            e1.printStackTrace();
+            return new NullCommand();
+        }
+
+    }
+    
+    public boolean isEmpty()
+    {
+    	return _dlist.isEmpty();
+    }
+    
+    /**
+     * How long until next Command should run.  Will block if called on an
+     * empty queue.
+     * 
+     * @return how long
+     */
+    public int timeToNextCmd()
+    {
+    	return _dlist.peek().getDelta();
     }
 
     /** 
@@ -105,81 +131,19 @@ public class DeltaCmdList
     public void insert(Command cmd)
     {
         // Wrap the command with an Event for insertion when the final delta is known
-        Event newEvent = new Event(cmd);		// wrap the Command with a delta value
-        Event curEvent = null;						    // placeholder for next node being investigated
-
-        // Add the first Event onto an empty DQ
-        if (_dlist.size() == 0) {
-            _dlist.add(newEvent);
-            return;
-        }
-
-        // Traverse the DQ, looking for the next place to add the new Event, based on its delta
-        int k = 0;
-        int endList = _dlist.size();
-        for (; k < endList; k++) {
-            curEvent = (Event) _dlist.get(k);
-            if (insertLocal(newEvent, curEvent, k) == true) {
-                //        		dump();		// Check the resulting DQ order
-                return;
-            }
-        }
-        // Add newEvent to end of list
+        Event newEvent = new Event(cmd);
         _dlist.add(newEvent);
-        //		dump();		// Check the resulting DQ order
-        return;
-
-    }	// end of insert() method
-
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++  
-     * 								PRIVATE METHODS
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-
-    /**
-     * Inserts the new delta in front of the current node, and decrements that node's delta in place.
-     * This private method implements Step 2 of the algorithm described in the class description.
-     * 
-     * @param newEvent 	the new Event to be inserted in the DQ
-     * @param curEvent 		the current Event to be displaced and delta-adjusted by the insertion
-     * @param index 			the position of the node containing the curEvent on the list
-     * @return true if new delta < current node's delta and insertion took place; else return false
-     */
-    private boolean insertLocal(Event newEvent, Event curEvent, int index)
-    {
-        // Guard: new.delta < curNode.delta
-        int newDelta = newEvent.getDelta();
-        int curDelta = curEvent.getDelta();
-        // Insert sooner Event at front of list
-        if (newDelta < curDelta) {
-            // Calc and reset the current delta
-            curEvent.setDelta(curDelta - newDelta);
-            // Update the old Event in the DQ
-            _dlist.set(index, curEvent);
-            // Add the new Event, which pushes the current Node back one
-            _dlist.add(index, newEvent);
-            return true;
-        }
-        else {
-            // Else decrement the newEvent by curEvent.delay and return
-            newEvent.setDelta(newDelta - curDelta);
-            return false;
-        }
     }
 
     /** Dump the delta list. For debugging only. */
     public void dump()
     {
-        Command cmd = null;
-        int nbrNodes = _dlist.size();
-        Event[] evlist = new Event[nbrNodes];
-        _dlist.toArray(evlist);
-
-        for (int k = 0; k < nbrNodes; k++)
+        int pos = 0;
+        for (Event e : _dlist)
         {
-            cmd = evlist[k].getCommand();
+            Command cmd = e.getCommand();
             System.err.println(cmd.getName() + "(" + cmd.getDelay() + ", " +
-                    cmd.getDuration() + "); delta = " + evlist[k].getDelta() +
-                    ", pos = " + k);
+                    cmd.getDuration() + "); delta = " + e.getDelta() + ", pos = " + pos++);
         }
         System.err.println("-------------------------\n");
     }

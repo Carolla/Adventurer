@@ -1,7 +1,5 @@
 package hic;
 
-import net.miginfocom.swing.MigLayout;
-
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,11 +9,13 @@ import javax.swing.BorderFactory;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
-import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import net.miginfocom.swing.MigLayout;
+
+@SuppressWarnings("serial")
 public class HeroSliders extends JDialog implements ChangeListener
 {
 	private final int XPOS = 100;
@@ -37,9 +37,7 @@ public class HeroSliders extends JDialog implements ChangeListener
 	
 	public HeroSliders(){
 		setBounds(XPOS, YPOS, W_WIDTH, W_HEIGHT);
-		
-		JTextField totalSpent = new JTextField();
-		
+				
 		_contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(_contentPanel, BorderLayout.CENTER);
         _contentPanel.setLayout(new MigLayout());
@@ -64,10 +62,6 @@ public class HeroSliders extends JDialog implements ChangeListener
 	}
 	
 	public void stateChanged(ChangeEvent e){
-		int total = 0;
-		for(JSlider slider : _allSliders){
-			
-		}
 	}
 	
 	public static void main(String args[]){

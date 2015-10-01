@@ -137,6 +137,7 @@ public class SkillRegistry extends Registry
    * 
    * @return the skillList
    */
+  @SuppressWarnings("serial")
   public ArrayList<Skill> getSkillList()
   {
     List<IRegistryElement> sklSet = get(new Predicate<IRegistryElement>() {

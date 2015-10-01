@@ -11,25 +11,21 @@
 
 package test.civ;
 
-import pdc.character.Person;
-
-import civ.HeroDisplayCiv;
-import civ.HeroDisplayCiv.MockHeroDisplayCiv;
-import civ.PersonKeys;
-
-import chronos.pdc.Item;
-
-import mylib.Constants;
-import mylib.MsgCtrl;
-import mylib.civ.DataShuttle;
-
 import java.io.File;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
+import mylib.Constants;
+import mylib.MsgCtrl;
+import mylib.civ.DataShuttle;
 
 import org.junit.After;
 import org.junit.Before;
+
+import pdc.character.Person;
+import civ.HeroDisplayCiv;
+import civ.HeroDisplayCiv.MockHeroDisplayCiv;
+import civ.PersonKeys;
 
 /**
  * 
@@ -111,16 +107,16 @@ public class TestHeroDisplayCiv extends TestCase
     private final String OP_DESCRIPTION = "A giant male with brown hair. He is weather-beaten and tough.";
 
     // DISPLAY VALUES when different from Person output data
-    private final String DSP_XP = "0";
-    private final String DSP_LEVEL = "0";
-    private final String DSP_HP = "10";
+//    private final String DSP_XP = "0";
+//    private final String DSP_LEVEL = "0";
+//    private final String DSP_HP = "10";
 
     // Row 2: Armor Class, Speed, Age, Height, and Weight
-    private final String DSP_AC = "10";
-    private final String DSP_SPEED = "4.0";
+//    private final String DSP_AC = "10";
+//    private final String DSP_SPEED = "4.0";
     // private final String DSP_AGE = "17.0";
-    private final String DSP_HEIGHT = "6' 9\"";
-    private final String DSP_WEIGHT = "175";
+//    private final String DSP_HEIGHT = "6' 9\"";
+//    private final String DSP_WEIGHT = "175";
 
     // // Row 3: Gold, Silver, Gold Banked, and Load
     // private final String DSP_GOLD = "15";
@@ -717,79 +713,79 @@ public class TestHeroDisplayCiv extends TestCase
      *            shuttle containing data formatted for the widget
      * @return true only if all asserts passed
      */
-    private boolean verifyPersonDisplay(DataShuttle<PersonKeys> ws)
-    {
-        // Null guards
-        if (ws == null) {
-            return false;
-        }
-        if (DataShuttle.hasErrors(ws)) {
-            return false;
-        }
-        // temps
-        String s = null;
-        int intNum = 0;
-        double dblNum = 0.0f;
-
-        // Verify that the Person contains the expected data
-        // Compare each requested key value with the expected output value
-        // NamePlate before Attribute grid: Name, gender, Race, Klass
-        s = (String) ws.getField(PersonKeys.NAME);
-        assertEquals(s, NAME);
-        s = (String) ws.getField(PersonKeys.GENDER);
-        assertEquals(s, GENDER);
-        s = (String) ws.getField(PersonKeys.RACENAME);
-        assertEquals(s, RACENAME);
-        s = (String) ws.getField(PersonKeys.KLASSNAME);
-        assertEquals(s, KLASSNAME);
-
-        // Row 1: XP, Level, Hit Points, Occupation, Hunger state
-        s = (String) ws.getField(PersonKeys.XP);
-        assertEquals(s, DSP_XP);
-        s = (String) ws.getField(PersonKeys.LEVEL);
-        assertEquals(s, DSP_LEVEL);
-        s = (String) ws.getField(PersonKeys.HP);
-        assertEquals(s, DSP_HP);
-        s = (String) ws.getField(PersonKeys.OCCUPATION);
-        assertEquals(s, OCCUP);
-        s = (String) ws.getField(PersonKeys.HUNGER);
-        assertEquals(s, OP_HUNGER);
-
-        // Row 2: Armor Class, Speed, Age, Height, and Weight
-        s = (String) ws.getField(PersonKeys.AC);
-        assertEquals(s, DSP_AC);
-        s = (String) ws.getField(PersonKeys.SPEED);
-        assertEquals(s, DSP_SPEED);
-        s = (String) ws.getField(PersonKeys.HEIGHT);
-        assertEquals(s, DSP_HEIGHT);
-        s = (String) ws.getField(PersonKeys.WEIGHT);
-        assertEquals(s, DSP_WEIGHT);
-
-        // Row 3: Gold, Silver, Gold Banked, and Load (wt carried)
-        intNum = ((Item) ws.getField(PersonKeys.GOLD)).getQuantity();
-        assertEquals(intNum, OP_GOLD);
-        intNum = ((Item) ws.getField(PersonKeys.SILVER)).getQuantity();
-        assertEquals(intNum, OP_SILVER);
-        dblNum = ((Double)
-                ws.getField(PersonKeys.GOLD_BANKED)).doubleValue();
-        assertEquals(dblNum, OP_GOLD_BANKED);
-        intNum = ((Integer) ws.getField(PersonKeys.LOAD)).intValue();
-        assertEquals(intNum, OP_LOAD);
-
-        // Row 4: Languages: Max and Known (List)
-        intNum = ((Integer) ws.getField(PersonKeys.MAX_LANGS)).intValue();
-        assertEquals(intNum, OP_MAX_LANGS);
-        @SuppressWarnings("unchecked")
-        ArrayList<String> langs = (ArrayList<String>)
-                ws.getField(PersonKeys.LANGUAGES);
-        assertEquals(1, langs.size());
-        assertEquals(langs.get(0), OP_LANGUAGES);
-
-        // Row 5: Description of the new Hero
-        s = (String) ws.getField(PersonKeys.DESCRIPTION);
-        assertEquals(s, OP_DESCRIPTION);
-
-        return true;
-    }
+//    private boolean verifyPersonDisplay(DataShuttle<PersonKeys> ws)
+//    {
+//        // Null guards
+//        if (ws == null) {
+//            return false;
+//        }
+//        if (DataShuttle.hasErrors(ws)) {
+//            return false;
+//        }
+//        // temps
+//        String s = null;
+//        int intNum = 0;
+//        double dblNum = 0.0f;
+//
+//        // Verify that the Person contains the expected data
+//        // Compare each requested key value with the expected output value
+//        // NamePlate before Attribute grid: Name, gender, Race, Klass
+//        s = (String) ws.getField(PersonKeys.NAME);
+//        assertEquals(s, NAME);
+//        s = (String) ws.getField(PersonKeys.GENDER);
+//        assertEquals(s, GENDER);
+//        s = (String) ws.getField(PersonKeys.RACENAME);
+//        assertEquals(s, RACENAME);
+//        s = (String) ws.getField(PersonKeys.KLASSNAME);
+//        assertEquals(s, KLASSNAME);
+//
+//        // Row 1: XP, Level, Hit Points, Occupation, Hunger state
+//        s = (String) ws.getField(PersonKeys.XP);
+//        assertEquals(s, DSP_XP);
+//        s = (String) ws.getField(PersonKeys.LEVEL);
+//        assertEquals(s, DSP_LEVEL);
+//        s = (String) ws.getField(PersonKeys.HP);
+//        assertEquals(s, DSP_HP);
+//        s = (String) ws.getField(PersonKeys.OCCUPATION);
+//        assertEquals(s, OCCUP);
+//        s = (String) ws.getField(PersonKeys.HUNGER);
+//        assertEquals(s, OP_HUNGER);
+//
+//        // Row 2: Armor Class, Speed, Age, Height, and Weight
+//        s = (String) ws.getField(PersonKeys.AC);
+//        assertEquals(s, DSP_AC);
+//        s = (String) ws.getField(PersonKeys.SPEED);
+//        assertEquals(s, DSP_SPEED);
+//        s = (String) ws.getField(PersonKeys.HEIGHT);
+//        assertEquals(s, DSP_HEIGHT);
+//        s = (String) ws.getField(PersonKeys.WEIGHT);
+//        assertEquals(s, DSP_WEIGHT);
+//
+//        // Row 3: Gold, Silver, Gold Banked, and Load (wt carried)
+//        intNum = ((Item) ws.getField(PersonKeys.GOLD)).getQuantity();
+//        assertEquals(intNum, OP_GOLD);
+//        intNum = ((Item) ws.getField(PersonKeys.SILVER)).getQuantity();
+//        assertEquals(intNum, OP_SILVER);
+//        dblNum = ((Double)
+//                ws.getField(PersonKeys.GOLD_BANKED)).doubleValue();
+//        assertEquals(dblNum, OP_GOLD_BANKED);
+//        intNum = ((Integer) ws.getField(PersonKeys.LOAD)).intValue();
+//        assertEquals(intNum, OP_LOAD);
+//
+//        // Row 4: Languages: Max and Known (List)
+//        intNum = ((Integer) ws.getField(PersonKeys.MAX_LANGS)).intValue();
+//        assertEquals(intNum, OP_MAX_LANGS);
+//        @SuppressWarnings("unchecked")
+//        ArrayList<String> langs = (ArrayList<String>)
+//                ws.getField(PersonKeys.LANGUAGES);
+//        assertEquals(1, langs.size());
+//        assertEquals(langs.get(0), OP_LANGUAGES);
+//
+//        // Row 5: Description of the new Hero
+//        s = (String) ws.getField(PersonKeys.DESCRIPTION);
+//        assertEquals(s, OP_DESCRIPTION);
+//
+//        return true;
+//    }
 
 } // end of TestHeroDisplayCiv class

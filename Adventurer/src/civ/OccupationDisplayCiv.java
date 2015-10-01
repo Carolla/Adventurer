@@ -53,8 +53,8 @@ public class OccupationDisplayCiv extends BaseCiv<OccupationKeys, OccupationKeys
   /** Error type for validating input for Skills */
   static public final int INVALID_WHITESPACE = -3;
 
-  private DataShuttle<OccupationKeys> _ds = null;
-  private DataShuttle<OccupationKeys> _ws = null;
+//  private DataShuttle<OccupationKeys> _ds = null;
+//  private DataShuttle<OccupationKeys> _ws = null;
 
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS

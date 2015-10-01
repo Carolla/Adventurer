@@ -13,10 +13,6 @@ package pdc.command;
 
 import java.util.List;
 
-import chronos.pdc.buildings.Building;
-import chronos.pdc.registry.BuildingRegistry;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.BuildingDisplayCiv;
 
 
@@ -51,117 +47,73 @@ import civ.BuildingDisplayCiv;
  */
 public class CmdEnter extends Command
 {
-  // THESE CONSTANTS MUST BE STATIC BECAUSE THEY ARE CALLED IN THE CONSTRUCTOR
-  /** The description of what the command does, used in the {@code help()} method. */
-  static private final String CMD_DESCRIPTION = "Enter into the Building of choice.";
-  /** Format for this command; null building defaults to current building */
-  static private final String CMDFMT = "ENTER [Building Name]";
-  /** This command starts immediately, requiring no delay. */
-  static private final int DELAY = 0;
-  /** This command takes 10 seconds on the game clock. */
-  static private final int DURATION = 10;
+    // THESE CONSTANTS MUST BE STATIC BECAUSE THEY ARE CALLED IN THE CONSTRUCTOR
+    /** The description of what the command does, used in the {@code help()} method. */
+    static private final String CMD_DESCRIPTION = "Enter into the Building of choice.";
+    /** Format for this command; null building defaults to current building */
+    static private final String CMDFMT = "ENTER [Building Name]";
+    /** This command starts immediately, requiring no delay. */
+    static private final int DELAY = 0;
+    /** This command takes 10 seconds on the game clock. */
+    static private final int DURATION = 10;
 
-  /** Building accesses and displays are controlled by the BuildingDisplayCiv */
-  private BuildingDisplayCiv _bldgCiv;
-  /** BuildingRegistry from which to retrieve buildings and properties */
-  private BuildingRegistry _breg = null;
+    /** Building accesses and displays are controlled by the BuildingDisplayCiv */
+    private BuildingDisplayCiv _bldgCiv;
 
-  /** The building to enter */
-  private Building _targetBuilding;
+    /** The building to enter */
+    private String _targetBuilding;
 
 
 
-  // ============================================================
-  // Constructors and constructor helpers
-  // ============================================================
+    // ============================================================
+    // Constructors and constructor helpers
+    // ============================================================
 
-  /** Constructor called by the CommandFactory. There is no delay but a 10-second duration. */
-  public CmdEnter()
-  {
-    super("CmdEnter", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
-    _breg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
-  }
-
-
-  // ============================================================
-  // Implementation Methods
-  // ============================================================
-
-  /**
-   * There can be 0 or 1 arg in the arglist. If an arg is not specified, then the current Building
-   * is assumed. If an argument is specified, then all words are combined into a building name.
-   * <P>
-   * The Building name is checked with and without the word 'the', in case it is part of the name of
-   * the Building. If the Hero specified the building he is already in, then the image is
-   * redisplayed, which appears to the user as if nothing happened.
-   * 
-   * @param args if empty, then use current Building; otherwise gets Building specified;
-   * @return true if all worked, else returns false on input error
-   */
-  @Override
-  public boolean init(List<String> args) 
-  {
-    String bldgParm = convertArgsToString(args);
-      
-    // The BuildingDisplayCiv must already exist
-    _bldgCiv = BuildingDisplayCiv.getInstance();
-    if (_bldgCiv.canEnter(bldgParm)) {
-    	if (bldgParm.length() > 0) {
-        	_targetBuilding = _breg.getBuilding(bldgParm);
-    	} else {
-    		_targetBuilding = _bldgCiv.getCurrentBuilding();
-    	}
-    	return true;
-    } else {
-    	return false;
-    }
-  }
-
-
-  /** Enter the designated building, or the current building if displayed */
-  @Override
-  public boolean exec()
-  {
-    _bldgCiv.enterBuilding(_targetBuilding);
-    return true;
-  }
-
-
-  /** INNER CLASS: MOCK */
-  public class MockCmdEnter
-  {
-    /** Ctor */
-    public MockCmdEnter()
-    {}
-
-    public void clearTargetBldg()
+    /** Constructor called by the CommandFactory. There is no delay but a 10-second duration. */
+    public CmdEnter(BuildingDisplayCiv bdCiv)
     {
-      _targetBuilding = null;
+        super("CmdEnter", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
+        _bldgCiv = bdCiv;
     }
 
-    public Building getTargetBldg()
+
+    // ============================================================
+    // Implementation Methods
+    // ============================================================
+
+    /**
+     * There can be 0 or 1 arg in the arglist. If an arg is not specified, then the current Building
+     * is assumed. If an argument is specified, then all words are combined into a building name.
+     * <P>
+     * The Building name is checked with and without the word 'the', in case it is part of the name
+     * of the Building. If the Hero specified the building he is already in, then the image is
+     * redisplayed, which appears to the user as if nothing happened.
+     * 
+     * @param args if empty, then use current Building; otherwise gets Building specified;
+     * @return true if all worked, else returns false on input error
+     */
+    @Override
+    public boolean init(List<String> args)
     {
-      return _targetBuilding;
+        String bldgParm = convertArgsToString(args);
+
+        boolean canEnter = _bldgCiv.canEnter(bldgParm);
+        if (canEnter) {
+            _targetBuilding = bldgParm;
+        }
+        
+        _isInitialized = canEnter;
+        return canEnter;
     }
 
-    public int getDelay()
+
+    /** Enter the designated building, or the current building if displayed */
+    @Override
+    public boolean exec()
     {
-      return CmdEnter.DELAY;
+        _bldgCiv.enterBuilding(_targetBuilding);
+        return true;
     }
-
-    public int getDuration()
-    {
-      return CmdEnter.DURATION;
-    }
-
-    public String getCmdFormat()
-    {
-      return CmdEnter.CMDFMT;
-    }
-
-  } // end MockCmdEnter class
-
-
 
 } // end CmdEnter class
 

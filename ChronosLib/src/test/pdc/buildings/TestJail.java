@@ -25,9 +25,7 @@ import org.junit.Test;
 
 import chronos.pdc.buildings.Jail;
 import chronos.pdc.buildings.Jail.MockJail;
-import chronos.pdc.registry.NPCRegistry;
 import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 
 /**
  *    Test the Jail methods

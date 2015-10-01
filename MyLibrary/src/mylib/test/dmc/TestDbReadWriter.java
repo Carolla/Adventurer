@@ -467,6 +467,7 @@ public class TestDbReadWriter extends TestCase
    * @Normal.Test extract element lists using different kinds of Predicates
    */
   @Test
+  @SuppressWarnings("serial")
   public void testDbQuery()
   {
     MsgCtrl.auditMsgsOn(false);

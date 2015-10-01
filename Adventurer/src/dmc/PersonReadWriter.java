@@ -11,7 +11,6 @@ package dmc;
 
 import java.util.ArrayList;
 
-import mylib.Constants;
 import mylib.MsgCtrl;
 import pdc.character.Person;
 import chronos.Chronos;
@@ -38,13 +37,6 @@ import com.db4o.query.Query;
  */
 public class PersonReadWriter
 {
-  /** The extension to use for Character files (with the '.' delimiter) */
-  private final String PERSON_EXT = ".chr";
-  /** The name to put on the File Filter button for Person files */
-  private final String PERSON_LABEL = ".chr (Person Files)";
-  /** The directory where Persons are saved */
-  private final String DORMITORY = Chronos.USER_RESOURCES + "dormitory" + Constants.FS;
-
   /** XML Tag names to be used by various objects */
   /** Person file start tag */
   static public final String PERSON_GROUP = "Person";
@@ -106,20 +98,6 @@ public class PersonReadWriter
     }
     return p;
   }
-
-//  /**
-//   * Pack the Hero file related data that only this object has.
-//   * 
-//   * @param fileMap shuttle of keys designating the data to return
-//   * @return a data shuttle for displaying directory files for saving the Person
-//   */
-//  public List<PersonFileData> packFileData(List<PersonFileData> fileMap)
-//  {
-//    fileMap.putField(PersonFileData.RESOURCE_DIR, DORMITORY);
-//    fileMap.putField(PersonFileData.PERSON_EXT, PERSON_EXT);
-//    fileMap.putField(PersonFileData.CHOOSER_LABEL, PERSON_LABEL);
-//    return fileMap;
-//  }
 
   /**
    * Return a list of all the names of people saved in the dormitory

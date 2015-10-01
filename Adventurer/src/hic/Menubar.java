@@ -11,6 +11,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import civ.MainframeCiv;
+
 /**
  * Contains all the actions available from the menubar. This class uses the AdvMainframeCiv as its
  * Civ.
@@ -23,12 +25,18 @@ import javax.swing.JMenuItem;
 public class Menubar extends JMenuBar
 {
 
-  // ============================================================
+  private MainframeInterface _mainframe;
+  private MainframeCiv _mfCiv;
+
+
+// ============================================================
   // Constructor and constructor helpers
   // ============================================================
 
-  public Menubar()
+  public Menubar(MainframeInterface mainframe, MainframeCiv mfCiv)
   {
+      _mainframe = mainframe;
+      _mfCiv = mfCiv;
     setBackground(Color.LIGHT_GRAY);
     populateAdventureMenu();
     // populateHeroMenu();
@@ -60,7 +68,7 @@ public class Menubar extends JMenuBar
     mnAdventure.add(createMenuItemWithAction("Quit", new ActionListener() {
       public void actionPerformed(ActionEvent e)
       {
-        Mainframe.getInstance().getMainframeCiv().quit();
+          _mfCiv.quit();
       }
     }));
   }
@@ -80,7 +88,7 @@ public class Menubar extends JMenuBar
     {
       public void actionPerformed(ActionEvent evt)
       {
-        Mainframe.getInstance().showHelp();
+          ((Mainframe) _mainframe).showHelp();
       }
     });
     mnHelp.add(mntmHelp);
@@ -107,18 +115,18 @@ public class Menubar extends JMenuBar
   }
 
 
-  /**
-   * Create a menu item that is disabled--until it is implemented
-   * 
-   * @param string the name of the menu item
-   * @return a menu item
-   */
-  private JMenuItem createMenuItemWithNoAction(String string)
-  {
-    JMenuItem item = new JMenuItem(string);
-    item.setEnabled(false);
-    return item;
-  }
+//  /**
+//   * Create a menu item that is disabled--until it is implemented
+//   * 
+//   * @param string the name of the menu item
+//   * @return a menu item
+//   */
+//  private JMenuItem createMenuItemWithNoAction(String string)
+//  {
+//    JMenuItem item = new JMenuItem(string);
+//    item.setEnabled(false);
+//    return item;
+//  }
 
 
   // ============================================================
@@ -130,7 +138,7 @@ public class Menubar extends JMenuBar
   // // Populate the Enter menu
   // JMenu mnEnter = new JMenu("Enter");
   // this.add(mnEnter);
-  // // mnEnter.add(createMenuItemWithNoAction("Registrar"));
+  // mnEnter.add(createMenuItemWithNoAction("Registrar"));
   // mnEnter.add(createMenuItemWithNoAction("Arena"));
   // mnEnter.add(new JMenuItem("---"));
   // mnEnter.add(createMenuItemWithNoAction("Inn"));

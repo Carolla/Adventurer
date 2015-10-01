@@ -13,10 +13,6 @@ package pdc.command;
 
 import java.util.List;
 
-import chronos.pdc.buildings.Building;
-import chronos.pdc.registry.BuildingRegistry;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.BuildingDisplayCiv;
 
 /**
@@ -52,33 +48,19 @@ public class CmdApproach extends Command
 
     /** Building accesses and displays are controlled by the BuildingDisplayCiv */
     private BuildingDisplayCiv _bldgCiv;
-    /** BuildingRegistry from which to retrieve buildings */
-    private BuildingRegistry _breg;
     
     /** The building to approach */
-    private Building _targetBuilding;
-    
-    /** Error message if no arguments or multiple arguments specified */
-    private final String ERRMSG_NOBLDG =
-        "Sure, but you've gotta say WHICH building to approach.";
-    /** Error message if building not found in registry */
-    private final String ERRMSG_WRONG_BLDG =
-            "That some kinda slang, stranger?  WHAT building was that again?";
-    
-    /** Message if trying to jump from interior to exterior of buildings */
-    private final String ERRMSG_JUMPBLDG =
-        "You must leave this building before you approach another.";
-
+    private String _targetBuilding = "";
     
     // ============================================================
     // Constructors and constructor helpers
     // ============================================================
 
     /** Constructor called by the CommandFactory. */
-    public CmdApproach()
+    public CmdApproach(BuildingDisplayCiv bdCiv)
     {
       super("CmdApproach", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
-      _breg = (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
+      _bldgCiv = bdCiv;
     }
 
     // ============================================================
@@ -98,33 +80,9 @@ public class CmdApproach extends Command
     @Override
     public boolean init(List<String> args)
     {
-      // The BuildingDisplayCiv must already exist
-      _bldgCiv = BuildingDisplayCiv.getInstance();
-
-      // The Hero cannot be inside a building already
-      if (_bldgCiv.isInside() == true) {
-        _mfCiv.errorOut(ERRMSG_JUMPBLDG);
-        return false;
-      }
-      
-      // Case 1: Building name is given
-      if (args.size() != 0) {
-        String bldgParm = convertArgsToString(args);
-        Building b = _breg.getBuilding(bldgParm);
-        // Check that the building specified actually exists
-        if (b == null) {
-          _mfCiv.errorOut(ERRMSG_WRONG_BLDG);
-          return false;
-        } else {
-          _targetBuilding = b;
-          return true;
-        }
-      }
-      else {
-        // Case 2: No building specified
-          _mfCiv.errorOut(ERRMSG_NOBLDG);
-          return false;
-      }
+      _targetBuilding = convertArgsToString(args);
+      _isInitialized = _bldgCiv.canApproach(_targetBuilding);
+      return _isInitialized;
     }
 
     @Override
@@ -133,40 +91,4 @@ public class CmdApproach extends Command
         _bldgCiv.approachBuilding(_targetBuilding);
         return true;
     }
-    
-    /** INNER CLASS: MOCK */
-    public class MockCmdApproach
-    {
-      /** Ctor */
-      public MockCmdApproach()
-      {}
-
-      public void clearTargetBldg()
-      {
-        _targetBuilding = null;
-      }
-
-      public Building getTargetBldg()
-      {
-        return _targetBuilding;
-      }
-
-      public int getDelay()
-      {
-        return CmdApproach.DELAY;
-      }
-
-      public int getDuration()
-      {
-        return CmdApproach.DURATION;
-      }
-      
-      public String getCmdFormat()
-      {
-          return CmdApproach.CMDFMT;
-      }
-
-      
-    } // end MockCmdEnter class
-
 } // end CmdApproach Class

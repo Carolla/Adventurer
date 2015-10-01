@@ -25,19 +25,13 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 
 /**
- * Defines the common methods and attributes for all Klasses. Peasant is the
- * default Klass.
+ * Defines the common methods and attributes for all Klasses. Peasant is the default Klass.
  * <P>
  * NOTE: This class is serializable, so contains transients that will not be
  * stored.
  * 
  * @author Alan Cline
- * @version <DL>
- *          <DT> Build 1.0 Feb 14 2009 // original <DD> <DT> Build 1.1 Feb 28
- *          2009 // modifed after Race and Klass re-design <DD> <DT> Build 1.2
- *          Mar 5 2009 // modifed for serialization <DD> <DT> Build 1.3 Apr 19
- *          2011 // TAA Removed acAdj, it is in Person <DD>
- *          </DL>
+ * @version Sept 4 2014 // rewrite to support after Hero rewrite <br>
  */
 public abstract class Klass implements Serializable
 {

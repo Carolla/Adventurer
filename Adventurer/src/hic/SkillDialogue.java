@@ -713,7 +713,6 @@ public class SkillDialogue extends JDialog
     return _ws;
   }
 
-  @SuppressWarnings("unchecked")
   private void unpackShuttle(DataShuttle<SkillKeys> ds)
   {
     // Unpack the data shuttle into individual pieces of info

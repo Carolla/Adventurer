@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
 
+@SuppressWarnings("serial")
 public class StandardScreenPanel extends JPanel {
 
 	/**

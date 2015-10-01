@@ -25,9 +25,9 @@ import chronos.Chronos;
  */
 public class RegistryFactory
 {
-  static private RegistryFactory _rf = null;
+  private static RegistryFactory _rf = null;
 
-  private HashMap<RegKey, Registry> _regMap = null;
+  private static HashMap<RegKey, Registry> _regMap = null;
 
   /** Public list of all possible registries subclasses, in rough dependency order. */
   public enum RegKey

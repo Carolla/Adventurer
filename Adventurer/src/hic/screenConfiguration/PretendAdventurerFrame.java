@@ -29,9 +29,6 @@ import net.miginfocom.swing.MigLayout;
 @SuppressWarnings("serial")
 public class PretendAdventurerFrame extends JFrame {
   
-  /* Static variables */
-  private static final String TOWN_IMAGE = "ext_Quasqueton.JPG";
-  
   /* Instance variables */
   private final JPanel _contentPane;
   private final JPanel _appPanel;

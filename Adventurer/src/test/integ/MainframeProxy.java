@@ -15,7 +15,7 @@ import hic.MainframeInterface;
 import java.awt.Dimension;
 import java.awt.Image;
 
-import mylib.MsgCtrl;
+import javax.swing.JComponent;
 
 
 
@@ -27,57 +27,38 @@ import mylib.MsgCtrl;
  */
 public class MainframeProxy implements MainframeInterface
 {
-  /** Buffer for holding building name */
-  private String _bldgName;
   /** Buffer for holding messages for auditing */
   private String _msg;
   private String _errMsg;
 
+  
   /** Default constructor */
   public MainframeProxy()
   {
+//    MsgCtrl.auditMsgsOn(false);
+//    MsgCtrl.errorMsgsOn(false);
   }
+
   
-  /** Simulate quitting the system */
-  @Override
-  public boolean approvedQuit()
-  {
-      return true;
-  }
-  
-  /* (non-Javadoc)
-   * @see hic.IOPanelInterface#setImage(java.lang.String)
-   */
-  @Override
-  public void setImage(Image image)
-  {
-    MsgCtrl.where(this);
-//    _imagePath = image.
-//    MsgCtrl.msgln("\timage path = " + _imagePath);
-  }
-
-  /* (non-Javadoc)
-   * @see hic.IOPanelInterface#setImageTitle(java.lang.String)
-   */
-  @Override
-  public void setImageTitle(String bldgName)
-  {
-    MsgCtrl.where(this);
-    _bldgName = bldgName;
-    MsgCtrl.msgln("\tbuilding name = " + bldgName + "\n");
-  }
-
-  /** Returns the name and image path in array */
-  public String getBldgName()
-  {
-    return _bldgName;
-  }
-
-
   /** Replace the button panel with the final IOPanel */
   public void addIOPanel()
   {
-      MsgCtrl.msgln("\tMainframeProxy.addIOPanel(): ");
+//    MsgCtrl.where(this);
+  }
+
+  @Override
+public void add(JComponent comonent, String location)
+{
+//    MsgCtrl.where(this);
+}
+
+
+/** Simulate quitting the system */
+  @Override
+  public boolean approvedQuit()
+  {
+//  MsgCtrl.where(this);
+    return true;
   }
 
   /**
@@ -87,21 +68,9 @@ public class MainframeProxy implements MainframeInterface
    */
   public void displayErrorText(String errText)
   {
-	  MsgCtrl.where(this);
-	  _errMsg = errText;
-    MsgCtrl.errMsgln("\t" + errText);
-  }
-
-  /**
-   * Display the text into the output panel
-   * 
-   * @param text to be displayed
-   */
-  public void displayText(String text)
-  {
-	  MsgCtrl.where(this);
-	  _msg = text;
-    MsgCtrl.msgln("\t" + text);
+//    MsgCtrl.where(this);
+//    MsgCtrl.errMsgln("\t" + errText);
+    _errMsg = errText;
   }
 
   /**
@@ -112,8 +81,43 @@ public class MainframeProxy implements MainframeInterface
   @Override
   public boolean displayPrompt(String text)
   {
-    MsgCtrl.msgln("\tMainframeProxy.displayPrompt(): " + text);
+//    MsgCtrl.where(this);
     return true;
+  }
+
+  /**
+   * Display the text into the output panel
+   * 
+   * @param text to be displayed
+   */
+  public void displayText(String text)
+  {
+//    MsgCtrl.where(this);
+    _msg = text;
+  }
+
+  public String errMsgOut()
+  {
+//    MsgCtrl.where(this);
+    return _errMsg;
+  }
+
+  /** Return the size of the image space; set here temporarily */
+  public Dimension getImagePanelSize()
+  {
+//    MsgCtrl.where(this);
+    return new Dimension(800, 600);
+  }
+
+  /**
+   * Return last message out and clear buffer
+   * 
+   * @return whatever message was last intended for the GUI
+   */
+  public String msgOut()
+  {
+//    MsgCtrl.where(this);
+    return _msg;
   }
 
   /**
@@ -124,14 +128,17 @@ public class MainframeProxy implements MainframeInterface
    */
   public boolean msgPrompt(String msg)
   {
-    System.out.println("\tMainframeProxy.msgPrompt(): " + msg);
+//    MsgCtrl.where(this);
     return true;
   }
 
-  /** Return the size of the image space; set here temporarily */
-  public Dimension getImagePanelSize()
+  /*
+   * Misplaced redraw command in BuildingDisplayCiv
+   */
+  @Override
+  public void redraw()
   {
-    return new Dimension(800, 600);
+//    MsgCtrl.where(this);
   }
 
   /**
@@ -141,36 +148,37 @@ public class MainframeProxy implements MainframeInterface
    */
   public void setBuilding(BuildingRectangle rect)
   {
-    System.out.println("\tMainframeProxy.setBuilding(): " + rect);
+//    MsgCtrl.where(this);
   }
 
 
   /*
-   * Misplaced redraw commnad in BuildingDisplayCiv
+   * (non-Javadoc)
+   * 
+   * @see hic.IOPanelInterface#setImage(java.lang.String)
    */
   @Override
-  public void redraw()
+  public void setImage(Image image)
   {
-    System.out.println("MainframeProxy.redraw(): called.");
+//    MsgCtrl.where(this);
   }
 
-
-  /**
-   * Return last message out and clear buffer
+  /*
+   * (non-Javadoc)
    * 
-   * @return whatever message was last intended for the GUI
+   * @see hic.IOPanelInterface#setImageTitle(java.lang.String)
    */
-  public String msgOut()
+  @Override
+  public void setImageTitle(String bldgName)
   {
-    MsgCtrl.where(this);
-    return _msg;
+//    MsgCtrl.where(this);
+//    MsgCtrl.msgln("\tbuilding name = " + bldgName + "\n");
   }
-  
-  public String errMsgOut()
-  {
-	 MsgCtrl.where(this);
-	 return _errMsg;
-  }
+
+
+@Override
+public void repaint()
+{}
 
 
 } // end of MainframeProxy class

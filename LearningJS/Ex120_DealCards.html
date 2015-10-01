@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Deal Cards</title>
+  <script>
+   function Card(suit, face) {
+     this.suit = suit;
+     this.face = face;
+     this.showInfo = function() {
+       document.write(this.face + " of " + this.suit + "<br>");
+     }
+     this.shuffle = function() {
+       var suitList = ['Clubs', 'Spades', 'Diamonds', 'Hearts'];
+       var faceList = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King'];
+       this.suit = suitList[Math.round(Math.random() * suitList.length)];   
+       this.face = faceList[Math.round(Math.random() * faceList.length)];
+       }
+     this.deal = function() {
+       for (var k=0; k < 25; k++) {
+         myCard.shuffle();
+         this.showInfo();
+       }
+     }
+  }
+  var myCard = new Card("Spades", "Ace");
+  </script>
+</head>
+<body>
+    <input type="button" value="Deal Cards" onclick="myCard.deal()" />
+</body>
+</html>
+
