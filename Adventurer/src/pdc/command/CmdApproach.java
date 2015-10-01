@@ -107,7 +107,7 @@ public class CmdApproach extends Command
         return false;
       }
       
-      // Case 1: Building name is given 
+      // Case 1: Building name is given
       if (args.size() != 0) {
         String bldgParm = convertArgsToString(args);
         Building b = _breg.getBuilding(bldgParm);

@@ -90,6 +90,15 @@ public class CmdReturn extends Command
     _mfCiv.openTown();
     return true;
   }
+  
+  /** INNER CLASS: MOCK */
+  public class MockCmdReturn
+  {
+    /** Ctor */
+    public MockCmdReturn()
+    {}
+
+  } // end MockCmdReturn class
 
 } // end CmdReturn class
 
