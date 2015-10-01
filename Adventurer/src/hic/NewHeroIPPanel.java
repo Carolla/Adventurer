@@ -77,9 +77,9 @@ public class NewHeroIPPanel extends JPanel
       "Press F1 key for specific help.";
 
   /** Before the Hero's name is entered */
-  private final String GENERIC_TITLE = "Creating New Hero";
+  private final String PANEL_TITLE = "Create New Hero";
   /** Adapt title to Hero's name when entered */
-  private final String NEW_HERO_TITLE = GENERIC_TITLE + " -- ";
+  private final String NEW_HERO_TITLE = PANEL_TITLE + " -- ";
   /** Prompt for hero's name */
   private final String HERO_NAME_PROMPT = "What is your Hero's Name?";
   /** Hair color prompt */
@@ -157,7 +157,7 @@ public class NewHeroIPPanel extends JPanel
 
     int pad = Mainframe.PAD;
     Border matte = BorderFactory.createMatteBorder(pad, pad, pad, pad, Color.WHITE);
-    Border titledBorder = BorderFactory.createTitledBorder(matte, GENERIC_TITLE,
+    Border titledBorder = BorderFactory.createTitledBorder(matte, PANEL_TITLE,
         TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION);
     setBorder(titledBorder);
     _backColor = MY_LIGHT_BROWN;

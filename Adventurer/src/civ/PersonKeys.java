@@ -33,6 +33,17 @@ public enum PersonKeys
         RACENAME ,
         ABILITY_SCORES,
         
+        // Prime traits and their mods
+        STR, TO_HIT_MELEE, DAMAGE, WT_ALLOW, LOAD,
+        INT, TO_KNOW, CURRENT_MSP, MAX_MSP, MSP_PER_LEVEL, SPELLS_KNOWN, MAX_LANGS, 
+        WIS, MAM, CURRENT_CSP, MAX_CSP, CSP_PER_LEVEL, TURN_UNDEAD, 
+        CON, HP_MOD, RMR,
+        DEX, TO_HIT_MISSLE, AC_MOD,
+        CHR,
+        
+        // This group contains the remaining non-lethal combat values
+        AP, OVERBEARING, GRAPPLING, PUMMELING, SHIELD_BASH,
+        
         // This group contains the remaining displayable set of key values for the Person
         AC ,
         DESCRIPTION  ,
@@ -40,13 +51,12 @@ public enum PersonKeys
         GOLD_BANKED ,
         HEIGHT ,
         HP ,    
+        HP_MAX ,    
         HUNGER ,
         INVENTORY ,
         LANGUAGES ,
         LITERACY,
         LEVEL ,
-        LOAD ,
-        MAX_LANGS , 
         SILVER ,
         SKILLS,
         SPEED ,  

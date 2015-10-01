@@ -82,8 +82,8 @@ public class HeroDisplayCiv
   {
     _hero = hero;
 //    _widget = new HeroDisplay(this, Mainframe.getInstance());
-    _widget = new HeroDisplay();
-//    _outputMap = convertAttributes(_hero);
+//    _widget = new HeroDisplay();
+    _outputMap = convertAttributes(_hero);
 //    _widget.displayAttributes(_outputMap);
     
   }
@@ -96,8 +96,7 @@ public class HeroDisplayCiv
    */
   private EnumMap<PersonKeys, String> convertAttributes(Hero hero)
   {
-    String name = hero.getName();
-    _outputMap.put(PersonKeys.NAME, name);
+    _outputMap = hero.loadAttributeMap(_outputMap);
     return _outputMap;    
     
   }
