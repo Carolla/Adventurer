@@ -264,13 +264,11 @@ public class HeroDisplay extends JPanel
    * 
    * @param hdCiv the intermediary between this GUI and the Person
    */
-  public HeroDisplay(HeroDisplayCiv hdCiv, MainframeInterface mainframe)
+  public HeroDisplay(HeroDisplayCiv hdCiv)
   {
     _hdCiv = hdCiv;
-    _mainframe = mainframe;
     // _hdCiv.resetLoadState();
     setupDisplay();
-    // _mainframe.add(this, BorderLayout.WEST);
   }
 
 
@@ -575,7 +573,7 @@ public class HeroDisplay extends JPanel
     JScrollPane heroScroll = makeScrollable();
 
     // Add the non-static scrolling panel to the main JFrame
-    _mainframe.add(heroScroll, BorderLayout.WEST);
+    _mainframe.addPanel(heroScroll);
     _mainframe.repaint();
     // Get the focus so the arrow keys will work
     requestFocusInWindow();

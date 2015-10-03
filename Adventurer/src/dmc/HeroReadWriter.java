@@ -1,5 +1,5 @@
 /**
- * PersonReadWriter.java Copyright (c) 2008, Carolla Development, Inc. All Rights Reserved
+ * HeroReadWriter.java Copyright (c) 2008, Carolla Development, Inc. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
@@ -11,17 +11,17 @@ package dmc;
 
 import java.util.ArrayList;
 
-import mylib.MsgCtrl;
-import pdc.character.Person;
-import chronos.Chronos;
-
 import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
 import com.db4o.query.Query;
 
+import chronos.Chronos;
+import mylib.MsgCtrl;
+import pdc.character.Hero;
+
 /**
- * Handles Person serializations from Hero files.
+ * Handles Hero serializations from Hero files.
  * 
  * @author Alan Cline
  * @version <DL>
@@ -29,19 +29,19 @@ import com.db4o.query.Query;
  *          <DD>
  *          <DT>Build 1.1 Nov 27 2008 // removed intermediate class and inserted SAXStream directly
  *          <DD>
- *          <DT>Build 2.0 Feb 22 2009 // updated for Adventurer module and Person class
+ *          <DT>Build 2.0 Feb 22 2009 // updated for Adventurer module and Hero class
  *          <DD>
  *          <DT>Build 2.1 Mar 5 2009 // revised for serialization instead of XML file
  *          <DD>
  *          </DL>
  */
-public class PersonReadWriter
+public class HeroReadWriter
 {
   /** XML Tag names to be used by various objects */
-  /** Person file start tag */
-  static public final String PERSON_GROUP = "Person";
-  /** Person name is an attribute tag */
-  static public final String PERSON_ATTRIB = "name";
+  /** Hero file start tag */
+  static public final String Hero_GROUP = "Hero";
+  /** Hero name is an attribute tag */
+  static public final String Hero_ATTRIB = "name";
   /** Gender element is a single line tag */
   static public final String GENDER_ELEMENT = "Gender";
   static public final String GENDER_ATTRIB = "gender";
@@ -58,27 +58,27 @@ public class PersonReadWriter
   static public final String KLASSNAME_ATTRIB = "klassname";
 
   /**
-   * Receive Person PDC object so that this loader has back-reference to its owner.
+   * Receive Hero PDC object so that this loader has back-reference to its owner.
    */
-  public PersonReadWriter()
+  public HeroReadWriter()
   {}
 
   /**
-   * De-serialize a Person object and repopulate it. It will need to have the transient values
+   * De-serialize a Hero object and repopulate it. It will need to have the transient values
    * recalculated before it can be used. It is assumed to be stored in the resource directory with a
-   * PERSON_EXT file extension.
+   * Hero_EXT file extension.
    * 
-   * @param personName of the Person object to deserialize
-   * @return the Person read in, else null
+   * @param HeroName of the Hero object to deserialize
+   * @return the Hero read in, else null
    */
-  public Person load(String personName)
+  public Hero load(String HeroName)
   {
-    if (personName == null) {
-      MsgCtrl.errMsgln(this, "Null Person name given");
+    if (HeroName == null) {
+      MsgCtrl.errMsgln(this, "Null Hero name given");
       return null;
     }
 
-    Person p = null;
+    Hero p = null;
 
     // db4o code inserted here
     ObjectContainer db =
@@ -86,10 +86,10 @@ public class PersonReadWriter
     try {
       // retrieveComplexSODA
       Query query = db.query();
-      query.constrain(Person.class);
+      query.constrain(Hero.class);
       // TODO: remove hard-coded reference to _name field
-      query.descend("_name").constrain(personName);
-      ObjectSet<Person> result = query.execute();
+      query.descend("_name").constrain(HeroName);
+      ObjectSet<Hero> result = query.execute();
       if (result.size() > 0) {
         p = result.get(0);
       }
@@ -113,13 +113,13 @@ public class PersonReadWriter
       // Make a new query
       Query query = db.query();
 
-      // Restrict it to the Person class
-      query.constrain(Person.class);
-      ObjectSet<Person> result = query.execute();
+      // Restrict it to the Hero class
+      query.constrain(Hero.class);
+      ObjectSet<Hero> result = query.execute();
 
       // Get all the names of the people in the database
       if (result.size() > 0) {
-        for (Person p : result) {
+        for (Hero p : result) {
           sleepers.add(p.getName());
         }
       }
@@ -130,38 +130,38 @@ public class PersonReadWriter
   }
 
   /**
-   * Serialize the Person to a file, using his/her name. A PERSON_EXT suffix is added when saving to
+   * Serialize the Hero to a file, using his/her name. A Hero_EXT suffix is added when saving to
    * the file system The Klass and Race will be stored with it as components. The Inventory for the
-   * Person is saved with the Person.
+   * Hero is saved with the Hero.
    * 
-   * @param p Person object to serialize
+   * @param p Hero object to serialize
    * @param pName filename only; path will be expanded
-   * @return false if the person exists, else return true for no errors
+   * @return false if the Hero exists, else return true for no errors
    */
-  public boolean save(Person p, String pName)
+  public boolean save(Hero p, String pName)
   {
     // Guards against bad input
     if (p == null) {
-      MsgCtrl.errMsgln(this, "There  is no Person to save. Null received");
+      MsgCtrl.errMsgln(this, "There  is no Hero to save. Null received");
       return false;
     }
     if ((pName == null) || (pName.trim().length() == 0)) {
-      MsgCtrl.errMsgln(this, "This Person has no name!. Cannot save him or her.");
+      MsgCtrl.errMsgln(this, "This Hero has no name!. Cannot save him or her.");
       return false;
     }
 
-    // Check if the person exists
+    // Check if the Hero exists
     ObjectContainer db =
         Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), Chronos.PersonRegPath);
     try {
-      // Now retrieve that person from the database
+      // Now retrieve that Hero from the database
       Query query = db.query();
-      query.constrain(Person.class);
+      query.constrain(Hero.class);
       // TODO: remove hard-coded reference to _name field
       query.descend("_name").constrain(pName);
-      ObjectSet<Person> result = query.execute();
+      ObjectSet<Hero> result = query.execute();
 
-      // Return false, prompting for overwrite if person exists
+      // Return false, prompting for overwrite if Hero exists
       if (result.size() > 0) {
         return false;
       } else {
@@ -175,23 +175,23 @@ public class PersonReadWriter
   }
 
   /**
-   * Serialize the Person to a file, using his/her name. A PERSON_EXT suffix is added when saving to
+   * Serialize the Hero to a file, using his/her name. A Hero_EXT suffix is added when saving to
    * the file system The Klass and Race will be stored with it as components. The Inventory for the
-   * Person is saved with the Person.
+   * Hero is saved with the Hero.
    * 
-   * @param p Person object to serialize
-   * @param personName filename only; path will be expanded
+   * @param p Hero object to serialize
+   * @param HeroName filename only; path will be expanded
    * @return false if the save goes awry, else return true
    */
-  public boolean overwrite(Person p, String pName)
+  public boolean overwrite(Hero p, String pName)
   {
     // Guards against bad input
     if (p == null) {
-      MsgCtrl.errMsgln(this, "There  is no Person to save. Null received");
+      MsgCtrl.errMsgln(this, "There  is no Hero to save. Null received");
       return false;
     }
     if ((pName == null) || (pName.trim().length() == 0)) {
-      MsgCtrl.errMsgln(this, "This Person has no name!. Cannot save him or her.");
+      MsgCtrl.errMsgln(this, "This Hero has no name!. Cannot save him or her.");
       return false;
     }
 
@@ -210,11 +210,11 @@ public class PersonReadWriter
     return true;
   }
 
-  public boolean delete(Person p)
+  public boolean delete(Hero p)
   {
     // Guards against bad input
     if (p == null) {
-      MsgCtrl.errMsgln(this, "There  is no Person to remove. Null received");
+      MsgCtrl.errMsgln(this, "There  is no Hero to remove. Null received");
       return false;
     }
 
@@ -223,14 +223,14 @@ public class PersonReadWriter
             + Chronos.PersonRegPath);
     try {
       String pName = p.getName();
-      Person pToDel = null;
+      Hero pToDel = null;
 
-      // Now retrieve that person from the database
+      // Now retrieve that Hero from the database
       Query query = db.query();
-      query.constrain(Person.class);
+      query.constrain(Hero.class);
       // TODO: remove hard-coded reference to _name field
       query.descend("_name").constrain(pName);
-      ObjectSet<Person> result = query.execute();
+      ObjectSet<Hero> result = query.execute();
       if (result.size() > 0) {
         pToDel = result.get(0);
       }
@@ -243,5 +243,5 @@ public class PersonReadWriter
     return true;
   }
 
-} // end of PersonReadWriter class
+} // end of HeroReadWriter class
 

@@ -9,9 +9,6 @@
 
 package civ;
 
-import hic.BuildingRectangle;
-import hic.MainframeInterface;
-
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.Point;
@@ -22,12 +19,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import pdc.Util;
 import chronos.pdc.Adventure;
 import chronos.pdc.registry.AdventureRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
-import dmc.PersonReadWriter;
+import dmc.HeroReadWriter;
+import hic.BuildingRectangle;
+import hic.MainframeInterface;
+import pdc.Util;
 
 /**
  * The main civ behind the Mainframe screen.
@@ -73,7 +72,7 @@ public class MainframeCiv implements UserMsg
 
     private MainframeInterface _frame;
     private Adventure               _adv;
-    private PersonReadWriter  _personRW;
+    private HeroReadWriter  _personRW;
     private AdventureRegistry  _advReg;
     private BuildingDisplayCiv  _bdCiv;
 
@@ -101,10 +100,9 @@ public class MainframeCiv implements UserMsg
     {
         _frame = mf;
         _bdCiv = bdCiv;
-        doConstructorWork();
     }
 
-    protected void doConstructorWork()
+    public void initialize()
     {
         _frame.setImage(Util.convertToImage(INITIAL_IMAGE));
         // TODO Why is this in the civ, and not the hic.Mainframe?

@@ -32,12 +32,14 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
 import chronos.Chronos;
+import civ.HeroDisplayCiv;
 import civ.NewHeroCiv;
 import civ.NewHeroCiv.ErrorCode;
 import civ.NewHeroCiv.HeroInput;
 import mylib.MsgCtrl;
 import mylib.hic.HelpKeyListener;
 import net.miginfocom.swing.MigLayout;
+import pdc.character.Hero;
 
 
 /**
@@ -282,7 +284,10 @@ public class NewHeroIPPanel extends JPanel
           // Remove this panel and ignore any changes
           setVisible(false);
           // Create the new Hero and display it
-          _nhCiv.createHero(_input);
+          Hero hero = _nhCiv.createHero(_input);
+
+          HeroDisplayCiv hDispCiv = new HeroDisplayCiv(Mainframe.getInstance());
+          hDispCiv.displayHero(hero);
         } else {
           // Display the message
           showErrorMessage(err);
@@ -622,4 +627,5 @@ public class NewHeroIPPanel extends JPanel
   } // end FocusLostListener
 
 } // end NewHeroIPPanel class
+
 

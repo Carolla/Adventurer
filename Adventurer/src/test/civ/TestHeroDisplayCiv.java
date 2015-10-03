@@ -14,18 +14,17 @@ package test.civ;
 import java.io.File;
 import java.util.ArrayList;
 
+import org.junit.After;
+import org.junit.Before;
+
+import civ.HeroDisplayCiv;
+import civ.HeroDisplayCiv.MockHeroDisplayCiv;
+import civ.PersonKeys;
 import junit.framework.TestCase;
 import mylib.Constants;
 import mylib.MsgCtrl;
 import mylib.civ.DataShuttle;
-
-import org.junit.After;
-import org.junit.Before;
-
-import pdc.character.Person;
-import civ.HeroDisplayCiv;
-import civ.HeroDisplayCiv.MockHeroDisplayCiv;
-import civ.PersonKeys;
+import pdc.character.Hero;
 
 /**
  * 
@@ -47,7 +46,7 @@ public class TestHeroDisplayCiv extends TestCase
     private final String KLASSNAME = "Peasant";
 
     // Person needed for this CIV
-    private Person _p = null;
+    private Hero _p = null;
     // Widget needed for this CIV
     // private JPanel _widget = null;
     // CIV reference and mock

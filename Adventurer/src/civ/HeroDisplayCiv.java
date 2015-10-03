@@ -56,7 +56,9 @@ public class HeroDisplayCiv
   /** Hero data are converted and sent to the GUI in this EnumMap */
   private EnumMap<PersonKeys, String> _outputMap;
 
-
+  private Mainframe _mf;
+  
+  
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
@@ -66,30 +68,35 @@ public class HeroDisplayCiv
    * 
    * @param hero the model object from which to get the display data
    */
-  public HeroDisplayCiv()
+  public HeroDisplayCiv(Mainframe mf)
   {
     if (!HeroDisplayCiv.LOADING_CHAR) {
       HeroDisplayCiv.NEW_CHAR = true;
     }
+    _mf = mf;
     _outputMap = new EnumMap<PersonKeys, String>(PersonKeys.class);
   }
 
-  /** Display the Hero the HeroDisplay widget
+  /**
+   * Display the Hero the HeroDisplay widget
    * 
    * @param hero to display
    */
   public void displayHero(Hero hero)
   {
     _hero = hero;
-//    _widget = new HeroDisplay(this, Mainframe.getInstance());
-//    _widget = new HeroDisplay();
+    _widget = new HeroDisplay(this);
+    _mf.addPanel(_widget);
+
+    // _widget = new HeroDisplay();
     _outputMap = convertAttributes(_hero);
-//    _widget.displayAttributes(_outputMap);
-    
+    _widget.displayAttributes(_outputMap);
+
   }
 
 
-  /** Convert the data in the Hero object to stringified data fields for widget display
+  /**
+   * Convert the data in the Hero object to stringified data fields for widget display
    * 
    * @param hero to display
    * @return the output map of all hero data fields
@@ -97,28 +104,29 @@ public class HeroDisplayCiv
   private EnumMap<PersonKeys, String> convertAttributes(Hero hero)
   {
     _outputMap = hero.loadAttributeMap(_outputMap);
-    return _outputMap;    
-    
+    return _outputMap;
+
   }
-  
-//  /**
-//   * Creates the Civ and its associated output HeroDisplay widget. Do not display the GUI if this is
-//   * in JUnit test
-//   *
-//   * @param name the name of the person to be summoned
-//   */
-//  public HeroDisplayCiv(String name)
-//  {
-//    HeroDisplayCiv.LOADING_CHAR = true;
-//
-//    // Make a null person to run the summon method
-//    _hero = new Hero();
-//
-//    // Now load the person from the registry and display it
-//    _hero = _hero.load(name);
-//    _hero.display();
-//    this.resetLoadState();
-//  }
+
+  // /**
+  // * Creates the Civ and its associated output HeroDisplay widget. Do not display the GUI if this
+  // is
+  // * in JUnit test
+  // *
+  // * @param name the name of the person to be summoned
+  // */
+  // public HeroDisplayCiv(String name)
+  // {
+  // HeroDisplayCiv.LOADING_CHAR = true;
+  //
+  // // Make a null person to run the summon method
+  // _hero = new Hero();
+  //
+  // // Now load the person from the registry and display it
+  // _hero = _hero.load(name);
+  // _hero.display();
+  // this.resetLoadState();
+  // }
 
 
   /**

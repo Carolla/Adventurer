@@ -158,9 +158,6 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   /** Get access to the mainframe from afar */
   public static Mainframe getInstance()
   {
-    if (_mf == null) {
-      _mf = new Mainframe();
-    }
     return _mf;
   }
   
@@ -176,17 +173,19 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
    */
   public Mainframe()
   {
-    // Create the components of the mainframe
-    createFrameAndMenubar(); // contains left and right panel holders
+    // Create the support elements, e.g., the BuildingRegistry, Scheduler, etc.
+    constructMembers();
+    
+    createFrameAndMenubar(); // Depends on class members not being NULL
     addImagePanel(); // add image panel on right for adding images later
     createButtons(); // creates three action buttons on panel
     redraw();
     setVisible(true);
+    
+    _mfCiv.initialize();
 
     // Create the one time help dialog
     prepareHelpDialog();
-    // Create the support elements, e.g., the BuildingRegistry, Scheduler, etc.
-    constructMembers();
     _mf = this;
   }
 
@@ -501,14 +500,17 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
    */
   public void addIOPanel()
   {
-    _leftHolder.removeAll();
-
-    setTranscriptTitle(IOPANEL_TITLE);
-    _leftHolder.add(_iop);
-    redraw();
+    addPanel(_iop);
   }
 
+ public void addPanel(JComponent panel)
+ {
+   _leftHolder.removeAll();
 
+   //setTranscriptTitle(IOPANEL_TITLE);
+   _leftHolder.add(panel);
+   redraw();
+ }
   /**
    * Display a prompt, asking a question of the user
    * 
@@ -697,11 +699,11 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     }
   }
 
-  @Override
+/*  @Override
   public void add(JComponent component, String location)
   {
     add(component, location);
-  }
+  }*/
 
   public void start()
   {
@@ -710,3 +712,4 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
 
 
 } // end of Mainframe outer class
+

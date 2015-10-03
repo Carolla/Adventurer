@@ -1,5 +1,5 @@
 /**
- * PersonRegistry.java Copyright (c) 2009, Carolla Development, Inc. All Rights Reserved
+ * HeroRegistry.java Copyright (c) 2009, Carolla Development, Inc. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
@@ -13,21 +13,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import chronos.Chronos;
 import mylib.ApplicationException;
 import mylib.MsgCtrl;
 import mylib.dmc.IRegistryElement;
 import mylib.pdc.Registry;
-import pdc.character.Person;
-import chronos.Chronos;
+import pdc.character.Hero;
 
 /**
- * Contains all Persons in the game. {@code PersonRegistry} is a singleton and is only
+ * Contains all Heros in the game. {@code HeroRegistry} is a singleton and is only
  * initialized once.
  * 
  * @author Tim Armstrong
  * @version Mar 13, 2013 // original <br>
  */
-public class PersonRegistry extends Registry
+public class HeroRegistry extends Registry
 {
 
 
@@ -36,24 +36,24 @@ public class PersonRegistry extends Registry
    */
 
   /**
-   * Init this Person Registry
+   * Init this Hero Registry
    * 
    * @throws IOException if the Registry is not on the disk
    */
-  protected PersonRegistry() throws IOException
+  protected HeroRegistry() throws IOException
   {
     super(Chronos.PersonRegPath);
   }
 
 
   /**
-   * Create the Person Registry with the tables given (none), converting each element to a Person
+   * Create the Hero Registry with the tables given (none), converting each element to a Hero
    * object and saving it in the database.
    */
   @Override
   public void initialize()
   {
-    MsgCtrl.msgln("PersonRegistry.initialize() was called.");
+    MsgCtrl.msgln("HeroRegistry.initialize() was called.");
   }
 
 
@@ -62,42 +62,42 @@ public class PersonRegistry extends Registry
    */
 
   /**
-   * Retrieves the Person with the requested unique name
+   * Retrieves the Hero with the requested unique name
    * 
-   * @param name name of the Person to retrieve
-   * @return the Person object; or null if not unique
+   * @param name name of the Hero to retrieve
+   * @return the Hero object; or null if not unique
    * @throws ApplicationException if trying to retrieve non-unique object
    */
-  public Person getPerson(final String name)
+  public Hero getHero(final String name)
   {
     // ExtObjectContainer db = _regRW.getDB();
     // Retrieve all skills that match the skillname; should be only one
-    // List<Person> list = db.query(new PersonPredicate(name));
+    // List<Hero> list = db.query(new HeroPredicate(name));
 
     List<IRegistryElement> elist = get(name);
 
     // Ensure uniqueness
     if (elist.size() == 1) {
-      return (Person) elist.get(0);
+      return (Hero) elist.get(0);
     } else {
       return null;
     }
   }
 
   /**
-   * Retrieve multiple Persons
+   * Retrieve multiple Heros
    * 
    * @param target the object to find in the database
-   * @return the Person List
+   * @return the Hero List
    */
-  public ArrayList<Person> getPersonList(Person target)
+  public ArrayList<Hero> getHeroList(Hero target)
   {
-    List<IRegistryElement> PersonSet = getAll();
-    ArrayList<Person> personList = new ArrayList<Person>(PersonSet.size());
-    for (Object o : PersonSet) {
-      personList.add((Person) o);
+    List<IRegistryElement> HeroSet = getAll();
+    ArrayList<Hero> HeroList = new ArrayList<Hero>(HeroSet.size());
+    for (Object o : HeroSet) {
+      HeroList.add((Hero) o);
     }
-    return personList;
+    return HeroList;
   }
 
 
@@ -107,63 +107,63 @@ public class PersonRegistry extends Registry
 
 
 //  @SuppressWarnings("serial")
-//  private final class PersonPredicate extends Predicate<Person>
+//  private final class HeroPredicate extends Predicate<Hero>
 //  {
 //    private final String name;
 //
-//    private PersonPredicate(String name)
+//    private HeroPredicate(String name)
 //    {
 //      this.name = name;
 //    }
 //
-//    public boolean match(Person candidate)
+//    public boolean match(Hero candidate)
 //    {
 //      return candidate.getName().equals(name);
 //    }
 //  }
 
-  // /** Load a table of Persons into the PersonRegistry
+  // /** Load a table of Heros into the HeroRegistry
   // *
-  // * @param table the initial Persons to load
+  // * @param table the initial Heros to load
   // * @return false if a problem occurs, else true
-  // *@throw ApplicationException if the Person could not be added to the db
+  // *@throw ApplicationException if the Hero could not be added to the db
   // */
   // private void loadTable(String[][] table) throws ApplicationException
   // {
-  // // Save the Persons required for the new Hero's inventory
+  // // Save the Heros required for the new Hero's inventory
   // for (int k = 0; k < table.length; k++) {
-  // PersonCategory cat = PersonCategory.valueOf(table[k][0]);
+  // HeroCategory cat = HeroCategory.valueOf(table[k][0]);
   // String name = table[k][1];
   // int weight = Integer.valueOf(table[k][2]);
   // int qty = Integer.valueOf(table[k][3]);
-  // Person Person = new Person(cat, name, weight, qty);
-  // if (super.add(Person) == false) {
+  // Hero Hero = new Hero(cat, name, weight, qty);
+  // if (super.add(Hero) == false) {
   // throw new ApplicationException("loadTable() error while adding to db " +
-  // Person.getName());
+  // Hero.getName());
   // }
   // }
   // }
 
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ INNER CLASS: MockPersonRegistry for
+   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ INNER CLASS: MockHeroRegistry for
    * Testing ++++++++++++++++++++++++++++++++++++++++++++++++++++++
    */
 
-  /** Inner class for testing Person */
-  public class MockPersonRegistry
+  /** Inner class for testing Hero */
+  public class MockHeroRegistry
   {
     /** Default constructor */
-    public MockPersonRegistry()
+    public MockHeroRegistry()
     {}
     //
     // /** Total number of objects expected to be stored in the db */
     // public long getOverhead()
     // {
-    // return PersonRegistry.this.getOverhead();
+    // return HeroRegistry.this.getOverhead();
     // }
 
-  } // end of MockPersonRegistry inner class
+  } // end of MockHeroRegistry inner class
 
 
   // /** Close db, destroy the dbReadWriter and set this registry to null
@@ -181,5 +181,5 @@ public class PersonRegistry extends Registry
   // // _thisReg = null;
   // }
 
-} // end of PersonRegistry class
+} // end of HeroRegistry class
 

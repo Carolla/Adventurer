@@ -9,15 +9,14 @@
 
 package civ;
 
-import hic.Mainframe;
-
 import java.awt.EventQueue;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import mylib.pdc.Registry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
+import hic.Mainframe;
+import mylib.pdc.Registry;
 
 /**
  * This Launcher class detects command line arguments, takes appropriate loading action, initializes
