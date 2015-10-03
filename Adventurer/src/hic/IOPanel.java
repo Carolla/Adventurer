@@ -10,13 +10,6 @@
 package hic;
 
 
-import pdc.Util;
-
-import civ.CommandParser;
-import civ.UserMsg;
-
-import mylib.Constants;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -36,7 +29,11 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import civ.CommandParser;
+import civ.UserMsg;
+import mylib.Constants;
 import net.miginfocom.swing.MigLayout;
+import pdc.Util;
 
 /**
  * This class serves as the text output and command line input after an Adventure is selected
@@ -63,7 +60,10 @@ public class IOPanel extends JPanel // implements IOPanelInterface
      * Color class does not have brown, so I have to make it. Color constuctor args = red, green,
      * blue for values 0-255, kicked up one notch of brightness
      */
-    private final Color MY_LIGHT_BROWN = new Color(130, 100, 90).brighter();
+//    private final Color MY_LIGHT_BROWN = new Color(130, 100, 90).brighter();
+    private Color _backColor = Constants.MY_BROWN;
+    private Color _foreColor = Color.BLACK;
+    
     private final SimpleAttributeSet _errorAttributes;
     private final CommandParser _commandParser;
 
@@ -217,8 +217,9 @@ public class IOPanel extends JPanel // implements IOPanelInterface
         _pane.setEditable(false);
         _pane.setFocusable(false);
         _pane.setFont(Util.makeRunicFont(14f));
-        _pane.setBackground(MY_LIGHT_BROWN); // make the background my version of a nice warm brown
-        _pane.setForeground(Color.BLACK); // text is colored with the setForeground statement
+//        _pane.setBackground(MY_LIGHT_BROWN); // make the background my version of a nice warm brown
+        _pane.setBackground(_backColor); // make the background my version of a nice warm brown
+        _pane.setForeground(_foreColor); // text is colored with the setForeground statement
 
         // Ensure that the text always autoscrolls as more text is added
         DefaultCaret caret = (DefaultCaret) _pane.getCaret();

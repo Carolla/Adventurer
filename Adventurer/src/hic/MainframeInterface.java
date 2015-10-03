@@ -61,5 +61,10 @@ public interface MainframeInterface
 
   public void addPanel(JComponent component);
 
+  /**
+   * @param object
+   */
+  public void setTitle(String title);
+
   
 } // end of MainframeInterface 

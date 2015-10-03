@@ -36,6 +36,7 @@ import civ.HeroDisplayCiv;
 import civ.NewHeroCiv;
 import civ.NewHeroCiv.ErrorCode;
 import civ.NewHeroCiv.HeroInput;
+import mylib.Constants;
 import mylib.MsgCtrl;
 import mylib.hic.HelpKeyListener;
 import net.miginfocom.swing.MigLayout;
@@ -44,8 +45,7 @@ import pdc.character.Hero;
 
 /**
  * Allows the author to input a few key attributes of their Hero. A CIV object is called to validate
- * the data and create the {@code Hero} object.
- * <BL>
+ * the data and create the {@code Hero} object. <BL>
  * <LI>Name: All Persons must have a name by which they are addressed, and are associated with a
  * file in which they are saved.</LI>
  * <LI>Gender: Females are, on average, shorter, lighter, and have less Strength than Males (the
@@ -78,10 +78,12 @@ public class NewHeroIPPanel extends JPanel
   private final String HELP_LABEL2 =
       "Press F1 key for specific help.";
 
-  /** Before the Hero's name is entered */
-  private final String PANEL_TITLE = "Create New Hero";
-  /** Adapt title to Hero's name when entered */
-  private final String NEW_HERO_TITLE = PANEL_TITLE + " -- ";
+  /** Replace left-side panel with this title */
+  private final String NEW_HERO_TITLE = " Create Your Kind of Hero ";
+  // /** Replace left-side panel with this title */
+  // private final String PANEL_TITLE = "Create New Hero";
+  // /** Adapt title to Hero's name when entered */
+  // private final String NEW_HERO_TITLE = PANEL_TITLE + " -- ";
   /** Prompt for hero's name */
   private final String HERO_NAME_PROMPT = "What is your Hero's Name?";
   /** Hair color prompt */
@@ -105,12 +107,14 @@ public class NewHeroIPPanel extends JPanel
   /** Error message when namefield is too long */
   private final String ERRMSG_NAME_TOO_LONG =
       "Your Hero's name is to long (45 char limit). \nTry perhaps your Hero's nickname?";
-//  /** Error message when an unknown error has occurred */
-//  private final String ERRMSG_UNKNOWN =
-//      "Hero could not be created for some unanticipated reason";
+      // /** Error message when an unknown error has occurred */
+      // private final String ERRMSG_UNKNOWN =
+      // "Hero could not be created for some unanticipated reason";
 
+  // TODO: Constant.MY_BROWN needs to be brightened here for some reason. Perhaps a background panel
+  // is affecting it?
   /** Background color inherited from parent */
-  private Color _backColor = null;
+  private Color _backColor = Constants.MY_BROWN.brighter();
 
   /** Input data from user */
   private String _name = null;
@@ -121,8 +125,6 @@ public class NewHeroIPPanel extends JPanel
 
   /** Contains user input field data */
   EnumMap<HeroInput, String> _input = null;
-
-  private final Color MY_LIGHT_BROWN = new Color(130, 100, 90).brighter();
 
 
   /**
@@ -156,13 +158,17 @@ public class NewHeroIPPanel extends JPanel
     int width = Mainframe.getWindowSize().width;// +MainFrame.PANEL_SHIFT;
     int height = Mainframe.getWindowSize().height;
     setPreferredSize(new Dimension(width, height));
+    // Replace the mainframe title with this panel title
+    Mainframe mf = Mainframe.getInstance();
+    mf.setTitle(NEW_HERO_TITLE);
 
     int pad = Mainframe.PAD;
     Border matte = BorderFactory.createMatteBorder(pad, pad, pad, pad, Color.WHITE);
-    Border titledBorder = BorderFactory.createTitledBorder(matte, PANEL_TITLE,
-        TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION);
-    setBorder(titledBorder);
-    _backColor = MY_LIGHT_BROWN;
+    // Border titledBorder = BorderFactory.createTitledBorder(matte, PANEL_TITLE,
+    // TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION);
+//    setBorder(titledBorder);
+    setBorder(matte);
+    // _backColor = Constants.MY_BROWN;
     setBackground(_backColor);
 
     // Define context controls
@@ -208,13 +214,13 @@ public class NewHeroIPPanel extends JPanel
 
     /* Add a button panel containing the Submit and Cancel buttons */
     add(makeButtonPanel(), "push, align center, span, gaptop 20%");
-    
+
     // Make textField get the focus whenever frame is activated.
-//    frame.addWindowFocusListener(new WindowAdapter() {
-//        public void windowGainedFocus(WindowEvent e) {
-//            textField.requestFocusInWindow();
-//        }
-//    });
+    // frame.addWindowFocusListener(new WindowAdapter() {
+    // public void windowGainedFocus(WindowEvent e) {
+    // textField.requestFocusInWindow();
+    // }
+    // });
 
   } // end NewHeroIPPanel constructor
 
@@ -536,12 +542,14 @@ public class NewHeroIPPanel extends JPanel
    * @return One of the ErrorCode enum values (NO_ERROR if all went well)
    */
   private ErrorCode submit()
-  {  
+  {
     _input = _nhCiv.getEmptyMap();
     _input.put(HeroInput.NAME, _name);
     _input.put(HeroInput.GENDER, _gender);
     _input.put(HeroInput.HAIR, _hairColor);
     _input.put(HeroInput.RACE, _raceName);
+    // Rogue is the pseudonym for the Thief class
+    _klassName = (_klassName.equalsIgnoreCase("Rogue")) ? _klassName = "Thief" : _klassName;
     _input.put(HeroInput.KLASS, _klassName);
 
     // Call the Civ to validate. If good, Civ creates the Hero; else display error widget

@@ -33,7 +33,7 @@ public class Hero implements Serializable // IRegistryElement
   /* INTERNAL OBJECT COMPONENTS */
   /** One of the four canonical Hero klasses: Fighter, Cleric, Wizard, or Thief */
   private Klass _klass;
-  /** The Race object for this Person (Input), and contains the Hunger and Age objects */
+  /** The Race object for this Person (Input), and contains the Hunger objects */
   private Race _race = null;
 
   /** Input Data for Hero */
@@ -47,8 +47,10 @@ public class Hero implements Serializable // IRegistryElement
   /** Name of the klass to convert to a Klass component */
   private String _klassname;
   /** What we see when we look at the Person */
-  private String _description = null;
-
+  private String _description;
+  /** The hungers state of the Hero as he/she burns calories and eats */
+  private String _hunger;
+  
   /** Hero game attributes */
   private int _level = 1;
   private int _XP = 0;
@@ -400,6 +402,8 @@ public class Hero implements Serializable // IRegistryElement
     // 11b. GET THE HERO'S PHYSICAL DESCRIPTION FROM THIS BODY-TYPE
     _description = initDescription();
     // System.out.println(_description);
+    // 11c. SET THE HERO'S INITIAL HUNGER STATE
+    _hunger = "Full";
 
     // 12. SET THE INITIAL LEVEL AND EXPERIENCE POINTS
     _level = 1;
@@ -590,9 +594,12 @@ public class Hero implements Serializable // IRegistryElement
     // Now load the attributes in display order (values in parens are derived)
     // Row 1: Name
     map.put(PersonKeys.NAME, _name);
-    
-    // Row 2: Race and Klass
+
+    // Row 2: Gender, Race and Klass
+    map.put(PersonKeys.GENDER, _gender);
     map.put(PersonKeys.RACENAME, _racename);
+    // Rogue is the user pseudonym for the Thief class
+    _klassname = (_klassname.equalsIgnoreCase("Thief")) ? _klassname = "Rogue" : _klassname;
     map.put(PersonKeys.KLASSNAME, _klassname);
 
     // Row 3: Level, Current HP, Max HP, AC, (AC with Magic adj)
@@ -618,7 +625,7 @@ public class Hero implements Serializable // IRegistryElement
     map.put(PersonKeys.WT_ALLOW, String.format("%s", _wtAllow));
 
     // Row 7: INT and INT mods: percent to know spell, current MSP, max MSP, MSPs/Level,
-    //    spells known (in book), and max languages
+    // spells known (in book), and max languages
     map.put(PersonKeys.INT, String.format("%s", _traits[PrimeTraits.INT.ordinal()]));
     map.put(PersonKeys.TO_KNOW, String.format("%s", _percentToKnow));
     map.put(PersonKeys.CURRENT_MSP, String.format("%s", _MSPs));
@@ -626,7 +633,7 @@ public class Hero implements Serializable // IRegistryElement
     map.put(PersonKeys.MSP_PER_LEVEL, String.format("%s", _MSPsPerLevel));
     map.put(PersonKeys.SPELLS_KNOWN, String.format("%s", _spellsKnown));
     map.put(PersonKeys.MAX_LANGS, String.format("%s", _maxLangs));
-    
+
     // Row 8: WIS and WIS mods: Magic Attack Mod, Current CSP, Max CSPs, CSPs/Level, Turn Undead
     map.put(PersonKeys.WIS, String.format("%s", _traits[PrimeTraits.WIS.ordinal()]));
     map.put(PersonKeys.MAM, String.format("%s", _magicAttackMod));
@@ -640,16 +647,17 @@ public class Hero implements Serializable // IRegistryElement
     map.put(PersonKeys.HP_MOD, String.format("%s", _HPMod));
     map.put(PersonKeys.RMR, String.format("%s", _racialPoisonResist));
 
-    // Row 10: DEX and DEX mods: ToHit Missile, AC Mod 
+    // Row 10: DEX and DEX mods: ToHit Missile, AC Mod
     map.put(PersonKeys.DEX, String.format("%s", _traits[PrimeTraits.DEX.ordinal()]));
     map.put(PersonKeys.TO_HIT_MISSLE, String.format("%s", _toHitDex));
     map.put(PersonKeys.AC_MOD, String.format("%s", _ACMod));
-    
+
     // Row 11: CHR, then Weight and Height of Hero
     map.put(PersonKeys.CHR, String.format("%s", _traits[PrimeTraits.CHR.ordinal()]));
     map.put(PersonKeys.WEIGHT, String.format("%s", _weight));
     map.put(PersonKeys.HEIGHT, String.format("%s", _height));
- 
+    map.put(PersonKeys.HUNGER, _hunger);
+
     // Row 12: AP and non-lethal combat values
     map.put(PersonKeys.AP, String.format("%s", _AP));
     map.put(PersonKeys.OVERBEARING, String.format("%s", _apMods[OVERBEAR]));
@@ -657,18 +665,18 @@ public class Hero implements Serializable // IRegistryElement
     map.put(PersonKeys.GRAPPLING, String.format("%s", _apMods[GRAPPLE]));
     map.put(PersonKeys.SHIELD_BASH, String.format("%s", _apMods[BASH]));
 
-    // Row 13: Maximum languages 
+    // Row 13: Maximum languages
     map.put(PersonKeys.MAX_LANGS, String.format("%s", _maxLangs));
-    
+
     // Row 14: All known languages as single string
     StringBuilder sb = new StringBuilder();
-    for (int k=0; k < _knownLangs.size(); k++) {
+    for (int k = 0; k < _knownLangs.size(); k++) {
       sb.append(_knownLangs.get(k));
       sb.append(", ");
     }
     String langList = new String(sb);
     map.put(PersonKeys.LANGUAGES, langList);
-    
+
     return map;
   }
 

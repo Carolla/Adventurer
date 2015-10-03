@@ -8,12 +8,10 @@
 
 package hic;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
-import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -34,12 +32,12 @@ import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
 
 import chronos.Chronos;
 import civ.HeroDisplayCiv;
 import civ.MiscKeys.ItemCategory;
 import civ.PersonKeys;
+import mylib.Constants;
 import mylib.MsgCtrl;
 import net.miginfocom.swing.MigLayout;
 
@@ -121,7 +119,7 @@ import net.miginfocom.swing.MigLayout;
  *          May 31 2010 // replaced PDC and DMC with CIV package <br>
  *          May 2 2011 // major rewrite for MigLayout manager <br>
  *          Oct 6 2011 // minor changes to support MVP Stack <br>
- *          Oct 1 2015 // revised to accommodate new Hero generation rules <br>
+ *          Oct 1 2015 // revised to accommodate new Hero character sheet <br>
  */
 public class HeroDisplay extends JPanel
 {
@@ -157,8 +155,8 @@ public class HeroDisplay extends JPanel
   private final int FONT_HT = 14;
   /** Normal font height */
   private final int ATT_FONT_HT = 12;
-  /** Size for name */
-  private final float NAME_HT = 30f;
+  /** Size for name in title */
+  private final float TITLE_HT = 14f;
   /** Border width for main panel */
   private final int SCROLLBAR_SIZE = 20;
   /** Standard height of font and cells in display, but can be changed */
@@ -205,8 +203,10 @@ public class HeroDisplay extends JPanel
   /** Gets rid of unused/unwanted characters */
   private JButton _delButton;
 
+  // TODO: Constant.MY_BROWN needs to be brightened here for some reason. Perhaps a background panel
+  // is affecting it?
   /** Background color inherited from parent */
-  private Color _backColor = null;
+  private Color _backColor = Constants.MY_BROWN.brighter();
 
   /** Tabbed pane to hold inventory stuff */
   JTabbedPane _tab = null;
@@ -245,7 +245,7 @@ public class HeroDisplay extends JPanel
   /** JLabel to hold character's name */
   private JLabel _charName;
 
-  private MainframeInterface _mainframe;
+  private Mainframe _mainframe;
 
 
   /*
@@ -256,6 +256,7 @@ public class HeroDisplay extends JPanel
   public HeroDisplay()
   {
     setupDisplay();
+    _mainframe = Mainframe.getInstance();
   }
 
 
@@ -278,34 +279,37 @@ public class HeroDisplay extends JPanel
     // Set private field equal to passed parameter
     _ds = ds;
 
-    // Generate titled border (banner) containing Hero's name
-    int mfpad = Mainframe.PAD;
-    String mftitle = " Attributes for " + _ds.get(PersonKeys.NAME) + " ";
-    Border thisBorder = BorderFactory.createMatteBorder(mfpad, mfpad,
-        mfpad, mfpad, Color.WHITE);
-    Border titledBorder = BorderFactory.createTitledBorder(thisBorder,
-        mftitle, TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION);
-    setBorder(titledBorder);
-
-    // ADD HELP MESSAGE TO INSTRUCT HOW TO SHIFT FOCUS
-    add(new JLabel(HELP_LABEL), "span");
-    //
-    // // Use a larger special font for the Hero's name. Extract the label font
-    // // size from the cell
+    // Set up a larger special font for the Hero's name in title.
+    // Extract the label font size from the cell
     Font nameFont = null;
     try {
       // Returned font is of pt size 1
-      Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(
-          Chronos.RUNIC_ENGLISH_FONT_FILE));
-
-      // Derive a 30 pt version:
-      nameFont = newFont.deriveFont(NAME_HT);
+      Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(Chronos.RUNIC_ENGLISH_FONT_FILE));
+      // Derive a larger version:
+      nameFont = newFont.deriveFont(TITLE_HT);
     } catch (FontFormatException e) {
       MsgCtrl.errMsgln("Could not format font: " + e.getMessage());
     } catch (IOException e) {
       MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
     }
-    // NamePlate before Attribute grid: Name, gender, Race, Klass
+
+    // Generate titled border (banner) containing Hero's name and klass
+    // int mfpad = Mainframe.PAD;
+    // String mftitle = " The " + _ds.get(PersonKeys.KLASSNAME) + " " + _ds.get(PersonKeys.NAME);
+    // Border thisBorder = BorderFactory.createMatteBorder(mfpad, mfpad,
+    // mfpad, mfpad, Color.WHITE);
+    // Border titledBorder = BorderFactory.createTitledBorder(thisBorder,
+    // mftitle, TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION, nameFont);
+    // setBorder(titledBorder);
+    // Replace title with klass and hero name
+    String mftitle = " The " + _ds.get(PersonKeys.KLASSNAME) + " " + _ds.get(PersonKeys.NAME) + " ";
+    Mainframe mf = Mainframe.getInstance();
+    mf.setTitle(mftitle);
+
+    // ADD HELP MESSAGE TO INSTRUCT HOW TO SHIFT FOCUS
+    add(new JLabel(HELP_LABEL), "span");
+
+    // Two-row namePlate before Attribute grid: Name, Gender, Race, Klass
     String namePlate = _ds.get(PersonKeys.NAME) + ": "
         + _ds.get(PersonKeys.GENDER) + " "
         + _ds.get(PersonKeys.RACENAME) + " "
@@ -313,55 +317,28 @@ public class HeroDisplay extends JPanel
     // Put some space above and below the namePlate
     _charName = new JLabel(namePlate);
 
-    GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-    String[] fontNames = env.getAvailableFontFamilyNames();
+    // GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    // String[] fontNames = env.getAvailableFontFamilyNames();
     _charName.setFont(nameFont);
 
-    // TODO: Update this to change the size Tim
-    while (_charName.getPreferredSize().width > DATA_WIDTH) {
-      // Edit name font down a notch or two
-      Font labelFont = _charName.getFont();
-      String labelText = _charName.getText();
-
-      int stringWidth = _charName.getFontMetrics(labelFont).stringWidth(
-          labelText);
-      int componentWidth = DATA_WIDTH;
-
-      // Find out how much the font can grow in width.
-      double widthRatio = (double) componentWidth / (double) stringWidth;
-
-      int newFontSize = (int) (labelFont.getSize() * widthRatio);
-
-      // Recreate the new font
-      try {
-        Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(
-            Chronos.RUNIC_ENGLISH_FONT_FILE));
-
-        // Set the label's font size to the newly determined size.
-        Font smallNameFont = newFont.deriveFont(newFontSize);
-        _charName.setFont(smallNameFont);
-      } catch (FontFormatException e) {
-        MsgCtrl.errMsgln("Could not format font: " + e.getMessage());
-      } catch (IOException e) {
-        MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
-      }
-    }
+    // while (_charName.getPreferredSize().width > DATA_WIDTH) {
+    // newFont = shrinkFontSize();
     add(_charName, "span, gaptop 5, gapbottom 8");
 
-//    // Display Ability Scores
-//    List<Integer> attList = (List<Integer>) ds.get(PersonKeys.ABILITY_SCORES);
-//    List<String> attributes = new NewHeroCiv().getAttributes();
-//
-//    JPanel scorePanel = new JPanel();
-//
-//    int i = 0;
-//    for (String att : attributes) {
-//      JLabel scoreLabel = new JLabel(att + ": " + attList.get(i).toString());
-//      scorePanel.add(scoreLabel);
-//      i++;
-//    }
-//
-//    add(scorePanel, "span");
+    // Display Ability Scores
+    // List<Integer> attList = (List<Integer>) ds.get(PersonKeys.ABILITY_SCORES);
+    // List<String> attributes = new NewHeroCiv().getAttributes();
+    //
+    // JPanel scorePanel = new JPanel();
+    //
+    // int i = 0;
+    // for (String att : attributes) {
+    // JLabel scoreLabel = new JLabel(att + ": " + attList.get(i).toString());
+    // scorePanel.add(scoreLabel);
+    // i++;
+    // }
+    //
+    // add(scorePanel, "span");
 
     // // CREATE THE ATTRIBUTE GRID PANEL AND SIZE IT FOR DISPLAY
     _attribPanel = buildAttributePanel();
@@ -369,18 +346,48 @@ public class HeroDisplay extends JPanel
     _attribPanel.setPreferredSize(new Dimension(DATA_WIDTH, _attribPanel.getHeight()));
     // attribPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
     add(_attribPanel, "span, center, gapbottom 0");// , span, growx");
-    //
+
     // // ADD SAVE & CANCEL BUTTONS TO THE BOTTOM OF THE PANEL
     _buttonPanel = buildButtonPanel();
     _buttonPanel.setPreferredSize(new Dimension(DATA_WIDTH, _buttonPanel.getHeight()));
     add(_buttonPanel, "span, center, gapbottom 5");
-    
-//     Mainframe frame = Mainframe.getInstance();
-//      frame.changeToLeftPanel(this);
-//      revalidate();
-//      repaint();
+
     return true;
   }
+
+  // TODO: THis may not be needed, but keep the old code here anyway. It needs to be debugged
+  // private Font shrinkFontSize()
+  // {
+  // while (_charName.getPreferredSize().width > DATA_WIDTH) {
+  // // Edit name font down a notch or two
+  // Font labelFont = _charName.getFont();
+  // String labelText = _charName.getText();
+  //
+  // int stringWidth = _charName.getFontMetrics(labelFont).stringWidth(
+  // labelText);
+  // int componentWidth = DATA_WIDTH;
+  //
+  // // Find out how much the font can grow in width.
+  // double widthRatio = (double) componentWidth / (double) stringWidth;
+  //
+  // int newFontSize = (int) (labelFont.getSize() * widthRatio);
+  //
+  // // Recreate the new font
+  // try {
+  // Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(
+  // Chronos.RUNIC_ENGLISH_FONT_FILE));
+  //
+  // // Set the label's font size to the newly determined size.
+  // Font smallNameFont = newFont.deriveFont(newFontSize);
+  // _charName.setFont(smallNameFont);
+  // } catch (FontFormatException e) {
+  // MsgCtrl.errMsgln("Could not format font: " + e.getMessage());
+  // } catch (IOException e) {
+  // MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
+  // }
+  // }
+  // return newFont;
+  // }
 
 
   /** Stub until the display is working properly. */
@@ -456,8 +463,8 @@ public class HeroDisplay extends JPanel
     _tab.setEnabledAt(_tab.indexOfTab("Magic"), false);
     // add(_tab,"span, center");
 
-    // MainFrame.getInstance().validate();
-    // MainFrame.getInstance().repaint();
+    // _mainframe.validate();
+    _mainframe.repaint();
     return true;
   }
 
@@ -491,7 +498,6 @@ public class HeroDisplay extends JPanel
     skillArea.setBackground(_backColor);
     skillArea.setEditable(false);
     skillArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, FONT_HT));
-    skillArea.setBackground(_backColor);
 
     // Set size of skill Area prior to adding to ScrollPane
     skillArea.setPreferredSize(new Dimension(DATA_WIDTH, skillList.size()
@@ -601,11 +607,12 @@ public class HeroDisplay extends JPanel
   // =================================================================
 
   /**
-   * Create the person's attributes in a grid panel for display Attributes are unpacked from the
-   * data shuttle as they are needed, row by row HEURISTIC LAYOUT: Character attibutes, e.g. XP and
-   * Level, go toward the left side; Personal attributes, such as gender, weight, and height, go
-   * toward the right side. The more important attributes, e.g. HP and Klass, go toward the top;
-   * lesser ones, e.g. description and gold banked, toward the bottom.
+   * Create the person's attributes in a grid panel for display. Attributes are unpacked from the
+   * outputmap as they are needed, row by row, <br>
+   * HEURISTIC LAYOUT: Character attibutes, e.g. XP and Level, go toward the left side; Personal
+   * attributes, such as gender, weight, and height, go toward the right side. The more important
+   * attributes, e.g. HP and Klass, go toward the top; lesser ones, e.g. description and gold
+   * banked, toward the bottom.
    * 
    * @return the attribute grid panel
    */
@@ -619,12 +626,12 @@ public class HeroDisplay extends JPanel
     attribPanel.setBackground(_backColor);
 
     // // Row 1: XP, Level, Hit Points, Occupation, Hunger state
-    // attribPanel.add(gridCell("XP: ", (String) _ds.getField(PersonKeys.XP)), "sg r1");
+    // attribPanel.add(gridCell("XP: ", (String) _ds.get(PersonKeys.XP)), "sg r1");
     // attribPanel.add(
-    // gridCell("Level: ", (String) _ds.getField(PersonKeys.LEVEL)), "sg r1");
-    // attribPanel.add(gridCell("HP: ", (String) _ds.getField(PersonKeys.HP)), "sg r1");
-    // attribPanel.add(gridCell("", (String) _ds.getField(PersonKeys.OCCUPATION)), "sg r1");
-    // attribPanel.add(gridCell("", (String) _ds.getField(PersonKeys.HUNGER)), "sg r1");
+    // gridCell("Level: ", (String) _ds.get(PersonKeys.LEVEL)), "sg r1");
+    // attribPanel.add(gridCell("HP: ", (String) _ds.get(PersonKeys.HP)), "sg r1");
+    // attribPanel.add(gridCell("", (String) _ds.get(PersonKeys.OCCUPATION)), "sg r1");
+    // attribPanel.add(gridCell("", (String) _ds.get(PersonKeys.HUNGER)), "sg r1");
 
     // // Row 2: Armor Class, Speed, Age, Height, and Weight
     // attribPanel.add(gridCell("AC: ", (String) _ds.getField(PersonKeys.AC)), "sg r1");
@@ -1111,7 +1118,6 @@ public class HeroDisplay extends JPanel
     _panelWidth = PANEL_WIDTH;
     _panelHeight = Mainframe.getWindowSize().height;
     setPreferredSize(new Dimension(_panelWidth, _panelHeight));
-    _backColor = Color.GRAY;
     setBackground(_backColor);
 
     // Set Panel layout to special MiGLayout

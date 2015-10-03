@@ -66,21 +66,21 @@ public class CmdReturn extends Command
      * @param mfCiv
      * @return true if all worked, else returns false on input error
      */
+    @Override
     public boolean init(List<String> args)
     {
         _isInitialized = true;
         return true;
     }
 
-
     /**
-     * Forces the program to end.
+     * Returns hero to the town.
      * 
-     * @return false always to break out of the Scheduler loop
+     * @return true if successful return to town
      */
+    @Override
     public boolean exec()
     {
-        System.err.println("\nExiting to town view");
         _mfCiv.openTown();
         return true;
     }

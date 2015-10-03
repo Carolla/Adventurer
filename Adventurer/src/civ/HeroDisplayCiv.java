@@ -9,7 +9,6 @@
 
 package civ;
 
-import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.EnumMap;
 
@@ -78,24 +77,6 @@ public class HeroDisplayCiv
   }
 
   /**
-   * Display the Hero the HeroDisplay widget
-   * 
-   * @param hero to display
-   */
-  public void displayHero(Hero hero)
-  {
-    _hero = hero;
-    _widget = new HeroDisplay(this);
-    _mf.addPanel(_widget);
-
-    // _widget = new HeroDisplay();
-    _outputMap = convertAttributes(_hero);
-    _widget.displayAttributes(_outputMap);
-
-  }
-
-
-  /**
    * Convert the data in the Hero object to stringified data fields for widget display
    * 
    * @param hero to display
@@ -106,6 +87,50 @@ public class HeroDisplayCiv
     _outputMap = hero.loadAttributeMap(_outputMap);
     return _outputMap;
 
+  }
+
+  // /**
+  // * Load all person names from the database Method made static because in order to create a
+  // * HeroDisplayCiv, a person or person name is needed, which is currently being loaded
+  // *
+  // * @return list of people in the dorimtory
+  // */
+  // public static List<String> openDormitory()
+  // {
+  // Person tmp = new Person();
+  // return tmp.wake();
+  // }
+  
+  
+  /**
+   * Convert the Item objects into string fields for list display. All Item fields are concatenated
+   * into a single delimited string.
+   * 
+   * @param items list of Item object to convert
+   * @return the string list of output data
+   */
+  private ArrayList<String> convertItems(ArrayList<Item> items)
+  {
+    ArrayList<String> itemList = new ArrayList<String>(items.size());
+    for (int k = 0; k < items.size(); k++) {
+      // Each item consists of: Inventory category, name, quantity, and
+      // weight (each)
+      Item item = items.get(k);
+      String cat = item.getCategory().toString();
+      String name = item.getName();
+      String qty = String.valueOf(item.getQuantity());
+      // Convert weight from ounces to lbs and ozs
+      int weight = item.getWeight();
+      int lbs = weight / Constants.OUNCES_PER_POUND;
+      int ozs = weight % Constants.OUNCES_PER_POUND;
+      String lbWt = String.valueOf(lbs);
+      String ozWt = String.valueOf(ozs);
+      // Build displayable string
+      String itemStr = cat + BaseCiv.DELIM + name + BaseCiv.DELIM + qty + BaseCiv.DELIM + lbWt
+          + BaseCiv.DELIM + ozWt;
+      itemList.add(k, itemStr);
+    }
+    return itemList;
   }
 
   // /**
@@ -128,6 +153,59 @@ public class HeroDisplayCiv
   // this.resetLoadState();
   // }
 
+
+  /**
+   * Convert the Skill object into string fields for list display. All Item fields are concatenated
+   * into a single delimited string.
+   * 
+   * @param skills list of Skills objects to convert
+   * @return the string list of output data
+   */
+  private ArrayList<String> convertSkills(ArrayList<Skill> skills)
+  {
+    ArrayList<String> skillList = new ArrayList<String>(skills.size());
+    for (int k = 0; k < skills.size(); k++) {
+      // Each Skill consists of: name, description, race, klass, and
+      // action (excluded)
+      Skill skill = skills.get(k);
+      String name = skill.getName();
+      // String race = skill.getRace();
+      // String klass = skill.getKlass();
+      String description = skill.getDescription();
+      String skillStr = name + BaseCiv.DELIM + description; // race + BaseCiv.DELIM + klass +
+                                                            // BaseCiv.DELIM + description;
+      skillList.add(k, skillStr);
+    }
+    return skillList;
+  }
+
+  /**
+   * Delete the Person
+   * 
+   * @return true if the delete worked correctly; else false
+   */
+  public boolean deletePerson()
+  {
+    // return _hero.delete();
+    return false;
+  }
+
+  /**
+   * Display the Hero the HeroDisplay widget
+   * 
+   * @param hero to display
+   */
+  public void displayHero(Hero hero)
+  {
+    _hero = hero;
+    _widget = new HeroDisplay(this);
+    _mf.addPanel(_widget);
+  
+    // _widget = new HeroDisplay();
+    _outputMap = convertAttributes(_hero);
+    _widget.displayAttributes(_outputMap);
+  
+  }
 
   /**
    * @return the length of the inventory (number of Items)
@@ -164,19 +242,19 @@ public class HeroDisplayCiv
     return true;
   }
 
-  /**
-   * Format the model data and tell the widget to display it
-   * 
-   * @param ds map containing internally formatted key values
-   * @return false is an error occurs
-   */
-  public boolean populateAttributes(EnumMap<PersonKeys, String> ds)
-  {
-    // Create a shuttle to contain the data and convert to widget String format
-    _outputMap = convertAttributes(ds);
-    _widget.displayAttributes(_outputMap);
-    return true;
-  }
+//  /**
+//   * Format the model data and tell the widget to display it
+//   * 
+//   * @param ds map containing internally formatted key values
+//   * @return false is an error occurs
+//   */
+//  public boolean populateAttributes(EnumMap<PersonKeys, String> ds)
+//  {
+//    // Create a shuttle to contain the data and convert to widget String format
+//    _outputMap = convertAttributes(ds);
+//    _widget.displayAttributes(_outputMap);
+//    return true;
+//  }
 
   /**
    * Format the inventory data and tell the widget to display it
@@ -211,13 +289,14 @@ public class HeroDisplayCiv
   }
 
   /**
-   * Delete the Person
+   * Rename the Persona to the name selected
    * 
-   * @return true if the delete worked correctly; else false
+   * @param name the new name for the character
+   * @return true if the rename worked correctly; else false
    */
-  public boolean deletePerson()
+  public boolean renamePerson(String name)
   {
-    // return _hero.delete();
+    // return _hero.rename(name);
     return false;
   }
 
@@ -242,132 +321,9 @@ public class HeroDisplayCiv
     return false;
   }
 
-  /**
-   * Rename the Persona to the name selected
-   * 
-   * @param name the new name for the character
-   * @return true if the rename worked correctly; else false
-   */
-  public boolean renamePerson(String name)
-  {
-    // return _hero.rename(name);
-    return false;
-  }
+  
 
-  // /**
-  // * Load all person names from the database Method made static because in order to create a
-  // * HeroDisplayCiv, a person or person name is needed, which is currently being loaded
-  // *
-  // * @return list of people in the dorimtory
-  // */
-  // public static List<String> openDormitory()
-  // {
-  // Person tmp = new Person();
-  // return tmp.wake();
-  // }
-
-  /**
-   * Convert the attributes in the map to an all-String shuttle for display. Each key value is a
-   * single field
-   * 
-   * @param ds model data shuttle
-   * @return the string map of output data
-   */
-  private EnumMap<PersonKeys, String> convertAttributes(EnumMap<PersonKeys, String> ds)
-  {
-    // Guard against null shuttle
-    if (ds == null) {
-      return null;
-    }
-    // Guard: in case of null shuttles
-    if (ds.size() == 0) {
-      return null;
-    }
-    // // Convert each value to a String en masse
-    // for (PersonKeys key : ds.getKeys()) {
-    // Object obj = ds.getField(key);
-    // String str = BaseCiv.toString(obj);
-    // // Handle manipulations for special keys
-    // // Converts from inches to "9' 99" format (e.g., 81 in = 6' 9")
-    // if (key == PersonKeys.HEIGHT) {
-    // // Double strnum = Utilities.formatDistance(Double.parseDouble(str));
-    // ((DataShuttle<PersonKeys>) ds).putField(key, 6.0); // temp until repaired
-    // }
-    // // Converts from ounces to "999.9 lb." format (e.g,100 oz = 6.25
-    // // lb.)
-    // else if (key == PersonKeys.LOAD) {
-    // int load = ((Integer) obj).intValue();
-    // double num = load / Constants.OUNCES_PER_POUND;
-    // str = Double.toString(num);
-    // ((DataShuttle<PersonKeys>) ds).putField(key, str);
-    // } else if (key == PersonKeys.OCCUPATION) {
-    // str = ((Occupation) obj).getName();
-    // ((DataShuttle<PersonKeys>) ds).putField(key, str);
-    // } else if (key == PersonKeys.ABILITY_SCORES) {
-    // List<Integer> scores = ((AttributeList) obj).getList();
-    // ((DataShuttle<PersonKeys>) ds).putField(key, scores);
-    // } else {
-    // ((DataShuttle<PersonKeys>) ds).putField(key, str);
-    // }
-    // }
-    return ds;
-  }
-
-  /**
-   * Convert the Item objects into string fields for list display. All Item fields are concatenated
-   * into a single delimited string.
-   * 
-   * @param items list of Item object to convert
-   * @return the string list of output data
-   */
-  private ArrayList<String> convertItems(ArrayList<Item> items)
-  {
-    ArrayList<String> itemList = new ArrayList<String>(items.size());
-    for (int k = 0; k < items.size(); k++) {
-      // Each item consists of: Inventory category, name, quantity, and
-      // weight (each)
-      Item item = items.get(k);
-      String cat = item.getCategory().toString();
-      String name = item.getName();
-      String qty = String.valueOf(item.getQuantity());
-      // Convert weight from ounces to lbs and ozs
-      int weight = item.getWeight();
-      int lbs = weight / Constants.OUNCES_PER_POUND;
-      int ozs = weight % Constants.OUNCES_PER_POUND;
-      String lbWt = String.valueOf(lbs);
-      String ozWt = String.valueOf(ozs);
-      // Build displayable string
-      String itemStr = cat + BaseCiv.DELIM + name + BaseCiv.DELIM + qty + BaseCiv.DELIM + lbWt
-          + BaseCiv.DELIM + ozWt;
-      itemList.add(k, itemStr);
-    }
-    return itemList;
-  }
-
-  /**
-   * Convert the Skill object into string fields for list display. All Item fields are concatenated
-   * into a single delimited string.
-   * 
-   * @param skills list of Skills objects to convert
-   * @return the string list of output data
-   */
-  private ArrayList<String> convertSkills(ArrayList<Skill> skills)
-  {
-    ArrayList<String> skillList = new ArrayList<String>(skills.size());
-    for (int k = 0; k < skills.size(); k++) {
-      // Each Skill consists of: name, description, race, klass, and
-      // action (excluded)
-      Skill skill = skills.get(k);
-      String name = skill.getName();
-      // String race = skill.getRace();
-      // String klass = skill.getKlass();
-      String description = skill.getDescription();
-      String skillStr = name + BaseCiv.DELIM + description; // race + BaseCiv.DELIM + klass +
-                                                            // BaseCiv.DELIM + description;
-      skillList.add(k, skillStr);
-    }
-    return skillList;
-  }
+  
 
   /*
    * PRIVATE METHODS
