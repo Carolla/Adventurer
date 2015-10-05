@@ -201,12 +201,14 @@ public class HeroDisplayCiv
     _widget = new HeroDisplay(this);
     _mf.addPanel(_widget);
   
-    // _widget = new HeroDisplay();
     _outputMap = convertAttributes(_hero);
-    _widget.displayAttributes(_outputMap);
-  
+    _widget.displayAttributes(_outputMap);  
   }
 
+  /** Display the main 
+  
+  
+  
   /**
    * @return the length of the inventory (number of Items)
    */
