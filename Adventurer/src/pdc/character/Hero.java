@@ -1,5 +1,5 @@
 /**
- * Person.java Copyright (c) 2009, Carolla Development, Inc. All Rights Reserved
+ * Hero.java Copyright (c) 2009, Carolla Development, Inc. All Rights Reserved
  *
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
@@ -17,6 +17,7 @@ import java.util.EnumMap;
 
 import civ.PersonKeys;
 import mylib.pdc.MetaDie;
+import pdc.TmpItem;
 import pdc.character.Thief.TSKILL;
 
 
@@ -33,7 +34,7 @@ public class Hero implements Serializable // IRegistryElement
   /* INTERNAL OBJECT COMPONENTS */
   /** One of the four canonical Hero klasses: Fighter, Cleric, Wizard, or Thief */
   private Klass _klass;
-  /** The Race object for this Person (Input), and contains the Hunger and Age objects */
+  /** The Race object for this Person (Input), and contains the Hunger objects */
   private Race _race = null;
 
   /** Input Data for Hero */
@@ -47,14 +48,17 @@ public class Hero implements Serializable // IRegistryElement
   /** Name of the klass to convert to a Klass component */
   private String _klassname;
   /** What we see when we look at the Person */
-  private String _description = null;
-
+  private String _description;
+  /** The hungers state of the Hero as he/she burns calories and eats */
+  private String _hunger;
+  
   /** Hero game attributes */
   private int _level = 1;
-  private int _XP = 0;
-  private int _HP = 0;
-  private int _AP = 0;
-  private int _AC = 0;
+  private int _XP;
+  private int _HP;
+  private int _AP;
+  private int _AC;
+  private int _AC_Magic;
 
   // Non-lethal combat stats
   int OVERBEAR = 0;
@@ -64,7 +68,7 @@ public class Hero implements Serializable // IRegistryElement
   int[] _apMods;
 
   // Speed is measured in block movement per turn */
-  int _speed = 0;
+  int _speed;
 
   /** Indices into the Hero's prime traits */
   public enum PrimeTraits {
@@ -80,10 +84,14 @@ public class Hero implements Serializable // IRegistryElement
   private int _toHitStr = 0; // to hit with melee weapon
   private int _damage = 0; // damage bonus
   private int _wtAllow = 0; // load allowed
+  private int _load = 0; // weight carried
+
+  // Spells in the Cleric or Wizard's spell book
+  ArrayList<String> _spellBook = new ArrayList<String>();
 
   // INT mods
-  ArrayList<String> _knownLangs; // everyone knows Common, and perhaps a race language
-  ArrayList<String> _spellBook; // spells in the Wizard spell book
+  // Everyone knows Common, and perhaps a race language
+  ArrayList<String> _knownLangs = new ArrayList<String>();
   int _maxLangs; // some can learn new languages, up to this number
   // Wizard only
   private int _MSPs = 0;
@@ -110,17 +118,24 @@ public class Hero implements Serializable // IRegistryElement
   int _weight = 0;
   int _height = 0;
 
-  // Gold in hand and gold banked. The decimal represents silver pieces */
-  double _gold = 0.0;
+  // Gold pieces and silver pieces in hand. 
+  int _gold = 0;
+  int _silver = 0;
+  // Gold banked. The decimal represents silver pieces
   double _goldBanked = 0.0;
 
-  ArrayList<String> _skills; // literacy, occupational, and race skills
+ // Literacy, occupational, and race skills
+  ArrayList<String> _skills = new ArrayList<String>();
+
   // Number of skills only the thief has
   final int NBR_THIEF_SKILLS = TSKILL.values().length;
   // The first index is the skill name, the second is the chance of success
   String[][] _thiefSkills = new String[NBR_THIEF_SKILLS][2];
 
-  // List of all inventory items
+  // Holds all inventory items
+  private ArrayList<TmpItem> _inventory = new ArrayList<TmpItem>();
+
+  // Keys to all occupational kits
   private enum KitNdx {
     ALCHEMIST, LEATHER, METAL, SEWING, WOOD, THIEVES
   };
@@ -134,12 +149,11 @@ public class Hero implements Serializable // IRegistryElement
       "Woodworking Kit (50 gp) | 64", // 8 lb
       "Thieves Kit (50 gp) | 8" // 1 lb
   };
-  private ArrayList<String> _inventory;
 
   // Table to hold occupational skills
   private String _occupation = "";
-  private ArrayList<String> _ocpSkills;
-
+  private ArrayList<String> _ocpSkills = new ArrayList<String>();
+  
   // Various occupations (31) for random selection
   private String[] _ocpTable = {
       "Academic", "Acrobat", "Alchemist", "Apothecary", "Armorer", "Banker", "Bowyer",
@@ -330,7 +344,7 @@ public class Hero implements Serializable // IRegistryElement
     _traits = _race.verifyRaceLimits(_traits);
     displayTraits("Race-verified final Traits: ", _traits);
 
-    // 6. ASSIGN THE STRENGTH MODIFIERS: To Hit Mod, Damage Mod, and Wt Allowance (Load)
+    // 6. ASSIGN THE STRENGTH MODIFIERS: To Hit Mod, Damage Mod, and Wt Allowance
     int[] strMods = calcStrengthMods(_traits);
     _toHitStr = strMods[0];
     _damage = strMods[1];
@@ -339,12 +353,10 @@ public class Hero implements Serializable // IRegistryElement
 
     // 7a. ASSIGN THE INTELLIGENCE MODIFIERS: Known Languages, Max Languages, Literacy Skill
     int intel = _traits[PrimeTraits.INT.ordinal()]; // for typing convenience
-    _knownLangs = new ArrayList<String>();
     _knownLangs = addLanguages(_knownLangs);
     // displayList("Known Languages: \t", _knownLangs);
     _maxLangs = intel / 2 - 3;
     // System.out.println("Hero can learn an additional " + _maxLangs + " languages.");
-    _skills = new ArrayList<String>();
     addUnique(_skills, getLiteracy(intel));
     addUnique(_skills, getLiteracy(intel));
     // displayList("Skills: \t", _skills);
@@ -354,7 +366,6 @@ public class Hero implements Serializable // IRegistryElement
       _MSPsPerLevel = wizMods[0];
       _percentToKnow = wizMods[1];
       _MSPs = _MSPsPerLevel; // for first level
-      _spellBook = new ArrayList<String>();
       addUnique(_spellBook, "Read Magic");
       _spellsKnown = _spellBook.size();
       // displayWizardMods();
@@ -400,6 +411,8 @@ public class Hero implements Serializable // IRegistryElement
     // 11b. GET THE HERO'S PHYSICAL DESCRIPTION FROM THIS BODY-TYPE
     _description = initDescription();
     // System.out.println(_description);
+    // 11c. SET THE HERO'S INITIAL HUNGER STATE
+    _hunger = "Full";
 
     // 12. SET THE INITIAL LEVEL AND EXPERIENCE POINTS
     _level = 1;
@@ -409,7 +422,7 @@ public class Hero implements Serializable // IRegistryElement
     _HP = _klass.rollHP(_HPMod);
     // System.out.println("\nInitial HP = " + _HP + ", including the " + _HPMod + " HP mod.");
 
-    // 14. SET THE NON-LETAHL COMBAT STATS: OVERBEARING, GRAPPLING, PUMMELING, AND SHIELD BASH
+    // 14. SET THE NON-LETHAL COMBAT STATS: OVERBEARING, GRAPPLING, PUMMELING, AND SHIELD BASH
     _AP = _traits[PrimeTraits.STR.ordinal()] + _traits[PrimeTraits.DEX.ordinal()];
     _apMods = new int[4];
     _apMods = calcAPMods(_apMods);
@@ -422,10 +435,12 @@ public class Hero implements Serializable // IRegistryElement
 
     // 16. SET INITIAL ARMOR CLASS
     _AC = 10 + _ACMod;
+    _AC_Magic = 0;    // no magica adjustments initially
     // System.out.println("\nArmor Class (without armor) = " + _AC);
 
     // 17. ROLL FOR KLASS-SPECIFIC STARTING GOLD
     _gold = _klass.rollGold();
+    _silver = 9;    // for testing
     _goldBanked = 0.0;
     // System.out.println("\nInitial gold for " + _klassname + " = " + _gold + " gp");
 
@@ -444,23 +459,21 @@ public class Hero implements Serializable // IRegistryElement
 
     // 20. ADD RANDOM OCCUPATION AND OCCUPATIONAL SKILLS
     _occupation = assignOccupation();
-    _ocpSkills = new ArrayList<String>();
     _ocpSkills = assignOcpSkills();
     // displayList("Skills for occupation " + _occupation + ":", _ocpSkills);
     // displayList("Inventory in backpack: ", _inventory);
 
     // 21. ASSIGN SPELLS TO CLERICS (WIZARDS ALREADY WERE ASSIgned 'READ MAGIC')
     if (_klassname.equalsIgnoreCase("Cleric")) {
-      _spellBook = new ArrayList<String>();
       _spellBook = ((Cleric) _klass).addClericalSpells(_spellBook);
       _spellsKnown = _spellBook.size();
       // displayList(String.format("Clerical spells knowns: %s spells: ", _spellsKnown),
       // _spellBook);
     }
     // 22. Assign initial inventory
-    _inventory = new ArrayList<String>();
-    _inventory = _klass.assignBasicInventory(_inventory);
-    _inventory = _klass.addKlassItems(_inventory);
+//    _inventory = _klass.assignBasicInventory(_inventory);
+//    _inventory = _klass.addKlassItems(_inventory);
+    
     // displayList("Inventory in backpack: ", _inventory);
 
 
@@ -479,7 +492,6 @@ public class Hero implements Serializable // IRegistryElement
       oList.add(obj);
     }
   }
-
 
   // Assign a random occupation to the Hero
   private String assignOccupation()
@@ -590,9 +602,12 @@ public class Hero implements Serializable // IRegistryElement
     // Now load the attributes in display order (values in parens are derived)
     // Row 1: Name
     map.put(PersonKeys.NAME, _name);
-    
-    // Row 2: Race and Klass
+
+    // Row 2: Gender, Race and Klass
+    map.put(PersonKeys.GENDER, _gender);
     map.put(PersonKeys.RACENAME, _racename);
+    // Rogue is the user pseudonym for the Thief class
+    _klassname = (_klassname.equalsIgnoreCase("Thief")) ? _klassname = "Rogue" : _klassname;
     map.put(PersonKeys.KLASSNAME, _klassname);
 
     // Row 3: Level, Current HP, Max HP, AC, (AC with Magic adj)
@@ -600,11 +615,13 @@ public class Hero implements Serializable // IRegistryElement
     map.put(PersonKeys.HP, String.format("%s", _HP));
     map.put(PersonKeys.HP_MAX, String.format("%s", _HP));
     map.put(PersonKeys.AC, String.format("%s", _AC));
+    map.put(PersonKeys.AC_MAGIC, String.format("%s", _AC_Magic));
 
-    // Row 4: XP, Speed, Gold (gp.sp), Gold Banked
+    // Row 4: XP, Speed, Gold/Silver (gp/sp), Gold Banked
     map.put(PersonKeys.XP, String.format("%s", _XP));
     map.put(PersonKeys.SPEED, String.format("%s", _speed));
     map.put(PersonKeys.GOLD, String.format("%s", _gold));
+    map.put(PersonKeys.SILVER, String.format("%s", _silver));
     map.put(PersonKeys.GOLD_BANKED, String.format("%s", _goldBanked));
 
     // Row 5: Occupation, Description
@@ -616,9 +633,10 @@ public class Hero implements Serializable // IRegistryElement
     map.put(PersonKeys.TO_HIT_MELEE, String.format("%s", _toHitStr));
     map.put(PersonKeys.DAMAGE, String.format("%s", _damage));
     map.put(PersonKeys.WT_ALLOW, String.format("%s", _wtAllow));
+    map.put(PersonKeys.LOAD, String.format("%s", "134"));  // for testing
 
     // Row 7: INT and INT mods: percent to know spell, current MSP, max MSP, MSPs/Level,
-    //    spells known (in book), and max languages
+    // spells known (in book), and max languages
     map.put(PersonKeys.INT, String.format("%s", _traits[PrimeTraits.INT.ordinal()]));
     map.put(PersonKeys.TO_KNOW, String.format("%s", _percentToKnow));
     map.put(PersonKeys.CURRENT_MSP, String.format("%s", _MSPs));
@@ -626,7 +644,7 @@ public class Hero implements Serializable // IRegistryElement
     map.put(PersonKeys.MSP_PER_LEVEL, String.format("%s", _MSPsPerLevel));
     map.put(PersonKeys.SPELLS_KNOWN, String.format("%s", _spellsKnown));
     map.put(PersonKeys.MAX_LANGS, String.format("%s", _maxLangs));
-    
+
     // Row 8: WIS and WIS mods: Magic Attack Mod, Current CSP, Max CSPs, CSPs/Level, Turn Undead
     map.put(PersonKeys.WIS, String.format("%s", _traits[PrimeTraits.WIS.ordinal()]));
     map.put(PersonKeys.MAM, String.format("%s", _magicAttackMod));
@@ -640,16 +658,17 @@ public class Hero implements Serializable // IRegistryElement
     map.put(PersonKeys.HP_MOD, String.format("%s", _HPMod));
     map.put(PersonKeys.RMR, String.format("%s", _racialPoisonResist));
 
-    // Row 10: DEX and DEX mods: ToHit Missile, AC Mod 
+    // Row 10: DEX and DEX mods: ToHit Missile, AC Mod
     map.put(PersonKeys.DEX, String.format("%s", _traits[PrimeTraits.DEX.ordinal()]));
     map.put(PersonKeys.TO_HIT_MISSLE, String.format("%s", _toHitDex));
     map.put(PersonKeys.AC_MOD, String.format("%s", _ACMod));
-    
+
     // Row 11: CHR, then Weight and Height of Hero
     map.put(PersonKeys.CHR, String.format("%s", _traits[PrimeTraits.CHR.ordinal()]));
     map.put(PersonKeys.WEIGHT, String.format("%s", _weight));
     map.put(PersonKeys.HEIGHT, String.format("%s", _height));
- 
+    map.put(PersonKeys.HUNGER, _hunger);
+
     // Row 12: AP and non-lethal combat values
     map.put(PersonKeys.AP, String.format("%s", _AP));
     map.put(PersonKeys.OVERBEARING, String.format("%s", _apMods[OVERBEAR]));
@@ -657,18 +676,18 @@ public class Hero implements Serializable // IRegistryElement
     map.put(PersonKeys.GRAPPLING, String.format("%s", _apMods[GRAPPLE]));
     map.put(PersonKeys.SHIELD_BASH, String.format("%s", _apMods[BASH]));
 
-    // Row 13: Maximum languages 
+    // Row 13: Maximum languages
     map.put(PersonKeys.MAX_LANGS, String.format("%s", _maxLangs));
-    
+
     // Row 14: All known languages as single string
     StringBuilder sb = new StringBuilder();
-    for (int k=0; k < _knownLangs.size(); k++) {
+    for (int k = 0; k < _knownLangs.size(); k++) {
       sb.append(_knownLangs.get(k));
       sb.append(", ");
     }
     String langList = new String(sb);
     map.put(PersonKeys.LANGUAGES, langList);
-    
+
     return map;
   }
 
@@ -923,13 +942,13 @@ public class Hero implements Serializable // IRegistryElement
     int CHR = _traits[PrimeTraits.CHR.ordinal()];
 
     // for testing
-    _occupation = "Drifter";
-    STR = 17;
-    INT = 17;
-    WIS = 17;
-    DEX = 17;
-    CON = 17;
-    CHR = 17;
+//    _occupation = "Armorer";
+//    STR = 17;
+//    INT = 17;
+//    WIS = 17;
+//    DEX = 17;
+//    CON = 17;
+//    CHR = 17;
 
     // Get all conditional skills for each occupation
     switch (_occupation)
@@ -962,7 +981,7 @@ public class Hero implements Serializable // IRegistryElement
       }
       case ("Alchemist"): {
         ocpDesc = "Knows chemicals and elixirs. Owns Alchemists' Kit.";
-        _inventory.add(kits[KitNdx.ALCHEMIST.ordinal()]);
+//        _inventory.add(kits[KitNdx.ALCHEMIST.ordinal()]);
         if (INT > 14) {
           skills.add(extractSkillSet("Arcane Knowledge"));
         } else {
@@ -972,7 +991,7 @@ public class Hero implements Serializable // IRegistryElement
       }
       case ("Apothecary"): {
         ocpDesc = "Knows herbs, ointments, and medicines. Owns Alchemists' Kit.";
-        _inventory.add(kits[KitNdx.ALCHEMIST.ordinal()]);
+//        _inventory.add(kits[KitNdx.ALCHEMIST.ordinal()]);
         if (WIS > 14) {
           skills.add(extractSkillSet("Natural Knowledge"));
         } else {
@@ -982,7 +1001,7 @@ public class Hero implements Serializable // IRegistryElement
       }
       case ("Armorer"): {
         ocpDesc = "Makes and repairs metal armor, helmets and shields. Owns Metalsmith Kit.";
-        _inventory.add(kits[KitNdx.METAL.ordinal()]);
+//        _inventory.add(kits[KitNdx.METAL.ordinal()]);
         skills.add(extractSkillSet("Repair Armor"));
         break;
       }
@@ -996,13 +1015,13 @@ public class Hero implements Serializable // IRegistryElement
       }
       case ("Bowyer"): {
         ocpDesc = "Can make bows and arrows. Owns Woodworking Kit.";
-        _inventory.add(kits[KitNdx.WOOD.ordinal()]);
+//        _inventory.add(kits[KitNdx.WOOD.ordinal()]);
         skills.add(extractSkillSet("Bowmaking"));
         break;
       }
       case ("Carpenter"): {
         ocpDesc = "Knows wood and woodworking tools. Owns Woodworking Kit.";
-        _inventory.add(kits[KitNdx.WOOD.ordinal()]);
+//        _inventory.add(kits[KitNdx.WOOD.ordinal()]);
         skills.add(extractSkillSet("Find Secrets in Woodwork"));
         break;
       }
@@ -1014,7 +1033,7 @@ public class Hero implements Serializable // IRegistryElement
       }
       case ("Fisher"): {
         ocpDesc = "Knows about bodies of fresh water and lakes. Owns Sewing Kit.";
-        _inventory.add(kits[KitNdx.SEWING.ordinal()]);
+//        _inventory.add(kits[KitNdx.SEWING.ordinal()]);
         skills.add(extractSkillSet("Netmaking"));
         if (STR > 14) {
           skills.add(extractSkillSet("Fast Swim"));
@@ -1035,7 +1054,7 @@ public class Hero implements Serializable // IRegistryElement
       }
       case ("Freighter"): {
         ocpDesc = "Businessman. Ships cargo in wagons. Owns Woodworking Kit.";
-        _inventory.add(kits[KitNdx.WOOD.ordinal()]);
+//        _inventory.add(kits[KitNdx.WOOD.ordinal()]);
         skills.add(extractSkillSet("Negotiations"));
         skills.add(extractSkillSet("Cargo Transport"));
         if (WIS > 14) {
@@ -1098,7 +1117,7 @@ public class Hero implements Serializable // IRegistryElement
       }
       case ("Leatherworker"): {
         ocpDesc = "Tans hides and makes leather items. Owns Leatherworking Kit";
-        _inventory.add(kits[KitNdx.LEATHER.ordinal()]);
+//        _inventory.add(kits[KitNdx.LEATHER.ordinal()]);
         skills.add(extractSkillSet("Leatherworking"));
         break;
       }
@@ -1157,7 +1176,7 @@ public class Hero implements Serializable // IRegistryElement
       }
       case ("Tailor"): {
         ocpDesc = "Makes clothing, knows dyes. Owns Sewing Kit";
-        _inventory.add(kits[KitNdx.SEWING.ordinal()]);
+//        _inventory.add(kits[KitNdx.SEWING.ordinal()]);
         skills.add(extractSkillSet("Sewing"));
         if (CHR > 14) {
           skills.add(extractSkillSet("Gather Information"));
@@ -1189,20 +1208,20 @@ public class Hero implements Serializable // IRegistryElement
       }
       case ("Weaponsmith"): {
         ocpDesc = "Knows metal weapons of all types and metalworking. Owns Metalsmith Kit.";
-        _inventory.add(kits[KitNdx.METAL.ordinal()]);
+//        _inventory.add(kits[KitNdx.METAL.ordinal()]);
         skills.add(extractSkillSet("Make Weapons"));
         break;
       }
       case ("Weaver"): {
         ocpDesc = "Makes tapestries, rugs, bed clothing. Knows dyes. Owns Sewing Kit";
-        _inventory.add(kits[KitNdx.SEWING.ordinal()]);
+//        _inventory.add(kits[KitNdx.SEWING.ordinal()]);
         skills.add(extractSkillSet("Appraise Tapestries"));
         break;
       }
       case ("Woodworker"): {
         ocpDesc = "Builds wood furniture, cabinets. Knows wood and wood-working tools. " +
             "Owns Woodworking Kit.";
-        _inventory.add(kits[KitNdx.WOOD.ordinal()]);
+//        _inventory.add(kits[KitNdx.WOOD.ordinal()]);
         skills.add(extractSkillSet("Woodworking"));
         skills.add(extractSkillSet("Find Secrets in Woodwork"));
         if ((DEX > 14) && (INT > 14)) {
@@ -1246,6 +1265,8 @@ public class Hero implements Serializable // IRegistryElement
   }
 
 
+  
+  
   // ====================================================
   // INNER CLASS MockHero
   // ====================================================

@@ -59,7 +59,12 @@ public interface MainframeInterface
   /** Redraws the view */
   public void repaint();
 
-public void add(JComponent component, String location);
+  public void addPanel(JComponent component);
+
+  /**
+   * @param object
+   */
+  public void setTitle(String title);
 
   
 } // end of MainframeInterface 

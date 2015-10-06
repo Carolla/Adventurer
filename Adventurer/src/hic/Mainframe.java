@@ -113,9 +113,9 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   /** Title of the IOPanel of left side */
   private final String IOPANEL_TITLE = " Transcript ";
   /** Title of the initial three-button panel on left side */
-  private final String INITIAL_OPENING_TITLE = " Actions ";
+  private final String INITIAL_OPENING_TITLE = " Select an Action from the Buttons Below ";
 
-  
+
   /** Help Title for the mainframe */
   private static final String _helpTitle = "GREETINGS ADVENTURER!";
   /** Help Text for the mainframe */
@@ -137,7 +137,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
 
   /** Need access to this mainframe from almost every Civ */
   private static Mainframe _mf;
-  
+
   // ============================================================
   // Constructors and constructor helpers
   // ============================================================
@@ -154,17 +154,13 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     return new Dimension(USERWIN_WIDTH, USERWIN_HEIGHT);
   }
 
-  
+
   /** Get access to the mainframe from afar */
   public static Mainframe getInstance()
   {
-    if (_mf == null) {
-      _mf = new Mainframe();
-    }
     return _mf;
   }
-  
-  
+
   /**
    * Creates the initial frame layout: left and right panel holders with buttons, and image panel
    * showing chronos logo on right. Creates the {@code HelpDialog} singleton, ready to receive
@@ -176,17 +172,19 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
    */
   public Mainframe()
   {
-    // Create the components of the mainframe
-    createFrameAndMenubar(); // contains left and right panel holders
+    // Create the support elements, e.g., the BuildingRegistry, Scheduler, etc.
+    constructMembers();
+
+    createFrameAndMenubar(); // Depends on class members not being NULL
     addImagePanel(); // add image panel on right for adding images later
     createButtons(); // creates three action buttons on panel
     redraw();
     setVisible(true);
 
+    _mfCiv.initialize();
+
     // Create the one time help dialog
     prepareHelpDialog();
-    // Create the support elements, e.g., the BuildingRegistry, Scheduler, etc.
-    constructMembers();
     _mf = this;
   }
 
@@ -237,6 +235,13 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     _contentPane.setFocusable(true);
   }
 
+  /** Replace the current title with the given title */
+  @Override
+  public void setTitle(String title)
+  {
+    _leftHolder = makePanelHolder(_leftHolder, Constants.MY_BROWN, title, Color.WHITE);
+  }
+
 
   /**
    * Create a holder for the left or right side of the frame, with all cosmetics. Holders will have
@@ -255,8 +260,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     holder.setBackground(borderColor);
 
     Border matte = BorderFactory.createMatteBorder(5, 5, 5, 5, borderColor);
-    // TODO Move call to pdc.Util to mfCiv so pdc is not imported; and duplicate calls are
-    // avoided
+    // TODO Move call to pdc.Util to mfCiv so pdc is not imported; and duplicate calls are avoided
     Border titled = BorderFactory.createTitledBorder(matte, title,
         TitledBorder.CENTER, TitledBorder.TOP, Util.makeRunicFont(14f), Color.BLACK);
     holder.setBorder(titled);
@@ -413,7 +417,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
           e.printStackTrace();
           System.exit(0);
         }
-        // changeToLeftPanel(nhd);   // This my still be needed
+        // changeToLeftPanel(nhd); // This my still be needed
       }
     });
     return button;
@@ -501,13 +505,17 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
    */
   public void addIOPanel()
   {
-    _leftHolder.removeAll();
-
-    setTranscriptTitle(IOPANEL_TITLE);
-    _leftHolder.add(_iop);
-    redraw();
+    addPanel(_iop);
   }
 
+  public void addPanel(JComponent panel)
+  {
+    _leftHolder.removeAll();
+
+    // setTranscriptTitle(IOPANEL_TITLE);
+    _leftHolder.add(panel);
+    redraw();
+  }
 
   /**
    * Display a prompt, asking a question of the user
@@ -697,11 +705,9 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     }
   }
 
-  @Override
-  public void add(JComponent component, String location)
-  {
-    add(component, location);
-  }
+  /*
+   * @Override public void add(JComponent component, String location) { add(component, location); }
+   */
 
   public void start()
   {
@@ -710,3 +716,4 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
 
 
 } // end of Mainframe outer class
+

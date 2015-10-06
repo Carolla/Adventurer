@@ -81,13 +81,17 @@ public class Inventory implements Serializable
    * Silver, both of Category CASH
    */
   private String[][] _startList = {
-      {"Gold pieces", "15"}, {"Silver pieces", "8"},
-      {"Backpack", "1"}, {"Cloak", "1"},
-      {"Belt", "1"}, {"Belt pouch, small", "1"}, {"Breeches", "1"},
+      {"Backpack", "1"}, 
+      {"Cloak", "1"},
+      {"Belt", "1"}, 
+      {"Belt pouch, small", "1"}, 
+      {"Breeches", "1"},
       {"Pair of Boots", "1"},
-      {"Shirt", "1"}, {"Tinderbox, Flint & Steel", "1"},
-      {"Torches", "3"}, {"Rations", "3"},
-      {"Water skein", "1"}, {"Quarterstaff", "1"}
+      {"Shirt", "1"}, 
+      {"Tinderbox, Flint & Steel", "1"},
+      {"Torches", "3"}, 
+      {"Rations", "3"},
+      {"Water skein", "1"} 
   };
 
   /*
@@ -490,8 +494,7 @@ public class Inventory implements Serializable
           System.out.println("Inventory search: " + target[k]
               + " found!");
           retval = true;
-        }
-        else {
+        } else {
           System.out.println("Inventory search: " + target[k]
               + " missing!");
           retval = true;
@@ -500,7 +503,9 @@ public class Inventory implements Serializable
       return retval;
     }
 
-    /** @return the size of the starting list */
+    /**
+     * @return the size of the starting list
+     */
     public int startSize()
     {
       return _startList.length;

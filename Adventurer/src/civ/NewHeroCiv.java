@@ -67,7 +67,7 @@ public class NewHeroCiv
    * @param inputMap of user fields: name, gender, hairColor, race, and Klass
    * @param ErrorCode of NO_ERROR, or some ErrorCode value if a problem occured
    */
-  public ErrorCode createHero(EnumMap<HeroInput, String> inputMap) 
+  public Hero createHero(EnumMap<HeroInput, String> inputMap) 
   {
     String name = _inputMap.get(HeroInput.NAME);
     String gender = _inputMap.get(HeroInput.GENDER);
@@ -80,12 +80,11 @@ public class NewHeroCiv
     
     try {
       myHero = new Hero(name, gender, hairColor, raceName, klassName);
-      HeroDisplayCiv hDispCiv = new HeroDisplayCiv();
-      hDispCiv.displayHero(myHero);
     } catch (InstantiationException ex) {
       err = ErrorCode.HERO_NOT_CREATED;
+      //TODO Handle error here
     }
-    return err;
+    return myHero;
   }
   
   // Get empty map for input data

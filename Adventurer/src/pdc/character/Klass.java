@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import chronos.Chronos;
 import mylib.pdc.MetaDie;
+import pdc.TmpItem;
 
 /**
  * Defines the common methods and attributes for all Klasses. Peasant is the default Klass.
@@ -65,33 +66,7 @@ public abstract class Klass implements Serializable
     return newKlass;
   }
 
-
-  // Assign initial inventory to Hero (8 gpw = 1 lb)
-  public ArrayList<String> assignBasicInventory(ArrayList<String> inven)
-  {
-    // Basic inventory items: name | weight
-    String[] basics = {
-        "backpack | 56", // 7.00 lb
-        "tinderbox | 4", // 0.50 lb
-        "torch | 8", // 1.00 lb
-        "rations | 4", // 0.50 lb
-        "water skein (empty) | 4", // 0.50 lb
-        "small belt pouch | 2", // 0.25 lb
-        "leather boots | 32", // 4.00 lb
-        "belt | 2", // 0.25 lb
-        "breeches | 4", // 0.50 lb
-        "shirt | 4", // 0.50 lb
-        "cloak | 16" // 2.00 lb
-    };
-    // total weight = 136 gpw (17.00 lb)
-
-    // Load up on common basics
-    for (int k = 0; k < basics.length; k++) {
-      inven.add(basics[k]);
-    }
-    return inven;
-  }
-
+  
   /** Add klass-specific items into their inventory */
   public ArrayList<String> addKlassItems(ArrayList<String> inven )
   {
@@ -102,6 +77,25 @@ public abstract class Klass implements Serializable
   }
 
   
+  // Assign initial inventory to Hero (8 gpw = 1 lb)
+  public ArrayList<TmpItem> assignBasicInventory(ArrayList<TmpItem> inven)
+  {
+    // Basic inventory TmpItems: name, quantity, total weight
+    inven.add(new TmpItem("backpack", 1, 56));
+    inven.add(new TmpItem("tinderbox", 1, 4));
+    inven.add(new TmpItem("torch", 1, 8));
+    inven.add(new TmpItem("rations", 1, 4));
+    inven.add(new TmpItem("water skein (empty)", 1, 4));
+    inven.add(new TmpItem("small belt pouch", 1, 2));
+    inven.add(new TmpItem("leather boots", 1, 32));
+    inven.add(new TmpItem("belt", 1, 2));
+    inven.add(new TmpItem("breeches", 1, 4));
+    inven.add(new TmpItem("shirt", 1, 4));
+    inven.add(new TmpItem("cloak", 1, 16));
+
+    return inven;
+  }
+
   
   
 //  // Add an element to an array
@@ -141,10 +135,10 @@ public abstract class Klass implements Serializable
    * 
    * @return the starting gold
    */
-  public double rollGold()
+  public int rollGold()
   {
     MetaDie md = new MetaDie();
-    double gold = md.roll(_goldDice) * 10.0;
+    int gold = md.roll(_goldDice) * 10;
     return gold;
   }
 
