@@ -30,8 +30,11 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.StyledDocument;
 
 import chronos.Chronos;
+import civ.DocumentSizeFilter;
 import civ.NewHeroCiv;
 import civ.NewHeroCiv.ErrorCode;
 import civ.NewHeroCiv.HeroInput;
@@ -92,7 +95,7 @@ public class NewHeroIPPanel extends JPanel
   private final String HERO_KLASS_PROMPT = "What Guild to you belong to?";
 
   /** Number of columns in the person's name input window */
-  private final int HERO_NAME_WIDTH = 40;
+  private final int HERO_NAME_WIDTH = 45;
   /** Space between buttons */
   private final String SPACER = "          ";
 
@@ -425,7 +428,15 @@ public class NewHeroIPPanel extends JPanel
         setEditFlag(true);
       }
     });
-
+    
+    /* Use DocumentFilter to limit the number of columns/characters that can be
+     * entered into the name field.
+     */
+//    AbstractDocument doc;
+//    StyledDocument styledDoc = (StyledDocument)_nameField.getDocument();
+//    doc = (AbstractDocument)styledDoc;
+//    doc.setDocumentFilter(new DocumentSizeFilter(HERO_NAME_WIDTH));
+    
     return _nameField;
   }
 
