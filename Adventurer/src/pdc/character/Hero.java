@@ -111,18 +111,18 @@ public class Hero implements Serializable // IRegistryElement
   int _racialPoisonResist = 0;
 
   // DEX mods
-  int _toHitDex = 0;
-  int _ACMod = 0;
+  int _toHitDex;
+  int _ACMod;
 
   // Misc: height and weight of the Hero, affected by race and gender
-  int _weight = 0;
-  int _height = 0;
+  int _height;
+  int _weight;
 
   // Gold pieces and silver pieces in hand. 
-  int _gold = 0;
-  int _silver = 0;
+  int _gold;
+  int _silver;
   // Gold banked. The decimal represents silver pieces
-  double _goldBanked = 0.0;
+  double _goldBanked;
 
  // Literacy, occupational, and race skills
   ArrayList<String> _skills = new ArrayList<String>();

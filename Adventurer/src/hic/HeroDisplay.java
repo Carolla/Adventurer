@@ -30,6 +30,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
@@ -40,7 +41,6 @@ import civ.PersonKeys;
 import mylib.Constants;
 import mylib.MsgCtrl;
 import net.miginfocom.swing.MigLayout;
-import pdc.character.Hero.PrimeTraits;
 
 
 /**
@@ -162,8 +162,8 @@ public class HeroDisplay extends JPanel
   private final int SCROLLBAR_SIZE = 20;
   /** Standard height of font and cells in display, but can be changed */
   private int CELL_HEIGHT = 26;
-  /** Standard height of font and cells in display, but can be changed */
-  private int CELL_WIDTH = 12;
+  // /** Standard height of font and cells in display, but can be changed */
+  // private int CELL_WIDTH = 12;
   /** Border width for main panel */
   private final int THICK_BORDER = Mainframe.PAD;
   /** Border width for subpanel */
@@ -171,9 +171,10 @@ public class HeroDisplay extends JPanel
   /** Set the max width of the hero panel at half screen */
   private final int PANEL_WIDTH = Mainframe.getWindowSize().width / 2;
 
-  /** Set the width of the data panels within the display borders */
+  /** Set the width of the two data panels within the display borders */
   private final int DATA_PAD = 50;
-  private final int DATA_WIDTH = PANEL_WIDTH - SCROLLBAR_SIZE - 2 * (THICK_BORDER + THIN_BORDER);
+  private final int DATA_WIDTH =
+      PANEL_WIDTH / 2 - SCROLLBAR_SIZE - 2 * (THICK_BORDER + THIN_BORDER);
 
   // /** Keep a reference to this scrollpane that contains this display*/
   // private JScrollPane _heroScroll = null;
@@ -592,36 +593,46 @@ public class HeroDisplay extends JPanel
 
   /**
    * Create the person's attributes in a grid panel for display. Attributes are unpacked from the
-   * outputmap as they are needed, row by row, <br>
+   * outputmap as they are needed, row by row.
+   * <P>
    * HEURISTIC LAYOUT: Character attibutes, e.g. XP and Level, go toward the left side; Personal
    * attributes, such as gender, weight, and height, go toward the right side. The more important
    * attributes, e.g. HP and Klass, go toward the top; lesser ones, e.g. description and gold
    * banked, toward the bottom.
+   * <P>
+   * {@code MigLayout} uses cryptic parameters so their use is explained as they are used in this
+   * method. The {@code MigLayout} constructor grid is divided into cells, 12 rows with 6 cells for
+   * each row. This is shown by the {@code []0[]} parms. The {@code ins 0} parm means no space is
+   * inserted between cells or rows. <br>
+   * The {@code attribPanel.add()} method contains a call to {@code gridCell()}, followed by
+   * {@code span n} when the cell should span multiple columns; <br>
+   * {@code growx} parm enlarges each cell to the max column width. <br>
+   * Each row is terminated by a {@code wrap} parm to trigger the start of a new row. <BR>
+   * Empty lines are filled with one {@code span 6} cell instead of a series of empty cells.
    * 
-   * @param panelLimits size of the panel into which this panel must fit
+   * @param panelLimits size of the parent panel into which this panel must fit
    * @return the attribute grid panel
    */
   private JPanel buildAttributePanel(Dimension panelLimits)
   {
     // Create a layout that spans the entire width of the panel
     JPanel attribPanel = new JPanel(new MigLayout("ins 0", // layout constraints
-        "[]0[]0[]0[]0[]0[][left]", // align left
-        "[]0[]0[]0[]0[]0[][bottom]")); // align bottom
+        "[]0[]0[]0[]0[]0[][left]", // align horizontally 6 cell-widths
+        "[]0[]0[]0[]0[]0[]0[]0[]0[]0[]0[]0[][bottom]")); // align vertically 12 rows
 
     // Ensure that the attribute panel does not exceed the HeroDisplay panel width
-    // _attribPanel.setPreferredSize(new Dimension(DATA_WIDTH, _attribPanel.getHeight()));
     attribPanel.setPreferredSize(panelLimits);
     attribPanel.setMaximumSize(panelLimits);
     // attribPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-     attribPanel.setBackground(_backColor);
+    // attribPanel.setBackground(_backColor);
+    attribPanel.setBackground(Color.GRAY);
 
     // Row 1: Level, Current/Max HP (2), AC, Hunger (2)
     attribPanel.add(gridCell("Level: ", _ds.get(PersonKeys.LEVEL)), "growx");
     String HP_valueStr = _ds.get(PersonKeys.HP) + " / " + _ds.get(PersonKeys.HP_MAX);
     attribPanel.add(gridCell("Current/Max HP: ", HP_valueStr), "span 2, growx");
     attribPanel.add(gridCell("AC: ", _ds.get(PersonKeys.AC)), "growx");
-    attribPanel.add(gridCell("Hunger: ", _ds.get(PersonKeys.HUNGER)),
-        "span 2, growx, wrap");
+    attribPanel.add(gridCell("Hunger: ", _ds.get(PersonKeys.HUNGER)), "span 2, growx, wrap");
 
     // Row 2: XP, Speed, Gold Banked, Gold (gp/sp) (in hand) (3)
     attribPanel.add(gridCell("XP: ", _ds.get(PersonKeys.XP)), "growx");
@@ -634,8 +645,8 @@ public class HeroDisplay extends JPanel
     String inHand = gp + " gp / " + sp + " sp";
     attribPanel.add(gridCell("Gold in Hand: ", inHand), "span 3, growx, wrap");
 
-    // Row 3: Occupation (full line)
-    attribPanel.add(gridCell("Former Occupation: ", _ds.get(PersonKeys.OCCUPATION)),
+    // Row 3: Personal description (full line)
+    attribPanel.add(gridCell("Description: ", _ds.get(PersonKeys.DESCRIPTION)),
         "span 6, growx, wrap");
 
     // Row 4: STR trait, ToHitMelee, Damage, Wt Allowance (gpw), Load Carried (gpw)
@@ -653,12 +664,13 @@ public class HeroDisplay extends JPanel
       String MSP_valueStr = _ds.get(PersonKeys.CURRENT_MSP) + " / " + _ds.get(PersonKeys.MAX_MSP);
       attribPanel.add(gridCell("Current/Max MSP: ", MSP_valueStr), "growx");
       attribPanel.add(gridCell("Bonus MSP/Level: ", _ds.get(PersonKeys.MSP_PER_LEVEL)), "growx");
-      attribPanel.add(gridCell("Spells in Book: ", _ds.get(PersonKeys.SPELLS_KNOWN)), "growx, wrap");
-    }
-    else {
+      attribPanel.add(gridCell("Spells in Book: ", _ds.get(PersonKeys.SPELLS_KNOWN)),
+          "span 2, growx, wrap");
+      // attribPanel.add(gridCell(" ", ""), "span 1, growx, wrap"); // remainder of line is empty
+    } else {
       attribPanel.add(gridCell(" ", ""), "span 5, growx, wrap");
     }
-    
+
     // Row 6: WIS and Wis Mods: Magic Attack Mod, Current/Max CSPs, CSP/Level, Turn Undead
     attribPanel.add(gridCell("WIS: ", _ds.get(PersonKeys.WIS)), "growx");
     attribPanel.add(gridCell("Magic Attack Mod: ", _ds.get(PersonKeys.MAM)), "growx");
@@ -666,51 +678,55 @@ public class HeroDisplay extends JPanel
       String CSP_valueStr = _ds.get(PersonKeys.CURRENT_CSP) + " / " + _ds.get(PersonKeys.MAX_CSP);
       attribPanel.add(gridCell("Current/Max CSP: ", CSP_valueStr), "growx");
       attribPanel.add(gridCell("Bonus CSP/Level: ", _ds.get(PersonKeys.CSP_PER_LEVEL)), "growx");
-      attribPanel.add(gridCell("Turn Undead: ", _ds.get(PersonKeys.TURN_UNDEAD)), "growx, wrap");
-    }
-    else {
+      attribPanel.add(gridCell("Turn Undead: ", _ds.get(PersonKeys.TURN_UNDEAD)),
+          "span 2, growx, wrap");
+      // attribPanel.add(gridCell(" ", ""), "span 1, growx, wrap"); // remainder of line is empty
+    } else {
       attribPanel.add(gridCell(" ", ""), "span 4, growx, wrap");
     }
 
     // Row 7: CON and HP Mod
     attribPanel.add(gridCell("CON: ", _ds.get(PersonKeys.CON)), "growx");
     attribPanel.add(gridCell("HP Mod: ", _ds.get(PersonKeys.HP_MOD)), "growx");
-    attribPanel.add(gridCell(" ", " "), "span 4, growx, wrap");   // remainder of line is empty
+    attribPanel.add(gridCell(" ", ""), "span 4, growx, wrap"); // remainder of line is empty
 
+    // Row 8: DEX and DEX mods: To Hit Missle, AC Mod
+    attribPanel.add(gridCell("DEX: ", _ds.get(PersonKeys.DEX)), "growx");
+    attribPanel.add(gridCell("To Hit (missile): ", _ds.get(PersonKeys.TO_HIT_MISSLE)), "growx");
+    attribPanel.add(gridCell("AC Mod: ", _ds.get(PersonKeys.AC_MOD)), "growx");
+    attribPanel.add(gridCell(" ", ""), "span 3, growx, wrap"); // remainder of line is empty
 
-    
-    // Row 4: Height, and Weight
-    // attribPanel.add(gridCell("AC: ", (String) _ds.getField(PersonKeys.AC)), "sg r1");
-    // attribPanel.add(gridCell("Age: ", (String) _ds.getField(PersonKeys.AGE)), "sg r1");
-    // attribPanel.add(gridCell("Speed: ", (String) _ds.getField(PersonKeys.SPEED)), "sg r1");
-    // attribPanel.add(gridCell("Ht: ", (String) _ds.getField(PersonKeys.HEIGHT)), "sg r1");
-    // attribPanel.add(gridCell("Wt: ", ((String) _ds.getField(PersonKeys.WEIGHT)) + " lbs"), "sg
-    // r1");
-    //
-    // // Row 3: Gold, Silver, Gold Banked, and Load
-    // attribPanel.add(gridCell("Gold: ", ((String) _ds.getField(PersonKeys.GOLD)) + " gp"), "sg
-    // r1");
-    // attribPanel.add(gridCell("Silver: ", ((String) _ds.getField(PersonKeys.SILVER)) + " sp"),
-    // "sg r1");
-    // attribPanel.add(gridCell("Gold Banked: ", (String) _ds.getField(PersonKeys.GOLD_BANKED)),
-    // "span 2, growx");
-    // attribPanel.add(gridCell("Load: ", ((String) _ds.getField(PersonKeys.LOAD)) + " lbs"), "sg
-    // r1");
-    //
-    // // Row 4: MaxLangs, Languages (remaining width of the panel)
-    // JPanel maxLangCell = gridCell("Max Langs: ", (String) _ds.getField(PersonKeys.MAX_LANGS));
-    // // maxLangCell.setSize(minCellWidth, 10);
-    // attribPanel.add(maxLangCell, "sg r1"); // gridCell("Max Langs: ",
-    // (String) _ds.getField(PersonKeys.MAX_LANGS)), "sg r1");
-    // attribPanel.add(gridCell("Known Languages: ", (String) _ds.getField(PersonKeys.LANGUAGES)),
-    // "span 4, growx");
-    //
-    // // Row 5: Character Description
-    // // Need special handling of "long" description
-    // JPanel p = new JPanel(new MigLayout("left, inset 3"));
-    // p.setBackground(_backColor);
-    // p.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-    //
+    // Row 9: CHR, Weight, and Height
+    attribPanel.add(gridCell("CHR: ", _ds.get(PersonKeys.CHR)), "growx");
+    attribPanel.add(gridCell("Weight (lbs): ", _ds.get(PersonKeys.WEIGHT)), "growx");
+    int intHeight = new Integer(_ds.get(PersonKeys.HEIGHT));
+    int feet = intHeight / 12;
+    int inches = intHeight - feet * 12;
+    String heightStr = String.format("%s' %s\"", feet, inches);
+    attribPanel.add(gridCell("Height: ", heightStr), "growx");
+    attribPanel.add(gridCell(" ", ""), "span 3, growx, wrap"); // remainder of line is empty
+
+    // Row 10: AP, overbearing, grappling, pummeling, and shield bash
+    attribPanel.add(gridCell("AP: ", _ds.get(PersonKeys.AP)), "growx");
+    attribPanel.add(gridCell("Overbearing: ", _ds.get(PersonKeys.OVERBEARING)), "growx");
+    attribPanel.add(gridCell("Grappling: ", _ds.get(PersonKeys.GRAPPLING)), "growx");
+    attribPanel.add(gridCell("Pummeling: ", _ds.get(PersonKeys.PUMMELING)), "growx");
+    attribPanel.add(gridCell("Shield Bash: ", _ds.get(PersonKeys.SHIELD_BASH)),
+        "span 2, growx, wrap");
+        // attribPanel.add(gridCell(" ", ""), "span 1, growx, wrap"); // remainder of line is empty
+
+    // Row 11: Languages label, max langs, list of languages
+    String langStr = String.format("Languages (can learn %s more):",
+        _ds.get(PersonKeys.MAX_LANGS));
+    attribPanel.add(gridCell(langStr, ""), "span 2, growx");
+    String langList = String.format("%s", _ds.get(PersonKeys.LANGUAGES));
+    attribPanel.add(gridCell(langList, ""), "span 4, growx, wrap");
+
+    // Row 12: Occupation (full line)
+    attribPanel.add(gridCell("Former Occupation: ", _ds.get(PersonKeys.OCCUPATION)),
+        "span 6, growx, wrap");
+
+    // TODO: Full line text probaby needs to be in a JTextArea insteaf of a single line cell
     // JTextArea descPanel = new JTextArea("Description: "
     // + (String) _ds.getField(PersonKeys.DESCRIPTION));
     // descPanel.setPreferredSize(new Dimension(DATA_WIDTH, descPanel
@@ -888,8 +904,7 @@ public class HeroDisplay extends JPanel
     // Add a non-editable textArea containing all the Inventory
     JTextArea invenArea = new JTextArea(invenLen, 0); // rows by columns
     // Make area restricted to displayable size (without scrollbar)
-    invenArea.setPreferredSize(new Dimension(DATA_WIDTH, invenLen
-        * CELL_HEIGHT));
+    invenArea.setPreferredSize(new Dimension(DATA_WIDTH, invenLen * CELL_HEIGHT));
     invenArea.setEditable(false);
     invenArea.setBackground(_backColor);
     invenArea.setTabSize(TAB_SIZE);
@@ -984,8 +999,9 @@ public class HeroDisplay extends JPanel
    * aligned within the component. A JPanel type is returned so that the cell can also get the focus
    * for help listeners.
    * 
-   * @param label the text of the label, cannot be null but can be empty
-   * @param value the stringified value to display after the label, cannot be null but can be empty
+   * @param label the left-aligned text of the label, cannot be null but can be empty
+   * @param value the right-aligned stringified value to display after the label, cannot be null but
+   *        can be empty
    * @return bordered grid cell as Component
    */
   private JPanel gridCell(String label, String value)
@@ -994,33 +1010,24 @@ public class HeroDisplay extends JPanel
     if ((label == null) || (value == null)) {
       return null;
     }
-    // Create the grid cell as a panel to hold to JLabels within a border
-    JPanel p = new JPanel(new MigLayout("left, inset 3"));
+
+    // Create the grid cell as a panel to hold two JLabels within a border
+    JPanel p = new JPanel(new MigLayout("inset 3")); // space between text and cell border
     p.setBackground(_backColor);
 
     int cellWidth = DATA_WIDTH / PANELS_IN_ROW;
     p.setPreferredSize(new Dimension(cellWidth, FONT_HT));
-    // p.setPreferredSize(new Dimension(DATA_WIDTH / PANELS_IN_ROW, FONT_HT));
-    // // What does this block do, from here...
-    // JLabel left = new JLabel(label);
-    // Font plainLabel = new Font(UIManager.getFont("Label.font").getFontName(),
-    // Font.PLAIN, UIManager.getFont("Label.font").getSize());
-    // left.setFont(plainLabel);
-    // p.add(left);
-    // JLabel right = new JLabel(value);
-    // right.setFont(plainLabel);
-    // p.add(right);
-    // // ...to here?
-
-    p.add(new JLabel(label), "left");
-    p.add(new JLabel(value), "right");
+    p.add(new JLabel(label, SwingConstants.LEFT));
+    p.add(new JLabel(value, SwingConstants.RIGHT));
 
     // Create the border for each grid cell
     int cpad = 1;
     Border cellBorder = BorderFactory.createLineBorder(Color.BLACK, cpad);
     p.setBorder(cellBorder);
 
+    p.validate();
     return p;
+
   }
 
 
