@@ -198,11 +198,9 @@ public class HeroDisplayCiv
   public void displayHero(Hero hero)
   {
     _hero = hero;
-    _widget = new HeroDisplay(this);
-    _mf.addPanel(_widget);
-  
     _outputMap = convertAttributes(_hero);
-    _widget.displayAttributes(_outputMap);  
+    _widget = new HeroDisplay(this, _outputMap);
+    _mf.addPanel(_widget);
   }
 
   /** Display the main 

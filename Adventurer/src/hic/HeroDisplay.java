@@ -8,18 +8,15 @@
 
 package hic;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.FontFormatException;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.StringTokenizer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -32,9 +29,7 @@ import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 
-import chronos.Chronos;
 import civ.HeroDisplayCiv;
 import civ.MiscKeys.ItemCategory;
 import civ.PersonKeys;
@@ -172,12 +167,10 @@ public class HeroDisplay extends JPanel
   private final int PANEL_WIDTH = Mainframe.getWindowSize().width / 2;
 
   /** Set the width of the two data panels within the display borders */
-  private final int DATA_PAD = 50;
-  private final int DATA_WIDTH =
-      PANEL_WIDTH / 2 - SCROLLBAR_SIZE - 2 * (THICK_BORDER + THIN_BORDER);
-
-  // /** Keep a reference to this scrollpane that contains this display*/
-  // private JScrollPane _heroScroll = null;
+  // private final int DATA_PAD = 50;
+//  private final int DATA_WIDTH =
+//      PANEL_WIDTH / 2 - SCROLLBAR_SIZE - 2 * (THICK_BORDER + THIN_BORDER);
+  private final int DATA_WIDTH = PANEL_WIDTH / 2 - 2 * (THICK_BORDER + THIN_BORDER);
 
   /** Size of inventory area */
   final int INVEN_HEIGHT = 30;
@@ -208,8 +201,8 @@ public class HeroDisplay extends JPanel
   /** Background color inherited from parent */
   private Color _backColor = Constants.MY_BROWN.brighter();
 
-  /** Tabbed pane to hold inventory stuff */
-  JTabbedPane _tab = null;
+  // /** Tabbed pane to hold inventory stuff */
+  // JTabbedPane _tab = null;
 
   /** The backend CIV for this JPanel widget */
   private HeroDisplayCiv _hdCiv = null;
@@ -237,12 +230,7 @@ public class HeroDisplay extends JPanel
   /** Button panel for Save/Delete/Cancel buttons */
   private JPanel _buttonPanel;
 
-  // /** Attribute panel where characters atrs are displayed */
-  // private JPanel _attribPanel;
-
-  // /** JLabel to hold character's name */
-  // private JLabel _charName;
-
+  /** Reference to the parent frame */
   private Mainframe _mainframe;
 
 
@@ -250,93 +238,33 @@ public class HeroDisplay extends JPanel
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
-  // /** Default constructor */
-  // public HeroDisplay()
-  // {
-  // setupDisplay();
-  // }
-
-
   /**
    * Create the GUI and populate it with various data maps
    * 
    * @param hdCiv the intermediary between this GUI and the Person
+   * @param outputMap contains all the hero's data to be displayed
    */
-  public HeroDisplay(HeroDisplayCiv hdCiv)
+  public HeroDisplay(HeroDisplayCiv hdCiv, EnumMap<PersonKeys, String> outputMap)
   {
     _hdCiv = hdCiv;
     _mainframe = Mainframe.getInstance();
+    _ds = outputMap;
     // _hdCiv.resetLoadState();
+    // Define the overall three-tabbed pane and button layout
     setupDisplay();
   }
 
 
-  /** Display the attributes of the Hero */
-  public boolean displayAttributes(EnumMap<PersonKeys, String> ds)
+  /** Swap the main panel title with the HeroDisplay title */
+  private void setHeroAsTitle()
   {
-    // Set private field equal to passed parameter
-    _ds = ds;
-
-    displayMainTitle();
-    Font nameFont = getLargeRunicFont();
-
     // Two-row namePlate before Attribute grid: Name, Gender, Race, Klass
     String namePlate = _ds.get(PersonKeys.NAME) + ": "
         + _ds.get(PersonKeys.GENDER) + " "
         + _ds.get(PersonKeys.RACENAME) + " "
         + _ds.get(PersonKeys.KLASSNAME);
-    // Put some space above and below the namePlate
-    JLabel charName = new JLabel(namePlate);
-    charName.setFont(nameFont);
 
-    // while (_charName.getPreferredSize().width > DATA_WIDTH) {
-    // newFont = shrinkFontSize();
-    add(charName, "span, gaptop 5, gapbottom 8"); // center string within 5 & 8 spacing
-
-    // CREATE THE ATTRIBUTE GRID PANEL AND SIZE IT FOR DISPLAY
-    // Ensure that the attribute panel does not exceed the HeroDisplay panel width
-    JPanel attribPanel = buildAttributePanel(this.getPreferredSize());
-    add(attribPanel, "span, center, gapbottom 0");
-
-    // // ADD SAVE & CANCEL BUTTONS TO THE BOTTOM OF THE PANEL
-    _buttonPanel = buildButtonPanel();
-    _buttonPanel.setPreferredSize(new Dimension(DATA_WIDTH, _buttonPanel.getHeight()));
-    add(_buttonPanel, "span, center, gapbottom 5");
-
-    // ADD HELP MESSAGE TO INSTRUCT HOW TO SHIFT FOCUS
-    add(new JLabel(HELP_LABEL), "span");
-
-    return true;
-  }
-
-
-  /** Swap the main panel title with the HeroDisplay title */
-  private void displayMainTitle()
-  {
-    String mftitle = " The " + _ds.get(PersonKeys.KLASSNAME) + " " + _ds.get(PersonKeys.NAME) + " ";
-    _mainframe.setTitle(mftitle);
-  }
-
-  /**
-   * Set up a larger special font for the Hero's name in title. Extract the label font size from the
-   * cell
-   * 
-   * @return the large Runic font
-   */
-  private Font getLargeRunicFont()
-  {
-    Font nameFont = null;
-    try {
-      // Returned font is of pt size 1
-      Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(Chronos.RUNIC_ENGLISH_FONT_FILE));
-      // Derive a larger version:
-      nameFont = newFont.deriveFont(TITLE_HT);
-    } catch (FontFormatException e) {
-      MsgCtrl.errMsgln("Could not format font: " + e.getMessage());
-    } catch (IOException e) {
-      MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
-    }
-    return nameFont;
+    _mainframe.setTitle(namePlate);
   }
 
 
@@ -378,78 +306,79 @@ public class HeroDisplay extends JPanel
   /** Stub until the display is working properly. */
   public boolean displayInventory(ArrayList<String> items)
   {
-    // Put some space above and below the namePlate
-    // Add a non-editable textArea containing all the Inventory
-    JTextArea invenHeader = new JTextArea();
-    invenHeader.setPreferredSize(new Dimension(DATA_WIDTH - SCROLLBAR_SIZE,
-        FONT_HT));
-    invenHeader.setFont(new Font(Font.MONOSPACED, Font.PLAIN, FONT_HT));
-    invenHeader.setBackground(_backColor);
-    // Start the column headers
-    invenHeader.setText("   QTY   ITEM\t\t\t    WEIGHT (ea)\n");
-    StringBuilder b = new StringBuilder();
-    int numDash = (DATA_WIDTH - SCROLLBAR_SIZE) / PIX_PER_CHAR;
-    for (int i = 0; i < numDash; i++) {
-      b.append("-");
-    }
-    invenHeader.append(b.toString());
-    invenHeader.setEditable(false);
-
-    _itemList = items;
-
-    // Set up scrolling area
-    JTextArea inventoryArea = buildInventoryArea();
-    // IMPORTANT: This select recenters screen to the top/left
-    inventoryArea.select(0, 0);
-    JScrollPane inventoryScroll = new JScrollPane(inventoryArea);
-    inventoryScroll.setBorder(new EmptyBorder(0, 0, 0, 0));
-    inventoryScroll
-        .setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
-    Dimension scrollSize = new Dimension(
-        inventoryArea.getPreferredSize().width,
-        inventoryArea.getPreferredSize().height + FONT_HT);
-    inventoryScroll.setPreferredSize(scrollSize);
-
+    // // Put some space above and below the namePlate
+    // // Add a non-editable textArea containing all the Inventory
+    // JTextArea invenHeader = new JTextArea();
+    // invenHeader.setPreferredSize(new Dimension(DATA_WIDTH - SCROLLBAR_SIZE,
+    // FONT_HT));
+    // invenHeader.setFont(new Font(Font.MONOSPACED, Font.PLAIN, FONT_HT));
+    // invenHeader.setBackground(_backColor);
+    // // Start the column headers
+    // invenHeader.setText(" QTY ITEM\t\t\t WEIGHT (ea)\n");
+    // StringBuilder b = new StringBuilder();
+    // int numDash = (DATA_WIDTH - SCROLLBAR_SIZE) / PIX_PER_CHAR;
+    // for (int i = 0; i < numDash; i++) {
+    // b.append("-");
+    // }
+    // invenHeader.append(b.toString());
+    // invenHeader.setEditable(false);
+    //
+    // _itemList = items;
+    //
+    // // Set up scrolling area
+    // JTextArea inventoryArea = buildInventoryArea();
+    // // IMPORTANT: This select recenters screen to the top/left
+    // inventoryArea.select(0, 0);
+    // JScrollPane inventoryScroll = new JScrollPane(inventoryArea);
+    // inventoryScroll.setBorder(new EmptyBorder(0, 0, 0, 0));
+    // inventoryScroll
+    // .setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+    //
+    // Dimension scrollSize = new Dimension(
+    // inventoryArea.getPreferredSize().width,
+    // inventoryArea.getPreferredSize().height + FONT_HT);
+    // inventoryScroll.setPreferredSize(scrollSize);
+    //
+    // //
     // inventoryScroll.getVerticalScrollBar().setValue(inventoryScroll.getVerticalScrollBar().getMinimum());
-    JPanel wholeInventory = new JPanel(new MigLayout("fill, wrap 5, ins 2", // layout
-                                                                            // constraints
-        "[]0[]0[]0[]0[]0[][left]", // align left
-        "[]0[]0[]0[]0[]0[][bottom]"));
-    wholeInventory.setPreferredSize(new Dimension(DATA_WIDTH, inventoryArea
-        .getHeight() + invenHeader.getHeight()));
-    wholeInventory.setBackground(_backColor);
-    wholeInventory.setBorder(new EmptyBorder(0, 0, 0, 0));
-    wholeInventory.add(invenHeader, "span, gapbottom 0");
-    wholeInventory.add(inventoryScroll, "span, gaptop 0, gapbottom 0");
-
-    // Put onto tabs
-    _tab = new JTabbedPane();
-    _tab.addTab("Inventory", wholeInventory);
-    // _tab.setBorder(new EmptyBorder(0,0,0,0));
-    // _tab.setPreferredSize(new Dimension (DATA_WIDTH,_panelHeight/3));
-    _tab.setBackground(_backColor);
-
-    // System.out.println("invenHeader width: " +
-    // invenHeader.getPreferredSize());
-    // System.out.println("invenArea width: " +
-    // inventoryArea.getPreferredSize());
-    // System.out.println("invenScroll width: " +
-    // inventoryScroll.getPreferredSize());
-    // System.out.println("wholeInventory width: " +
-    // wholeInventory.getPreferredSize());
-    // System.out.println("tab width: " + _tab.getPreferredSize());
-
-    // Make magic tab
-    JTextArea magicArea = new JTextArea();
-    magicArea.setBackground(_backColor);
-    magicArea.setEditable(false);
-    _tab.addTab("Magic", magicArea);
-    _tab.setEnabledAt(_tab.indexOfTab("Magic"), false);
-    // add(_tab,"span, center");
-
-    // _mainframe.validate();
-    _mainframe.repaint();
+    // JPanel wholeInventory = new JPanel(new MigLayout("fill, wrap 5, ins 2", // layout
+    // // constraints
+    // "[]0[]0[]0[]0[]0[][left]", // align left
+    // "[]0[]0[]0[]0[]0[][bottom]"));
+    // wholeInventory.setPreferredSize(new Dimension(DATA_WIDTH, inventoryArea
+    // .getHeight() + invenHeader.getHeight()));
+    // wholeInventory.setBackground(_backColor);
+    // wholeInventory.setBorder(new EmptyBorder(0, 0, 0, 0));
+    // wholeInventory.add(invenHeader, "span, gapbottom 0");
+    // wholeInventory.add(inventoryScroll, "span, gaptop 0, gapbottom 0");
+    //
+    // // Put onto tabs
+    // _tab = new JTabbedPane();
+    // _tab.addTab("Inventory", wholeInventory);
+    // // _tab.setBorder(new EmptyBorder(0,0,0,0));
+    // // _tab.setPreferredSize(new Dimension (DATA_WIDTH,_panelHeight/3));
+    // _tab.setBackground(_backColor);
+    //
+    // // System.out.println("invenHeader width: " +
+    // // invenHeader.getPreferredSize());
+    // // System.out.println("invenArea width: " +
+    // // inventoryArea.getPreferredSize());
+    // // System.out.println("invenScroll width: " +
+    // // inventoryScroll.getPreferredSize());
+    // // System.out.println("wholeInventory width: " +
+    // // wholeInventory.getPreferredSize());
+    // // System.out.println("tab width: " + _tab.getPreferredSize());
+    //
+    // // Make magic tab
+    // JTextArea magicArea = new JTextArea();
+    // magicArea.setBackground(_backColor);
+    // magicArea.setEditable(false);
+    // _tab.addTab("Magic", magicArea);
+    // _tab.setEnabledAt(_tab.indexOfTab("Magic"), false);
+    // // add(_tab,"span, center");
+    //
+    // // _mainframe.validate();
+    // _mainframe.repaint();
     return true;
   }
 
@@ -457,97 +386,97 @@ public class HeroDisplay extends JPanel
   /** Stub until the display is working properly. */
   public boolean displaySkills(ArrayList<String> skillList)
   {
-    JTextArea skillHeader = new JTextArea();
-    skillHeader.setPreferredSize(new Dimension(DATA_WIDTH - SCROLLBAR_SIZE,
-        FONT_HT));
-    skillHeader.setFont(new Font(Font.MONOSPACED, Font.PLAIN, FONT_HT));
-    skillHeader.setBackground(_backColor);
-    // Start the column headers
-    skillHeader.setText("NAME   DESCRIPTION\n");
-
-    StringBuilder b = new StringBuilder();
-    int numDash = (DATA_WIDTH - SCROLLBAR_SIZE) / PIX_PER_CHAR;
-    for (int i = 0; i < numDash; i++) {
-      b.append("-");
-    }
-    skillHeader.append(b.toString());
-    skillHeader.setEditable(false);
-
-    // Make skill tab
-    JTextArea skillArea = new JTextArea(skillList.size(), 0);
-    // Set up area to wrap on long descriptions
-    skillArea.setLineWrap(true);
-    skillArea.setWrapStyleWord(true);
-
-    // Format remaining agrea
-    skillArea.setBackground(_backColor);
-    skillArea.setEditable(false);
-    skillArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, FONT_HT));
-
-    // Set size of skill Area prior to adding to ScrollPane
-    skillArea.setPreferredSize(new Dimension(DATA_WIDTH, skillList.size()
-        * SKILL_LINE_HT));
-
-    // Get all the skills and descriptions
-    for (int i = 0; i < skillList.size(); i++) {
-      String str = skillList.get(i);
-      StringTokenizer st = new StringTokenizer(str, "|");
-
-      // First get skill name and append it
-      String skillName = st.nextToken();
-      skillArea.append(skillName + "\n");
-
-      // Then discard unneeded contents
-      // st.nextToken(); // Race
-      // st.nextToken(); // Klass
-
-      // Then get description and append it
-      String skillDesc = st.nextToken();
-      skillArea.append("       " + skillDesc + "\n");
-    }
-
-    // IMPORTANT: This select recenters screen to the top/left
-    skillArea.select(0, 0);
-
-    JPanel allSkills = new JPanel(new MigLayout("fill, wrap 5, ins 2", // layout
-                                                                       // constraints
-        "[]0[]0[]0[]0[]0[][left]", // align left
-        "[]0[]0[]0[]0[]0[][bottom]"));
-    allSkills.setPreferredSize(new Dimension(DATA_WIDTH, (int) ((skillArea
-        .getRows() + skillHeader.getRows()) * FONT_HT * WRAP_ADJ)));
-    allSkills.setBackground(_backColor);
-    allSkills.setBorder(new EmptyBorder(0, 0, 0, 0));
-    allSkills.add(skillHeader, "span, gapbottom 0");
-
-    // Put skills onto scroll panel
-    JScrollPane skillScroll = new JScrollPane(skillArea);
-    skillScroll.setBorder(new EmptyBorder(0, 0, 0, 0));
-    skillScroll
-        .setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-    Dimension scrollSize = new Dimension(
-        skillArea.getPreferredSize().width,
-        (int) (skillArea.getPreferredSize().height * WRAP_ADJ)
-            + FONT_HT);
-    skillScroll.setPreferredSize(scrollSize);
-    allSkills.add(skillScroll, "span, gaptop 0, gapbottom 0");
-
-    _tab.addTab("Skills", allSkills);
-    _tab.setEnabledAt(_tab.indexOfTab("Skills"), true);
-    // _tab.setPreferredSize(new Dimension (DATA_WIDTH,_panelHeight/3));
-
-    // System.out.println("skillHeader width: " +
-    // skillHeader.getPreferredSize());
-    // System.out.println("skillArea width: " +
-    // skillArea.getPreferredSize());
-    // System.out.println("skillScroll width: " +
-    // skillScroll.getPreferredSize());
-    // System.out.println("allSKills width: " +
-    // allSkills.getPreferredSize());
-    // System.out.println("tab width: " + _tab.getPreferredSize());
-
-    add(_tab, "span, grow, push, center");
-
-    _mainframe.repaint();
+    // JTextArea skillHeader = new JTextArea();
+    // skillHeader.setPreferredSize(new Dimension(DATA_WIDTH - SCROLLBAR_SIZE,
+    // FONT_HT));
+    // skillHeader.setFont(new Font(Font.MONOSPACED, Font.PLAIN, FONT_HT));
+    // skillHeader.setBackground(_backColor);
+    // // Start the column headers
+    // skillHeader.setText("NAME DESCRIPTION\n");
+    //
+    // StringBuilder b = new StringBuilder();
+    // int numDash = (DATA_WIDTH - SCROLLBAR_SIZE) / PIX_PER_CHAR;
+    // for (int i = 0; i < numDash; i++) {
+    // b.append("-");
+    // }
+    // skillHeader.append(b.toString());
+    // skillHeader.setEditable(false);
+    //
+    // // Make skill tab
+    // JTextArea skillArea = new JTextArea(skillList.size(), 0);
+    // // Set up area to wrap on long descriptions
+    // skillArea.setLineWrap(true);
+    // skillArea.setWrapStyleWord(true);
+    //
+    // // Format remaining agrea
+    // skillArea.setBackground(_backColor);
+    // skillArea.setEditable(false);
+    // skillArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, FONT_HT));
+    //
+    // // Set size of skill Area prior to adding to ScrollPane
+    // skillArea.setPreferredSize(new Dimension(DATA_WIDTH, skillList.size()
+    // * SKILL_LINE_HT));
+    //
+    // // Get all the skills and descriptions
+    // for (int i = 0; i < skillList.size(); i++) {
+    // String str = skillList.get(i);
+    // StringTokenizer st = new StringTokenizer(str, "|");
+    //
+    // // First get skill name and append it
+    // String skillName = st.nextToken();
+    // skillArea.append(skillName + "\n");
+    //
+    // // Then discard unneeded contents
+    // // st.nextToken(); // Race
+    // // st.nextToken(); // Klass
+    //
+    // // Then get description and append it
+    // String skillDesc = st.nextToken();
+    // skillArea.append(" " + skillDesc + "\n");
+    // }
+    //
+    // // IMPORTANT: This select recenters screen to the top/left
+    // skillArea.select(0, 0);
+    //
+    // JPanel allSkills = new JPanel(new MigLayout("fill, wrap 5, ins 2", // layout
+    // // constraints
+    // "[]0[]0[]0[]0[]0[][left]", // align left
+    // "[]0[]0[]0[]0[]0[][bottom]"));
+    // allSkills.setPreferredSize(new Dimension(DATA_WIDTH, (int) ((skillArea
+    // .getRows() + skillHeader.getRows()) * FONT_HT * WRAP_ADJ)));
+    // allSkills.setBackground(_backColor);
+    // allSkills.setBorder(new EmptyBorder(0, 0, 0, 0));
+    // allSkills.add(skillHeader, "span, gapbottom 0");
+    //
+    // // Put skills onto scroll panel
+    // JScrollPane skillScroll = new JScrollPane(skillArea);
+    // skillScroll.setBorder(new EmptyBorder(0, 0, 0, 0));
+    // skillScroll
+    // .setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+    // Dimension scrollSize = new Dimension(
+    // skillArea.getPreferredSize().width,
+    // (int) (skillArea.getPreferredSize().height * WRAP_ADJ)
+    // + FONT_HT);
+    // skillScroll.setPreferredSize(scrollSize);
+    // allSkills.add(skillScroll, "span, gaptop 0, gapbottom 0");
+    //
+    // _tab.addTab("Skills", allSkills);
+    // _tab.setEnabledAt(_tab.indexOfTab("Skills"), true);
+    // // _tab.setPreferredSize(new Dimension (DATA_WIDTH,_panelHeight/3));
+    //
+    // // System.out.println("skillHeader width: " +
+    // // skillHeader.getPreferredSize());
+    // // System.out.println("skillArea width: " +
+    // // skillArea.getPreferredSize());
+    // // System.out.println("skillScroll width: " +
+    // // skillScroll.getPreferredSize());
+    // // System.out.println("allSKills width: " +
+    // // allSkills.getPreferredSize());
+    // // System.out.println("tab width: " + _tab.getPreferredSize());
+    //
+    // add(_tab, "span, grow, push, center");
+    //
+    // _mainframe.repaint();
 
     return true;
   }
@@ -613,19 +542,15 @@ public class HeroDisplay extends JPanel
    * @param panelLimits size of the parent panel into which this panel must fit
    * @return the attribute grid panel
    */
-  private JPanel buildAttributePanel(Dimension panelLimits)
+  // private JPanel buildAttributePanel(Dimension panelLimits)
+  private JPanel buildAttributePanel()
   {
     // Create a layout that spans the entire width of the panel
     JPanel attribPanel = new JPanel(new MigLayout("ins 0", // layout constraints
         "[]0[]0[]0[]0[]0[][left]", // align horizontally 6 cell-widths
         "[]0[]0[]0[]0[]0[]0[]0[]0[]0[]0[]0[][bottom]")); // align vertically 12 rows
 
-    // Ensure that the attribute panel does not exceed the HeroDisplay panel width
-    attribPanel.setPreferredSize(panelLimits);
-    attribPanel.setMaximumSize(panelLimits);
-    // attribPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-    // attribPanel.setBackground(_backColor);
-    attribPanel.setBackground(Color.GRAY);
+    attribPanel.setBackground(_backColor);
 
     // Row 1: Level, Current/Max HP (2), AC, Hunger (2)
     attribPanel.add(gridCell("Level: ", _ds.get(PersonKeys.LEVEL)), "growx");
@@ -726,48 +651,31 @@ public class HeroDisplay extends JPanel
     attribPanel.add(gridCell("Former Occupation: ", _ds.get(PersonKeys.OCCUPATION)),
         "span 6, growx, wrap");
 
-    // TODO: Full line text probaby needs to be in a JTextArea insteaf of a single line cell
-    // JTextArea descPanel = new JTextArea("Description: "
-    // + (String) _ds.getField(PersonKeys.DESCRIPTION));
-    // descPanel.setPreferredSize(new Dimension(DATA_WIDTH, descPanel
-    // .getLineCount() * FONT_HT));
-    // descPanel.setBackground(_backColor);
-    // descPanel.setEditable(false);
-    // descPanel.setFont(new Font(Font.DIALOG, Font.PLAIN, ATT_FONT_HT));
-    // descPanel.setLineWrap(true);
-    // descPanel.setWrapStyleWord(true);
-    // p.add(descPanel);
-    // attribPanel.add(p, "span 5");
-
     return attribPanel;
 
   } // End of buildAttribute panel
 
 
   /**
-   * Add Save and Cancel buttons to the display next
+   * Create Save, Delete, and Cancel buttons, then add then to a JPanel
    * 
    * @return button panel
    */
   private JPanel buildButtonPanel()
   {
-    final JPanel hd = this;
     // NOTE: Save action is invoked for new Characters */
     _saveButton = new JButton("Save");
     // _saveButton.setBackground(_backColor);
     _saveButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        // Audit statement
-        MsgCtrl.traceEvent(event);
         if (savePerson() == true) {
           // Display confirmation message
           JOptionPane.showMessageDialog(null,
               _ds.get(PersonKeys.NAME) + CONFIRM_SAVE_MSG,
               CONFIRM_SAVE_TITLE, JOptionPane.INFORMATION_MESSAGE);
         } else {
-          // Display an error message with a Sorry button instead of
-          // OK
+          // Display an error message with a Sorry button instead of OK
           String[] sorry = new String[1];
           sorry[0] = "SORRY!";
           JOptionPane.showOptionDialog(null,
@@ -790,16 +698,13 @@ public class HeroDisplay extends JPanel
     _delButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        // Audit statement
-        MsgCtrl.traceEvent(event);
         if (deletePerson() == true) {
           // Display confirmation message
           JOptionPane.showMessageDialog(null,
               _ds.get(PersonKeys.NAME) + CONFIRM_DEL_MSG,
               CONFIRM_DEL_TITLE, JOptionPane.INFORMATION_MESSAGE);
         } else {
-          // Display an error message with a Sorry button instead of
-          // OK
+          // Display an error message with a Sorry button instead of OK
           String[] sorry = new String[1];
           sorry[0] = "You dropped your scythe!!";
           JOptionPane.showOptionDialog(null,
@@ -814,7 +719,7 @@ public class HeroDisplay extends JPanel
         // Remove this panel
         // Mainframe frame = Mainframe.getInstance();
         // frame.resetPanels();
-        hd.setVisible(false);
+        setVisible(false);
       }
 
     });
@@ -846,11 +751,9 @@ public class HeroDisplay extends JPanel
       // }
     });
 
-    // Add buttons to buttonPanel, and buttonPanel to basePanel
+    // Add buttons to buttonPanel
     JPanel buttonPanel = new JPanel();
     buttonPanel.setBackground(_backColor);
-    // buttonPanel.setMaximumSize(new Dimension(DATA_WIDTH-DATA_PAD,
-    // BUTTON_HT));
 
     // Add small space at the top of the button panel
     buttonPanel.add(_saveButton);
@@ -947,6 +850,18 @@ public class HeroDisplay extends JPanel
   }
 
 
+  // private JTabbedPane buildTabPanels()
+  // {
+  // // Add the tabbed pane for inventory and magic tab displays
+  // JTabbedPane tabPane = new JTabbedPane();
+  // JPanel inventoryTab = new JPanel();
+  // JPanel magicTab = new JPanel();
+  // tabPane.addTab("Inventory", inventoryTab);
+  // tabPane.addTab("Magic", magicTab);
+  // return tabPane;
+  // }
+  //
+
   /**
    * Format a fixed-field space-filled display string for the Inventory list If values are zero, the
    * String is empty FIELDS: Quantity, Name (left-justified), wt (lb), wt (oz)
@@ -1010,12 +925,16 @@ public class HeroDisplay extends JPanel
     if ((label == null) || (value == null)) {
       return null;
     }
-
     // Create the grid cell as a panel to hold two JLabels within a border
     JPanel p = new JPanel(new MigLayout("inset 3")); // space between text and cell border
     p.setBackground(_backColor);
 
+    // TODO: For now, truncate overly long cells
     int cellWidth = DATA_WIDTH / PANELS_IN_ROW;
+    int dataLen = label.length() + value.length() + 1;
+    if (dataLen > DATA_WIDTH) {
+      value = value.substring(0, DATA_WIDTH-1);
+    }
     p.setPreferredSize(new Dimension(cellWidth, FONT_HT));
     p.add(new JLabel(label, SwingConstants.LEFT));
     p.add(new JLabel(value, SwingConstants.RIGHT));
@@ -1025,9 +944,7 @@ public class HeroDisplay extends JPanel
     Border cellBorder = BorderFactory.createLineBorder(Color.BLACK, cpad);
     p.setBorder(cellBorder);
 
-    p.validate();
     return p;
-
   }
 
 
@@ -1155,29 +1072,53 @@ public class HeroDisplay extends JPanel
       _ds.put(PersonKeys.NAME, newName);
     }
 
-    this.displayAttributes(_ds);
-
     return this.savePerson();
   }
 
 
   /**
    * Creates the panel and container fields for the given Hero, using a data map from the model to
-   * populate the widget.
+   * populate the widget. The HeroDisplay panel contains three tabs: one for attributes, one for
+   * inventory, and one for magic spells
    */
   private boolean setupDisplay()
   {
     // GENERAL SETUP
+    setLayout(new MigLayout("center, ins 5"));
     // Set the preferred and max size
     _panelWidth = PANEL_WIDTH;
     _panelHeight = Mainframe.getWindowSize().height;
     setPreferredSize(new Dimension(_panelWidth, _panelHeight));
     setBackground(_backColor);
 
-    // Set Panel layout to special MiGLayout
-    setLayout(new MigLayout("fill", "[center]"));
+    // Display Hero in title in Runic Font
+    setHeroAsTitle();
+
+    // Add the tabbed pane for attributes, inventory and magic tab displays
+    JTabbedPane tabPane = new JTabbedPane();
+    tabPane.setPreferredSize(new Dimension(_panelWidth, _panelHeight));
+
+    // Add the three tabs to the HeroDisplay panel
+    // tabPane.addTab("Attributes", buildAttributePanel(new Dimension(_panelWidth, _panelHeight)));
+    tabPane.addTab("Attributes", buildAttributePanel());
+    tabPane.addTab("Inventory", new JPanel());
+    tabPane.addTab("Magic", new JPanel());
+    tabPane.setSelectedIndex(0); // set attribs as default tab
+
+    // Add the tabs to the HeroDisplay panel
+    add(tabPane, "wrap");
+
+    // // ADD SAVE & CANCEL BUTTONS TO THE BOTTOM OF THE PANEL
+    _buttonPanel = buildButtonPanel();
+    _buttonPanel.setPreferredSize(new Dimension(_panelWidth, _buttonPanel.getHeight()));
+    add(_buttonPanel, "span, center, gapbottom 20");
+
+    // ADD HELP MESSAGE TO INSTRUCT HOW TO SHIFT FOCUS
+    add(new JLabel(HELP_LABEL), "span, center, gapbottom 5");
+
     return true;
   }
+
 
   // //TODO: Redo showInventoryByCategory
   // /** Retrieve a list of items for a particular category and display. All
