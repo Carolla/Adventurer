@@ -8,7 +8,6 @@
 
 package hic;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -165,12 +164,12 @@ public class HeroDisplay extends JPanel
   private final int THIN_BORDER = Mainframe.PAD / 2;
   /** Set the max width of the hero panel at half screen */
   private final int PANEL_WIDTH = Mainframe.getWindowSize().width / 2;
+  /** Set the max height of the hero panel */
+  private final int PANEL_HEIGHT = Mainframe.getWindowSize().height;
 
   /** Set the width of the two data panels within the display borders */
-  // private final int DATA_PAD = 50;
-//  private final int DATA_WIDTH =
-//      PANEL_WIDTH / 2 - SCROLLBAR_SIZE - 2 * (THICK_BORDER + THIN_BORDER);
-  private final int DATA_WIDTH = PANEL_WIDTH / 2 - 2 * (THICK_BORDER + THIN_BORDER);
+//  private final int DATA_WIDTH = PANEL_WIDTH / 2 - 2 * (THICK_BORDER + THIN_BORDER);
+  private final int DATA_WIDTH = PANEL_WIDTH / 2 - Mainframe.PAD;
 
   /** Size of inventory area */
   final int INVEN_HEIGHT = 30;
@@ -182,10 +181,6 @@ public class HeroDisplay extends JPanel
   // /** Set the default HelpKey for the general panel */
   // private HelpKeyListener _helpKey = new HelpKeyListener("HeroDsp");
 
-  /** Preferred (calculated) width for HeroDisplay */
-  int _panelWidth = 0;
-  /** Preferred (calculated) height for HeroDisplay */
-  int _panelHeight = 0;
   // /** Maximum size of cell in attribute panel */
   // private final int CELL_MAX_WIDTH = 17;
 
@@ -850,6 +845,27 @@ public class HeroDisplay extends JPanel
   }
 
 
+  /**
+   * Delete the Person currently being displayed into a new file.
+   * 
+   * @return true if the Person was removed successfully, else false
+   */
+  private boolean deletePerson()
+  {
+    // Custom button text
+    Object[] options = {"Yes", "No"};
+    int n = JOptionPane.showOptionDialog(this,
+        "Are you sure you want to delete?", "Delete confirmation",
+        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+        options, options[1]);
+    if (n == JOptionPane.YES_OPTION) {
+      return _hdCiv.deletePerson();
+    } else {
+      return false;
+    }
+  }
+
+
   // private JTabbedPane buildTabPanels()
   // {
   // // Add the tabbed pane for inventory and magic tab displays
@@ -928,23 +944,31 @@ public class HeroDisplay extends JPanel
     // Create the grid cell as a panel to hold two JLabels within a border
     JPanel p = new JPanel(new MigLayout("inset 3")); // space between text and cell border
     p.setBackground(_backColor);
+    gridSetCellBorder(p);
 
-    // TODO: For now, truncate overly long cells
     int cellWidth = DATA_WIDTH / PANELS_IN_ROW;
-    int dataLen = label.length() + value.length() + 1;
-    if (dataLen > DATA_WIDTH) {
-      value = value.substring(0, DATA_WIDTH-1);
-    }
     p.setPreferredSize(new Dimension(cellWidth, FONT_HT));
-    p.add(new JLabel(label, SwingConstants.LEFT));
-    p.add(new JLabel(value, SwingConstants.RIGHT));
 
-    // Create the border for each grid cell
+    int datalen = label.length() + value.length() + 1;
+    if (datalen > cellWidth) {
+      String multiline = "<html>" + label + "<br>" + value + "</html>";
+      p.add(new JLabel(multiline, SwingConstants.LEFT));
+    } else {
+      p.add(new JLabel(label, SwingConstants.LEFT));
+      p.add(new JLabel(value, SwingConstants.RIGHT));
+    }
+
+    return p;
+  }
+
+
+
+  /** Whether single cell or double-height cell, set a border around it */
+  private void gridSetCellBorder(JPanel p)
+  {
     int cpad = 1;
     Border cellBorder = BorderFactory.createLineBorder(Color.BLACK, cpad);
     p.setBorder(cellBorder);
-
-    return p;
   }
 
 
@@ -958,7 +982,7 @@ public class HeroDisplay extends JPanel
     // Reset the panel size based on the size of the constituent components
     int finalHt = getPreferredSize().height;
     // setPreferredSize(new Dimension(DATA_WIDTH, finalHt));
-    setPreferredSize(new Dimension(_panelWidth - 2 * (SCROLLBAR_SIZE),
+    setPreferredSize(new Dimension(PANEL_WIDTH - 2 * (SCROLLBAR_SIZE),
         finalHt));
 
     /*
@@ -981,24 +1005,39 @@ public class HeroDisplay extends JPanel
   }
 
 
+  // // WRITING TO PERSON FILE (either original or new file name)
+  // if (_hdCiv.savePerson() == true) {
+  // JOptionPane.showMessageDialog(null,
+  // CONFIRM_SAVE_MSG, CONFIRM_SAVE_TITLE,
+  // JOptionPane.INFORMATION_MESSAGE);
+  // setVisible(false);
+  // return true;
+  // }
+  // else {
+  // JOptionPane.showMessageDialog(null, OPEN_ERROR_MSG,
+  // OPEN_ERROR_TITLE, JOptionPane.ERROR_MESSAGE);
+  // return false;
+  // }
+  // }
+
   /**
-   * Delete the Person currently being displayed into a new file.
+   * Displays the Person attributes in the shuttle, including inventory and skill set
    * 
-   * @return true if the Person was removed successfully, else false
+   * @param ws shuttle of PersonKeys containing only String data
    */
-  private boolean deletePerson()
+  private boolean renamePerson()
   {
-    // Custom button text
-    Object[] options = {"Yes", "No"};
-    int n = JOptionPane.showOptionDialog(this,
-        "Are you sure you want to delete?", "Delete confirmation",
-        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-        options, options[1]);
-    if (n == JOptionPane.YES_OPTION) {
-      return _hdCiv.deletePerson();
-    } else {
-      return false;
+    // Pop up window for rename
+    String newName = JOptionPane.showInputDialog(this,
+        "Please input new name: ");
+
+    // Call hdCiv.renamePerson()
+    if (_hdCiv.renamePerson(newName)) {
+      // Now update the display
+      _ds.put(PersonKeys.NAME, newName);
     }
+
+    return this.savePerson();
   }
 
 
@@ -1056,27 +1095,6 @@ public class HeroDisplay extends JPanel
   // }
 
   /**
-   * Displays the Person attributes in the shuttle, including inventory and skill set
-   * 
-   * @param ws shuttle of PersonKeys containing only String data
-   */
-  private boolean renamePerson()
-  {
-    // Pop up window for rename
-    String newName = JOptionPane.showInputDialog(this,
-        "Please input new name: ");
-
-    // Call hdCiv.renamePerson()
-    if (_hdCiv.renamePerson(newName)) {
-      // Now update the display
-      _ds.put(PersonKeys.NAME, newName);
-    }
-
-    return this.savePerson();
-  }
-
-
-  /**
    * Creates the panel and container fields for the given Hero, using a data map from the model to
    * populate the widget. The HeroDisplay panel contains three tabs: one for attributes, one for
    * inventory, and one for magic spells
@@ -1084,11 +1102,9 @@ public class HeroDisplay extends JPanel
   private boolean setupDisplay()
   {
     // GENERAL SETUP
-    setLayout(new MigLayout("center, ins 5"));
+    setLayout(new MigLayout());
     // Set the preferred and max size
-    _panelWidth = PANEL_WIDTH;
-    _panelHeight = Mainframe.getWindowSize().height;
-    setPreferredSize(new Dimension(_panelWidth, _panelHeight));
+    setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
     setBackground(_backColor);
 
     // Display Hero in title in Runic Font
@@ -1096,21 +1112,20 @@ public class HeroDisplay extends JPanel
 
     // Add the tabbed pane for attributes, inventory and magic tab displays
     JTabbedPane tabPane = new JTabbedPane();
-    tabPane.setPreferredSize(new Dimension(_panelWidth, _panelHeight));
+    tabPane.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
 
-    // Add the three tabs to the HeroDisplay panel
-    // tabPane.addTab("Attributes", buildAttributePanel(new Dimension(_panelWidth, _panelHeight)));
-    tabPane.addTab("Attributes", buildAttributePanel());
-    tabPane.addTab("Inventory", new JPanel());
-    tabPane.addTab("Magic", new JPanel());
+    // Create and add three tabs to the HeroDisplay panel
+    tabPane.addTab("Attributes", null, buildAttributePanel(), "View Hero's personal characteristics");
+    tabPane.addTab("Inventory", null, new JPanel(), "View Hero's items and skills owned");
+    tabPane.addTab("Magic", null, new JPanel(), "View Hero's magical items");
     tabPane.setSelectedIndex(0); // set attribs as default tab
 
     // Add the tabs to the HeroDisplay panel
-    add(tabPane, "wrap");
+    add(tabPane, "center, wrap");
 
     // // ADD SAVE & CANCEL BUTTONS TO THE BOTTOM OF THE PANEL
     _buttonPanel = buildButtonPanel();
-    _buttonPanel.setPreferredSize(new Dimension(_panelWidth, _buttonPanel.getHeight()));
+    _buttonPanel.setPreferredSize(new Dimension(PANEL_WIDTH, _buttonPanel.getHeight()));
     add(_buttonPanel, "span, center, gapbottom 20");
 
     // ADD HELP MESSAGE TO INSTRUCT HOW TO SHIFT FOCUS

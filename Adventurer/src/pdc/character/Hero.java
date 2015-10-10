@@ -164,7 +164,7 @@ public class Hero implements Serializable // IRegistryElement
 
   // Occupational skills and descriptions for defined occupations
   private String[] _ocpSkillTable = {
-      "Animal Empathy: Can communicate emotionally with animals",
+      "Animal Empathy: Communicate emotionally with animals",
       "Appraise Jewelry: Estimate selling value of gems and jewelry",
       "Appraise Tapestries: Estimate selling value of tapestries",
       "Arcane Knowledge: +1 INT to recognize things, substances, and potions  "
@@ -176,15 +176,15 @@ public class Hero implements Serializable // IRegistryElement
       "Balance: +1 DEX for balancing tasks and saves",
       "Bluff: +2 CHR if the lie is only a matter of luck that the listener believes you",
       "Bowmaking: in the field if proper materials available:"
-          + "\n\t --make short bow (-1 to hit) (20 gp, 3 days) "
-          + "\n\t --make arrows (-1 dmg), need 1 bird for feathers "
+          + "\n\t --Make/repair short bow (-1 to hit) (20 gp, 3 days) "
+          + "\n\t --Make arrows (-1 damage), need 1 bird for feathers "
           + "(1 gp per 3d4+2 per day) ",
       "Cargo Transport: knows tack, harness, and transport equipment"
-          + "\n\t --Can repair wagons",
+          + "\n\t --Repair wagons",
       "Cavern Lore: +1 WIS to guide party through caverns without getting lost"
-          + "\n\t --Can avoid natural cavern hazards"
-          + "\n\t --Identify most rock ores, +1 INT on rarer ores"
-          + "\n\t --Uses picks and shovels as +1, +1 weapons",
+          + "\n\t --Avoid natural cavern hazards"
+          + "\n\t --Identify most kinds of rock ores, +1 INT on rarer ores"
+          + "\n\t --Use picks and shovels as +1, +1 weapons",
       "Climb Walls: as a Level 1 Thief (%)",
       "Concentration: +1 Save vs INT to avoid distraction (and spell interruption if spell caster)",
       "Diplomacy: +1 CHR for all political negotiating",
@@ -201,28 +201,28 @@ public class Hero implements Serializable // IRegistryElement
           + "e.g. cavern walls, stone floors, fireplaces ",
       "Find/Set Traps: for simple traps like snares and deadweights, as a Level 1 Thief (%)",
       "Gather Information: +2 CHR to hear rumor when in an inn or similarly crowded place"
-          + "\n\t --+2 CHR to find contact information for a key person",
+          + "\n\t -- Gets +2 CHR to find contact information for a key person",
       "General Knowledge: +1 INT on any general question on specific topic ",
       "Hide in Shadows: as a Level 1 Thief (%)",
       "Hunting: 20% chance of finding wild game",
       "Husbandry: 10% chance of catching live animals"
-          + "\n\t --From vet skills, heal d2 HP human dmg or Slow Poison. Needs herbs",
+          + "\n\t --From vet skills, ca heal d3 HP human dmg or Slow Poison. Needs herbs",
       "Identify Plants: +1 INT on rarer items",
       "Intimidate: +1 CHR to get info from a prison or backdown a bully",
       "Intuit Outdoor Direction: +1 WIS to know direction of travel when outside",
       "Intuit Underground Direction: +1 WIS to know direction when underground",
       "Jump: +2 AP for leaping chasms or reaching lower tree branches",
-      "Leatherworking: Makes leather armor (10gp, 3 days)"
-          + "\n\t --Makes boots or gloves (5gp, 1 day)",
+      "Leatherworking: Make/repair leather armor (10gp, 3 days)"
+          + "\n\t --Make/repair boots or gloves (5gp, 1 day)",
       "Listening: as a Level 1 Thief (%)",
       "Luck: Gets +1 on all Saves involving luck and risk taking"
           + "\n\t --Gets +2 on all throws involving gaming luck",
       "Make Raft: Make a sailing raft. Needs hand axe (3 days)",
-      "Make Weapons: Can make small metal shield (12gp, 4hr)"
-          + "\n\t --Make or repair small melee weapons (all at -1 to Hit, -1 dmg):"
+      "Make Weapons: Make small metal shield (12gp, 4hr)"
+          + "\n\t --Make/repair small melee weapons (all at -1 to Hit, -1 dmg):"
           + "\n\t . . dagger (5gp, 2hr); battle axe (5gp, 2hr, need hand axe); spear (5gp, 2hr); "
           + "short sword (no scabbard) (10gp, 1 day)"
-          + "\n\t --Make or repair small missile weapons (all at -1 to Hit, -1 dmg): "
+          + "\n\t --Make/repair small missile weapons (all at -1 to Hit, -1 dmg): "
           + "throwing axe (5gp, 2hr, need hand axe); "
           + "\n\t . . light xbow bolts (10sp, 15 min); heavy bolts (1gp, 30 min); "
           + "sling bullet or dart (1 gp per 3d6 bullets/4hrs)",
@@ -237,31 +237,31 @@ public class Hero implements Serializable // IRegistryElement
           + "\n\t --Make weak poison (L1 poison)( (5gp, 1hr) "
           + "\n\t --Make medium poison (L2 poison)(40gp, 4hr in town only) ",
       "Negotiations: +1 CHR when negotiating money deals",
-      "Netmaking: Makes or repairs 10'x10' net that can provide 10d4 fish per day for food. "
+      "Netmaking: Make/repair 10'x10' net that can provide 10d4 fish per day for food. "
           + " Needs 50' rope (2 days) ",
       "Open Locks: as a Level 1 Thief (%)",
-      "Painting: Paints buildings, mixes paint. (yep, that's it).",
+      "Painting: Paint buildings, mix paint. (yep, that's it).",
       "Pick Pockets: as a Level 1 Thief (%)",
       "Predict Weather: Predict next day weather at +2 WIS",
-      "Read Lips: Can understand about 1 minute of speaker's speech if within 30' "
+      "Read Lips: Understand about 1 minute of speaker's speech if within 30' "
           + "and knows the speaker's language",
       "Repair Armor: in the field if proper materials available:"
           + "\n\t --Make shield, small metal (10gp, 1 day) or small wooden (2 gp, 4 hr) "
           + "\n\t --Convert lantern from open (hooded) to bulls-eye lantern (10gp, 4hr) "
           + "\n\t --Make caltrop from 4 spikes (1gp, 1hr) ",
       "Sense Motive: +1 WIS to determine if person is lying or bluffing",
-      "Sewing: Can make belt (1gp, 1hr), boots (5gp, 1 day), cloak (1gp, 1hr), hat (1gp, 1hr)",
+      "Sewing: Make/repair belt (1gp, 1hr), boots (5gp, 1 day), cloak (1gp, 1hr), hat (1gp, 1hr)",
       "Spot Details: +2 WIS to notice details such as ambushing bandits, obscure items in "
           + "dim room, centipedes in pile of trash",
-      "Train Animals: Can train animals or work teams",
-      "Trapping: Catch animals alive at 20%",
+      "Train Animals: Train animals or work teams",
+      "Trapping: Catch animals alive (20%)",
       "Tumble: land softer when falling (reduce dmg by d3) "
           + "\n\t--Dive tumble over opponents at +2 AC ",
       "Water Lore: +1 WIS to guide party through water areas and avoid natural hazards",
-      "Wilderness Lore: Can guide party through badlands and avoid natural hazards "
-          + "\n\t --Can navigate outdoor course without getting lost "
-          + "\n\t --Can survive off the land",
-      "Woodworking: Repair or make mods to wooden items, e.g. repair xbows (not bows),"
+      "Wilderness Lore: Guide party through badlands and avoid natural hazards "
+          + "\n\t --Navigate outdoor course without getting lost "
+          + "\n\t --Survive off the land",
+      "Woodworking: Make/repair wooden items, e.g. repair xbows (not bows),"
           + "\n\t --Add secret compartments to chests"
   };
 
