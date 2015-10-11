@@ -14,7 +14,6 @@ import java.util.EnumMap;
 
 import chronos.pdc.AttributeList;
 import chronos.pdc.Item;
-import chronos.pdc.Skill;
 import hic.HeroDisplay;
 import hic.Mainframe;
 import mylib.Constants;
@@ -54,6 +53,8 @@ public class HeroDisplayCiv
 
   /** Hero data are converted and sent to the GUI in this EnumMap */
   private EnumMap<PersonKeys, String> _outputMap;
+  /** Hero data are converted and sent to the GUI in this EnumMap */
+  private ArrayList<String> _skills;
 
   private Mainframe _mf;
   
@@ -74,20 +75,21 @@ public class HeroDisplayCiv
     }
     _mf = mf;
     _outputMap = new EnumMap<PersonKeys, String>(PersonKeys.class);
+    _skills = new ArrayList<String>();
   }
 
-  /**
-   * Convert the data in the Hero object to stringified data fields for widget display
-   * 
-   * @param hero to display
-   * @return the output map of all hero data fields
-   */
-  private EnumMap<PersonKeys, String> convertAttributes(Hero hero)
-  {
-    _outputMap = hero.loadAttributeMap(_outputMap);
-    return _outputMap;
-
-  }
+//  /**
+//   * Convert the data in the Hero object to stringified data fields for widget display
+//   * 
+//   * @param hero to display
+//   * @return the output map of all hero data fields
+//   */
+//  private EnumMap<PersonKeys, String> getAttributes(Hero hero)
+//  {
+//    _outputMap = hero.getAttributes(_outputMap);
+//    return _outputMap;
+//
+//  }
 
   // /**
   // * Load all person names from the database Method made static because in order to create a
@@ -102,36 +104,7 @@ public class HeroDisplayCiv
   // }
   
   
-  /**
-   * Convert the Item objects into string fields for list display. All Item fields are concatenated
-   * into a single delimited string.
-   * 
-   * @param items list of Item object to convert
-   * @return the string list of output data
-   */
-  private ArrayList<String> convertItems(ArrayList<Item> items)
-  {
-    ArrayList<String> itemList = new ArrayList<String>(items.size());
-    for (int k = 0; k < items.size(); k++) {
-      // Each item consists of: Inventory category, name, quantity, and
-      // weight (each)
-      Item item = items.get(k);
-      String cat = item.getCategory().toString();
-      String name = item.getName();
-      String qty = String.valueOf(item.getQuantity());
-      // Convert weight from ounces to lbs and ozs
-      int weight = item.getWeight();
-      int lbs = weight / Constants.OUNCES_PER_POUND;
-      int ozs = weight % Constants.OUNCES_PER_POUND;
-      String lbWt = String.valueOf(lbs);
-      String ozWt = String.valueOf(ozs);
-      // Build displayable string
-      String itemStr = cat + BaseCiv.DELIM + name + BaseCiv.DELIM + qty + BaseCiv.DELIM + lbWt
-          + BaseCiv.DELIM + ozWt;
-      itemList.add(k, itemStr);
-    }
-    return itemList;
-  }
+  
 
   // /**
   // * Creates the Civ and its associated output HeroDisplay widget. Do not display the GUI if this
@@ -155,31 +128,6 @@ public class HeroDisplayCiv
 
 
   /**
-   * Convert the Skill object into string fields for list display. All Item fields are concatenated
-   * into a single delimited string.
-   * 
-   * @param skills list of Skills objects to convert
-   * @return the string list of output data
-   */
-  private ArrayList<String> convertSkills(ArrayList<Skill> skills)
-  {
-    ArrayList<String> skillList = new ArrayList<String>(skills.size());
-    for (int k = 0; k < skills.size(); k++) {
-      // Each Skill consists of: name, description, race, klass, and
-      // action (excluded)
-      Skill skill = skills.get(k);
-      String name = skill.getName();
-      // String race = skill.getRace();
-      // String klass = skill.getKlass();
-      String description = skill.getDescription();
-      String skillStr = name + BaseCiv.DELIM + description; // race + BaseCiv.DELIM + klass +
-                                                            // BaseCiv.DELIM + description;
-      skillList.add(k, skillStr);
-    }
-    return skillList;
-  }
-
-  /**
    * Delete the Person
    * 
    * @return true if the delete worked correctly; else false
@@ -198,14 +146,33 @@ public class HeroDisplayCiv
   public void displayHero(Hero hero)
   {
     _hero = hero;
-    _outputMap = convertAttributes(_hero);
-    _widget = new HeroDisplay(this, _outputMap);
+    _outputMap = hero.loadAttributes(_outputMap);
+    _widget = new HeroDisplay(this);
+    
     _mf.addPanel(_widget);
   }
 
-  /** Display the main 
+
+  public EnumMap<PersonKeys, String> getAttributes()
+  {
+    return _outputMap;
+  }
   
-  
+  public ArrayList<String> getKlassSkills()
+  {
+    return _hero.getKlassSkills();
+  }
+
+  public ArrayList<String> getOcpSkills()
+  {
+    return _hero.getOcpSkills();
+  }
+
+  public ArrayList<String> getRaceSkills()
+  {
+    return _hero.getRaceSkills();
+  }
+
   
   /**
    * @return the length of the inventory (number of Items)
@@ -271,25 +238,25 @@ public class HeroDisplayCiv
     return true;
   }
 
-  /**
-   * Format the Skill data and tell the widget to display it
-   * 
-   * @param skills list of Hero's skills to display
-   * @return false is an error occurs
-   */
-  public boolean populateSkills(ArrayList<Skill> skills)
-  {
-    // Create a shuttle to contain the data and convert to widget String
-    // format
-    ArrayList<String> skillList = convertSkills(skills);
-    // if (!Constants.IN_TEST) {
-    _widget.displaySkills(skillList);
-    // }
-    return true;
-  }
+//  /**
+//   * Format the Skill data and tell the widget to display it
+//   * 
+//   * @param skills list of Hero's skills to display
+//   * @return false is an error occurs
+//   */
+//  public boolean populateSkills(ArrayList<Skill> skills)
+//  {
+//    // Create a shuttle to contain the data and convert to widget String
+//    // format
+//    ArrayList<String> skillList = convertSkills(skills);
+//    // if (!Constants.IN_TEST) {
+//    _widget.displaySkills(skillList);
+//    // }
+//    return true;
+//  }
 
   /**
-   * Rename the Persona to the name selected
+   * Rename the Hero to the name selected
    * 
    * @param name the new name for the character
    * @return true if the rename worked correctly; else false
@@ -406,6 +373,113 @@ public class HeroDisplayCiv
   // ==================================================================
   // INNER CLASS: MockHeroDisplayCiv
   // ==================================================================
+
+  //  /**
+  //   * Convert the data in the Hero object to stringified data fields for widget display
+  //   * 
+  //   * @param hero to display
+  //   * @return the output map of all hero data fields
+  //   */
+  //  private EnumMap<PersonKeys, String> getAttributes(Hero hero)
+  //  {
+  //    _outputMap = hero.getAttributes(_outputMap);
+  //    return _outputMap;
+  //
+  //  }
+  
+    // /**
+    // * Load all person names from the database Method made static because in order to create a
+    // * HeroDisplayCiv, a person or person name is needed, which is currently being loaded
+    // *
+    // * @return list of people in the dorimtory
+    // */
+    // public static List<String> openDormitory()
+    // {
+    // Person tmp = new Person();
+    // return tmp.wake();
+    // }
+    
+    
+    /**
+     * Convert the Item objects into string fields for list display. All Item fields are concatenated
+     * into a single delimited string.
+     * 
+     * @param items list of Item object to convert
+     * @return the string list of output data
+     */
+    private ArrayList<String> convertItems(ArrayList<Item> items)
+    {
+      ArrayList<String> itemList = new ArrayList<String>(items.size());
+      for (int k = 0; k < items.size(); k++) {
+        // Each item consists of: Inventory category, name, quantity, and
+        // weight (each)
+        Item item = items.get(k);
+        String cat = item.getCategory().toString();
+        String name = item.getName();
+        String qty = String.valueOf(item.getQuantity());
+        // Convert weight from ounces to lbs and ozs
+        int weight = item.getWeight();
+        int lbs = weight / Constants.OUNCES_PER_POUND;
+        int ozs = weight % Constants.OUNCES_PER_POUND;
+        String lbWt = String.valueOf(lbs);
+        String ozWt = String.valueOf(ozs);
+        // Build displayable string
+        String itemStr = cat + BaseCiv.DELIM + name + BaseCiv.DELIM + qty + BaseCiv.DELIM + lbWt
+            + BaseCiv.DELIM + ozWt;
+        itemList.add(k, itemStr);
+      }
+      return itemList;
+    }
+
+  // /**
+  // * Creates the Civ and its associated output HeroDisplay widget. Do not display the GUI if this
+  // is
+  // * in JUnit test
+  // *
+  // * @param name the name of the person to be summoned
+  // */
+  // public HeroDisplayCiv(String name)
+  // {
+  // HeroDisplayCiv.LOADING_CHAR = true;
+  //
+  // // Make a null person to run the summon method
+  // _hero = new Hero();
+  //
+  // // Now load the person from the registry and display it
+  // _hero = _hero.load(name);
+  // _hero.display();
+  // this.resetLoadState();
+  // }
+  
+  
+//  /**
+//   * Convert the Skill object into string fields for list display. All Item fields are concatenated
+//   * into a single delimited string.
+//   * 
+//   * @param skills list of Skills objects to convert
+//   * @return the string list of output data
+//   */
+//  private ArrayList<String> convertSkills(ArrayList<Skill> skills)
+//  {
+//    ArrayList<String> skillList = new ArrayList<String>(skills.size());
+//    for (int k = 0; k < skills.size(); k++) {
+//      // Each Skill consists of: name, description, race, klass, and
+//      // action (excluded)
+//      Skill skill = skills.get(k);
+//      String name = skill.getName();
+//      // String race = skill.getRace();
+//      // String klass = skill.getKlass();
+//      String description = skill.getDescription();
+//      String skillStr = name + BaseCiv.DELIM + description; // race + BaseCiv.DELIM + klass +
+//                                                            // BaseCiv.DELIM + description;
+//      skillList.add(k, skillStr);
+//    }
+//    return skillList;
+//  }
+
+
+
+
 
   /** Inner class used for testing private methods */
   public class MockHeroDisplayCiv

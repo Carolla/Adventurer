@@ -49,7 +49,7 @@ public class Elf extends Race
   // Special Elf skills
   private final String[] _elfSkills = {
       "Infravision (60')", 
-      "Resistance to Sleep and Charm spells (90%) (second Save allowed on first fail)", 
+      "Resistance to Sleep and Charm spells (90%) (second std Save allowed if first fails)", 
       "Archery: +1 To Hit with bow (not crossbow)", 
       "Tingling: Detect hidden or secret doors if within 10' (67% active; 33% passive)",
       "Move Silently (26%)"

@@ -1,6 +1,5 @@
 /**
  * 
- * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
  * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
  * by email: acline@carolla.com
@@ -168,7 +167,7 @@ public class HeroDisplay extends JPanel
   private final int PANEL_HEIGHT = Mainframe.getWindowSize().height;
 
   /** Set the width of the two data panels within the display borders */
-//  private final int DATA_WIDTH = PANEL_WIDTH / 2 - 2 * (THICK_BORDER + THIN_BORDER);
+  // private final int DATA_WIDTH = PANEL_WIDTH / 2 - 2 * (THICK_BORDER + THIN_BORDER);
   private final int DATA_WIDTH = PANEL_WIDTH / 2 - Mainframe.PAD;
 
   /** Size of inventory area */
@@ -208,9 +207,6 @@ public class HeroDisplay extends JPanel
   /** Items to be displayed */
   private ArrayList<String> _itemList = null;
 
-  // /** Minimum display width */
-  // private final int MINIMUM_DISPLAY = 500;
-
   /** Default inset values */
   private final int DEF_INSET = 3;
 
@@ -229,9 +225,9 @@ public class HeroDisplay extends JPanel
   private Mainframe _mainframe;
 
 
-  /*
-   * CONSTRUCTOR(S) AND RELATED METHODS
-   */
+  // ===============================================================
+  // CONSTRUCTOR(S) AND RELATED METHODS
+  // ===============================================================
 
   /**
    * Create the GUI and populate it with various data maps
@@ -239,11 +235,12 @@ public class HeroDisplay extends JPanel
    * @param hdCiv the intermediary between this GUI and the Person
    * @param outputMap contains all the hero's data to be displayed
    */
-  public HeroDisplay(HeroDisplayCiv hdCiv, EnumMap<PersonKeys, String> outputMap)
+  public HeroDisplay(HeroDisplayCiv hdCiv)
   {
-    _hdCiv = hdCiv;
     _mainframe = Mainframe.getInstance();
-    _ds = outputMap;
+    _hdCiv = hdCiv;
+    _ds = _hdCiv.getAttributes();
+
     // _hdCiv.resetLoadState();
     // Define the overall three-tabbed pane and button layout
     setupDisplay();
@@ -378,105 +375,6 @@ public class HeroDisplay extends JPanel
   }
 
 
-  /** Stub until the display is working properly. */
-  public boolean displaySkills(ArrayList<String> skillList)
-  {
-    // JTextArea skillHeader = new JTextArea();
-    // skillHeader.setPreferredSize(new Dimension(DATA_WIDTH - SCROLLBAR_SIZE,
-    // FONT_HT));
-    // skillHeader.setFont(new Font(Font.MONOSPACED, Font.PLAIN, FONT_HT));
-    // skillHeader.setBackground(_backColor);
-    // // Start the column headers
-    // skillHeader.setText("NAME DESCRIPTION\n");
-    //
-    // StringBuilder b = new StringBuilder();
-    // int numDash = (DATA_WIDTH - SCROLLBAR_SIZE) / PIX_PER_CHAR;
-    // for (int i = 0; i < numDash; i++) {
-    // b.append("-");
-    // }
-    // skillHeader.append(b.toString());
-    // skillHeader.setEditable(false);
-    //
-    // // Make skill tab
-    // JTextArea skillArea = new JTextArea(skillList.size(), 0);
-    // // Set up area to wrap on long descriptions
-    // skillArea.setLineWrap(true);
-    // skillArea.setWrapStyleWord(true);
-    //
-    // // Format remaining agrea
-    // skillArea.setBackground(_backColor);
-    // skillArea.setEditable(false);
-    // skillArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, FONT_HT));
-    //
-    // // Set size of skill Area prior to adding to ScrollPane
-    // skillArea.setPreferredSize(new Dimension(DATA_WIDTH, skillList.size()
-    // * SKILL_LINE_HT));
-    //
-    // // Get all the skills and descriptions
-    // for (int i = 0; i < skillList.size(); i++) {
-    // String str = skillList.get(i);
-    // StringTokenizer st = new StringTokenizer(str, "|");
-    //
-    // // First get skill name and append it
-    // String skillName = st.nextToken();
-    // skillArea.append(skillName + "\n");
-    //
-    // // Then discard unneeded contents
-    // // st.nextToken(); // Race
-    // // st.nextToken(); // Klass
-    //
-    // // Then get description and append it
-    // String skillDesc = st.nextToken();
-    // skillArea.append(" " + skillDesc + "\n");
-    // }
-    //
-    // // IMPORTANT: This select recenters screen to the top/left
-    // skillArea.select(0, 0);
-    //
-    // JPanel allSkills = new JPanel(new MigLayout("fill, wrap 5, ins 2", // layout
-    // // constraints
-    // "[]0[]0[]0[]0[]0[][left]", // align left
-    // "[]0[]0[]0[]0[]0[][bottom]"));
-    // allSkills.setPreferredSize(new Dimension(DATA_WIDTH, (int) ((skillArea
-    // .getRows() + skillHeader.getRows()) * FONT_HT * WRAP_ADJ)));
-    // allSkills.setBackground(_backColor);
-    // allSkills.setBorder(new EmptyBorder(0, 0, 0, 0));
-    // allSkills.add(skillHeader, "span, gapbottom 0");
-    //
-    // // Put skills onto scroll panel
-    // JScrollPane skillScroll = new JScrollPane(skillArea);
-    // skillScroll.setBorder(new EmptyBorder(0, 0, 0, 0));
-    // skillScroll
-    // .setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-    // Dimension scrollSize = new Dimension(
-    // skillArea.getPreferredSize().width,
-    // (int) (skillArea.getPreferredSize().height * WRAP_ADJ)
-    // + FONT_HT);
-    // skillScroll.setPreferredSize(scrollSize);
-    // allSkills.add(skillScroll, "span, gaptop 0, gapbottom 0");
-    //
-    // _tab.addTab("Skills", allSkills);
-    // _tab.setEnabledAt(_tab.indexOfTab("Skills"), true);
-    // // _tab.setPreferredSize(new Dimension (DATA_WIDTH,_panelHeight/3));
-    //
-    // // System.out.println("skillHeader width: " +
-    // // skillHeader.getPreferredSize());
-    // // System.out.println("skillArea width: " +
-    // // skillArea.getPreferredSize());
-    // // System.out.println("skillScroll width: " +
-    // // skillScroll.getPreferredSize());
-    // // System.out.println("allSKills width: " +
-    // // allSkills.getPreferredSize());
-    // // System.out.println("tab width: " + _tab.getPreferredSize());
-    //
-    // add(_tab, "span, grow, push, center");
-    //
-    // _mainframe.repaint();
-
-    return true;
-  }
-
-
   /**
    * Put the HeroDisplay panel into a scrollpane and add to the MainFrame
    * 
@@ -509,6 +407,66 @@ public class HeroDisplay extends JPanel
   {
     return _cancelButton;
   }
+
+
+  /**
+   * Add a JTextArea into a multiline grid
+   * 
+   * @param title of the section for a skill group, e.g., racial, occupational, or klass
+   * @param skillList of skills to display in this multi-line cell
+   */
+  private JPanel buildMultiCell(String title, ArrayList<String> skillList)
+  {
+    JTextArea msgArea = new JTextArea(skillList.size() + 1, DATA_WIDTH);
+    msgArea.setBackground(_backColor);
+    msgArea.setEditable(false);
+    msgArea.setTabSize(1);
+    msgArea.setLineWrap(true); // auto line wrapping doesn't seem to work
+    msgArea.setWrapStyleWord(true);
+
+    // Display the title
+    msgArea.append(" " + title + Constants.NEWLINE);
+
+    // Display the detailed skill list
+    for (int k = 0; k < skillList.size(); k++) {
+      String s0 = skillList.get(k);
+      msgArea.append(" + " + skillList.get(k) + Constants.NEWLINE);
+    }
+    // Handle word wrapping manually here
+    // if (s0.length() > (cellWidth - 1)) {
+    // String s1 = s0.substring(0, cellWidth - 1);
+    // int ws = s1.lastIndexOf(' ');
+    // s1 = s0.substring(0, ws - 1);
+    // String s2 = s0.substring(ws);
+    // msgArea.append(" + " + s1 + Constants.NEWLINE);
+    // msgArea.append(" " + s2 + Constants.NEWLINE);
+    // } else {
+    // msgArea.append(" + " + skillList.get(k) + Constants.NEWLINE);
+    // }
+
+    // Add the text area into a JPanel cell
+    JPanel cell = new JPanel(
+        new MigLayout("ins 0"));
+    msgArea.setBackground(_backColor);
+    cell.add(msgArea, "growx, wrap");
+
+    gridSetCellBorder(cell);
+    cell.validate();
+    return cell;
+  }
+
+
+  // // Add grids for each detailed skill item
+  // private void addSkillDetail(JPanel panel, ArrayList<String> skillList)
+  // {
+  // if (skillList.size() == 0) {
+  // panel.add(gridCell("-- ", " None "), "span 6, growx, wrap");
+  // } else {
+  // for (int k = 0; k < skillList.size(); k++) {
+  // panel.add(gridCell("-- ", skillList.get(k)), "span 6, growx, wrap");
+  // }
+  // }
+  // }
 
 
   // =================================================================
@@ -845,6 +803,47 @@ public class HeroDisplay extends JPanel
   }
 
 
+  // Build panel of skills: literacy, racial skills, occupational skills, and klass skills
+  private JPanel buildSkillsPanel()
+  {
+    // Create a layout that spans the entire width of the panel
+    JPanel skillPanel = new JPanel(new MigLayout("fillx, ins 0", // layout constraints
+        "[]0[]0[]0[]0[]0[][left]", // align horizontally 6 cell-widths
+        "[]0[]0[]0[]0[]0[]0[]0[]0[]0[]0[]0[][bottom]")); // align vertically 12 rows
+
+    skillPanel.setBackground(_backColor);
+    skillPanel.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
+
+    // Get various skills from the civ
+    ArrayList<String> racialSkills = _hdCiv.getRaceSkills();
+    ArrayList<String> ocpSkills = _hdCiv.getOcpSkills();
+    ArrayList<String> klassSkills = _hdCiv.getKlassSkills();
+
+    // Section 1: Literacy
+    skillPanel.add(gridCell("", _ds.get(PersonKeys.LITERACY)), "gaptop 5, span 6, growx, wrap");
+
+    // Section 2: Occupational Skills title
+    String occupation = _ds.get(PersonKeys.OCCUPATION);
+    int nameIndex = occupation.indexOf(":");
+    String ocpName = occupation.substring(0, nameIndex);
+    String ocpDesc = occupation.substring(nameIndex + 1);
+    String ocpTitle = ocpName.toUpperCase() + " SKILLS: " + ocpDesc;
+    skillPanel.add(buildMultiCell(ocpTitle, ocpSkills), "span 6, growx, wrap");
+
+    // Section 3: Racial skills
+    // skillPanel.add(gridCell("RACIAL SKILLS: ", ""), "gaptop 5, span 6, growx, wrap");
+    // Add all the little skills for the occupation
+    skillPanel.add(buildMultiCell("RACIAL SKILLS: ", racialSkills), "span 6, growx, wrap");
+
+    // Section 4: Klass skills
+    skillPanel.add(buildMultiCell(_ds.get(PersonKeys.KLASSNAME).toUpperCase() + " SKILLS: ", 
+        klassSkills), "span 6, growx, wrap");
+
+
+    return skillPanel;
+  }
+
+
   /**
    * Delete the Person currently being displayed into a new file.
    * 
@@ -951,7 +950,7 @@ public class HeroDisplay extends JPanel
 
     int datalen = label.length() + value.length() + 1;
     if (datalen > cellWidth) {
-      String multiline = "<html>" + label + "<br>" + value + "</html>";
+      String multiline = "<html>" + label + "<br>" + value + "<br></html>";
       p.add(new JLabel(multiline, SwingConstants.LEFT));
     } else {
       p.add(new JLabel(label, SwingConstants.LEFT));
@@ -1094,6 +1093,21 @@ public class HeroDisplay extends JPanel
   // }
   // }
 
+  // // WRITING TO PERSON FILE (either original or new file name)
+  // if (_hdCiv.savePerson() == true) {
+  // JOptionPane.showMessageDialog(null,
+  // CONFIRM_SAVE_MSG, CONFIRM_SAVE_TITLE,
+  // JOptionPane.INFORMATION_MESSAGE);
+  // setVisible(false);
+  // return true;
+  // }
+  // else {
+  // JOptionPane.showMessageDialog(null, OPEN_ERROR_MSG,
+  // OPEN_ERROR_TITLE, JOptionPane.ERROR_MESSAGE);
+  // return false;
+  // }
+  // }
+
   /**
    * Creates the panel and container fields for the given Hero, using a data map from the model to
    * populate the widget. The HeroDisplay panel contains three tabs: one for attributes, one for
@@ -1115,10 +1129,13 @@ public class HeroDisplay extends JPanel
     tabPane.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
 
     // Create and add three tabs to the HeroDisplay panel
-    tabPane.addTab("Attributes", null, buildAttributePanel(), "View Hero's personal characteristics");
+    tabPane.addTab("Attributes", null, buildAttributePanel(),
+        "View Hero's personal characteristics");
+    tabPane.addTab("Skills & Abilities", null, buildSkillsPanel(),
+        "View Hero's special skills and abilities");
     tabPane.addTab("Inventory", null, new JPanel(), "View Hero's items and skills owned");
     tabPane.addTab("Magic", null, new JPanel(), "View Hero's magical items");
-    tabPane.setSelectedIndex(0); // set attribs as default tab
+    tabPane.setSelectedIndex(1); // set default tab
 
     // Add the tabs to the HeroDisplay panel
     add(tabPane, "center, wrap");

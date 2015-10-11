@@ -15,6 +15,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EnumMap;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.Constants;
+
 import civ.PersonKeys;
 import mylib.pdc.MetaDie;
 import pdc.TmpItem;
@@ -51,7 +53,7 @@ public class Hero implements Serializable // IRegistryElement
   private String _description;
   /** The hungers state of the Hero as he/she burns calories and eats */
   private String _hunger;
-  
+
   /** Hero game attributes */
   private int _level = 1;
   private int _XP;
@@ -98,6 +100,7 @@ public class Hero implements Serializable // IRegistryElement
   private int _MSPsPerLevel = 0;
   private int _percentToKnow = 0;
   private int _spellsKnown = 0;
+  private String _literacy;
 
   // WIS mods
   int _magicAttackMod = 0; // adjusted by racial magic resistence too
@@ -118,14 +121,16 @@ public class Hero implements Serializable // IRegistryElement
   int _height;
   int _weight;
 
-  // Gold pieces and silver pieces in hand. 
+  // Gold pieces and silver pieces in hand.
   int _gold;
   int _silver;
   // Gold banked. The decimal represents silver pieces
   double _goldBanked;
 
- // Literacy, occupational, and race skills
-  ArrayList<String> _skills = new ArrayList<String>();
+  // Race skills
+  ArrayList<String> _raceSkills = new ArrayList<String>();
+  // Klass-based skills, mostly for Thief
+  ArrayList<String> _klassSkills = new ArrayList<String>();
 
   // Number of skills only the thief has
   final int NBR_THIEF_SKILLS = TSKILL.values().length;
@@ -153,7 +158,7 @@ public class Hero implements Serializable // IRegistryElement
   // Table to hold occupational skills
   private String _occupation = "";
   private ArrayList<String> _ocpSkills = new ArrayList<String>();
-  
+
   // Various occupations (31) for random selection
   private String[] _ocpTable = {
       "Academic", "Acrobat", "Alchemist", "Apothecary", "Armorer", "Banker", "Bowyer",
@@ -251,8 +256,8 @@ public class Hero implements Serializable // IRegistryElement
           + "\n\t --Make caltrop from 4 spikes (1gp, 1hr) ",
       "Sense Motive: +1 WIS to determine if person is lying or bluffing",
       "Sewing: Make/repair belt (1gp, 1hr), boots (5gp, 1 day), cloak (1gp, 1hr), hat (1gp, 1hr)",
-      "Spot Details: +2 WIS to notice details such as ambushing bandits, obscure items in "
-          + "dim room, centipedes in pile of trash",
+      "Spot Details: +2 WIS to notice details such as obscure items in a dim room, "
+          + "or centipedes in a pile of trash",
       "Train Animals: Train animals or work teams",
       "Trapping: Catch animals alive (20%)",
       "Tumble: land softer when falling (reduce dmg by d3) "
@@ -357,8 +362,7 @@ public class Hero implements Serializable // IRegistryElement
     // displayList("Known Languages: \t", _knownLangs);
     _maxLangs = intel / 2 - 3;
     // System.out.println("Hero can learn an additional " + _maxLangs + " languages.");
-    addUnique(_skills, getLiteracy(intel));
-    addUnique(_skills, getLiteracy(intel));
+    _literacy = getLiteracy(intel);
     // displayList("Skills: \t", _skills);
     // 7b. FOR WIZARDS ONLY: PercentToKnow, MSPs/Level, MSPS, Spells Known
     if (_klassname.equalsIgnoreCase("Wizard")) {
@@ -435,12 +439,12 @@ public class Hero implements Serializable // IRegistryElement
 
     // 16. SET INITIAL ARMOR CLASS
     _AC = 10 + _ACMod;
-    _AC_Magic = 0;    // no magica adjustments initially
+    _AC_Magic = 0; // no magica adjustments initially
     // System.out.println("\nArmor Class (without armor) = " + _AC);
 
     // 17. ROLL FOR KLASS-SPECIFIC STARTING GOLD
     _gold = _klass.rollGold();
-    _silver = 9;    // for testing
+    _silver = 9; // for testing
     _goldBanked = 0.0;
     // System.out.println("\nInitial gold for " + _klassname + " = " + _gold + " gp");
 
@@ -451,10 +455,13 @@ public class Hero implements Serializable // IRegistryElement
       // displayThiefSkills(_thiefSkills);
       _thiefSkills = _race.adjRacialThiefSkills(_thiefSkills);
       // displayThiefSkills(_thiefSkills);
+      // Convert from String[][] to ArrayList<String> 
+      _klassSkills = toArrayList(_thiefSkills);
     }
 
     // 19. ADD RACIAL ABILITIES
-    _skills = _race.addRaceSkills(_skills);
+    // TESTING: Set Spot Detail
+    _raceSkills = _race.addRaceSkills(_raceSkills);
     // displayList("Racial Skills: ", _skills);
 
     // 20. ADD RANDOM OCCUPATION AND OCCUPATIONAL SKILLS
@@ -471,100 +478,28 @@ public class Hero implements Serializable // IRegistryElement
       // _spellBook);
     }
     // 22. Assign initial inventory
-//    _inventory = _klass.assignBasicInventory(_inventory);
-//    _inventory = _klass.addKlassItems(_inventory);
-    
+    // _inventory = _klass.assignBasicInventory(_inventory);
+    // _inventory = _klass.addKlassItems(_inventory);
+
     // displayList("Inventory in backpack: ", _inventory);
 
 
   } // end of Hero constructor
 
 
-  /**
-   * Adds the object to the ArrayList, but does not add duplicated
-   * 
-   * @param oList list to add object to
-   * @param obj to add to list if it isn't in the list already
-   */
-  private void addUnique(ArrayList<String> oList, String obj)
+  /** Converts from Skill name, description, and percent change into a string */
+  private ArrayList<String> toArrayList(String[][] thiefSkills) 
   {
-    if (!oList.contains(obj)) {
-      oList.add(obj);
+    ArrayList<String> sk = new ArrayList<String>();
+    
+    for (int k=0; k < thiefSkills.length; k++) {
+      sk.add(thiefSkills[k][0] + ": " + thiefSkills[k][1]);
     }
+    return sk;
   }
-
-  // Assign a random occupation to the Hero
-  private String assignOccupation()
-  {
-    MetaDie md = new MetaDie();
-    int maxLimit = _ocpTable.length;
-    // ndx is index into table, so ranges between 0 and length of table - 1
-    int ndx = md.getRandom(1, maxLimit) - 1; // range must be between 1 and maxLimit
-    return _ocpTable[ndx];
-  }
-
-
-  private void displayThiefSkills(String[][] thiefSkills)
-  {
-    // Put the skill name and chance into a single output string
-    System.out.println("\nThief Skills:");
-    for (int k = 0; k < thiefSkills.length; k++) {
-      String name = thiefSkills[k][0];
-      String chance = thiefSkills[k][1];
-      System.out.println("\t" + name + " = " + chance + "%");
-    }
-  }
-
-  /** Lookup the speed of the character, factoring in height */
-  private int calcSpeed(int ap)
-  {
-    int speed = 0;
-    if (ap <= 15) {
-      speed = 2;
-    } else if ((ap >= 16) && (ap <= 23)) {
-      speed = 3;
-    } else if ((ap >= 24) && (ap <= 32)) {
-      speed = 4;
-    } else if (ap > 32) {
-      speed = 5;
-    }
-    // Adjust for height
-    if (_height <= 48) {
-      speed -= 1;
-    }
-    if (_height >= 74) {
-      speed += 1;
-    }
-    return speed;
-  }
-
-
-
-  /** Display the Action Points and non-lethal combat stats */
-  private void displayCombatStats()
-  {
-    StringBuffer sb = new StringBuffer();
-    sb.append("AP = " + _AP);
-    sb.append("\t Overbearing (for " + _weight + " lbs) = " + _apMods[OVERBEAR]);
-    sb.append("\t Grappling = " + _apMods[GRAPPLE]);
-    sb.append("\t Pummeling = " + _apMods[PUMMEL]);
-    sb.append("\t Shield Bash (with no shield) = " + _apMods[BASH]);
-    System.out.println("\n" + sb);
-  }
-
-
-  /** Calculate the non-lethal combat stats: overbearing, grappling, pummeling, and shield bash */
-  private int[] calcAPMods(int[] mods)
-  {
-    mods[OVERBEAR] = _AP + (_weight / 25);
-    mods[GRAPPLE] = _AP + _damage;
-    mods[PUMMEL] = _AP + _damage + _toHitDex;
-    mods[BASH] = 0;
-    return mods;
-  }
-
-
-
+  
+  
+  
   public String getGender()
   {
     return _gender;
@@ -590,14 +525,29 @@ public class Hero implements Serializable // IRegistryElement
     return _klassname;
   }
 
+  public ArrayList<String> getRaceSkills()
+  {
+    return _raceSkills;
+  }
 
+  public ArrayList<String> getOcpSkills()
+  {
+    return _ocpSkills;
+  }
+
+  public ArrayList<String> getKlassSkills()
+  {
+    return _klassSkills;
+  }
+
+  
   /**
    * Load all the Hero attriutes into a single output map, keyed by the {@code PersonKeys} enum
    * 
    * @param map the keyed map of Hero data attributes
    * @return the EnumMap with attribute data
    */
-  public EnumMap<PersonKeys, String> loadAttributeMap(EnumMap<PersonKeys, String> map)
+  public EnumMap<PersonKeys, String> loadAttributes(EnumMap<PersonKeys, String> map)
   {
     // Now load the attributes in display order (values in parens are derived)
     // Row 1: Name
@@ -633,7 +583,7 @@ public class Hero implements Serializable // IRegistryElement
     map.put(PersonKeys.TO_HIT_MELEE, String.format("%s", _toHitStr));
     map.put(PersonKeys.DAMAGE, String.format("%s", _damage));
     map.put(PersonKeys.WT_ALLOW, String.format("%s", _wtAllow));
-    map.put(PersonKeys.LOAD, String.format("%s", "134"));  // for testing
+    map.put(PersonKeys.LOAD, String.format("%s", "134")); // for testing
 
     // Row 7: INT and INT mods: percent to know spell, current MSP, max MSP, MSPs/Level,
     // spells known (in book), and max languages
@@ -644,6 +594,7 @@ public class Hero implements Serializable // IRegistryElement
     map.put(PersonKeys.MSP_PER_LEVEL, String.format("%s", _MSPsPerLevel));
     map.put(PersonKeys.SPELLS_KNOWN, String.format("%s", _spellsKnown));
     map.put(PersonKeys.MAX_LANGS, String.format("%s", _maxLangs));
+    map.put(PersonKeys.LITERACY, _literacy);
 
     // Row 8: WIS and WIS mods: Magic Attack Mod, Current CSP, Max CSPs, CSPs/Level, Turn Undead
     map.put(PersonKeys.WIS, String.format("%s", _traits[PrimeTraits.WIS.ordinal()]));
@@ -691,144 +642,6 @@ public class Hero implements Serializable // IRegistryElement
     return map;
   }
 
-
-
-  // ====================================================
-  // Private helper methods
-  // ====================================================
-
-  /**
-   * Build the physical appearance of the Person, without regard to what they are wearing or
-   * anything that can drastically change. The description depends on height, weight, race, klass,
-   * hair color, gender and charisma. A special racial note is appended to all races except Human.
-   * <P>
-   * Template for the attributes in description: \n\t
-   * "A [height_descriptor] and [weight_descriptor]" + "[gender] with [color] hair" +
-   * "and [racial note]". [She | He] is [CHR reflection]". \n\t
-   * 
-   * @return a string that describes the Person's body-type (a Race function).
-   */
-  private String initDescription()
-  {
-    // Infer body-type from racial attributes of height, weight, and charisma
-    int chr = _traits[PrimeTraits.CHR.ordinal()];
-    String bodyType = _race.initBodyType(chr, _height, _weight);
-    // Start the description with a vowel-sensitive article
-    String article = (checkFirstVowel(bodyType) == true) ? "An " : "A ";
-    // Determine proper gender for descriptive statement
-    String pronoun = _gender.equalsIgnoreCase("female") ? "She" : "He";
-
-    // Process baldness.
-    String hairType = (_hairColor.equalsIgnoreCase("bald")) ? "a bald head" : _hairColor + " hair";
-    String desc1 = article + bodyType + " " + getGender().toLowerCase() + " with " + hairType;
-
-    // Get race descriptor for suffix.
-    String desc2 = _race.getRaceDescriptor();
-
-    // Get Charisma description
-    String chrDesc = _race.initCharismaDescriptor(chr);
-    String desc3 = pronoun + " is " + chrDesc + ".";
-
-    String desc = desc1 + " and " + desc2 + ". " + desc3;
-    return desc;
-  }
-
-  /**
-   * Check if the first letter of a string is a vowel so the proper article (A or An) can be placed
-   * in front of it.
-   * 
-   * @param target the string to check if the first letter is a vowel or not
-   * @return true if a the target starts with a vowel; else false
-   */
-  private boolean checkFirstVowel(String target)
-  {
-    final Character[] c = {'a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'};
-    boolean retflag = false;
-
-    for (int k = 0; k < c.length; k++) {
-      if (target.charAt(0) == c[k]) {
-        retflag = true;
-      }
-    }
-    return retflag;
-  }
-
-
-  private void displayRacialMods()
-  {
-    StringBuffer sb = new StringBuffer();
-    sb.append("Dwarves, Gnomes, and Hobbits only: ");
-    sb.append("\t Updated Magic Attack Mod = " + _magicAttackMod);
-    sb.append("\t Racial Poison Resist = " + _racialPoisonResist);
-    System.out.println("\n" + sb);
-  }
-
-
-  private void displayClericMods()
-  {
-    StringBuffer sb = new StringBuffer();
-    sb.append("Clerics only: ");
-    sb.append("\t CSPs per Level = " + _CSPsPerLevel);
-    sb.append("\t CSPs = " + _CSPs);
-    sb.append("\t Turn Undead: " + _turnUndead + " + ULD");
-    System.out.println("\n" + sb);
-  }
-
-  // Find a number in one of three ranges: low, medium, high
-  private int findInRange(int value)
-  {
-    final int HI_GATE = 14;
-    final int LO_GATE = 9;
-    if (value > HI_GATE)
-      return (value - HI_GATE);
-    if (value < LO_GATE)
-      return (value - LO_GATE);
-    return 0;
-  }
-
-
-  private void displayWizardMods()
-  {
-    StringBuffer sb = new StringBuffer();
-    sb.append("Wizards only: ");
-    sb.append("\t MSPs per Level = " + _MSPsPerLevel);
-    sb.append("\t MSPs = " + _MSPs);
-    sb.append("\t % to know new spell = " + _percentToKnow);
-    sb.append("\t MSPs per Level = " + _MSPsPerLevel);
-    sb.append("\t Spells known (in Spellbook): " + _spellsKnown);
-    System.out.println("\n" + sb);
-  }
-
-  private int[] calcWizardMods(int intell)
-  {
-    int[] mod = new int[2];
-    mod[0] = intell / 2 - 3; // MPSs per level
-    mod[1] = intell * 5; // percent to know new spells
-    return mod;
-  }
-
-
-  /** Get the literacy based on intelligence; Spell casters are always literate */
-  private String getLiteracy(int intel)
-  {
-    final String ILLITERATE = "Illiterate: Cannot read nor write";
-    final String LITERATE = "Literate: Can read and write";
-    final String PART_LITERATE = "Can read but cannot write";
-    String lit = "";
-    if ((_klassname.equalsIgnoreCase("Cleric")) || (_klassname.equalsIgnoreCase("Wizard"))) {
-      return LITERATE;
-    }
-    if (intel <= 10)
-      return ILLITERATE;
-    if (intel >= 12)
-      return LITERATE;
-    if (intel == 11)
-      return PART_LITERATE;
-    return lit;
-  }
-
-
-
   /** Update the list with initial languages, including race langauges */
   private ArrayList<String> addLanguages(ArrayList<String> langs)
   {
@@ -841,53 +654,18 @@ public class Hero implements Serializable // IRegistryElement
     return langs;
   }
 
-
   /**
-   * Display a list with a header message
+   * Adds the object to the ArrayList, but does not add duplicated
    * 
-   * @param msg the message to display as label
-   * @param list display each element of this list
+   * @param oList list to add object to
+   * @param obj to add to list if it isn't in the list already
    */
-  private void displayList(String msg, ArrayList<String> list)
+  private void addUnique(ArrayList<String> oList, String obj)
   {
-    System.out.println("\n" + msg);
-    for (int k = 0; k < list.size(); k++) {
-      System.out.println("\t" + list.get(k) + ", ");
+    if (!oList.contains(obj)) {
+      oList.add(obj);
     }
-    System.out.println();
   }
-
-  private void displayStrMods(int[] mods)
-  {
-    System.out.println("\n\tStr Mods: \t To Hit (melee) = " + _toHitStr + ";\t Dmg = " + _damage
-        + ";\t Wt Allownace = " + _wtAllow);
-  }
-
-  // Set the strength modifiers: ToHit, Damage, and Wt Allowace
-  private int[] calcStrengthMods(int[] traits)
-  {
-    // STR values 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21
-    final int[] toHitTbl = {-3, -2, -2, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 2, 3};
-    final int[] dmgTbl = {-3, -3, -2, -2, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5};
-
-    // STR values 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-    final int[] wtTbl = {80, 120, 160, 200, 280, 360, 440, 520, 600, 700, 800, 900, 1000,
-        // STR values 16, 17, 18, 19, 20, 21
-        1200, 1500, 1800, 2100, 2300, 2600};
-
-    // Internal check
-    if ((toHitTbl.length != dmgTbl.length) && (toHitTbl.length != wtTbl.length)) {
-      System.err.println("calcCtrengthMods(): invalid internal tables");
-      System.exit(-1);
-    }
-    int[] mods = new int[3];
-    int ndx = traits[PrimeTraits.STR.ordinal()] - 3; // read from the table 3 places to the left
-    mods[0] = toHitTbl[ndx];
-    mods[1] = dmgTbl[ndx];
-    mods[2] = wtTbl[ndx];
-    return mods;
-  }
-
 
   /** Females are given more CON and CHR but less STR */
   private int[] adjustTraitsForGender(int[] traits)
@@ -898,32 +676,14 @@ public class Hero implements Serializable // IRegistryElement
     return traits;
   }
 
-  /** Display the Hero's key characteristics */
-  private void auditOutHero()
+  // Assign a random occupation to the Hero
+  private String assignOccupation()
   {
-    StringBuilder out = new StringBuilder();
-    out.append(_name + " ");
-    out.append(_gender + " ");
-    out.append(_racename + " ");
-    out.append(_klassname + " ");
-    System.out.println("Hero " + out);
-  }
-
-
-  /**
-   * Display the Hero's prime traits
-   * 
-   * @param msg header message before traits display
-   * @param traits traits for display
-   */
-  private void displayTraits(String msg, int[] traits)
-  {
-    // TODO Make this list depend on PrimeTraits order, and not these constants
-    final String[] ndx = {"STR", "INT", "WIS", "DEX", "CON", "CHR"};
-    System.out.println(msg);
-    for (int k = 0; k < 6; k++) {
-      System.out.print("\t" + ndx[k] + " = " + traits[k] + "\t");
-    }
+    MetaDie md = new MetaDie();
+    int maxLimit = _ocpTable.length;
+    // ndx is index into table, so ranges between 0 and length of table - 1
+    int ndx = md.getRandom(1, maxLimit) - 1; // range must be between 1 and maxLimit
+    return _ocpTable[ndx];
   }
 
 
@@ -942,13 +702,13 @@ public class Hero implements Serializable // IRegistryElement
     int CHR = _traits[PrimeTraits.CHR.ordinal()];
 
     // for testing
-//    _occupation = "Armorer";
-//    STR = 17;
-//    INT = 17;
-//    WIS = 17;
-//    DEX = 17;
-//    CON = 17;
-//    CHR = 17;
+    // _occupation = "Armorer";
+    // STR = 17;
+    // INT = 17;
+    // WIS = 17;
+    // DEX = 17;
+    // CON = 17;
+    // CHR = 17;
 
     // Get all conditional skills for each occupation
     switch (_occupation)
@@ -961,8 +721,6 @@ public class Hero implements Serializable // IRegistryElement
           if (CHR > 14) {
             skills.add(extractSkillSet("Diplomacy"));
           }
-        } else {
-          skills.add("Too much book-learning. No practical Adventuring skills.");
         }
         break;
       }
@@ -974,34 +732,28 @@ public class Hero implements Serializable // IRegistryElement
           skills.add(extractSkillSet("Escape Artist"));
           skills.add(extractSkillSet("Jump"));
           skills.add(extractSkillSet("Tumble"));
-        } else {
-          skills.add("You'll break your neck. Don't try it in the dungeon.");
         }
         break;
       }
       case ("Alchemist"): {
         ocpDesc = "Knows chemicals and elixirs. Owns Alchemists' Kit.";
-//        _inventory.add(kits[KitNdx.ALCHEMIST.ordinal()]);
+        // _inventory.add(kits[KitNdx.ALCHEMIST.ordinal()]);
         if (INT > 14) {
           skills.add(extractSkillSet("Arcane Knowledge"));
-        } else {
-          skills.add("You'll blow yourself up. Don't try it even once.");
         }
         break;
       }
       case ("Apothecary"): {
         ocpDesc = "Knows herbs, ointments, and medicines. Owns Alchemists' Kit.";
-//        _inventory.add(kits[KitNdx.ALCHEMIST.ordinal()]);
+        // _inventory.add(kits[KitNdx.ALCHEMIST.ordinal()]);
         if (WIS > 14) {
           skills.add(extractSkillSet("Natural Knowledge"));
-        } else {
-          skills.add("One mistake and you'll poison yourself. Stick to aspirin.");
         }
         break;
       }
       case ("Armorer"): {
         ocpDesc = "Makes and repairs metal armor, helmets and shields. Owns Metalsmith Kit.";
-//        _inventory.add(kits[KitNdx.METAL.ordinal()]);
+        // _inventory.add(kits[KitNdx.METAL.ordinal()]);
         skills.add(extractSkillSet("Repair Armor"));
         break;
       }
@@ -1015,13 +767,13 @@ public class Hero implements Serializable // IRegistryElement
       }
       case ("Bowyer"): {
         ocpDesc = "Can make bows and arrows. Owns Woodworking Kit.";
-//        _inventory.add(kits[KitNdx.WOOD.ordinal()]);
+        // _inventory.add(kits[KitNdx.WOOD.ordinal()]);
         skills.add(extractSkillSet("Bowmaking"));
         break;
       }
       case ("Carpenter"): {
         ocpDesc = "Knows wood and woodworking tools. Owns Woodworking Kit.";
-//        _inventory.add(kits[KitNdx.WOOD.ordinal()]);
+        // _inventory.add(kits[KitNdx.WOOD.ordinal()]);
         skills.add(extractSkillSet("Find Secrets in Woodwork"));
         break;
       }
@@ -1033,7 +785,7 @@ public class Hero implements Serializable // IRegistryElement
       }
       case ("Fisher"): {
         ocpDesc = "Knows about bodies of fresh water and lakes. Owns Sewing Kit.";
-//        _inventory.add(kits[KitNdx.SEWING.ordinal()]);
+        // _inventory.add(kits[KitNdx.SEWING.ordinal()]);
         skills.add(extractSkillSet("Netmaking"));
         if (STR > 14) {
           skills.add(extractSkillSet("Fast Swim"));
@@ -1054,7 +806,7 @@ public class Hero implements Serializable // IRegistryElement
       }
       case ("Freighter"): {
         ocpDesc = "Businessman. Ships cargo in wagons. Owns Woodworking Kit.";
-//        _inventory.add(kits[KitNdx.WOOD.ordinal()]);
+        // _inventory.add(kits[KitNdx.WOOD.ordinal()]);
         skills.add(extractSkillSet("Negotiations"));
         skills.add(extractSkillSet("Cargo Transport"));
         if (WIS > 14) {
@@ -1117,7 +869,7 @@ public class Hero implements Serializable // IRegistryElement
       }
       case ("Leatherworker"): {
         ocpDesc = "Tans hides and makes leather items. Owns Leatherworking Kit";
-//        _inventory.add(kits[KitNdx.LEATHER.ordinal()]);
+        // _inventory.add(kits[KitNdx.LEATHER.ordinal()]);
         skills.add(extractSkillSet("Leatherworking"));
         break;
       }
@@ -1133,13 +885,11 @@ public class Hero implements Serializable // IRegistryElement
         ocpDesc = "Constructs buildings, works mortar, lays brick; knows stonework.";
         if (INT > 14) {
           skills.add(extractSkillSet("Find Secrets in Stonework"));
-        } else {
-          skills.add("You're especially good at putting your finger in a dike");
         }
         break;
       }
       case ("Miner"): {
-        ocpDesc = "Digs ores from caverns and mines. Know rock and ores";
+        ocpDesc = "Digs ores from caverns and mines. Knows kinds of rock and ores";
         skills.add(extractSkillSet("Intuit Underground Direction"));
         skills.add(extractSkillSet("Cavern Lore"));
         if (INT > 14) {
@@ -1176,7 +926,7 @@ public class Hero implements Serializable // IRegistryElement
       }
       case ("Tailor"): {
         ocpDesc = "Makes clothing, knows dyes. Owns Sewing Kit";
-//        _inventory.add(kits[KitNdx.SEWING.ordinal()]);
+        // _inventory.add(kits[KitNdx.SEWING.ordinal()]);
         skills.add(extractSkillSet("Sewing"));
         if (CHR > 14) {
           skills.add(extractSkillSet("Gather Information"));
@@ -1208,20 +958,20 @@ public class Hero implements Serializable // IRegistryElement
       }
       case ("Weaponsmith"): {
         ocpDesc = "Knows metal weapons of all types and metalworking. Owns Metalsmith Kit.";
-//        _inventory.add(kits[KitNdx.METAL.ordinal()]);
+        // _inventory.add(kits[KitNdx.METAL.ordinal()]);
         skills.add(extractSkillSet("Make Weapons"));
         break;
       }
       case ("Weaver"): {
         ocpDesc = "Makes tapestries, rugs, bed clothing. Knows dyes. Owns Sewing Kit";
-//        _inventory.add(kits[KitNdx.SEWING.ordinal()]);
+        // _inventory.add(kits[KitNdx.SEWING.ordinal()]);
         skills.add(extractSkillSet("Appraise Tapestries"));
         break;
       }
       case ("Woodworker"): {
         ocpDesc = "Builds wood furniture, cabinets. Knows wood and wood-working tools. " +
             "Owns Woodworking Kit.";
-//        _inventory.add(kits[KitNdx.WOOD.ordinal()]);
+        // _inventory.add(kits[KitNdx.WOOD.ordinal()]);
         skills.add(extractSkillSet("Woodworking"));
         skills.add(extractSkillSet("Find Secrets in Woodwork"));
         if ((DEX > 14) && (INT > 14)) {
@@ -1230,13 +980,13 @@ public class Hero implements Serializable // IRegistryElement
         break;
       }
       case ("Drifter"): {
-        ocpDesc = "Everyone is running from something. What is your story?";
+        ocpDesc = "Everyone is running from something. What's your story?";
         skills.add("No special skills");
         break;
       }
       default: {
-        System.err
-            .println("\n assignOcpSkills(): Can't find the occupation given as " + _occupation);
+        System.err.println(
+            "\n assignOcpSkills(): Can't find the occupation given as " + _occupation);
         break;
       }
     }
@@ -1245,6 +995,209 @@ public class Hero implements Serializable // IRegistryElement
     return skills;
   }
 
+  /** Display the Hero's key characteristics */
+  private void auditOutHero()
+  {
+    StringBuilder out = new StringBuilder();
+    out.append(_name + " ");
+    out.append(_gender + " ");
+    out.append(_racename + " ");
+    out.append(_klassname + " ");
+    System.out.println("Hero " + out);
+  }
+
+  /** Calculate the non-lethal combat stats: overbearing, grappling, pummeling, and shield bash */
+  private int[] calcAPMods(int[] mods)
+  {
+    mods[OVERBEAR] = _AP + (_weight / 25);
+    mods[GRAPPLE] = _AP + _damage;
+    mods[PUMMEL] = _AP + _damage + _toHitDex;
+    mods[BASH] = 0;
+    return mods;
+  }
+
+  /** Lookup the speed of the character, factoring in height */
+  private int calcSpeed(int ap)
+  {
+    int speed = 0;
+    if (ap <= 15) {
+      speed = 2;
+    } else if ((ap >= 16) && (ap <= 23)) {
+      speed = 3;
+    } else if ((ap >= 24) && (ap <= 32)) {
+      speed = 4;
+    } else if (ap > 32) {
+      speed = 5;
+    }
+    // Adjust for height
+    if (_height <= 48) {
+      speed -= 1;
+    }
+    if (_height >= 74) {
+      speed += 1;
+    }
+    return speed;
+  }
+
+  // Set the strength modifiers: ToHit, Damage, and Wt Allowace
+  private int[] calcStrengthMods(int[] traits)
+  {
+    // STR values 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21
+    final int[] toHitTbl = {-3, -2, -2, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 2, 3};
+    final int[] dmgTbl = {-3, -3, -2, -2, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5};
+
+    // STR values 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+    final int[] wtTbl = {80, 120, 160, 200, 280, 360, 440, 520, 600, 700, 800, 900, 1000,
+        // STR values 16, 17, 18, 19, 20, 21
+        1200, 1500, 1800, 2100, 2300, 2600};
+
+    // Internal check
+    if ((toHitTbl.length != dmgTbl.length) && (toHitTbl.length != wtTbl.length)) {
+      System.err.println("calcCtrengthMods(): invalid internal tables");
+      System.exit(-1);
+    }
+    int[] mods = new int[3];
+    int ndx = traits[PrimeTraits.STR.ordinal()] - 3; // read from the table 3 places to the left
+    mods[0] = toHitTbl[ndx];
+    mods[1] = dmgTbl[ndx];
+    mods[2] = wtTbl[ndx];
+    return mods;
+  }
+
+  private int[] calcWizardMods(int intell)
+  {
+    int[] mod = new int[2];
+    mod[0] = intell / 2 - 3; // MPSs per level
+    mod[1] = intell * 5; // percent to know new spells
+    return mod;
+  }
+
+  /**
+   * Check if the first letter of a string is a vowel so the proper article (A or An) can be placed
+   * in front of it.
+   * 
+   * @param target the string to check if the first letter is a vowel or not
+   * @return true if a the target starts with a vowel; else false
+   */
+  private boolean checkFirstVowel(String target)
+  {
+    final Character[] c = {'a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'};
+    boolean retflag = false;
+
+    for (int k = 0; k < c.length; k++) {
+      if (target.charAt(0) == c[k]) {
+        retflag = true;
+      }
+    }
+    return retflag;
+  }
+
+  // ====================================================
+  // Private helper methods
+  // ====================================================
+
+  private void displayClericMods()
+  {
+    StringBuffer sb = new StringBuffer();
+    sb.append("Clerics only: ");
+    sb.append("\t CSPs per Level = " + _CSPsPerLevel);
+    sb.append("\t CSPs = " + _CSPs);
+    sb.append("\t Turn Undead: " + _turnUndead + " + ULD");
+    System.out.println("\n" + sb);
+  }
+
+  /** Display the Action Points and non-lethal combat stats */
+  private void displayCombatStats()
+  {
+    StringBuffer sb = new StringBuffer();
+    sb.append("AP = " + _AP);
+    sb.append("\t Overbearing (for " + _weight + " lbs) = " + _apMods[OVERBEAR]);
+    sb.append("\t Grappling = " + _apMods[GRAPPLE]);
+    sb.append("\t Pummeling = " + _apMods[PUMMEL]);
+    sb.append("\t Shield Bash (with no shield) = " + _apMods[BASH]);
+    System.out.println("\n" + sb);
+  }
+
+
+
+  // ====================================================
+  // Private helper methods
+  // ====================================================
+
+
+
+  // ====================================================
+  // Private helper methods
+  // ====================================================
+
+  /**
+   * Display a list with a header message
+   * 
+   * @param msg the message to display as label
+   * @param list display each element of this list
+   */
+  private void displayList(String msg, ArrayList<String> list)
+  {
+    System.out.println("\n" + msg);
+    for (int k = 0; k < list.size(); k++) {
+      System.out.println("\t" + list.get(k) + ", ");
+    }
+    System.out.println();
+  }
+
+  private void displayRacialMods()
+  {
+    StringBuffer sb = new StringBuffer();
+    sb.append("Dwarves, Gnomes, and Hobbits only: ");
+    sb.append("\t Updated Magic Attack Mod = " + _magicAttackMod);
+    sb.append("\t Racial Poison Resist = " + _racialPoisonResist);
+    System.out.println("\n" + sb);
+  }
+
+  private void displayStrMods(int[] mods)
+  {
+    System.out.println("\n\tStr Mods: \t To Hit (melee) = " + _toHitStr + ";\t Dmg = " + _damage
+        + ";\t Wt Allownace = " + _wtAllow);
+  }
+
+  private void displayThiefSkills(String[][] thiefSkills)
+  {
+    // Put the skill name and chance into a single output string
+    System.out.println("\nThief Skills:");
+    for (int k = 0; k < thiefSkills.length; k++) {
+      String name = thiefSkills[k][0];
+      String chance = thiefSkills[k][1];
+      System.out.println("\t" + name + " = " + chance + "%");
+    }
+  }
+
+  /**
+   * Display the Hero's prime traits
+   * 
+   * @param msg header message before traits display
+   * @param traits traits for display
+   */
+  private void displayTraits(String msg, int[] traits)
+  {
+    // TODO Make this list depend on PrimeTraits order, and not these constants
+    final String[] ndx = {"STR", "INT", "WIS", "DEX", "CON", "CHR"};
+    System.out.println(msg);
+    for (int k = 0; k < 6; k++) {
+      System.out.print("\t" + ndx[k] + " = " + traits[k] + "\t");
+    }
+  }
+
+  private void displayWizardMods()
+  {
+    StringBuffer sb = new StringBuffer();
+    sb.append("Wizards only: ");
+    sb.append("\t MSPs per Level = " + _MSPsPerLevel);
+    sb.append("\t MSPs = " + _MSPs);
+    sb.append("\t % to know new spell = " + _percentToKnow);
+    sb.append("\t MSPs per Level = " + _MSPsPerLevel);
+    sb.append("\t Spells known (in Spellbook): " + _spellsKnown);
+    System.out.println("\n" + sb);
+  }
 
   // Private: Extract the skills for a given skillname of the given occupation
   private String extractSkillSet(String name)
@@ -1264,9 +1217,81 @@ public class Hero implements Serializable // IRegistryElement
     return skill;
   }
 
+  // Find a number in one of three ranges: low, medium, high
+  private int findInRange(int value)
+  {
+    final int HI_GATE = 14;
+    final int LO_GATE = 9;
+    if (value > HI_GATE)
+      return (value - HI_GATE);
+    if (value < LO_GATE)
+      return (value - LO_GATE);
+    return 0;
+  }
 
-  
-  
+
+  /** Get the literacy based on intelligence; Spell casters are always literate */
+  private String getLiteracy(int intel)
+  {
+    final String ILLITERATE = "ILLITERATE: Cannot read or write";
+    final String LITERATE = "LITERATE: Can read and write";
+    final String PART_LITERATE = "PARTIALLY LITERATE: Can read but cannot write";
+    String lit = "";
+    if ((_klassname.equalsIgnoreCase("Cleric")) || (_klassname.equalsIgnoreCase("Wizard"))) {
+      return LITERATE;
+    }
+    if (intel <= 10)
+      return ILLITERATE;
+    if (intel >= 12)
+      return LITERATE;
+    if (intel == 11)
+      return PART_LITERATE;
+    return lit;
+  }
+
+
+
+  // ====================================================
+  // Private helper methods
+  // ====================================================
+
+  /**
+   * Build the physical appearance of the Person, without regard to what they are wearing or
+   * anything that can drastically change. The description depends on height, weight, race, klass,
+   * hair color, gender and charisma. A special racial note is appended to all races except Human.
+   * <P>
+   * Template for the attributes in description: \n\t
+   * "A [height_descriptor] and [weight_descriptor]" + "[gender] with [color] hair" +
+   * "and [racial note]". [She | He] is [CHR reflection]". \n\t
+   * 
+   * @return a string that describes the Person's body-type (a Race function).
+   */
+  private String initDescription()
+  {
+    // Infer body-type from racial attributes of height, weight, and charisma
+    int chr = _traits[PrimeTraits.CHR.ordinal()];
+    String bodyType = _race.initBodyType(chr, _height, _weight);
+    // Start the description with a vowel-sensitive article
+    String article = (checkFirstVowel(bodyType) == true) ? "An " : "A ";
+    // Determine proper gender for descriptive statement
+    String pronoun = _gender.equalsIgnoreCase("female") ? "She" : "He";
+
+    // Process baldness.
+    String hairType = (_hairColor.equalsIgnoreCase("bald")) ? "a bald head" : _hairColor + " hair";
+    String desc1 = article + bodyType + " " + getGender().toLowerCase() + " with " + hairType;
+
+    // Get race descriptor for suffix.
+    String desc2 = _race.getRaceDescriptor();
+
+    // Get Charisma description
+    String chrDesc = _race.initCharismaDescriptor(chr);
+    String desc3 = pronoun + " is " + chrDesc + ".";
+
+    String desc = desc1 + " and " + desc2 + ". " + desc3;
+    return desc;
+  }
+
+
   // ====================================================
   // INNER CLASS MockHero
   // ====================================================

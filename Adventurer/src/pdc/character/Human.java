@@ -39,7 +39,7 @@ public class Human extends Race
   private final String _raceDescriptor = "a naive look in the eyes";
 
   /** No special human skills, but don't leave this null */
-  private final String[] _humanSkills = { " " }; 
+  private final String[] _humanSkills = { "None" }; 
   
   /** Humans get no special mods for thief skills */
   // Find Secret Door | Pick Pockets | Open Locks | Find/Remove Traps | Move Silently |
