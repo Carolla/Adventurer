@@ -12,8 +12,6 @@ package chronos.pdc.registry;
 import java.util.ArrayList;
 import java.util.List;
 
-import mylib.ApplicationException;
-import mylib.MsgCtrl;
 import mylib.dmc.IRegistryElement;
 import mylib.pdc.Registry;
 import chronos.Chronos;
@@ -43,12 +41,14 @@ public class BuildingRegistry extends Registry
   // ========================================================================
 
   private final Scheduler _skedder;
+  private final NPCRegistry _npcRegistry;
 
 /** Called by RegistryFactory class */
-  protected BuildingRegistry(Scheduler skedder)
+  protected BuildingRegistry(Scheduler skedder, NPCRegistry npcRegistry)
   {
     super(Chronos.BuildingRegPath);
     _skedder = skedder;
+    _npcRegistry = npcRegistry;
   }
 
 
@@ -60,8 +60,9 @@ public class BuildingRegistry extends Registry
   {
     // Create each of the default buildings and save to registry
     // The constructors load the default data
-    try {
-      super.add(new Inn(_skedder)); // Ugly Ogre Inn
+      Inn inn = new Inn(_skedder, _npcRegistry);
+      inn.initPatrons();
+      super.add(inn); // Ugly Ogre Inn
       super.add(new Store()); // Rat's Pack
       super.add(new Jail()); // Jail
       super.add(new Bank()); // The Bank
@@ -69,9 +70,6 @@ public class BuildingRegistry extends Registry
       super.add(new RoguesGuild()); // Rouge's Tavern
       super.add(new ClericsGuild()); // Monastery
       super.add(new WizardsGuild()); // Arcaneum
-    } catch (ApplicationException ex) {
-      MsgCtrl.errMsgln(this, ex.getMessage());
-    }
   }
 
 

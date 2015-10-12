@@ -20,8 +20,6 @@ import chronos.pdc.Command.Scheduler;
 import chronos.pdc.Command.intCmdPatronEnter;
 import chronos.pdc.Command.intCmdPatronLeave;
 import chronos.pdc.registry.NPCRegistry;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 
 /**
  * Main building in town for rest, food, conversation, and sometimes even a bar brawl. Heroes can be
@@ -94,6 +92,7 @@ public class Inn extends Building
     
     /** Used to schedule commands */
     private final Scheduler _skedder;
+    private final NPCRegistry _npcRegistry;
 
     /*
      * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND RELATED METHODS
@@ -105,13 +104,13 @@ public class Inn extends Building
      * 
      * @throws ApplicationException if the ctor fails
      */
-    public Inn(Scheduler skedder) throws ApplicationException
+    public Inn(Scheduler skedder, NPCRegistry npcRegistry) throws ApplicationException
     {
         super(INN_NAME, INNKEEPER, HOVERTEXT, EXTERIOR, INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
         _skedder = skedder;
+        _npcRegistry = npcRegistry;
         _busyDescription = BUSY_DESC;
         setBusinessHours(OPENTIME, CLOSETIME);
-        initPatrons();
     }
 
     /**
@@ -125,7 +124,7 @@ public class Inn extends Building
      */
     public void initPatrons()
     {
-        _patrons = ((NPCRegistry) RegistryFactory.getInstance().getRegistry(RegKey.NPC)).getNPCList();
+        _patrons = _npcRegistry.getNPCList();
         // The starterList has no zero-delay intCmdEnter commands, each containing the
         // Patron who shall enter at the designated delay time.
         List<intCmdPatronEnter> starterList = createStarterList();

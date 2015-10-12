@@ -13,7 +13,6 @@ import pdc.command.CommandFactory;
 import pdc.command.CommandInput;
 import chronos.pdc.Command.Command;
 import chronos.pdc.Command.NullCommand;
-import chronos.pdc.Command.Scheduler;
 import civ.CommandParser;
 
 public class TestCommandParser
@@ -91,22 +90,6 @@ public class TestCommandParser
     {
         _cp.receiveCommand("Don't do anything");
         assertEquals(new NullCommand().getName(), _fakeSkedder.command.getName());
-    }
-    
-    public class FakeScheduler extends Scheduler
-    {
-        public Command command;
-
-        public FakeScheduler()
-        {
-            super();
-        }
-        
-        @Override
-        public void sched(Command cmd)
-        {
-            command = cmd;
-        }
     }
 
     public class FakeCommandFactory extends CommandFactory

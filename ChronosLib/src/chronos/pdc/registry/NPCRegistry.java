@@ -485,7 +485,7 @@ public class NPCRegistry extends Registry
    * 
    * @return the list of NPCs
    */
-  public ArrayList<NPC> getNPCList()
+  public List<NPC> getNPCList()
   {
     List<IRegistryElement> npcSet = get(new Predicate<IRegistryElement>() {
       private static final long serialVersionUID = 6815466908808374953L;

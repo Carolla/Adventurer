@@ -83,7 +83,7 @@ private Scheduler _skedder;
         _regMap.put(RegKey.SKILL, new SkillRegistry());
         _regMap.put(RegKey.OCP, new OccupationRegistry());
         _regMap.put(RegKey.NPC, new NPCRegistry());
-        _regMap.put(RegKey.BLDG, new BuildingRegistry(_skedder));
+        _regMap.put(RegKey.BLDG, new BuildingRegistry(_skedder, (NPCRegistry) _regMap.get(RegKey.NPC)));
         _regMap.put(RegKey.TOWN, new TownRegistry());
         _regMap.put(RegKey.ADV, new AdventureRegistry());
     }
@@ -153,7 +153,7 @@ private Scheduler _skedder;
     switch (regtype)
     {
         case ADV:   reg = new AdventureRegistry();
-        case BLDG:  reg = new BuildingRegistry(_skedder);
+        case BLDG:  reg = new BuildingRegistry(_skedder, (NPCRegistry) _regMap.get(RegKey.NPC));
         case ITEM:  reg = new ItemRegistry();
         case NPC:   reg = new NPCRegistry();
         case OCP:   reg = new OccupationRegistry();
