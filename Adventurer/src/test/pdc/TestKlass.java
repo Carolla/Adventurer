@@ -11,20 +11,17 @@
 
 package test.pdc;
 
-import pdc.Klass;
-
-import civ.PersonKeys;
-
-import chronos.Chronos;
-
-import mylib.MsgCtrl;
-
 import java.util.EnumMap;
 
 import junit.framework.TestCase;
+import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.Before;
+
+import pdc.Klass;
+import chronos.Chronos;
+import civ.PersonKeys;
 
 /**
  * Tests the abstract Klass class by implementing a concrete subclass from which the

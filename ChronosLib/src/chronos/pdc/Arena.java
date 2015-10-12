@@ -12,8 +12,8 @@
 
 package chronos.pdc;
 
-import chronos.Chronos;
 import mylib.dmc.DbReadWriter;
+import chronos.Chronos;
 
 
 /**
@@ -100,7 +100,6 @@ public class Arena
      */
     public void close()
     {
-        _dbi.close();
         _thisArena = null;
     }
 

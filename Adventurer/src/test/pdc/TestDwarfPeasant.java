@@ -11,20 +11,17 @@
 
 package test.pdc;
 
-import pdc.character.Person;
+import java.util.ArrayList;
 
+import junit.framework.TestCase;
+import mylib.Constants;
+import mylib.MsgCtrl;
+import mylib.pdc.MetaDie;
+import pdc.character.Person;
 import chronos.Chronos.ATTRIBUTE;
 import chronos.pdc.AttributeList;
 import chronos.pdc.Race;
 import chronos.pdc.Skill;
-
-import mylib.Constants;
-import mylib.MsgCtrl;
-import mylib.pdc.MetaDie;
-
-import java.util.ArrayList;
-
-import junit.framework.TestCase;
 
 /**
  * Tests the Peasant object of all Races. Private methods of Peasant are tested

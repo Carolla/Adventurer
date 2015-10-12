@@ -18,6 +18,7 @@ import mylib.dmc.IRegistryElement;
 import mylib.pdc.Registry;
 import chronos.Chronos;
 import chronos.pdc.NPC;
+import chronos.pdc.Command.Scheduler;
 import chronos.pdc.buildings.Bank;
 import chronos.pdc.buildings.Building;
 import chronos.pdc.buildings.ClericsGuild;
@@ -41,10 +42,13 @@ public class BuildingRegistry extends Registry
   // CONSTRUCTOR(S) AND RELATED METHODS
   // ========================================================================
 
-  /** Called by RegistryFactory class */
-  protected BuildingRegistry()
+  private final Scheduler _skedder;
+
+/** Called by RegistryFactory class */
+  protected BuildingRegistry(Scheduler skedder)
   {
     super(Chronos.BuildingRegPath);
+    _skedder = skedder;
   }
 
 
@@ -57,7 +61,7 @@ public class BuildingRegistry extends Registry
     // Create each of the default buildings and save to registry
     // The constructors load the default data
     try {
-      super.add(new Inn()); // Ugly Ogre Inn
+      super.add(new Inn(_skedder)); // Ugly Ogre Inn
       super.add(new Store()); // Rat's Pack
       super.add(new Jail()); // Jail
       super.add(new Bank()); // The Bank

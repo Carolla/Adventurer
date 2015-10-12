@@ -128,7 +128,7 @@ public class TestRegistry
     MsgCtrl.where(this);
 
     // Normal Create an object to add and verify
-    SomeObject so1 = new SomeObject(4.2, "object one");
+    SomeObject so1 = new SomeObject(4, "object one");
     _testReg.add(so1); // object 1 into db
     assertEquals(1, _testReg.getNbrElements());
     assertEquals(so1, _testReg.getUnique("object one"));
@@ -140,7 +140,7 @@ public class TestRegistry
     assertEquals(so2, _testReg.getUnique("object two"));
 
     // Normal Add two identical objects and verify that the second is not added
-    SomeObject so1Copy = new SomeObject(4.2, "object one");
+    SomeObject so1Copy = new SomeObject(4, "object one");
     assertTrue(so1Copy.equals(so1));
     // The copy is rejected because it matches an original
     assertFalse(_testReg.add(so1Copy));
@@ -173,7 +173,7 @@ public class TestRegistry
     MsgCtrl.where(this);
 
     // Normal Create an object to add and verify
-    SomeObject so1 = new SomeObject(4.2, "object one");
+    SomeObject so1 = new SomeObject(4, "object one");
     _testReg.add(so1); // object 1 into db
     assertEquals(1, _testReg.getNbrElements());
     assertTrue(_testReg.contains(so1));
@@ -195,7 +195,7 @@ public class TestRegistry
     assertTrue(_testReg.contains(so3));
 
     // Normal Verify that an updated object is still contained
-    so3.setNum(-42.0);
+    so3.setNum(-42);
     _testReg.update(so3); // object 3 into db
     assertEquals(2, _testReg.getNbrElements());
     assertFalse(_testReg.contains(so1));
@@ -225,7 +225,7 @@ public class TestRegistry
     MsgCtrl.where(this);
 
     // Normal Create an object to add and verify
-    SomeObject so = new SomeObject(4.2, "perfect");
+    SomeObject so = new SomeObject(4, "perfect");
     _testReg.add(so);
     assertEquals(1, _testReg.getNbrElements());
     assertEquals(so, _testReg.getUnique("perfect"));
@@ -275,9 +275,9 @@ public class TestRegistry
     MsgCtrl.where(this);
 
     // Prepare: Add a few objects to the db
-    SomeObject so1 = new SomeObject(1.0, "one");
-    SomeObject so2 = new SomeObject(2.0, "two");
-    SomeObject so3 = new SomeObject(3.0, "three");
+    SomeObject so1 = new SomeObject(1, "one");
+    SomeObject so2 = new SomeObject(2, "two");
+    SomeObject so3 = new SomeObject(3, "three");
     _testReg.add(so3);
     _testReg.add(so1);
     _testReg.add(so2);
@@ -304,9 +304,9 @@ public class TestRegistry
 
     // Normal Get a list of elements that have the same key
     // Add some same non-key values for different keys to get a list
-    SomeObject so11 = new SomeObject(1.0, "eleventy");
-    SomeObject so12 = new SomeObject(2.0, "eleventy");
-    SomeObject so13 = new SomeObject(3.0, "eleventy");
+    SomeObject so11 = new SomeObject(1, "eleventy");
+    SomeObject so12 = new SomeObject(2, "eleventy");
+    SomeObject so13 = new SomeObject(3, "eleventy");
     _testReg.add(so11);
     _testReg.add(so12);   
     _testReg.add(so13);   
@@ -320,7 +320,7 @@ public class TestRegistry
     }
 
     // Error get an object with an empty string name
-    SomeObject emptySO = new SomeObject(-99.0, " ");
+    SomeObject emptySO = new SomeObject(-99, " ");
     assertFalse(_testReg.add(emptySO));
   }
 
@@ -341,9 +341,9 @@ public class TestRegistry
     MsgCtrl.where(this);
 
     // Prepare: Add a few objects to the db
-    SomeObject so1 = new SomeObject(1.0, "one");
-    SomeObject so2 = new SomeObject(2.0, "two");
-    SomeObject so3 = new SomeObject(3.0, "three");
+    SomeObject so1 = new SomeObject(1, "one");
+    SomeObject so2 = new SomeObject(2, "two");
+    SomeObject so3 = new SomeObject(3, "three");
     _testReg.add(so3);
     _testReg.add(so1);
     _testReg.add(so2);
@@ -368,9 +368,9 @@ public class TestRegistry
 
     // Normal Get a list of elements that have the same key
     // Add some same non-key values for different keys to get a list
-    SomeObject so11 = new SomeObject(1.0, "eleventy");
-    SomeObject so12 = new SomeObject(2.0, "eleventy");
-    SomeObject so13 = new SomeObject(3.0, "eleventy");
+    SomeObject so11 = new SomeObject(1, "eleventy");
+    SomeObject so12 = new SomeObject(2, "eleventy");
+    SomeObject so13 = new SomeObject(3, "eleventy");
     _testReg.add(so11);
     _testReg.add(so12);
     _testReg.add(so13);
@@ -430,8 +430,8 @@ public class TestRegistry
     MsgCtrl.msg("\n");
 
     // Add two and try again
-    SomeObject s1 = new SomeObject(1.5, "supplement A");
-    SomeObject s2 = new SomeObject(2.5, "supplement B");
+    SomeObject s1 = new SomeObject(1, "supplement A");
+    SomeObject s2 = new SomeObject(2, "supplement B");
     _testReg.add(s1);
     _testReg.add(s2);
     list = _mock.getAll();
@@ -462,7 +462,7 @@ public class TestRegistry
     assertEquals(_testReg.getNbrElements(), 0);
 
     // Add get a unique object from the list
-    SomeObject obj = new SomeObject(11.2, "key");
+    SomeObject obj = new SomeObject(11, "key");
     assertNotNull(obj);
     _testReg.add(obj);    
     assertEquals(_testReg.getNbrElements(), 1);
@@ -507,14 +507,14 @@ public class TestRegistry
 
     // Normal Ensure that one object is swapped for a newer one
     // First, place an object in the registry
-    SomeObject so1 = new SomeObject(1.0, "one");
+    SomeObject so1 = new SomeObject(1, "one");
     assertTrue(_testReg.add(so1));
     MsgCtrl.msg("\tObject stored: " + so1.toString());
     MsgCtrl.msgln("\tRegistry contains " + _testReg.getNbrElements() + " elements.");
     assertEquals(1, _testReg.getNbrElements());
 
     // Normal update it with a different object but attempt should fail
-    SomeObject so2 = new SomeObject(2.0, "two");
+    SomeObject so2 = new SomeObject(2, "two");
     assertFalse(_testReg.update(so2));
     assertEquals(1, _testReg.getNbrElements());
 
@@ -527,7 +527,7 @@ public class TestRegistry
 
     // Normal Ensure that one object is swapped for different one but of the same field values
     // Now try the update: same fields but different instance
-    SomeObject so1Copy = new SomeObject(1.0, "one");
+    SomeObject so1Copy = new SomeObject(1, "one");
     // This update will try to get around the uniqueness issue
     assertTrue(_testReg.update(so1Copy));
     MsgCtrl.msgln("\tObject tried to update to make a duplicate...");
@@ -535,7 +535,7 @@ public class TestRegistry
         + _testReg.getNbrElements() + " elements.");
 
     // Error Try to replace an object that does not exist in the registry
-    SomeObject soNone = new SomeObject(-99.0, "None");
+    SomeObject soNone = new SomeObject(-99, "None");
     assertFalse(_testReg.update(soNone));
     assertEquals(2, _testReg.getNbrElements());
     MsgCtrl.msgln("\tOriginal not found, so registry still contains "

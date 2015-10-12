@@ -20,7 +20,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import pdc.command.CommandFactory;
-import pdc.command.Scheduler;
+import chronos.pdc.Command.Scheduler;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.NPCRegistry;
 import chronos.pdc.registry.RegistryFactory;
@@ -128,7 +128,7 @@ public class TA09_CmdLeave
 
     // Setup: must be inside Building (onTown = false, currentBuilding !null; isInside = true)
     _cp.receiveCommand("Enter the Bank");
-    _skedder.doOneCommand();
+    _skedder.doOneUserCommand();
 
     assertFalse(_bldgCiv.isOnTown());
     assertTrue(_bldgCiv.isInside());
@@ -136,7 +136,7 @@ public class TA09_CmdLeave
 
     // TEST
     assertTrue(_cp.receiveCommand("Leave "));
-    _skedder.doOneCommand();
+    _skedder.doOneUserCommand();
 
     // Confirm Hero is no longer on town or in building
     assertFalse(_bldgCiv.isOnTown());
@@ -158,7 +158,7 @@ public class TA09_CmdLeave
 
     // Setup: outside Building (onTown = false, currentBuilding !null; isInside = false)
     _cp.receiveCommand("Approach the Bank");
-    _skedder.doOneCommand();
+    _skedder.doOneUserCommand();
 
     assertFalse(_bldgCiv.isOnTown());
     assertNotNull(_bldgCiv.getCurrentBuilding());

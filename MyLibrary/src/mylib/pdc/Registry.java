@@ -118,7 +118,6 @@ public abstract class Registry
     /** Close the given registry */
     public void closeRegistry()
     {
-        _regRW.close();
     }
 
 
@@ -262,18 +261,6 @@ public abstract class Registry
         // If no element found, return null
         return regElem;
     }
-
-
-    /**
-     * Check if registry is closed or not
-     * 
-     * @return true if registry is closed
-     */
-    public boolean isOpen()
-    {
-        return _regRW.isOpen();
-    }
-
 
     /**
      * Verifies if the string (key) is unique to the Registry Calls getUnique() to return a boolean

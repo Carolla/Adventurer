@@ -9,11 +9,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import pdc.command.CmdReturn;
-import pdc.command.Command;
 import pdc.command.CommandFactory;
 import pdc.command.CommandInput;
-import pdc.command.NullCommand;
-import pdc.command.Scheduler;
+import chronos.pdc.Command.Command;
+import chronos.pdc.Command.NullCommand;
+import chronos.pdc.Command.Scheduler;
 import civ.CommandParser;
 
 public class TestCommandParser
@@ -102,9 +102,6 @@ public class TestCommandParser
             super();
         }
         
-        @Override
-        public void run() {}
-
         @Override
         public void sched(Command cmd)
         {

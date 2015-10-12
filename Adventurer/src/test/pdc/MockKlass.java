@@ -11,12 +11,11 @@
 
 package test.pdc;
 
-import pdc.Klass;
+import java.util.ArrayList;
 
+import pdc.Klass;
 import chronos.pdc.AttributeList;
 import chronos.pdc.Skill;
-
-import java.util.ArrayList;
 
 /**
  * Fake class to test the base class methods of the Klass superclass.

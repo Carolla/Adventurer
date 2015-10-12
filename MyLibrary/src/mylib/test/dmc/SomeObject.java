@@ -27,7 +27,7 @@ public class SomeObject implements IRegistryElement
   /** Field to use as search key */
   private String _key;
   /** Test field */
-  private double _num = 9.1;
+  private int _num = 9;
   /** Test field, also used as key */
   private String _word = "test";
 
@@ -38,7 +38,7 @@ public class SomeObject implements IRegistryElement
    * @param value any float number
    * @param text any text string
    */
-  public SomeObject(double value, String text) throws IllegalArgumentException
+  public SomeObject(int value, String text) throws IllegalArgumentException
   {
     _num = value;
     _word = text;
@@ -52,7 +52,7 @@ public class SomeObject implements IRegistryElement
    * @param target object to match against
    * @return true if both fields match, else false
    */
-  public boolean equals(IRegistryElement object)
+  public boolean equals(Object object)
   {
     SomeObject target = (SomeObject) object;
     return ((_num == target.getNum()) && (_word.equals(target.getWord())));
@@ -125,7 +125,7 @@ public class SomeObject implements IRegistryElement
    * 
    * @param value new value to store
    */
-  public void setNum(double value)
+  public void setNum(int value)
   {
     _num = value;
   }
@@ -141,6 +141,13 @@ public class SomeObject implements IRegistryElement
     s += "\t word = " + _word;
     return s;
   }
+
+
+@Override
+public boolean equals(IRegistryElement target)
+{
+    return this.equals((Object) target);
+}
 
 
 } // end of SomeObject class

@@ -44,8 +44,8 @@ import mylib.hic.ShuttleList;
 import net.miginfocom.swing.MigLayout;
 import pdc.Util;
 import pdc.command.CommandFactory;
-import pdc.command.Scheduler;
 import chronos.Chronos;
+import chronos.pdc.Command.Scheduler;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
@@ -185,6 +185,9 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     protected void constructMembers()
     {
         // Create the BuildingDisplayCiv to define the output GUI for descriptions and images
+        _skedder = new Scheduler(); //Skedder first for injection
+        RegistryFactory rf = RegistryFactory.getInstance();
+        rf.setScheduler(_skedder);
         BuildingRegistry breg =
                 (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
         _bldgCiv = new BuildingDisplayCiv(this, breg);
@@ -192,7 +195,6 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
         // Create the Civ
         _mfCiv = new MainframeCiv(this, _bldgCiv);
 
-        _skedder = new Scheduler();
         _cp = new CommandParser(_skedder, new CommandFactory(_mfCiv, _bldgCiv));
         _iop = new IOPanel(_mfCiv, _cp);
     }
@@ -688,11 +690,5 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     {
         add(component, location);
     }
-
-    public void start()
-    {
-        new Thread(_skedder).start();        
-    }
-
 
 } // end of Mainframe outer class

@@ -10,15 +10,14 @@
 
 package pdc.character;
 
-import chronos.pdc.AttributeList;
-import chronos.pdc.Race;
-import chronos.pdc.Skill;
+import java.io.Serializable;
+import java.util.ArrayList;
 
 import mylib.ApplicationException;
 import mylib.MsgCtrl;
-
-import java.io.Serializable;
-import java.util.ArrayList;
+import chronos.pdc.AttributeList;
+import chronos.pdc.Race;
+import chronos.pdc.Skill;
 
 /**
  * Human is the normalized Person of all Races and Klasses. It implements the

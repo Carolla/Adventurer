@@ -1,10 +1,8 @@
-package pdc.command;
+package chronos.pdc.Command;
 
 import java.util.List;
 
 import mylib.MsgCtrl;
-import civ.ChronosLogger;
-import civ.MainframeCiv;
 
 public class NullCommand extends Command
 {
@@ -22,8 +20,9 @@ public class NullCommand extends Command
             throws NullPointerException
     {
         super(name, delay, duration, desc, fmt);
-        ChronosLogger logger = MainframeCiv.getLogger();
-        logger.errorOut(ERRMSG_UNKNOWN);
+//        ChronosLogger logger = MainframeCiv.getLogger();
+//        logger.errorOut(ERRMSG_UNKNOWN);
+        MsgCtrl.msgln(ERRMSG_UNKNOWN);
     }
 
     @Override

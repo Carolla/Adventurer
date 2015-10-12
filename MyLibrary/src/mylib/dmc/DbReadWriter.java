@@ -9,14 +9,14 @@
 
 package mylib.dmc;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.db4o.Db4oEmbedded;
+import com.db4o.EmbeddedObjectContainer;
+import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
 import com.db4o.config.Configuration;
-import com.db4o.ext.Db4oIOException;
 import com.db4o.ext.ExtObjectContainer;
 import com.db4o.query.Predicate;
 
@@ -35,8 +35,6 @@ import com.db4o.query.Predicate;
  */
 public class DbReadWriter
 {
-    /** The instance of the database in memory */
-    private ExtObjectContainer _db;
     /** The path of the database file */
     private final String _regPath;
 
@@ -55,7 +53,6 @@ public class DbReadWriter
             throw new NullPointerException();
         }
 
-        open(filepath);
         _regPath = filepath;
     }
 
@@ -72,40 +69,44 @@ public class DbReadWriter
     public void addElement(IRegistryElement obj)
     {
         if (obj == null) {
-            // Do not allow null objects to be stored
-            return;
+            throw new NullPointerException("Object added was null");
         } else {
-            _db.store(obj);
-            _db.commit();
+            ObjectContainer objectContanier = open(_regPath);
+            try {
+                objectContanier.store(obj);
+                objectContanier.commit();
+            } finally {
+                objectContanier.close();
+            }
         }
     }
 
     /**
      * Deletes all elements in the registry. This method is only used for testing.
      * <p>
-     * WARNING: This method is for testing only. An application should never have a need to
-     * clear the database, file, and DbReadWriter.
+     * WARNING: This method is for testing only. An application should never have a need to clear
+     * the database, file, and DbReadWriter.
      */
     @SuppressWarnings("serial")
     public void dbClear()
     {
-        ObjectSet<IRegistryElement> obSet = _db.query(new Predicate<IRegistryElement>() {
-            public boolean match(IRegistryElement candidate)
-            {
-                return true;
-            }
-        });
-        for (IRegistryElement elem : obSet) {
-            _db.delete(elem);
-        }
-    }
+        ObjectContainer objectContanier = open(_regPath);
 
-    /**
-     * Closes down the database but keeps its file
-     */
-    public void close()
-    {
-        _db.close();
+        ObjectSet<IRegistryElement> obSet =
+                objectContanier.query(new Predicate<IRegistryElement>() {
+                    public boolean match(IRegistryElement candidate)
+                    {
+                        return true;
+                    }
+                });
+
+        try {
+            for (IRegistryElement elem : obSet) {
+                objectContanier.delete(elem);
+            }
+        } finally {
+            objectContanier.close();
+        }
     }
 
     /**
@@ -118,26 +119,19 @@ public class DbReadWriter
     @SuppressWarnings("serial")
     public boolean containsElement(final IRegistryElement target)
     {
+        ObjectContainer objectContanier = open(_regPath);
+
         // Run the query using the equals method
-        List<IRegistryElement> obSet = _db.query(new Predicate<IRegistryElement>() {
+        List<IRegistryElement> obSet = objectContanier.query(new Predicate<IRegistryElement>() {
             public boolean match(IRegistryElement candidate)
             {
                 return target.equals(candidate);
             }
         });
-        return (obSet.size() > 0) ? true : false;
-    }
 
-    /**
-     * Close down the database and delete its file
-     * 
-     * @throws Db4oIOException on a db4o-specific IO exception
-     */
-    public void dbDelete() throws Db4oIOException
-    {
-        close();
-        File regfile = new File(_regPath);
-        regfile.delete();
+        boolean contains = obSet.size() > 0;
+        objectContanier.close();
+        return contains;
     }
 
     /**
@@ -156,21 +150,26 @@ public class DbReadWriter
             return true;
         }
 
-        boolean retval = false;
-        ObjectSet<IRegistryElement> obSet = _db.query(new Predicate<IRegistryElement>() {
-            public boolean match(IRegistryElement candidate)
-            {
-                return candidate.equals(target);
-            }
-        });
+        ObjectContainer objectContanier = open(_regPath);
+        ObjectSet<IRegistryElement> obSet =
+                objectContanier.query(new Predicate<IRegistryElement>() {
+                    public boolean match(IRegistryElement candidate)
+                    {
+                        return candidate.equals(target);
+                    }
+                });
 
-        // If object was found, delete it...
-        if (obSet.size() != 0) {
-            IRegistryElement found = obSet.next(); // get first object in result
-                                                   // set
-            _db.delete(found);
-            _db.commit();
-            retval = true;
+        boolean retval = false;
+        try {
+            if (obSet.size() != 0) {
+                IRegistryElement found = obSet.next(); // get first object in result
+                                                       // set
+                objectContanier.delete(found);
+                objectContanier.commit();
+                retval = true;
+            }
+        } finally {
+            objectContanier.close();
         }
         // ...else if object was not found, there is nothing to do
         return retval;
@@ -186,11 +185,6 @@ public class DbReadWriter
         return _regPath;
     }
 
-    public boolean isOpen()
-    {
-        return !_db.isClosed();
-    }
-
     /**
      * Create a new db only if it doesn't exist; else db4o will throw an exception. Create the
      * object container for transaction processing with the default configuration. Javadoc Tutorial
@@ -200,9 +194,16 @@ public class DbReadWriter
      * NOTE: The folder structure must exist before a db file within it can be created. db4o will
      * not create folders: db4o will throw an enigmatic System IO error.
      */
-    public void open(String filepath)
+    public EmbeddedObjectContainer open(String filepath)
     {
-        _db = (ExtObjectContainer) Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), filepath);
+        EmbeddedObjectContainer container = null;
+        try {
+            container = Db4oEmbedded.openFile(filepath);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+        return container;
     }
 
     /**
@@ -213,16 +214,21 @@ public class DbReadWriter
      */
     public List<IRegistryElement> query(Predicate<IRegistryElement> pred)
     {
+
         List<IRegistryElement> elementList = new ArrayList<IRegistryElement>();
         // Guards: db and predicate must exist
-        // if (_db == null) {
-        if (_db.isClosed() || pred == null) {
+        if (pred == null) {
             return elementList;
         }
 
+        ObjectContainer objectContanier = open(_regPath);
         // Use predicate to call match() method to select element
-        elementList = _db.query(pred);
-        return elementList;
+        try {
+            elementList.addAll(objectContanier.query(pred));
+            return elementList;
+        } finally {
+            objectContanier.close();
+        }
     }
 
     /**
@@ -234,10 +240,14 @@ public class DbReadWriter
      */
     public void setReadOnly(boolean roFlag)
     {
+        ExtObjectContainer objectContanier = (ExtObjectContainer) open(_regPath);
+
         // Get the current configuration; needs Extended services for this
-        Configuration config = _db.configure();
+        Configuration config = objectContanier.configure();
         // Set the configuration to the desired state
         config.readOnly(roFlag);
+
+        objectContanier.close();
     }
 
 
@@ -251,23 +261,21 @@ public class DbReadWriter
 
     /** Finds all elements in the given Registry ReadWriter */
     @SuppressWarnings("serial")
-    public int dbSize()
+    public int size()
     {
-        ObjectSet<IRegistryElement> obSet = _db.query(new Predicate<IRegistryElement>() {
-            public boolean match(IRegistryElement candidate)
-            {
-                return true;
-            }
-        });
-        return obSet.size();
+        ObjectContainer objectContanier = open(_regPath);
+        ObjectSet<IRegistryElement> obSet =
+                objectContanier.query(new Predicate<IRegistryElement>() {
+                    public boolean match(IRegistryElement candidate)
+                    {
+                        return true;
+                    }
+                });
+        int size = obSet.size();
+
+        objectContanier.close();
+        return size;
     }
 
-
-    /** Mock registry read writer to access private methods */
-    public class MockDBRW
-    {
-        public MockDBRW()
-        {}
-    } // end of MockDbReadWriter inner class
 } // end of RegistryReadWriter class
 

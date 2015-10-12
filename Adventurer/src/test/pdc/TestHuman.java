@@ -11,20 +11,18 @@
 
 package test.pdc;
 
-import pdc.character.Human;
-import pdc.character.Human.MockHuman;
-
-import chronos.pdc.Age;
-import chronos.pdc.AttributeList;
-
+import junit.framework.TestCase;
 import mylib.Constants;
 import mylib.MsgCtrl;
 import mylib.pdc.MetaDie;
 
-import junit.framework.TestCase;
-
 import org.junit.After;
 import org.junit.Before;
+
+import pdc.character.Human;
+import pdc.character.Human.MockHuman;
+import chronos.pdc.Age;
+import chronos.pdc.AttributeList;
 
 /**
  * Tests only the derived methods of the Human class, using an empty

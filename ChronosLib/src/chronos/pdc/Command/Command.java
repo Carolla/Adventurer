@@ -9,13 +9,10 @@
  * email: acline@carolla.com.
  */
 
-package pdc.command; // This package value is needed by the subcommands; see _cmdPackage field
+package chronos.pdc.Command; // This package value is needed by the subcommands; see _cmdPackage field
 
 import java.util.ArrayList;
 import java.util.List;
-
-import civ.ChronosLogger;
-import civ.MainframeCiv;
 
 
 /**
@@ -67,6 +64,7 @@ public abstract class Command
 {
   /** The package field that allows the CommandFactory to know where the commands are */
   static final protected String CMD_PACKAGE = "pdc.command.";
+  public enum CommandStatus { INTERNAL, USER };
   /** The name of the command */
   protected String _name = null;
   /** The amount of time before the command is triggered */
@@ -221,25 +219,25 @@ public abstract class Command
   // ============================================================
   // PROTECTED METHODS
   // ============================================================
-
-  /**
-   * Displays correct usage format for user command in case of error. This method will work if there
-   * are no parms needed for the subcommand. If parms are needed, the subcommand must supply the
-   * override.
-   */
-  protected void usage()
-  {
-      ChronosLogger logger = MainframeCiv.getLogger();
-    if (_cmdfmt == null) {
-        logger.errorOut("USAGE: " + _name + " command takes no parms");
-    }
-    else {
-        logger.errorOut("USAGE: " +  _cmdfmt);
-    }
-    // Do not increment the game clock for this command
-    _delay = 0;
-    _duration = 0;
-  }
+//
+//  /**
+//   * Displays correct usage format for user command in case of error. This method will work if there
+//   * are no parms needed for the subcommand. If parms are needed, the subcommand must supply the
+//   * override.
+//   */
+//  protected void usage()
+//  {
+//      ChronosLogger logger = MainframeCiv.getLogger();
+//    if (_cmdfmt == null) {
+//        logger.errorOut("USAGE: " + _name + " command takes no parms");
+//    }
+//    else {
+//        logger.errorOut("USAGE: " +  _cmdfmt);
+//    }
+//    // Do not increment the game clock for this command
+//    _delay = 0;
+//    _duration = 0;
+//  }
 
   /**
    * @return
@@ -248,6 +246,26 @@ public abstract class Command
   {
     return _isInitialized;
   }
+
+  /**
+   * By default, assume commands are UserInput.
+   * 
+   * @return whether command is input from user
+   */
+    public boolean isUserInput()
+    {
+        return true;
+    }
+
+    /**
+     * By default, assume commands are UserInput.
+     * 
+     * @return whether command is internal system commnad
+     */
+    public boolean isInternal()
+    {
+        return false;
+    }
 
 
   /**

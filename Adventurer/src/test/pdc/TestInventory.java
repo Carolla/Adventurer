@@ -11,20 +11,18 @@
 
 package test.pdc;
 
-import pdc.Inventory;
-import pdc.Inventory.MockInventory;
-
-import chronos.civ.MiscKeys.ItemCategory;
-import chronos.pdc.Item;
-
+import junit.framework.TestCase;
 import mylib.ApplicationException;
 import mylib.MsgCtrl;
-
-import junit.framework.TestCase;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import pdc.Inventory;
+import pdc.Inventory.MockInventory;
+import chronos.civ.MiscKeys.ItemCategory;
+import chronos.pdc.Item;
 
 /**
  * Tests the Inventory repository, a collection of Item objects.

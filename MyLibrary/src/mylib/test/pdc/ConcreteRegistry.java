@@ -14,7 +14,6 @@ import java.util.List;
 
 import mylib.ApplicationException;
 import mylib.dmc.DbReadWriter;
-import mylib.dmc.DbReadWriter.MockDBRW;
 import mylib.dmc.IRegistryElement;
 import mylib.pdc.Registry;
 import mylib.test.dmc.SomeObject;
@@ -68,9 +67,9 @@ public class ConcreteRegistry extends Registry
   protected void initialize()
   {
     // Create three objects to initialize database
-    SomeObject obj1 = new SomeObject(1.0, "one");
-    SomeObject obj2 = new SomeObject(2.0, "two");
-    SomeObject obj3 = new SomeObject(3.0, "three");
+    SomeObject obj1 = new SomeObject(1, "one");
+    SomeObject obj2 = new SomeObject(2, "two");
+    SomeObject obj3 = new SomeObject(3, "three");
     add(obj1);
     add(obj2);
     add(obj3);
@@ -86,17 +85,6 @@ public class ConcreteRegistry extends Registry
    */
   public class MockRegistry
   {
-    /** Testing mock for the DBReadWriter component */
-    MockDBRW _dbMock = null;
-
-    /**
-     * Creates this testing mock, and a testing mock of the DbReadWriter to have access to its
-     * private methods
-     */
-    public MockRegistry()
-    {
-      _dbMock = _regRW.new MockDBRW();
-    }
 
     /** Clear all elements in the database but leave it open */
     @SuppressWarnings("serial")

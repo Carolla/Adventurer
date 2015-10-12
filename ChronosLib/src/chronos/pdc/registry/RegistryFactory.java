@@ -13,7 +13,7 @@ package chronos.pdc.registry;
 import java.util.HashMap;
 
 import mylib.pdc.Registry;
-import chronos.Chronos;
+import chronos.pdc.Command.Scheduler;
 
 /**
  * Creates singleton registries of various kinds and keeps count of existing registries
@@ -63,6 +63,9 @@ public class RegistryFactory
 
   }
 
+/** For creating certain registries */
+private Scheduler _skedder;
+
 
   // ============================================================
   // Constructor(s) and Related Methods
@@ -74,11 +77,24 @@ public class RegistryFactory
   }
 
 
-  /** Retrieve or create the factory class, a collection of all Registries */
+    private void initRegistries()
+    {
+        _regMap.put(RegKey.ITEM, new ItemRegistry());
+        _regMap.put(RegKey.SKILL, new SkillRegistry());
+        _regMap.put(RegKey.OCP, new OccupationRegistry());
+        _regMap.put(RegKey.NPC, new NPCRegistry());
+        _regMap.put(RegKey.BLDG, new BuildingRegistry(_skedder));
+        _regMap.put(RegKey.TOWN, new TownRegistry());
+        _regMap.put(RegKey.ADV, new AdventureRegistry());
+    }
+
+
+/** Retrieve or create the factory class, a collection of all Registries */
   static public RegistryFactory getInstance()
   {
     if (_rf == null) {
       _rf = new RegistryFactory();
+      _rf.initRegistries();
     }
     return _rf;
   }
@@ -132,31 +148,20 @@ public class RegistryFactory
     if (regtype == null) {
       return null;
     }
-    Registry reg = null;
-    String regName = Chronos.REGISTRY_CLASSPKG + regtype + "Registry";
-    try {
-      reg = (Registry) Class.forName(regName).newInstance();
-      // System.err.println("RegistryFactory.createRegistry() created = " + reg.toString());
-      _regMap.put(regtype, reg);
 
-      // TODO Figure out how to suppress these exception messages during testing
-    } catch (ClassNotFoundException ex) {
-      System.err.println("createRegistry(): Class.forName() cannot find specified registry: "
-          + ex.getMessage());
-      ex.printStackTrace();
-    } catch (IllegalAccessException ex) {
-      System.err.println("createRegistry(): cannot access specified method: " + ex.getMessage());
-    } catch (IllegalArgumentException ex) {
-      System.err.println("createRegistry(): found unexpected argument: " + ex.getMessage());
-    } catch (NullPointerException ex) {
-      System.err.println("createRegistry(): null pointer exception thrown: " + ex.getMessage());
-    } catch (InstantiationException ex) {
-      System.err.println("createRegistry(): class cannot be created with newInstance(): "
-          + ex.getMessage());
-    } // catch (Exception ex) {
-    // System.err.println("createRegistry(): possible database closed exception thrown: "
-    // + ex.getMessage());
-    // }
+    Registry reg = null;
+    switch (regtype)
+    {
+        case ADV:   reg = new AdventureRegistry();
+        case BLDG:  reg = new BuildingRegistry(_skedder);
+        case ITEM:  reg = new ItemRegistry();
+        case NPC:   reg = new NPCRegistry();
+        case OCP:   reg = new OccupationRegistry();
+        case SKILL: reg = new SkillRegistry();
+        case TOWN:  reg = new TownRegistry(); 
+    }
+
+    _regMap.put(regtype, reg);
     return reg;
   }
 
@@ -194,48 +199,20 @@ public class RegistryFactory
    */
   public Registry getRegistry(RegKey regtype)
   {
-    Registry reg = getExisting(regtype);
+    Registry reg = _regMap.get(regtype);
     if (reg == null) {
       reg = createRegistry(regtype);
     }
+       
     return reg;
   }
 
-  // ============================================================
-  // Private Methods
-  // ============================================================
-
   /**
-   * Get an existing Registry, else return null; do not create it
-   * 
-   * @param regtype one of the Registries defined in <code>enum RegKey</code>
-   * @return the registry of the specified type, else null if not found
-   */
-  private Registry getExisting(RegKey regtype)
-  {
-    return _regMap.get(regtype);
-  }
-
-
-  // private Registry findRegistry(RegKey regtype)
-  // {
-  // Registry reg = _regMap.get(regtype);
-  // if (isValidRegistry(reg)) {
-  // return reg;
-  // } else {
-  // return createRegistry(regtype);
-  // }
-  // }
-
-
-  // private boolean isValidRegistry(Registry reg)
-  // {
-  // if ((reg == null) || (reg.isClosed())) {
-  // _regMap.remove(reg);
-  // return false;
-  // }
-  // return true;
-  // }
-
+   * Setter injection for Scheduler field, needed by some children
+   * @param skedder scheduler */
+    public void setScheduler(Scheduler skedder)
+    {
+        _skedder = skedder;
+    }
 
 } // end of RegistryFactory class

@@ -11,18 +11,16 @@
 
 package pdc;
 
-import civ.PersonKeys;
-
-import chronos.Chronos;
-import chronos.pdc.AttributeList;
-import chronos.pdc.Skill;
-
-import mylib.Constants;
-import mylib.MsgCtrl;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EnumMap;
+
+import mylib.Constants;
+import mylib.MsgCtrl;
+import chronos.Chronos;
+import chronos.pdc.AttributeList;
+import chronos.pdc.Skill;
+import civ.PersonKeys;
 
 /**
  * Defines the common methods and attributes for all Klasses. Peasant is the

@@ -11,14 +11,13 @@
 
 package pdc;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+
+import mylib.pdc.MetaDie;
 import chronos.Chronos.ATTRIBUTE;
 import chronos.pdc.AttributeList;
 import chronos.pdc.Skill;
-
-import mylib.pdc.MetaDie;
-
-import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
  * Peasants are default-Klass Persons, not associated with a Guild, and are

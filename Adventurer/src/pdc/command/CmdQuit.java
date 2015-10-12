@@ -14,6 +14,7 @@ package pdc.command;
 
 import java.util.List;
 
+import chronos.pdc.Command.Command;
 import civ.BuildingDisplayCiv;
 import civ.MainframeCiv;
 

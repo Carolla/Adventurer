@@ -11,17 +11,14 @@
 
 package test.pdc;
 
-import pdc.character.Person;
-
-import chronos.pdc.AttributeList;
-import chronos.pdc.Race;
-import chronos.pdc.Skill;
-
-import mylib.MsgCtrl;
-
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
+import mylib.MsgCtrl;
+import pdc.character.Person;
+import chronos.pdc.AttributeList;
+import chronos.pdc.Race;
+import chronos.pdc.Skill;
 
 /**
  * Tests the Peasant Hero object. Private methods of Peasant are tested through

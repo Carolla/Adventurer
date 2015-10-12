@@ -13,15 +13,14 @@
 package test.pdc;
 
 
-import pdc.Peasant;
-import pdc.Peasant.MockPeasant;
-
-import mylib.MsgCtrl;
-
 import junit.framework.TestCase;
+import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.Before;
+
+import pdc.Peasant;
+import pdc.Peasant.MockPeasant;
 
 /**
  *

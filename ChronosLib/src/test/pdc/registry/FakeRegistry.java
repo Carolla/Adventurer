@@ -11,9 +11,9 @@
 
 package test.pdc.registry;
 
+import mylib.pdc.Registry;
 import chronos.Chronos;
 import chronos.pdc.Skill;
-import mylib.pdc.Registry;
 
 /**
  * Target for testing the RegistryFactory

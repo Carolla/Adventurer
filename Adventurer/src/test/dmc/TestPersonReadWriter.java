@@ -1,20 +1,17 @@
 package test.dmc;
 
-import pdc.character.Person;
-
-import dmc.PersonReadWriter;
-
-import chronos.Chronos;
-
-import mylib.MsgCtrl;
-
 import java.io.File;
 import java.io.IOException;
 
 import junit.framework.TestCase;
+import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.Before;
+
+import pdc.character.Person;
+import chronos.Chronos;
+import dmc.PersonReadWriter;
 
 /**
  * Test that the read/writer component of the SkillRegistry class works

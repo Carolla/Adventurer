@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import pdc.command.CommandFactory;
-import pdc.command.Scheduler;
+import chronos.pdc.Command.Scheduler;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
@@ -142,7 +142,7 @@ public class TA08_CmdEnter
             _cp.receiveCommand("Enter " + _bldgs.get(k));
 
             // After Cmd is executed...
-            _skedder.doOneCommand();
+            _skedder.doOneUserCommand();
             
             // Confirm Hero is no longer on town, but is inside a building
             assertFalse(_bldgCiv.isOnTown());
@@ -172,7 +172,7 @@ public class TA08_CmdEnter
             
             String bName = _bldgs.get(k);
             _cp.receiveCommand("Approach " + bName);
-            _skedder.doOneCommand();
+            _skedder.doOneUserCommand();
             assertFalse(_bldgCiv.isOnTown());
             assertFalse(_bldgCiv.isInside());
 
@@ -180,7 +180,7 @@ public class TA08_CmdEnter
             _cp.receiveCommand("Enter");
 
             // After Cmd is executed...
-            _skedder.doOneCommand();
+            _skedder.doOneUserCommand();
 
             // VERIFY
             // Confirm Hero is no longer on town, but is inside a building
@@ -210,7 +210,7 @@ public class TA08_CmdEnter
 
         // Setup: Enter a Building, and then try to enter same building
         _cp.receiveCommand("Enter " + bName1);
-        _skedder.doOneCommand();
+        _skedder.doOneUserCommand();
 
         assertFalse(_bldgCiv.isOnTown());
         assertTrue(_bldgCiv.isInside());

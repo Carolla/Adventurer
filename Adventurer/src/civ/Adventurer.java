@@ -73,7 +73,6 @@ public class Adventurer
                     adv.initRegistries();
                     // dumpAllRegistries();
                     final Mainframe frame = new Mainframe();
-                    frame.start();
                  
                     frame.setVisible(true);
                     frame.addWindowListener(new WindowAdapter() {

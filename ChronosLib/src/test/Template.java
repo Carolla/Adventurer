@@ -9,7 +9,7 @@
 
 package test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 import mylib.MsgCtrl;
 
 import org.junit.After;

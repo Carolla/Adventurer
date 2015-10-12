@@ -101,7 +101,7 @@ public abstract class Building implements IRegistryElement
       throw new ApplicationException("Business hours are invalid.");
     }
     // Probably not desired: Converts string to NPC object, stored with Building
-//    _buildingMaster = findBuildingMaster(masterName);
+    _buildingMaster = findBuildingMaster(masterName);
   }
 
   protected NPC findBuildingMaster(String masterName)

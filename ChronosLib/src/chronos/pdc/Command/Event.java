@@ -10,7 +10,8 @@
  * by email: acline@carolla.com.  
  */
 
-package pdc.command;
+package chronos.pdc.Command;
+
 
 
 /** 

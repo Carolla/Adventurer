@@ -29,7 +29,6 @@ import chronos.pdc.buildings.Bank;
 import chronos.pdc.buildings.Building;
 import chronos.pdc.buildings.ClericsGuild;
 import chronos.pdc.buildings.FightersGuild;
-import chronos.pdc.buildings.Inn;
 import chronos.pdc.buildings.Jail;
 import chronos.pdc.buildings.RoguesGuild;
 import chronos.pdc.buildings.Store;
@@ -338,10 +337,10 @@ public class TestBuilding
     dump(b);
     MsgCtrl.msgln("\n");
 
-    b = new Inn();
-    assertNotNull(b);
-    dump(b);
-    MsgCtrl.msgln("\n");
+//    b = new Inn();
+//    assertNotNull(b);
+//    dump(b);
+//    MsgCtrl.msgln("\n");
 
     b = new Jail();
     assertNotNull(b);
