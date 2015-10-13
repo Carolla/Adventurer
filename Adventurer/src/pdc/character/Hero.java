@@ -257,7 +257,7 @@ public class Hero implements Serializable // IRegistryElement
       "Sense Motive: +1 WIS to determine if person is lying or bluffing",
       "Sewing: Make/repair belt (1gp, 1hr), boots (5gp, 1 day), cloak (1gp, 1hr), hat (1gp, 1hr)",
       "Spot Details: +2 WIS to notice details such as obscure items in a dim room, "
-          + "or centipedes in a pile of trash",
+          + "\n\t or centipedes in a pile of trash",
       "Train Animals: Train animals or work teams",
       "Trapping: Catch animals alive (20%)",
       "Tumble: land softer when falling (reduce dmg by d3) "
@@ -455,7 +455,7 @@ public class Hero implements Serializable // IRegistryElement
       // displayThiefSkills(_thiefSkills);
       _thiefSkills = _race.adjRacialThiefSkills(_thiefSkills);
       // displayThiefSkills(_thiefSkills);
-      // Convert from String[][] to ArrayList<String> 
+      // Convert from String[][] to ArrayList<String>
       _klassSkills = toArrayList(_thiefSkills);
     }
 
@@ -467,7 +467,10 @@ public class Hero implements Serializable // IRegistryElement
     // 20. ADD RANDOM OCCUPATION AND OCCUPATIONAL SKILLS
     _occupation = assignOccupation();
     _ocpSkills = assignOcpSkills();
-    // displayList("Skills for occupation " + _occupation + ":", _ocpSkills);
+    // testing only
+    // _ocpSkills.add("Spot Details: +2 WIS to notice details such as bandits in ambush, "
+    // + "\n\t obscure items in a dim room, or centipedes in a pile of trash");
+    //    displayList("Skills for occupation " + _occupation + ":", _ocpSkills);
     // displayList("Inventory in backpack: ", _inventory);
 
     // 21. ASSIGN SPELLS TO CLERICS (WIZARDS ALREADY WERE ASSIgned 'READ MAGIC')
@@ -488,18 +491,18 @@ public class Hero implements Serializable // IRegistryElement
 
 
   /** Converts from Skill name, description, and percent change into a string */
-  private ArrayList<String> toArrayList(String[][] thiefSkills) 
+  private ArrayList<String> toArrayList(String[][] thiefSkills)
   {
     ArrayList<String> sk = new ArrayList<String>();
-    
-    for (int k=0; k < thiefSkills.length; k++) {
+
+    for (int k = 0; k < thiefSkills.length; k++) {
       sk.add(thiefSkills[k][0] + ": " + thiefSkills[k][1]);
     }
     return sk;
   }
-  
-  
-  
+
+
+
   public String getGender()
   {
     return _gender;
@@ -540,7 +543,7 @@ public class Hero implements Serializable // IRegistryElement
     return _klassSkills;
   }
 
-  
+
   /**
    * Load all the Hero attriutes into a single output map, keyed by the {@code PersonKeys} enum
    * 

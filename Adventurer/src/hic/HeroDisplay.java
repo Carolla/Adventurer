@@ -415,9 +415,11 @@ public class HeroDisplay extends JPanel
    * @param title of the section for a skill group, e.g., racial, occupational, or klass
    * @param skillList of skills to display in this multi-line cell
    */
+  // private JTextArea buildMultiCell(String title, ArrayList<String> skillList)
   private JPanel buildMultiCell(String title, ArrayList<String> skillList)
   {
     JTextArea msgArea = new JTextArea(skillList.size() + 1, DATA_WIDTH);
+    msgArea.setPreferredSize(new Dimension(DATA_WIDTH, skillList.size() + 1));
     msgArea.setBackground(_backColor);
     msgArea.setEditable(false);
     msgArea.setTabSize(1);
@@ -432,22 +434,9 @@ public class HeroDisplay extends JPanel
       String s0 = skillList.get(k);
       msgArea.append(" + " + skillList.get(k) + Constants.NEWLINE);
     }
-    // Handle word wrapping manually here
-    // if (s0.length() > (cellWidth - 1)) {
-    // String s1 = s0.substring(0, cellWidth - 1);
-    // int ws = s1.lastIndexOf(' ');
-    // s1 = s0.substring(0, ws - 1);
-    // String s2 = s0.substring(ws);
-    // msgArea.append(" + " + s1 + Constants.NEWLINE);
-    // msgArea.append(" " + s2 + Constants.NEWLINE);
-    // } else {
-    // msgArea.append(" + " + skillList.get(k) + Constants.NEWLINE);
-    // }
 
     // Add the text area into a JPanel cell
-    JPanel cell = new JPanel(
-        new MigLayout("ins 0"));
-    msgArea.setBackground(_backColor);
+    JPanel cell = new JPanel(new MigLayout("ins 0"));
     cell.add(msgArea, "growx, wrap");
 
     gridSetCellBorder(cell);
@@ -504,6 +493,7 @@ public class HeroDisplay extends JPanel
         "[]0[]0[]0[]0[]0[]0[]0[]0[]0[]0[]0[][bottom]")); // align vertically 12 rows
 
     attribPanel.setBackground(_backColor);
+    attribPanel.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
 
     // Row 1: Level, Current/Max HP (2), AC, Hunger (2)
     attribPanel.add(gridCell("Level: ", _ds.get(PersonKeys.LEVEL)), "growx");
@@ -523,7 +513,7 @@ public class HeroDisplay extends JPanel
     String inHand = gp + " gp / " + sp + " sp";
     attribPanel.add(gridCell("Gold in Hand: ", inHand), "span 3, growx, wrap");
 
-    // Row 3: Personal description (full line)
+    // Row 3: Personal description (full line, possibly multiline)
     attribPanel.add(gridCell("Description: ", _ds.get(PersonKeys.DESCRIPTION)),
         "span 6, growx, wrap");
 
@@ -600,7 +590,7 @@ public class HeroDisplay extends JPanel
     String langList = String.format("%s", _ds.get(PersonKeys.LANGUAGES));
     attribPanel.add(gridCell(langList, ""), "span 4, growx, wrap");
 
-    // Row 12: Occupation (full line)
+    // Row 12: Occupation (full line, possibly multiline)
     attribPanel.add(gridCell("Former Occupation: ", _ds.get(PersonKeys.OCCUPATION)),
         "span 6, growx, wrap");
 
@@ -812,7 +802,6 @@ public class HeroDisplay extends JPanel
         "[]0[]0[]0[]0[]0[]0[]0[]0[]0[]0[]0[][bottom]")); // align vertically 12 rows
 
     skillPanel.setBackground(_backColor);
-    skillPanel.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
 
     // Get various skills from the civ
     ArrayList<String> racialSkills = _hdCiv.getRaceSkills();
@@ -820,7 +809,7 @@ public class HeroDisplay extends JPanel
     ArrayList<String> klassSkills = _hdCiv.getKlassSkills();
 
     // Section 1: Literacy
-    skillPanel.add(gridCell("", _ds.get(PersonKeys.LITERACY)), "gaptop 5, span 6, growx, wrap");
+    skillPanel.add(gridCell("", _ds.get(PersonKeys.LITERACY)), "gaptop 10, span 6, growx, wrap");
 
     // Section 2: Occupational Skills title
     String occupation = _ds.get(PersonKeys.OCCUPATION);
@@ -828,17 +817,14 @@ public class HeroDisplay extends JPanel
     String ocpName = occupation.substring(0, nameIndex);
     String ocpDesc = occupation.substring(nameIndex + 1);
     String ocpTitle = ocpName.toUpperCase() + " SKILLS: " + ocpDesc;
-    skillPanel.add(buildMultiCell(ocpTitle, ocpSkills), "span 6, growx, wrap");
+    skillPanel.add(buildMultiCell(ocpTitle, ocpSkills), "growx, wrap");
 
     // Section 3: Racial skills
-    // skillPanel.add(gridCell("RACIAL SKILLS: ", ""), "gaptop 5, span 6, growx, wrap");
-    // Add all the little skills for the occupation
-    skillPanel.add(buildMultiCell("RACIAL SKILLS: ", racialSkills), "span 6, growx, wrap");
+    skillPanel.add(buildMultiCell("RACIAL SKILLS: ", racialSkills), "growx, wrap");
 
     // Section 4: Klass skills
-    skillPanel.add(buildMultiCell(_ds.get(PersonKeys.KLASSNAME).toUpperCase() + " SKILLS: ", 
-        klassSkills), "span 6, growx, wrap");
-
+    // skillPanel.add(buildMultiCell(_ds.get(PersonKeys.KLASSNAME).toUpperCase() + " SKILLS: ",
+    // klassSkills), "span 6, growx, wrap");
 
     return skillPanel;
   }
@@ -959,7 +945,6 @@ public class HeroDisplay extends JPanel
 
     return p;
   }
-
 
 
   /** Whether single cell or double-height cell, set a border around it */
@@ -1118,7 +1103,7 @@ public class HeroDisplay extends JPanel
     // GENERAL SETUP
     setLayout(new MigLayout());
     // Set the preferred and max size
-    setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
+    // setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
     setBackground(_backColor);
 
     // Display Hero in title in Runic Font
@@ -1126,11 +1111,12 @@ public class HeroDisplay extends JPanel
 
     // Add the tabbed pane for attributes, inventory and magic tab displays
     JTabbedPane tabPane = new JTabbedPane();
-    tabPane.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
 
     // Create and add three tabs to the HeroDisplay panel
     tabPane.addTab("Attributes", null, buildAttributePanel(),
         "View Hero's personal characteristics");
+    // tabPane.addTab("Skills & Abilities", null, buildSkillsPanel(),
+    // "View Hero's special skills and abilities");
     tabPane.addTab("Skills & Abilities", null, buildSkillsPanel(),
         "View Hero's special skills and abilities");
     tabPane.addTab("Inventory", null, new JPanel(), "View Hero's items and skills owned");
