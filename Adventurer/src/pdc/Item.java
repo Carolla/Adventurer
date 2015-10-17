@@ -7,15 +7,14 @@
  * by email: acline@carolla.com
  */
 
-package chronos.pdc;
+package pdc;
 
 import java.util.EnumMap;
 
 import mylib.ApplicationException;
 import mylib.dmc.IRegistryElement;
-import chronos.civ.MiscKeys;
-import chronos.civ.MiscKeys.ItemCategory;
-import chronos.civ.MiscKeys.ItemFields;
+import pdc.MiscKeys.ItemCategory;
+import pdc.MiscKeys.ItemFields;
 
 
 /**
@@ -25,6 +24,7 @@ import chronos.civ.MiscKeys.ItemFields;
  * @version Jun 8, 2009 // original <br>
  *          Oct 21, 2009 // changed ctor to take int weights instead of codes <br>
  *          Apr 11 2011 // TAA changed visibiltiy of attributes to protected <br>
+ *          Oct 13, 2015 // revised for new Hero gerneration rules <br>
  */
 public class Item implements IRegistryElement
 {
@@ -37,12 +37,12 @@ public class Item implements IRegistryElement
   /** Weight of Item in ounces of remaining fraction lb */
   public final int OZWT = 1;
 
+  /** Category for easier grouping */
+  private ItemCategory _category;
   /** Name of this Item */
   private String _name;
-  /** One of the many kinds of Item */
-  private MiscKeys.ItemCategory _category;
   /** Weight of a single Item in ounces (qty = 1) */
-  private int _weight;
+  private double _weight;
   /** Number of the kinds of items (quantity) */
   private int _qty;
 
@@ -55,32 +55,28 @@ public class Item implements IRegistryElement
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
-  /** Default constructor */
-  public Item()
-  {}
+  // /** Default constructor */
+  // public Item()
+  // {}
 
   /**
    * Construct an Item from its name and weight descriptor
    * 
-   * @param type one of General, Weapon, Armor, Valueable, or Key
+   * @param type one of enum ItemCategory
    * @param name of the Item
-   * @param ozWeight weight with Item in ounces
+   * @param weight weight of item in lbs.ounces
    * @param initialQty the number of these Items being constructed
    * @throws ApplicationException if any of the parms are null or illegal
    */
-  public Item(ItemCategory type, String name, int ozWeight, int initialQty)
+  public Item(ItemCategory cat, String name, int initialQty, double weight)
       throws ApplicationException
   {
-    if (type == null) {
-      throw new ApplicationException(
-          "Item(): Could not create Item. Null ItemCategory passed to Item ctor");
-    }
     // Trim down the name to ensure that no empty string was input
     if ((name == null) || (name.trim().length() == 0)) {
       throw new ApplicationException(
           "Item(): Could not create Item. Empty name passed to Item ctor");
     }
-    if (ozWeight <= 0) {
+    if (weight <= 0.0) {
       throw new ApplicationException(
           "Item(): Could not create Item. : Illegal (negative) weight for Item");
     }
@@ -88,9 +84,9 @@ public class Item implements IRegistryElement
       throw new ApplicationException(
           "Item(): Could not create Item: Illegal (negative) quantity for Item");
     }
-    _category = type;
+    _category = cat;
     _name = name;
-    _weight = ozWeight;
+    _weight = weight;
     _qty = initialQty;
   }
 
@@ -130,12 +126,12 @@ public class Item implements IRegistryElement
    */
   public Item copy()
   {
-    try {
-      Item mimic = new Item(_category, _name, _weight, _qty);
-      return mimic;
-    } catch (ApplicationException ex) {
+//    try {
+//      Item mimic = new Item(_category, _name, _weight, _qty);
+//      return mimic;
+//    } catch (ApplicationException ex) {
       return null;
-    }
+//    }
   }
 
   /**
@@ -224,7 +220,7 @@ public class Item implements IRegistryElement
    * 
    * @return the weight in ounces
    */
-  public int getWeight()
+  public double getWeight()
   {
     return _weight;
   }

@@ -33,8 +33,60 @@ public abstract class Race implements Serializable
   /** Name of the subclass race language */
   protected String _raceLang = null;
 
+  /**
+   * Create a specific subclass of Race based on the Race name. <br>
+   * NOTE: The subclass must be in the same package as the Race class.
+   *
+   * @param RaceName the name of the subclass to be created
+   * @return Race, the subclass created, but referenced polymorphically; else null
+   */
+  static public Race createRace(String raceName)
+  {
+    // If the race has a hyphen in it (e.g. Half-Elf), it is removed
+    int ndx = raceName.indexOf('-');
+    if (ndx != NOT_FOUND) {
+      String tmp = raceName.substring(0, ndx);
+      tmp += raceName.substring(ndx + 1);
+      raceName = tmp;
+    }
+    Race newRace = null;
+    try {
+      // Class Commands must have empty constructors (no formal input arguments)
+      String racePath = Chronos.getPackageName() + raceName;
+      newRace = (Race) Class.forName(racePath).newInstance();
+    } catch (Exception e) {
+      System.err.println("Race.createRace(): Cannot find class requested: " + e.getMessage());
+    }
+    return newRace;
+  }
+
+
   /** Races have different advantages and disadvantages */
   public abstract int[] adjustTraitsForRace(int[] traits);
+
+
+  // Assign the chances for thief skills for level 1 by race
+  protected String[][] adjustRacialThiefSkills(String[][] skills) 
+  {
+    // Adjust the thief skills by the racial mods
+    for (int k=0; k < skills.length; k++) {
+      int oldChance = Integer.parseInt(skills[k][1]);
+      int newChance = oldChance + _racialThiefMods[k];
+      skills[k][1] = String.format("%s",  newChance);     
+    }
+    return skills;
+  }
+
+
+  // Add race-specific skills to the Hero's skill list */
+  public ArrayList<String> addRaceSkills(ArrayList<String> existingSkills)
+  {
+    for (String s : _raceSkills) {
+      existingSkills.add(s);
+    }
+    return existingSkills;
+  }
+
 
   /** Hero male and female weight ranges */
   protected int _weightMaleMedValue = 0;;
@@ -75,76 +127,6 @@ public abstract class Race implements Serializable
 
   private static final int NOT_FOUND = -1;
 
-  /**
-   * Create a specific subclass of Race based on the Race name. <br>
-   * NOTE: The subclass must be in the same package as the Race class.
-   *
-   * @param RaceName the name of the subclass to be created
-   * @return Race, the subclass created, but referenced polymorphically; else null
-   */
-  static public Race createRace(String raceName)
-  {
-    // If the race has a hyphen in it (e.g. Half-Elf), it is removed
-    int ndx = raceName.indexOf('-');
-    if (ndx != NOT_FOUND) {
-      String tmp = raceName.substring(0, ndx);
-      tmp += raceName.substring(ndx + 1);
-      raceName = tmp;
-    }
-    Race newRace = null;
-    try {
-      // Class Commands must have empty constructors (no formal input arguments)
-      String racePath = Chronos.getPackageName() + raceName;
-      newRace = (Race) Class.forName(racePath).newInstance();
-    } catch (Exception e) {
-      System.err.println("Race.createRace(): Cannot find class requested: " + e.getMessage());
-    }
-    return newRace;
-  }
-
-
-  // Add race-specific skills to the Hero's skill list */
-  public ArrayList<String> addRaceSkills(ArrayList<String> existingSkills)
-  {
-    for (String s : _raceSkills) {
-      existingSkills.add(s);
-    }
-    return existingSkills;
-  }
-  
- 
-  // Assign the chances for thief skills for level 1 by race
-  protected String[][] adjRacialThiefSkills(String[][] skills) 
-  {
-    // Adjust the thief skills by the racial mods
-    for (int k=0; k < skills.length; k++) {
-      int oldChance = Integer.parseInt(skills[k][1]);
-      int newChance = oldChance + _racialThiefMods[k];
-      skills[k][1] = String.format("%s",  newChance);     
-    }
-    return skills;
-  }
-      
-
-
-  /**
-   * Verify that the traits do not exceed the racial limits. If they do, the trait is set to the
-   * limit value.
-   * 
-   * @param traits traits to examine and possibly redefine
-   * @param minLimit the minimum values for the race, set by the subclass constructor
-   * @param maxLimit the maximum values for the race, set by the subclass constructor
-   * @return the original or modified traits
-   */
-  public int[] verifyRaceLimits(int[] traits)
-  {
-    for (int k = 0; k < traits.length; k++) {
-      traits[k] = (traits[k] < _minLimit[k]) ? _minLimit[k] : traits[k];
-      traits[k] = (traits[k] > _maxLimit[k]) ? _maxLimit[k] : traits[k];
-    }
-    return traits;
-  };
-
   /** Calculate the weight of the Hero based on deviation from average */
   public int calcWeight(String gender)
   {
@@ -162,30 +144,6 @@ public abstract class Race implements Serializable
   }
 
   
-  /**
-   * Get the weight (in gpw) for subclass races in range of low, medium, high
-   *
-   * @param medValue the average weight for the Hero
-   * @param lowDice deviation below medValue in dice notation (e.g. 2d4)
-   * @param highDice deviation above medValue in dice notation (e.g. 2d4)
-   * @return the weight of the character
-   */
-  private int getDeviationFromMedValue(int medValue, String lowDice, String highDice)
-  {
-    MetaDie md = new MetaDie();
-    int result = 0;
-    int range = md.rollPercent();
-    if (range <= 30) {
-      result = medValue - md.roll(lowDice);
-    } else if (range >= 71) {
-      result = medValue + md.roll(highDice);
-    } else {
-      result = medValue;
-    }
-    return result;
-  };
-
-
   /**
    * Return the language specific to the race, or null. Half-breed races have a 50% chance of
    * knowing their race language.
@@ -299,6 +257,49 @@ public abstract class Race implements Serializable
     }
     String descr = descrChoice[rowNbr][colNbr];
     return descr;
+  }
+
+
+  /**
+   * Verify that the traits do not exceed the racial limits. If they do, the trait is set to the
+   * limit value.
+   * 
+   * @param traits traits to examine and possibly redefine
+   * @param minLimit the minimum values for the race, set by the subclass constructor
+   * @param maxLimit the maximum values for the race, set by the subclass constructor
+   * @return the original or modified traits
+   */
+  public int[] verifyRaceLimits(int[] traits)
+  {
+    for (int k = 0; k < traits.length; k++) {
+      traits[k] = (traits[k] < _minLimit[k]) ? _minLimit[k] : traits[k];
+      traits[k] = (traits[k] > _maxLimit[k]) ? _maxLimit[k] : traits[k];
+    }
+    return traits;
+  }
+
+
+  /**
+   * Get the weight (in gpw) for subclass races in range of low, medium, high
+   *
+   * @param medValue the average weight for the Hero
+   * @param lowDice deviation below medValue in dice notation (e.g. 2d4)
+   * @param highDice deviation above medValue in dice notation (e.g. 2d4)
+   * @return the weight of the character
+   */
+  private int getDeviationFromMedValue(int medValue, String lowDice, String highDice)
+  {
+    MetaDie md = new MetaDie();
+    int result = 0;
+    int range = md.rollPercent();
+    if (range <= 30) {
+      result = medValue - md.roll(lowDice);
+    } else if (range >= 71) {
+      result = medValue + md.roll(highDice);
+    } else {
+      result = medValue;
+    }
+    return result;
   }
 
 

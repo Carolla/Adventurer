@@ -9,11 +9,15 @@
 
 package pdc.character;
 
+import pdc.Inventory;
+import pdc.Item;
+import pdc.MiscKeys.ItemCategory;
 import pdc.character.Hero.PrimeTraits;
 
 /**
  * @author Al Cline
  * @version Sep 4, 2015 // original <br>
+ *          Oct 17, 2015 // added klass-specific inventory items <br>
  */
 public class Wizard extends Klass
 {
@@ -22,12 +26,6 @@ public class Wizard extends Klass
   private int _freeHP = 4;
   private String _startingGold = "2d4";
   
-  protected final String[] _wizardStuff = {
-      "magic spell book | 32",  // 4.00 lb
-      "magic bag | 2",          // 0.25 lb
-      "walking stick | 24",     // 3.00 lb
-  };
-
   
   /**
    * Default constructor, called reflectively by Klass
@@ -39,7 +37,18 @@ public class Wizard extends Klass
     _hpDie = _hitDie;
     _initialHP = _freeHP;
     _goldDice = _startingGold;
-    _klassItems = _wizardStuff;
   } 
 
-}
+  @Override
+  /** Assign initial inventory to Wizard (8 gpw = 1 lb) */
+  public Inventory addKlassItems(Inventory inven)
+  {
+    // Basic inventory Items: category, name, quantity, weight (each in fractional lb)
+    inven.addItem(new Item(ItemCategory.ARMS, "Walking stick (dmg=d6T, attack=1)", 1, 3.0));
+    inven.addItem(new Item(ItemCategory.SPELL_MATERIAL, "Spell book", 1, 5.0));
+    inven.addItem(new Item(ItemCategory.SPELL_MATERIAL, "Magic bag", 1, 0.25));
+    return inven;
+  }
+
+
+} // end of Wizard class

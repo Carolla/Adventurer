@@ -11,14 +11,10 @@
 package chronos.pdc.registry;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import mylib.ApplicationException;
-import mylib.dmc.IRegistryElement;
-import mylib.pdc.Registry;
 import chronos.Chronos;
-import chronos.civ.MiscKeys.ItemCategory;
-import chronos.pdc.Item;
+import mylib.ApplicationException;
+import mylib.pdc.Registry;
 
 /**
  * Contains all Items in the game: inventory, furniture, weapons, and even dead monsters or NPCs
@@ -123,21 +119,21 @@ public class ItemRegistry extends Registry
   @Override
   public void initialize()
   {
-    // Here are the list of tables to load
-    ArrayList<String[][]> tablz = new ArrayList<String[][]>();
-    tablz.add(_heroInventory);
-    tablz.add(_bankAssets);
-    tablz.add(_innMenu);
-    tablz.add(_rogueEquipment);
-    tablz.add(_storeInventory);
-    try {
-      // Load each of the tables
-      for (int k = 0; k < tablz.size(); k++) {
-        loadTable(tablz.get(k));
-      }
-    } catch (ApplicationException ex) {
-      System.err.println("ItemRegistry.initialize(): " + ex.getMessage());
-    }
+//    // Here are the list of tables to load
+//    ArrayList<String[][]> tablz = new ArrayList<String[][]>();
+//    tablz.add(_heroInventory);
+//    tablz.add(_bankAssets);
+//    tablz.add(_innMenu);
+//    tablz.add(_rogueEquipment);
+//    tablz.add(_storeInventory);
+//    try {
+//      // Load each of the tables
+//      for (int k = 0; k < tablz.size(); k++) {
+//        loadTable(tablz.get(k));
+//      }
+//    } catch (ApplicationException ex) {
+//      System.err.println("ItemRegistry.initialize(): " + ex.getMessage());
+//    }
   }
 
 
@@ -199,61 +195,61 @@ public class ItemRegistry extends Registry
   // // _thisReg = null;
   // }
 
-  /**
-   * Get a particlar Item by name
-   * 
-   * @param name of the Item
-   * @return the Item
-   */
-  public Item getItem(String name)
-  {
-    try {
-      return (Item) getUnique(name);
-    } catch (ApplicationException ex) {
-      return null;
-    }
-  }
+//  /**
+//   * Get a particlar Item by name
+//   * 
+//   * @param name of the Item
+//   * @return the Item
+//   */
+//  public Item getItem(String name)
+//  {
+//    try {
+//      return (Item) getUnique(name);
+//    } catch (ApplicationException ex) {
+//      return null;
+//    }
+//  }
 
 
-  /**
-   * Retrieve all Items in the registry
-   * 
-   * @return the Item List
-   */
-  public ArrayList<Item> getItemList()
-  {
-    List<IRegistryElement> itemSet = super.getAll();
-    ArrayList<Item> itemList = new ArrayList<Item>(itemSet.size());
-    for (IRegistryElement e : itemSet) {
-      itemList.add((Item) e);
-    }
-    return itemList;
-  }
+//  /**
+//   * Retrieve all Items in the registry
+//   * 
+//   * @return the Item List
+//   */
+//  public ArrayList<Item> getItemList()
+//  {
+//    List<IRegistryElement> itemSet = super.getAll();
+//    ArrayList<Item> itemList = new ArrayList<Item>(itemSet.size());
+//    for (IRegistryElement e : itemSet) {
+//      itemList.add((Item) e);
+//    }
+//    return itemList;
+//  }
 
   /*
    *  PRIVATE METHODS
    */
 
-  /**
-   * Load a table of Items into the ItemRegistry
-   * 
-   * @param table the initial Items to load
-   * @throw ApplicationException if the Item could not be added to the db
-   */
-  private void loadTable(String[][] table) throws ApplicationException
-  {
-    // Save the Items required for the new Hero's inventory
-    for (int k = 0; k < table.length; k++) {
-      ItemCategory cat = ItemCategory.valueOf(table[k][0]);
-      String name = table[k][1];
-      int weight = Integer.valueOf(table[k][2]);
-      int qty = Integer.valueOf(table[k][3]);
-      Item item = new Item(cat, name, weight, qty);
-      if (super.add(item) == false) {
-        throw new ApplicationException("loadTable() error while adding to db " + item.getName());
-      }
-    }
-  }
+//  /**
+//   * Load a table of Items into the ItemRegistry
+//   * 
+//   * @param table the initial Items to load
+//   * @throw ApplicationException if the Item could not be added to the db
+//   */
+//  private void loadTable(String[][] table) throws ApplicationException
+//  {
+//    // Save the Items required for the new Hero's inventory
+//    for (int k = 0; k < table.length; k++) {
+//      ItemCategory cat = ItemCategory.valueOf(table[k][0]);
+//      String name = table[k][1];
+//      int weight = Integer.valueOf(table[k][2]);
+//      int qty = Integer.valueOf(table[k][3]);
+//      Item item = new Item(cat, name, weight, qty);
+//      if (super.add(item) == false) {
+//        throw new ApplicationException("loadTable() error while adding to db " + item.getName());
+//      }
+//    }
+//  }
 
 
   /*

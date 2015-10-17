@@ -34,7 +34,7 @@ public class RegistryFactory
   {
     SKILL("Skill", 35),     // default:  8 racial, and 27 general Skills
     OCP("Occupation", 27),  // default: 26 Occupations plus "None"
-    ITEM("Item", 39),       // default  14 Hero, 6 Bank, 11 Inn menu, 5 Rogue, 3 Store
+    ITEM("Item", 0),       // default  14 Hero, 6 Bank, 11 Inn menu, 5 Rogue, 3 Store
     BLDG("Building", 8),    // default:  4 Guilds, Inn, Store, Jail, Bank
     NPC("NPC", 16),         // Default:  8 building masters and 8 Inn patrons
     TOWN("Town", 1),         // default: Biljur'Baz

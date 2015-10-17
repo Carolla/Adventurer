@@ -11,56 +11,60 @@ package pdc.character;
 
 import java.util.ArrayList;
 
+import pdc.Inventory;
+import pdc.Item;
+import pdc.MiscKeys.ItemCategory;
 import pdc.character.Hero.PrimeTraits;
 
 /**
  * @author Al Cline
  * @version Sep 4, 2015 // original <br>
+ *          Oct 17, 2015 // added klass-specific inventory items <br>
  */
 public class Cleric extends Klass
-{  
-  
+{
   /** Starting die and initial free HP for klass */
   private String _hitDie = "d8";
   private int _freeHP = 8;
   private String _startingGold = "3d6";
 
-  protected final String[] _clericStuff = {
-      "holy symbol, wooden | 4", // 0.50 lb
-      "sacred satchel | 2",      // 0.25 lb
-      "quarterstaff | 24",      // 3.00 lb
-  };
-  
   private final String[] _clericSpells = {
-      "Bless", "Command", "Create Water", "Cure Light Wounds","Detect Evil", "Detect Magic",
-      "Light", "Protection from Evil", "Purify Food and Drink", "Remove Fear", "Resist Cold", 
-      "Sanctuary" };
+      "Bless", "Command", "Create Water", "Cure Light Wounds", "Detect Evil", "Detect Magic",
+      "Light", "Protection from Evil", "Purify Food and Drink", "Remove Fear", "Resist Cold",
+      "Sanctuary"};
 
-  
+
   /**
    * Default constructor, called reflectively by Klass
    */
-  public Cleric() 
+  public Cleric()
   {
     _klassName = "Cleric";
     _primeNdx = PrimeTraits.WIS.ordinal();
     _hpDie = _hitDie;
     _initialHP = _freeHP;
     _goldDice = _startingGold;
-    _klassItems = _clericStuff;
-  } 
+  }
 
-  public ArrayList<String> addClericalSpells(ArrayList<String> spellList) 
+  public ArrayList<String> addClericalSpells(ArrayList<String> spellList)
   {
     for (String s : _clericSpells) {
       spellList.add(s);
     }
     return spellList;
   }
-  
-  
+
+  @Override
+  /** Assign initial inventory to Cleric (8 gpw = 1 lb) */
+  public Inventory addKlassItems(Inventory inven)
+  {
+    // Basic inventory Items: category, name, quantity, weight (each in fractional lb)
+    inven.addItem(new Item(ItemCategory.ARMS, "Quarterstaff (dmg=d6T, attack=1)", 1, 3.0));
+    inven.addItem(new Item(ItemCategory.SPELL_MATERIAL, "Sacred satchel", 1, 0.25));
+    inven.addItem(new Item(ItemCategory.SPELL_MATERIAL, "Holy symbol, wooden", 1, 0.50));
+    return inven;
+  }
+
 } // end of Cleric class
-
-
 
 

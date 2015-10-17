@@ -9,11 +9,15 @@
 
 package pdc.character;
 
+import pdc.Inventory;
+import pdc.Item;
+import pdc.MiscKeys.ItemCategory;
 import pdc.character.Hero.PrimeTraits;
 
 /**
  * @author Al Cline
  * @version Sep 6, 2015 // original <br>
+ *          Oct 17, 2015 // added klass-specific inventory items <br>
  */
 public class Thief extends Klass
 {
@@ -24,12 +28,7 @@ public class Thief extends Klass
   private int _freeHP = 6;
   private String _startingGold = "2d6";
 
-  protected final String[] _thiefStuff = {
-      "thieves' kit | 8",     // 1.00 lb
-      "dagger | 24",          // 3.00 lb
-  };
- 
-
+  
   /** Indices into the Hero's prime traits */
   public enum TSKILL {
     OPEN_SECRET_DOORS, PICK_POCKETS, OPEN_LOCKS, FIND_REMOVE_TRAPS, MOVE_SILENTLY, HIDE_IN_SHADOWS,
@@ -56,7 +55,17 @@ public class Thief extends Klass
     _hpDie = _hitDie;
     _initialHP = _freeHP;
     _goldDice = _startingGold;
-    _klassItems = _thiefStuff;
+  }
+
+
+  @Override
+  /** Assign initial inventory to Wizard (8 gpw = 1 lb) */
+  public Inventory addKlassItems(Inventory inven)
+  {
+    // Basic inventory Items: category, name, quantity, weight (each in fractional lb)
+    inven.addItem(new Item(ItemCategory.EQUIPMENT, "Thieves' kit", 1, 1.0));
+    inven.addItem(new Item(ItemCategory.ARMS, "Dagger (dmg=d6, attack=1)", 1, 3.0));
+    return inven;
   }
 
 

@@ -15,11 +15,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EnumMap;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.Constants;
-
 import civ.PersonKeys;
 import mylib.pdc.MetaDie;
-import pdc.TmpItem;
+import pdc.Inventory;
 import pdc.character.Thief.TSKILL;
 
 
@@ -128,17 +126,16 @@ public class Hero implements Serializable // IRegistryElement
   double _goldBanked;
 
   // Race skills
-  ArrayList<String> _raceSkills = new ArrayList<String>();
+  private ArrayList<String> _raceSkills = new ArrayList<String>();
   // Klass-based skills, mostly for Thief
-  ArrayList<String> _klassSkills = new ArrayList<String>();
+  private ArrayList<String> _klassSkills = new ArrayList<String>();
+  // Inventory object containing map with ItemCategory key
+  private Inventory _inven; 
 
   // Number of skills only the thief has
   final int NBR_THIEF_SKILLS = TSKILL.values().length;
   // The first index is the skill name, the second is the chance of success
   String[][] _thiefSkills = new String[NBR_THIEF_SKILLS][2];
-
-  // Holds all inventory items
-  private ArrayList<TmpItem> _inventory = new ArrayList<TmpItem>();
 
   // Keys to all occupational kits
   private enum KitNdx {
@@ -329,7 +326,7 @@ public class Hero implements Serializable // IRegistryElement
     _traits = _klass.adjustTraitsForKlass(_traits);
     // displayTraits(_klassname + "-adjusted Traits: ", _traits);
 
-    // 3. REARRANGE THE PRIME TRAIT FOR THE RACE
+    // 4a. REARRANGE THE PRIME TRAIT FOR THE RACE
     // Create the Race object
     _race = Race.createRace(_racename);
     // Verify that a good Race was created
@@ -339,7 +336,7 @@ public class Hero implements Serializable // IRegistryElement
     _traits = _race.adjustTraitsForRace(_traits);
     // displayTraits(_racename + "-adjusted Traits: ", _traits);
 
-    // 4. REARRANGE THE PRIME TRAIT FOR THE GENDER
+    // 4b. REARRANGE THE PRIME TRAIT FOR THE GENDER
     if (_gender.equalsIgnoreCase("female")) {
       _traits = adjustTraitsForGender(_traits);
       // displayTraits(_gender + "-adjusted Traits: ", _traits);
@@ -453,7 +450,7 @@ public class Hero implements Serializable // IRegistryElement
       int dexterity = _traits[PrimeTraits.DEX.ordinal()];
       _thiefSkills = ((Thief) _klass).assignThiefSkills(dexterity); // one subclass of Klass only
       // displayThiefSkills(_thiefSkills);
-      _thiefSkills = _race.adjRacialThiefSkills(_thiefSkills);
+      _thiefSkills = _race.adjustRacialThiefSkills(_thiefSkills);
       // displayThiefSkills(_thiefSkills);
       // Convert from String[][] to ArrayList<String>
       _klassSkills = toArrayList(_thiefSkills);
@@ -470,7 +467,7 @@ public class Hero implements Serializable // IRegistryElement
     // testing only
     // _ocpSkills.add("Spot Details: +2 WIS to notice details such as bandits in ambush, "
     // + "\n\t obscure items in a dim room, or centipedes in a pile of trash");
-    //    displayList("Skills for occupation " + _occupation + ":", _ocpSkills);
+    // displayList("Skills for occupation " + _occupation + ":", _ocpSkills);
     // displayList("Inventory in backpack: ", _inventory);
 
     // 21. ASSIGN SPELLS TO CLERICS (WIZARDS ALREADY WERE ASSIgned 'READ MAGIC')
@@ -481,8 +478,9 @@ public class Hero implements Serializable // IRegistryElement
       // _spellBook);
     }
     // 22. Assign initial inventory
-    // _inventory = _klass.assignBasicInventory(_inventory);
-    // _inventory = _klass.addKlassItems(_inventory);
+    _inven = new Inventory();
+    _inven = _inven.assignBasicInventory(_inven);
+    _inven = _klass.addKlassItems(_inven);
 
     // displayList("Inventory in backpack: ", _inventory);
 
@@ -513,6 +511,21 @@ public class Hero implements Serializable // IRegistryElement
     return _hairColor;
   }
 
+  public String getKlassName()
+  {
+    return _klassname;
+  }
+
+  public ArrayList<String> getKlassSkills()
+  {
+    return _klassSkills;
+  }
+
+  public Inventory getInventory()
+  {
+    return _inven;
+  }
+
   public String getName()
   {
     return _name;
@@ -521,11 +534,6 @@ public class Hero implements Serializable // IRegistryElement
   public String getRaceName()
   {
     return _racename;
-  }
-
-  public String getKlassName()
-  {
-    return _klassname;
   }
 
   public ArrayList<String> getRaceSkills()
@@ -537,12 +545,6 @@ public class Hero implements Serializable // IRegistryElement
   {
     return _ocpSkills;
   }
-
-  public ArrayList<String> getKlassSkills()
-  {
-    return _klassSkills;
-  }
-
 
   /**
    * Load all the Hero attriutes into a single output map, keyed by the {@code PersonKeys} enum

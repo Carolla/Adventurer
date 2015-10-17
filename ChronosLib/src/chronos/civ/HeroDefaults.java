@@ -12,12 +12,10 @@ package chronos.civ;
 
 import java.util.ArrayList;
 
-import mylib.ApplicationException;
-import mylib.MsgCtrl;
-import chronos.civ.MiscKeys.ItemCategory;
-import chronos.pdc.Item;
 import chronos.pdc.Occupation;
 import chronos.pdc.Skill;
+import mylib.ApplicationException;
+import mylib.MsgCtrl;
 
 /**
  * Contains all the default information to support the Hero creation: options for hair colors,
@@ -44,7 +42,7 @@ public class HeroDefaults
   /** List of racial skills */
   ArrayList<Skill> _skillList = null;
   /** List of default Items given to new Hero */
-  ArrayList<Item> _inventory = null;
+//  ArrayList<Item> _inventory = null;
 
 
   /**
@@ -195,10 +193,10 @@ public class HeroDefaults
     // Load the starting inventory Items
     try {
       for (int k = 0; k < _itemTable.length; k++) {
-        Item it = new Item(ItemCategory.valueOf(_itemTable[k][0]), _itemTable[k][1],
-            Integer.parseInt(_itemTable[k][2]),
-            Integer.parseInt(_itemTable[k][3]));
-        _inventory.add(it);
+//        Item it = new Item(ItemCategory.valueOf(_itemTable[k][0]), _itemTable[k][1],
+//            Integer.parseInt(_itemTable[k][2]),
+//            Integer.parseInt(_itemTable[k][3]));
+//        _inventory.add(it);
       }
     } catch (ApplicationException ex) {
       MsgCtrl.errMsgln(this, ex.getMessage());
@@ -236,17 +234,16 @@ public class HeroDefaults
     return _skillList;
   }
 
-  /** Retrieve the Hero's default Inventory */
-  public ArrayList<Item> getDefaultInventory()
-  {
-    return _inventory;
-  }
+//  /** Retrieve the Hero's default Inventory */
+//  public ArrayList<Item> getDefaultInventory()
+//  {
+//    return _inventory;
+//  }
 
 
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PRIVATE METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * PRIVATE METHODS
    */
 
 }

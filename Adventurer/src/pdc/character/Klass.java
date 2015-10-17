@@ -15,7 +15,9 @@ import java.util.ArrayList;
 
 import chronos.Chronos;
 import mylib.pdc.MetaDie;
-import pdc.TmpItem;
+import pdc.Inventory;
+import pdc.Item;
+import pdc.MiscKeys.ItemCategory;
 
 /**
  * Defines the common methods and attributes for all Klasses. Peasant is the default Klass.
@@ -29,6 +31,10 @@ public abstract class Klass implements Serializable
   /** Recommended serialization constant. */
   static final long serialVersionUID = 1100L;
 
+  /** Assign klass specific inventory items */
+  protected abstract Inventory addKlassItems(Inventory inventory);
+  
+  
   // KLASS-SPECIFIC ATTRIBUTES and METHODS
   /** Name of the subclass of Klass, e.g, Peasant or Fighter */
   protected String _klassName = null;
@@ -66,37 +72,6 @@ public abstract class Klass implements Serializable
     return newKlass;
   }
 
-  
-  /** Add klass-specific items into their inventory */
-  public ArrayList<String> addKlassItems(ArrayList<String> inven )
-  {
-    for (int k=0; k < _klassItems.length; k++) {
-      inven.add(_klassItems[k]);
-   }
-    return inven;
-  }
-
-  
-  // Assign initial inventory to Hero (8 gpw = 1 lb)
-  public ArrayList<TmpItem> assignBasicInventory(ArrayList<TmpItem> inven)
-  {
-    // Basic inventory TmpItems: name, quantity, total weight
-    inven.add(new TmpItem("backpack", 1, 56));
-    inven.add(new TmpItem("tinderbox", 1, 4));
-    inven.add(new TmpItem("torch", 1, 8));
-    inven.add(new TmpItem("rations", 1, 4));
-    inven.add(new TmpItem("water skein (empty)", 1, 4));
-    inven.add(new TmpItem("small belt pouch", 1, 2));
-    inven.add(new TmpItem("leather boots", 1, 32));
-    inven.add(new TmpItem("belt", 1, 2));
-    inven.add(new TmpItem("breeches", 1, 4));
-    inven.add(new TmpItem("shirt", 1, 4));
-    inven.add(new TmpItem("cloak", 1, 16));
-
-    return inven;
-  }
-
-  
   
 //  // Add an element to an array
 //  protected ArrayList<String> addItem(inven, item) {
@@ -156,6 +131,13 @@ public abstract class Klass implements Serializable
     return HP;
   }
 
+  // Assign initial klass-specific inventory
+  public Inventory assignKlassInventory(Inventory inven, ArrayList<Item> items)
+  {
+    // Basic inventory Items: category, name, quantity, weight (each in fractional lb)
+    inven.addItem(new Item(ItemCategory.EQUIPMENT, "backpack", 1, 7.0));
+    return inven;
+  }
 
   /**
    * Swap the largest trait for the prime trait of the klass: <br>

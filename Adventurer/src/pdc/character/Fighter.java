@@ -9,11 +9,15 @@
 
 package pdc.character;
 
+import pdc.Inventory;
+import pdc.Item;
+import pdc.MiscKeys.ItemCategory;
 import pdc.character.Hero.PrimeTraits;
 
 /**
  * @author Al Cline
  * @version Sep 4, 2015 // original <br>
+ *          Oct 17, 2015 // added klass-specific inventory items <br>
  */
 public class Fighter extends Klass
 {
@@ -22,21 +26,27 @@ public class Fighter extends Klass
   private int _freeHP = 10;
   private String _startingGold = "5d4";
 
-  protected final String[] _fighterStuff = {"short sword w/scabberd | 80"};
 
-  
   /**
    * Default constructor, called reflectively by Klass
    */
-  public Fighter() 
+  public Fighter()
   {
     _klassName = "Fighter";
     _primeNdx = PrimeTraits.STR.ordinal();
     _hpDie = _hitDie;
     _initialHP = _freeHP;
     _goldDice = _startingGold;
-    _klassItems = _fighterStuff;
-  } 
+  }
 
+  @Override
+  /** Assign initial inventory to Fighte (8 gpw = 1 lb) */
+  public Inventory addKlassItems(Inventory inven)
+  {
+    // Basic inventory Items: category, name, quantity, weight (each in fractional lb)
+    inven.addItem(new Item(ItemCategory.ARMS, "Sword, short, w/scabbard (dmg=d6, attack=1)", 1, 7.0));
+    inven.addItem(new Item(ItemCategory.ARMOR, "Leather (AC=12)", 1, 10.0));
+    return inven;
+  }
 
-}
+} // end of Fighter class

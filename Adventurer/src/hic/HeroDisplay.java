@@ -9,8 +9,6 @@ package hic;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -29,11 +27,12 @@ import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
 import civ.HeroDisplayCiv;
-import civ.MiscKeys.ItemCategory;
 import civ.PersonKeys;
 import mylib.Constants;
 import mylib.MsgCtrl;
 import net.miginfocom.swing.MigLayout;
+import pdc.Inventory;
+import pdc.MiscKeys.ItemCategory;
 
 
 /**
@@ -114,6 +113,7 @@ import net.miginfocom.swing.MigLayout;
  *          May 2 2011 // major rewrite for MigLayout manager <br>
  *          Oct 6 2011 // minor changes to support MVP Stack <br>
  *          Oct 1 2015 // revised to accommodate new Hero character sheet <br>
+ *          Oct 17 2015 // added dual tab pane for Spell casters vs non-spell casters <br>
  */
 public class HeroDisplay extends JPanel
 {
@@ -155,8 +155,6 @@ public class HeroDisplay extends JPanel
   private final int SCROLLBAR_SIZE = 20;
   /** Standard height of font and cells in display, but can be changed */
   private int CELL_HEIGHT = 26;
-  // /** Standard height of font and cells in display, but can be changed */
-  // private int CELL_WIDTH = 12;
   /** Border width for main panel */
   private final int THICK_BORDER = Mainframe.PAD;
   /** Border width for subpanel */
@@ -194,9 +192,7 @@ public class HeroDisplay extends JPanel
   // is affecting it?
   /** Background color inherited from parent */
   private Color _backColor = Constants.MY_BROWN.brighter();
-
-  // /** Tabbed pane to hold inventory stuff */
-  // JTabbedPane _tab = null;
+  private Color _boldBackColor = Constants.MY_BROWN;
 
   /** The backend CIV for this JPanel widget */
   private HeroDisplayCiv _hdCiv = null;
@@ -204,19 +200,11 @@ public class HeroDisplay extends JPanel
   /** Keys to Hero data to be displayed */
   EnumMap<PersonKeys, String> _ds;
 
-  /** Items to be displayed */
-  private ArrayList<String> _itemList = null;
-
-  /** Default inset values */
-  private final int DEF_INSET = 3;
-
   /** Six panels in each attribute row */
   private final int PANELS_IN_ROW = 6;
 
   /** Crude attempt to allocate space for wrapping text */
-  private final double WRAP_ADJ = 1.4;
   private final int SPACES_PER_LINE = 27;
-  private final int SKILL_LINE_HT = FONT_HT * 4;
 
   /** Button panel for Save/Delete/Cancel buttons */
   private JPanel _buttonPanel;
@@ -242,7 +230,7 @@ public class HeroDisplay extends JPanel
     _ds = _hdCiv.getAttributes();
 
     // _hdCiv.resetLoadState();
-    // Define the overall three-tabbed pane and button layout
+    // Define the overall tabbed pane and button layout
     setupDisplay();
   }
 
@@ -295,86 +283,6 @@ public class HeroDisplay extends JPanel
   // }
 
 
-  /** Stub until the display is working properly. */
-  public boolean displayInventory(ArrayList<String> items)
-  {
-    // // Put some space above and below the namePlate
-    // // Add a non-editable textArea containing all the Inventory
-    // JTextArea invenHeader = new JTextArea();
-    // invenHeader.setPreferredSize(new Dimension(DATA_WIDTH - SCROLLBAR_SIZE,
-    // FONT_HT));
-    // invenHeader.setFont(new Font(Font.MONOSPACED, Font.PLAIN, FONT_HT));
-    // invenHeader.setBackground(_backColor);
-    // // Start the column headers
-    // invenHeader.setText(" QTY ITEM\t\t\t WEIGHT (ea)\n");
-    // StringBuilder b = new StringBuilder();
-    // int numDash = (DATA_WIDTH - SCROLLBAR_SIZE) / PIX_PER_CHAR;
-    // for (int i = 0; i < numDash; i++) {
-    // b.append("-");
-    // }
-    // invenHeader.append(b.toString());
-    // invenHeader.setEditable(false);
-    //
-    // _itemList = items;
-    //
-    // // Set up scrolling area
-    // JTextArea inventoryArea = buildInventoryArea();
-    // // IMPORTANT: This select recenters screen to the top/left
-    // inventoryArea.select(0, 0);
-    // JScrollPane inventoryScroll = new JScrollPane(inventoryArea);
-    // inventoryScroll.setBorder(new EmptyBorder(0, 0, 0, 0));
-    // inventoryScroll
-    // .setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-    //
-    // Dimension scrollSize = new Dimension(
-    // inventoryArea.getPreferredSize().width,
-    // inventoryArea.getPreferredSize().height + FONT_HT);
-    // inventoryScroll.setPreferredSize(scrollSize);
-    //
-    // //
-    // inventoryScroll.getVerticalScrollBar().setValue(inventoryScroll.getVerticalScrollBar().getMinimum());
-    // JPanel wholeInventory = new JPanel(new MigLayout("fill, wrap 5, ins 2", // layout
-    // // constraints
-    // "[]0[]0[]0[]0[]0[][left]", // align left
-    // "[]0[]0[]0[]0[]0[][bottom]"));
-    // wholeInventory.setPreferredSize(new Dimension(DATA_WIDTH, inventoryArea
-    // .getHeight() + invenHeader.getHeight()));
-    // wholeInventory.setBackground(_backColor);
-    // wholeInventory.setBorder(new EmptyBorder(0, 0, 0, 0));
-    // wholeInventory.add(invenHeader, "span, gapbottom 0");
-    // wholeInventory.add(inventoryScroll, "span, gaptop 0, gapbottom 0");
-    //
-    // // Put onto tabs
-    // _tab = new JTabbedPane();
-    // _tab.addTab("Inventory", wholeInventory);
-    // // _tab.setBorder(new EmptyBorder(0,0,0,0));
-    // // _tab.setPreferredSize(new Dimension (DATA_WIDTH,_panelHeight/3));
-    // _tab.setBackground(_backColor);
-    //
-    // // System.out.println("invenHeader width: " +
-    // // invenHeader.getPreferredSize());
-    // // System.out.println("invenArea width: " +
-    // // inventoryArea.getPreferredSize());
-    // // System.out.println("invenScroll width: " +
-    // // inventoryScroll.getPreferredSize());
-    // // System.out.println("wholeInventory width: " +
-    // // wholeInventory.getPreferredSize());
-    // // System.out.println("tab width: " + _tab.getPreferredSize());
-    //
-    // // Make magic tab
-    // JTextArea magicArea = new JTextArea();
-    // magicArea.setBackground(_backColor);
-    // magicArea.setEditable(false);
-    // _tab.addTab("Magic", magicArea);
-    // _tab.setEnabledAt(_tab.indexOfTab("Magic"), false);
-    // // add(_tab,"span, center");
-    //
-    // // _mainframe.validate();
-    // _mainframe.repaint();
-    return true;
-  }
-
-
   /**
    * Put the HeroDisplay panel into a scrollpane and add to the MainFrame
    * 
@@ -412,14 +320,13 @@ public class HeroDisplay extends JPanel
   /**
    * Add a JTextArea into a multiline grid
    * 
-   * @param title of the section for a skill group, e.g., racial, occupational, or klass
-   * @param skillList of skills to display in this multi-line cell
+   * @param title of the section for a group, e.g., racial, occupational, or klass
+   * @param myList of Strings to display in this multi-line cell
    */
-  // private JTextArea buildMultiCell(String title, ArrayList<String> skillList)
-  private JPanel buildMultiCell(String title, ArrayList<String> skillList)
+  private JPanel buildMultiCell(String title, ArrayList<String> myList)
   {
-    JTextArea msgArea = new JTextArea(skillList.size() + 1, DATA_WIDTH);
-    msgArea.setPreferredSize(new Dimension(DATA_WIDTH, skillList.size() + 1));
+    JTextArea msgArea = new JTextArea(myList.size() + 1, DATA_WIDTH);
+    msgArea.setPreferredSize(new Dimension(DATA_WIDTH, myList.size() + 1));
     msgArea.setBackground(_backColor);
     msgArea.setEditable(false);
     msgArea.setTabSize(1);
@@ -430,9 +337,12 @@ public class HeroDisplay extends JPanel
     msgArea.append(" " + title + Constants.NEWLINE);
 
     // Display the detailed skill list
-    for (int k = 0; k < skillList.size(); k++) {
-      String s0 = skillList.get(k);
-      msgArea.append(" + " + skillList.get(k) + Constants.NEWLINE);
+    if (myList.size() == 0) {
+      myList.add(" None");
+    }
+    for (int k = 0; k < myList.size(); k++) {
+      String s0 = myList.get(k);
+      msgArea.append(" + " + myList.get(k) + Constants.NEWLINE);
     }
 
     // Add the text area into a JPanel cell
@@ -443,19 +353,6 @@ public class HeroDisplay extends JPanel
     cell.validate();
     return cell;
   }
-
-
-  // // Add grids for each detailed skill item
-  // private void addSkillDetail(JPanel panel, ArrayList<String> skillList)
-  // {
-  // if (skillList.size() == 0) {
-  // panel.add(gridCell("-- ", " None "), "span 6, growx, wrap");
-  // } else {
-  // for (int k = 0; k < skillList.size(); k++) {
-  // panel.add(gridCell("-- ", skillList.get(k)), "span 6, growx, wrap");
-  // }
-  // }
-  // }
 
 
   // =================================================================
@@ -736,71 +633,147 @@ public class HeroDisplay extends JPanel
   // return helpPanel;
   // }
 
+  // /**
+  // * Builds the inventory "table", showing Category, Items, quantity, and weight (in lbs) and
+  // weight
+  // * (in oz) of each; calls the display civ to pack a data shuttle
+  // *
+  // * @return the output-only JTextArea contining inventory data
+  // */
+  // private JTextArea buildInventoryArea()
+  // {
+  // // Get the Inventory items to display
+  // int invenLen = _itemList.size() - CASH_FIELDS; // _hdCiv.getInventorySize();
+  //
+  // // Add a non-editable textArea containing all the Inventory
+  // JTextArea invenArea = new JTextArea(invenLen, 0); // rows by columns
+  // // Make area restricted to displayable size (without scrollbar)
+  // invenArea.setPreferredSize(new Dimension(DATA_WIDTH, invenLen * CELL_HEIGHT));
+  // invenArea.setEditable(false);
+  // invenArea.setBackground(_backColor);
+  // invenArea.setTabSize(TAB_SIZE);
+  // invenArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, FONT_HT));
+  // invenArea.setMargin(new Insets(DEF_INSET, DEF_INSET, DEF_INSET,
+  // DEF_INSET));
+  // int j = 0;
+  // int size = ItemCategory.values().length;
+  // // Read in item groups by category, input like GENERAL|Backpack|1|10|0"\
+  // for (int i = 0; i < size; i++) {
+  // if (j < _itemList.size()) {
+  // String str = _itemList.get(j);
+  // int firstBar = str.indexOf('|');
+  // String cat = str.substring(0, firstBar);
+  // String subcat = cat;
+  // if (cat.compareTo("CASH") != 0) {
+  // invenArea.append(cat + "\n");
+  // }
+  // while (subcat.compareTo(cat) == 0) {
+  // // Display and format item
+  // String item = str.substring(firstBar + 1, str.length());
+  // item = formatItemString(item);
+  // if (subcat.compareTo("CASH") != 0) {
+  // invenArea.append(item);
+  // }
+  // j++;
+  //
+  // // Now get next item
+  // if (j < _itemList.size()) {
+  // str = _itemList.get(j);
+  // firstBar = str.indexOf('|');
+  // subcat = str.substring(0, firstBar);
+  // } else {
+  // subcat = "NEWCAT";
+  // }
+  // }
+  // }
+  // }
+  // return invenArea;
+  // }
+
+
   /**
-   * Builds the inventory "table", showing Category, Items, quantity, and weight (in lbs) and weight
-   * (in oz) of each; calls the display civ to pack a data shuttle
-   * 
-   * @return the output-only JTextArea contining inventory data
+   * Builds the inventory "table", showing Category, Items, quantity, weight (in lbs & oz of each,
+   * and total. Wielded Weapon and Armor Worn is at top. Inventory is organized by category: ARMS,
+   * ARMOR, CLOTHING, EQUIPMENT, PROVISIONS, LIVESTOCK, TRANSPORT : item, quantity, weight, total
+   * weight. See also Sacred Satchel and Magic Bag
    */
-  private JTextArea buildInventoryArea()
+  private JPanel buildInventoryPanel()
   {
-    // Get the Inventory items to display
-    int invenLen = _itemList.size() - CASH_FIELDS; // _hdCiv.getInventorySize();
+    JPanel invenPanel = new JPanel(new MigLayout("fillx, ins 0"));
+    invenPanel.setBackground(_backColor);
 
-    // Add a non-editable textArea containing all the Inventory
-    JTextArea invenArea = new JTextArea(invenLen, 0); // rows by columns
-    // Make area restricted to displayable size (without scrollbar)
-    invenArea.setPreferredSize(new Dimension(DATA_WIDTH, invenLen * CELL_HEIGHT));
-    invenArea.setEditable(false);
-    invenArea.setBackground(_backColor);
-    invenArea.setTabSize(TAB_SIZE);
-    invenArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, FONT_HT));
-    invenArea.setMargin(new Insets(DEF_INSET, DEF_INSET, DEF_INSET,
-        DEF_INSET));
-    int j = 0;
-    int size = ItemCategory.values().length;
-    // Read in item groups by category, input like GENERAL|Backpack|1|10|0"\
-    for (int i = 0; i < size; i++) {
-      if (j < _itemList.size()) {
-        String str = _itemList.get(j);
-        int firstBar = str.indexOf('|');
-        String cat = str.substring(0, firstBar);
-        String subcat = cat;
-        if (cat.compareTo("CASH") != 0) {
-          invenArea.append(cat + "\n");
-        }
-        while (subcat.compareTo(cat) == 0) {
-          // Display and format item
-          String item = str.substring(firstBar + 1, str.length());
-          item = formatItemString(item);
-          if (subcat.compareTo("CASH") != 0) {
-            invenArea.append(item);
-          }
-          j++;
+    // Get various items from the civ
+    Inventory inventory = _hdCiv.getInventory();
+    ArrayList<String> nameList = new ArrayList<String>();
 
-          // Now get next item
-          if (j < _itemList.size()) {
-            str = _itemList.get(j);
-            firstBar = str.indexOf('|');
-            subcat = str.substring(0, firstBar);
-          } else {
-            subcat = "NEWCAT";
-          }
-        }
-      }
-    }
-    return invenArea;
+    // Active arms and armor: initially, none
+    invenPanel.add(gridCell("Wielded Weapon:", "None"), "gaptop 10, span 6, growx, wrap 0");
+    invenPanel.add(gridCell("Armor Worn: ", " None"), "span 6, growx, wrap 0");
+    // Blank line before data
+    JPanel blankLine = gridCell("", "");
+    blankLine.setBackground(Color.DARK_GRAY);
+    invenPanel.add(blankLine, "span 6, growx, wrap 0");
+
+    // List of Arms: name, damage, fire rate, qty, wt, total wt
+    nameList = _hdCiv.getInventoryNames(ItemCategory.ARMS);
+    invenPanel.add(buildMultiCell(ItemCategory.ARMS.toString(), nameList), "growx, wrap");
+
+    // List of Armor
+    nameList = _hdCiv.getInventoryNames(ItemCategory.ARMOR);
+    invenPanel.add(buildMultiCell(ItemCategory.ARMOR.toString(), nameList), "growx, wrap");
+
+    // List of Equipment
+    nameList = _hdCiv.getInventoryNames(ItemCategory.EQUIPMENT);
+    invenPanel.add(buildMultiCell(ItemCategory.EQUIPMENT.toString(), nameList), "growx, wrap");
+
+    // List of Provisions
+    nameList = _hdCiv.getInventoryNames(ItemCategory.PROVISION);
+    invenPanel.add(buildMultiCell(ItemCategory.PROVISION.toString(), nameList), "growx, wrap");
+
+    // List of Clothing
+    nameList = _hdCiv.getInventoryNames(ItemCategory.CLOTHING);
+    invenPanel.add(buildMultiCell(ItemCategory.CLOTHING.toString(), nameList), "growx, wrap");
+
+    // List of Valueables
+    nameList = _hdCiv.getInventoryNames(ItemCategory.VALUABLES);
+    invenPanel.add(buildMultiCell(ItemCategory.VALUABLES.toString(), nameList), "growx, wrap");
+
+    return invenPanel;
+  }
+
+  /**
+   * Builds the magic inventory or spell materials list
+   */
+  private JPanel buildMagicPanel()
+  {
+    JPanel magicPanel = new JPanel(new MigLayout("fillx, ins 0"));
+    magicPanel.setBackground(_backColor);
+
+    // Get maigc items from the civ
+    ArrayList<String> nameList = _hdCiv.getInventoryNames(ItemCategory.SPELL_MATERIAL);
+
+    // Header cell: Item,  
+    
+    
+    magicPanel.add(gridCell("Wielded Weapon:", "None"), "gaptop 10, span 6, growx, wrap 0");
+    magicPanel.add(gridCell("Armor Worn: ", " None"), "span 6, growx, wrap 0");
+    // Blank line before data
+    JPanel blankLine = gridCell("", "");
+    blankLine.setBackground(Color.DARK_GRAY);
+    magicPanel.add(blankLine, "span 6, growx, wrap 0");
+
+    // List of Arms: name, damage, fire rate, qty, wt, total wt
+    nameList = _hdCiv.getInventoryNames(ItemCategory.ARMS);
+    magicPanel.add(buildMultiCell(ItemCategory.ARMS.toString(), nameList), "growx, wrap");
+
+    return magicPanel;
   }
 
 
   // Build panel of skills: literacy, racial skills, occupational skills, and klass skills
   private JPanel buildSkillsPanel()
   {
-    // Create a layout that spans the entire width of the panel
-    JPanel skillPanel = new JPanel(new MigLayout("fillx, ins 0", // layout constraints
-        "[]0[]0[]0[]0[]0[][left]", // align horizontally 6 cell-widths
-        "[]0[]0[]0[]0[]0[]0[]0[]0[]0[]0[]0[][bottom]")); // align vertically 12 rows
-
+    JPanel skillPanel = new JPanel(new MigLayout("fillx, ins 0"));
     skillPanel.setBackground(_backColor);
 
     // Get various skills from the civ
@@ -820,15 +793,16 @@ public class HeroDisplay extends JPanel
     skillPanel.add(buildMultiCell(ocpTitle, ocpSkills), "growx, wrap");
 
     // Section 3: Racial skills
-    skillPanel.add(buildMultiCell("RACIAL SKILLS: ", racialSkills), "growx, wrap");
+    skillPanel
+        .add(buildMultiCell("SPECIAL " + _ds.get(PersonKeys.RACENAME).toUpperCase() + " SKILLS: ",
+            racialSkills), "growx, wrap");
 
     // Section 4: Klass skills
-    // skillPanel.add(buildMultiCell(_ds.get(PersonKeys.KLASSNAME).toUpperCase() + " SKILLS: ",
-    // klassSkills), "span 6, growx, wrap");
+    skillPanel.add(buildMultiCell(_ds.get(PersonKeys.KLASSNAME).toUpperCase() + " SKILLS: ",
+        klassSkills), "growx, wrap");
 
     return skillPanel;
   }
-
 
   /**
    * Delete the Person currently being displayed into a new file.
@@ -850,18 +824,6 @@ public class HeroDisplay extends JPanel
     }
   }
 
-
-  // private JTabbedPane buildTabPanels()
-  // {
-  // // Add the tabbed pane for inventory and magic tab displays
-  // JTabbedPane tabPane = new JTabbedPane();
-  // JPanel inventoryTab = new JPanel();
-  // JPanel magicTab = new JPanel();
-  // tabPane.addTab("Inventory", inventoryTab);
-  // tabPane.addTab("Magic", magicTab);
-  // return tabPane;
-  // }
-  //
 
   /**
    * Format a fixed-field space-filled display string for the Inventory list If values are zero, the
@@ -1119,9 +1081,18 @@ public class HeroDisplay extends JPanel
     // "View Hero's special skills and abilities");
     tabPane.addTab("Skills & Abilities", null, buildSkillsPanel(),
         "View Hero's special skills and abilities");
-    tabPane.addTab("Inventory", null, new JPanel(), "View Hero's items and skills owned");
-    tabPane.addTab("Magic", null, new JPanel(), "View Hero's magical items");
-    tabPane.setSelectedIndex(1); // set default tab
+    tabPane.addTab("Inventory", null, buildInventoryPanel(),
+        "View Hero's items owned, worn, or wielded");
+
+    String klassname = _ds.get(PersonKeys.KLASSNAME);
+    String tabTitle = "Magic Items";
+    String tabText = "View Hero's magical items";
+    if ((klassname.equalsIgnoreCase("Cleric")) || (klassname.equalsIgnoreCase("Wizard"))) {
+      tabTitle = "Spell Materials";
+      tabText = "View spell caster's materials needed for spells";
+    }
+    tabPane.addTab(tabTitle, null, new JPanel(), tabText);
+    tabPane.setSelectedIndex(2); // set default tab
 
     // Add the tabs to the HeroDisplay panel
     add(tabPane, "center, wrap");
