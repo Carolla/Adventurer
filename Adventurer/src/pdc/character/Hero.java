@@ -546,6 +546,11 @@ public class Hero implements Serializable // IRegistryElement
     return _ocpSkills;
   }
 
+  public ArrayList<String> getSpellBook()
+  {
+    return _spellBook;
+  }
+
   /**
    * Load all the Hero attriutes into a single output map, keyed by the {@code PersonKeys} enum
    * 

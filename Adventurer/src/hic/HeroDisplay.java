@@ -742,7 +742,7 @@ public class HeroDisplay extends JPanel
   }
 
   /**
-   * Builds the magic inventory or spell materials list
+   * Builds the inventory of magic items (not spell materials)
    */
   private JPanel buildMagicPanel()
   {
@@ -750,21 +750,28 @@ public class HeroDisplay extends JPanel
     magicPanel.setBackground(_backColor);
 
     // Get maigc items from the civ
-    ArrayList<String> nameList = _hdCiv.getInventoryNames(ItemCategory.SPELL_MATERIAL);
+    ArrayList<String> nameList = _hdCiv.getInventoryNames(ItemCategory.MAGIC);
+    ArrayList<String> spellList = new ArrayList<String>();
 
-    // Header cell: Item,  
-    
-    
-    magicPanel.add(gridCell("Wielded Weapon:", "None"), "gaptop 10, span 6, growx, wrap 0");
-    magicPanel.add(gridCell("Armor Worn: ", " None"), "span 6, growx, wrap 0");
-    // Blank line before data
-    JPanel blankLine = gridCell("", "");
-    blankLine.setBackground(Color.DARK_GRAY);
-    magicPanel.add(blankLine, "span 6, growx, wrap 0");
+    magicPanel.add(buildMultiCell("MAGIC ITEMS", nameList), "growx, wrap 0");
 
-    // List of Arms: name, damage, fire rate, qty, wt, total wt
-    nameList = _hdCiv.getInventoryNames(ItemCategory.ARMS);
-    magicPanel.add(buildMultiCell(ItemCategory.ARMS.toString(), nameList), "growx, wrap");
+    return magicPanel;
+  }
+
+
+  /**
+   * Builds the inventory of (non-magical) spell material used for spells
+   */
+  private JPanel buildMaterialsPanel()
+  {
+    JPanel magicPanel = new JPanel(new MigLayout("fillx, ins 0"));
+    magicPanel.setBackground(_backColor);
+
+    // Get maigc items from the civ
+    ArrayList<String> itemList = _hdCiv.getInventoryNames(ItemCategory.SPELL_MATERIAL);
+    ArrayList<String> materialsList = new ArrayList<String>();
+
+    magicPanel.add(buildMultiCell("SPELL MATERIALS", itemList), "growx, wrap 0");
 
     return magicPanel;
   }
@@ -804,6 +811,23 @@ public class HeroDisplay extends JPanel
     return skillPanel;
   }
 
+  /**
+   * Builds the list of spells that spellcaster knows
+   */
+  private JPanel buildSpellsPanel()
+  {
+    JPanel spellPanel = new JPanel(new MigLayout("fillx, ins 0"));
+    spellPanel.setBackground(_backColor);
+
+    // Get maigc items from the civ
+    ArrayList<String> spellList = _hdCiv.getSpellBook();
+
+    spellPanel.add(buildMultiCell("SPELLS KNOWN", spellList), "growx, wrap 0");
+
+    return spellPanel;
+  }
+
+  
   /**
    * Delete the Person currently being displayed into a new file.
    * 
@@ -1074,7 +1098,7 @@ public class HeroDisplay extends JPanel
     // Add the tabbed pane for attributes, inventory and magic tab displays
     JTabbedPane tabPane = new JTabbedPane();
 
-    // Create and add three tabs to the HeroDisplay panel
+    // Create HeroDisplay panel tabs
     tabPane.addTab("Attributes", null, buildAttributePanel(),
         "View Hero's personal characteristics");
     // tabPane.addTab("Skills & Abilities", null, buildSkillsPanel(),
@@ -1083,16 +1107,23 @@ public class HeroDisplay extends JPanel
         "View Hero's special skills and abilities");
     tabPane.addTab("Inventory", null, buildInventoryPanel(),
         "View Hero's items owned, worn, or wielded");
+    tabPane.addTab("Magic Items", null, buildMagicPanel(),
+        "View Hero's enchanted items");
+    tabPane.setSelectedIndex(3); // set default tab
 
+    // Create the conditional tab for magic items for all klasses
     String klassname = _ds.get(PersonKeys.KLASSNAME);
-    String tabTitle = "Magic Items";
-    String tabText = "View Hero's magical items";
-    if ((klassname.equalsIgnoreCase("Cleric")) || (klassname.equalsIgnoreCase("Wizard"))) {
-      tabTitle = "Spell Materials";
-      tabText = "View spell caster's materials needed for spells";
+    // Only for Clerics
+    if (klassname.equalsIgnoreCase("Cleric")) {
+      tabPane.addTab("Sacred Satchel", null, buildMaterialsPanel(), 
+          "View Hero's materials needed for spells.");
+      tabPane.addTab("Spell Book", null, buildSpellsPanel(), "View Hero's known spells.");
     }
-    tabPane.addTab(tabTitle, null, new JPanel(), tabText);
-    tabPane.setSelectedIndex(2); // set default tab
+    // Only for Wizards
+    if (klassname.equalsIgnoreCase("Wizard")) {
+      tabPane.addTab("Magic Bag", null, buildMaterialsPanel(), "View Hero's materials needed for spells.");
+      tabPane.addTab("Spell Book", null, buildSpellsPanel(), "View Hero's known spells.");
+    }
 
     // Add the tabs to the HeroDisplay panel
     add(tabPane, "center, wrap");

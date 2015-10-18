@@ -45,8 +45,10 @@ public class Wizard extends Klass
   {
     // Basic inventory Items: category, name, quantity, weight (each in fractional lb)
     inven.addItem(new Item(ItemCategory.ARMS, "Walking stick (dmg=d6T, attack=1)", 1, 3.0));
-    inven.addItem(new Item(ItemCategory.SPELL_MATERIAL, "Spell book", 1, 5.0));
-    inven.addItem(new Item(ItemCategory.SPELL_MATERIAL, "Magic bag", 1, 0.25));
+    inven.addItem(new Item(ItemCategory.MAGIC, "Spell book", 1, 5.0));
+    inven.addItem(new Item(ItemCategory.MAGIC, "Magic bag", 1, 0.25));
+    // for testing
+    inven.addItem(new Item(ItemCategory.SPELL_MATERIAL, "Live spider", 1, 0.125));
     return inven;
   }
 

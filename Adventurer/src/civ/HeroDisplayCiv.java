@@ -187,6 +187,15 @@ public class HeroDisplayCiv
     return _inventory.getNbrItems();
   }
 
+  /**
+   * @return the list of spells known
+   */
+  public ArrayList<String> getSpellBook()
+  {
+    return _hero.getSpellBook();
+  }
+
+  
   // /**
   // * Save the Person to a new file. This method pops up a file chooser so the user can select a
   // * filename; else the Hero's name is used. If the Person is newly created, then the Person is

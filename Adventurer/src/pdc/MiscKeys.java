@@ -32,7 +32,7 @@ public class MiscKeys
 
   /** Enum of various category of Inventory Items */
   public enum ItemCategory {
-    ARMS, ARMOR, CLOTHING, EQUIPMENT, PROVISION, SPELL_MATERIAL, VALUABLES;
+    ARMS, ARMOR, CLOTHING, EQUIPMENT, MAGIC, PROVISION, SPELL_MATERIAL, VALUABLES;
   };
 
 
