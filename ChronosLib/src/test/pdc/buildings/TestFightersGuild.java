@@ -14,7 +14,6 @@ package test.pdc.buildings;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import mylib.ApplicationException;
 import mylib.MsgCtrl;
 
@@ -46,8 +45,6 @@ public class TestFightersGuild
     private final String NAME = "Acme Supplies";
     /** Expected name of Innkeeper */
     private final String OWNER = "Ripper";
-    /** Expected hovertext */
-    private final String HOVERTEXT = "Click and see!";
     /** Introduction */
     private final String INTRO = "This is the hover text for the building icon";
     /** Description */
@@ -87,7 +84,7 @@ public class TestFightersGuild
     @Before
     public void setUp() throws Exception
     {
-        _ftrsGuild = new FightersGuild(NAME, OWNER, HOVERTEXT, INTRO, DESC);
+        _ftrsGuild = new FightersGuild();
         assertNotNull(_ftrsGuild);
         _ftrsGuild.setBusinessHours(TEST_OPEN, TEST_CLOSING);
         _mock = _ftrsGuild.new MockFightersGuild();
@@ -126,39 +123,13 @@ public class TestFightersGuild
         dump(_ftrsGuild);
         // Verify the name, innkeeper, and business hours
         assertEquals(NAME, _ftrsGuild.getName());
-        assertEquals(OWNER, _ftrsGuild.getMaster().getName());
+        assertEquals(OWNER, _ftrsGuild.getMaster());
         // Verify the standard intro and descrption; there is no busy description yet
         assertEquals(INTRO, _ftrsGuild.getExteriorDescription());
         assertEquals(DESC, _ftrsGuild.getInteriorDescription());
         // Verify business hours in meridian time
         assertEquals(TEST_MEROPEN, _ftrsGuild.getOpeningTime());
         assertEquals(TEST_MERCLOSING, _ftrsGuild.getClosingTime());
-    }    
-
-
-    /** Chronos.pdc.Store
-     * @Error   trigger exception with bad business hours
-     * @Error   trigger exception with building master not in NPC Registry
-     * @throws ApplicationException if unexpected error occurs 
-     */
-    @Test
-    public void testStoreErrors() throws ApplicationException
-    {
-        MsgCtrl.auditMsgsOn(false);
-        MsgCtrl.errorMsgsOn(false);
-        MsgCtrl.msgln(this, "\t testStoreErrors()");
-    
-        // Clear out old Inn from setUp()
-        _ftrsGuild = null;
-        _mock = null;
-        
-        // ERROR  Building Master does not exist in Registry
-        try {
-            _ftrsGuild = new FightersGuild(NAME, "Unregistered Owner", HOVERTEXT, INTRO, DESC);
-        } catch (ApplicationException ex) {
-            MsgCtrl.msgln("\tExpected exception: " + ex.getMessage());
-        }
-        assertNull(_ftrsGuild);
     }    
 
     
@@ -185,7 +156,7 @@ public class TestFightersGuild
         dump(_ftrsGuild);
         // Verify the name, innkeeper, and business hours
         assertEquals(DEF_NAME, _ftrsGuild.getName());
-        assertEquals(DEF_MASTER, _ftrsGuild.getMaster().getName());
+        assertEquals(DEF_MASTER, _ftrsGuild.getMaster());
         // Verify the standard intro and descrption; there is no busy description yet
         String intro =  _mock.getIntro();
         String desc =  _mock.getDescrption();
@@ -213,7 +184,7 @@ public class TestFightersGuild
     private void dump(FightersGuild guild)
     {
         MsgCtrl.msg("\t Created: \t" + guild.getName());
-        MsgCtrl.msgln("\t owned by " + guild.getMaster().getName());
+        MsgCtrl.msgln("\t owned by " + guild.getMaster());
         int[] hours = guild.getBusinessHours();
         int oTime = hours[0];
         int cTime = hours[1];

@@ -14,7 +14,6 @@ package test.pdc.buildings;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import mylib.ApplicationException;
 import mylib.MsgCtrl;
 
@@ -87,7 +86,7 @@ public class TestRoguesGuild
     @Before
     public void setUp() throws Exception
     {
-        _thfGuild = new RoguesGuild(NAME, OWNER, HOVERTEXT, INTRO,  DESC);
+        _thfGuild = new RoguesGuild();
         assertNotNull(_thfGuild);
         _thfGuild.setBusinessHours(TEST_OPEN, TEST_CLOSING);
         _mock = _thfGuild.new MockRoguesGuild();
@@ -126,39 +125,13 @@ public class TestRoguesGuild
         dump(_thfGuild);
         // Verify the name, innkeeper, and business hours
         assertEquals(NAME, _thfGuild.getName());
-        assertEquals(OWNER, _thfGuild.getMaster().getName());
+        assertEquals(OWNER, _thfGuild.getMaster());
         // Verify the standard intro and descrption; there is no busy description yet
         assertEquals(HOVERTEXT, INTRO,  _thfGuild.getExteriorDescription());
         assertEquals(DESC, _thfGuild.getInteriorDescription());
         // Verify business hours in meridian time
         assertEquals(TEST_MEROPEN, _thfGuild.getOpeningTime());
         assertEquals(TEST_MERCLOSING, _thfGuild.getClosingTime());
-    }    
-
-
-    /** Chronos.pdc.RoguesGuild
-     * @Error   trigger exception with bad business hours
-     * @Error   trigger exception with building master not in NPC Registry
-     * @throws ApplicationException if unexpected error occurs 
-     */
-    @Test
-    public void testRoguesGuildErrors() throws ApplicationException
-    {
-        MsgCtrl.auditMsgsOn(false);
-        MsgCtrl.errorMsgsOn(false);
-        MsgCtrl.msgln(this, "\t testRoguesGuildErrors()");
-    
-        // Clear out old Inn from setUp()
-        _thfGuild = null;
-        _mock = null;
-        
-        // ERROR  Building Master does not exist in Registry
-        try {
-            _thfGuild = new RoguesGuild(NAME, "Unregistered Owner", HOVERTEXT, INTRO,  DESC);
-        } catch (ApplicationException ex) {
-            MsgCtrl.msgln("\tExpected exception: " + ex.getMessage());
-        }
-        assertNull(_thfGuild);
     }    
 
     
@@ -185,7 +158,7 @@ public class TestRoguesGuild
         dump(_thfGuild);
         // Verify the name, innkeeper, and business hours
         assertEquals(DEF_NAME, _thfGuild.getName());
-        assertEquals(DEF_MASTER, _thfGuild.getMaster().getName());
+        assertEquals(DEF_MASTER, _thfGuild.getMaster());
         // Verify the standard intro and descrption; there is no busy description yet
         String intro =  _mock.getIntro();
         String desc =  _mock.getDescrption();
@@ -213,7 +186,7 @@ public class TestRoguesGuild
     private void dump(RoguesGuild guild)
     {
         MsgCtrl.msg("\t Created: \t" + guild.getName());
-        MsgCtrl.msgln("\t owned by " + guild.getMaster().getName());
+        MsgCtrl.msgln("\t owned by " + guild.getMaster());
         int[] hours = guild.getBusinessHours();
         int oTime = hours[0];
         int cTime = hours[1];

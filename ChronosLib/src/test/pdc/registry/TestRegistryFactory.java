@@ -27,6 +27,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.Chronos;
+import chronos.pdc.Command.Scheduler;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 
@@ -42,275 +43,242 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
  */
 public class TestRegistryFactory
 {
-  static private RegistryFactory _rf = null;
+    private RegistryFactory _rf = null;
+    private Scheduler skedder = null;
 
-  // ============================================================
-  // Fixtures
-  // ============================================================
+    // ============================================================
+    // Fixtures
+    // ============================================================
 
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception
-  {}
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception
+    {}
 
-  @AfterClass
-  public static void tearDownAfterClass() throws Exception
-  {}
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception
+    {}
 
-  @Before
-  public void setUp() throws Exception
-  {
-    _rf = RegistryFactory.getInstance();
-    assertNotNull(_rf);
-  }
+    @Before
+    public void setUp() throws Exception
+    {
+        skedder = new Scheduler();
+        _rf = new RegistryFactory(skedder);
+        _rf.initRegistries();
+        assertNotNull(_rf);
+    }
 
-  @After
-  public void tearDown() throws Exception
-  {
-    _rf.closeAllRegistries();
-    assertEquals(_rf.getNumberOfRegistries(), 0);
-    _rf = null;
-    // Turn off messaging at end of each test
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-  }
+    @After
+    public void tearDown() throws Exception
+    {
+        _rf.closeAllRegistries();
 
-
-  // ============================================================
-  // Begin Tests
-  // ============================================================
-
-  /**
-   * @Not.Needed {@code RegistryFactory()} -- wrapper method <br>
-   * @Not.Needed {@code getInstance()} -- wrapper method <br>
-   */
-  public void _testsNotNeeded()
-  {}
-
-  /*
-   * closeAllRegistries() deleteAllRegistries() getExisting(RegKey)
-   */
-
-  /**
-   * Close a registry and remove it from the factory collection. Do not delete the file.
-   * 
-   * @Normal.Test close an existing registry
-   */
-  @Test
-  public void testCloseRegistry()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    // SETUP: ensure that registry already exists and is open
-    _rf.getRegistry(RegKey.ITEM);
-    int regnum = _rf.getNumberOfRegistries();
-    File regfile = new File(Chronos.ItemRegPath);
-    assertTrue(regfile.exists());
-
-    // DO
-    MsgCtrl.msgln("Number of registries before closing = " + regnum);
-    _rf.closeRegistry(RegKey.ITEM);
-    MsgCtrl.msgln("Number of registries after closing = " + regnum);
-
-    // VERIFY
-    assertEquals(_rf.getNumberOfRegistries(), regnum - 1);
-    assertTrue(regfile.exists()); // file did not get deleted
-  }
+        // Turn off messaging at end of each test
+        MsgCtrl.auditMsgsOn(false);
+        MsgCtrl.errorMsgsOn(false);
+    }
 
 
-  /**
-   * Close a registry and remove it from the factory collection. Do not delete the file.
-   * 
-   * @Error.Test close a registry that is closed (but file may or may not exist)
-   */
-  @Test
-  public void testCloseRegistry_Empty()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
+    // ============================================================
+    // Begin Tests
+    // ============================================================
 
-    // SETUP: ensure that registry is exists and is closed
-    _rf.getRegistry(RegKey.ITEM);
-    int regnum = _rf.getNumberOfRegistries();
-    _rf.closeRegistry(RegKey.ITEM);
-    assertEquals(_rf.getNumberOfRegistries(), regnum - 1);
+    /**
+     * @Not.Needed {@code RegistryFactory()} -- wrapper method <br>
+     */
+    public void _testsNotNeeded()
+    {}
 
-    // DO: try closing it again
-    _rf.closeRegistry(RegKey.ITEM);
+    /*
+     * closeAllRegistries() deleteAllRegistries() getExisting(RegKey)
+     */
 
-    // VERIFY: size does not decrease; no runtime error; nothing else happens
-    assertEquals(_rf.getNumberOfRegistries(), regnum - 1);
+    /**
+     * Close a registry and remove it from the factory collection. Do not delete the file.
+     * 
+     * @Normal.Test close an existing registry
+     */
+    @Test
+    public void testCloseRegistry()
+    {
+        MsgCtrl.where(this);
 
-  }
+        // SETUP: ensure that registry already exists and is open
+        _rf.getRegistry(RegKey.ITEM);
+        int regnum = _rf.getNumberOfRegistries();
 
-  /**
-   * Create a singleton registry given a registry type, using Class reflection
-   * 
-   * @Normal.Test create a valid registry
-   * @Error.Test passing a non-valid enum RegKey type will cause a compile error
-   * @Null.Test passing a null enum RegKey type will NOT cause a compile error
-   */
-  @Test
-  public void testCreateRegistry()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
+        // DO
+        _rf.closeRegistry(RegKey.ITEM);
 
-    // SETUP: ensure that registry doesn't already exist
-    int regnum = _rf.getNumberOfRegistries();
-    File regfile = new File(Chronos.ItemRegPath);
-    regfile.delete();
-    assertFalse(regfile.exists());
+        // VERIFY
+        assertEquals(_rf.getNumberOfRegistries(), regnum - 1);
+    }
 
-    // DO
-    _rf.createRegistry(RegKey.ITEM);
+    /**
+     * Close a registry and remove it from the factory collection. Do not delete the file.
+     * 
+     * @Normal.Test close an existing registry
+     */
+    @Test
+    public void closeRegistryShouldNotDeleteRegistry()
+    {
+        File regfile = new File(Chronos.ItemRegPath);
+        assertTrue(regfile.exists());
 
-    // VERIFY
-    assertEquals(_rf.getNumberOfRegistries(), regnum + 1);
-    assertTrue(regfile.exists());
-
-    // Error pass in a null regkey
-    assertNull(_rf.createRegistry(null));
-
-  }
+        _rf.closeRegistry(RegKey.ITEM);
+        assertTrue(regfile.exists()); // file did not get deleted
+    }
 
 
-  /**
-   * How many registries exist in the Factory?
-   */
-  @Test
-  public void testGetNumberOfRegistries()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
+    /**
+     * Close a registry and remove it from the factory collection. Do not delete the file.
+     * 
+     * @Error.Test close a registry that is closed (but file may or may not exist)
+     */
+    @Test
+    public void testCloseRegistry_Empty()
+    {
+        MsgCtrl.auditMsgsOn(false);
+        MsgCtrl.errorMsgsOn(false);
+        MsgCtrl.where(this);
 
-    // SETUP: Clear all registry entries
-    _rf.closeAllRegistries();
+        // SETUP: ensure that registry is exists and is closed
+        _rf.getRegistry(RegKey.ITEM);
+        int regnum = _rf.getNumberOfRegistries();
+        _rf.closeRegistry(RegKey.ITEM);
+        assertEquals(_rf.getNumberOfRegistries(), regnum - 1);
 
-    // DO: create two registries
-    _rf.getRegistry(RegKey.ITEM);
-    _rf.getRegistry(RegKey.SKILL);
-    // VERIFY: Ensure that only two registries exist
-    assertEquals(_rf.getNumberOfRegistries(), 2);
+        // DO: try closing it again
+        _rf.closeRegistry(RegKey.ITEM);
 
-    // DO: create a third registry
-    _rf.getRegistry(RegKey.NPC);
-    // VERIFY: Ensure that three registries exist
-    assertEquals(_rf.getNumberOfRegistries(), 3);
+        // VERIFY: size does not decrease; no runtime error; nothing else happens
+        assertEquals(_rf.getNumberOfRegistries(), regnum - 1);
 
-    // DO: remove two registries
-    _rf.closeRegistry(RegKey.SKILL);
-    _rf.closeRegistry(RegKey.ITEM);
-
-    // VERIFY: Ensure that only one registry exists
-    assertEquals(_rf.getNumberOfRegistries(), 1);
-
-    // DO: last registrys
-    _rf.closeRegistry(RegKey.NPC);
-    // VERIFY: Ensure that only one registry exists
-    assertEquals(_rf.getNumberOfRegistries(), 0);
-
-    // TEARDOWN
-    // Nothing to do
-  }
+    }
 
 
-  /**
-   * Get a Registry, and if it doesn't exist, create it and add the entry to the factory's map
-   * 
-   * @Normal.Test Get a registry that does not yet exist
-   */
-  @Test
-  public void testGetRegistry_Uncreated()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
+    /**
+     * How many registries exist in the Factory?
+     */
+    @Test
+    public void testGetNumberOfRegistries()
+    {
+        MsgCtrl.auditMsgsOn(false);
+        MsgCtrl.errorMsgsOn(false);
+        MsgCtrl.where(this);
 
-    // SETUP: ensure that registries to be created does not yet exist
-    _rf.closeAllRegistries();
-    assertEquals(_rf.getNumberOfRegistries(), 0);
-    File regfile1 = new File(Chronos.SkillRegPath);
-    regfile1.delete();
-    assertFalse(regfile1.exists());
+        // SETUP: Clear all registry entries
+        _rf.closeAllRegistries();
 
-    // DO:
-    _rf.getRegistry(RegKey.SKILL);
+        // DO: create two registries
+        _rf.getRegistry(RegKey.ITEM);
+        _rf.getRegistry(RegKey.SKILL);
+        // VERIFY: Ensure that only two registries exist
+        assertEquals(_rf.getNumberOfRegistries(), 2);
 
-    // VERIFY: factory has a new registry and file exists
-    assertTrue(regfile1.exists());
-    assertEquals(_rf.getNumberOfRegistries(), 1);
+        // DO: create a third registry
+        _rf.getRegistry(RegKey.NPC);
+        // VERIFY: Ensure that three registries exist
+        assertEquals(_rf.getNumberOfRegistries(), 3);
 
-    // TEARDOWN
-  }
+        // DO: remove two registries
+        _rf.closeRegistry(RegKey.SKILL);
+        _rf.closeRegistry(RegKey.ITEM);
 
+        // VERIFY: Ensure that only one registry exists
+        assertEquals(_rf.getNumberOfRegistries(), 1);
 
-  /**
-   * Get a Registry, and if it doesn't exist, create it and add the entry to the factory's map
-   * 
-   * @Normal.Test Get a registry that already exists
-   */
-  @Test
-  public void testGetRegistry_Exists()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
+        // DO: last registrys
+        _rf.closeRegistry(RegKey.NPC);
+        // VERIFY: Ensure that only one registry exists
+        assertEquals(_rf.getNumberOfRegistries(), 0);
 
-    // SETUP: ensure that registry to be created already exists
-    assertEquals(_rf.getNumberOfRegistries(), 0);
-    Registry testreg = _rf.getRegistry(RegKey.SKILL);
-    File regfile = new File(Chronos.SkillRegPath);
-//    assertTrue(regfile.exists());
-    assertEquals(_rf.getNumberOfRegistries(), 1);
-
-    // DO:
-    Registry testreg2 = _rf.getRegistry(RegKey.SKILL);
-
-    // VERIFY: factory has same registry file exists
-    assertTrue(regfile.exists());
-    assertEquals(_rf.getNumberOfRegistries(), 1);
-    assertEquals(testreg, testreg2);
-
-    // TEARDOWN
-    // Nothing to do
-  }
+        // TEARDOWN
+        // Nothing to do
+    }
 
 
-  /**
-   * Get a Registry, and if it doesn't exist, create it and add the entry to the factory's map
-   * 
-   * @Null.Test use null to request a null registry returns null
-   */
-  @Test
-  public void testGetRegistry_Errors()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
+    /**
+     * Get a Registry, and if it doesn't exist, create it and add the entry to the factory's map
+     * 
+     * @Normal.Test Get a registry that does not yet exist
+     */
+    @Test
+    public void testGetRegistry_Uncreated()
+    {
+        MsgCtrl.auditMsgsOn(false);
+        MsgCtrl.errorMsgsOn(false);
+        MsgCtrl.where(this);
 
-    // SETUP
-    assertEquals(_rf.getNumberOfRegistries(), 0);
+        // SETUP: ensure that registries to be created does not yet exist
+        _rf.closeAllRegistries();
+        assertEquals(_rf.getNumberOfRegistries(), 0);
+        File regfile1 = new File(Chronos.SkillRegPath);
+        regfile1.delete();
+        assertFalse(regfile1.exists());
 
-    // DO: Null request
-    Registry testreg = _rf.getRegistry(null);
-    
-    // VERIFY
-    assertNull(testreg);
-    assertEquals(_rf.getNumberOfRegistries(), 0);
+        // DO:
+        _rf.getRegistry(RegKey.SKILL);
 
-    // TEARDOWN
-    // None
+        // VERIFY: factory has a new registry and file exists
+        assertTrue(regfile1.exists());
+        assertEquals(_rf.getNumberOfRegistries(), 1);
 
-  }
+        // TEARDOWN
+    }
 
-  // ============================================================
-  // Helper Methods
-  // ============================================================
+
+    /**
+     * Get a Registry, and if it doesn't exist, create it and add the entry to the factory's map
+     * 
+     * @Normal.Test Get a registry that already exists
+     */
+    @Test
+    public void testGetRegistry_Exists()
+    {
+        MsgCtrl.auditMsgsOn(false);
+        MsgCtrl.errorMsgsOn(false);
+        MsgCtrl.where(this);
+
+        // SETUP: ensure that registry to be created already exists
+        Registry testreg = _rf.getRegistry(RegKey.SKILL);
+        File regfile = new File(Chronos.SkillRegPath);
+
+        // DO:
+        Registry testreg2 = _rf.getRegistry(RegKey.SKILL);
+
+        // VERIFY: factory has same registry file exists
+        assertTrue(regfile.exists());
+        assertEquals(testreg, testreg2);
+
+        // TEARDOWN
+        // Nothing to do
+    }
+
+
+    /**
+     * Get a Registry, and if it doesn't exist, create it and add the entry to the factory's map
+     * 
+     * @Null.Test use null to request a null registry returns null
+     */
+    @Test
+    public void testGetRegistry_Errors()
+    {
+        MsgCtrl.auditMsgsOn(false);
+        MsgCtrl.errorMsgsOn(false);
+        MsgCtrl.where(this);
+
+        // SETUP
+
+        // DO: Null request
+        Registry testreg = _rf.getRegistry(null);
+
+        // VERIFY
+        assertNull(testreg);
+    }
+
+    // ============================================================
+    // Helper Methods
+    // ============================================================
 
 
 

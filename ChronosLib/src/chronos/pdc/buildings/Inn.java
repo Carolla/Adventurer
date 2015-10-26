@@ -218,7 +218,7 @@ public class Inn extends Building
         }
         Inn inn = (Inn) target;
         boolean bName = this.getKey().equals(inn.getKey());
-        boolean bMaster = this.getMaster().getName().equals(inn.getMaster().getName());
+        boolean bMaster = this.getMaster().equals(inn.getMaster());
         return (bName && bMaster);
     }
 
@@ -257,67 +257,5 @@ public class Inn extends Building
     {
         _busyDescription = bdesc;
     }
-
-    public boolean remove(NPC _npc)
-    {
-        return true;
-    }
-
-    public boolean add(NPC _npc)
-    {
-        return true;
-    }
-
-
-    /*
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ INNER CLASS: MockInn
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-     */
-    public class MockInn
-    {
-        /** default ctor */
-        public MockInn()
-        {}
-
-        /** Get the Inn's name */
-        public String getName()
-        {
-            return _name;
-        }
-
-        /** Get the Innkeeper's name */
-        public String getMasterName()
-        {
-            return _buildingMaster.getName();
-        }
-
-        /** Get the description statements: intro, standard desc; busy desc */
-        public String[] getDescs()
-        {
-            String[] s = new String[3];
-            s[0] = _extDesc;
-            s[1] = _intDesc;
-            s[2] = _busyDescription;
-            return s;
-        }
-
-        /**
-         * Get the current number of patrons, making the Inn busy or notbusy
-         * 
-         * @param nbrPatrons number of patrons in the Inn, not counting staff
-         */
-        public void setCurrentPatrons(int nbrPatrons)
-        {
-            _patronsNow = nbrPatrons;
-        }
-
-        /** Set the standard description */
-        public void setDesc(String desc)
-        {
-            _intDesc = desc;
-        }
-
-    } // end of MockInn inner class
-
 
 } // end of Inn class

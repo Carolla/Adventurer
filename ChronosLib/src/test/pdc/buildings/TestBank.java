@@ -13,7 +13,6 @@ package test.pdc.buildings;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import mylib.ApplicationException;
 import mylib.MsgCtrl;
 
@@ -42,8 +41,6 @@ public class TestBank
 
   /** Expected name of inn */
   private final String NAME = "Ready-Cache Bank";
-  /** Expected hovertext */
-  private final String HOVERTEXT = "Click and see!";
   /** Expected name of Innkeeper */
   private final String OWNER = "J.P. Pennypacker";
   /** Introduction */
@@ -83,7 +80,7 @@ public class TestBank
   {
     RegistryFactory _rf = RegistryFactory.getInstance();
     assertNotNull(_rf);
-    _bank = new Bank(NAME, OWNER, HOVERTEXT, INTRO, DESC);
+    _bank = new Bank();
     assertNotNull(_bank);
     _bank.setBusinessHours(TEST_OPEN, TEST_CLOSING);
     _mock = _bank.new MockBank();
@@ -126,40 +123,13 @@ public class TestBank
     dump(_bank);
     // Verify the name, innkeeper, and business hours
     assertEquals(NAME, _bank.getName());
-    assertEquals(OWNER, _bank.getMaster().getName());
+    assertEquals(OWNER, _bank.getMaster());
     // Verify the standard intro and descrption; there is no busy description yet
     assertEquals(INTRO, _bank.getExteriorDescription());
     assertEquals(DESC, _bank.getInteriorDescription());
     // Verify business hours in meridian time
     assertEquals(TEST_MEROPEN, _bank.getOpeningTime());
     assertEquals(TEST_MERCLOSING, _bank.getClosingTime());
-  }
-
-
-  /**
-   * Chronos.pdc.Bank
-   * 
-   * @Error trigger exception with building master not in NPC Registry
-   * @throws ApplicationException if unexpected error occurs
-   */
-  @Test
-  public void testBankErrors() throws ApplicationException
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\t testBankErrors()");
-
-    // Clear out old Inn from setUp()
-    _bank = null;
-    _mock = null;
-
-    // ERROR Building Master does not exist in Registry
-    try {
-      _bank = new Bank(NAME, "Unregistered Owner", HOVERTEXT, INTRO, DESC);
-    } catch (ApplicationException ex) {
-      MsgCtrl.msgln("\tExpected exception: " + ex.getMessage());
-    }
-    assertNull(_bank);
   }
 
 
@@ -188,7 +158,7 @@ public class TestBank
     dump(_bank);
     // Verify the name, innkeeper, and business hours
     assertEquals(_mock.getName(), _bank.getName());
-    assertEquals("J.P. Pennypacker", _bank.getMaster().getName());
+    assertEquals("J.P. Pennypacker", _bank.getMaster());
     // Verify the standard intro and descrption; there is no busy description yet
     String[] s = _mock.getDescs();
     assertEquals(s[0], _bank.getExteriorDescription());
@@ -237,7 +207,7 @@ public class TestBank
   private void dump(Bank myBank)
   {
     MsgCtrl.msg("\t Created: \t" + myBank.getName());
-    MsgCtrl.msgln("\t owned by " + myBank.getMaster().getName());
+    MsgCtrl.msgln("\t owned by " + myBank.getMaster());
     int[] hours = myBank.getBusinessHours();
     int oTime = hours[0];
     int cTime = hours[1];

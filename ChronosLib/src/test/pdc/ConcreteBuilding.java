@@ -42,7 +42,7 @@ public class ConcreteBuilding extends Building
     public ConcreteBuilding(String name, String master, String hoverText, String intro, String desc) 
                         throws ApplicationException
     {
-        super(name, master, hoverText, intro, desc);
+        super(name, master, hoverText, intro, desc, null, null);
     }
 
 

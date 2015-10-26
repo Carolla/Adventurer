@@ -14,7 +14,6 @@ package test.pdc.buildings;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import mylib.ApplicationException;
 import mylib.MsgCtrl;
 
@@ -85,7 +84,7 @@ public class TestJail
     @Before
     public void setUp() throws Exception
     {
-        _jail = new Jail(NAME, OWNER, HOVERTEXT, INTRO,  DESC);
+        _jail = new Jail();
         assertNotNull(_jail);
         _jail.setBusinessHours(TEST_OPEN, TEST_CLOSING);
         _mock = _jail.new MockJail();
@@ -124,38 +123,13 @@ public class TestJail
         dump(_jail);
         // Verify the name, innkeeper, and business hours
         assertEquals(NAME, _jail.getName());
-        assertEquals(OWNER,  _jail.getMaster().getName());
+        assertEquals(OWNER,  _jail.getMaster());
         // Verify the standard intro and descrption; there is no busy description yet
         assertEquals(HOVERTEXT, INTRO,  _jail.getExteriorDescription());
         assertEquals(DESC, _jail.getInteriorDescription());
         // Verify business hours in meridian time
         assertEquals(TEST_MEROPEN, _jail.getOpeningTime());
         assertEquals(TEST_MERCLOSING, _jail.getClosingTime());
-    }    
-
-    
-    /** Chronos.pdc.Jail
-     * @Error   trigger exception with building master not in NPC Registry
-     * @throws ApplicationException if unexpected error occurs 
-     */
-    @Test
-    public void testJailErrors() throws ApplicationException
-    {
-        MsgCtrl.auditMsgsOn(false);
-        MsgCtrl.errorMsgsOn(false);
-        MsgCtrl.msgln(this, "\t testJailErrors()");
-    
-        // Clear out old Inn from setUp()
-        _jail = null;
-        _mock = null;
-        
-        // ERROR  Building Master does not exist in Registry
-        try {
-            _jail = new Jail(NAME, "Unregistered Owner", HOVERTEXT, INTRO,  DESC);
-        } catch (ApplicationException ex) {
-            MsgCtrl.msgln("\tExpected exception: " + ex.getMessage());
-        }
-        assertNull(_jail);
     }    
 
 
@@ -182,7 +156,7 @@ public class TestJail
         dump(_jail);
         // Verify the name, innkeeper, and business hours
         assertEquals(_mock.getName(), _jail.getName());
-        assertEquals(DEF_OWNER, _jail.getMaster().getName());
+        assertEquals(DEF_OWNER, _jail.getMaster());
         // Verify the standard intro and descrption; there is no busy description yet
         String[] s = _mock.getDescs();
         assertEquals(s[0], _jail.getExteriorDescription());
@@ -228,7 +202,7 @@ public class TestJail
     private void dump(Jail myJail)
     {
         MsgCtrl.msg("\t Created: \t" + myJail.getName());
-        MsgCtrl.msgln("\t owned by " + myJail.getMaster().getName());
+        MsgCtrl.msgln("\t owned by " + myJail.getMaster());
         int[] hours = myJail.getBusinessHours();
         int oTime = hours[0];
         int cTime = hours[1];

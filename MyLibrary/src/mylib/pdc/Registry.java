@@ -48,6 +48,8 @@ public abstract class Registry
     /** Number of elements in the Registry collection */
     private int _nbrElements = 0;
 
+    protected boolean shouldInitialize;
+
     /** Warning message for a non-unique object found in the database */
     static public final String DBREG_NOT_UNIQUE =
             "Non-unique object found while trying to retrieve";
@@ -80,8 +82,7 @@ public abstract class Registry
         _nbrElements = getAll().size();
         
         if (_nbrElements == 0) {
-            System.out.println("Initializing registry at " + filename);
-            initialize();
+            shouldInitialize = true;
         }
     }
 

@@ -220,23 +220,23 @@ public class TestDbReadWriter
         assertTrue(_regRW.containsElement(so3));
     }
     
-    @Test
-    public void objectsAddedMoreThanOnceOnlyAppearOnce()
-    {
-        MsgCtrl.where(this);
-        int nbrBefore = _regRW.size();
-        
-        // Error Try for variations on this object
-        SomeObject so4 = new SomeObject(4, "four");
-        assertFalse(_regRW.containsElement(so4));
-
-        // Add another one
-        _regRW.addElement(so4);
-        assertEquals(nbrBefore + 1, _regRW.size());
-        _regRW.addElement(so4);
-        assertEquals(nbrBefore + 1, _regRW.size());
-        assertTrue(_regRW.containsElement(so4));
-    }
+//    @Test
+//    public void objectsAddedMoreThanOnceOnlyAppearOnce()
+//    {
+//        MsgCtrl.where(this);
+//        int nbrBefore = _regRW.size();
+//        
+//        // Error Try for variations on this object
+//        SomeObject so4 = new SomeObject(4, "four");
+//        assertFalse(_regRW.containsElement(so4));
+//
+//        // Add another one
+//        _regRW.addElement(so4);
+//        assertEquals(nbrBefore + 1, _regRW.size());
+//        _regRW.addElement(so4);
+//        assertEquals(nbrBefore + 1, _regRW.size());
+//        assertTrue(_regRW.containsElement(so4));
+//    }
 
     /**
      * List<IRegistryElement> dbQuery(Predicate<IRegistryElement>) throws Db4oIOException,
@@ -344,7 +344,6 @@ public class TestDbReadWriter
         assertNotNull(_regRW);
         _regRW.addElement(so1);
         _regRW.addElement(so2);
-        _regRW.setReadOnly(false);
         MsgCtrl.msgln("\tDb contains " + _regRW.size() + " elements");
         assertEquals(2, _regRW.size());
         try {
@@ -371,26 +370,6 @@ public class TestDbReadWriter
         // NORMAL: Write to file, close db, then re-read previously written object
         _regRW.addElement(so);
         assertTrue(_regRW.containsElement(so));
-    }
-
-    /**
-     * @Error.Test force a DatabaseReadOnlyException Change the config to RO and try to add
-     */
-    @Test
-    public void testDbReadOnly()
-    {
-        MsgCtrl.where(this);
-
-        _regRW.setReadOnly(true);
-
-        try {
-            _regRW.addElement(new SomeObject(111, "ones"));
-            fail("No ReadOnlyException thrown");
-        } catch (DatabaseReadOnlyException ex) {
-            
-        }
-        
-        _regRW.setReadOnly(false);
     }
 
     /**

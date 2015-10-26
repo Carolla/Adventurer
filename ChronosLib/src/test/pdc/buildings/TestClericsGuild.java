@@ -14,7 +14,6 @@ package test.pdc.buildings;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import mylib.ApplicationException;
 import mylib.MsgCtrl;
 
@@ -46,8 +45,6 @@ public class TestClericsGuild
     private final String NAME = "House on Haunted Hill";
     /** Expected name of Innkeeper */
     private final String OWNER = "Ripper";
-    /** Expected hovertext */
-    private final String HOVERTEXT = "Click and see!";
     /** Introduction */
     private final String INTRO = "This is the hover text for the building icon";
     /** Description */
@@ -86,7 +83,7 @@ public class TestClericsGuild
     @Before
     public void setUp() throws Exception
     {
-        _clericGuild = new ClericsGuild(NAME, OWNER, HOVERTEXT, INTRO, DESC);
+        _clericGuild = new ClericsGuild();
         assertNotNull(_clericGuild);
         _clericGuild.setBusinessHours(TEST_OPEN, TEST_CLOSING);
         _mock = _clericGuild.new MockClericsGuild();
@@ -125,7 +122,7 @@ public class TestClericsGuild
         dump(_clericGuild);
         // Verify the name, innkeeper, and business hours
         assertEquals(NAME, _clericGuild.getName());
-        assertEquals(OWNER, _clericGuild.getMaster().getName());
+        assertEquals(OWNER, _clericGuild.getMaster());
         // Verify the standard intro and descrption; there is no busy description yet
         assertEquals(INTRO, _clericGuild.getExteriorDescription());
         assertEquals(DESC, _clericGuild.getInteriorDescription());
@@ -133,33 +130,6 @@ public class TestClericsGuild
         assertEquals(TEST_MEROPEN, _clericGuild.getOpeningTime());
         assertEquals(TEST_MERCLOSING, _clericGuild.getClosingTime());
     }    
-
-
-    /** Chronos.pdc.ClericsGuild
-     * @Error   trigger exception with bad business hours
-     * @Error   trigger exception with building master not in NPC Registry
-     * @throws ApplicationException if unexpected error occurs 
-     */
-    @Test
-    public void testClericsGuildErrors() throws ApplicationException
-    {
-        MsgCtrl.auditMsgsOn(false);
-        MsgCtrl.errorMsgsOn(false);
-        MsgCtrl.msgln(this, "\t testClericsGuildErrors()");
-    
-        // Clear out old Inn from setUp()
-        _clericGuild = null;
-        _mock = null;
-        
-        // ERROR  Building Master does not exist in Registry
-        try {
-            _clericGuild = new ClericsGuild(NAME, "Unregistered Owner", HOVERTEXT, INTRO, DESC);
-        } catch (ApplicationException ex) {
-            MsgCtrl.msgln("\tExpected exception: " + ex.getMessage());
-        }
-        assertNull(_clericGuild);
-    }    
-
     
     /** Chronos.pdc.ClericsGuild
      * @Normal ensure that the default Inn has correct data
@@ -184,7 +154,7 @@ public class TestClericsGuild
         dump(_clericGuild);
         // Verify the name, innkeeper, and business hours
         assertEquals(DEF_NAME, _clericGuild.getName());
-        assertEquals(DEF_MASTER, _clericGuild.getMaster().getName());
+        assertEquals(DEF_MASTER, _clericGuild.getMaster());
         // Verify the standard intro and descrption; there is no busy description yet
         String intro =  _mock.getIntro();
         String desc =  _mock.getDescrption();
@@ -212,7 +182,7 @@ public class TestClericsGuild
     private void dump(ClericsGuild guild)
     {
         MsgCtrl.msg("\t Created: \t" + guild.getName());
-        MsgCtrl.msgln("\t owned by " + guild.getMaster().getName());
+        MsgCtrl.msgln("\t owned by " + guild.getMaster());
         int[] hours = guild.getBusinessHours();
         int oTime = hours[0];
         int cTime = hours[1];

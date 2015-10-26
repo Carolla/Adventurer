@@ -9,7 +9,7 @@ public class FakeBuilding extends Building
 
     public FakeBuilding(String name)
     {
-        super(name, "", "", "", "");
+        super(name, "", "", "", "", "", "");
     }
 
     @Override

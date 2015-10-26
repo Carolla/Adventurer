@@ -392,7 +392,7 @@ public class TestBuilding
   private void dump(Building bldg)
   {
     MsgCtrl.msg("\t Created: \t" + bldg.getName());
-    MsgCtrl.msgln("\t managed by " + bldg.getMaster().getName());
+    MsgCtrl.msgln("\t managed by " + bldg.getMaster());
     int[] hours = bldg.getBusinessHours();
     int oTime = hours[0];
     int cTime = hours[1];

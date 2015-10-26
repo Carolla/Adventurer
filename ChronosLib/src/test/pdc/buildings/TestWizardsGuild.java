@@ -14,7 +14,6 @@ package test.pdc.buildings;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import mylib.ApplicationException;
 import mylib.MsgCtrl;
 
@@ -87,7 +86,7 @@ public class TestWizardsGuild
     @Before
     public void setUp() throws Exception
     {
-        _wizGuild = new WizardsGuild(NAME, OWNER, HOVERTEXT, INTRO,  DESC);
+        _wizGuild = new WizardsGuild();
         assertNotNull(_wizGuild);
         _wizGuild.setBusinessHours(TEST_OPEN, TEST_CLOSING);
         _mock = _wizGuild.new MockWizardsGuild();
@@ -126,39 +125,13 @@ public class TestWizardsGuild
         dump(_wizGuild);
         // Verify the name, innkeeper, and business hours
         assertEquals(NAME, _wizGuild.getName());
-        assertEquals(OWNER, _wizGuild.getMaster().getName());
+        assertEquals(OWNER, _wizGuild.getMaster());
         // Verify the standard intro and descrption; there is no busy description yet
         assertEquals(HOVERTEXT, INTRO,  _wizGuild.getExteriorDescription());
         assertEquals(DESC, _wizGuild.getInteriorDescription());
         // Verify business hours in meridian time
         assertEquals(TEST_MEROPEN, _wizGuild.getOpeningTime());
         assertEquals(TEST_MERCLOSING, _wizGuild.getClosingTime());
-    }    
-
-
-    /** Chronos.pdc.Store
-     * @Error   trigger exception with bad business hours
-     * @Error   trigger exception with building master not in NPC Registry
-     * @throws ApplicationException if unexpected error occurs 
-     */
-    @Test
-    public void testStoreErrors() throws ApplicationException
-    {
-        MsgCtrl.auditMsgsOn(false);
-        MsgCtrl.errorMsgsOn(false);
-        MsgCtrl.msgln(this, "\t testStoreErrors()");
-    
-        // Clear out old Inn from setUp()
-        _wizGuild = null;
-        _mock = null;
-        
-        // ERROR  Building Master does not exist in Registry
-        try {
-            _wizGuild = new WizardsGuild(NAME, "Unregistered Owner", HOVERTEXT, INTRO,  DESC);
-        } catch (ApplicationException ex) {
-            MsgCtrl.msgln("\tExpected exception: " + ex.getMessage());
-        }
-        assertNull(_wizGuild);
     }    
 
     
@@ -185,7 +158,7 @@ public class TestWizardsGuild
         dump(_wizGuild);
         // Verify the name, innkeeper, and business hours
         assertEquals(DEF_NAME, _wizGuild.getName());
-        assertEquals(DEF_MASTER, _wizGuild.getMaster().getName());
+        assertEquals(DEF_MASTER, _wizGuild.getMaster());
         // Verify the standard intro and descrption; there is no busy description yet
         String intro =  _mock.getIntro();
         String desc =  _mock.getDescrption();
@@ -213,7 +186,7 @@ public class TestWizardsGuild
     private void dump(WizardsGuild guild)
     {
         MsgCtrl.msg("\t Created: \t" + guild.getName());
-        MsgCtrl.msgln("\t owned by " + guild.getMaster().getName());
+        MsgCtrl.msgln("\t owned by " + guild.getMaster());
         int[] hours = guild.getBusinessHours();
         int oTime = hours[0];
         int cTime = hours[1];

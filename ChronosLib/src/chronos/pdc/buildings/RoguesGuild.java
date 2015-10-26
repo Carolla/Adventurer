@@ -66,24 +66,6 @@ public class RoguesGuild extends Building
     setBusinessHours(OPENTIME, CLOSETIME);
   }
 
-
-  /**
-   * Constructor for typical thieves' guild with default business hours
-   * 
-   * @param name of this building
-   * @param master who runs this building
-   * @param hoverText quick phrase for purpose of building
-   * @param intro first glance outside, or when entering
-   * @param desc detailed look of building, inside or out
-   * @throws ApplicationException if the ctor fails
-   */
-  public RoguesGuild(String name, String master, String hoverText, String intro, String desc)
-      throws ApplicationException
-  {
-    super(name, master, hoverText, intro, desc);
-  }
-
-
   /*
    * PUBLIC METHODS
    */
@@ -101,7 +83,7 @@ public class RoguesGuild extends Building
     }
     RoguesGuild thfG = (RoguesGuild) target;
     boolean bName = this.getKey().equals(thfG.getKey());
-    boolean bMaster = this.getMaster().getName().equals(thfG.getMaster().getName());
+    boolean bMaster = this.getMaster().equals(thfG.getMaster());
     return (bName && bMaster);
   }
 

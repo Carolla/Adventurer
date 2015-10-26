@@ -61,24 +61,6 @@ public class Jail extends Building
     setBusinessHours(OPENTIME, CLOSETIME);
   }
 
-
-  /**
-   * Constructor for typical inn with default business hours and no busy description
-   * 
-   * @param name of this building
-   * @param master who runs this building
-   * @param hoverText quick phrase for purpose of building
-   * @param intro first glance outside, or when entering
-   * @param desc detailed look of building, inside or out
-   * @throws ApplicationException if the ctor fails
-   */
-  public Jail(String name, String master, String hoverText, String intro, String desc)
-      throws ApplicationException
-  {
-    super(name, master, hoverText, intro, desc);
-  }
-
-
   /*
    * Two Jails are considerd equal if their name and building masters are equal
    * 
@@ -92,7 +74,7 @@ public class Jail extends Building
     }
     Jail bank = (Jail) target;
     boolean bName = this.getKey().equals(bank.getKey());
-    boolean bMaster = this.getMaster().getName().equals(bank.getMaster().getName());
+    boolean bMaster = this.getMaster().equals(bank.getMaster());
     return (bName && bMaster);
   }
 

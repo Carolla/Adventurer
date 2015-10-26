@@ -72,24 +72,6 @@ public class Bank extends Building
         setBusinessHours(OPENTIME, CLOSETIME);
     }
 
-
-    /**
-     * Constructor for typical inn with default business hours and no busy description
-     * 
-     * @param name of this building
-     * @param master who runs this building
-     * @param hoverText small phrase for purpose of the Buidling
-     * @param exterior first glance of outside of Bank
-     * @param interior detailed look of building inside
-     * @throws ApplicationException if the ctor fails
-     */
-    public Bank(String name, String master, String hoverText, String exterior, String interior)
-            throws ApplicationException
-    {
-        super(name, master, hoverText, exterior, interior);
-    }
-
-
     /*
      * Two Banks are considerd equal if their name and building masters are equal
      * 
@@ -103,7 +85,7 @@ public class Bank extends Building
         }
         Bank bank = (Bank) target;
         boolean bName = this.getKey().equals(bank.getKey());
-        boolean bMaster = this.getMaster().getName().equals(bank.getMaster().getName());
+        boolean bMaster = this.getMaster().equals(bank.getMaster());
         return (bName && bMaster);
     }
 

@@ -49,6 +49,9 @@ public class BuildingRegistry extends Registry
     super(Chronos.BuildingRegPath);
     _skedder = skedder;
     _npcRegistry = npcRegistry;
+    if (shouldInitialize) {
+        initialize();
+    }
   }
 
 
