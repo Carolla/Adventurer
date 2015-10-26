@@ -506,24 +506,6 @@ public class Inventory implements Serializable
       return _startList.length;
     }
 
-    /**
-     * Test that the starting inventory, when a different string list is used, still works. Replace
-     * the default list with the given new list
-     * 
-     * @param alternate item list
-     * @return the inventory newly createed
-     */
-    public Inventory replaceStartList(String[][] newList)
-    {
-      // Clear out the statically-defined startlist
-      Inventory.this._inventory.clear();
-      // Replace the old list that got initialized inherently
-      Inventory.this._startList = newList;
-
-      // Inventory is populated by the starting inventory method
-      Inventory.this.initStartingInventory();
-      return Inventory.this;
-    }
 
   } // end of MockInventory inner class
 
