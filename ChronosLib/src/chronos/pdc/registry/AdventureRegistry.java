@@ -78,9 +78,12 @@ public class AdventureRegistry extends Registry
   /**
    * This method is a wrapper to the base class which passes the data file path and not the source code
    */
-  protected AdventureRegistry()
+  public AdventureRegistry()
   {
     super(Chronos.AdventureRegPath);
+    if (shouldInitialize) {
+        initialize();
+    }
   }
 
 
@@ -144,36 +147,5 @@ public class AdventureRegistry extends Registry
   // ===========================================================================
   // PRIVATE METHODS
   // ===========================================================================
-
-  // ===========================================================================
-  // INNER CLASS: MockAdventureRegistry for Testing
-  // ===========================================================================
-
-  /** Inner class for testing Person */
-  public class MockAdventureRegistry
-  {
-    /** Default constructor */
-    public MockAdventureRegistry()
-    {}
-
-    /** Diagnostic to dump all skills in the Registry */
-    public void dump()
-    {}
-
-    /** Return the path for the registry file */
-    public String getPath()
-    {
-      return Chronos.AdventureRegPath;
-    }
-
-    /** Return the path for the registry file */
-    public void setPath(String testPath)
-    {
-      Chronos.AdventureRegPath = testPath;
-    }
-
-  } // end of MockAdventureRegistry class
-
-
 } // end of AdventureRegistry class
 

@@ -37,180 +37,139 @@ import chronos.pdc.registry.AdventureRegistry;
 public class TestAdventureRegistry
 {
 
-  private String DEF_ADVENTURE = "The Quest for Rogahn and Zelligar";
+    private String DEF_ADVENTURE = "The Quest for Rogahn and Zelligar";
+    private AdventureRegistry areg;
 
-  // ===========================================================================
-  // FIXTURES
-  // ===========================================================================
+    // ===========================================================================
+    // FIXTURES
+    // ===========================================================================
 
-  /**
-   * @throws java.lang.Exception
-   */
-  @Before
-  public void setUp() throws Exception
-  {
-      MsgCtrl.auditMsgsOn(false);
-      MsgCtrl.errorMsgsOn(false);
-  }
+    /**
+     * @throws java.lang.Exception
+     */
+    @Before
+    public void setUp() throws Exception
+    {
+        MsgCtrl.auditMsgsOn(false);
+        MsgCtrl.errorMsgsOn(false);
+        areg = new AdventureRegistry();
+    }
 
-  /**
-   * @throws java.lang.Exception
-   */
-  @After
-  public void tearDown() throws Exception
-  {
-  }
-
-
-  // ===========================================================================
-  // BEGIN TESTS
-  // ===========================================================================
-
-  /**
-   * @Normal open and close all 7 registries
-   */
-  @Test
-  public void testRegistryList()
-  {
-    MsgCtrl.where(this);
-
-  }
+    /**
+     * @throws java.lang.Exception
+     */
+    @After
+    public void tearDown() throws Exception
+    {}
 
 
-  /**
-   * @Normal Add a new Adventure into the AdvReg, then retrieve it without recreating it
-   */
-  @Test
-  public void testNewInstance()
-  {
-    MsgCtrl.where(this);
+    // ===========================================================================
+    // BEGIN TESTS
+    // ===========================================================================
 
-    // SETUP None
+    /**
+     * @Normal Add a new Adventure into the AdvReg, then retrieve it without recreating it
+     */
+    @Test
+    public void testNewInstance()
+    {
+        MsgCtrl.where(this);
 
-    // DO
-    // Add a new Adventure to the AdventureRegistry
-    AdventureRegistry areg = null;
-
-    // VERIFY AdvReg contains single element
-    assertEquals(1, areg.getNbrElements());
-    // and the element is the recent adventure
-    Adventure adv = areg.getAdventure(DEF_ADVENTURE);
-    assertTrue(adv.getName().equals(DEF_ADVENTURE));
-  }
-
-
-  /**
-   * @Normal Return an adventure by name
-   */
-  @Test
-  public void testGetAdventure()
-  {
-    MsgCtrl.where(this);
-
-    // SETUP None
-    MsgCtrl.msgln("Creating default adventure in Registry ");
-    AdventureRegistry areg = null;
-    assertNotNull(areg);
-
-    // DO
-    MsgCtrl.msgln("Retrieving adventure from Registry ");
-    List<IRegistryElement> advList = areg.get(DEF_ADVENTURE);
-    assertNotNull(advList);
-    assertEquals(1, advList.size());
-
-    // VERIFY
-    MsgCtrl.msgln("Retrieving adventure name from Adventure");
-    Adventure adv = (Adventure) advList.get(0);
-    assertEquals(DEF_ADVENTURE, adv.getName());
-  }
+        // VERIFY AdvReg contains single element
+        assertEquals(1, areg.getNbrElements());
+        
+        // and the element is the recent adventure
+        Adventure adv = areg.getAdventure(DEF_ADVENTURE);
+        assertTrue(adv.getName().equals(DEF_ADVENTURE));
+    }
 
 
-  /**
-   * @Error Return an non-existing adventure
-   * @Error Return an adventure with an empty null key
-   * @Null Return an adventure with a null key
-   * @Error Retrieve an adventure from a non-existing AdventureRegistry
-   */
-  @Test
-  public void testGetAdventure_Nonexisting()
-  {
-    MsgCtrl.where(this);
+    /**
+     * @Normal Return an adventure by name
+     */
+    @Test
+    public void testGetAdventure()
+    {
+        MsgCtrl.where(this);
+        
+        // DO
+        List<IRegistryElement> advList = areg.get(DEF_ADVENTURE);
+        assertNotNull(advList);
+        assertEquals(1, advList.size());
 
-    // SETUP None
-    MsgCtrl.msgln("Creating default adventure in Registry ");
-    AdventureRegistry areg = null;
-    assertNotNull(areg);
-
-    // DO
-    MsgCtrl.msgln("Retrieving non-existing adventure from Registry ");
-    List<IRegistryElement> advList = areg.get("Salazar's Lair");
-
-    // VERIFY
-    assertEquals(0, advList.size());
-    MsgCtrl.msgln("Received an empty list");
-  }
+        // VERIFY
+        Adventure adv = (Adventure) advList.get(0);
+        assertEquals(DEF_ADVENTURE, adv.getName());
+    }
 
 
-  /**
-   * @Error Attempt to return an adventure with an empty key
-   * @Null Return an adventure with a null key -- compile error
-   */
-  @Test
-  public void testGetAdventure_EmptyKey()
-  {
-    MsgCtrl.where(this);
+    /**
+     * @Error Return an non-existing adventure
+     * @Error Return an adventure with an empty null key
+     * @Null Return an adventure with a null key
+     * @Error Retrieve an adventure from a non-existing AdventureRegistry
+     */
+    @Test
+    public void testGetAdventure_Nonexisting()
+    {
+        MsgCtrl.where(this);
 
-    // SETUP None
-    MsgCtrl.msgln("Creating default adventure in Registry ");
-    AdventureRegistry areg = null;
-    assertNotNull(areg);
+        // SETUP None
 
-    // DO
-    MsgCtrl.msgln("Attempting to retrieve a adventure with an empty key");
-    List<IRegistryElement> advList = areg.get("   ");
+        // DO
+        List<IRegistryElement> advList = areg.get("Salazar's Lair");
 
-    // VERIFY
-    assertEquals(0, advList.size());
-    MsgCtrl.msgln("Received an empty list");
-  }
+        // VERIFY
+        assertEquals(0, advList.size());
+    }
 
 
-  /**
-   * @Normal  Get a list of all adventures in the AdventureRegistry
-   */
-  @Test
-  public void testGetAdventureList()
-  {
-    MsgCtrl.where(this);
+    /**
+     * @Error Attempt to return an adventure with an empty key
+     * @Null Return an adventure with a null key -- compile error
+     */
+    @Test
+    public void testGetAdventure_EmptyKey()
+    {
+        MsgCtrl.where(this);
 
-    // SETUP None
-    MsgCtrl.msgln("Creating default adventure in Registry ");
-    AdventureRegistry areg = null;
-    assertNotNull(areg);
+        // DO
+        List<IRegistryElement> advList = areg.get("   ");
 
-    // DO
-    MsgCtrl.msgln("Dumping all Adventures in AdventureRegistry, which is 1");
-    ArrayList<Adventure> advList = areg.getAdventureList();
-
-    // VERIFY
-    assertEquals(1, advList.size());
-    MsgCtrl.msgln("Received a list of one: " + advList.get(0).getName());
-  }
+        // VERIFY
+        assertEquals("Received an non-empty list", 0, advList.size());
+    }
 
 
-  // ===========================================================================
-  // PRIVATE HELPER METHODS
-  // ===========================================================================
+    /**
+     * @Normal Get a list of all adventures in the AdventureRegistry
+     */
+    @Test
+    public void testGetAdventureList()
+    {
+        MsgCtrl.where(this);
+        
+        // DO
+        ArrayList<Adventure> advList = areg.getAdventureList();
 
-  /**
-   * @Null Return an adventure with a null key
-   */
+        // VERIFY
+        assertEquals(1, advList.size());
+    }
 
-  /**
-   * All methods tested
-   */
-  void _testsNotNeeded()
-  {}
+
+    // ===========================================================================
+    // PRIVATE HELPER METHODS
+    // ===========================================================================
+
+    /**
+     * @Null Return an adventure with a null key
+     */
+
+    /**
+     * All methods tested
+     */
+    void _testsNotNeeded()
+    {}
 
 
 } // end of TestAdvHelp class
