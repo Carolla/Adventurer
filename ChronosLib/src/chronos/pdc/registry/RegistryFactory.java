@@ -13,6 +13,9 @@ package chronos.pdc.registry;
 import java.util.HashMap;
 
 import mylib.pdc.Registry;
+import chronos.pdc.Item;
+import chronos.pdc.Occupation;
+import chronos.pdc.Skill;
 import chronos.pdc.Command.Scheduler;
 
 /**
@@ -86,6 +89,10 @@ public class RegistryFactory
                 new BuildingRegistry(_skedder, (NPCRegistry) _regMap.get(RegKey.NPC)));
         _regMap.put(RegKey.TOWN, new TownRegistry((BuildingRegistry) _regMap.get(RegKey.BLDG)));
         _regMap.put(RegKey.ADV, new AdventureRegistry());
+
+        Skill.setSkillRegistry((SkillRegistry) _regMap.get(RegKey.SKILL));
+        Occupation.setOccupationRegistry((OccupationRegistry) _regMap.get(RegKey.OCP));
+        Item.setItemRegistry((ItemRegistry) _regMap.get(RegKey.ITEM));
     }
 
     // ============================================================
