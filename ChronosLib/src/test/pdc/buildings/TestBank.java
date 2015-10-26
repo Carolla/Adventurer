@@ -22,7 +22,6 @@ import org.junit.Test;
 
 import chronos.pdc.buildings.Bank;
 import chronos.pdc.buildings.Bank.MockBank;
-import chronos.pdc.registry.RegistryFactory;
 
 /**
  * Test the Bank methods
@@ -32,8 +31,6 @@ import chronos.pdc.registry.RegistryFactory;
  */
 public class TestBank
 {
-  static private RegistryFactory _rf;
-
   /** Test target object */
   private Bank _bank = null;
   /** Associated mock */
@@ -79,10 +76,8 @@ public class TestBank
   public void setUp() throws Exception
   {
     _bank = new Bank();
-    assertNotNull(_bank);
     _bank.setBusinessHours(TEST_OPEN, TEST_CLOSING);
     _mock = _bank.new MockBank();
-    assertNotNull(_mock);
   }
 
   /**
@@ -91,10 +86,6 @@ public class TestBank
   @After
   public void tearDown() throws Exception
   {
-    _bank = null;
-    _mock = null;
-    _rf.closeAllRegistries();
-    _rf = null;
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
   }
