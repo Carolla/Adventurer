@@ -18,7 +18,6 @@ import mylib.ApplicationException;
 import mylib.MsgCtrl;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,7 +33,6 @@ import chronos.pdc.buildings.RoguesGuild;
 import chronos.pdc.buildings.Store;
 import chronos.pdc.buildings.WizardsGuild;
 import chronos.pdc.registry.NPCRegistry;
-import chronos.pdc.registry.RegistryFactory;
 
 
 /**

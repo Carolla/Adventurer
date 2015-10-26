@@ -38,11 +38,8 @@ import chronos.pdc.Skill;
  */
 public class OccupationRegistry extends Registry
 {
-  /** Quick reference to the RegistryFactory to avoid repeated calls */
-  // private RegistryFactory _rf;
   /** Quick reference to the SkillRegistry to avoid repeated calls */
-  private SkillRegistry _skReg;
-
+  private SkillRegistry _skillRegistry;
 
   /**
    * Use this table to init the OccupTable with the occupation and skill names. Put occupations into
@@ -126,9 +123,10 @@ public class OccupationRegistry extends Registry
    * 
    * @param init flag to initialize registry for default data if true
    */
-  protected OccupationRegistry()
+  protected OccupationRegistry(SkillRegistry skillRegistry)
   {
     super(Chronos.OcpRegPath);
+    _skillRegistry = skillRegistry;
   }
 
 
@@ -150,7 +148,7 @@ public class OccupationRegistry extends Registry
     try {
       for (int k = 0; k < _occupTable.length; k++) {
         // Throw exception if Skill is not in Skill Registry
-        Occupation occup = new Occupation(_occupTable[k][0], _occupTable[k][1]);
+        Occupation occup = new Occupation(_occupTable[k][0], _skillRegistry.getSkill(_occupTable[k][1]));
         super.add(occup); // super is used to highlight inheritance
       }
     } catch (ApplicationException ex) {
@@ -177,7 +175,7 @@ public class OccupationRegistry extends Registry
     }
 
     // Create new Occupations and save to registry
-    if (verifySkill(_skReg, occup.getSkillName()) == true) {
+    if (verifySkill(_skillRegistry, occup.getSkillName()) == true) {
       super.add(occup); // super is used to highlight inheritance
     } else {
       throw (new ApplicationException("Skill not found in Skill Registry"));

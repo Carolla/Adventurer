@@ -35,7 +35,7 @@ public class Skill implements IRegistryElement
   static final long serialVersionUID = 101005L; // creation date
 
   /** The name of the skill the player uses to select */
-  private String _name = null;
+  protected String _name = null;
   /** A description of the skill and how the Hero may use it. */
   private String _description = null;
   /**

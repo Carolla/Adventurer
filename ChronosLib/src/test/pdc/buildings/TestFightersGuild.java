@@ -18,13 +18,11 @@ import mylib.ApplicationException;
 import mylib.MsgCtrl;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
 import chronos.pdc.buildings.FightersGuild;
 import chronos.pdc.buildings.FightersGuild.MockFightersGuild;
-import chronos.pdc.registry.RegistryFactory;
 
 /**
  *    Tests the various Guild-specific methods.

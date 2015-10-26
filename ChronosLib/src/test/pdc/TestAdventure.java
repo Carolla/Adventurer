@@ -22,7 +22,6 @@ import org.junit.Test;
 
 import chronos.pdc.Adventure;
 import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 
 /**
  * Unit tests for {@code chronos.pdc.Adventure}

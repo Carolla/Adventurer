@@ -10,14 +10,8 @@
 
 package chronos.pdc;
 
-import java.io.File;
-
 import mylib.ApplicationException;
 import mylib.dmc.IRegistryElement;
-import chronos.Chronos;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
-import chronos.pdc.registry.TownRegistry;
 
 /**
  * Singleton containing a reference to a Town and an Arena, two required elements of all Adventures.

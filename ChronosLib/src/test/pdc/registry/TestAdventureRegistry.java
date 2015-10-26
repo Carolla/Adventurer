@@ -21,21 +21,11 @@ import mylib.MsgCtrl;
 import mylib.dmc.IRegistryElement;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.pdc.Adventure;
 import chronos.pdc.registry.AdventureRegistry;
-import chronos.pdc.registry.BuildingRegistry;
-import chronos.pdc.registry.ItemRegistry;
-import chronos.pdc.registry.NPCRegistry;
-import chronos.pdc.registry.OccupationRegistry;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
-import chronos.pdc.registry.SkillRegistry;
-import chronos.pdc.registry.TownRegistry;
 
 /**
  * Test the repository for Adventure storage

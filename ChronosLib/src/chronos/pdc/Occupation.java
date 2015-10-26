@@ -14,9 +14,6 @@ import java.util.List;
 import mylib.ApplicationException;
 import mylib.dmc.IRegistryElement;
 import chronos.civ.OccupationKeys;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
-import chronos.pdc.registry.SkillRegistry;
 
 /**
  * An occupation gives a person some skill from their previous experience. Occupations are
@@ -38,7 +35,7 @@ public class Occupation implements IRegistryElement
 
   // TODO Should Occupation be saved with the Skill object, or just its name?
   /** A name of the Skill assocated with the occupationl and how the Hero may use it. */
-  private String _skillName = null;
+  private Skill _skill = null;
 
   /** The length of the name field in a record */
   public static final int OCC_NAME_LIMIT = 35;
@@ -64,24 +61,15 @@ public class Occupation implements IRegistryElement
    * @throws ApplicationException if the description is too long
    * @throws NullPointerException if the parms are null
    */
-  public Occupation(String name, String skillname)
+  public Occupation(String name, Skill skill)
       throws ApplicationException, NullPointerException
   {
     // GUARDS
     // Name cannot be null
-    if (name == null) {
+    if (name == null || skill == null) {
       throw new NullPointerException(name + ": Occupation must have a name; received null");
     }
-    // Skill name cannot be null
-    if (skillname == null) {
-      throw new NullPointerException(name + ": Occupation must have a skill; received null");
-    }
-    // Do not create an Occupation if the skillname is too long
-    if (skillname.length() > OCC_SKILL_LIMIT) {
-      throw new ApplicationException(skillname
-          + ": Skill description is too long by "
-          + (skillname.length() - OCC_SKILL_LIMIT));
-    }
+
     // Do not create an Occupation if its name is too long
     if (name.length() > OCC_NAME_LIMIT) {
       throw new ApplicationException(name
@@ -90,16 +78,8 @@ public class Occupation implements IRegistryElement
     }
     // End Guards
 
-    // Verify that the skill name given exists in the Skill Registry
-    SkillRegistry skReg = (SkillRegistry) RegistryFactory.getInstance().getRegistry(RegKey.SKILL);
-    Skill s = skReg.getSkill(skillname);
-    if (s != null) {
       _name = name;
-      _skillName = skillname;
-    }
-    else {
-      throw new ApplicationException(skillname + " does not exist in the SkillRegistry");
-    }
+      _skill= skill;
   }
 
 
@@ -164,7 +144,7 @@ public class Occupation implements IRegistryElement
     }
     Occupation ocp = (Occupation) otherThing;
     boolean bName = _name.equals(ocp._name);
-    boolean bSkill = _skillName.equals(ocp._skillName);
+    boolean bSkill = _skill.equals(ocp._skill);
     return (bName || bSkill);
   }
 
@@ -231,7 +211,7 @@ public class Occupation implements IRegistryElement
    */
   public String getSkillName()
   {
-    return _skillName;
+    return _skill.getName();
   }
 
   // /** Find the Occupation by its name, and return the Skill associated with

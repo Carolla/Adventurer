@@ -18,13 +18,11 @@ import mylib.ApplicationException;
 import mylib.MsgCtrl;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
 import chronos.pdc.buildings.Jail;
 import chronos.pdc.buildings.Jail.MockJail;
-import chronos.pdc.registry.RegistryFactory;
 
 /**
  *    Test the Jail methods
