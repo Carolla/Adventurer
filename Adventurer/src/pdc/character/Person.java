@@ -29,10 +29,6 @@ import chronos.pdc.Item;
 import chronos.pdc.Occupation;
 import chronos.pdc.Race;
 import chronos.pdc.Skill;
-import chronos.pdc.registry.OccupationRegistry;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
-import chronos.pdc.registry.SkillRegistry;
 import civ.HeroDisplayCiv;
 import civ.PersonKeys;
 import dmc.PersonReadWriter;
@@ -325,9 +321,8 @@ public class Person implements Serializable, IRegistryElement
     }
 
     // Create the Occupation object from its name
-    _Occupation =
-        ((OccupationRegistry) RegistryFactory.getInstance().getRegistry(RegKey.OCP))
-            .getOccupation(occup);
+    _Occupation = Occupation.getOccupation(occup);
+    
     // Verify that good objects were created
     if (_Occupation == null) {
       throw new InstantiationException(String.format(

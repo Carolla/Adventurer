@@ -15,11 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import chronos.pdc.Occupation;
 import chronos.pdc.Race;
 import chronos.pdc.registry.OccupationRegistry;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 
 /**
  * Contains the widget keys to the display fields for the new Hero widget, and
@@ -152,9 +149,8 @@ public enum NewHeroFields {
         public ArrayList<String> getDefault()
         {
             _list = new ArrayList<String>();
-            for (Occupation o : ((OccupationRegistry) RegistryFactory.getInstance().getRegistry(RegKey.OCP))
-                    .getOccupationList()) {
-                _list.add(o.getName());
+            for (String s : OccupationRegistry.getOccupationNameList()) {
+                _list.add(s);
             }
             String defName = (String) OCCUPATION.getDefault();
             _list.remove(defName);

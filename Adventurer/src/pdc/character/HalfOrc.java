@@ -12,7 +12,6 @@
 package pdc.character;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import mylib.ApplicationException;
@@ -22,9 +21,6 @@ import chronos.Chronos.ATTRIBUTE;
 import chronos.pdc.AttributeList;
 import chronos.pdc.Race;
 import chronos.pdc.Skill;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
-import chronos.pdc.registry.SkillRegistry;
 
 /**
  * The <code>Half-Orc</code> is a mixed breed of human and orc (ugh!). Half-Orcs

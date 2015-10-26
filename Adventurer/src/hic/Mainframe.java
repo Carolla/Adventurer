@@ -188,6 +188,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
         // Create the BuildingDisplayCiv to define the output GUI for descriptions and images
         _skedder = new Scheduler(); //Skedder first for injection
         RegistryFactory rf = new RegistryFactory(_skedder);
+        rf.initRegistries();
         BuildingRegistry breg = (BuildingRegistry) rf.getRegistry(RegKey.BLDG);
         _bldgCiv = new BuildingDisplayCiv(this, breg);
 

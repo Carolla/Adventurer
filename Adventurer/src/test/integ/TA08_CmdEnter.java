@@ -73,6 +73,7 @@ public class TA08_CmdEnter
         MsgCtrl.auditMsgsOn(false);
         MsgCtrl.errorMsgsOn(false);
         
+        _regFactory.initRegistries();
         _bReg = (BuildingRegistry) _regFactory.getRegistry(RegKey.BLDG);
 
         // Replace the GUI objects with their test facades

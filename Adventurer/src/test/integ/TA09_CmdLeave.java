@@ -63,6 +63,7 @@ public class TA09_CmdLeave
     // Start up the support classes
     _skedder = new Scheduler();
     _regFactory = new RegistryFactory(_skedder);
+    _regFactory.initRegistries();
     _bReg = (BuildingRegistry) _regFactory.getRegistry(RegKey.BLDG);
 
     // Replace the GUI objects with their test facades

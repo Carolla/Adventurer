@@ -12,7 +12,6 @@
 package pdc.character;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import mylib.ApplicationException;
@@ -21,9 +20,6 @@ import chronos.Chronos.ATTRIBUTE;
 import chronos.pdc.AttributeList;
 import chronos.pdc.Race;
 import chronos.pdc.Skill;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
-import chronos.pdc.registry.SkillRegistry;
 
 /**
  * The <code>Hobbit</code> is a stout and loyal friend. Hobbit tends to make

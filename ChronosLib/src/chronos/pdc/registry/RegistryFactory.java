@@ -102,7 +102,6 @@ public class RegistryFactory
             Registry reg = _regMap.get(key);
             if (reg != null) {
                 reg.closeRegistry();
-                _regMap.remove(key);
             }
         }
     }
@@ -118,58 +117,6 @@ public class RegistryFactory
         Registry reg = _regMap.get(key); // get returns null if not found
         if (reg != null) {
             reg.closeRegistry(); // this is the registry's method, not this method it's in
-            _regMap.remove(key);
-        }
-    }
-
-
-    /**
-     * Creates a registry of the given type. Registry location defaults to ChronosLib resources.
-     * Registry is stored for quick access in this factory
-     * 
-     * @param regtype defined in {@code RegistryFactory.RegKey enum}
-     * @return the requested Registry, or null if cannot be created
-     */
-    public Registry createRegistry(RegKey regtype)
-    {
-        // Guard: RegKey may be null (dumb compiler should have checked that!)
-        if (regtype == null) {
-            return null;
-        }
-
-        Registry reg = null;
-        switch (regtype)
-        {
-            case ADV:
-                reg = new AdventureRegistry();
-            case BLDG:
-                reg = new BuildingRegistry(_skedder, (NPCRegistry) _regMap.get(RegKey.NPC));
-            case ITEM:
-                reg = new ItemRegistry();
-            case NPC:
-                reg = new NPCRegistry();
-            case OCP:
-                reg = new OccupationRegistry((SkillRegistry) _regMap.get(RegKey.SKILL));
-            case SKILL:
-                reg = new SkillRegistry();
-            case TOWN:
-                reg = new TownRegistry((BuildingRegistry) _regMap.get(RegKey.BLDG));
-        }
-
-        _regMap.put(regtype, reg);
-        return reg;
-    }
-
-
-    /**
-     * Close all registries and delete their .reg files
-     */
-    public void deleteAllRegistries()
-    {
-        for (RegKey key : RegKey.values()) {
-            Registry reg = _regMap.get(key);
-            reg.closeRegistry();
-            _regMap.remove(reg);
         }
     }
 
@@ -194,12 +141,7 @@ public class RegistryFactory
      */
     public Registry getRegistry(RegKey regtype)
     {
-        Registry reg = _regMap.get(regtype);
-        if (reg == null) {
-            reg = createRegistry(regtype);
-        }
-
-        return reg;
+        return _regMap.get(regtype);
     }
 
 } // end of RegistryFactory class
