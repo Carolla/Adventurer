@@ -8,7 +8,7 @@ public class FakeMainframeCiv extends MainframeCiv
 
     public FakeMainframeCiv()
     {
-        super(new MainframeProxy(), null);
+        super(new MainframeProxy(), null, null);
     }
     
     @Override

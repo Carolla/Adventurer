@@ -25,8 +25,6 @@ import java.util.TreeMap;
 import pdc.Util;
 import chronos.pdc.Adventure;
 import chronos.pdc.registry.AdventureRegistry;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 import dmc.PersonReadWriter;
 
 /**
@@ -99,10 +97,11 @@ public class MainframeCiv implements ChronosLogger
      * @param personRW supports the Summon Hero and Create Hero buttons
      * @param advReg registry to support the Adventures button
      */
-    public MainframeCiv(MainframeInterface mf, BuildingDisplayCiv bdCiv)
+    public MainframeCiv(MainframeInterface mf, BuildingDisplayCiv bdCiv, AdventureRegistry advReg)
     {
         _frame = mf;
         _bdCiv = bdCiv;
+        _advReg = advReg;
         _logger = this;
 
         doConstructorWork();
@@ -141,7 +140,6 @@ public class MainframeCiv implements ChronosLogger
      */
     public ArrayList<String> getAdventures()
     {
-        _advReg = (AdventureRegistry) RegistryFactory.getInstance().getRegistry(RegKey.ADV);
         ArrayList<Adventure> adventures = _advReg.getAdventureList();
         ArrayList<String> results = new ArrayList<String>();
         for (Adventure a : adventures) {

@@ -21,6 +21,7 @@ import org.junit.Test;
 
 import pdc.command.CommandFactory;
 import chronos.pdc.Command.Scheduler;
+import chronos.pdc.registry.AdventureRegistry;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.NPCRegistry;
 import chronos.pdc.registry.RegistryFactory;
@@ -60,7 +61,8 @@ public class TA09_CmdLeave
     MsgCtrl.errorMsgsOn(false);
 
     // Start up the support classes
-    _regFactory = RegistryFactory.getInstance();
+    _skedder = new Scheduler();
+    _regFactory = new RegistryFactory(_skedder);
     _bReg = (BuildingRegistry) _regFactory.getRegistry(RegKey.BLDG);
 
     // Replace the GUI objects with their test facades
@@ -68,8 +70,7 @@ public class TA09_CmdLeave
     // This will open the BuildingRegistry, which must be closed before exiting
     _bldgCiv = new BuildingDisplayCiv(_mfProxy, _bReg);
 
-    _mfCiv = new MainframeCiv(_mfProxy, _bldgCiv);
-    _skedder = new Scheduler();
+    _mfCiv = new MainframeCiv(_mfProxy, _bldgCiv, (AdventureRegistry) _regFactory.getRegistry(RegKey.ADV));
     _cp = new CommandParser(_skedder, new CommandFactory(_mfCiv, _bldgCiv));
 
     // // Get list of names for all buildings that can be entered

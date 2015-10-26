@@ -155,10 +155,6 @@ public class OccupationDialogue extends JDialog
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
-  /** Default constructor */
-  public OccupationDialogue()
-  {}
-
   /**
    * Creates the dialogue fields
    * 

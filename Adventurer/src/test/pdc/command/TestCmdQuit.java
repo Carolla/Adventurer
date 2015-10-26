@@ -30,7 +30,7 @@ public class TestCmdQuit
     {
         MainframeInterface mfInterface = new MainframeProxy();
         _bdciv = new FakeBuildingDisplayCiv();
-        _mfCiv = new MainframeCiv(mfInterface, _bdciv);
+        _mfCiv = new MainframeCiv(mfInterface, _bdciv, null);
     }
 
     @Before

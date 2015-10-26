@@ -28,7 +28,6 @@ import chronos.Chronos;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.Adventurer;
-import civ.Adventurer.MockAdventurer;
 
 /**
  * Test the Adventurer (Launcher) class: ensure that all Registries are created.
@@ -41,8 +40,6 @@ public class TA00a_Initialize
 {
   static private RegistryFactory _rf;
   private Adventurer _launcher;
-  private MockAdventurer _mock;
-
   /**
    * INFO ONLY: Keys used by RegistryFactory public enum RegKey { ADV("Adventure"),
    * BLDG("Building"), ITEM("Item"), NPC("NPC"), OCP("Occupation"), SKILL("Skill"), TOWN("Town");
@@ -83,7 +80,6 @@ public class TA00a_Initialize
   public void setUp() throws Exception
   {
     _launcher = new Adventurer();
-    _mock = _launcher.new MockAdventurer();
   }
 
 
@@ -95,9 +91,6 @@ public class TA00a_Initialize
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    _rf = null;
-    _mock = null;
-    _launcher = null;
   }
 
 
@@ -123,7 +116,6 @@ public class TA00a_Initialize
     deleteRegistryFiles();
 
     // DO create the registries
-    _mock.initRegistries();
 
     // VERIFY all registry files created
     assertTrue(RegistryFilesExist());
@@ -152,13 +144,6 @@ public class TA00a_Initialize
     MsgCtrl.msg("\tNumber of keys = " + keynum);
     MsgCtrl.msgln("\tNumber of file paths = " + pathnum);
     assertEquals(keynum, pathnum);
-
-    // Create all registry files to ensure that they exist
-    _mock.initRegistries();
-    assertTrue(RegistryFilesExist());
-
-    // Try creating the registries when they already exist
-    _mock.initRegistries();
 
     // VERIFY all registry files created
     assertTrue(RegistryFilesExist());

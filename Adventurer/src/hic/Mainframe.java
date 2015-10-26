@@ -46,6 +46,7 @@ import pdc.Util;
 import pdc.command.CommandFactory;
 import chronos.Chronos;
 import chronos.pdc.Command.Scheduler;
+import chronos.pdc.registry.AdventureRegistry;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
@@ -191,7 +192,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
         _bldgCiv = new BuildingDisplayCiv(this, breg);
 
         // Create the Civ
-        _mfCiv = new MainframeCiv(this, _bldgCiv);
+        _mfCiv = new MainframeCiv(this, _bldgCiv, (AdventureRegistry) rf.getRegistry(RegKey.ADV));
 
         _cp = new CommandParser(_skedder, new CommandFactory(_mfCiv, _bldgCiv));
         _iop = new IOPanel(_mfCiv, _cp);

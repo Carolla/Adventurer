@@ -70,8 +70,6 @@ public class Adventurer
             public void run()
             {
                 try {
-                    adv.initRegistries();
-                    // dumpAllRegistries();
                     final Mainframe frame = new Mainframe();
                  
                     frame.setVisible(true);
@@ -123,70 +121,6 @@ public class Adventurer
     // System.out.println("\t" + reglist.toString());
     // }
     // }
-
-    // ============================================================
-    // Inner class for testing
-    // ============================================================
-
-    /**
-     * Open all database Registries (singletons) for convenience and performance
-     */
-    private void initRegistries()
-    {
-        _rf = RegistryFactory.getInstance();
-        for (RegKey key : RegKey.values()) {
-            _rf.getRegistry(key);
-        }
-        // Check proper initialization, else terminate program
-        if (verifyRegistries() == false) {
-            approvedQuit();
-        }
-    }
-
-
-    /**
-     * Validate the creation of all the registries for default sizes. Later, this method will have
-     * to be modified for any new material added beyond the defaults.
-     */
-    static private boolean verifyRegistries()
-    {
-        boolean retval = true;
-        // Expected size of each of the registries
-        _rf = RegistryFactory.getInstance();
-        for (RegKey key : RegKey.values()) {
-            Registry reg = _rf.getRegistry(key);
-            int defaultSize = key.getDefaultSize();
-            int foundSize = reg.getNbrElements();
-            // Check if the registries are not initialized properly
-            if (foundSize != defaultSize) {
-                System.err.println("Registry " + reg.toString()
-                        + " has the wrong number of default elements");
-                System.err.println("\tExpected " + defaultSize + "; found " + foundSize);
-                retval = false;
-            }
-        }
-        return retval;
-    }
-
-    /** Inner class for testing {@code Adventurer} launcher */
-    public class MockAdventurer
-    {
-        public MockAdventurer()
-        {}
-
-        public void initRegistries()
-        {
-            this.initRegistries();
-        }
-
-        public void closeRegistries()
-        {
-            this.closeRegistries();
-        }
-
-
-    } // end of MockAdventurer inner class
-
 
 } // end of Adventurer class
 

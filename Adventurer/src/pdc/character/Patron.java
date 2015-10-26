@@ -27,8 +27,7 @@ package pdc.character;
  * @see Innkeeper
  * @see Hero
  */
-@SuppressWarnings("serial")
-public class Patron extends Person
+public class Patron
 {
 	/** Internal: Indicates if <code>Patron</code> left after a rumor, or if they rebuked the 
 	 * <code>Hero</code> and stomped off. 

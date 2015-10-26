@@ -21,8 +21,6 @@ import chronos.civ.OccupationKeys;
 import chronos.pdc.Occupation;
 import chronos.pdc.Skill;
 import chronos.pdc.registry.OccupationRegistry;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 import chronos.pdc.registry.SkillRegistry;
 
 // TODO: Move this to {@code Quest Master}. It is not part of {@code Adventurer}.
@@ -61,12 +59,12 @@ public class OccupationDisplayCiv extends BaseCiv<OccupationKeys, OccupationKeys
    */
 
   /** Default constructor */
-  public OccupationDisplayCiv()
+  public OccupationDisplayCiv(OccupationRegistry occReg, SkillRegistry skillReg)
   {
     _ds = new DataShuttle<OccupationKeys>(OccupationKeys.class);
     _ws = new DataShuttle<OccupationKeys>(OccupationKeys.class);
-    _occreg = (OccupationRegistry) RegistryFactory.getInstance().getRegistry(RegKey.OCP);
-    _skreg = (SkillRegistry) RegistryFactory.getInstance().getRegistry(RegKey.SKILL);
+    _occreg = occReg;
+    _skreg = skillReg;
   }
 
   /**
@@ -278,7 +276,7 @@ public class OccupationDisplayCiv extends BaseCiv<OccupationKeys, OccupationKeys
 
     Occupation newOcc = null;
     try {
-      newOcc = new Occupation(name, skill);
+      newOcc = new Occupation(name, _skreg.getSkill(skill));
       _occreg.add(newOcc);
     } catch (ApplicationException e) {
       MsgCtrl.errMsgln("Error creating skill: " + e.getMessage());

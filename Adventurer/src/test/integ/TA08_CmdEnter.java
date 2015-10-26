@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import pdc.command.CommandFactory;
 import chronos.pdc.Command.Scheduler;
+import chronos.pdc.registry.AdventureRegistry;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
@@ -56,13 +57,12 @@ public class TA08_CmdEnter
     private BuildingDisplayCiv _bldgCiv = null;
     private MainframeProxy _mfProxy = null;
     private MainframeCiv _mfCiv;
-    private RegistryFactory _regFactory = null;
     private BuildingRegistry _bReg = null;
 
     /** List of valid Buildings that can be entered */
     private List<String> _bldgs = null;
-    private Scheduler _skedder;
-
+    private static Scheduler _skedder = new Scheduler();
+    private static RegistryFactory _regFactory = new RegistryFactory(_skedder);
 
     /**
      * @throws java.lang.Exception
@@ -73,8 +73,6 @@ public class TA08_CmdEnter
         MsgCtrl.auditMsgsOn(false);
         MsgCtrl.errorMsgsOn(false);
         
-        // Start up the support classes
-        _regFactory = RegistryFactory.getInstance();
         _bReg = (BuildingRegistry) _regFactory.getRegistry(RegKey.BLDG);
 
         // Replace the GUI objects with their test facades
@@ -82,8 +80,7 @@ public class TA08_CmdEnter
         // This will open the BuildingRegistry, which must be closed before exiting
         _bldgCiv = new BuildingDisplayCiv(_mfProxy, _bReg);
 
-        _mfCiv = new MainframeCiv(_mfProxy, _bldgCiv);
-        _skedder = new Scheduler();
+        _mfCiv = new MainframeCiv(_mfProxy, _bldgCiv, (AdventureRegistry) _regFactory.getRegistry(RegKey.ADV));
         _cp = new CommandParser(_skedder, new CommandFactory(_mfCiv, _bldgCiv));
         
         // Get list of names for all buildings that can be entered
@@ -97,11 +94,10 @@ public class TA08_CmdEnter
     @AfterClass
     public static void tearDownAfterClass() throws Exception
     {
-        RegistryFactory regFactory = RegistryFactory.getInstance();
         // Close BuildingRegistry, left open from BuildingDisplayCiv
-        regFactory.getRegistry(RegKey.BLDG).closeRegistry();
+        _regFactory.getRegistry(RegKey.BLDG).closeRegistry();
         // Close NPCRegistry, left open from BuildingDisplayCiv
-        regFactory.getRegistry(RegKey.NPC).closeRegistry();
+        _regFactory.getRegistry(RegKey.NPC).closeRegistry();
     }
 
     /**
