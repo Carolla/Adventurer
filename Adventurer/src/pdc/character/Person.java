@@ -8,6 +8,7 @@ package pdc.character;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 
 import mylib.ApplicationException;
 import mylib.Constants;
@@ -225,12 +226,12 @@ public class Person implements Serializable, IRegistryElement
    * half-elf, have a chance at a racial language. Rogues also know "Thieves' Cant", a Klass-based
    * language.
    */
-  private ArrayList<String> _langs = new ArrayList<String>();
+  private List<String> _langs = new ArrayList<String>();
   /**
    * The special abilities for the Person, depending on the occupation, Race or Klass. (if none,
    * then assign "None")
    */
-  private ArrayList<Skill> _skills = new ArrayList<Skill>();
+  private List<Skill> _skills = new ArrayList<Skill>();
 
   // Derived from STR attribute; low volatility
   /**
@@ -804,7 +805,7 @@ public class Person implements Serializable, IRegistryElement
     boolean bGender = _gender.equals(other.getGender());
     boolean bOccup = _Occupation.equals(other.getOccupation());
     boolean bRace = _Race.equals(other.getRace());
-    ArrayList<Skill> skillset = other.getSkills();
+    List<Skill> skillset = other.getSkills();
     boolean bSkills = _skills.equals(skillset);
 
     return (bName || bGender || bOccup || bRace || bSkills);
@@ -849,7 +850,7 @@ public class Person implements Serializable, IRegistryElement
    * 
    * @return the number of languages known
    */
-  public ArrayList<String> getLangsKnown()
+  public List<String> getLangsKnown()
   {
     return _langs;
   }
@@ -944,7 +945,7 @@ public class Person implements Serializable, IRegistryElement
    * 
    * @return array of skills
    */
-  public ArrayList<Skill> getSkills()
+  public List<Skill> getSkills()
   {
     return _skills;
   }
@@ -1622,7 +1623,7 @@ public class Person implements Serializable, IRegistryElement
    * 
    * @return an arrayList containing the language(s) intialized for this Person
    */
-  private ArrayList<String> initLanguages()
+  private List<String> initLanguages()
   {
     String newLang = null;
     // Create the language list
@@ -1681,7 +1682,7 @@ public class Person implements Serializable, IRegistryElement
    * 
    * @return the new skills for this Person
    */
-  private ArrayList<Skill> initSkills()
+  private List<Skill> initSkills()
   {
     _skills.clear();
     // Get the skill associated with the person's occupation
@@ -1786,7 +1787,7 @@ public class Person implements Serializable, IRegistryElement
      * 
      * @return list of known languages
      */
-    public ArrayList<String> initLanguages()
+    public List<String> initLanguages()
     {
       return Person.this.initLanguages();
     }

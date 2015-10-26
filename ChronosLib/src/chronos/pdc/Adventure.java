@@ -66,14 +66,7 @@ public class Adventure implements IRegistryElement
     if ((advName == null) || (townName == null) || (arenaName == null) || (overview == null)) {
       throw new ApplicationException("Adventure cannot have null parms");
     }
-    // Guard against a non-existent Town
-    if (!townExists(townName)) {
-      throw new ApplicationException("Town cannot be found for this Adventure");
-    }
-    // Guard against a non-existent Arena file
-    if (!arenaExists(arenaName)) {
-      throw new ApplicationException("Arena cannot be found for this Adventure");
-    }
+
     // Set the parms
     else {
       _name = advName;
@@ -102,27 +95,6 @@ public class Adventure implements IRegistryElement
   // System.out.println("\thas Arena " + _arenaName);
   // System.out.println("\tOverview: \t" + getOverview());
   // }
-
-  /** Checks if the Town exists in the TownRegistry
-   * @param townName to check in TownRegistry
-   * @return true if town found, else false
-   */
-  private boolean townExists(String townName)
-  {
-    TownRegistry treg = (TownRegistry) RegistryFactory.getInstance().getRegistry(RegKey.TOWN);
-    return (treg.getUnique(townName) == null)  ? false : true;
-  }
-  
-  /** Checks if the Arena exists in a dgn file
-   * @param arenaName to check 
-   * @return true if town found, else false
-   */
-  private boolean arenaExists(String arenaName)
-  {
-    File arenaFile = new File(Chronos.ARENA_PATH + arenaName + Chronos.ARENA_EXT);
-    return arenaFile.exists();
-  }
-
   
   /**
    * Two Adventures are equal if all the adventure name, Town name, and Arena name are equal

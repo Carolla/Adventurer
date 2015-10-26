@@ -11,7 +11,7 @@
 
 package test.pdc;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import pdc.Klass;
 import chronos.pdc.AttributeList;
@@ -46,7 +46,7 @@ public class MockKlass extends Klass {
 	 */
 
 	@Override
-	public ArrayList<Skill> assignSkills(ArrayList<Skill> skillList) {
+	public List<Skill> assignSkills(List<Skill> skillList) {
 		return skillList;
 	}
 

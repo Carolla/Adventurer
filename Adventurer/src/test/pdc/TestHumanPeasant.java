@@ -11,7 +11,7 @@
 
 package test.pdc;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 import mylib.MsgCtrl;
@@ -271,7 +271,7 @@ public class TestHumanPeasant extends TestCase {
 		// abilities
 		// This human has only the Luck skill of a gambler
 		assertTrue(_pGuy.hasSkill("Luck"));
-		ArrayList<Skill> skills = _pGuy.getSkills(); // Luck plus readOnly skill
+		List<Skill> skills = _pGuy.getSkills(); // Luck plus readOnly skill
 		assertTrue(skills.size() == 2);
 		// Although all Persons have this attribute, Humans have it for 0 feet
 		// assertEquals(_pGuy.getInfraDistance(), 0);

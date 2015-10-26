@@ -9,7 +9,7 @@
 
 package test.pdc;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import mylib.ApplicationException;
 import chronos.pdc.AttributeList;
@@ -64,13 +64,13 @@ public class MockRace extends Race
   }
 
   /** Set the Race subclass skills of the Person */
-  public ArrayList<Skill> assignRacialSkills(ArrayList<Skill> skillList)
+  public List<Skill> assignRacialSkills(List<Skill> skillList)
   {
     return skillList;
   };
 
   /** Set the Race subclass skills of the Person */
-  public ArrayList<Skill> assignSkills(ArrayList<Skill> skillList)
+  public List<Skill> assignSkills(List<Skill> skillList)
   {
     return null;
   }

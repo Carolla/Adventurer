@@ -19,6 +19,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import javax.swing.BorderFactory;
@@ -455,7 +456,7 @@ private MainframeInterface _mainframe;
 
 
   /** Stub until the display is working properly. */
-  public boolean displaySkills(ArrayList<String> skillList)
+  public boolean displaySkills(List<String> skillList)
   {
     JTextArea skillHeader = new JTextArea();
     skillHeader.setPreferredSize(new Dimension(DATA_WIDTH - SCROLLBAR_SIZE,

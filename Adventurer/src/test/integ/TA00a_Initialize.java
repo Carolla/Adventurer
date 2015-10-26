@@ -82,7 +82,6 @@ public class TA00a_Initialize
   @Before
   public void setUp() throws Exception
   {
-    _rf = RegistryFactory.getInstance();
     _launcher = new Adventurer();
     _mock = _launcher.new MockAdventurer();
   }

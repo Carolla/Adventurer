@@ -13,6 +13,7 @@ package pdc.character;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import mylib.ApplicationException;
 import mylib.pdc.MetaDie;
@@ -99,7 +100,7 @@ public class HalfElf extends Race implements Serializable {
      */
 
     /** Assign the skills that the Half-Elf has */
-    public ArrayList<Skill> assignSkills(ArrayList<Skill> inSkills) {
+    public List<Skill> assignSkills(List<Skill> inSkills) {
         Skill skill = new Skill();
         SkillRegistry skreg = (SkillRegistry) RegistryFactory.getInstance().getRegistry(RegKey.SKILL);
         for (int i = 0; i < _helfSkills.length; i++) {
@@ -387,7 +388,7 @@ public class HalfElf extends Race implements Serializable {
             return HalfElf.this.initWeightDescriptor(weight);
         }
 
-        public ArrayList<Skill> assignRacialSkills(ArrayList<Skill> inSkills) {
+        public List<Skill> assignRacialSkills(List<Skill> inSkills) {
             // TODO Auto-generated method stub
             return HalfElf.this.assignSkills(inSkills);
         }

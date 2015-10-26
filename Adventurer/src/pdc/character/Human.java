@@ -11,7 +11,7 @@
 package pdc.character;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.List;
 
 import mylib.ApplicationException;
 import mylib.MsgCtrl;
@@ -109,7 +109,7 @@ public class Human extends Race implements Serializable {
 	 * @return the original list since Human adds no new skill
 	 */
 	@Override
-	public ArrayList<Skill> assignSkills(ArrayList<Skill> skillList) {
+	public List<Skill> assignSkills(List<Skill> skillList) {
 		return skillList;
 	}
 
@@ -259,7 +259,7 @@ public class Human extends Race implements Serializable {
 		 *            set of skills the Person has from other initilizations
 		 * @return original skillList
 		 */
-		public ArrayList<Skill> assignSkills(ArrayList<Skill> skillList) {
+		public List<Skill> assignSkills(List<Skill> skillList) {
 			return Human.this.assignSkills(skillList);
 		}
 

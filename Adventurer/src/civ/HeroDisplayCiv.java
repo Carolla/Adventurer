@@ -171,14 +171,14 @@ public class HeroDisplayCiv
   /**
    * Format the Skill data and tell the widget to display it
    * 
-   * @param skills list of Hero's skills to display
+   * @param _skills list of Hero's skills to display
    * @return false is an error occurs
    */
-  public boolean populateSkills(ArrayList<Skill> skills)
+  public boolean populateSkills(List<Skill> _skills)
   {
     // Create a shuttle to contain the data and convert to widget String
     // format
-    ArrayList<String> skillList = convertSkills(skills);
+    List<String> skillList = convertSkills(_skills);
     // if (!Constants.IN_TEST) {
     _widget.displaySkills(skillList);
     // }
@@ -325,16 +325,16 @@ public class HeroDisplayCiv
    * Convert the Skill object into string fields for list display. All Item fields are concatenated
    * into a single delimited string.
    * 
-   * @param skills list of Skills objects to convert
+   * @param _skills list of Skills objects to convert
    * @return the string list of output data
    */
-  private ArrayList<String> convertSkills(ArrayList<Skill> skills)
+  private List<String> convertSkills(List<Skill> _skills)
   {
-    ArrayList<String> skillList = new ArrayList<String>(skills.size());
-    for (int k = 0; k < skills.size(); k++) {
+    List<String> skillList = new ArrayList<String>(_skills.size());
+    for (int k = 0; k < _skills.size(); k++) {
       // Each Skill consists of: name, description, race, klass, and
       // action (excluded)
-      Skill skill = skills.get(k);
+      Skill skill = _skills.get(k);
       String name = skill.getName();
       // String race = skill.getRace();
       // String klass = skill.getKlass();

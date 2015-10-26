@@ -13,6 +13,7 @@ package pdc.character;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import mylib.ApplicationException;
 import mylib.MsgCtrl;
@@ -91,7 +92,7 @@ public class Hobbit extends Race implements Serializable {
      */
 
     /** Assign the skills that the Hobbit has */
-    public ArrayList<Skill> assignSkills(ArrayList<Skill> inSkills) {
+    public List<Skill> assignSkills(List<Skill> inSkills) {
         Skill skill = new Skill();
         SkillRegistry skreg = (SkillRegistry) RegistryFactory.getInstance().getRegistry(RegKey.SKILL);
         // skreg.load();
@@ -443,7 +444,7 @@ public class Hobbit extends Race implements Serializable {
             return Hobbit.this.initWeightDescriptor(weight);
         }
 
-        public ArrayList<Skill> assignRacialSkills(ArrayList<Skill> inSkills) {
+        public List<Skill> assignRacialSkills(List<Skill> inSkills) {
             // TODO Auto-generated method stub
             return Hobbit.this.assignSkills(inSkills);
         }

@@ -70,15 +70,6 @@ public class TestRoguesGuild
     /** Name of default Guildmaster */
     private final String DEF_MASTER = "Ripper";
     
-
-    /** Close down all the secondary registries needed */
-    @AfterClass
-    public static void cleanUp() 
-    {
-      RegistryFactory.getInstance().closeAllRegistries();
-    }
-    
-
     /**
      * Creates the test RoguesGuild, but many tests in this class create their own different stores
      * @throws java.lang.Exception

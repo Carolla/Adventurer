@@ -20,15 +20,10 @@ import mylib.ApplicationException;
 import mylib.MsgCtrl;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.pdc.Occupation;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
-import chronos.pdc.registry.SkillRegistry;
 
 
 /**
@@ -61,22 +56,6 @@ public class TestOccupation
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++  
      *                  SETUP / TEARDOWN 
      * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-
-    /** Create the secondary registries needed */
-    @BeforeClass
-    public static void runOnce()
-    {
-        // Create a Registry object, which will be initialized if new
-        assertNotNull((SkillRegistry) RegistryFactory.getInstance().getRegistry(RegKey.SKILL));
-    }
-    
-    /** Close down all the secondary registries needed */
-    @AfterClass
-    public static void cleanUp() 
-    {
-      RegistryFactory.getInstance().closeAllRegistries();
-    }
-
     
     /**
      * @throws java.lang.Exception for unexpected exception

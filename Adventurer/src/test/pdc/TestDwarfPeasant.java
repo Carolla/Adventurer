@@ -11,7 +11,7 @@
 
 package test.pdc;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 import mylib.Constants;
@@ -281,7 +281,7 @@ public class TestDwarfPeasant extends TestCase
         assertTrue(_pGuy.hasSkill("Luck"));
         assertTrue(_pGuy.hasSkill("Infravision 60'"));
         assertTrue(_pGuy.hasSkill("Geasing"));
-        ArrayList<Skill> skills = _pGuy.getSkills(); // Luck plus readOnly skill
+        List<Skill> skills = _pGuy.getSkills(); // Luck plus readOnly skill
         assertTrue(skills.size() == 4);
         // Although all Persons have this attribute, Dwarfs have it for 0 feet
         // assertEquals(_pGuy.getInfraDistance(), 0);
@@ -412,7 +412,7 @@ public class TestDwarfPeasant extends TestCase
         assertTrue(_pGal.hasSkill("Appraise Tapestries"));
         assertTrue(_pGal.hasSkill("Infravision 60'"));
         assertTrue(_pGal.hasSkill("Geasing"));
-        ArrayList<Skill> skills = _pGal.getSkills(); // Appraise plus readOnly
+        List<Skill> skills = _pGal.getSkills(); // Appraise plus readOnly
                                                      // skill
         assertTrue(skills.size() == 4);
         // Although all Persons have this attribute, Dwarfs have it for 0 feet

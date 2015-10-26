@@ -68,14 +68,6 @@ public class TestClericsGuild
     /** Name of default Guildmaster */
     private final String DEF_MASTER = "Balthazar";
 
-    /** Close down all the secondary registries needed */
-    @AfterClass
-    public static void cleanUp() 
-    {
-      RegistryFactory.getInstance().closeAllRegistries();
-    }
-    
-
     /**
      * Creates the test Store, but many tests in this class create their own different stores
      * @throws java.lang.Exception

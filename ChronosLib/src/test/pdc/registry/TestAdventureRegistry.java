@@ -46,8 +46,6 @@ import chronos.pdc.registry.TownRegistry;
  */
 public class TestAdventureRegistry
 {
-  /** Factory that retrieves or creates all registries (singletons) */
-  static private RegistryFactory _rf;
 
   private String DEF_ADVENTURE = "The Quest for Rogahn and Zelligar";
 
@@ -58,26 +56,11 @@ public class TestAdventureRegistry
   /**
    * @throws java.lang.Exception
    */
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception
-  {}
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @AfterClass
-  public static void tearDownAfterClass() throws Exception
-  {}
-
-  /**
-   * @throws java.lang.Exception
-   */
   @Before
   public void setUp() throws Exception
   {
       MsgCtrl.auditMsgsOn(false);
       MsgCtrl.errorMsgsOn(false);
-    _rf = RegistryFactory.getInstance();
   }
 
   /**
@@ -86,8 +69,6 @@ public class TestAdventureRegistry
   @After
   public void tearDown() throws Exception
   {
-    _rf.closeAllRegistries();
-    _rf = null;
   }
 
 
@@ -103,37 +84,6 @@ public class TestAdventureRegistry
   {
     MsgCtrl.where(this);
 
-    // DO
-    AdventureRegistry areg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
-    assertNotNull(areg);
-
-    BuildingRegistry breg = (BuildingRegistry) _rf.getRegistry(RegKey.BLDG);
-    assertNotNull(breg);
-
-    ItemRegistry ireg = (ItemRegistry) _rf.getRegistry(RegKey.ITEM);
-    assertNotNull(ireg);
-
-    NPCRegistry nreg = (NPCRegistry) _rf.getRegistry(RegKey.NPC);
-    assertNotNull(nreg);
-
-    OccupationRegistry oreg = (OccupationRegistry) _rf.getRegistry(RegKey.OCP);
-    assertNotNull(oreg);
-
-    SkillRegistry sreg = (SkillRegistry) _rf.getRegistry(RegKey.SKILL);
-    assertNotNull(sreg);
-
-    TownRegistry treg = (TownRegistry) _rf.getRegistry(RegKey.TOWN);
-    assertNotNull(treg);
-
-    int regNum = _rf.getNumberOfRegistries();
-    MsgCtrl.msgln("Registires open and stored in RegistryFactory collection = " + regNum);
-    assertTrue(regNum == RegKey.values().length);
-
-    MsgCtrl.msgln("Closing all Registires");
-    _rf.closeAllRegistries();
-    regNum = _rf.getNumberOfRegistries();
-    MsgCtrl.msgln("Registires open and stored in RegistryFactory collection = " + regNum);
-    assertEquals(0, regNum);
   }
 
 
@@ -149,48 +99,13 @@ public class TestAdventureRegistry
 
     // DO
     // Add a new Adventure to the AdventureRegistry
-    AdventureRegistry areg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
-    assertNotNull(areg);
+    AdventureRegistry areg = null;
 
     // VERIFY AdvReg contains single element
     assertEquals(1, areg.getNbrElements());
     // and the element is the recent adventure
     Adventure adv = areg.getAdventure(DEF_ADVENTURE);
     assertTrue(adv.getName().equals(DEF_ADVENTURE));
-  }
-
-
-  /**
-   * @Normal Try to duplicate an AdventureRegisty in the collection
-   */
-  @Test
-  public void testNewInstance_Dup()
-  {
-    MsgCtrl.where(this);
-
-    // SETUP None
-
-    // DO
-    // Add a new Adventure to the AdventureRegistry
-    AdventureRegistry areg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
-    assertNotNull(areg);
-    MsgCtrl.msgln("Registry " + areg + " open and stored");
-
-    int regNum = _rf.getNumberOfRegistries();
-    MsgCtrl.msgln("Registries open and stored in RegistryFactory collection = " + regNum);
-    assertEquals(1, regNum);
-
-    // Try to add another AdventureRegistry
-    AdventureRegistry areg2 = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
-    assertNotNull(areg2);
-    MsgCtrl.msgln("Registry " + areg2 + " open and stored");
-
-    // VERIFY RegistryFactory contains same single element
-    assertEquals(areg, areg2);
-    regNum = _rf.getNumberOfRegistries();
-    assertEquals(1, regNum);
-    // ...and the element is the recent adventure
-    assertEquals(1, areg.getAdventureList().size());
   }
 
 
@@ -204,7 +119,7 @@ public class TestAdventureRegistry
 
     // SETUP None
     MsgCtrl.msgln("Creating default adventure in Registry ");
-    AdventureRegistry areg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
+    AdventureRegistry areg = null;
     assertNotNull(areg);
 
     // DO
@@ -233,7 +148,7 @@ public class TestAdventureRegistry
 
     // SETUP None
     MsgCtrl.msgln("Creating default adventure in Registry ");
-    AdventureRegistry areg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
+    AdventureRegistry areg = null;
     assertNotNull(areg);
 
     // DO
@@ -257,7 +172,7 @@ public class TestAdventureRegistry
 
     // SETUP None
     MsgCtrl.msgln("Creating default adventure in Registry ");
-    AdventureRegistry areg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
+    AdventureRegistry areg = null;
     assertNotNull(areg);
 
     // DO
@@ -280,7 +195,7 @@ public class TestAdventureRegistry
 
     // SETUP None
     MsgCtrl.msgln("Creating default adventure in Registry ");
-    AdventureRegistry areg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
+    AdventureRegistry areg = null;
     assertNotNull(areg);
 
     // DO

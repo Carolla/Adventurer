@@ -12,6 +12,7 @@
 package test.pdc;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 import mylib.ApplicationException;
@@ -148,10 +149,10 @@ public class TestDwarf extends TestCase {
 		MsgCtrl.auditMsgsOn(false);
 		MsgCtrl.msgln(this, "\ttestAssignRacialSkills()");
 		// Build array of fake skills
-		ArrayList<Skill> inSkills = new ArrayList<Skill>();
+		List<Skill> inSkills = new ArrayList<Skill>();
 
 		// Check that inSkills and outSkills are equal
-		ArrayList<Skill> outSkills = _mock.assignRacialSkills(inSkills);
+		List<Skill> outSkills = _mock.assignRacialSkills(inSkills);
 		assertTrue(outSkills.size() == inSkills.size());
 		assertTrue(inSkills.get(0).equals(outSkills.get(0)));
 		assertTrue(inSkills.get(1).equals(outSkills.get(1)));

@@ -13,6 +13,7 @@ package chronos.pdc;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import mylib.ApplicationException;
 import mylib.Constants;
@@ -170,7 +171,7 @@ public abstract class Race implements Serializable
             AttributeList unadjustedTraits);
 
     /** Set the Race subclass skills of the Person */
-    abstract public ArrayList<Skill> assignSkills(ArrayList<Skill> skillList);
+    abstract public List<Skill> assignSkills(List<Skill> skillList);
 
     /** Add the specific race language to the Person's list */
     abstract public String getLanguage();
@@ -340,7 +341,7 @@ public abstract class Race implements Serializable
      *            target list to which this method will add new skills
      * @return the updated skillList
      */
-    protected ArrayList<Skill> assignSkills(ArrayList<Skill> skillList,
+    protected List<Skill> assignSkills(List<Skill> skillList,
             String[] racialList)
     {
         // Ensure that there are racial skills to add; if not, no changes

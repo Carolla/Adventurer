@@ -12,7 +12,7 @@
 package test.pdc;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 import mylib.Constants;
@@ -189,7 +189,7 @@ public class TestPerson extends TestCase {
 		MsgCtrl.msgln(this, "\ttestInitLanguages()");
 
 		// NORMAL -- Humans have only Common
-		ArrayList<String> langs = _mock.initLanguages();
+		List<String> langs = _mock.initLanguages();
 		assertTrue(langs.size() == 1);
 		assertTrue(langs.get(0).equals("Common"));
 		MsgCtrl.msgln("Languages known: " + langs.get(0));

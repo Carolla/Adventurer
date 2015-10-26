@@ -14,6 +14,7 @@ package pdc;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 
 import mylib.Constants;
 import mylib.MsgCtrl;
@@ -101,7 +102,7 @@ public abstract class Klass implements Serializable
     public Klass() {}
 
     /** Set the Klass-specific special abilities. Peasants have none. */
-    public abstract ArrayList<Skill> assignSkills(ArrayList<Skill> skillList);
+    public abstract List<Skill> assignSkills(List<Skill> _skills);
 
     /**
      * Each class, except Peasant, sets their subclass's characteristic Hit

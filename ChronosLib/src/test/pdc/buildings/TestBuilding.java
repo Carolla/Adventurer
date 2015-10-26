@@ -79,15 +79,6 @@ public class TestBuilding
 //    assertNotNull((NPCRegistry) RegistryFactory.getInstance().getRegistry(RegKey.NPC));
   }
 
-  /** Close down all the secondary registries needed for the Inn */
-  @AfterClass
-  public static void tearDownAfterClass()
-  {
-    RegistryFactory.getInstance().closeAllRegistries();
-//    // Close down the secondary, but don't delete the registry file
-//    ((NPCRegistry) RegistryFactory.getInstance().getRegistry(RegKey.NPC)).closeRegistry();
-  }
-
   /**
    * @throws java.lang.Exception
    */

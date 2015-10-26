@@ -67,15 +67,7 @@ public class TestStore
     private final String DEF_CLOSING = "6:00 PM";
     /** Name of default store name */
     private final String DEF_NAME = "Rat's Pack";
-    
-
-    /** Close down all the secondary registries needed */
-    @AfterClass
-    public static void cleanUp() 
-    {
-      RegistryFactory.getInstance().closeAllRegistries();
-    }
-    
+   
 
     /**
      * Creates the test Store, but many tests in this class create their own different stores

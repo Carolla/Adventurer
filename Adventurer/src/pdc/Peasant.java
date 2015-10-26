@@ -12,7 +12,7 @@
 package pdc;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.List;
 
 import mylib.pdc.MetaDie;
 import chronos.Chronos.ATTRIBUTE;
@@ -85,7 +85,7 @@ public class Peasant extends Klass implements Serializable {
 	 * @return the original list since Peasant adds no new skill
 	 */
 	@Override
-	public ArrayList<Skill> assignSkills(ArrayList<Skill> skillList)
+	public List<Skill> assignSkills(List<Skill> skillList)
 	{
 		return skillList;
 	}

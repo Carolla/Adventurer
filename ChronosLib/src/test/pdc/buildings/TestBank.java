@@ -78,8 +78,6 @@ public class TestBank
   @Before
   public void setUp() throws Exception
   {
-    RegistryFactory _rf = RegistryFactory.getInstance();
-    assertNotNull(_rf);
     _bank = new Bank();
     assertNotNull(_bank);
     _bank.setBusinessHours(TEST_OPEN, TEST_CLOSING);

@@ -70,12 +70,6 @@ public class TestJail
     private final String DEF_CLOSING = "6:00 PM";
     /** Keeper of the Jail */
     private final String DEF_OWNER = "The Sheriff";
-
-    @AfterClass
-    public static void cleanUp() 
-    {
-      RegistryFactory.getInstance().closeAllRegistries();
-    }
     
     /**
      * Creates the test Jail, but many tests in this class create their own different banks
