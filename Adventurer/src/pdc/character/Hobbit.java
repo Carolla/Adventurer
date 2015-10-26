@@ -93,12 +93,10 @@ public class Hobbit extends Race implements Serializable {
 
     /** Assign the skills that the Hobbit has */
     public List<Skill> assignSkills(List<Skill> inSkills) {
-        Skill skill = new Skill();
-        SkillRegistry skreg = (SkillRegistry) RegistryFactory.getInstance().getRegistry(RegKey.SKILL);
         // skreg.load();
         for (int i = 0; i < _hobbitSkills.length; i++) {
             String skillName = _hobbitSkills[i];
-            skill = skreg.getSkill(skillName);
+            Skill skill = Skill.getSkill(skillName);
             inSkills.add(skill);
         }
         super._infraDistance = INFRA_DISTANCE;

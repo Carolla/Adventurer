@@ -12,15 +12,13 @@ package pdc;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 
 import mylib.ApplicationException;
 import mylib.Constants;
 import mylib.MsgCtrl;
 import chronos.civ.MiscKeys.ItemCategory;
 import chronos.pdc.Item;
-import chronos.pdc.registry.ItemRegistry;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 
 /**
  * Contains the Person's collection of Items. All weights are in ounces; the client object must
@@ -433,15 +431,13 @@ public class Inventory implements Serializable
    * 
    * @return the ArrayList containing the items
    */
-  public ArrayList<Item> initStartingInventory()
+  public List<Item> initStartingInventory()
   {
-    ItemRegistry ireg = (ItemRegistry) RegistryFactory.getInstance().getRegistry(RegKey.ITEM);
-
     for (int i = 0; i < _startList.length; i++) {
       Item it = null;
 
       // Try to create item
-      it = ireg.getItem(_startList[i][0]);
+      it = Item.getItem(_startList[i][0]);
 
       // Ensure item count is 1
       if (it.getQuantity() > 1) {

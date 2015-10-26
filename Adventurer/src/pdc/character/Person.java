@@ -1686,11 +1686,7 @@ public class Person implements Serializable, IRegistryElement
   {
     _skills.clear();
     // Get the skill associated with the person's occupation
-    String occSkillName = _Occupation.getSkillName();
-    Skill s = null;
-    s =
-        ((SkillRegistry) RegistryFactory.getInstance().getRegistry(RegKey.SKILL))
-            .getSkill(occSkillName);
+    Skill s = _Occupation.getSkill();
     _skills.add(s);
     // Append the skills associated with the person's Race and return
     _skills = _Race.assignSkills(_skills);

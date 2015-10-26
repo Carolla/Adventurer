@@ -204,7 +204,12 @@ public class Occupation implements IRegistryElement
     return _name;
   }
 
-  /**
+  public Skill getSkill()
+{
+    return _skill;
+}
+
+/**
    * Get the description of the skill that corresponds to this occupation
    * 
    * @return the name of the skill

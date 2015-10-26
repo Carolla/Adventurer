@@ -101,11 +101,9 @@ public class HalfElf extends Race implements Serializable {
 
     /** Assign the skills that the Half-Elf has */
     public List<Skill> assignSkills(List<Skill> inSkills) {
-        Skill skill = new Skill();
-        SkillRegistry skreg = (SkillRegistry) RegistryFactory.getInstance().getRegistry(RegKey.SKILL);
         for (int i = 0; i < _helfSkills.length; i++) {
             String skillName = _helfSkills[i];
-            skill = skreg.getSkill(skillName);
+            Skill skill = Skill.getSkill(skillName);
             inSkills.add(skill);
         }
         super._infraDistance = INFRA_DISTANCE;

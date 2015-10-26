@@ -21,9 +21,6 @@ import mylib.MsgCtrl;
 import mylib.pdc.MetaDie;
 import chronos.Chronos;
 import chronos.Chronos.ATTRIBUTE;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
-import chronos.pdc.registry.SkillRegistry;
 
 /**
  * Defines the common methods and attributes for all Races; <code>Human</code>
@@ -350,9 +347,8 @@ public abstract class Race implements Serializable
         }
 
         // Get the collection of all skills for lookup
-        SkillRegistry skReg = (SkillRegistry) RegistryFactory.getInstance().getRegistry(RegKey.SKILL);
         for (int k = 0; k < racialList.length; k++) {
-            Skill skill = skReg.getSkill(racialList[k]);
+            Skill skill = Skill.getSkill(racialList[k]);
             if (skill != null) {
                 skillList.add(skill);
             }

@@ -16,6 +16,7 @@ import mylib.dmc.IRegistryElement;
 import chronos.civ.MiscKeys;
 import chronos.civ.MiscKeys.ItemCategory;
 import chronos.civ.MiscKeys.ItemFields;
+import chronos.pdc.registry.ItemRegistry;
 
 
 /**
@@ -51,6 +52,7 @@ public class Item implements IRegistryElement
   /** Standard weight (oz) for a silver piece */
   static public final int SILVER_WEIGHT = 1;
 
+  private static ItemRegistry _ireg = null;
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
@@ -59,6 +61,16 @@ public class Item implements IRegistryElement
   public Item()
   {}
 
+  public static void setItemRegistry(ItemRegistry ireg)
+  {
+      _ireg = ireg;
+  }
+  
+  public static Item getItem(String itemName)
+  {
+      return _ireg.getItem(itemName);
+  }
+  
   /**
    * Construct an Item from its name and weight descriptor
    * 
