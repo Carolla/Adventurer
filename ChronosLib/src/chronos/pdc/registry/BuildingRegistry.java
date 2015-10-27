@@ -64,7 +64,6 @@ public class BuildingRegistry extends Registry
     // Create each of the default buildings and save to registry
     // The constructors load the default data
       Inn inn = new Inn(_skedder, _npcRegistry);
-      inn.initPatrons();
       super.add(inn); // Ugly Ogre Inn
       super.add(new Store()); // Rat's Pack
       super.add(new Jail()); // Jail
@@ -74,7 +73,6 @@ public class BuildingRegistry extends Registry
       super.add(new ClericsGuild()); // Monastery
       super.add(new WizardsGuild()); // Arcaneum
   }
-
 
   /**
    * Get all the Buildings of the registry, which will also include NPCs unfortunately as an element

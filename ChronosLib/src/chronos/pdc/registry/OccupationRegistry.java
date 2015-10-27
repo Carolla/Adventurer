@@ -127,6 +127,9 @@ public class OccupationRegistry extends Registry
     {
         super(Chronos.OcpRegPath);
         _skillRegistry = skillRegistry;
+        if (shouldInitialize) {
+            initialize();
+        }        
     }
 
 

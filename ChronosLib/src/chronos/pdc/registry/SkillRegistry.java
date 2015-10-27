@@ -85,6 +85,9 @@ public class SkillRegistry extends Registry
   protected SkillRegistry()
   {
     super(Chronos.SkillRegPath);
+    if (shouldInitialize) {
+        initialize();
+    }        
   }
 
 

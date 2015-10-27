@@ -15,8 +15,6 @@ import java.awt.EventQueue;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import chronos.pdc.registry.RegistryFactory;
-
 /**
  * This Launcher class detects command line arguments, takes appropriate loading action, initializes
  * all singleton Registries, and turns control over the Mainframe GUI singleton.
@@ -33,9 +31,6 @@ import chronos.pdc.registry.RegistryFactory;
  */
 public class Adventurer
 {
-    /** Quick reference to avoid repeated calls to {@code getInstance} */
-    static private RegistryFactory _rf;
-
     /** Launcher class does not require a constructor--it has the {@code main} method. */
     public Adventurer()
     {}
@@ -92,18 +87,9 @@ public class Adventurer
     /** Close all registries and shutdown the system */
     public void approvedQuit()
     {
-        closeRegistries();
         System.exit(0);
     }
 
-
-    /**
-     * Close all database Registries (singletons)
-     */
-    private static void closeRegistries()
-    {
-        _rf.closeAllRegistries();
-    }
 
     // /**
     // * Dump the contents of all the registries for viewing

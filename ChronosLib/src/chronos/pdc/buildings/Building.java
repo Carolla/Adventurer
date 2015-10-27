@@ -27,39 +27,6 @@ import chronos.pdc.NPC;
  */
 public abstract class Building implements IRegistryElement
 {
-    @Override
-    public int hashCode()
-    {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((_buildingMaster == null) ? 0 : _buildingMaster.hashCode());
-        result = prime * result + ((_name == null) ? 0 : _name.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj)
-    {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Building other = (Building) obj;
-        if (_buildingMaster == null) {
-            if (other._buildingMaster != null)
-                return false;
-        } else if (!_buildingMaster.equals(other._buildingMaster))
-            return false;
-        if (_name == null) {
-            if (other._name != null)
-                return false;
-        } else if (!_name.equals(other._name))
-            return false;
-        return true;
-    }
-
     /** Default Opening Time for all buildings */
     private final int DEFAULT_OPENHOURS = 900;
     /** Default Closing Time for all buildings */
@@ -368,6 +335,39 @@ public abstract class Building implements IRegistryElement
     public String toString()
     {
         return _name;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((_buildingMaster == null) ? 0 : _buildingMaster.hashCode());
+        result = prime * result + ((_name == null) ? 0 : _name.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Building other = (Building) obj;
+        if (_buildingMaster == null) {
+            if (other._buildingMaster != null)
+                return false;
+        } else if (!_buildingMaster.equals(other._buildingMaster))
+            return false;
+        if (_name == null) {
+            if (other._name != null)
+                return false;
+        } else if (!_name.equals(other._name))
+            return false;
+        return true;
     }
 
 

@@ -63,6 +63,9 @@ public class TownRegistry extends Registry
     {
         super(Chronos.TownRegPath);
         _buildingRegistry = buildingRegistry;
+        if (shouldInitialize) {
+            initialize();
+        }        
     }
 
     // ==============================================================================

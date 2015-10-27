@@ -431,6 +431,9 @@ public class NPCRegistry extends Registry
   protected NPCRegistry()
   {
     super(Chronos.NPCRegPath);
+    if (shouldInitialize) {
+        initialize();
+    }        
   }
 
 

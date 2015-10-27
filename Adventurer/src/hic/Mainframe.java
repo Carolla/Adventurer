@@ -46,6 +46,7 @@ import pdc.Util;
 import pdc.command.CommandFactory;
 import chronos.Chronos;
 import chronos.pdc.Command.Scheduler;
+import chronos.pdc.buildings.Inn;
 import chronos.pdc.registry.AdventureRegistry;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
@@ -190,6 +191,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
         RegistryFactory rf = new RegistryFactory(_skedder);
         rf.initRegistries();
         BuildingRegistry breg = (BuildingRegistry) rf.getRegistry(RegKey.BLDG);
+        ((Inn) breg.getBuilding("Ugly Ogre Inn")).initPatrons();
         _bldgCiv = new BuildingDisplayCiv(this, breg);
 
         // Create the Civ

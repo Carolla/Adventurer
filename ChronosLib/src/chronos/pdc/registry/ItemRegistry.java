@@ -113,6 +113,9 @@ public class ItemRegistry extends Registry
   protected ItemRegistry()
   {
     super(Chronos.ItemRegPath);
+    if (shouldInitialize) {
+        initialize();
+    }        
   }
 
 
