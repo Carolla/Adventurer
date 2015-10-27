@@ -85,7 +85,11 @@ public abstract class Registry
             shouldInitialize = true;
         }
     }
-
+    
+    public void setDbReadWriter(DbReadWriter regRW)
+    {
+        _regRW = regRW;
+    }
 
     // ============================================================
     // PUBLIC METHODS
