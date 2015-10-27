@@ -9,6 +9,8 @@
 
 package test;
 
+import mylib.test.MyLibraryTestSuite;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -30,8 +32,10 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 
-    // ChronosLib test suite (includes MyLibaryTestSuite.class)
+    // ChronosLib test suite
     ChronosSuite.class,
+    /** MyLibrary test suit */
+    MyLibraryTestSuite.class,
 
     // UnitTestSuite includes all unit tests for all components
     UnitTestSuite.class,

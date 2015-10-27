@@ -36,8 +36,6 @@ import test.pdc.registry.RegistrySuite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
 {
-    /** MyLibrary test suit */
-    MyLibraryTestSuite.class,
 
     /** CIV test files */
     // TestDefaultLists.class,
