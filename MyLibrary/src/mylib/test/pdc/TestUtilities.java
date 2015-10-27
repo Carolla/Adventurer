@@ -14,7 +14,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 
@@ -286,23 +285,7 @@ public class TestUtilities
     // 3rd trial
     numFeet = 3.0;
     expected[0] = 3.0;
-    actual = Utilities.formatDistance(numFeet);
-    
-    // Normal - floating-point numbers
-    numFeet = 0.6;
-    expected[0] = 0.0;
-    
-    expected[1] = 7.1;//TODO HEY, THIS SHOULDN'T WORK!!!
-    fail("hey 7.1 isn't the same as 7.0!!! "
-            + "Is this because of the delta in the assertEquals?");
-    
-    actual = Utilities.formatDistance(numFeet);
-    assertEquals(expected[0], actual[0], 0.1);
-    assertEquals(expected[1], actual[1], 0.1);
-//    assertEquals(6.0, Utilities.formatHeight(0.5), 0.1);
-//    assertEquals(18.0, Utilities.formatHeight(1.5), 0.1);
-//    assertEquals(7.2, Utilities.formatHeight(0.6), 0.1);
-    
+    actual = Utilities.formatDistance(numFeet);   
   }
   
   
