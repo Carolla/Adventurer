@@ -12,6 +12,11 @@ package test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import test.integ.TA00a_Initialize;
+import test.integ.TA00b_Quit;
+import test.integ.TA08_CmdEnter;
+import test.integ.TA09_CmdLeave;
+
 
 /**
  * Regression test suite for all the {@code JUnit} unit and integration test cases for
@@ -29,14 +34,14 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+    // Individual integration tests for each use case
+    TA00a_Initialize.class,
+    TA00b_Quit.class,
+    TA08_CmdEnter.class,
+    TA09_CmdLeave.class
 
-    // ChronosLib test suite (includes MyLibaryTestSuite.class)
-    ChronosSuite.class,
-
-    // UnitTestSuite includes all unit tests for all components
-    UnitTestSuite.class,
 })
-public class AdventurerSuite
+public class IntegrationSuite
 {
 
 } // end of AdventurerSuite class
