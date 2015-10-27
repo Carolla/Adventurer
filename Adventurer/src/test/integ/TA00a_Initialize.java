@@ -19,15 +19,14 @@ import java.io.File;
 import mylib.MsgCtrl;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.Chronos;
+import chronos.pdc.Command.Scheduler;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
-import civ.Adventurer;
 
 /**
  * Test the Adventurer (Launcher) class: ensure that all Registries are created.
@@ -39,7 +38,6 @@ import civ.Adventurer;
 public class TA00a_Initialize
 {
   static private RegistryFactory _rf;
-  private Adventurer _launcher;
   /**
    * INFO ONLY: Keys used by RegistryFactory public enum RegKey { ADV("Adventure"),
    * BLDG("Building"), ITEM("Item"), NPC("NPC"), OCP("Occupation"), SKILL("Skill"), TOWN("Town");
@@ -54,12 +52,10 @@ public class TA00a_Initialize
   // Fixtures
   // ============================================================
 
-  /**
-   * @throws java.lang.Exception
-   */
   @BeforeClass
-  public static void setUpBeforeClass() throws Exception
+  public static void setUpBeforeClass()
   {
+      _rf = new RegistryFactory(new Scheduler());
     assertTrue(Chronos.ECHRONOS_ROOT != null);
     assertTrue(Chronos.ADV_RESOURCES_PATH != null);
     assertTrue(Chronos.RESOURCES_PATH != null);
@@ -69,17 +65,9 @@ public class TA00a_Initialize
   /**
    * @throws java.lang.Exception
    */
-  @AfterClass
-  public static void tearDownAfterClass() throws Exception
-  {}
-
-  /**
-   * @throws java.lang.Exception
-   */
   @Before
   public void setUp() throws Exception
   {
-    _launcher = new Adventurer();
   }
 
 
@@ -112,10 +100,12 @@ public class TA00a_Initialize
     MsgCtrl.msg("\tNumber of keys = " + keynum);
     MsgCtrl.msgln("\tNumber of file paths = " + pathnum);
     assertEquals(keynum, pathnum);
+    
     // Ensure that no registry files exist
     deleteRegistryFiles();
 
     // DO create the registries
+    _rf = new RegistryFactory(new Scheduler());
 
     // VERIFY all registry files created
     assertTrue(RegistryFilesExist());
@@ -168,48 +158,19 @@ public class TA00a_Initialize
     boolean retval = true;
     for (String s : paths) {
       File f = new File(s);
-      retval = (doesExist(s) && (f.length() > 0));
-      if (retval == false) {
-        break;
-      }
+      retval &= (f.exists() && (f.length() > 0));
     }
     return retval;
   }
-
-
-  // /** Create almost-empoty Registry files for testing */
-  // private void createFiles()
-  // {
-  // for (String s : paths) {
-  // FileOutputStream fos = new FileOutputStream(s);
-  // fos.wr
-  // }
-  // }
-
-
-  /** Check existence of single Registry file */
-  private boolean doesExist(String path)
-  {
-    File rf = new File(path);
-    return rf.exists();
-  }
-
 
   /** Clear all Registry files */
   private void deleteRegistryFiles()
   {
     for (String s : paths) {
-      deleteRegFile(s);
+        File rf = new File(s);
+        rf.delete();
+        assertFalse(rf.exists());
     }
-  }
-
-
-  /** Delete a Registry file */
-  private void deleteRegFile(String path)
-  {
-    File rf = new File(path);
-    rf.delete();
-    assertFalse(rf.exists());
   }
 
 
