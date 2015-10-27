@@ -56,10 +56,7 @@ public class TA00a_Initialize
   public static void setUpBeforeClass()
   {
       _rf = new RegistryFactory(new Scheduler());
-    assertTrue(Chronos.ECHRONOS_ROOT != null);
-    assertTrue(Chronos.ADV_RESOURCES_PATH != null);
-    assertTrue(Chronos.RESOURCES_PATH != null);
-    assertTrue(Chronos.IMAGE_PATH != null);
+      _rf.initRegistries();
   }
 
   /**
@@ -106,6 +103,7 @@ public class TA00a_Initialize
 
     // DO create the registries
     _rf = new RegistryFactory(new Scheduler());
+    _rf.initRegistries();
 
     // VERIFY all registry files created
     assertTrue(RegistryFilesExist());
