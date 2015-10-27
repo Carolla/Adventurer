@@ -23,16 +23,16 @@ public class Jail extends Building
 {
   // Data to initialize the default Jail; must be static because it is used in constructor
   /** Name of this fine establishment */
-  static private final String JAIL_NAME = "Jail";
+  public static final String DEFAULT_JAIL_NAME = "Jail";
   /** Owner of this fine establishment */
-  static private final String OWNER = "The Sheriff";
+  public static final String DEFAULT_OWNER = "The Sheriff";
   /** Town Jail */
   static private final String HOVERTEXT = "The Jail. You'll end up here if you cause trouble";
   /** What appears as one enters the building */
-  static private final String EXTERIOR =
+  public static final String DEFAULT_EXTERIOR =
       "The Jail is not much more than a stone box with a heavy wooden door in its side.";
   /** What one senses when looking around the inside of the Inn when few patrons are here. */
-  static private final String INTERIOR = "A hallway extends past the Sherriff's area down to " +
+  public static final String DEFAULT_INTERIOR = "A hallway extends past the Sherriff's area down to " +
       "a wooden door with a barred window facing you.";
 
   /** Paths to the images for this building **/
@@ -57,7 +57,7 @@ public class Jail extends Building
    */
   public Jail() throws ApplicationException
   {
-    super(JAIL_NAME, OWNER, HOVERTEXT, EXTERIOR, INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
+    super(DEFAULT_JAIL_NAME, DEFAULT_OWNER, HOVERTEXT, DEFAULT_EXTERIOR, DEFAULT_INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
     setBusinessHours(OPENTIME, CLOSETIME);
   }
 
@@ -89,53 +89,6 @@ public class Jail extends Building
   {
     return _name;
   }
-
-
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND RELATED METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
-
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PUBLIC METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
-
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PRIVATE METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
-
-
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ INNER CLASS: MockJail
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
-
-  public class MockJail
-  {
-    /** default ctor */
-    public MockJail()
-    {}
-
-    /** Get the building's name */
-    public String getName()
-    {
-      return _name;
-    }
-
-
-    /** Get the intro and description statements */
-    public String[] getDescs()
-    {
-      String[] s = new String[3];
-      s[0] = _extDesc;
-      s[1] = _intDesc;
-      return s;
-    }
-
-  } // end of MockJail inner class
-
 
 } // end of Jail class
 

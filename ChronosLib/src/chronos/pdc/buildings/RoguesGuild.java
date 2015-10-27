@@ -24,17 +24,17 @@ public class RoguesGuild extends Building
 {
   // Data to initialize the default Store; must be static because it is used in constructor
   /** Name of this fine establishment */
-  static private final String GUILD_NAME = "Rouge's Tavern";
+  public static final String DEFAULT_GUILD_NAME = "Rouge's Tavern";
   /** Owner of this fine establishment */
-  static private final String OWNER = "Ripper";
+  public static final String DEFAULT_OWNER = "Ripper";
   /** Thieve's Guild */
   static private final String HOVERTEXT = "Where all the thieves party";
   /** What appears as one enters the building */
-  static private final String EXTERIOR =
+  public static final String DEFAUL_TEXTERIOR =
       "A rowdy bar filled with unseemly characters of the night " +
           "obscures these headquarters for thieves and murderers.";
   /** For this case, a non-Guild member cannot enter */
-  static private final String INTERIOR = "The grizzled barman opens a secret door behind a large " +
+  public static final String DEFAULT_INTERIOR = "The grizzled barman opens a secret door behind a large " +
       "cask of wine. He motions you to proceed into the darkness. As you step inside, you " +
       "hear laughter and can make out more seedy characters rolling dice, throwing short " +
       "daggers at a dart board, and practicing picking locks. ";
@@ -62,7 +62,7 @@ public class RoguesGuild extends Building
    */
   public RoguesGuild() throws ApplicationException
   {
-    super(GUILD_NAME, OWNER, HOVERTEXT, EXTERIOR, INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
+    super(DEFAULT_GUILD_NAME, DEFAULT_OWNER, HOVERTEXT, DEFAUL_TEXTERIOR, DEFAULT_INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
     setBusinessHours(OPENTIME, CLOSETIME);
   }
 
@@ -99,57 +99,4 @@ public class RoguesGuild extends Building
     return _name;
   }
 
-  /**
-   * Set the business hours for this Building. This override allows the closing time to be the day
-   * after it opens.
-   * 
-   * @param open time building is available
-   * @param closed time building is not available
-   * @return false if parms are invalid
-   */
-  public boolean setBusinessHours(int open, int closed)
-  {
-    // Guards
-    boolean bOpen = (open > 0) && (open < 2400) ? true : false;
-    boolean bClose = (closed > 0) && (closed <= 2400) ? true : false;
-    // boolean bFlip = (open < closed) ? true : false;
-    // if ((bOpen && bClose && bFlip) == false) {
-    if ((bOpen && bClose) == false) {
-      return false;
-    }
-    // Clear out old values
-    _openTime = open;
-    _closingTime = closed;
-    return true;
-  }
-
-
-  /*
-   * PRIVATE METHODS
-   */
-
-  /*
-   * INNER CLASS: MockStore
-   */
-
-  public class MockRoguesGuild
-  {
-    /** default ctor */
-    public MockRoguesGuild()
-    {}
-
-    public String getDescrption()
-    {
-      return _intDesc;
-    }
-
-    public String getIntro()
-    {
-      return _extDesc;
-    }
-
-
-  } // end of MockRoguesGuild inner class
-
-
-} // end of Wizards Guild class
+} // end of Rogues Guild class

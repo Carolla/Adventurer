@@ -24,19 +24,19 @@ public class Store extends Building
 {
   // Data to initialize the default Store; must be static because it is used in constructor
   /** Name of this fine establishment */
-  static private final String STORE_NAME = "Rat's Pack";
+  public static final String DEFAULT_STORE_NAME = "Rat's Pack";
   /** Owner of the store */
-  static private final String OWNER = "Dewey N. Howe";
+  public static final String DEFAULT_OWNER = "Dewey N. Howe";
   /** General Store */
   static private final String HOVERTEXT = "General store for buying and selling supplies";
   /** What appears as one approaches the building */
-  static private final String EXTERIOR = "The sign over the door is in good repair. "
-      + "A fresh coat of paint on the lettering spells out: \'General Store, " + OWNER
+  public static final String DEFAUL_TEXTERIOR = "The sign over the door is in good repair. "
+      + "A fresh coat of paint on the lettering spells out: \'General Store, " + DEFAULT_OWNER
       + ", Proprietor. Est. 1066\', but all the townspeople still know this shop as the "
-      + STORE_NAME + ".";
+      + DEFAULT_STORE_NAME + ".";
 
   /** What one sees when looking around the inside of the Inn when few patrons are here. */
-  static private final String INTERIOR =
+  public static final String DEFAUL_TINTERIOR =
       "The store is crowded with crates of different sizes, shelves "
           + "loaded with bottles, packages, boxes, and miscellanea. Sacks of grain and flour rest "
           + "on the floor near the wall, coiled ropes hang on the walls. A cat sniffs around a "
@@ -63,7 +63,7 @@ public class Store extends Building
    */
   public Store() throws ApplicationException
   {
-    super(STORE_NAME, OWNER, HOVERTEXT, EXTERIOR, INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
+    super(DEFAULT_STORE_NAME, DEFAULT_OWNER, HOVERTEXT, DEFAUL_TEXTERIOR, DEFAUL_TINTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
     setBusinessHours(OPENTIME, CLOSETIME);
   }
 
@@ -99,37 +99,5 @@ public class Store extends Building
   {
     return _name;
   }
-
-
-
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PRIVATE METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
-
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ INNER CLASS: MockStore
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
-
-  public class MockStore
-  {
-    /** default ctor */
-    public MockStore()
-    {}
-
-    public String getDescrption()
-    {
-      return _intDesc;
-    }
-
-    public String getIntro()
-    {
-      return _extDesc;
-    }
-
-
-  } // end of MockStore inner class
-
 
 } // end of Inn class

@@ -29,16 +29,14 @@ public class Bank extends Building
 {
     // Data to initialize the default Bank; must be static because it is used in constructor
     /** Name of this fine establishment */
-    static private final String BANK_NAME = "The Bank";
+    public static final String DEFAULT_BANK_NAME = "The Bank";
     /** Owner of this fine establishment */
-    static private final String OWNER = "J.P. Pennypacker";
-    /** Town Bank */
-    static private final String HOVERTEXT = "The Bank, for deposits, wills, and loans";
+    public static final String DEFAULT_OWNER = "J.P. Pennypacker";
     /** What appears as one enters the building */
-    static private final String EXTERIOR =
+    public static final String DEFAULT_EXTERIOR =
             "The Bank is more stylish than the other buildings in this town.";
     /** What one senses when looking around the inside of the Inn when few patrons are here. */
-    static private final String INTERIOR =
+    public static final String DEFAULT_INTERIOR =
             "You face a baldish middle-aged man on the other "
                     +
                     "side of an old counter about four feet high. A dark metal grill partitions his side of the "
@@ -48,8 +46,9 @@ public class Bank extends Building
                     "eyeing you suspiciously.";
 
     /** Paths to the images for this building **/
-    static private final String EXTERIOR_IMAGE = "ext_Bank.JPG";
-    static private final String INTERIOR_IMAGE = "raw_int_Bank.jpg";
+    private static final String DEFAULT_HOVERTEXT = "The Bank, for deposits, wills, and loans";
+    private static final String EXTERIOR_IMAGE = "ext_Bank.JPG";
+    private static final String INTERIOR_IMAGE = "raw_int_Bank.jpg";
 
 
     /** The bank opens at 9am and closes at 3pm */
@@ -68,10 +67,17 @@ public class Bank extends Building
      */
     public Bank() throws ApplicationException
     {
-        super(BANK_NAME, OWNER, HOVERTEXT, EXTERIOR, INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
+        super(DEFAULT_BANK_NAME, DEFAULT_OWNER, DEFAULT_HOVERTEXT, DEFAULT_EXTERIOR, DEFAULT_INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
         setBusinessHours(OPENTIME, CLOSETIME);
     }
 
+
+    /*
+     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+     *                   PUBLIC METHODS
+     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    
     /*
      * Two Banks are considerd equal if their name and building masters are equal
      * 
@@ -101,51 +107,6 @@ public class Bank extends Building
         return _name;
     }
 
-
-    /*
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND RELATED METHODS
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-     */
-
-    /*
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PUBLIC METHODS
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-     */
-
-    /*
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PRIVATE METHODS
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-     */
-
-
-    /*
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ INNER CLASS: MockBank
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-     */
-
-    public class MockBank
-    {
-        /** default ctor */
-        public MockBank()
-        {}
-
-        /** Get the building's name */
-        public String getName()
-        {
-            return _name;
-        }
-
-
-        /** Get the intro and description statements */
-        public String[] getDescs()
-        {
-            String[] s = new String[3];
-            s[0] = _extDesc;
-            s[1] = _intDesc;
-            return s;
-        }
-
-    } // end of MockBank inner class
 
 
 } // end of Bank class

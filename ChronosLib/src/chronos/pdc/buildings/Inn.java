@@ -139,7 +139,7 @@ public class Inn extends Building
             _skedder.sched(ce);
             _skedder.sched(cl);
         }
-        System.out.println(_patrons.size() + " patrons are in the Inn");
+        System.out.println(enterList.size() + " patrons are in the Inn");
     }
 
     /**
