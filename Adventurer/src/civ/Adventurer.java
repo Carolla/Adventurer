@@ -65,14 +65,15 @@ public class Adventurer
           // dumpAllRegistries();
           final Mainframe frame = new Mainframe();
           frame.start();
-
           frame.setVisible(true);
           frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e)
             {
-              super.windowClosing(e);
-              adv.approvedQuit();
+              if (frame.displayPrompt("Quit Adventurer?") == true) {
+                super.windowClosing(e);
+                adv.approvedQuit();
+              }
             }
           });
         } catch (Exception e) {
@@ -81,12 +82,12 @@ public class Adventurer
         }
       }
     });
-
+    
   } // end of static main()
 
 
   /** Close all registries and shutdown the system */
-  public void approvedQuit()
+  static public void approvedQuit()
   {
     closeRegistries();
     System.exit(0);

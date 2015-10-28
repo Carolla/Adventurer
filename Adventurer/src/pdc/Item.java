@@ -28,9 +28,8 @@ import pdc.MiscKeys.ItemFields;
  */
 public class Item implements IRegistryElement
 {
-  // /** METADATA CONSTANTS */
-  // /** Recommended serialization constant */
-  // static final long serialVersionUID = 1002L;
+   /** Recommended serialization constant */
+   static final long serialVersionUID = 1002L;
 
   /** Weight of Item to nearest lb */
   public final int LBWT = 0;
@@ -54,10 +53,6 @@ public class Item implements IRegistryElement
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
-
-  // /** Default constructor */
-  // public Item()
-  // {}
 
   /**
    * Construct an Item from its name and weight descriptor

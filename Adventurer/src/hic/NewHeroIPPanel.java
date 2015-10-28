@@ -31,10 +31,6 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
-import javax.swing.text.AbstractDocument;
-import javax.swing.text.StyledDocument;
-import civ.DocumentSizeFilter;
-
 import chronos.Chronos;
 import civ.HeroDisplayCiv;
 import civ.NewHeroCiv;
@@ -266,6 +262,7 @@ public class NewHeroIPPanel extends JPanel
     // Create the CANCEL button
     JButton cancelButton = new JButton("CANCEL");
 
+    // TODO: Why is a dirty flag needed for input panel?
     // Clear editFlag and data, then return back to mainframe if Cancel is pressed
     cancelButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)

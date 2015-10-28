@@ -21,8 +21,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +39,6 @@ import chronos.Chronos;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
-import civ.Adventurer;
 import civ.BuildingDisplayCiv;
 import civ.CommandParser;
 import civ.MainframeCiv;
@@ -66,8 +63,9 @@ import pdc.command.Scheduler;
  *          Aug 3, 2014 // added Runic font to the buttons <br>
  *          Aug 6, 2014 // removed innner classes and merged StandardLayout with IOPanel <br>
  *          Aug 18, 2014 // moved {@code ImagePanel} backend methods to {@code MainframeCiv} <br>
- *          Aug 23 2014 // added methods to change titles on either panel, and images in the imaage
+ *          Aug 23 2014 // added methods to change titles on either panel, and images in the image
  *          pane <br>
+ *          Oct 19, 2015 // repaired Cancel button on Quit prompt window <br>
  */
 // Mainframe serialization unnecessary
 @SuppressWarnings("serial")
@@ -110,8 +108,6 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   private List<String> _partyHeros = new ArrayList<String>();
   private List<String> _summonableHeroes;
 
-  /** Title of the IOPanel of left side */
-  private final String IOPANEL_TITLE = " Transcript ";
   /** Title of the initial three-button panel on left side */
   private final String INITIAL_OPENING_TITLE = " Select an Action from the Buttons Below ";
 
@@ -142,6 +138,13 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   // Constructors and constructor helpers
   // ============================================================
 
+  /** Get access to the mainframe from afar */
+  public static Mainframe getInstance()
+  {
+    return _mf;
+  }
+
+
   /**
    * Get the size of the main window being displayed, which is used as a standard for laying out
    * subcomponents and panels.
@@ -154,12 +157,6 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     return new Dimension(USERWIN_WIDTH, USERWIN_HEIGHT);
   }
 
-
-  /** Get access to the mainframe from afar */
-  public static Mainframe getInstance()
-  {
-    return _mf;
-  }
 
   /**
    * Creates the initial frame layout: left and right panel holders with buttons, and image panel
@@ -188,6 +185,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     _mf = this;
   }
 
+
   /**
    * Perform construction act. This wires together all the "single instance variables" for the
    * Adventurer application. None of these constructors should ever be called anywhere outside of
@@ -208,32 +206,167 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     _iop = new IOPanel(_mfCiv, _cp);
   }
 
+
+  // ============================================================
+  // Public Methods
+  // ============================================================
+
   /**
-   * Create mainframe layout and menubar; add left and right panel holders, which have titled
-   * borders
+   * Layout the IOPanel on the left: scrolling text window and working Comandline input area
    */
-  private void createFrameAndMenubar()
+  public void addIOPanel()
   {
-    setupSizeAndBoundaries();
-    setupContentPane();
-    // Add the frame listener to prompt and terminate the application
-    setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-    addWindowListener(new Terminator());
-
-    // Add menu
-    setJMenuBar(new Menubar(this, _mfCiv));
-
-    _leftHolder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
-    _leftHolder =
-        makePanelHolder(_leftHolder, Constants.MY_BROWN, INITIAL_OPENING_TITLE, Color.WHITE);
-
-    _rightHolder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
-    _rightHolder = makePanelHolder(_rightHolder, Constants.MY_BROWN, "", Color.WHITE);
-
-    _contentPane.add(_leftHolder, "cell 0 0, wmax 50%, grow");
-    _contentPane.add(_rightHolder, "cell 1 0, wmax 50%, grow");
-    _contentPane.setFocusable(true);
+    addPanel(_iop);
   }
+
+  public void addPanel(JComponent panel)
+  {
+    _leftHolder.removeAll();
+
+    // setTranscriptTitle(IOPANEL_TITLE);
+    _leftHolder.add(panel);
+    redraw();
+  }
+
+
+  // public boolean approvedQuit()
+  // {
+  // // new Adventurer().approvedQuit();
+  // return true;
+  // }
+
+
+  /**
+   * Display a prompt, asking a question of the user
+   * 
+   * @param msg the question to be asked, must be yes or no
+   * @return the answer to the prompt
+   */
+  public boolean displayPrompt(String msg)
+  {
+    int selection =
+        JOptionPane.showConfirmDialog(this, msg, "REALLY?", JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.QUESTION_MESSAGE);
+    if (selection == JOptionPane.OK_OPTION) {
+      return true;
+    }
+    return false;
+  }
+
+
+  /**
+   * Display error text onto the scrolling output panel
+   * 
+   * @param msg text to append to existing text in panel
+   */
+  public void displayErrorText(String msg)
+  {
+    _iop.displayErrorText(msg);
+  }
+
+
+  /**
+   * Display text onto the scrolling output panel
+   * 
+   * @param msg text to append to existing text in panel
+   */
+  public void displayText(String msg)
+  {
+    _iop.displayText(msg);
+    _iop.setFocusOnCommandWindow();
+  }
+
+
+  /**
+   * Display image and associated test to the IOPanel
+   * 
+   * @param msg text to append to text in IOPanel
+   * @param image to display in Image Panel
+   */
+  public void displayImageAndText(String msg, Image image)
+  {
+    displayText(msg);
+    _imagePanel.setImage(image);
+    redraw();
+  }
+
+  public Dimension getImagePanelSize()
+  {
+    return _rightHolder.getSize();
+  }
+
+  public void mouseClicked(MouseEvent e)
+  {
+    _mfCiv.handleClick(e.getPoint());
+  }
+
+  public void mouseEntered(MouseEvent e)
+  {}
+
+  public void mouseExited(MouseEvent e)
+  {}
+
+  public void mousePressed(MouseEvent e)
+  {}
+
+  public void mouseReleased(MouseEvent e)
+  {}
+
+  public void mouseDragged(MouseEvent e)
+  {
+    _mfCiv.handleMouseMovement(e.getPoint());
+  }
+
+  public void mouseMoved(MouseEvent e)
+  {
+    _mfCiv.handleMouseMovement(e.getPoint());
+  }
+
+  public void redraw()
+  {
+    validate();
+    repaint();
+  }
+
+
+  public void setHeroList(List<String> list)
+  {
+    _partyHeros = list;
+    // setHeroPartyText();
+  }
+
+
+  /**
+   * Display an image in the Image panel
+   * 
+   * @param image to display on the rightside
+   */
+  public void setImage(Image image)
+  {
+    _imagePanel.setImage(image);
+    redraw();
+  }
+
+
+  public void setBuilding(BuildingRectangle rect)
+  {
+    _imagePanel.setRectangle(rect);
+    redraw();
+  }
+
+
+  /**
+   * Display a title onto the border of the right side image panel. Add one space char on either
+   * side for aesthetics
+   * 
+   * @param title of the panel to set
+   */
+  public void setImageTitle(String title)
+  {
+    TitledBorder border = (TitledBorder) _rightHolder.getBorder();
+    border.setTitle(" " + title + " ");
+  }
+
 
   /** Replace the current title with the given title */
   @Override
@@ -244,54 +377,35 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
 
 
   /**
-   * Create a holder for the left or right side of the frame, with all cosmetics. Holders will have
-   * same layout manager, size, border type, and runic font title is a title is supplied.
+   * Display a title onto the border of the left side IO Panel
    * 
-   * @param borderColor background Color for the border
-   * @param title to be positioned top center in Runic font
-   * @param backColor background Color for the panel
-   * 
-   * @return the JPanel that is assigned to the left or the right
+   * @param title of the panel to set
    */
-  private JPanel makePanelHolder(JPanel holder, Color borderColor, String title, Color backColor)
+  public void setTranscriptTitle(String title)
   {
-    Dimension holderSize = new Dimension(USERWIN_WIDTH / 2, USERWIN_HEIGHT);
-    holder.setPreferredSize(holderSize);
-    holder.setBackground(borderColor);
-
-    Border matte = BorderFactory.createMatteBorder(5, 5, 5, 5, borderColor);
-    // TODO Move call to pdc.Util to mfCiv so pdc is not imported; and duplicate calls are avoided
-    Border titled = BorderFactory.createTitledBorder(matte, title,
-        TitledBorder.CENTER, TitledBorder.TOP, Util.makeRunicFont(14f), Color.BLACK);
-    holder.setBorder(titled);
-    holder.setBackground(backColor);
-
-    return holder;
+    TitledBorder border = (TitledBorder) _leftHolder.getBorder();
+    border.setTitle(title);
   }
 
 
-  /** Define the mainframe layout characteristics */
-  private void setupSizeAndBoundaries()
+  /**
+   * Display the help text for this mainframe; implements {@code IHelpText}
+   */
+  public void showHelp()
   {
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    USERWIN_WIDTH = screenSize.width;
-    USERWIN_HEIGHT = screenSize.height;
-    setSize(USERWIN_WIDTH, USERWIN_HEIGHT);
-    setLocationByPlatform(true); // Operating System specific windowing
-    setExtendedState(Frame.MAXIMIZED_BOTH);
-    setResizable(false);
+    _helpdlg.setVisible(true);
+    _helpdlg.showHelp(_helpTitle, _helpText);
+  }
+
+  public void start()
+  {
+    new Thread(_skedder).start();
   }
 
 
-  /** Apply the layout manager to the content pane */
-  private void setupContentPane()
-  {
-    _contentPane = (JPanel) getContentPane();
-    _contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-    setContentPane(_contentPane);
-    _contentPane.setLayout(new MigLayout("", "[grow, fill]10[grow]", "[grow]"));
-  }
-
+  // ============================================================
+  // Private Methods
+  // ============================================================
 
   /**
    * Layout the image panel on the right side of the frame, with mouse listeners.
@@ -303,74 +417,6 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     _rightHolder.addMouseListener(Mainframe.this);
     _rightHolder.addMouseMotionListener(Mainframe.this);
     _rightHolder.add(_imagePanel);
-  }
-
-
-  /**
-   * Prepare the HelpDialog and HelpKey event responder
-   */
-  private void prepareHelpDialog()
-  {
-    _helpdlg = HelpDialog.getInstance(this);
-    // TODO Move call to pdc.Util to mfCiv so pdc is not imported; and duplicate calls are
-    // avoided
-    _helpdlg.setMyFont(Util.makeRunicFont(14f));
-    _contentPane.addKeyListener(new KeyListener() {
-      public void keyReleased(KeyEvent e)
-      {
-        if (e.getKeyCode() == KeyEvent.VK_F1) {
-          showHelp();
-        }
-      }
-
-      // Empty methods required to be overridden
-      public void keyPressed(KeyEvent e)
-      {}
-
-      public void keyTyped(KeyEvent e)
-      {}
-    });
-  }
-
-
-
-  // ============================================================
-  // Public Methods
-  // ============================================================
-
-  public boolean approvedQuit()
-  {
-    new Adventurer().approvedQuit();
-    return true;
-  }
-
-
-  // ============================================================
-  // Private Methods
-  // ============================================================
-
-  /**
-   * Create the Adventure, Heroes, and Create-Hero buttons, and button panel for them
-   */
-  private void createButtons()
-  {
-    JButton adventureButton = createAdventureButton();
-    JButton summonButton = createSummonHeroesButton();
-    JButton creationButton = createHeroCreationButton();
-
-    JPanel buttonPanel = new JPanel();
-    // Align all buttons in a single column
-    buttonPanel.setLayout(new MigLayout("wrap 1"));
-    buttonPanel.setPreferredSize(new Dimension(
-        (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
-    buttonPanel.setBackground(Constants.MY_BROWN.brighter());
-
-    /** Buttons are at 25% to allow space for Command Line later */
-    buttonPanel.add(adventureButton, "hmax 25%, grow");
-    buttonPanel.add(summonButton, "hmax 25%, grow");
-    buttonPanel.add(creationButton, "hmax 25%, grow");
-
-    _leftHolder.add(buttonPanel);
   }
 
 
@@ -400,6 +446,74 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
       }
     });
     return button;
+  }
+
+
+  /**
+   * Create the Adventure, Heroes, and Create-Hero buttons, and button panel for them
+   */
+  private void createButtons()
+  {
+    JButton adventureButton = createAdventureButton();
+    JButton summonButton = createSummonHeroesButton();
+    JButton creationButton = createHeroCreationButton();
+
+    JPanel buttonPanel = new JPanel();
+    // Align all buttons in a single column
+    buttonPanel.setLayout(new MigLayout("wrap 1"));
+    buttonPanel.setPreferredSize(new Dimension(
+        (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
+    buttonPanel.setBackground(Constants.MY_BROWN.brighter());
+
+    /** Buttons are at 25% to allow space for Command Line later */
+    buttonPanel.add(adventureButton, "hmax 25%, grow");
+    buttonPanel.add(summonButton, "hmax 25%, grow");
+    buttonPanel.add(creationButton, "hmax 25%, grow");
+
+    _leftHolder.add(buttonPanel);
+  }
+
+
+  private JButton createButtonWithTextAndIcon(String imageFilePath, String buttonText)
+  {
+    JButton button = new JButton(buttonText);
+    button.setBackground(Constants.MY_BROWN.brighter().brighter());
+
+    // button.setFont(new Font("Tahoma", Font.PLAIN, 24));
+    // TODO Move call to pdc.Util to mfCiv so pdc is not imported; and duplicate calls are
+    // avoided
+    button.setFont(Util.makeRunicFont(14f));
+    button.setIcon(new ImageIcon(Chronos.ADV_IMAGE_PATH + imageFilePath));
+    button.setIconTextGap(40);
+    return button;
+  }
+
+
+  /**
+   * Create mainframe layout and menubar; add left and right panel holders, which have titled
+   * borders
+   */
+  private void createFrameAndMenubar()
+  {
+    setupSizeAndBoundaries();
+    setupContentPane();
+    // Add the frame listener to prompt and terminate the application
+    setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    // addWindowListener(new Terminator());
+
+    // Add menu
+    setJMenuBar(new Menubar(this, _mfCiv));
+
+    _leftHolder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
+    _leftHolder =
+        makePanelHolder(_leftHolder, Constants.MY_BROWN, INITIAL_OPENING_TITLE, Color.WHITE);
+
+    _rightHolder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
+    _rightHolder = makePanelHolder(_rightHolder, Constants.MY_BROWN, "", Color.WHITE);
+
+    _contentPane.add(_leftHolder, "cell 0 0, wmax 50%, grow");
+    _contentPane.add(_rightHolder, "cell 1 0, wmax 50%, grow");
+    _contentPane.setFocusable(true);
   }
 
 
@@ -481,237 +595,80 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   }
 
 
-  private JButton createButtonWithTextAndIcon(String imageFilePath, String buttonText)
+  /**
+   * Create a holder for the left or right side of the frame, with all cosmetics. Holders will have
+   * same layout manager, size, border type, and runic font title is a title is supplied.
+   * 
+   * @param borderColor background Color for the border
+   * @param title to be positioned top center in Runic font
+   * @param backColor background Color for the panel
+   * 
+   * @return the JPanel that is assigned to the left or the right
+   */
+  private JPanel makePanelHolder(JPanel holder, Color borderColor, String title, Color backColor)
   {
-    JButton button = new JButton(buttonText);
-    button.setBackground(Constants.MY_BROWN.brighter().brighter());
+    Dimension holderSize = new Dimension(USERWIN_WIDTH / 2, USERWIN_HEIGHT);
+    holder.setPreferredSize(holderSize);
+    holder.setBackground(borderColor);
 
-    // button.setFont(new Font("Tahoma", Font.PLAIN, 24));
+    Border matte = BorderFactory.createMatteBorder(5, 5, 5, 5, borderColor);
+    // TODO Move call to pdc.Util to mfCiv so pdc is not imported; and duplicate calls are avoided
+    Border titled = BorderFactory.createTitledBorder(matte, title,
+        TitledBorder.CENTER, TitledBorder.TOP, Util.makeRunicFont(14f), Color.BLACK);
+    holder.setBorder(titled);
+    holder.setBackground(backColor);
+
+    return holder;
+  }
+
+
+  /**
+   * Prepare the HelpDialog and HelpKey event responder
+   */
+  private void prepareHelpDialog()
+  {
+    _helpdlg = HelpDialog.getInstance(this);
     // TODO Move call to pdc.Util to mfCiv so pdc is not imported; and duplicate calls are
     // avoided
-    button.setFont(Util.makeRunicFont(14f));
-    button.setIcon(new ImageIcon(Chronos.ADV_IMAGE_PATH + imageFilePath));
-    button.setIconTextGap(40);
-    return button;
+    _helpdlg.setMyFont(Util.makeRunicFont(14f));
+    _contentPane.addKeyListener(new KeyListener() {
+      public void keyReleased(KeyEvent e)
+      {
+        if (e.getKeyCode() == KeyEvent.VK_F1) {
+          showHelp();
+        }
+      }
+
+      // Empty methods required to be overridden
+      public void keyPressed(KeyEvent e)
+      {}
+
+      public void keyTyped(KeyEvent e)
+      {}
+    });
   }
 
 
-  // ============================================================
-  // Deprecated Methods Temporarily
-  // ============================================================
-
-  /**
-   * Layout the IOPanel on the left: scrolling text window and working Comandline input area
-   */
-  public void addIOPanel()
+  /** Apply the layout manager to the content pane */
+  private void setupContentPane()
   {
-    addPanel(_iop);
-  }
-
-  public void addPanel(JComponent panel)
-  {
-    _leftHolder.removeAll();
-
-    // setTranscriptTitle(IOPANEL_TITLE);
-    _leftHolder.add(panel);
-    redraw();
-  }
-
-  /**
-   * Display a prompt, asking a question of the user
-   * 
-   * @param msg the question to be asked, must be yes or no
-   * @return the answer to the prompt
-   */
-  public boolean displayPrompt(String msg)
-  {
-    int selection =
-        JOptionPane.showConfirmDialog(this, msg, "REALLY?", JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.QUESTION_MESSAGE);
-    if (selection == JOptionPane.OK_OPTION) {
-      return true;
-    }
-    return false;
+    _contentPane = (JPanel) getContentPane();
+    _contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+    setContentPane(_contentPane);
+    _contentPane.setLayout(new MigLayout("", "[grow, fill]10[grow]", "[grow]"));
   }
 
 
-  /**
-   * Display error text onto the scrolling output panel
-   * 
-   * @param msg text to append to existing text in panel
-   */
-  public void displayErrorText(String msg)
+  /** Define the mainframe layout characteristics */
+  private void setupSizeAndBoundaries()
   {
-    _iop.displayErrorText(msg);
-  }
-
-
-  /**
-   * Display text onto the scrolling output panel
-   * 
-   * @param msg text to append to existing text in panel
-   */
-  public void displayText(String msg)
-  {
-    _iop.displayText(msg);
-    _iop.setFocusOnCommandWindow();
-  }
-
-
-  /**
-   * Display image and associated test to the IOPanel
-   * 
-   * @param msg text to append to text in IOPanel
-   * @param image to display in Image Panel
-   */
-  public void displayImageAndText(String msg, Image image)
-  {
-    displayText(msg);
-    _imagePanel.setImage(image);
-    redraw();
-  }
-
-  public Dimension getImagePanelSize()
-  {
-    return _rightHolder.getSize();
-  }
-
-
-  public void mouseClicked(MouseEvent e)
-  {
-    _mfCiv.handleClick(e.getPoint());
-  }
-
-  public void mouseEntered(MouseEvent e)
-  {}
-
-  public void mouseExited(MouseEvent e)
-  {}
-
-  public void mousePressed(MouseEvent e)
-  {}
-
-  public void mouseReleased(MouseEvent e)
-  {}
-
-  public void mouseDragged(MouseEvent e)
-  {
-    _mfCiv.handleMouseMovement(e.getPoint());
-  }
-
-  public void mouseMoved(MouseEvent e)
-  {
-    _mfCiv.handleMouseMovement(e.getPoint());
-  }
-
-
-  // ============================================================
-  // Public Methods
-  // ============================================================
-
-  public void redraw()
-  {
-    validate();
-    repaint();
-  }
-
-
-  public void setHeroList(List<String> list)
-  {
-    _partyHeros = list;
-    // setHeroPartyText();
-  }
-
-
-  /**
-   * Display an image in the Image panel
-   * 
-   * @param image to display on the rightside
-   */
-  public void setImage(Image image)
-  {
-    _imagePanel.setImage(image);
-    redraw();
-  }
-
-
-  public void setBuilding(BuildingRectangle rect)
-  {
-    _imagePanel.setRectangle(rect);
-    redraw();
-  }
-
-
-  /**
-   * Display a title onto the border of the right side image panel. Add one space char on either
-   * side for aesthetics
-   * 
-   * @param title of the panel to set
-   */
-  public void setImageTitle(String title)
-  {
-    TitledBorder border = (TitledBorder) _rightHolder.getBorder();
-    border.setTitle(" " + title + " ");
-  }
-
-
-  /**
-   * Display a title onto the border of the left side IO Panel
-   * 
-   * @param title of the panel to set
-   */
-  public void setTranscriptTitle(String title)
-  {
-    TitledBorder border = (TitledBorder) _leftHolder.getBorder();
-    border.setTitle(title);
-  }
-
-
-  /**
-   * Display the help text for this mainframe; implements {@code IHelpText}
-   */
-  public void showHelp()
-  {
-    _helpdlg.setVisible(true);
-    _helpdlg.showHelp(_helpTitle, _helpText);
-  }
-
-
-
-  // ============================================================
-  // Inner Class for catching frame events
-  // ============================================================
-  /**
-   * This is an inner class only to inherit from the {@code WindowAdaptor} class instead of
-   * implementing a lot of unneeded methods by implementing {@code WindowListener} interface.
-   * 
-   * @author alancline
-   * @version Aug 29, 2014 // original <br>
-   */
-  public class Terminator extends WindowAdapter
-  {
-    /** Default constructor */
-    public Terminator()
-    {}
-
-    /**
-     * Close the window and the applicaiton by calling the {@code Adventurer.quit} method.
-     * 
-     * @param event when user closes application frame
-     */
-    public void windowClosing(WindowEvent evt)
-    {
-      _mfCiv.quit();
-    }
-  }
-
-  /*
-   * @Override public void add(JComponent component, String location) { add(component, location); }
-   */
-
-  public void start()
-  {
-    new Thread(_skedder).start();
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    USERWIN_WIDTH = screenSize.width;
+    USERWIN_HEIGHT = screenSize.height;
+    setSize(USERWIN_WIDTH, USERWIN_HEIGHT);
+    setLocationByPlatform(true); // Operating System specific windowing
+    setExtendedState(Frame.MAXIMIZED_BOTH);
+    setResizable(false);
   }
 
 

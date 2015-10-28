@@ -821,13 +821,25 @@ public class HeroDisplay extends JPanel
 
     // Get maigc items from the civ
     ArrayList<String> spellList = _hdCiv.getSpellBook();
+    int known = spellList.size();
+    spellPanel.add(buildMultiCell(known + " SPELLS KNOWN", spellList), "growx, wrap 0");
 
-    spellPanel.add(buildMultiCell("SPELLS KNOWN", spellList), "growx, wrap 0");
+    // Prompt Wizard (only) to get more spells if he/she can
+    if (_ds.get(PersonKeys.KLASSNAME).equalsIgnoreCase("Wizard")) {
+      int allowed = Integer.parseInt(_ds.get(PersonKeys.MAX_MSP));
+      int diff = allowed - known;
+      if (diff != 0) {
+        String prompt =
+            String.format("Go to your local Wizard's Guild to get %d more spells", diff);
+        spellPanel.add(gridCell("", ""), "span 6, growx, wrap 0");
+        spellPanel.add(gridCell(prompt, " "), "span 6, growx, wrap 0");
+      }
+    }
 
     return spellPanel;
   }
 
-  
+
   /**
    * Delete the Person currently being displayed into a new file.
    * 
@@ -1109,19 +1121,20 @@ public class HeroDisplay extends JPanel
         "View Hero's items owned, worn, or wielded");
     tabPane.addTab("Magic Items", null, buildMagicPanel(),
         "View Hero's enchanted items");
-    tabPane.setSelectedIndex(3); // set default tab
+    tabPane.setSelectedIndex(0); // set default tab
 
     // Create the conditional tab for magic items for all klasses
     String klassname = _ds.get(PersonKeys.KLASSNAME);
     // Only for Clerics
     if (klassname.equalsIgnoreCase("Cleric")) {
-      tabPane.addTab("Sacred Satchel", null, buildMaterialsPanel(), 
+      tabPane.addTab("Sacred Satchel", null, buildMaterialsPanel(),
           "View Hero's materials needed for spells.");
       tabPane.addTab("Spell Book", null, buildSpellsPanel(), "View Hero's known spells.");
     }
     // Only for Wizards
     if (klassname.equalsIgnoreCase("Wizard")) {
-      tabPane.addTab("Magic Bag", null, buildMaterialsPanel(), "View Hero's materials needed for spells.");
+      tabPane.addTab("Magic Bag", null, buildMaterialsPanel(),
+          "View Hero's materials needed for spells.");
       tabPane.addTab("Spell Book", null, buildSpellsPanel(), "View Hero's known spells.");
     }
 
