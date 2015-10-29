@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mylib.ApplicationException;
-import mylib.dmc.IRegistryElement;
 import mylib.pdc.Registry;
 import chronos.Chronos;
 import chronos.pdc.Occupation;
@@ -36,7 +35,7 @@ import chronos.pdc.Skill;
  *          library file for pathing <br>
  *          May 13 2012 // TAA updated initTables method </DL>
  */
-public class OccupationRegistry extends Registry
+public class OccupationRegistry extends Registry<Occupation>
 {
     /** Quick reference to the SkillRegistry to avoid repeated calls */
     private SkillRegistry _skillRegistry;
@@ -141,12 +140,6 @@ public class OccupationRegistry extends Registry
     @Override
     public void initialize()
     {
-        // _rf = RegistryFactory.getInstance();
-        // _rf.getRegistry(RegKey.SKILL);
-
-        // // Open Skill Registry for verification purposes
-        // _skReg = (SkillRegistry) _rf.getRegistry(RegKey.SKILL);
-
         // Create new Occupations and save to registry
         try {
             for (int k = 0; k < _occupTable.length; k++) {
@@ -188,50 +181,6 @@ public class OccupationRegistry extends Registry
     }
 
 
-
-    // /** Retrieves the Occupation with the requested unique name
-    // *
-    // * @param name name of the Skill to retrieve
-    // * @return the Occupation; or null if not unique
-    // * @throws ApplicationException if trying to retrieve non-unique object
-    // */
-    // @Override
-    // public Occupation get(final String skillName) throws ApplicationException
-    // {
-    // ExtObjectContainer db = _regRW.getDB();
-    // // Retrieve all skills that match the skillname; should be only one
-    // List<Occupation> list = db.query(new Predicate<Occupation>() {
-    // public boolean match(Occupation candidate) {
-    // return candidate.getName().equals(skillName);
-    // }
-    // });
-    // // Ensure uniqueness
-    // if (list.size() == 1) {
-    // return list.get(0);
-    // }
-    // else {
-    // throw new ApplicationException(Registry.DBREG_NOT_UNIQUE);
-    // }
-    // }
-
-
-    // /** Close db, destroy the dbReadWriter and set this registry to null
-    // * @param eraseFile if true, erase registry file; else not
-    // */
-    // public void closeRegistry()
-    // {
-    // super.close();
-    // // _thisReg = null;
-    // }
-    //
-    //
-    // public void deleteRegistry()
-    // {
-    // super.delete();
-    // // _thisReg = null;
-    // }
-
-
     /**
      * Converts the name into a searachable Occupation, and queries the db
      * 
@@ -241,11 +190,10 @@ public class OccupationRegistry extends Registry
     public Occupation getOccupation(String ocpName)
     {
         try {
-            return (Occupation) getUnique(ocpName);
+            return getUnique(ocpName);
         } catch (ApplicationException ex) {
             return null;
         }
-
     }
 
 
@@ -256,12 +204,7 @@ public class OccupationRegistry extends Registry
      */
     public List<Occupation> getOccupationList()
     {
-        List<IRegistryElement> itemSet = super.getAll();
-        List<Occupation> itemList = new ArrayList<Occupation>(itemSet.size());
-        for (IRegistryElement e : itemSet) {
-            itemList.add((Occupation) e);
-        }
-        return itemList;
+        return super.getAll();
     }
 
     public static List<String> getOccupationNameList()
@@ -300,39 +243,6 @@ public class OccupationRegistry extends Registry
         }
         return retval;
     }
-
-    /*
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ INNER CLASS: MockOccupationRegistry
-     * for Testing ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-     */
-
-    /** Inner class for testing Person */
-    public class MockOccupationRegistry
-    {
-        /** Default constructor */
-        public MockOccupationRegistry()
-        {}
-
-        // /** Get the Registry object */
-        // public OccupationRegistry getRegistry()
-        // {
-        // return (OccupationRegistry) _thisReg;
-        // }
-
-        /** Get number of skills for all tables */
-        public int getNbrOccupations()
-        {
-            int totalOccupations = OccupationRegistry._occupTable.length;
-            return totalOccupations;
-        }
-
-        /** Get the skill names and descriptions for comparing expected values */
-        public String[][] getOccupationTable()
-        {
-            return _occupTable;
-        }
-
-    } // end of MockOccupationRegistry class
 
 } // end of OccupationRegistry class
 

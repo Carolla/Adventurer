@@ -36,14 +36,14 @@ import com.db4o.query.Predicate;
  *          Sept 13, 2014 // removed need for closeflag <br>
  *          Sept 27, 2014 // removed ctor used only for testing <br>
  */
-public abstract class Registry
+public abstract class Registry<E extends IRegistryElement>
 {
 
     /**
      * The DMC registry class for handling persistence. Each derived-class {@code Registry} has its
      * own ReadWriter
      */
-    protected DbReadWriter _regRW = null;
+    protected DbReadWriter<E> _regRW = null;
 
     /** Number of elements in the Registry collection */
     private int _nbrElements = 0;
@@ -77,7 +77,7 @@ public abstract class Registry
     public Registry(String filename)
     {
         // Creates registry file and reloads it (new registry will be empty)
-        _regRW = new DbReadWriter(filename);
+        _regRW = new DbReadWriter<E>(filename);
         // Set the persistence number of elements in the Registry
         _nbrElements = getAll().size();
         
@@ -86,7 +86,7 @@ public abstract class Registry
         }
     }
     
-    public void setDbReadWriter(DbReadWriter regRW)
+    public void setDbReadWriter(DbReadWriter<E> regRW)
     {
         _regRW = regRW;
     }
@@ -158,13 +158,13 @@ public abstract class Registry
      * @param name of the target object to match against for comparison
      * @return the list of all elements that match the name
      */
-    public List<IRegistryElement> get(final String name)
+    public List<E> get(final String name)
     {
         // Suppression needed for the annoymous inner class to turn off warnings
         @SuppressWarnings("serial")
         // Run the query using the getKey method
-        Predicate<IRegistryElement> pred = new Predicate<IRegistryElement>() {
-            public boolean match(IRegistryElement candidate)
+        Predicate<E> pred = new Predicate<E>() {
+            public boolean match(E candidate)
             {
                 String key = candidate.getKey();
                 // System.err.print("\tName to match =  " + name);
@@ -175,7 +175,7 @@ public abstract class Registry
                 // return candidate.getKey().equalsIgnoreCase(name);
             }
         };
-        List<IRegistryElement> elementList = get(pred);
+        List<E> elementList = get(pred);
         return elementList;
     }
 
@@ -186,9 +186,9 @@ public abstract class Registry
      * @param pred object containing the element's match() method for comparison
      * @return one or more registry elements that match the Predicate, else returns null.
      */
-    public List<IRegistryElement> get(Predicate<IRegistryElement> pred)
+    public List<E> get(Predicate<E> pred)
     {
-        List<IRegistryElement> elementList = _regRW.query(pred);
+        List<E> elementList = _regRW.query(pred);
         return elementList;
     }
 
@@ -198,10 +198,10 @@ public abstract class Registry
      * @return one or more registry elements that match the Predicate, else returns null.
      */
     @SuppressWarnings("serial")
-    public List<IRegistryElement> getAll()
+    public List<E> getAll()
     {
-        List<IRegistryElement> elementList = get(new Predicate<IRegistryElement>() {
-            public boolean match(IRegistryElement candidate)
+        List<E> elementList = get(new Predicate<E>() {
+            public boolean match(E candidate)
             {
                 return true;
             }
@@ -227,10 +227,10 @@ public abstract class Registry
      */
     public List<String> getElementNames()
     {
-        List<IRegistryElement> elem = getAll();
+        List<E> elem = getAll();
         List<String> names = new ArrayList<String>(elem.size());
         // Convert the name of the town to a string
-        for (IRegistryElement e : elem) {
+        for (E e : elem) {
             String key = e.getKey();
             names.add(key);
         }
@@ -245,14 +245,14 @@ public abstract class Registry
      * @return the particular matching object; or null if not found or name was null
      * @throws ApplicationException if more than one (non-unique) match was found
      */
-    public IRegistryElement getUnique(String name) throws ApplicationException
+    public E getUnique(String name) throws ApplicationException
     {
         // Guard
         if ((name == null) || (name.trim().length() == 0)) {
             return null;
         }
-        IRegistryElement regElem = null;
-        List<IRegistryElement> elementList = get(name);
+        E regElem = null;
+        List<E> elementList = get(name);
         int nbrFound = elementList.size();
         // If single element found, return it
         if (nbrFound == 1) {

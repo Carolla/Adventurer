@@ -26,7 +26,8 @@ import java.awt.event.WindowEvent;
  *          similar to windowClosing event <br>
  *          July 21, 2014 ABC // removed environment variables, based everything off user's home
  *          directory <br>
- *          Aug 24, 2014 // renamed {@code exit} method to {@code quit} for consistency with menu <br>
+ *          Aug 24, 2014 // renamed {@code exit} method to {@code quit} for consistency with menu
+ *          <br>
  *          Sept 6, 2014 // ABC removed repeated getInstance calls from loop <br>
  */
 public class Adventurer
@@ -56,8 +57,6 @@ public class Adventurer
      */
     public static void main(String[] args)
     {
-        final Adventurer adv = new Adventurer();
-
         /** All Swing processing occurs from the single EventQueue thread. */
         EventQueue.invokeLater(new Runnable() {
             public void run()
@@ -71,7 +70,7 @@ public class Adventurer
                         public void windowClosing(WindowEvent e)
                         {
                             super.windowClosing(e);
-                            adv.approvedQuit();
+                            Adventurer.approvedQuit();
                         }
                     });
                 } catch (Exception e) {
@@ -85,7 +84,7 @@ public class Adventurer
 
 
     /** Close all registries and shutdown the system */
-    public void approvedQuit()
+    public static void approvedQuit()
     {
         System.exit(0);
     }
@@ -105,6 +104,5 @@ public class Adventurer
     // System.out.println("\t" + reglist.toString());
     // }
     // }
-
 } // end of Adventurer class
 

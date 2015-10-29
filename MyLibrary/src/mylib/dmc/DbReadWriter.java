@@ -33,7 +33,7 @@ import com.db4o.query.Predicate;
  *          Mar 18, 2013 // revised after adding IRegistryElement <br>
  *          Dec 7, 2013 // changed dbOpen signature <br>
  */
-public class DbReadWriter
+public class DbReadWriter<E extends IRegistryElement>
 {
     /** The path of the database file */
     private final String _regPath;
@@ -212,10 +212,10 @@ public class DbReadWriter
      * @param pred predicate objet containing the comparison function to match for retrieval
      * @return the list of elements that match the predicate provided; else returns null.
      */
-    public List<IRegistryElement> query(Predicate<IRegistryElement> pred)
+    public List<E> query(Predicate<E> pred)
     {
 
-        List<IRegistryElement> elementList = new ArrayList<IRegistryElement>();
+        List<E> elementList = new ArrayList<E>();
         // Guards: db and predicate must exist
         if (pred == null) {
             return elementList;

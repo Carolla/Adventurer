@@ -10,7 +10,6 @@
 
 package test.pdc.buildings;
 
-
 import mylib.MsgCtrl;
 
 import org.junit.After;

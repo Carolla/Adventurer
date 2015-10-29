@@ -12,7 +12,6 @@ package chronos.pdc.registry;
 import java.util.ArrayList;
 import java.util.List;
 
-import mylib.dmc.IRegistryElement;
 import mylib.pdc.Registry;
 import chronos.Chronos;
 import chronos.pdc.Town;
@@ -24,7 +23,7 @@ import chronos.pdc.buildings.Building;
  * @author Alan Cline
  * @version Feb 6, 2013 // original <br>
  */
-public class TownRegistry extends Registry
+public class TownRegistry extends Registry<Town>
 {
     /** Name of default town */
     private final static String TOWN_NAME = "Biljur'Baz";
@@ -114,15 +113,9 @@ public class TownRegistry extends Registry
      * 
      * @return the list of Towns
      */
-    public ArrayList<Town> getTownList()
+    public List<Town> getTownList()
     {
-        // Run the query to retrieve all buildings from the registry
-        List<IRegistryElement> result = super.getAll();
-        ArrayList<Town> townList = new ArrayList<Town>(result.size());
-        for (IRegistryElement e : result) {
-            townList.add((Town) e);
-        }
-        return townList;
+        return super.getAll();
     }
 
     // ==============================================================================

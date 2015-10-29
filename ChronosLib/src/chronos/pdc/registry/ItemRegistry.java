@@ -14,11 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mylib.ApplicationException;
-import mylib.dmc.IRegistryElement;
 import mylib.pdc.Registry;
 import chronos.Chronos;
-import chronos.civ.MiscKeys.ItemCategory;
 import chronos.pdc.Item;
+import chronos.pdc.MiscKeys.ItemCategory;
 
 /**
  * Contains all Items in the game: inventory, furniture, weapons, and even dead monsters or NPCs
@@ -31,7 +30,7 @@ import chronos.pdc.Item;
  *          Feb 12, 2013 // updated to allow all items for all registries <br>
  *          May 6, 2013 // updated getInstance(boolean) <br>
  */
-public class ItemRegistry extends Registry
+public class ItemRegistry extends Registry<Item>
 {
   /**
    * 14 Starting Items, and weight in ounces, for the Hero's inventory: Total weight for this stash
@@ -127,7 +126,7 @@ public class ItemRegistry extends Registry
   public void initialize()
   {
     // Here are the list of tables to load
-    ArrayList<String[][]> tablz = new ArrayList<String[][]>();
+    List<String[][]> tablz = new ArrayList<String[][]>();
     tablz.add(_heroInventory);
     tablz.add(_bankAssets);
     tablz.add(_innMenu);
@@ -148,43 +147,16 @@ public class ItemRegistry extends Registry
    * PUBLIC METHODS
    */
 
-  // /** Retrieves the Iteml with the requested unique name
-  // *
-  // * @param name name of the Item to retrieve
-  // * @return the Item object; or null if not unique
-  // * @throws ApplicationException if trying to retrieve non-unique object
-  // */
-  // @Override
-  // public Item get(final String name) throws ApplicationException
-  // {
-  // ExtObjectContainer db = _regRW.getDB();
-  // // Retrieve all skills that match the skillname; should be only one
-  // List<Item> list = db.query(new Predicate<Item>() {
-  // public boolean match(Item candidate) {
-  // return candidate.getName().equals(name);
-  // }
-  // });
-  // // Ensure uniqueness
-  // if (list.size() == 1) {
-  // return list.get(0);
-  // }
-  // else {
-  // throw new ApplicationException(Registry.DBREG_NOT_UNIQUE);
-  // }
-  // }
-
-
-  // /** Converts the name into a searachable Item, and queries the db for a unique object
-  // *
-  // * @param itemName name of the Item to retrieve
-  // * @return the Item object; or null if not found
-  // */
-  // public Item getItem(String itemName)
-  // {
-  // // Db requires an object not a string
-  // Object target = new Item(itemName);
-  // return (Item) _regRW.get(target);
-  // }
+//   /** Converts the name into a searachable Item, and queries the db for a unique object
+//   *
+//   * @param itemName name of the Item to retrieve
+//   * @return the Item object; or null if not found
+//   */
+//   public Item getItem(String itemName)
+//   {
+//       // Db requires an object not a string
+//       return get(itemName);
+//   }
 
 
   // /** Close db, destroy the dbReadWriter and set this registry to null
@@ -218,26 +190,26 @@ public class ItemRegistry extends Registry
   }
 
 
-  /**
-   * Retrieve all Items in the registry
-   * 
-   * @return the Item List
-   */
-  public ArrayList<Item> getItemList()
-  {
-    List<IRegistryElement> itemSet = super.getAll();
-    ArrayList<Item> itemList = new ArrayList<Item>(itemSet.size());
-    for (IRegistryElement e : itemSet) {
-      itemList.add((Item) e);
-    }
-    return itemList;
-  }
+//  /**
+//   * Retrieve all Items in the registry
+//   * 
+//   * @return the Item List
+//   */
+//  public ArrayList<Item> getItemList()
+//  {
+//    List<IRegistryElement> itemSet = super.getAll();
+//    ArrayList<Item> itemList = new ArrayList<Item>(itemSet.size());
+//    for (IRegistryElement e : itemSet) {
+//      itemList.add((Item) e);
+//    }
+//    return itemList;
+//  }
 
   /*
    *  PRIVATE METHODS
    */
 
-  /**
+  /**   
    * Load a table of Items into the ItemRegistry
    * 
    * @param table the initial Items to load
@@ -247,7 +219,7 @@ public class ItemRegistry extends Registry
   {
     // Save the Items required for the new Hero's inventory
     for (int k = 0; k < table.length; k++) {
-      ItemCategory cat = ItemCategory.valueOf(table[k][0]);
+      ItemCategory cat = ItemCategory.valueOf(ItemCategory.class, table[k][0]);
       String name = table[k][1];
       int weight = Integer.valueOf(table[k][2]);
       int qty = Integer.valueOf(table[k][3]);

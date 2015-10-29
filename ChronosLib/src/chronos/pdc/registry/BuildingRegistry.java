@@ -33,7 +33,7 @@ import chronos.pdc.buildings.WizardsGuild;
  * @author Alan Cline
  * @version April 20, 2013 // original <br>
  */
-public class BuildingRegistry extends Registry
+public class BuildingRegistry extends Registry<Building>
 {
 
   // ========================================================================
@@ -91,11 +91,11 @@ public class BuildingRegistry extends Registry
    */
   public Building getBuilding(String name)
   {
-    List<IRegistryElement> buildingList = super.get(name);
+    List<Building> buildingList = super.get(name);
     if (buildingList.size() == 0) {
       return null;
     }
-    Building aBuilding = (Building) buildingList.get(0);
+    Building aBuilding = buildingList.get(0);
     return aBuilding;
   }
 
@@ -105,11 +105,11 @@ public class BuildingRegistry extends Registry
    * 
    * @return the list of Buildings only
    */
-  public ArrayList<Building> getBuildingList()
+  public List<Building> getBuildingList()
   {
     // Run the query to retrieve all buildings from the registry
-    List<IRegistryElement> result = super.getAll();
-    ArrayList<Building> bldgList = new ArrayList<Building>(result.size());
+    List<Building> result = super.getAll();
+    List<Building> bldgList = new ArrayList<Building>(result.size());
     for (int k = 0; k < result.size(); k++) {
       // Check against all building subtypes
       IRegistryElement elem = result.get(k);

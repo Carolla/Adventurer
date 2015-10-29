@@ -28,7 +28,7 @@ import chronos.pdc.Command.Scheduler;
  */
 public class RegistryFactory
 {
-    private HashMap<RegKey, Registry> _regMap = null;
+    private HashMap<RegKey, Registry<?>> _regMap = null;
 
     /** Public list of all possible registries subclasses, in rough dependency order. */
     public enum RegKey
@@ -75,7 +75,7 @@ public class RegistryFactory
     public RegistryFactory(Scheduler skedder)
     {
         _skedder = skedder;
-        _regMap = new HashMap<RegKey, Registry>();
+        _regMap = new HashMap<RegKey, Registry<?>>();
     }
 
 
@@ -106,7 +106,7 @@ public class RegistryFactory
     public void closeAllRegistries()
     {
         for (RegKey key : RegKey.values()) {
-            Registry reg = _regMap.get(key);
+            Registry<?> reg = _regMap.get(key);
             if (reg != null) {
                 reg.closeRegistry();
             }
@@ -121,7 +121,7 @@ public class RegistryFactory
      */
     public void closeRegistry(RegKey key)
     {
-        Registry reg = _regMap.get(key); // get returns null if not found
+        Registry<?> reg = _regMap.get(key); // get returns null if not found
         if (reg != null) {
             reg.closeRegistry(); // this is the registry's method, not this method it's in
         }
@@ -146,7 +146,7 @@ public class RegistryFactory
      * @return an existing registry of the requested type, or null if it doesn't exist or can't be
      *         found
      */
-    public Registry getRegistry(RegKey regtype)
+    public Registry<?> getRegistry(RegKey regtype)
     {
         return _regMap.get(regtype);
     }

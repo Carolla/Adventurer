@@ -11,6 +11,7 @@
 
 package test.pdc.registry;
 
+import mylib.dmc.IRegistryElement;
 import mylib.pdc.Registry;
 import chronos.Chronos;
 import chronos.pdc.Skill;
@@ -23,7 +24,7 @@ import chronos.pdc.Skill;
  *  <DT>Build 1.0 May 18, 2013 // original <DD>
  *  </DL>
  */
-public class FakeRegistry extends Registry
+public class FakeRegistry extends Registry<IRegistryElement>
 {
     
     /*

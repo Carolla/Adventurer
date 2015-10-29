@@ -27,7 +27,7 @@ package chronos.pdc.Command;
  *          Jul 3 2008 // Final commenting for Javadoc compliance <br>
  * 
  * @see pdc.command.DeltaCmdList
- * @see hic.CommandParser
+ * @see civ.CommandParser
  * 
  */
 public class Scheduler
@@ -38,9 +38,6 @@ public class Scheduler
     /**
      * Creates the {@code Scheduler} and its components. However, if a {@code Scheduler} does not
      * exist, it cannot be created without a {@code CommandParser} (parm), so null is returned.
-     * 
-     * @param deltaCmdList bidirectional association for callbacks to get a user {@code Command} object
-     *        for scheduling.
      */
     public Scheduler()
     {

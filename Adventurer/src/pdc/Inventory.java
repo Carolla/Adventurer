@@ -14,11 +14,9 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
-import mylib.ApplicationException;
 import mylib.Constants;
-import mylib.MsgCtrl;
-import chronos.civ.MiscKeys.ItemCategory;
 import chronos.pdc.Item;
+import chronos.pdc.MiscKeys.ItemCategory;
 
 /**
  * Contains the Person's collection of Items. All weights are in ounces; the client object must
@@ -32,6 +30,7 @@ import chronos.pdc.Item;
  *          Apr 11, 2011 // TAA uncommented money for testing <br>
  *          Jun 13, 2011 // ABC added data shuttle handling <br>
  *          Nov 25, 2011 // ABC replaced double cash with Items Gold and Silver <br>
+ *          Oct 13, 2015 // updated for new Hero generation rules and categories <br>
  */
 public class Inventory implements Serializable
 {
@@ -46,6 +45,7 @@ public class Inventory implements Serializable
   /** Peasant must start less than any of the other Klasses */
   static public final int SILVER_PER_GOLD = 10;
 
+  // TODO: Remove this. It is in Hero attributes
   /** List of mods for Action Points */
   private enum APMODS {
     OVERBEARING, GRAPPLING, PUMMELING, SHIELD_BASH
@@ -65,33 +65,13 @@ public class Inventory implements Serializable
   /** Armor class depending on Dex and armor */
   private int _ac = NO_ARMOR;
 
-  /**
-   * Inventory is currently implemented as an ArrayList<Item> (EnumMaps cannot have duplicate keys).
-   * Each element is an Item object: category, name, weight (oz), and quantity.
-   */
-  private ArrayList<Item> _inventory = null;
+  // Holds all inventory items
+  private ArrayList<Item> _inventory;
 
-  /**
-   * Starting Items, and weight in ounces, for the Person's inventory: Total weight for this stash
-   * is 426 oz + Peasant starting cash (15.8 gp = 32 oz) = 464 oz. The String format is used so that
-   * the triple-array can be easily iniitialized until in ItemRegistry. Each Item := Category, Name,
-   * Weight (ea), and Quantity. Cash will be set from the Klass initCash() method as Gold and
-   * Silver, both of Category CASH
-   */
-  private String[][] _startList = {
-      {"Gold pieces", "15"}, {"Silver pieces", "8"},
-      {"Backpack", "1"}, {"Cloak", "1"},
-      {"Belt", "1"}, {"Belt pouch, small", "1"}, {"Breeches", "1"},
-      {"Pair of Boots", "1"},
-      {"Shirt", "1"}, {"Tinderbox, Flint & Steel", "1"},
-      {"Torches", "3"}, {"Rations", "3"},
-      {"Water skein", "1"}, {"Quarterstaff", "1"}
-  };
 
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND RELATED METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
+  // =============================================================================
+  // CONSTRUCTOR(S) AND RELATED METHODS
+  // =============================================================================
 
   /**
    * Some Inventories are meant to be empty, for creating subsets. To populate the inventory with
@@ -100,13 +80,33 @@ public class Inventory implements Serializable
   public Inventory()
   {
     // Create the map to hold the Items
+    // Holds all inventory items
     _inventory = new ArrayList<Item>();
+
   }
 
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PUBLIC METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
+  // =============================================================================
+  // PUBLIC METHODS
+  // =============================================================================
+
+  // Assign initial inventory to Hero (8 gpw = 1 lb)
+  public Inventory assignBasicInventory(Inventory inven)
+  {
+    // Basic inventory Items: category, name, quantity, weight (each in fractional lb)
+    inven.addItem(new Item(ItemCategory.EQUIPMENT, "Backpack", 1, 7.0));
+    inven.addItem(new Item(ItemCategory.EQUIPMENT, "Tinderbox", 1, 0.50));
+    inven.addItem(new Item(ItemCategory.EQUIPMENT, "Torch", 1, 1.0));
+    inven.addItem(new Item(ItemCategory.PROVISION, "Rations", 2, 0.50));
+    inven.addItem(new Item(ItemCategory.PROVISION, "Water skein (full)", 1, 1.5));
+    inven.addItem(new Item(ItemCategory.CLOTHING, "Belt pouch, small", 1, 0.25));
+    inven.addItem(new Item(ItemCategory.CLOTHING, "Leather boots", 1, 6.0));
+    inven.addItem(new Item(ItemCategory.CLOTHING, "Belt", 1, 0.25));
+    inven.addItem(new Item(ItemCategory.CLOTHING, "Breeches", 1, 0.50));
+    inven.addItem(new Item(ItemCategory.CLOTHING, "Shirt", 1, 0.50));
+    inven.addItem(new Item(ItemCategory.CLOTHING, "Cloak", 1, 2.0));
+
+    return inven;
+  }
 
   /**
    * Adds a copy of the incoming Item to the Inventory; used to build sub-inventories by
@@ -123,30 +123,14 @@ public class Inventory implements Serializable
     if (item == null) {
       return false;
     }
-    // Copy the Item to be added to the Inventory; copies help immutability
-    Item mimic = item.copy();
-    if (mimic == null) {
-      return false;
-    }
-
-    // Verify if Item is already in inventory
-    int idx = _inventory.indexOf(item);
-    // Search for the target thing
-    if (idx == Constants.NOT_FOUND) {
-      // Add a copy of the Item to the inventory
-      _inventory.add(mimic);
-    }
-    // If it exists, increase the item count on the existing Item
-    else {
-      // Identify the Item and tell it to adjust its quantity
-      Item thing = _inventory.get(idx);
-      try {
-        thing.adjustQuantity(mimic.getQuantity());
-      } catch (ApplicationException e) {
-        MsgCtrl.errMsg(e.getMessage());
-        System.exit(0);
-      }
-    }
+    // If Item is already in inventory, increase its item count (qty)
+    int ndx = _inventory.indexOf(item);
+    if (ndx == Constants.NOT_FOUND) {
+      _inventory.add(item);
+    } else {
+      item.adjustQuantity(1);
+      _inventory.set(ndx, item);    // replace the item with updated qty
+    } 
     return true;
   }
 
@@ -239,46 +223,46 @@ public class Inventory implements Serializable
    */
   public boolean dropItems(String itemName, int nbrToDrop)
   {
-    // Guard against null Items or negative number
-    if ((itemName == null) || (nbrToDrop < 1)) {
-      return false;
-    }
-
-    // Get Item to work with, if it can be found
-    Item thing = getItem(itemName);
-    // if Item doesn't exist, return false
-    if (thing == null) {
-      return false;
-    }
-    // Get its position for later update
-    int pos = _inventory.indexOf(thing);
-    if (pos == Constants.NOT_FOUND) {
-      return false;
-    }
-
-    // Find out how many of these things there are
-    int count = thing.getQuantity();
-    // Ensure that there are enough to drop as requested
-    if ((nbrToDrop > count) || (count == 0)) {
-      return false;
-    }
-
-    // Adjust the qty to account for the drop nbr
-    int newCount = 0;
-    try {
-      newCount = thing.adjustQuantity(-nbrToDrop);
-    } catch (ApplicationException e) {
-      MsgCtrl.errMsg(e.getMessage());
-      System.exit(0);
-    }
-    // If the qty becomes zero, remove the Item from the list
-    if (newCount == 0) {
-      _inventory.remove(pos);
-    }
-    // If qty is not zero, overwrite adjusted Item back into list
-    else {
-      _inventory.set(pos, thing);
-    }
+    // // Guard against null Items or negative number
+    // if ((itemName == null) || (nbrToDrop < 1)) {
+    // return false;
+    // }
+    //
+    // // Get Item to work with, if it can be found
+    // Item thing = getItem(itemName);
+    // // if Item doesn't exist, return false
+    // if (thing == null) {
+    // return false;
+    // }
+    // // Get its position for later update
+    // int pos = _inventory.indexOf(thing);
+    // if (pos == Constants.NOT_FOUND) {
+    // return false;
+    // }
+    //
+    // // Find out how many of these things there are
+    // int count = thing.getQuantity();
+    // // Ensure that there are enough to drop as requested
+    // if ((nbrToDrop > count) || (count == 0)) {
+    // return false;
+    // }
+    //
+    // // Adjust the qty to account for the drop nbr
+    // int newCount = 0;
+    // try {
+    // newCount = thing.adjustQuantity(-nbrToDrop);
+    // } catch (ApplicationException e) {
+    // MsgCtrl.errMsg(e.getMessage());
+    // System.exit(0);
+    // }
+    // // If the qty becomes zero, remove the Item from the list
+    // if (newCount == 0) {
+    // _inventory.remove(pos);
+    // }
+    // // If qty is not zero, overwrite adjusted Item back into list
+    // else {
+    // _inventory.set(pos, thing);
+    // }
     return true;
   }
 
@@ -309,7 +293,7 @@ public class Inventory implements Serializable
    * 
    * @return the inventory Items
    */
-  public ArrayList<Item> getInventory()
+  public ArrayList<Item> getAll()
   {
     return _inventory;
   }
@@ -339,16 +323,16 @@ public class Inventory implements Serializable
    */
   public Item getItem(String itemName)
   {
-    // Guard against null input
-    if (itemName == null) {
-      return null;
-    }
-
-    for (Item it : _inventory) {
-      if (itemName.equalsIgnoreCase(it.getName())) {
-        return it;
-      }
-    }
+    // // Guard against null input
+    // if (itemName == null) {
+    // return null;
+    // }
+    //
+    // for (Item it : _inventory) {
+    // if (itemName.equalsIgnoreCase(it.getName())) {
+    // return it;
+    // }
+    // }
     return null;
   }
 
@@ -358,7 +342,7 @@ public class Inventory implements Serializable
    * @param category which of the available categories should be selected
    * @return an Item list of only the requested category
    */
-  public Inventory getItemByCategory(ItemCategory category)
+  public Inventory getItemsByCategory(ItemCategory category)
   {
     int invSize = _inventory.size();
     Inventory catList = new Inventory();
@@ -371,6 +355,22 @@ public class Inventory implements Serializable
     return catList;
   }
 
+  /** Retrieve a list of all items in the given invenotry by name
+   * 
+   * @param cat     category of item to build a subset from
+   * @return the list of names for the subset inventory
+   */
+  public List<String> getNameList(ItemCategory cat)
+  {
+    Inventory aList = getItemsByCategory(cat);
+    List<String> nameList = new ArrayList<String>();
+    for (int k = 0; k < aList.getNbrItems(); k++) {
+      String itemName = aList.getItem(k).getName();
+      nameList.add(itemName);
+    }
+    return nameList;
+  }
+
   /**
    * Count the number of Items (number of unique Items, not quantities) in the Inventory
    * 
@@ -381,27 +381,27 @@ public class Inventory implements Serializable
     return _inventory.size();
   }
 
-  /**
-   * Confirm that the String of inventory items are properly loaded Later, the Inventory will be
-   * read from the <code>DungeonWizard</code> file
-   * 
-   * @return the list of items before they populate the Inventory
-   */
-  public String[][] getItemList()
-  {
-    return _startList;
-  }
+  // /**
+  // * Confirm that the String of inventory items are properly loaded Later, the Inventory will be
+  // * read from the <code>DungeonWizard</code> file
+  // *
+  // * @return the list of items before they populate the Inventory
+  // */
+  // public String[][] getItemList()
+  // {
+  // return _startList;
+  // }
 
-  /**
-   * Examine the Item list for requested Items.
-   * 
-   * @param target the Item being searched
-   * @return the Item if the name of the Item was found; else null
-   */
-  public boolean hasItem(Item target)
-  {
-    return _inventory.contains(target);
-  }
+  // /**
+  // * Examine the Item list for requested Items.
+  // *
+  // * @param target the Item being searched
+  // * @return the Item if the name of the Item was found; else null
+  // */
+  // public boolean hasItem(Item target)
+  // {
+  // return _inventory.contains(target);
+  // }
 
   /**
    * Traverse the inventory list, looking for Items by name. This method uses the equalsIgnoreCase
@@ -424,44 +424,9 @@ public class Inventory implements Serializable
     return false;
   }
 
-  /**
-   * Assign the starting set of Items to the Person's inventory: clothing, cash, provisions, and
-   * other minimums for adventuring. Each key is an Item containing its category, name, weight (oz),
-   * and quantity.
-   * 
-   * @return the ArrayList containing the items
-   */
-  public List<Item> initStartingInventory()
-  {
-    for (int i = 0; i < _startList.length; i++) {
-      Item it = null;
-
-      // Try to create item
-      it = Item.getItem(_startList[i][0]);
-
-      // Ensure item count is 1
-      if (it.getQuantity() > 1) {
-        try {
-          it.adjustQuantity(1 - it.getQuantity());
-        } catch (ApplicationException e) {
-          MsgCtrl.errMsg("Could not adjust quantity");
-          e.printStackTrace();
-        }
-      }
-
-      // Add item to registry
-      int numItems = Integer.parseInt(_startList[i][1]);
-      for (int j = 0; j < numItems; j++) {
-        this.addItem(it);
-      }
-    }
-    return _inventory;
-  }
-
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ INNER CLASS: MockInventory
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
+  // ===========================================================================
+  // INNER CLASS: MockInventory
+  // ===========================================================================
 
   /** Inner class for testing Inventory */
   public class MockInventory
@@ -486,8 +451,7 @@ public class Inventory implements Serializable
           System.out.println("Inventory search: " + target[k]
               + " found!");
           retval = true;
-        }
-        else {
+        } else {
           System.out.println("Inventory search: " + target[k]
               + " missing!");
           retval = true;
@@ -496,12 +460,32 @@ public class Inventory implements Serializable
       return retval;
     }
 
-    /** @return the size of the starting list */
-    public int startSize()
-    {
-      return _startList.length;
-    }
+//    /**
+//     * @return the size of the starting list
+//     */
+//    public int startSize()
+//    {
+//      return _startList.length;
+//    }
 
+//    /**
+//     * Test that the starting inventory, when a different string list is used, still works. Replace
+//     * the default list with the given new list
+//     * 
+//     * @param alternate item list
+//     * @return the inventory newly createed
+//     */
+//    public Inventory replaceStartList(String[][] newList)
+//    {
+//      // Clear out the statically-defined startlist
+//      Inventory.this._inventory.clear();
+//      // Replace the old list that got initialized inherently
+//      Inventory.this._startList = newList;
+//
+//      // Inventory is populated by the starting inventory method
+//      Inventory.this.initStartingInventory();
+//      return Inventory.this;
+//    }
 
   } // end of MockInventory inner class
 

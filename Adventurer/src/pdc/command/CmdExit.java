@@ -19,24 +19,15 @@ import civ.MainframeCiv;
 
 
 /**
- * Moves the Hero from ... to ..., and displays its interior description and image. If no building
- * is specified (no parm), the current building is assumed; if there is no current building, that
- * is, at the town view, then an error msg. If the Hero is already in the targeted building, then
- * only an info message is displaed. If the Hero tries to jump from inside one building to inside
- * another, he gets an error message saying he has to leave one before he can enter another. <br>
- * <P>
- * Format: ENTER [current Building name | current Building type] <br>
- * where:
- * <UL>
- * <LI>Building Name is the actual string name of the Building, and is Adventure specific;</LI>
- * <LI>Building Type is the Building class, e.g., Inn, Bank, Jail;</LI>
- * </UL>
+ * Invokes the LEAVE command (to leave the current Building) and then QUIT (to terminate the game).
+ * Format: EXIT <br>
  * 
  * @author Alan Cline
  * @version Mar 19 2014 // original <br>
  *          Aug 23, 2014 // updated {@code init} method to handle IOPanel for outputs <br>
  *          Aug 30, 2014 // updated {@code exec} method to handle current building <br>
  *          Feb 18, 2015 // updated to handle common IOPanel for text outputs <br>
+ *          Aug 28, 2015 // final revisions from ENTER template <br>
  * 
  * @see Command
  */
@@ -53,15 +44,18 @@ public class CmdExit extends Command
     static private final String CMDFMT = "EXIT";
 
     private MainframeCiv _mfCiv;
-
+    private BuildingDisplayCiv _bldgCiv;
+    
     /*
      * CONSTRUCTOR(S) AND RELATED METHODS
      */
 
     /** Constructor called by the CommandFactory. There is no delay nor duration. */
-    public CmdExit()
+    public CmdExit(MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
     {
         super("CmdExit", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
+        _mfCiv = mfCiv;
+        _bldgCiv = bdCiv;
     }
 
 
@@ -92,8 +86,7 @@ public class CmdExit extends Command
      */
     public boolean exec()
     {
-        BuildingDisplayCiv bdCiv = _mfCiv.getBuildingDisplayCiv();
-        bdCiv.leaveBuilding();
+        _bldgCiv.leaveBuilding();
         _mfCiv.quit();
         return false;
     }

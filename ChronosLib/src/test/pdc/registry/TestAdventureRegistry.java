@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mylib.MsgCtrl;
-import mylib.dmc.IRegistryElement;
 
 import org.junit.After;
 import org.junit.Before;
@@ -93,7 +92,7 @@ public class TestAdventureRegistry
         MsgCtrl.where(this);
         
         // DO
-        List<IRegistryElement> advList = areg.get(DEF_ADVENTURE);
+        List<Adventure> advList = areg.get(DEF_ADVENTURE);
         assertNotNull(advList);
         assertEquals(1, advList.size());
 
@@ -117,7 +116,7 @@ public class TestAdventureRegistry
         // SETUP None
 
         // DO
-        List<IRegistryElement> advList = areg.get("Salazar's Lair");
+        List<Adventure> advList = areg.get("Salazar's Lair");
 
         // VERIFY
         assertEquals(0, advList.size());
@@ -134,7 +133,7 @@ public class TestAdventureRegistry
         MsgCtrl.where(this);
 
         // DO
-        List<IRegistryElement> advList = areg.get("   ");
+        List<Adventure> advList = areg.get("   ");
 
         // VERIFY
         assertEquals("Received an non-empty list", 0, advList.size());

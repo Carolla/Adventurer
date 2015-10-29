@@ -10,15 +10,9 @@
 
 package mylib.test.pdc;
 
-import java.util.List;
-
 import mylib.ApplicationException;
-import mylib.dmc.DbReadWriter;
-import mylib.dmc.IRegistryElement;
 import mylib.pdc.Registry;
 import mylib.test.dmc.SomeObject;
-
-import com.db4o.query.Predicate;
 
 
 /**
@@ -37,7 +31,7 @@ import com.db4o.query.Predicate;
  *          Jun 13 2011 // TAA: updated/deprecated methods <br>
  *          Sep 27 2014 // ABC removed unneeded methods and encapsulated DBRW better <br>
  */
-public class ConcreteRegistry extends Registry
+public class ConcreteRegistry extends Registry<SomeObject>
 {
 
   // ============================================================
@@ -74,77 +68,6 @@ public class ConcreteRegistry extends Registry
     add(obj2);
     add(obj3);
   }
-
-
-  // ============================================================
-  // INNER CLASS MockRegistry
-  // ============================================================
-  /*
-   * 
-   * /** Accesses private data in test target
-   */
-  public class MockRegistry
-  {
-
-    /** Clear all elements in the database but leave it open */
-    @SuppressWarnings("serial")
-    public void clearElements()
-    {
-      // Get all the elements first
-      List<IRegistryElement> list = get(new Predicate<IRegistryElement>() {
-        public boolean match(IRegistryElement candidate)
-        {
-          return true;
-        }
-      });
-      // Now delete everything found from the registry
-      for (int k = 0; k < list.size(); k++) {
-        delete(list.get(k));
-      }
-    }
-
-
-//    /** Exposes the db erase method for testing purposes */
-//    public void eraseDB()
-//    {
-//      _dbMock.dbErase();
-//    }
-
-
-    /** Get all the elements in the Registry */
-    @SuppressWarnings("serial")
-    public List<IRegistryElement> getAll()
-    {
-      // Run the query using the equals method
-      List<IRegistryElement> obSet = _regRW.query(new Predicate<IRegistryElement>() {
-        public boolean match(IRegistryElement candidate)
-        {
-          return true;
-        }
-      });
-      return obSet;
-    }
-
-
-    /**
-     * Get the DbRW for test access
-     * 
-     * @return the db read-writer object reference for this registry
-     */
-    public DbReadWriter getDBRW()
-    {
-      return _regRW;
-    }
-
-
-    /** Load the registry with the initialized elements */
-    public void init()
-    {
-      ConcreteRegistry.this.initialize();
-    }
-
-  } // end of MockRegistry inner class
-
 
 } // end of ConcreteRegistry outer class
 

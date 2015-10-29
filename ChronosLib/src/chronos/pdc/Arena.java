@@ -12,8 +12,6 @@
 
 package chronos.pdc;
 
-import mylib.dmc.DbReadWriter;
-import chronos.Chronos;
 
 
 /**
@@ -46,7 +44,7 @@ public class Arena
 
     // Create the db interface to store the Arena, but do not store the read writer
     // It is massive large ~27K, because it pulls in db40.
-    private transient DbReadWriter _dbi = null;
+    //private transient DbReadWriter<Adventure> _dbi = null;
     
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++  
      * 					CONSTRUCTOR(S) AND RELATED METHODS
@@ -65,7 +63,7 @@ public class Arena
         _name = name;
         _intro = String.format(DEF_INTRO, name);
         // Create the db file to store the Arena
-        _dbi = new DbReadWriter(Chronos.ArenaPath + name + Chronos.ARENA_EXT);
+        //_dbi = new DbReadWriter(Chronos.ArenaPath + name + Chronos.ARENA_EXT);
     }
 
     

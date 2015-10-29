@@ -101,7 +101,9 @@ public class Constants
   static public final int INCHES_PER_FOOT = 12;
 
   /** My own special version of Brown since there is not one for Color */
+//  static public final Color MY_BROWN = new Color(130, 100, 90).brighter();
   static public final Color MY_BROWN = new Color(130, 100, 90);
+
 
   /**
    * Allow the base location of class files to be defined or redirected for testing

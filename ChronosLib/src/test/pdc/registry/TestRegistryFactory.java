@@ -26,6 +26,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.Chronos;
+import chronos.pdc.Skill;
 import chronos.pdc.Command.Scheduler;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
@@ -117,11 +118,11 @@ public class TestRegistryFactory
         MsgCtrl.where(this);
 
         // SETUP: ensure that registry to be created already exists
-        Registry testreg = _rf.getRegistry(RegKey.SKILL);
+        Registry<Skill> testreg = (Registry<Skill>) _rf.getRegistry(RegKey.SKILL);
         File regfile = new File(Chronos.SkillRegPath);
 
         // DO:
-        Registry testreg2 = _rf.getRegistry(RegKey.SKILL);
+        Registry<Skill> testreg2 = (Registry<Skill>) _rf.getRegistry(RegKey.SKILL);
 
         // VERIFY: factory has same registry file exists
         assertTrue(regfile.exists());

@@ -22,7 +22,7 @@ import mylib.civ.DataShuttle;
 import org.junit.After;
 import org.junit.Before;
 
-import pdc.character.Person;
+import pdc.character.Hero;
 import civ.HeroDisplayCiv;
 import civ.HeroDisplayCiv.MockHeroDisplayCiv;
 import civ.PersonKeys;
@@ -47,7 +47,7 @@ public class TestHeroDisplayCiv extends TestCase
     private final String KLASSNAME = "Peasant";
 
     // Person needed for this CIV
-    private Person _p = null;
+    private Hero _p = null;
     // Widget needed for this CIV
     // private JPanel _widget = null;
     // CIV reference and mock
@@ -145,9 +145,9 @@ public class TestHeroDisplayCiv extends TestCase
     {
         MsgCtrl.auditMsgsOn(true);
         MsgCtrl.errorMsgsOn(true);
-        _p = new Person(NAME, GENDER, OCCUP, HAIRCOLOR, RACENAME, KLASSNAME);
+        _p = new Hero(NAME, GENDER, OCCUP, HAIRCOLOR, RACENAME);
         assertNotNull(_p);
-        _civ = new HeroDisplayCiv((Person) null);
+        _civ = new HeroDisplayCiv(null);
         assertNotNull(_civ);
         _mock = _civ.new MockHeroDisplayCiv();
         assertTrue(_mock != null);
@@ -225,11 +225,6 @@ public class TestHeroDisplayCiv extends TestCase
 
         // NORMAL. Civ is created in setup, verify it here
         assertTrue(verifyPersonData(_p));
-
-        // NULL widget case as Normal
-        _civ = null;
-        _civ = new HeroDisplayCiv((Person) null);
-        assertNotNull(_civ);
 
         // // NULL model case as Normal
         // _civ = null;
@@ -613,7 +608,7 @@ public class TestHeroDisplayCiv extends TestCase
     /** Load data shuttle */
     private DataShuttle<PersonKeys> loadPersonData()
     {
-        _p.new MockPerson();
+        _p.new MockHero();
 
         // Build data shuttle with all the desired keys
         DataShuttle<PersonKeys> ds = new DataShuttle<PersonKeys>(
@@ -632,7 +627,7 @@ public class TestHeroDisplayCiv extends TestCase
      *            Person, the model, created
      * @return true only if all asserts passed
      */
-    private boolean verifyPersonData(Person p)
+    private boolean verifyPersonData(Hero p)
     {
         // Null guards
         if (p == null) {

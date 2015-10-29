@@ -64,10 +64,10 @@ public class SkillDisplayCiv extends BaseCiv<SkillKeys, SkillKeys> implements Ob
   static public final int INVALID_WHITESPACE = -3;
 
   /** Data shuttle */
-  private DataShuttle<SkillKeys> _ds = null;
+//  private DataShuttle<SkillKeys> _ds = null;
 
   /** Widget shuttle */
-  private DataShuttle<SkillKeys> _ws = null;
+//  private DataShuttle<SkillKeys> _ws = null;
 
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS

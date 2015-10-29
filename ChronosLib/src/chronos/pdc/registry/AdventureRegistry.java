@@ -29,7 +29,7 @@ import com.db4o.query.Predicate;
  * @version Jan 1 2010 // original <br>
  *          Jun 28 2014 // make available only through Class reflection call; some cleanup <br>
  */
-public class AdventureRegistry extends Registry
+public class AdventureRegistry extends Registry<Adventure>
 {
   /** Default Adventure */
   private final String DEF_ADVENTURE = "The Quest for Rogahn and Zelligar";
@@ -129,8 +129,8 @@ public class AdventureRegistry extends Registry
   public ArrayList<Adventure> getAdventureList()
   {
     @SuppressWarnings("serial")
-    List<IRegistryElement> advSet = get(new Predicate<IRegistryElement>() {
-      public boolean match(IRegistryElement candidate)
+    List<Adventure> advSet = get(new Predicate<Adventure>() {
+      public boolean match(Adventure candidate)
       {
         return true;
       }

@@ -46,7 +46,7 @@ import com.db4o.query.Predicate;
 public class TestDbReadWriter
 {
     /** Object under test */
-    private DbReadWriter _regRW = null;
+    private DbReadWriter<SomeObject> _regRW = null;
     /** Place temporary test files in resource directory */
     private final String REG_PATH = Constants.MYLIB_RESOURCES + "Test.reg";
     /** File for db persistence */
@@ -68,7 +68,7 @@ public class TestDbReadWriter
         MsgCtrl.auditMsgsOn(true);
         MsgCtrl.errorMsgsOn(true);
         // Create new registry, open database and read-write file (default config)
-        _regRW = new DbReadWriter(REG_PATH);
+        _regRW = new DbReadWriter<SomeObject>(REG_PATH);
     }
 
     /**
@@ -101,7 +101,7 @@ public class TestDbReadWriter
     {
         MsgCtrl.where(this);
         try {
-            new DbReadWriter(null);
+            new DbReadWriter<IRegistryElement>(null);
             fail("No exception thrown");
         } catch (NullPointerException ex) {
 
@@ -120,7 +120,7 @@ public class TestDbReadWriter
         MsgCtrl.where(this);
 
         // NORMAL: Setup has created db, container, and file
-        DbReadWriter oldRW = _regRW;
+        DbReadWriter<SomeObject> oldRW = _regRW;
         File oldFile = _regFile;
 
         // Close down the file and recreate the database with the same file; DBRW still exists
@@ -136,7 +136,7 @@ public class TestDbReadWriter
         // Now try to create DBRW and confirm that it reused existing one, and that same file is
         // used
         // Create new registry, open database and read-write file (default config)
-        _regRW = new DbReadWriter(REG_PATH);
+        _regRW = new DbReadWriter<SomeObject>(REG_PATH);
         assertFalse(oldRW == _regRW);
         fileLen = _regFile.length();
         MsgCtrl.msgln("\tNewly loaded file " + _regRW.getPath() + "\t:" + fileLen + " bytes.");
@@ -259,18 +259,18 @@ public class TestDbReadWriter
         _regRW.addElement(t3);
 
         // NORMAL Retrieve using a matching object predicate
-        Predicate<IRegistryElement> objPred = new Predicate<IRegistryElement>() {
-            public boolean match(IRegistryElement candidate)
+        Predicate<SomeObject> objPred = new Predicate<SomeObject>() {
+            public boolean match(SomeObject candidate)
             {
                 return candidate.equals(t2);
             }
         };
-        List<IRegistryElement> soList = _regRW.query(objPred); // input the predicate
+        List<SomeObject> soList = _regRW.query(objPred); // input the predicate
         assertEquals(1, soList.size());
 
         // NORMAL Retrieve using a key matching predicate
-        Predicate<IRegistryElement> keyPred = new Predicate<IRegistryElement>() {
-            public boolean match(IRegistryElement candidate)
+        Predicate<SomeObject> keyPred = new Predicate<SomeObject>() {
+            public boolean match(SomeObject candidate)
             {
                 return candidate.getKey().equals(t2.getKey());
             }
@@ -279,8 +279,8 @@ public class TestDbReadWriter
         assertEquals(2, soList.size());
 
         // NORMAL Retrieve using a predicate that matches everything
-        Predicate<IRegistryElement> allPred = new Predicate<IRegistryElement>() {
-            public boolean match(IRegistryElement candidate)
+        Predicate<SomeObject> allPred = new Predicate<SomeObject>() {
+            public boolean match(SomeObject candidate)
             {
                 return true;
             }
@@ -292,8 +292,8 @@ public class TestDbReadWriter
         }
 
         // NORMAL Retrieve using a predicate that matches nothing
-        Predicate<IRegistryElement> nonePred = new Predicate<IRegistryElement>() {
-            public boolean match(IRegistryElement candidate)
+        Predicate<SomeObject> nonePred = new Predicate<SomeObject>() {
+            public boolean match(SomeObject candidate)
             {
                 return candidate.getKey().equals("nothing");
             }
@@ -340,7 +340,7 @@ public class TestDbReadWriter
 
         // Error: Set the database to readOnly and try again
         // Create new registry, open database and read-write file (default config)
-        _regRW = new DbReadWriter(REG_PATH);
+        _regRW = new DbReadWriter<SomeObject>(REG_PATH);
         assertNotNull(_regRW);
         _regRW.addElement(so1);
         _regRW.addElement(so2);

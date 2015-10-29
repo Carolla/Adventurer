@@ -10,12 +10,12 @@
 
 package chronos.civ;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import mylib.ApplicationException;
 import mylib.MsgCtrl;
-import chronos.civ.MiscKeys.ItemCategory;
 import chronos.pdc.Item;
+import chronos.pdc.MiscKeys.ItemCategory;
 import chronos.pdc.Occupation;
 import chronos.pdc.Skill;
 import chronos.pdc.registry.SkillRegistry;
@@ -41,115 +41,115 @@ public class HeroDefaults
     // /** List of Races */
     // ArrayList<String> _raceNames = null;
     /** List of Occupations (one Occupation contains its associated Skill) */
-    ArrayList<Occupation> _ocpList = null;
+    List<Occupation> _ocpList = null;
     /** List of racial skills */
-    ArrayList<Skill> _skillList = null;
+    List<Skill> _skillList = null;
     /** List of default Items given to new Hero */
-    ArrayList<Item> _inventory = null;
+    List<Item> _inventory = null;
 
 
-    /**
-     * Skills that are defined for particular races. These skills must be moved to
-     * <code>DungeonWizard</code> later.
-     */
-    static private final String[][] _racialSkillTable = {
-            {"Archery", "Extra skillful with a short or long bow."},
-            {"Geasing", "Able to detect undeground direction and stone-based traps."},
-            {"Infravision", "Can see warm bodies in the dark."},
-            {"Move Silently", "Chance of sneaking about undetected."},
-            {"Resistance to Charm", "Charm spells rarely effect you."},
-            {"Resistance to Poison", "Most poisons only moderately effect you."},
-            {"Resistance to Sleep", "Sleep spells rarely effect you."},
-            {"Tingling", "Ability to find hidden doors, secret panels, or concealed openings."},
-    };
+  /**
+   * Skills that are defined for particular races. These skills must be moved to
+   * <code>DungeonWizard</code> later.
+   */
+  static private final String[][] _racialSkillTable = {
+      {"Archery", "Extra skillful with a short or long bow."},
+      {"Geasing", "Able to detect undeground direction and stone-based traps."},
+      {"Infravision", "Can see warm bodies in the dark."},
+      {"Move Silently", "Chance of sneaking about undetected."},
+      {"Resistance to Charm", "Charm spells rarely effect you."},
+      {"Resistance to Poison", "Most poisons only moderately effect you."},
+      {"Resistance to Sleep", "Sleep spells rarely effect you."},
+      {"Tingling", "Ability to find hidden doors, secret panels, or concealed openings."},
+  };
 
-    /**
-     * Starting Items, and weight in ounces, for the Hero's inventory: Total weight for this stash
-     * is 426 oz + Peasant starting cash (15.8 gp = 32 oz) = 464 oz. The String format is used so
-     * that the array can be easily initialized until in ItemRegistry. Each Item := Category, Name,
-     * Weight (ea), and Quantity.
-     */
-    static private String[][] _itemTable = {
-            {"CASH", "Gold pieces", "2", "15"}, // 30 oz = 1.875 lb
-            {"CASH", "Silver pieces", "1", "8"}, // 8 oz = 0.5 lb
-            {"GENERAL", "Backpack", "160", "1"}, // 160 oz = 10.0 lb
-            {"GENERAL", "Cloak", "32", "1"}, // 32 oz = 2.0 lb
-            {"GENERAL", "Belt", "5", "1"}, // 5 oz = 0.3125 lb
-            {"GENERAL", "Belt pouch, small", "2", "1"}, // 2 oz = 0.125 lb
-            {"GENERAL", "Breeches", "16", "1"}, // 16 oz = 1.0 lb
-            {"GENERAL", "Pair of Boots", "40", "1"}, // 40 oz = 2.5 lb
-            {"GENERAL", "Shirt", "8", "1"}, // 8 oz = 0.5 lb
-            {"GENERAL", "Tinderbox, Flint & Steel", "5", "1"}, // 5 oz = 0.3125 lb
-            {"GENERAL", "Torches", "8", "3"}, // 24 oz = 1.5 lb
-            {"PROVISION", "Rations", "2", "3"}, // 6 oz = 0.125 lb
-            {"PROVISION", "Water skein", "80", "1"}, // 80 oz = 5.0 lb
-            {"WEAPON", "Quarterstaff", "48", "1"} // 48 oz = 3.0 lb
-    };
+  /**
+   * Starting Items, and weight in ounces, for the Hero's inventory: Total weight for this stash is
+   * 426 oz + Peasant starting cash (15.8 gp = 32 oz) = 464 oz. The String format is used so that
+   * the array can be easily initialized until in ItemRegistry. Each Item := Category, Name, Weight
+   * (ea), and Quantity.
+   */
+  static private String[][] _itemTable = {
+      {"CASH", "Gold pieces", "2", "15"}, // 30 oz = 1.875 lb
+      {"CASH", "Silver pieces", "1", "8"}, // 8 oz = 0.5 lb
+      {"GENERAL", "Backpack", "160", "1"}, // 160 oz = 10.0 lb
+      {"GENERAL", "Cloak", "32", "1"}, // 32 oz = 2.0 lb
+      {"GENERAL", "Belt", "5", "1"}, // 5 oz = 0.3125 lb
+      {"GENERAL", "Belt pouch, small", "2", "1"}, // 2 oz = 0.125 lb
+      {"GENERAL", "Breeches", "16", "1"}, // 16 oz = 1.0 lb
+      {"GENERAL", "Pair of Boots", "40", "1"}, // 40 oz = 2.5 lb
+      {"GENERAL", "Shirt", "8", "1"}, // 8 oz = 0.5 lb
+      {"GENERAL", "Tinderbox, Flint & Steel", "5", "1"}, // 5 oz = 0.3125 lb
+      {"GENERAL", "Torches", "8", "3"}, // 24 oz = 1.5 lb
+      {"PROVISION", "Rations", "2", "3"}, // 6 oz = 0.125 lb
+      {"PROVISION", "Water skein", "80", "1"}, // 80 oz = 5.0 lb
+      {"WEAPON", "Quarterstaff", "48", "1"} // 48 oz = 3.0 lb
+  };
 
 
-    /**
-     * Contains same occupations as the Occupation Registry for now. Put occupations into
-     * alphabetical order, which is how the names will be displayed. Each skill must be in the
-     * SkillRegistry. See the SkillRegistry for a definition of what each of the Skills does.
-     */
-    private final String[][] _occupTable = {
-            // No Skills is a placeholder if no other skills apply (Literacy does not count)
-            {"None", "No Occupational Skills"},
-            // Reduce damage d3 if falling off walls; also can pass enemy spaces +2 AC
-            {"Acrobat", "Tumbling"},
-            // Increased chance of recognition (+1 INT) to identify substance or thing
-            {"Alchemist", "Arcane Knowledge"},
-            // Increased chance of recognition (+1 WIS) to identify substance or potion
-            {"Apothecary", "Natural Knowledge"},
-            // Repair armor to -1 original AC; make small wooden or metal shields
-            {"Armorer", "Repair Armor"},
-            // Gets 10% discounts on financial transactions, and no-fee banking
-            {"Banker", "Brokering"},
-            // Make short bow (-1 to hit) and arrows (-1 damage adj)
-            {"Bowyer", "Bowmaking"},
-            // +10% chance to find secret doors in wall paneling, cabinets, etc.
-            {"Carpenter", "Find Secret Doors in Wood"},
-            // +2 CHR factor when negotiating
-            {"Courtesan", "Charm Person"},
-            // Predict next day weather at +2 WIS
-            {"Farmer", "Predict Weather"},
-            // With 50' rope, can make 50' x 50' net, can catch fish or NPCs
-            {"Fisher", "Netmaking"},
-            // +1 WIS to know compass directions when outside
-            {"Forester", "Intuit Direction"},
-            // +1 CHR when negotiating money deals
-            {"Freighter", "Negotations"},
-            // +1 on all Saving throws involving risk-taking; +2 on all game rolls
-            {"Gambler", "Luck"},
-            // 20% increased chance of finding and catching wild game
-            {"Hunter", "Hunting"},
-            // +1 WIS to determine if Person is lying or bluffing
-            {"Innkeeper", "Sense Motive"},
-            // Can know base selling value of jewelry and gems
-            {"Jeweler", "Appraise"},
-            // Can make leather armor, gloves or boots
-            {"Leatherworker", "Leatherworking"},
-            // +10 chance to find secret doors in stone work, walls, fireplaces, floors
-            {"Mason", "Find Secret Openings in Stonework"},
-            // +1 WIS to know direction underground
-            {"Miner", "Intuit Underground Direction"},
-            // +1 movement (normal = half Movement) when swimming over or underwater
-            {"Sailor", "Fast Swim"},
-            // With hand axe and wood, can make sailing raft
-            {"Shipwright", "Make Raft"},
-            // Can make clothing, belt, boots, cloak, hat, etc.
-            {"Tailor", "Sewing"},
-            // Gets 10% discounts on financial transactions, and no-fee banking
-            {"Trader", "Brokering"},
-            // Set, find, or remove simple mechanical traps as if L1 Rogue
-            {"Trapper", "Trapping"},
-            // Make or repair small specific weapons (-1 normal)
-            {"Weaponsmith", "Make Weapons"},
-            // Can know base selling value of tapestries
-            {"Weaver", "Appraise Tapestries"},
-            // Repair or modify wooden items, e.g. repair xbows, add secret compartment to chest
-            {"Woodworker", "Woodworking"}};
-   
+  /**
+   * Contains same occupations as the Occupation Registry for now. Put occupations into alphabetical
+   * order, which is how the names will be displayed. Each skill must be in the SkillRegistry. See
+   * the SkillRegistry for a definition of what each of the Skills does.
+   */
+  private final String[][] _occupTable = {
+      // No Skills is a placeholder if no other skills apply (Literacy does not count)
+      {"None", "No Occupational Skills"},
+      // Reduce damage d3 if falling off walls; also can pass enemy spaces +2 AC
+      {"Acrobat", "Tumbling"},
+      // Increased chance of recognition (+1 INT) to identify substance or thing
+      {"Alchemist", "Arcane Knowledge"},
+      // Increased chance of recognition (+1 WIS) to identify substance or potion
+      {"Apothecary", "Natural Knowledge"},
+      // Repair armor to -1 original AC; make small wooden or metal shields
+      {"Armorer", "Repair Armor"},
+      // Gets 10% discounts on financial transactions, and no-fee banking
+      {"Banker", "Brokering"},
+      // Make short bow (-1 to hit) and arrows (-1 damage adj)
+      {"Bowyer", "Bowmaking"},
+      // +10% chance to find secret doors in wall paneling, cabinets, etc.
+      {"Carpenter", "Find Secret Doors in Wood"},
+      // +2 CHR factor when negotiating
+      {"Courtesan", "Charm Person"},
+      // Predict next day weather at +2 WIS
+      {"Farmer", "Predict Weather"},
+      // With 50' rope, can make 50' x 50' net, can catch fish or NPCs
+      {"Fisher", "Netmaking"},
+      // +1 WIS to know compass directions when outside
+      {"Forester", "Intuit Direction"},
+      // +1 CHR when negotiating money deals
+      {"Freighter", "Negotations"},
+      // +1 on all Saving throws involving risk-taking; +2 on all game rolls
+      {"Gambler", "Luck"},
+      // 20% increased chance of finding and catching wild game
+      {"Hunter", "Hunting"},
+      // +1 WIS to determine if Person is lying or bluffing
+      {"Innkeeper", "Sense Motive"},
+      // Can know base selling value of jewelry and gems
+      {"Jeweler", "Appraise"},
+      // Can make leather armor, gloves or boots
+      {"Leatherworker", "Leatherworking"},
+      // +10 chance to find secret doors in stone work, walls, fireplaces, floors
+      {"Mason", "Find Secret Openings in Stonework"},
+      // +1 WIS to know direction underground
+      {"Miner", "Intuit Underground Direction"},
+      // +1 movement (normal = half Movement) when swimming over or underwater
+      {"Sailor", "Fast Swim"},
+      // With hand axe and wood, can make sailing raft
+      {"Shipwright", "Make Raft"},
+      // Can make clothing, belt, boots, cloak, hat, etc.
+      {"Tailor", "Sewing"},
+      // Gets 10% discounts on financial transactions, and no-fee banking
+      {"Trader", "Brokering"},
+      // Set, find, or remove simple mechanical traps as if L1 Rogue
+      {"Trapper", "Trapping"},
+      // Make or repair small specific weapons (-1 normal)
+      {"Weaponsmith", "Make Weapons"},
+      // Can know base selling value of tapestries
+      {"Weaver", "Appraise Tapestries"},
+      // Repair or modify wooden items, e.g. repair xbows, add secret compartment to chest
+      {"Woodworker", "Woodworking"}};
+  
     private SkillRegistry _skillRegistry;
 
 
@@ -238,23 +238,16 @@ public class HeroDefaults
     // }
 
     /** Retrieve racial skills for Hero */
-    public ArrayList<Skill> getSkillList()
+    public List<Skill> getSkillList()
     {
         return _skillList;
     }
 
     /** Retrieve the Hero's default Inventory */
-    public ArrayList<Item> getDefaultInventory()
+    public List<Item> getDefaultInventory()
     {
         return _inventory;
     }
-
-
-
-    /*
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PRIVATE METHODS
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-     */
 
 }
 // end of HeroDefaults class

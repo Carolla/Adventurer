@@ -1,6 +1,5 @@
 /**
  * 
- * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
  * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
  * by email: acline@carolla.com
@@ -8,19 +7,13 @@
 
 package hic;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontFormatException;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -31,73 +24,81 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 
+import mylib.Constants;
 import mylib.MsgCtrl;
-import mylib.civ.DataShuttle;
 import net.miginfocom.swing.MigLayout;
-import chronos.Chronos;
+import pdc.Inventory;
+import chronos.pdc.MiscKeys.ItemCategory;
 import civ.HeroDisplayCiv;
-import civ.MiscKeys.ItemCategory;
 import civ.PersonKeys;
 
-/** TODO: [4] Add Help for Attribute page */
 
 /**
- * Allows the user to show their Person's many attributes. <BL> <LI>Name: All Persons must have a
- * name by which they are addressed, and are associated with a file by which they are saved.</LI>
+ * Allows the user to show their Person's many attributes. <BL>
+ * <LI>Name: All Persons must have a name by which they are addressed, and are associated with a
+ * file by which they are saved.</LI>
  * <LI>Experience Points (XP): Reflects the amount of playing experiences encountered by the Person,
  * and gained toward next Level of ability. XP are awarded for gold and treasure recovered, monsters
- * killed, and puzzles solved. All start at XP = 0.</LI> <LI>Level: Reflects the Person's ability,
- * Level 0 being lowest (usually a Peasant), and Level 1 usually being the lowest Guild member.
- * Levels may rise to Level 10, master of all they command. A Person may rise in Level (be promoted)
- * in their Guild after obtaining enough XP to achieve that Level. All start at Level = 0.</LI> <LI>
- * Hit Points (HP): Reflects the life of the Person. HP are lost each time the Person is damaged in
- * a fight, and are recovered through healing. When the Person's HP = 0, he or she is dead. (There
- * are other ways of dying too, of course.) HP depend on the Person's Klass and Level; Peasants,
- * lowest of all, start at HP = 10.</LI> <LI>Race: Human is the default, but others are available:
- * Dwarf, Elf, Gnome, Half-Elf, Half-Orc, or Hobbit. Each have special penalties and bonuses
- * compared to the Human.</LI> <LI>Klass: Everyone starts as a Peasant, but can become a Fighter,
- * Cleric, Wizard, or Rogue at the proper Guild. All but Fighters inherit special abilities.</LI>
+ * killed, and puzzles solved. All start at XP = 0.</LI>
+ * <LI>Level: Reflects the Person's ability, Level 0 being lowest (usually a Peasant), and Level 1
+ * usually being the lowest Guild member. Levels may rise to Level 10, master of all they command. A
+ * Person may rise in Level (be promoted) in their Guild after obtaining enough XP to achieve that
+ * Level. All start at Level = 0.</LI>
+ * <LI>Hit Points (HP): Reflects the life of the Person. HP are lost each time the Person is damaged
+ * in a fight, and are recovered through healing. When the Person's HP = 0, he or she is dead.
+ * (There are other ways of dying too, of course.) HP depend on the Person's Klass and Level;
+ * Peasants, lowest of all, start at HP = 10.</LI>
+ * <LI>Race: Human is the default, but others are available: Dwarf, Elf, Gnome, Half-Elf, Half-Orc,
+ * or Hobbit. Each have special penalties and bonuses compared to the Human.</LI>
+ * <LI>Klass: Everyone starts as a Peasant, but can become a Fighter, Cleric, Wizard, or Rogue at
+ * the proper Guild. All but Fighters inherit special abilities.</LI>
  * <LI>Armor Class (AC): Reflects defensive ability, mostly due to the armor worn. AC also slightly
- * reflects the Dexterity a Person has to avoid being hit.</LI> <LI>Age: Reflects how old the Person
- * is. As the Person plays, and increases in Age, base traits change, and modifiers adjust
- * accordingly. Age also reflects how long the Person spent in play.</LI> <LI>
- * Gender: Females are, on average, shorter, lighter, and have less Strength than Males, but have a
- * higher Constitution and Charisma.</LI> <LI>Height: The height of the Person, affects speed
- * slightly; also defines how high the Person can reach for something. Height depends on the
- * Person's Race.</LI> <LI>
- * Weight: The weight of the Person, affects non-lethal combat somewhat; also limits the strength of
- * bridges the Person may cross safely. Weight depends on the Person's Race.</LI> <LI>Occupation:
- * Although "No Skills" is an option, most occupations reflect some special skill that the Person
- * acquired in earlier life.</LI> <LI>Gold: The amount of wealth the Person owns, and carries about
- * (adding to his load). The <i>Gold</i> value is the number of gold pieces and silver pieces in G.S
- * format (10 sp = 1 gp). Peasants start with the least gold; Guilds will confer a little wealth on
- * the Person, depending on the Guild.</LI> <LI>Gold Banked: The amount of wealth the Person has
- * stashed away, usually in the local Bank. Banks will charge interest on the amount periodically,
- * but you won't have to carry it around with you, and take the risk of being robbed.</LI> <LI>
- * Weight Carried: The weight the Person is currently carrying. Some weight may slow the Person, and
- * there is a limit to how much the Person can carry. Weight carried affects non-lethal combat
+ * reflects the Dexterity a Person has to avoid being hit.</LI>
+ * <LI>Age: Reflects how old the Person is. As the Person plays, and increases in Age, base traits
+ * change, and modifiers adjust accordingly. Age also reflects how long the Person spent in play.
+ * </LI>
+ * <LI>Gender: Females are, on average, shorter, lighter, and have less Strength than Males, but
+ * have a higher Constitution and Charisma.</LI>
+ * <LI>Height: The height of the Person, affects speed slightly; also defines how high the Person
+ * can reach for something. Height depends on the Person's Race.</LI>
+ * <LI>Weight: The weight of the Person, affects non-lethal combat somewhat; also limits the
+ * strength of bridges the Person may cross safely. Weight depends on the Person's Race.</LI>
+ * <LI>Occupation: Although "No Skills" is an option, most occupations reflect some special skill
+ * that the Person acquired in earlier life.</LI>
+ * <LI>Gold: The amount of wealth the Person owns, and carries about (adding to his load). The
+ * <i>Gold</i> value is the number of gold pieces and silver pieces in G.S format (10 sp = 1 gp).
+ * Peasants start with the least gold; Guilds will confer a little wealth on the Person, depending
+ * on the Guild.</LI>
+ * <LI>Gold Banked: The amount of wealth the Person has stashed away, usually in the local Bank.
+ * Banks will charge interest on the amount periodically, but you won't have to carry it around with
+ * you, and take the risk of being robbed.</LI>
+ * <LI>Weight Carried: The weight the Person is currently carrying. Some weight may slow the Person,
+ * and there is a limit to how much the Person can carry. Weight carried affects non-lethal combat
  * somewhat; also limits the strength of bridges the Person may cross safely. Weight carried depends
- * on the Person's Strength.</LI> <LI>Max Languages: The total number of languages a Person can
- * learn, in addition to <i>Common</i> and a Race language.</LI> <LI>Languages: All Persons know the
- * <i>Common</i> language, and perhaps a Race language. Each Person has the ability to learn other
- * languages.</LI> <LI>Description: Deduced from hair color, weight, height, gender, race, Klass and
- * CHR, it follows the formula "A [body type] [gender] [race] [klass] with [color] hair. She | He is
- * [CHR value]." Body type is derived from weight, height, body-mass-index ratio, e.g.
- * "tall and thin", or "short and squat". CHR value ranges from "stunningly beautiful" (18) to
- * "horribly scarred" (8).</LI> <LI>Inventory: The list of Items carried by the Person, usually in
- * their backpack. Items are found in the Dungeon, or purchased in the Store. If you don't have it,
- * you can't use it!</LI> <LI>Special Abilities: The behaviors are specific to a Person's
- * occupation, Race, and Klass. Special abilities may involve detecting secret doors (e.g., Rogues
- * and Elves), throwing spells (e.g. Wizards and Clerics), or just plain luck (e.g, Gamblers).</LI>
+ * on the Person's Strength.</LI>
+ * <LI>Max Languages: The total number of languages a Person can learn, in addition to <i>Common</i>
+ * and a Race language.</LI>
+ * <LI>Languages: All Persons know the <i>Common</i> language, and perhaps a Race language. Each
+ * Person has the ability to learn other languages.</LI>
+ * <LI>Description: Deduced from hair color, weight, height, gender, race, Klass and CHR, it follows
+ * the formula "A [body type] [gender] [race] [klass] with [color] hair. She | He is [CHR value]."
+ * Body type is derived from weight, height, body-mass-index ratio, e.g. "tall and thin", or
+ * "short and squat". CHR value ranges from "stunningly beautiful" (18) to "horribly scarred" (8).
+ * </LI>
+ * <LI>Inventory: The list of Items carried by the Person, usually in their backpack. Items are
+ * found in the Dungeon, or purchased in the Store. If you don't have it, you can't use it!</LI>
+ * <LI>Special Abilities: The behaviors are specific to a Person's occupation, Race, and Klass.
+ * Special abilities may involve detecting secret doors (e.g., Rogues and Elves), throwing spells
+ * (e.g. Wizards and Clerics), or just plain luck (e.g, Gamblers).</LI>
  * <LI>Magic Bag (Wizard) or Sacred Satchel (Cleric): If the Person is a spellcaster, then this
  * special container for spell items will appear. Inventory items can be moved to or from the Bag or
  * Satchel to be available for Spells.</LI> </BL>
  * <P>
  * 
- * @see NewHeroDisplay
+ * @see NewHeroIPPanel
  * @see HeroDisplayCiv
  * @see PersonKeys
  * 
@@ -112,6 +113,8 @@ import civ.PersonKeys;
  *          May 31 2010 // replaced PDC and DMC with CIV package <br>
  *          May 2 2011 // major rewrite for MigLayout manager <br>
  *          Oct 6 2011 // minor changes to support MVP Stack <br>
+ *          Oct 1 2015 // revised to accommodate new Hero character sheet <br>
+ *          Oct 17 2015 // added dual tab pane for Spell casters vs non-spell casters <br>
  */
 public class HeroDisplay extends JPanel
 {
@@ -147,29 +150,24 @@ public class HeroDisplay extends JPanel
   private final int FONT_HT = 14;
   /** Normal font height */
   private final int ATT_FONT_HT = 12;
-  /** Size for name */
-  private final float NAME_HT = 30f;
+  /** Size for name in title */
+  private final float TITLE_HT = 14f;
   /** Border width for main panel */
   private final int SCROLLBAR_SIZE = 20;
   /** Standard height of font and cells in display, but can be changed */
   private int CELL_HEIGHT = 26;
-  // /** Standard height of font and cells in display, but can be changed */
-  // private int CELL_WIDTH = 12;
   /** Border width for main panel */
   private final int THICK_BORDER = Mainframe.PAD;
   /** Border width for subpanel */
   private final int THIN_BORDER = Mainframe.PAD / 2;
   /** Set the max width of the hero panel at half screen */
-  // final int PANEL_WIDTH = Mainframe.USERWIN_WIDTH / 2;
   private final int PANEL_WIDTH = Mainframe.getWindowSize().width / 2;
+  /** Set the max height of the hero panel */
+  private final int PANEL_HEIGHT = Mainframe.getWindowSize().height;
 
-  /** Set the width of the data panels within the display borders */
-  final int DATA_WIDTH = PANEL_WIDTH - SCROLLBAR_SIZE - 2
-      * (THICK_BORDER + THIN_BORDER);
-  final int DATA_PAD = 50;
-
-  // /** Keep a reference to this scrollpane that contains this display*/
-  // private JScrollPane _heroScroll = null;
+  /** Set the width of the two data panels within the display borders */
+  // private final int DATA_WIDTH = PANEL_WIDTH / 2 - 2 * (THICK_BORDER + THIN_BORDER);
+  private final int DATA_WIDTH = PANEL_WIDTH / 2 - Mainframe.PAD;
 
   /** Size of inventory area */
   final int INVEN_HEIGHT = 30;
@@ -181,397 +179,127 @@ public class HeroDisplay extends JPanel
   // /** Set the default HelpKey for the general panel */
   // private HelpKeyListener _helpKey = new HelpKeyListener("HeroDsp");
 
-  /** Preferred (calculated) width for HeroDisplay */
-  int _panelWidth = 0;
-  /** Preferred (calculated) height for HeroDisplay */
-  int _panelHeight = 0;
   // /** Maximum size of cell in attribute panel */
   // private final int CELL_MAX_WIDTH = 17;
 
   /** Disable SaveAs at some time . */
-  private JButton _saveButton = null;
+  private JButton _saveButton;
   /** Change Cancel Button to OK Button at some time . */
-  private JButton _cancelButton = null;
+  private JButton _cancelButton;
   /** Gets rid of unused/unwanted characters */
   private JButton _delButton;
 
+  // TODO: Constant.MY_BROWN needs to be brightened here for some reason. Perhaps a background panel
+  // is affecting it?
   /** Background color inherited from parent */
-  private Color _backColor = null;
-
-  /** Tabbed pane to hold inventory stuff */
-  JTabbedPane _tab = null;
+  private Color _backColor = Constants.MY_BROWN.brighter();
+  private Color _boldBackColor = Constants.MY_BROWN;
 
   /** The backend CIV for this JPanel widget */
   private HeroDisplayCiv _hdCiv = null;
 
   /** Keys to Hero data to be displayed */
-  DataShuttle<PersonKeys> _ds = null;
+  EnumMap<PersonKeys, String> _ds;
 
-  /** Items to be displayed */
-  private ArrayList<String> _itemList = null;
+  /** Six panels in each attribute row */
+  private final int PANELS_IN_ROW = 6;
 
-  // /** Minimum display width */
-  // private final int MINIMUM_DISPLAY = 500;
-
-  /** Default inset values */
-  private final int DEF_INSET = 3;
-
-  /** Five panels in each attribute row */
-  private final int PANELS_IN_ROW = 5;
-
-  /** Crude attempt to allocate space for wrappping text */
-  private final double WRAP_ADJ = 1.4;
-
+  /** Crude attempt to allocate space for wrapping text */
   private final int SPACES_PER_LINE = 27;
-
-  private final int SKILL_LINE_HT = FONT_HT * 4;
 
   /** Button panel for Save/Delete/Cancel buttons */
   private JPanel _buttonPanel;
 
-  /** Attribute panel where characters atts are displayed */
-  private JPanel _attribPanel;
-
-  /** JLabel to hold character's name */
-  private JLabel _charName;
-
-private MainframeInterface _mainframe;
+  /** Reference to the parent frame */
+  private Mainframe _mainframe;
 
 
-  /*
-   * CONSTRUCTOR(S) AND RELATED METHODS
-   */
-
-  /** Default constuctor */
-  public HeroDisplay()
-  {}
-
+  // ===============================================================
+  // CONSTRUCTOR(S) AND RELATED METHODS
+  // ===============================================================
 
   /**
-   * Create the GUI and populate it with various data shuttles
+   * Create the GUI and populate it with various data maps
    * 
    * @param hdCiv the intermediary between this GUI and the Person
+   * @param outputMap contains all the hero's data to be displayed
    */
-  public HeroDisplay(HeroDisplayCiv hdCiv, MainframeInterface mainframe)
+  public HeroDisplay(HeroDisplayCiv hdCiv)
   {
     _hdCiv = hdCiv;
-    _mainframe = mainframe;
+    _ds = _hdCiv.getAttributes();
+
     // _hdCiv.resetLoadState();
-    _mainframe.add(this, BorderLayout.WEST);
+    // Define the overall tabbed pane and button layout
     setupDisplay();
   }
 
 
-  /** Stub until the display is working properly. */
-  public boolean displayAttributes(DataShuttle<PersonKeys> ds)
+  /** Swap the main panel title with the HeroDisplay title */
+  private void setHeroAsTitle()
   {
-    // Set private field equal to passed parameter
-    _ds = ds;
+    // Two-row namePlate before Attribute grid: Name, Gender, Race, Klass
+    String namePlate = _ds.get(PersonKeys.NAME) + ": "
+        + _ds.get(PersonKeys.GENDER) + " "
+        + _ds.get(PersonKeys.RACENAME) + " "
+        + _ds.get(PersonKeys.KLASSNAME);
 
-    // // Generate titled border (banner) containing Hero's name
-    // int mfpad = Mainframe.PAD;
-    // String mftitle = " Attributes for " + _ds.getField(PersonKeys.NAME)
-    // + " ";
-    // Border thisBorder = BorderFactory.createMatteBorder(mfpad, mfpad,
-    // mfpad, mfpad, Color.WHITE);
-    // Border titledBorder = BorderFactory.createTitledBorder(thisBorder,
-    // mftitle, TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION);
-    // setBorder(titledBorder);
-    //
-     // ADD HELP MESSAGE TO INSTRUCT HOW TO SHIFT FOCUS
-     add(new JLabel(HELP_LABEL), "span");
-    //
-    // // Use a larger special font for the Hero's name. Extract the label font
-    // // size from the cell
-     Font nameFont = null;
-     try {
-     // Returned font is of pt size 1
-     Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(
-     Chronos.RUNIC_ENGLISH_FONT_FILE));
-    
-     // Derive a 30 pt version:
-     nameFont = newFont.deriveFont(NAME_HT);
-        } catch (FontFormatException e) {
-            MsgCtrl.errMsgln("Could not format font: " + e.getMessage());
-        } catch (IOException e) {
-            MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
-        }
-    // // NamePlate before Attribute grid: Name, gender, Race, Klass
-    // String namePlate = _ds.getField(PersonKeys.NAME) + ": "
-    // + _ds.getField(PersonKeys.GENDER) + " "
-    // + _ds.getField(PersonKeys.RACENAME) + " "
-    // + _ds.getField(PersonKeys.KLASSNAME);
-    // // Put some space above and below the namePlate
-    // _charName = new JLabel(namePlate);
-    //
-    // // GraphicsEnvironment env =
-    // // GraphicsEnvironment.getLocalGraphicsEnvironment();
-    // // String[] fontNames = env.getAvailableFontFamilyNames();
-    //
-    _charName.setFont(nameFont);
-    // // TODO: Update this to change the size Tim
-    // while (_charName.getPreferredSize().width > DATA_WIDTH) {
-    // // Edit name font down a notch or two
-    // Font labelFont = _charName.getFont();
-    // String labelText = _charName.getText();
-    //
-    // int stringWidth = _charName.getFontMetrics(labelFont).stringWidth(
-    // labelText);
-    // int componentWidth = DATA_WIDTH;
-    //
-    // // Find out how much the font can grow in width.
-    // double widthRatio = (double) componentWidth / (double) stringWidth;
-    //
-    // int newFontSize = (int) (labelFont.getSize() * widthRatio);
-    //
-    // // Recreate the new font
-    // try {
-    // Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(
-    // Chronos.RUNIC_ENGLISH_FONT_FILE));
-    //
-    // // Set the label's font size to the newly determined size.
-    // Font smallNameFont = newFont.deriveFont(newFontSize);
-    // _charName.setFont(smallNameFont);
-    // } catch (FontFormatException e) {
-    // MsgCtrl.errMsgln("Could not format font: " + e.getMessage());
-    // } catch (IOException e) {
-    // MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
-    // }
-    // }
-    // add(_charName, "span, gaptop 5, gapbottom 8");
-    //
-    // // Display Ability Scores
-    //
-    // List<Integer> attList = (List<Integer>) ds.getField(PersonKeys.ABILITY_SCORES);
-    // List<String> attributes = new NewHeroCiv().getAttributes();
-    //
-    // JPanel scorePanel = new JPanel();
-    //
-    // int i = 0;
-    // for (String att : attributes) {
-    // JLabel scoreLabel = new JLabel(att + ": " + attList.get(i).toString());
-    // scorePanel.add(scoreLabel);
-    // i++;
-    // }
-    //
-    // add(scorePanel, "span");
-    //
-    // // CREATE THE ATTRIBUTE GRID PANEL AND SIZE IT FOR DISPLAY
-     _attribPanel = buildAttributePanel();
-     // Ensure that the attribute panel does not exceed the HeroDisplay panel width
-     _attribPanel.setPreferredSize(new Dimension(DATA_WIDTH, _attribPanel.getHeight()));
-     // attribPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-     add(_attribPanel, "span, center, gapbottom 0");// , span, growx");
-    //
-    // // ADD SAVE & CANCEL BUTTONS TO THE BOTTOM OF THE PANEL
-     _buttonPanel = buildButtonPanel();
-     _buttonPanel.setPreferredSize(new Dimension(DATA_WIDTH, _buttonPanel.getHeight()));
-     add(_buttonPanel, "span, center, gapbottom 5");
-    //
-    // Mainframe frame = Mainframe.getInstance();
-    // // frame.changeToLeftPanel(this);
-    // // revalidate();
-    // // repaint();
-    return true;
+    _mainframe.setTitle(namePlate);
   }
 
 
-  /** Stub until the display is working properly. */
-  public boolean displayInventory(ArrayList<String> items)
-  {
-    // Put some space above and below the namePlate
-    // Add a non-editable textArea containing all the Inventory
-    JTextArea invenHeader = new JTextArea();
-    invenHeader.setPreferredSize(new Dimension(DATA_WIDTH - SCROLLBAR_SIZE,
-        FONT_HT));
-    invenHeader.setFont(new Font(Font.MONOSPACED, Font.PLAIN, FONT_HT));
-    invenHeader.setBackground(_backColor);
-    // Start the column headers
-    invenHeader.setText("   QTY   ITEM\t\t\t    WEIGHT (ea)\n");
-    StringBuilder b = new StringBuilder();
-    int numDash = (DATA_WIDTH - SCROLLBAR_SIZE) / PIX_PER_CHAR;
-    for (int i = 0; i < numDash; i++) {
-      b.append("-");
-    }
-    invenHeader.append(b.toString());
-    invenHeader.setEditable(false);
-
-    _itemList = items;
-
-    // Set up scrolling area
-    JTextArea inventoryArea = buildInventoryArea();
-    // IMPORTANT: This select recenters screen to the top/left
-    inventoryArea.select(0, 0);
-    JScrollPane inventoryScroll = new JScrollPane(inventoryArea);
-    inventoryScroll.setBorder(new EmptyBorder(0, 0, 0, 0));
-    inventoryScroll
-        .setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
-    Dimension scrollSize = new Dimension(
-        inventoryArea.getPreferredSize().width,
-        inventoryArea.getPreferredSize().height + FONT_HT);
-    inventoryScroll.setPreferredSize(scrollSize);
-
-    // inventoryScroll.getVerticalScrollBar().setValue(inventoryScroll.getVerticalScrollBar().getMinimum());
-    JPanel wholeInventory = new JPanel(new MigLayout("fill, wrap 5, ins 2", // layout
-                                                                            // constraints
-        "[]0[]0[]0[]0[]0[][left]", // align left
-        "[]0[]0[]0[]0[]0[][bottom]"));
-    wholeInventory.setPreferredSize(new Dimension(DATA_WIDTH, inventoryArea
-        .getHeight() + invenHeader.getHeight()));
-    wholeInventory.setBackground(_backColor);
-    wholeInventory.setBorder(new EmptyBorder(0, 0, 0, 0));
-    wholeInventory.add(invenHeader, "span, gapbottom 0");
-    wholeInventory.add(inventoryScroll, "span, gaptop 0, gapbottom 0");
-
-    // Put onto tabs
-    _tab = new JTabbedPane();
-    _tab.addTab("Inventory", wholeInventory);
-    // _tab.setBorder(new EmptyBorder(0,0,0,0));
-    // _tab.setPreferredSize(new Dimension (DATA_WIDTH,_panelHeight/3));
-    _tab.setBackground(_backColor);
-
-    // System.out.println("invenHeader width: " +
-    // invenHeader.getPreferredSize());
-    // System.out.println("invenArea width: " +
-    // inventoryArea.getPreferredSize());
-    // System.out.println("invenScroll width: " +
-    // inventoryScroll.getPreferredSize());
-    // System.out.println("wholeInventory width: " +
-    // wholeInventory.getPreferredSize());
-    // System.out.println("tab width: " + _tab.getPreferredSize());
-
-    // Make magic tab
-    JTextArea magicArea = new JTextArea();
-    magicArea.setBackground(_backColor);
-    magicArea.setEditable(false);
-    _tab.addTab("Magic", magicArea);
-    _tab.setEnabledAt(_tab.indexOfTab("Magic"), false);
-    // add(_tab,"span, center");
-
-    // MainFrame.getInstance().validate();
-    // MainFrame.getInstance().repaint();
-    return true;
-  }
+  // TODO: THis may not be needed, but keep the old code here anyway. It needs to be debugged
+  // private Font shrinkFontSize()
+  // {
+  // while (_charName.getPreferredSize().width > DATA_WIDTH) {
+  // // Edit name font down a notch or two
+  // Font labelFont = _charName.getFont();
+  // String labelText = _charName.getText();
+  //
+  // int stringWidth = _charName.getFontMetrics(labelFont).stringWidth(
+  // labelText);
+  // int componentWidth = DATA_WIDTH;
+  //
+  // // Find out how much the font can grow in width.
+  // double widthRatio = (double) componentWidth / (double) stringWidth;
+  //
+  // int newFontSize = (int) (labelFont.getSize() * widthRatio);
+  //
+  // // Recreate the new font
+  // try {
+  // Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(
+  // Chronos.RUNIC_ENGLISH_FONT_FILE));
+  //
+  // // Set the label's font size to the newly determined size.
+  // Font smallNameFont = newFont.deriveFont(newFontSize);
+  // _charName.setFont(smallNameFont);
+  // } catch (FontFormatException e) {
+  // MsgCtrl.errMsgln("Could not format font: " + e.getMessage());
+  // } catch (IOException e) {
+  // MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
+  // }
+  // }
+  // return newFont;
+  // }
 
 
-  /** Stub until the display is working properly. */
-  public boolean displaySkills(List<String> skillList)
-  {
-    JTextArea skillHeader = new JTextArea();
-    skillHeader.setPreferredSize(new Dimension(DATA_WIDTH - SCROLLBAR_SIZE,
-        FONT_HT));
-    skillHeader.setFont(new Font(Font.MONOSPACED, Font.PLAIN, FONT_HT));
-    skillHeader.setBackground(_backColor);
-    // Start the column headers
-    skillHeader.setText("NAME   DESCRIPTION\n");
-
-    StringBuilder b = new StringBuilder();
-    int numDash = (DATA_WIDTH - SCROLLBAR_SIZE) / PIX_PER_CHAR;
-    for (int i = 0; i < numDash; i++) {
-      b.append("-");
-    }
-    skillHeader.append(b.toString());
-    skillHeader.setEditable(false);
-
-    // Make skill tab
-    JTextArea skillArea = new JTextArea(skillList.size(), 0);
-    // Set up area to wrap on long descriptions
-    skillArea.setLineWrap(true);
-    skillArea.setWrapStyleWord(true);
-
-    // Format remaining agrea
-    skillArea.setBackground(_backColor);
-    skillArea.setEditable(false);
-    skillArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, FONT_HT));
-    skillArea.setBackground(_backColor);
-
-    // Set size of skill Area prior to adding to ScrollPane
-    skillArea.setPreferredSize(new Dimension(DATA_WIDTH, skillList.size()
-        * SKILL_LINE_HT));
-
-    // Get all the skills and descriptions
-    for (int i = 0; i < skillList.size(); i++) {
-      String str = skillList.get(i);
-      StringTokenizer st = new StringTokenizer(str, "|");
-
-      // First get skill name and append it
-      String skillName = st.nextToken();
-      skillArea.append(skillName + "\n");
-
-      // Then discard unneeded contents
-      // st.nextToken(); // Race
-      // st.nextToken(); // Klass
-
-      // Then get description and append it
-      String skillDesc = st.nextToken();
-      skillArea.append("       " + skillDesc + "\n");
-    }
-
-    // IMPORTANT: This select recenters screen to the top/left
-    skillArea.select(0, 0);
-
-    JPanel allSkills = new JPanel(new MigLayout("fill, wrap 5, ins 2", // layout
-                                                                       // constraints
-        "[]0[]0[]0[]0[]0[][left]", // align left
-        "[]0[]0[]0[]0[]0[][bottom]"));
-    allSkills.setPreferredSize(new Dimension(DATA_WIDTH, (int) ((skillArea
-        .getRows() + skillHeader.getRows()) * FONT_HT * WRAP_ADJ)));
-    allSkills.setBackground(_backColor);
-    allSkills.setBorder(new EmptyBorder(0, 0, 0, 0));
-    allSkills.add(skillHeader, "span, gapbottom 0");
-
-    // Put skills onto scroll panel
-    JScrollPane skillScroll = new JScrollPane(skillArea);
-    skillScroll.setBorder(new EmptyBorder(0, 0, 0, 0));
-    skillScroll
-        .setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-    Dimension scrollSize = new Dimension(
-        skillArea.getPreferredSize().width,
-        (int) (skillArea.getPreferredSize().height * WRAP_ADJ)
-            + FONT_HT);
-    skillScroll.setPreferredSize(scrollSize);
-    allSkills.add(skillScroll, "span, gaptop 0, gapbottom 0");
-
-    _tab.addTab("Skills", allSkills);
-    _tab.setEnabledAt(_tab.indexOfTab("Skills"), true);
-    // _tab.setPreferredSize(new Dimension (DATA_WIDTH,_panelHeight/3));
-
-    // System.out.println("skillHeader width: " +
-    // skillHeader.getPreferredSize());
-    // System.out.println("skillArea width: " +
-    // skillArea.getPreferredSize());
-    // System.out.println("skillScroll width: " +
-    // skillScroll.getPreferredSize());
-    // System.out.println("allSKills width: " +
-    // allSkills.getPreferredSize());
-    // System.out.println("tab width: " + _tab.getPreferredSize());
-
-    add(_tab, "span, grow, push, center");
-
-    _mainframe.repaint();
-
-    return true;
-  }
-
-
-  /**
-   * Put the HeroDisplay panel into a scrollpane and add to the MainFrame
-   * 
-   * @return the scrollpane for the Person's attributes
-   */
-  public JScrollPane display()
-  {
-    // Make the display scrollable to add to the MainFrame
-    JScrollPane heroScroll = makeScrollable();
-
-    // Add the non-static scrolling panel to the main JFrame
-    _mainframe.add(heroScroll, BorderLayout.WEST);
-    _mainframe.repaint();
-    // Get the focus so the arrow keys will work
-    requestFocusInWindow();
-    return heroScroll;
-  }
+//  /**
+//   * Put the HeroDisplay panel into a scrollpane and add to the MainFrame
+//   * 
+//   * @return the scrollpane for the Person's attributes
+//   */
+//  public JScrollPane display()
+//  {
+//    // Make the display scrollable to add to the MainFrame
+//    JScrollPane heroScroll = makeScrollable();
+//
+//    // Add the non-static scrolling panel to the main JFrame
+//    _mainframe.addPanel(heroScroll);
+//    _mainframe.repaint();
+//    // Get the focus so the arrow keys will work
+//    requestFocusInWindow();
+//    return heroScroll;
+//  }
 
 
   /**
@@ -589,79 +317,178 @@ private MainframeInterface _mainframe;
   }
 
 
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PRIVATE METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  /**
+   * Add a JTextArea into a multiline grid
+   * 
+   * @param title of the section for a group, e.g., racial, occupational, or klass
+   * @param nameList of Strings to display in this multi-line cell
    */
+  private JPanel buildMultiCell(String title, List<String> nameList)
+  {
+    JTextArea msgArea = new JTextArea(nameList.size() + 1, DATA_WIDTH);
+    msgArea.setPreferredSize(new Dimension(DATA_WIDTH, nameList.size() + 1));
+    msgArea.setBackground(_backColor);
+    msgArea.setEditable(false);
+    msgArea.setTabSize(1);
+    msgArea.setLineWrap(true); // auto line wrapping doesn't seem to work
+    msgArea.setWrapStyleWord(true);
+
+    // Display the title
+    msgArea.append(" " + title + Constants.NEWLINE);
+
+    // Display the detailed skill list
+    if (nameList.size() == 0) {
+      nameList.add(" None");
+    }
+    for (int k = 0; k < nameList.size(); k++) {
+      msgArea.append(" + " + nameList.get(k) + Constants.NEWLINE);
+    }
+
+    // Add the text area into a JPanel cell
+    JPanel cell = new JPanel(new MigLayout("ins 0"));
+    cell.add(msgArea, "growx, wrap");
+
+    gridSetCellBorder(cell);
+    cell.validate();
+    return cell;
+  }
+
+
+  // =================================================================
+  // PRIVATE METHODS
+  // =================================================================
 
   /**
-   * Create the person's attributes in a grid panel for display Attributes are unpacked from the
-   * data shuttle as they are needed, row by row HEURISTIC LAYOUT: Character attibutes, e.g. XP and
-   * Level, go toward the left side; Personal attributes, such as gender, weight, and height, go
-   * toward the right side. The more important attributes, e.g. HP and Klass, go toward the top;
-   * lesser ones, e.g. description and gold banked, toward the bottom.
+   * Create the person's attributes in a grid panel for display. Attributes are unpacked from the
+   * outputmap as they are needed, row by row.
+   * <P>
+   * HEURISTIC LAYOUT: Character attibutes, e.g. XP and Level, go toward the left side; Personal
+   * attributes, such as gender, weight, and height, go toward the right side. The more important
+   * attributes, e.g. HP and Klass, go toward the top; lesser ones, e.g. description and gold
+   * banked, toward the bottom.
+   * <P>
+   * {@code MigLayout} uses cryptic parameters so their use is explained as they are used in this
+   * method. The {@code MigLayout} constructor grid is divided into cells, 12 rows with 6 cells for
+   * each row. This is shown by the {@code []0[]} parms. The {@code ins 0} parm means no space is
+   * inserted between cells or rows. <br>
+   * The {@code attribPanel.add()} method contains a call to {@code gridCell()}, followed by
+   * {@code span n} when the cell should span multiple columns; <br>
+   * {@code growx} parm enlarges each cell to the max column width. <br>
+   * Each row is terminated by a {@code wrap} parm to trigger the start of a new row. <BR>
+   * Empty lines are filled with one {@code span 6} cell instead of a series of empty cells.
    * 
+   * @param panelLimits size of the parent panel into which this panel must fit
    * @return the attribute grid panel
    */
+  // private JPanel buildAttributePanel(Dimension panelLimits)
   private JPanel buildAttributePanel()
   {
     // Create a layout that spans the entire width of the panel
-    JPanel attribPanel = new JPanel(new MigLayout("fill, wrap 5, ins 0", // layout
-                                                                         // constraints
-        "[]0[]0[]0[]0[]0[][left]", // align left
-        "[]0[]0[]0[]0[]0[][bottom]")); // align bottom
+    JPanel attribPanel = new JPanel(new MigLayout("ins 0", // layout constraints
+        "[]0[]0[]0[]0[]0[][left]", // align horizontally 6 cell-widths
+        "[]0[]0[]0[]0[]0[]0[]0[]0[]0[]0[]0[][bottom]")); // align vertically 12 rows
+
     attribPanel.setBackground(_backColor);
+    attribPanel.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
 
-    // Row 1: XP, Level, Hit Points, Occupation, Hunger state
-    attribPanel.add(gridCell("XP: ", (String) _ds.getField(PersonKeys.XP)), "sg r1");
-    attribPanel.add(
-        gridCell("Level: ", (String) _ds.getField(PersonKeys.LEVEL)), "sg r1");
-    attribPanel.add(gridCell("HP: ", (String) _ds.getField(PersonKeys.HP)), "sg r1");
-    attribPanel.add(gridCell("", (String) _ds.getField(PersonKeys.OCCUPATION)), "sg r1");
-    attribPanel.add(gridCell("", (String) _ds.getField(PersonKeys.HUNGER)), "sg r1");
+    // Row 1: Level, Current/Max HP (2), AC, Hunger (2)
+    attribPanel.add(gridCell("Level: ", _ds.get(PersonKeys.LEVEL)), "growx");
+    String HP_valueStr = _ds.get(PersonKeys.HP) + " / " + _ds.get(PersonKeys.HP_MAX);
+    attribPanel.add(gridCell("Current/Max HP: ", HP_valueStr), "span 2, growx");
+    attribPanel.add(gridCell("AC: ", _ds.get(PersonKeys.AC)), "growx");
+    attribPanel.add(gridCell("Hunger: ", _ds.get(PersonKeys.HUNGER)), "span 2, growx, wrap");
 
-    // Row 2: Armor Class, Speed, Age, Height, and Weight
-    attribPanel.add(gridCell("AC: ", (String) _ds.getField(PersonKeys.AC)), "sg r1");
-    attribPanel.add(gridCell("Age: ", (String) _ds.getField(PersonKeys.AGE)), "sg r1");
-    attribPanel.add(gridCell("Speed: ", (String) _ds.getField(PersonKeys.SPEED)), "sg r1");
-    attribPanel.add(gridCell("Ht: ", (String) _ds.getField(PersonKeys.HEIGHT)), "sg r1");
-    attribPanel.add(gridCell("Wt: ", ((String) _ds.getField(PersonKeys.WEIGHT)) + " lbs"), "sg r1");
+    // Row 2: XP, Speed, Gold Banked, Gold (gp/sp) (in hand) (3)
+    attribPanel.add(gridCell("XP: ", _ds.get(PersonKeys.XP)), "growx");
+    attribPanel.add(gridCell("Speed: ", _ds.get(PersonKeys.SPEED)), "growx");
+    attribPanel.add(gridCell("Gold Banked: ", _ds.get(PersonKeys.GOLD_BANKED)), "growx");
+    // attribPanel.add(gridCell("Gold Banked: ", "999999.09"), "");
+    // Convert from two quantities into single string gp/sp
+    String gp = _ds.get(PersonKeys.GOLD);
+    String sp = _ds.get(PersonKeys.SILVER);
+    String inHand = gp + " gp / " + sp + " sp";
+    attribPanel.add(gridCell("Gold in Hand: ", inHand), "span 3, growx, wrap");
 
-    // Row 3: Gold, Silver, Gold Banked, and Load
-    attribPanel.add(gridCell("Gold: ", ((String) _ds.getField(PersonKeys.GOLD)) + " gp"), "sg r1");
-    attribPanel.add(gridCell("Silver: ", ((String) _ds.getField(PersonKeys.SILVER)) + " sp"),
-        "sg r1");
-    attribPanel.add(gridCell("Gold Banked: ", (String) _ds.getField(PersonKeys.GOLD_BANKED)),
-        "span 2, growx");
-    attribPanel.add(gridCell("Load: ", ((String) _ds.getField(PersonKeys.LOAD)) + " lbs"), "sg r1");
+    // Row 3: Personal description (full line, possibly multiline)
+    attribPanel.add(gridCell("Description: ", _ds.get(PersonKeys.DESCRIPTION)),
+        "span 6, growx, wrap");
 
-    // Row 4: MaxLangs, Languages (remaining width of the panel)
-    JPanel maxLangCell = gridCell("Max Langs: ", (String) _ds.getField(PersonKeys.MAX_LANGS));
-    // maxLangCell.setSize(minCellWidth, 10);
-    attribPanel.add(maxLangCell, "sg r1"); // gridCell("Max Langs: ",
-                                           // (String)
-                                           // _ds.getField(PersonKeys.MAX_LANGS)),
-                                           // "sg r1");
-    attribPanel.add(gridCell("Known Languages: ", (String) _ds.getField(PersonKeys.LANGUAGES)),
-        "span 4, growx");
+    // Row 4: STR trait, ToHitMelee, Damage, Wt Allowance (gpw), Load Carried (gpw)
+    attribPanel.add(gridCell("STR: ", _ds.get(PersonKeys.STR)), "growx");
+    attribPanel.add(gridCell("To Hit (Melee): ", _ds.get(PersonKeys.TO_HIT_MELEE)), "growx");
+    attribPanel.add(gridCell("Damage: ", _ds.get(PersonKeys.DAMAGE)), "growx");
+    attribPanel.add(gridCell("Wt Allowance (gpw): ", _ds.get(PersonKeys.WT_ALLOW)), "growx");
+    attribPanel.add(gridCell("Load (gpw): ", _ds.get(PersonKeys.LOAD)), "span 2, growx, wrap");
 
-    // Row 5: Character Description
-    // Need special handling of "long" description
-    JPanel p = new JPanel(new MigLayout("left, inset 3"));
-    p.setBackground(_backColor);
-    p.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+    // Row 5: INT and INT mods: percent to know spell, current/max MSP, MSPs/Level, Spells in Book
+    attribPanel.add(gridCell("INT: ", _ds.get(PersonKeys.INT)), "growx");
+    String klassname = _ds.get(PersonKeys.KLASSNAME);
+    if (klassname.equalsIgnoreCase("WIZARD")) {
+      attribPanel.add(gridCell("% to Know: ", _ds.get(PersonKeys.TO_KNOW)), "growx");
+      String MSP_valueStr = _ds.get(PersonKeys.CURRENT_MSP) + " / " + _ds.get(PersonKeys.MAX_MSP);
+      attribPanel.add(gridCell("Current/Max MSP: ", MSP_valueStr), "growx");
+      attribPanel.add(gridCell("Bonus MSP/Level: ", _ds.get(PersonKeys.MSP_PER_LEVEL)), "growx");
+      attribPanel.add(gridCell("Spells in Book: ", _ds.get(PersonKeys.SPELLS_KNOWN)),
+          "span 2, growx, wrap");
+      // attribPanel.add(gridCell(" ", ""), "span 1, growx, wrap"); // remainder of line is empty
+    } else {
+      attribPanel.add(gridCell(" ", ""), "span 5, growx, wrap");
+    }
 
-    JTextArea descPanel = new JTextArea("Description: "
-        + (String) _ds.getField(PersonKeys.DESCRIPTION));
-    descPanel.setPreferredSize(new Dimension(DATA_WIDTH, descPanel
-        .getLineCount() * FONT_HT));
-    descPanel.setBackground(_backColor);
-    descPanel.setEditable(false);
-    descPanel.setFont(new Font(Font.DIALOG, Font.PLAIN, ATT_FONT_HT));
-    descPanel.setLineWrap(true);
-    descPanel.setWrapStyleWord(true);
-    p.add(descPanel);
-    attribPanel.add(p, "span 5");
+    // Row 6: WIS and Wis Mods: Magic Attack Mod, Current/Max CSPs, CSP/Level, Turn Undead
+    attribPanel.add(gridCell("WIS: ", _ds.get(PersonKeys.WIS)), "growx");
+    attribPanel.add(gridCell("Magic Attack Mod: ", _ds.get(PersonKeys.MAM)), "growx");
+    if (klassname.equalsIgnoreCase("CLERIC")) {
+      String CSP_valueStr = _ds.get(PersonKeys.CURRENT_CSP) + " / " + _ds.get(PersonKeys.MAX_CSP);
+      attribPanel.add(gridCell("Current/Max CSP: ", CSP_valueStr), "growx");
+      attribPanel.add(gridCell("Bonus CSP/Level: ", _ds.get(PersonKeys.CSP_PER_LEVEL)), "growx");
+      attribPanel.add(gridCell("Turn Undead: ", _ds.get(PersonKeys.TURN_UNDEAD)),
+          "span 2, growx, wrap");
+      // attribPanel.add(gridCell(" ", ""), "span 1, growx, wrap"); // remainder of line is empty
+    } else {
+      attribPanel.add(gridCell(" ", ""), "span 4, growx, wrap");
+    }
+
+    // Row 7: CON and HP Mod
+    attribPanel.add(gridCell("CON: ", _ds.get(PersonKeys.CON)), "growx");
+    attribPanel.add(gridCell("HP Mod: ", _ds.get(PersonKeys.HP_MOD)), "growx");
+    attribPanel.add(gridCell(" ", ""), "span 4, growx, wrap"); // remainder of line is empty
+
+    // Row 8: DEX and DEX mods: To Hit Missle, AC Mod
+    attribPanel.add(gridCell("DEX: ", _ds.get(PersonKeys.DEX)), "growx");
+    attribPanel.add(gridCell("To Hit (missile): ", _ds.get(PersonKeys.TO_HIT_MISSLE)), "growx");
+    attribPanel.add(gridCell("AC Mod: ", _ds.get(PersonKeys.AC_MOD)), "growx");
+    attribPanel.add(gridCell(" ", ""), "span 3, growx, wrap"); // remainder of line is empty
+
+    // Row 9: CHR, Weight, and Height
+    attribPanel.add(gridCell("CHR: ", _ds.get(PersonKeys.CHR)), "growx");
+    attribPanel.add(gridCell("Weight (lbs): ", _ds.get(PersonKeys.WEIGHT)), "growx");
+    int intHeight = new Integer(_ds.get(PersonKeys.HEIGHT));
+    int feet = intHeight / 12;
+    int inches = intHeight - feet * 12;
+    String heightStr = String.format("%s' %s\"", feet, inches);
+    attribPanel.add(gridCell("Height: ", heightStr), "growx");
+    attribPanel.add(gridCell(" ", ""), "span 3, growx, wrap"); // remainder of line is empty
+
+    // Row 10: AP, overbearing, grappling, pummeling, and shield bash
+    attribPanel.add(gridCell("AP: ", _ds.get(PersonKeys.AP)), "growx");
+    attribPanel.add(gridCell("Overbearing: ", _ds.get(PersonKeys.OVERBEARING)), "growx");
+    attribPanel.add(gridCell("Grappling: ", _ds.get(PersonKeys.GRAPPLING)), "growx");
+    attribPanel.add(gridCell("Pummeling: ", _ds.get(PersonKeys.PUMMELING)), "growx");
+    attribPanel.add(gridCell("Shield Bash: ", _ds.get(PersonKeys.SHIELD_BASH)),
+        "span 2, growx, wrap");
+        // attribPanel.add(gridCell(" ", ""), "span 1, growx, wrap"); // remainder of line is empty
+
+    // Row 11: Languages label, max langs, list of languages
+    String langStr = String.format("Languages (can learn %s more):",
+        _ds.get(PersonKeys.MAX_LANGS));
+    attribPanel.add(gridCell(langStr, ""), "span 2, growx");
+    String langList = String.format("%s", _ds.get(PersonKeys.LANGUAGES));
+    attribPanel.add(gridCell(langList, ""), "span 4, growx, wrap");
+
+    // Row 12: Occupation (full line, possibly multiline)
+    attribPanel.add(gridCell("Former Occupation: ", _ds.get(PersonKeys.OCCUPATION)),
+        "span 6, growx, wrap");
 
     return attribPanel;
 
@@ -669,34 +496,29 @@ private MainframeInterface _mainframe;
 
 
   /**
-   * Add Save and Cancel buttons to the display next
+   * Create Save, Delete, and Cancel buttons, then add then to a JPanel
    * 
    * @return button panel
    */
   private JPanel buildButtonPanel()
   {
-    final JPanel hd = this;
     // NOTE: Save action is invoked for new Characters */
     _saveButton = new JButton("Save");
     // _saveButton.setBackground(_backColor);
-    _saveButton.addActionListener(new ActionListener()
-    {
+    _saveButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        // Audit statement
-        MsgCtrl.traceEvent(event);
         if (savePerson() == true) {
           // Display confirmation message
           JOptionPane.showMessageDialog(null,
-              _ds.getField(PersonKeys.NAME) + CONFIRM_SAVE_MSG,
+              _ds.get(PersonKeys.NAME) + CONFIRM_SAVE_MSG,
               CONFIRM_SAVE_TITLE, JOptionPane.INFORMATION_MESSAGE);
         } else {
-          // Display an error message with a Sorry button instead of
-          // OK
+          // Display an error message with a Sorry button instead of OK
           String[] sorry = new String[1];
           sorry[0] = "SORRY!";
           JOptionPane.showOptionDialog(null,
-              _saveMsg + _ds.getField(PersonKeys.NAME),
+              _saveMsg + _ds.get(PersonKeys.NAME),
               SAVE_ERROR_TITLE, JOptionPane.DEFAULT_OPTION,
               JOptionPane.ERROR_MESSAGE, null, sorry, null);
         }
@@ -706,30 +528,26 @@ private MainframeInterface _mainframe;
         // Remove this panel and ignore any changes in either case
         // Mainframe.getInstance().
         setVisible(false);
-//        Mainframe frame = Mainframe.getInstance();
+        // Mainframe frame = Mainframe.getInstance();
         // frame.resetPanels();
       }
     });
 
     _delButton = new JButton("Delete");
-    _delButton.addActionListener(new ActionListener()
-    {
+    _delButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        // Audit statement
-        MsgCtrl.traceEvent(event);
         if (deletePerson() == true) {
           // Display confirmation message
           JOptionPane.showMessageDialog(null,
-              _ds.getField(PersonKeys.NAME) + CONFIRM_DEL_MSG,
+              _ds.get(PersonKeys.NAME) + CONFIRM_DEL_MSG,
               CONFIRM_DEL_TITLE, JOptionPane.INFORMATION_MESSAGE);
         } else {
-          // Display an error message with a Sorry button instead of
-          // OK
+          // Display an error message with a Sorry button instead of OK
           String[] sorry = new String[1];
           sorry[0] = "You dropped your scythe!!";
           JOptionPane.showOptionDialog(null,
-              DEL_ERROR_MSG + _ds.getField(PersonKeys.NAME),
+              DEL_ERROR_MSG + _ds.get(PersonKeys.NAME),
               DEL_ERROR_TITLE, JOptionPane.DEFAULT_OPTION,
               JOptionPane.ERROR_MESSAGE, null, sorry, null);
         }
@@ -738,9 +556,9 @@ private MainframeInterface _mainframe;
         // Reset menu options to original
         // MenuBar.getInstance().resetMenus();
         // Remove this panel
-//        Mainframe frame = Mainframe.getInstance();
+        // Mainframe frame = Mainframe.getInstance();
         // frame.resetPanels();
-        hd.setVisible(false);
+        setVisible(false);
       }
 
     });
@@ -750,15 +568,14 @@ private MainframeInterface _mainframe;
     // _cancelButton.setBackground(_backColor);
 
     // Clear data and return back to mainframe if Cancel is pressed
-    _cancelButton.addActionListener(new ActionListener()
-    {
+    _cancelButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
         // Audit statement
         MsgCtrl.traceEvent(event);
         // Collect all the attributes and save to a new Hero file
         setVisible(false);
-//        Mainframe frame = Mainframe.getInstance();
+        // Mainframe frame = Mainframe.getInstance();
         // frame.resetPanels();
         // int response = mf.confirmQuit();
         // if (response == Mainframe.NOSAVE) {
@@ -773,11 +590,9 @@ private MainframeInterface _mainframe;
       // }
     });
 
-    // Add buttons to buttonPanel, and buttonPanel to basePanel
+    // Add buttons to buttonPanel
     JPanel buttonPanel = new JPanel();
     buttonPanel.setBackground(_backColor);
-    // buttonPanel.setMaximumSize(new Dimension(DATA_WIDTH-DATA_PAD,
-    // BUTTON_HT));
 
     // Add small space at the top of the button panel
     buttonPanel.add(_saveButton);
@@ -817,61 +632,229 @@ private MainframeInterface _mainframe;
   // return helpPanel;
   // }
 
+  // /**
+  // * Builds the inventory "table", showing Category, Items, quantity, and weight (in lbs) and
+  // weight
+  // * (in oz) of each; calls the display civ to pack a data shuttle
+  // *
+  // * @return the output-only JTextArea contining inventory data
+  // */
+  // private JTextArea buildInventoryArea()
+  // {
+  // // Get the Inventory items to display
+  // int invenLen = _itemList.size() - CASH_FIELDS; // _hdCiv.getInventorySize();
+  //
+  // // Add a non-editable textArea containing all the Inventory
+  // JTextArea invenArea = new JTextArea(invenLen, 0); // rows by columns
+  // // Make area restricted to displayable size (without scrollbar)
+  // invenArea.setPreferredSize(new Dimension(DATA_WIDTH, invenLen * CELL_HEIGHT));
+  // invenArea.setEditable(false);
+  // invenArea.setBackground(_backColor);
+  // invenArea.setTabSize(TAB_SIZE);
+  // invenArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, FONT_HT));
+  // invenArea.setMargin(new Insets(DEF_INSET, DEF_INSET, DEF_INSET,
+  // DEF_INSET));
+  // int j = 0;
+  // int size = ItemCategory.values().length;
+  // // Read in item groups by category, input like GENERAL|Backpack|1|10|0"\
+  // for (int i = 0; i < size; i++) {
+  // if (j < _itemList.size()) {
+  // String str = _itemList.get(j);
+  // int firstBar = str.indexOf('|');
+  // String cat = str.substring(0, firstBar);
+  // String subcat = cat;
+  // if (cat.compareTo("CASH") != 0) {
+  // invenArea.append(cat + "\n");
+  // }
+  // while (subcat.compareTo(cat) == 0) {
+  // // Display and format item
+  // String item = str.substring(firstBar + 1, str.length());
+  // item = formatItemString(item);
+  // if (subcat.compareTo("CASH") != 0) {
+  // invenArea.append(item);
+  // }
+  // j++;
+  //
+  // // Now get next item
+  // if (j < _itemList.size()) {
+  // str = _itemList.get(j);
+  // firstBar = str.indexOf('|');
+  // subcat = str.substring(0, firstBar);
+  // } else {
+  // subcat = "NEWCAT";
+  // }
+  // }
+  // }
+  // }
+  // return invenArea;
+  // }
+
+
   /**
-   * Builds the inventory "table", showing Category, Items, quantity, and weight (in lbs) and weight
-   * (in oz) of each; calls the display civ to pack a data shuttle
-   * 
-   * @return the output-only JTextArea contining inventory data
+   * Builds the inventory "table", showing Category, Items, quantity, weight (in lbs & oz of each,
+   * and total. Wielded Weapon and Armor Worn is at top. Inventory is organized by category: ARMS,
+   * ARMOR, CLOTHING, EQUIPMENT, PROVISIONS, LIVESTOCK, TRANSPORT : item, quantity, weight, total
+   * weight. See also Sacred Satchel and Magic Bag
    */
-  private JTextArea buildInventoryArea()
+  private JPanel buildInventoryPanel()
   {
-    // Get the Inventory items to display
-    int invenLen = _itemList.size() - CASH_FIELDS; // _hdCiv.getInventorySize();
+    JPanel invenPanel = new JPanel(new MigLayout("fillx, ins 0"));
+    invenPanel.setBackground(_backColor);
 
-    // Add a non-editable textArea containing all the Inventory
-    JTextArea invenArea = new JTextArea(invenLen, 0); // rows by columns
-    // Make area restricted to displayable size (without scrollbar)
-    invenArea.setPreferredSize(new Dimension(DATA_WIDTH, invenLen
-        * CELL_HEIGHT));
-    invenArea.setEditable(false);
-    invenArea.setBackground(_backColor);
-    invenArea.setTabSize(TAB_SIZE);
-    invenArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, FONT_HT));
-    invenArea.setMargin(new Insets(DEF_INSET, DEF_INSET, DEF_INSET,
-        DEF_INSET));
-    int j = 0;
-    int size = ItemCategory.values().length;
-    // Read in item groups by category, input like GENERAL|Backpack|1|10|0"\
-    for (int i = 0; i < size; i++) {
-      if (j < _itemList.size()) {
-        String str = _itemList.get(j);
-        int firstBar = str.indexOf('|');
-        String cat = str.substring(0, firstBar);
-        String subcat = cat;
-        if (cat.compareTo("CASH") != 0) {
-          invenArea.append(cat + "\n");
-        }
-        while (subcat.compareTo(cat) == 0) {
-          // Display and format item
-          String item = str.substring(firstBar + 1, str.length());
-          item = formatItemString(item);
-          if (subcat.compareTo("CASH") != 0) {
-            invenArea.append(item);
-          }
-          j++;
+    // Get various items from the civ
+    Inventory inventory = _hdCiv.getInventory();
+    List<String> nameList = new ArrayList<String>();
 
-          // Now get next item
-          if (j < _itemList.size()) {
-            str = _itemList.get(j);
-            firstBar = str.indexOf('|');
-            subcat = str.substring(0, firstBar);
-          } else {
-            subcat = "NEWCAT";
-          }
-        }
+    // Active arms and armor: initially, none
+    invenPanel.add(gridCell("Wielded Weapon:", "None"), "gaptop 10, span 6, growx, wrap 0");
+    invenPanel.add(gridCell("Armor Worn: ", " None"), "span 6, growx, wrap 0");
+    // Blank line before data
+    JPanel blankLine = gridCell("", "");
+    blankLine.setBackground(Color.DARK_GRAY);
+    invenPanel.add(blankLine, "span 6, growx, wrap 0");
+
+    // List of Arms: name, damage, fire rate, qty, wt, total wt
+    nameList = _hdCiv.getInventoryNames(ItemCategory.ARMS);
+    invenPanel.add(buildMultiCell(ItemCategory.ARMS.toString(), nameList), "growx, wrap");
+
+    // List of Armor
+    nameList = _hdCiv.getInventoryNames(ItemCategory.ARMOR);
+    invenPanel.add(buildMultiCell(ItemCategory.ARMOR.toString(), nameList), "growx, wrap");
+
+    // List of Equipment
+    nameList = _hdCiv.getInventoryNames(ItemCategory.EQUIPMENT);
+    invenPanel.add(buildMultiCell(ItemCategory.EQUIPMENT.toString(), nameList), "growx, wrap");
+
+    // List of Provisions
+    nameList = _hdCiv.getInventoryNames(ItemCategory.PROVISION);
+    invenPanel.add(buildMultiCell(ItemCategory.PROVISION.toString(), nameList), "growx, wrap");
+
+    // List of Clothing
+    nameList = _hdCiv.getInventoryNames(ItemCategory.CLOTHING);
+    invenPanel.add(buildMultiCell(ItemCategory.CLOTHING.toString(), nameList), "growx, wrap");
+
+    // List of Valueables
+    nameList = _hdCiv.getInventoryNames(ItemCategory.VALUABLES);
+    invenPanel.add(buildMultiCell(ItemCategory.VALUABLES.toString(), nameList), "growx, wrap");
+
+    return invenPanel;
+  }
+
+  /**
+   * Builds the inventory of magic items (not spell materials)
+   */
+  private JPanel buildMagicPanel()
+  {
+    JPanel magicPanel = new JPanel(new MigLayout("fillx, ins 0"));
+    magicPanel.setBackground(_backColor);
+
+    // Get maigc items from the civ
+    List<String> nameList = _hdCiv.getInventoryNames(ItemCategory.MAGIC);
+
+    magicPanel.add(buildMultiCell("MAGIC ITEMS", nameList), "growx, wrap 0");
+
+    return magicPanel;
+  }
+
+
+  /**
+   * Builds the inventory of (non-magical) spell material used for spells
+   */
+  private JPanel buildMaterialsPanel()
+  {
+    JPanel magicPanel = new JPanel(new MigLayout("fillx, ins 0"));
+    magicPanel.setBackground(_backColor);
+
+    // Get maigc items from the civ
+    List<String> itemList = _hdCiv.getInventoryNames(ItemCategory.SPELL_MATERIAL);
+
+    magicPanel.add(buildMultiCell("SPELL MATERIALS", itemList), "growx, wrap 0");
+
+    return magicPanel;
+  }
+
+
+  // Build panel of skills: literacy, racial skills, occupational skills, and klass skills
+  private JPanel buildSkillsPanel()
+  {
+    JPanel skillPanel = new JPanel(new MigLayout("fillx, ins 0"));
+    skillPanel.setBackground(_backColor);
+
+    // Get various skills from the civ
+    List<String> racialSkills = _hdCiv.getRaceSkills();
+    List<String> ocpSkills = _hdCiv.getOcpSkills();
+    List<String> klassSkills = _hdCiv.getKlassSkills();
+
+    // Section 1: Literacy
+    skillPanel.add(gridCell("", _ds.get(PersonKeys.LITERACY)), "gaptop 10, span 6, growx, wrap");
+
+    // Section 2: Occupational Skills title
+    String occupation = _ds.get(PersonKeys.OCCUPATION);
+    int nameIndex = occupation.indexOf(":");
+    String ocpName = occupation.substring(0, nameIndex);
+    String ocpDesc = occupation.substring(nameIndex + 1);
+    String ocpTitle = ocpName.toUpperCase() + " SKILLS: " + ocpDesc;
+    skillPanel.add(buildMultiCell(ocpTitle, ocpSkills), "growx, wrap");
+
+    // Section 3: Racial skills
+    skillPanel
+        .add(buildMultiCell("SPECIAL " + _ds.get(PersonKeys.RACENAME).toUpperCase() + " SKILLS: ",
+            racialSkills), "growx, wrap");
+
+    // Section 4: Klass skills
+    skillPanel.add(buildMultiCell(_ds.get(PersonKeys.KLASSNAME).toUpperCase() + " SKILLS: ",
+        klassSkills), "growx, wrap");
+
+    return skillPanel;
+  }
+
+  /**
+   * Builds the list of spells that spellcaster knows
+   */
+  private JPanel buildSpellsPanel()
+  {
+    JPanel spellPanel = new JPanel(new MigLayout("fillx, ins 0"));
+    spellPanel.setBackground(_backColor);
+
+    // Get maigc items from the civ
+    ArrayList<String> spellList = _hdCiv.getSpellBook();
+    int known = spellList.size();
+    spellPanel.add(buildMultiCell(known + " SPELLS KNOWN", spellList), "growx, wrap 0");
+
+    // Prompt Wizard (only) to get more spells if he/she can
+    if (_ds.get(PersonKeys.KLASSNAME).equalsIgnoreCase("Wizard")) {
+      int allowed = Integer.parseInt(_ds.get(PersonKeys.MAX_MSP));
+      int diff = allowed - known;
+      if (diff != 0) {
+        String prompt =
+            String.format("Go to your local Wizard's Guild to get %d more spells", diff);
+        spellPanel.add(gridCell("", ""), "span 6, growx, wrap 0");
+        spellPanel.add(gridCell(prompt, " "), "span 6, growx, wrap 0");
       }
     }
-    return invenArea;
+
+    return spellPanel;
+  }
+
+
+  /**
+   * Delete the Person currently being displayed into a new file.
+   * 
+   * @return true if the Person was removed successfully, else false
+   */
+  private boolean deletePerson()
+  {
+    // Custom button text
+    Object[] options = {"Yes", "No"};
+    int n = JOptionPane.showOptionDialog(this,
+        "Are you sure you want to delete?", "Delete confirmation",
+        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+        options, options[1]);
+    if (n == JOptionPane.YES_OPTION) {
+      return _hdCiv.deletePerson();
+    } else {
+      return false;
+    }
   }
 
 
@@ -918,18 +901,18 @@ private MainframeInterface _mainframe;
   }
 
 
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PRIVATE METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
+  // ======================================================================
+  // PRIVATE METHODS
+  // ======================================================================
 
   /**
    * Creates a lined bordered cell containing a label and its value. The label and its value can be
    * aligned within the component. A JPanel type is returned so that the cell can also get the focus
    * for help listeners.
    * 
-   * @param label the text of the label, can be null
-   * @param value the stringified value to display after the label
+   * @param label the left-aligned text of the label, cannot be null but can be empty
+   * @param value the right-aligned stringified value to display after the label, cannot be null but
+   *        can be empty
    * @return bordered grid cell as Component
    */
   private JPanel gridCell(String label, String value)
@@ -938,29 +921,33 @@ private MainframeInterface _mainframe;
     if ((label == null) || (value == null)) {
       return null;
     }
-    // Create the grid cell as a panel to hold to JLabels within a border
-    JPanel p = new JPanel(new MigLayout("left, inset 3"));
+    // Create the grid cell as a panel to hold two JLabels within a border
+    JPanel p = new JPanel(new MigLayout("inset 3")); // space between text and cell border
     p.setBackground(_backColor);
+    gridSetCellBorder(p);
 
-    p.setPreferredSize(new Dimension(DATA_WIDTH / PANELS_IN_ROW, FONT_HT));
-    // JLabel left = new JLabel(label);
-    // Font plainLabel = new
-    // Font(UIManager.getFont("Label.font").getFontName(),
-    // Font.PLAIN,UIManager.getFont("Label.font").getSize());
-    // left.setFont(plainLabel);
-    // p.add(left);
-    // JLabel right = new JLabel(value);
-    // right.setFont(plainLabel);
-    // p.add(right);
-    p.add(new JLabel(label), "left");
-    p.add(new JLabel(value), "right");
+    int cellWidth = DATA_WIDTH / PANELS_IN_ROW;
+    p.setPreferredSize(new Dimension(cellWidth, FONT_HT));
 
-    // Create the border for each grid cell
+    int datalen = label.length() + value.length() + 1;
+    if (datalen > cellWidth) {
+      String multiline = "<html>" + label + "<br>" + value + "<br></html>";
+      p.add(new JLabel(multiline, SwingConstants.LEFT));
+    } else {
+      p.add(new JLabel(label, SwingConstants.LEFT));
+      p.add(new JLabel(value, SwingConstants.RIGHT));
+    }
+
+    return p;
+  }
+
+
+  /** Whether single cell or double-height cell, set a border around it */
+  private void gridSetCellBorder(JPanel p)
+  {
     int cpad = 1;
     Border cellBorder = BorderFactory.createLineBorder(Color.BLACK, cpad);
     p.setBorder(cellBorder);
-
-    return p;
   }
 
 
@@ -974,7 +961,7 @@ private MainframeInterface _mainframe;
     // Reset the panel size based on the size of the constituent components
     int finalHt = getPreferredSize().height;
     // setPreferredSize(new Dimension(DATA_WIDTH, finalHt));
-    setPreferredSize(new Dimension(_panelWidth - 2 * (SCROLLBAR_SIZE),
+    setPreferredSize(new Dimension(PANEL_WIDTH - 2 * (SCROLLBAR_SIZE),
         finalHt));
 
     /*
@@ -997,24 +984,39 @@ private MainframeInterface _mainframe;
   }
 
 
+  // // WRITING TO PERSON FILE (either original or new file name)
+  // if (_hdCiv.savePerson() == true) {
+  // JOptionPane.showMessageDialog(null,
+  // CONFIRM_SAVE_MSG, CONFIRM_SAVE_TITLE,
+  // JOptionPane.INFORMATION_MESSAGE);
+  // setVisible(false);
+  // return true;
+  // }
+  // else {
+  // JOptionPane.showMessageDialog(null, OPEN_ERROR_MSG,
+  // OPEN_ERROR_TITLE, JOptionPane.ERROR_MESSAGE);
+  // return false;
+  // }
+  // }
+
   /**
-   * Delete the Person currently being displayed into a new file.
+   * Displays the Person attributes in the shuttle, including inventory and skill set
    * 
-   * @return true if the Person was removed successfully, else false
+   * @param ws shuttle of PersonKeys containing only String data
    */
-  private boolean deletePerson()
+  private boolean renamePerson()
   {
-    // Custom button text
-    Object[] options = {"Yes", "No"};
-    int n = JOptionPane.showOptionDialog(this,
-        "Are you sure you want to delete?", "Delete confirmation",
-        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-        options, options[1]);
-    if (n == JOptionPane.YES_OPTION) {
-      return _hdCiv.deletePerson();
-    } else {
-      return false;
+    // Pop up window for rename
+    String newName = JOptionPane.showInputDialog(this,
+        "Please input new name: ");
+
+    // Call hdCiv.renamePerson()
+    if (_hdCiv.renamePerson(newName)) {
+      // Now update the display
+      _ds.put(PersonKeys.NAME, newName);
     }
+
+    return this.savePerson();
   }
 
 
@@ -1071,53 +1073,82 @@ private MainframeInterface _mainframe;
   // }
   // }
 
-  /**
-   * Displays the Person attributes in the shuttle, including inventory and skill set
-   * 
-   * @param ws shuttle of PersonKeys containing only String data
-   */
-  private boolean renamePerson()
-  {
-    // Pop up window for rename
-    String newName = JOptionPane.showInputDialog(this,
-        "Please input new name: ");
-
-    // Call hdCiv.renamePerson()
-    if (_hdCiv.renamePerson(newName)) {
-      // Now update the display
-      _ds.putField(PersonKeys.NAME, newName);
-    }
-
-    this.displayAttributes(_ds);
-
-    return this.savePerson();
-  }
-
+  // // WRITING TO PERSON FILE (either original or new file name)
+  // if (_hdCiv.savePerson() == true) {
+  // JOptionPane.showMessageDialog(null,
+  // CONFIRM_SAVE_MSG, CONFIRM_SAVE_TITLE,
+  // JOptionPane.INFORMATION_MESSAGE);
+  // setVisible(false);
+  // return true;
+  // }
+  // else {
+  // JOptionPane.showMessageDialog(null, OPEN_ERROR_MSG,
+  // OPEN_ERROR_TITLE, JOptionPane.ERROR_MESSAGE);
+  // return false;
+  // }
+  // }
 
   /**
-   * Creates the panel and container fields for the given Person, using a data shuttle from the
-   * model to populate the widget.
-   * 
-   * @param hdCiv output civ that owns this widget
-   * @param ds shuttle containing String formatted data from the model
-   * @param invenShuttle All Inventory (Item lists) to be displayed are pre-formatted into Strings,
-   *        and accessed by the keys in ItemFields
+   * Creates the panel and container fields for the given Hero, using a data map from the model to
+   * populate the widget. The HeroDisplay panel contains three tabs: one for attributes, one for
+   * inventory, and one for magic spells
    */
   private boolean setupDisplay()
   {
     // GENERAL SETUP
+    setLayout(new MigLayout());
     // Set the preferred and max size
-    _panelWidth = PANEL_WIDTH;
-    _panelHeight = Mainframe.getWindowSize().height;
-    setPreferredSize(new Dimension(_panelWidth, _panelHeight));
-    _backColor = Color.GRAY;
+    // setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
     setBackground(_backColor);
 
-    // Set Panel layout to special MiGLayout
-    setLayout(new MigLayout("fill", "[center]"));
+    // Display Hero in title in Runic Font
+    setHeroAsTitle();
+
+    // Add the tabbed pane for attributes, inventory and magic tab displays
+    JTabbedPane tabPane = new JTabbedPane();
+
+    // Create HeroDisplay panel tabs
+    tabPane.addTab("Attributes", null, buildAttributePanel(),
+        "View Hero's personal characteristics");
+    // tabPane.addTab("Skills & Abilities", null, buildSkillsPanel(),
+    // "View Hero's special skills and abilities");
+    tabPane.addTab("Skills & Abilities", null, buildSkillsPanel(),
+        "View Hero's special skills and abilities");
+    tabPane.addTab("Inventory", null, buildInventoryPanel(),
+        "View Hero's items owned, worn, or wielded");
+    tabPane.addTab("Magic Items", null, buildMagicPanel(),
+        "View Hero's enchanted items");
+    tabPane.setSelectedIndex(0); // set default tab
+
+    // Create the conditional tab for magic items for all klasses
+    String klassname = _ds.get(PersonKeys.KLASSNAME);
+    // Only for Clerics
+    if (klassname.equalsIgnoreCase("Cleric")) {
+      tabPane.addTab("Sacred Satchel", null, buildMaterialsPanel(),
+          "View Hero's materials needed for spells.");
+      tabPane.addTab("Spell Book", null, buildSpellsPanel(), "View Hero's known spells.");
+    }
+    // Only for Wizards
+    if (klassname.equalsIgnoreCase("Wizard")) {
+      tabPane.addTab("Magic Bag", null, buildMaterialsPanel(),
+          "View Hero's materials needed for spells.");
+      tabPane.addTab("Spell Book", null, buildSpellsPanel(), "View Hero's known spells.");
+    }
+
+    // Add the tabs to the HeroDisplay panel
+    add(tabPane, "center, wrap");
+
+    // // ADD SAVE & CANCEL BUTTONS TO THE BOTTOM OF THE PANEL
+    _buttonPanel = buildButtonPanel();
+    _buttonPanel.setPreferredSize(new Dimension(PANEL_WIDTH, _buttonPanel.getHeight()));
+    add(_buttonPanel, "span, center, gapbottom 20");
+
+    // ADD HELP MESSAGE TO INSTRUCT HOW TO SHIFT FOCUS
+    add(new JLabel(HELP_LABEL), "span, center, gapbottom 5");
 
     return true;
   }
+
 
   // //TODO: Redo showInventoryByCategory
   // /** Retrieve a list of items for a particular category and display. All
@@ -1132,12 +1163,12 @@ private MainframeInterface _mainframe;
   // {
   // // Guard: Default entry for no items in the category
   // if (itemMap.isEmpty() == true) {
-  // zone.append("        None\n");
+  // zone.append(" None\n");
   // return;
   // }
   // // Get the category name of the Item group to be displayed
   // String catName = itemMap.get(ItemFields.CATEGORY);
-  // MsgCtrl.msgln("\tCategory to display  = " + catName);
+  // MsgCtrl.msgln("\tCategory to display = " + catName);
   // zone.append(" " + catName + "\n");
   // }
 

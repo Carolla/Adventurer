@@ -25,7 +25,6 @@ import mylib.MsgCtrl;
 import mylib.dmc.DbReadWriter;
 import mylib.dmc.IRegistryElement;
 import mylib.test.dmc.SomeObject;
-import mylib.test.pdc.ConcreteRegistry.MockRegistry;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -53,14 +52,14 @@ import com.db4o.query.Predicate;
  */
 public class TestRegistry
 {
-    public class FakeDbReadWriter extends DbReadWriter
+    public class FakeDbReadWriter extends DbReadWriter<SomeObject>
     {
-        private List<IRegistryElement> _objects;
+        private List<SomeObject> _objects;
 
         public FakeDbReadWriter(String filepath)
         {
             super(filepath);
-            _objects = new ArrayList<IRegistryElement>();
+            _objects = new ArrayList<SomeObject>();
         }
         
         @Override
@@ -80,12 +79,12 @@ public class TestRegistry
         {
             return _objects.remove(((SomeObject) obj));
         }
-        
+
         @Override
-        public List<IRegistryElement> query(Predicate<IRegistryElement> pred)
+        public List<SomeObject> query(Predicate<SomeObject> pred)
         {
-            List<IRegistryElement> list = new ArrayList<IRegistryElement>();
-            for (IRegistryElement so : _objects) {
+            List<SomeObject> list = new ArrayList<SomeObject>();
+            for (SomeObject so : _objects) {
                 if (pred.match(so)) {
                     list.add(so);
                 }
@@ -96,8 +95,6 @@ public class TestRegistry
 
     /** Concrete derived class of Registry */
     private ConcreteRegistry _testReg = null;
-    /** MockDBRW to access the internal DbReadWriter methods */
-    private MockRegistry _mock = null;
     /** Location of test file */
     private static final String TEST_FILEPATH = Constants.MYLIB_RESOURCES + "Test.reg";
     /** Temporary Test file */
@@ -130,17 +127,13 @@ public class TestRegistry
     {
         // Create a Registry object, which will be initialized if one doesn't exist
         _testReg = new ConcreteRegistry(TEST_FILEPATH);
-        assertNotNull(_testReg);
-        _mock = _testReg.new MockRegistry();
-        assertNotNull(_mock);
-
+        
         // Insert the test double DbReadWriter
         _testReg.setDbReadWriter(new FakeDbReadWriter("Doesn't matter"));
 
         // Ensure that registry exists with no elements
         _testfile = new File(TEST_FILEPATH);
         assertTrue(_testfile.exists());
-        _mock.clearElements();
         assertEquals(0, _testReg.getNbrElements());
     }
 
@@ -148,7 +141,6 @@ public class TestRegistry
     public void tearDown() throws Exception
     {
         _testReg.closeRegistry();
-        _mock = null;
         // All messages are OFF after each test
         MsgCtrl.auditMsgsOn(false);
         MsgCtrl.errorMsgsOn(false);
@@ -306,71 +298,6 @@ public class TestRegistry
         assertEquals(0, _testReg.getNbrElements());
     }
 
-
-    /**
-     * mylib.test.pdc.get(Predicate<IRegistryElement>)
-     * 
-     * @Normal.Test Get an element by its key <br>
-     * @Normal.Test Change key and try to get it again <br>
-     * @Normal.Test Get a list of elements that have the same key <br>
-     */
-    @Test
-    public void testGet_ByPredicate()
-    {
-        MsgCtrl.auditMsgsOn(false);
-        MsgCtrl.errorMsgsOn(false);
-        MsgCtrl.where(this);
-
-        // Prepare: Add a few objects to the db
-        SomeObject so1 = new SomeObject(1, "one");
-        SomeObject so2 = new SomeObject(2, "two");
-        SomeObject so3 = new SomeObject(3, "three");
-        _testReg.add(so3);
-        _testReg.add(so1);
-        _testReg.add(so2);
-        MsgCtrl.msgln("Contents: " + _testReg.getElementNames());
-        assertEquals(3, _testReg.getNbrElements());
-
-        // Normal Get an element by its key...
-        Predicate<IRegistryElement> pred = keyPredicate(so2);
-        List<IRegistryElement> elist = _testReg.get(pred);
-        assertEquals(so2, elist.get(0));
-        // ... and is same as getUnique()
-        assertEquals(so2, _testReg.getUnique(so2.getKey()));
-
-        // Normal Change key and try to get it again
-        so3.setKey("threeCopy");
-        _testReg.update(so3);
-        elist = _testReg.get(keyPredicate(so3));
-        assertEquals(so3, elist.get(0));
-        // ... and is same as getUnique()
-        assertEquals(so3, _testReg.getUnique(so3.getKey()));
-        // Ensure that original is not in registry
-        assertEquals(0, _testReg.get("three").size());
-        assertEquals(1, _testReg.get("threeCopy").size());
-
-        // Normal Get a list of elements that have the same key
-        // Add some same non-key values for different keys to get a list
-        SomeObject so11 = new SomeObject(1, "eleventy");
-        SomeObject so12 = new SomeObject(2, "eleventy");
-        SomeObject so13 = new SomeObject(3, "eleventy");
-        _testReg.add(so11);
-        _testReg.add(so12);
-        _testReg.add(so13);
-        MsgCtrl.msgln("Contents: " + _testReg.getElementNames());
-        assertEquals(6, _testReg.getNbrElements());
-        // Retrieve the three objects with the same 'eleventy' keyword (that matches so11)
-        elist = _testReg.get(keyPredicate(so11));
-        assertEquals(3, elist.size());
-        for (IRegistryElement s : elist) {
-            MsgCtrl.msgln("\t" + s);
-        }
-
-        // Error get an object with an empty string name
-        SomeObject emptySO = new SomeObject(-99, " ");
-        assertFalse(_testReg.add(emptySO));
-    }
-
     /**
      * mylib.test.pdc.get(String)
      * 
@@ -397,7 +324,7 @@ public class TestRegistry
         assertEquals(3, _testReg.getNbrElements());
 
         // Normal Get an element by its key...
-        List<IRegistryElement> elist = _testReg.get(so2.getKey());
+        List<SomeObject> elist = _testReg.get(so2.getKey());
         assertEquals(so2, elist.get(0));
         // ... and is same as getUnique()
         assertEquals(so2, _testReg.getUnique(so2.getKey()));
@@ -446,7 +373,7 @@ public class TestRegistry
 
         /* Previously commented code */
         // Normal get an object with an empty string name
-        List<IRegistryElement> elist = _testReg.get(" ");
+        List<SomeObject> elist = _testReg.get(" ");
         assertEquals(0, elist.size());
         // ... and is same as getUnique()
         assertNull(_testReg.getUnique(" "));
@@ -468,8 +395,8 @@ public class TestRegistry
 
         // Normal dump all the objects in the registry
         // Add some elements first because setup() cleared the registry
-        _mock.init();
-        List<IRegistryElement> list = _mock.getAll();
+        _testReg.initialize();
+        List<SomeObject> list = _testReg.getAll();
         assertEquals(3, list.size());
         for (int k = 0; k < list.size(); k++) {
             MsgCtrl.msgln("\t" + list.get(k).toString());
@@ -481,7 +408,7 @@ public class TestRegistry
         SomeObject s2 = new SomeObject(2, "supplement B");
         _testReg.add(s1);
         _testReg.add(s2);
-        list = _mock.getAll();
+        list = _testReg.getAll();
         assertEquals(5, list.size());
         for (int k = 0; k < list.size(); k++) {
             MsgCtrl.msgln("\t" + list.get(k).toString());
@@ -597,26 +524,6 @@ public class TestRegistry
     /*********************************************************************************************************
      * PRIVATE METHODS
      **********************************************************************************************************/
-
-    /**
-     * Create a target predicate to match against the db candidate's key
-     * 
-     * @param target object to find
-     * @return the Predicate with the proper match() method
-     */
-    private Predicate<IRegistryElement> keyPredicate(final SomeObject target)
-    {
-        // Suppression needed for the anonymous inner class
-        @SuppressWarnings("serial")
-        Predicate<IRegistryElement> pred = new Predicate<IRegistryElement>() {
-            public boolean match(IRegistryElement candidate)
-            {
-                return target.getKey().equals(candidate.getKey());
-            }
-        };
-        return pred;
-    }
-
 
     /**
      * 3 methods

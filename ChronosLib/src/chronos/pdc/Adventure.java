@@ -74,22 +74,6 @@ public class Adventure implements IRegistryElement
   // PUBLIC METHODS
   // ============================================================
 
-  // /** Close an Adventure */
-  // public void close()
-  // {
-  // _open = false;
-  // }
-
-
-  // /** Dump the Adventure internals */
-  // public void dump()
-  // {
-  // System.out.println("\tAdventure " + getKey());
-  // System.out.println("\thas Town " + _townName);
-  // System.out.println("\thas Arena " + _arenaName);
-  // System.out.println("\tOverview: \t" + getOverview());
-  // }
-  
   /**
    * Two Adventures are equal if all the adventure name, Town name, and Arena name are equal
    * 
@@ -112,6 +96,28 @@ public class Adventure implements IRegistryElement
 
 
   /**
+   * If the Adventure has an Arena, get it from the arena folder
+   * 
+   * @return the Arena object or null
+   */
+  public Arena getArena()
+  {
+    return (_arenaName == null) ? null : Arena.getInstance(_arenaName);
+  }
+
+
+
+  /**
+   * @return the name of the adventure's arena
+   */
+  public String getArenaName()
+  {
+    return _arenaName;
+  }
+
+
+
+  /**
    * @see mylib.dmc.IRegistryElement#getKey()
    */
   @Override
@@ -130,23 +136,6 @@ public class Adventure implements IRegistryElement
 
 
   /**
-   * @return the name of the adventure's town
-   */
-  public String getTownName()
-  {
-    return _townName;
-  }
-
-  /**
-   * @return the name of the adventure's arena
-   */
-  public String getArenaName()
-  {
-    return _arenaName;
-  }
-
-
-  /**
    * @return the introductory description of the arena
    */
   public String getOverview()
@@ -156,30 +145,14 @@ public class Adventure implements IRegistryElement
 
 
   /**
-   * If the Adventure has an Arena, get it from the arena folder
-   * 
-   * @return the Arena object or null
+   * @return the name of the adventure's town
    */
-  public Arena getArena()
+  public String getTownName()
   {
-    return (_arenaName == null) ? null : Arena.getInstance(_arenaName);
+    return _townName;
   }
 
-
-
-  // /** Return true if the Adventure is open */
-  // public boolean isOpen()
-  // {
-  // return _open;
-  // }
-  //
-  //
-  // /** Open an Adventure */
-  // public void open()
-  // {
-  // _open = true;
-  // }
-
+ 
 
   /** @return the display name of the Adventure */
   public String toString()
@@ -187,17 +160,11 @@ public class Adventure implements IRegistryElement
     return _name;
   }
 
-  // ============================================================
-  // PUBLIC METHODS
-  // ============================================================
-
+  
   // ============================================================
   // PRIVATE METHODS
-  // ============================================================
+  // =============================================================
 
-  // ============================================================
-  // INNER CLASS MockAdventure
-  // ============================================================
 
   /** Inner class for testing Person */
   public class MockAdventure

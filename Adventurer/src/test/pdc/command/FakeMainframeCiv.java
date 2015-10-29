@@ -10,11 +10,5 @@ public class FakeMainframeCiv extends MainframeCiv
     {
         super(new MainframeProxy(), null, null);
     }
-    
-    @Override
-    protected void doConstructorWork()
-    {
-        //Do nothing, and FAST!
-    }
 
 }

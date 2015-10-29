@@ -12,6 +12,8 @@
 
 package test.pdc.registry;
 
+import mylib.test.pdc.TestRegistry;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -26,13 +28,14 @@ import org.junit.runners.Suite;
 {
     /** chronos.pdc.registry test files */
     // TestArena.class
-    // TestAdventureRegistry.class,
+    TestAdventureRegistry.class,
     // TestBuildingRegistry.class,
     // TestHelpTextObject.class,
     // TestItemRegistry.class,
     // TestNPCRegistry.class,
     // TestOccupationRegistry.class,
-    TestRegistryFactory.class
+    TestRegistryFactory.class,
+    TestRegistry.class
     // TestSkillRegistry.class,
     // TestTownRegistry.class,
 
