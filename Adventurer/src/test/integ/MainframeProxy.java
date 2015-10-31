@@ -180,5 +180,13 @@ public class MainframeProxy implements MainframeInterface
     }
 
 
+    @Override
+    public void showHelp()
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+
 } // end of MainframeProxy class
 

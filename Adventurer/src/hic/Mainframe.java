@@ -167,6 +167,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
      */
     public Mainframe()
     {
+        setupSizeAndBoundaries();
         // Create the support elements, e.g., the BuildingRegistry, Scheduler, etc.
         constructMembers();
 
@@ -210,7 +211,6 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
      */
     private void createFrameAndMenubar()
     {
-        setupSizeAndBoundaries();
         setupContentPane();
         // Add the frame listener to prompt and terminate the application
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

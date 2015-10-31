@@ -37,10 +37,16 @@ public class Menubar extends JMenuBar
   {
       _mainframe = mainframe;
       _mfCiv = mfCiv;
-    setBackground(Color.LIGHT_GRAY);
-    populateAdventureMenu();
-    populateHelpMenu();
+      doConstructorWork();
   }
+
+
+    public void doConstructorWork()
+    {
+        setBackground(Color.LIGHT_GRAY);
+        populateAdventureMenu();
+        populateHelpMenu();
+    }
 
 
   // ============================================================
@@ -80,7 +86,7 @@ public class Menubar extends JMenuBar
     {
       public void actionPerformed(ActionEvent evt)
       {
-          ((Mainframe) _mainframe).showHelp();
+          _mainframe.showHelp();
       }
     });
     mnHelp.add(mntmHelp);
