@@ -396,19 +396,20 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     private JButton createHeroCreationButton()
     {
         JButton button = createButtonWithTextAndIcon(REGISTRAR_IMAGE, "Create New Heroes");
-        // button.addActionListener(new ActionListener() {
-        // public void actionPerformed(ActionEvent arg0)
-        // {
-        // NewHeroDisplay nhd = null;
-        // try {
-        // nhd = new NewHeroDisplay();
-        // } catch (InstantiationException e) {
-        // e.printStackTrace();
-        // System.exit(0);
-        // }
-        // // changeToLeftPanel(nhd); // This my still be needed
-        // }
-        // });
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0)
+            {
+                try {
+                    _leftHolder.removeAll();
+                    _leftHolder.add(new NewHeroIPPanel(Mainframe.this));
+                    redraw();
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                    System.exit(0);
+                }
+                // changeToLeftPanel(nhd); // This my still be needed
+            }
+        });
         return button;
 
     }

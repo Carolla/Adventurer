@@ -134,7 +134,7 @@ public class HeroDisplayCiv
   {
     _hero = hero;
     _outputMap = hero.loadAttributes(_outputMap);
-    _widget = new HeroDisplay(this);
+    _widget = new HeroDisplay(this, _mf);
 
     _mf.addPanel(_widget);
   }

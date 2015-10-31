@@ -11,12 +11,10 @@ package hic;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.io.File;
 import java.util.EnumMap;
 
 import javax.swing.BorderFactory;
@@ -31,16 +29,15 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
-import chronos.Chronos;
-import civ.HeroDisplayCiv;
-import civ.NewHeroCiv;
-import civ.NewHeroCiv.ErrorCode;
-import civ.NewHeroCiv.HeroInput;
 import mylib.Constants;
 import mylib.MsgCtrl;
 import mylib.hic.HelpKeyListener;
 import net.miginfocom.swing.MigLayout;
 import pdc.character.Hero;
+import civ.HeroDisplayCiv;
+import civ.NewHeroCiv;
+import civ.NewHeroCiv.ErrorCode;
+import civ.NewHeroCiv.HeroInput;
 
 
 /**
@@ -135,6 +132,7 @@ public class NewHeroIPPanel extends JPanel
 
   /** Associated validating CIV object */
   private NewHeroCiv _nhCiv = null;
+  private Mainframe _mf;
 
 
   // ============================================================
@@ -148,10 +146,11 @@ public class NewHeroIPPanel extends JPanel
    * 
    * @throws InstantiationException if some problem occurs
    */
-  public NewHeroIPPanel() throws InstantiationException
+  public NewHeroIPPanel(Mainframe mf) throws InstantiationException
   {
     // Create the associated Civ object for validating the input data (no model yet)
     _nhCiv = new NewHeroCiv();
+    _mf = mf;
 
     // GENERAL SETUP
     // Set the preferred and max size, adjusting for panel border thickness
@@ -159,7 +158,6 @@ public class NewHeroIPPanel extends JPanel
     int height = Mainframe.getWindowSize().height;
     setPreferredSize(new Dimension(width, height));
     // Replace the mainframe title with this panel title
-    Mainframe mf = Mainframe.getInstance();
     mf.setTitle(NEW_HERO_TITLE);
 
     int pad = Mainframe.PAD;
@@ -293,7 +291,7 @@ public class NewHeroIPPanel extends JPanel
           // Create the new Hero and display it
           Hero hero = _nhCiv.createHero(_input);
 
-          HeroDisplayCiv hDispCiv = new HeroDisplayCiv(Mainframe.getInstance());
+          HeroDisplayCiv hDispCiv = new HeroDisplayCiv(_mf);
           hDispCiv.displayHero(hero);
         } else {
           // Display the message
@@ -566,24 +564,24 @@ public class NewHeroIPPanel extends JPanel
   }
 
 
-  /**
-   * Create a Runic Font.
-   * 
-   * @param size - the font size
-   * @return Font - the runic font
-   */
-  private Font makeRunicFont(float size)
-  {
-    Font font = null;
-    try {
-      Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(
-          Chronos.RUNIC_ENGLISH2_FONT_FILE));
-      font = newFont.deriveFont(size);
-    } catch (Exception e) {
-      MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
-    }
-    return font;
-  }
+//  /**
+//   * Create a Runic Font.
+//   * 
+//   * @param size - the font size
+//   * @return Font - the runic font
+//   */
+//  private Font makeRunicFont(float size)
+//  {
+//    Font font = null;
+//    try {
+//      Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(
+//          Chronos.RUNIC_ENGLISH2_FONT_FILE));
+//      font = newFont.deriveFont(size);
+//    } catch (Exception e) {
+//      MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
+//    }
+//    return font;
+//  }
 
 
   // ================================================================

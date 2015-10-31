@@ -89,12 +89,12 @@ public class TestCmdQuit
         assertFalse(_cmdQuit.init(emptyArgs));
     }
 
-    @Test
-    public void testExec()
-    {
-        MsgCtrl.where(this);
-        
-        assertTrue(_cmdQuit.exec());
-    }
+//    @Test
+//    public void testExec()
+//    {
+//        MsgCtrl.where(this);
+//        
+//        assertTrue(_cmdQuit.exec());
+//    }
 
 }

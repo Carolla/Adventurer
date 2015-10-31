@@ -65,10 +65,18 @@ public class TestCommandFactory
     }
     
     @Test
-    public void CommandIsInitialized()
+    public void FakeCommandIsNotInitialized()
     {
         CommandInput ci = new CommandInput("Fake", new ArrayList<String>());
         NullCommand c = (NullCommand) _commandFactory.createCommand(ci);
+        assertFalse(c.isInitialized());   
+    }
+    
+    @Test
+    public void RealCommandIsInitialized()
+    {
+        CommandInput ci = new CommandInput("RETURN", new ArrayList<String>());
+        Command c = _commandFactory.createCommand(ci);
         assertTrue(c.isInitialized());   
     }
 }

@@ -92,8 +92,7 @@ public class CommandFactory
       _mfCiv.errorOut(ERRMSG_UNKNOWN);
       return command;
     } else {
-      // If map contains the command as typed, Supplier<Command> will give new Instance of
-      // that
+      // If map contains the command, Supplier<Command> will give new Instance of that
       Supplier<Command> supplier = _commandMap.get(cmdInput.commandToken);
       if (supplier != null) {
         command = supplier.get();
@@ -109,7 +108,7 @@ public class CommandFactory
 
   public boolean canCreateCommand(CommandInput ci)
   {
-    return (_commandMap.get(ci.commandToken) == null) ? false : true;
+    return _commandMap.get(ci.commandToken) != null;
   }
 
 } // end of CommandFactory class

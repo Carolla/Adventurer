@@ -222,11 +222,13 @@ public class HeroDisplay extends JPanel
    * Create the GUI and populate it with various data maps
    * 
    * @param hdCiv the intermediary between this GUI and the Person
+ * @param _mf 
    * @param outputMap contains all the hero's data to be displayed
    */
-  public HeroDisplay(HeroDisplayCiv hdCiv)
+  public HeroDisplay(HeroDisplayCiv hdCiv, Mainframe mainframe)
   {
     _hdCiv = hdCiv;
+    _mainframe = mainframe;
     _ds = _hdCiv.getAttributes();
 
     // _hdCiv.resetLoadState();
