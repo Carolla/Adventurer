@@ -43,15 +43,13 @@ public class BuildingRegistry extends Registry<Building>
   private final Scheduler _skedder;
   private final NPCRegistry _npcRegistry;
 
-/** Called by RegistryFactory class */
+  /** Called by RegistryFactory class */
   protected BuildingRegistry(Scheduler skedder, NPCRegistry npcRegistry)
   {
     super(Chronos.BuildingRegPath);
     _skedder = skedder;
     _npcRegistry = npcRegistry;
-    if (shouldInitialize) {
-        initialize();
-    }
+    initialize();
   }
 
 
@@ -61,17 +59,18 @@ public class BuildingRegistry extends Registry<Building>
   @Override
   public void initialize()
   {
+    deleteAll();
     // Create each of the default buildings and save to registry
     // The constructors load the default data
-      Inn inn = new Inn(_skedder, _npcRegistry);
-      super.add(inn); // Ugly Ogre Inn
-      super.add(new Store()); // Rat's Pack
-      super.add(new Jail()); // Jail
-      super.add(new Bank()); // The Bank
-      super.add(new FightersGuild()); // Stadium
-      super.add(new RoguesGuild()); // Rouge's Tavern
-      super.add(new ClericsGuild()); // Monastery
-      super.add(new WizardsGuild()); // Arcaneum
+    Inn inn = new Inn(_skedder, _npcRegistry);
+    super.add(inn); // Ugly Ogre Inn
+    super.add(new Store()); // Rat's Pack
+    super.add(new Jail()); // Jail
+    super.add(new Bank()); // The Bank
+    super.add(new FightersGuild()); // Stadium
+    super.add(new RoguesGuild()); // Rouge's Tavern
+    super.add(new ClericsGuild()); // Monastery
+    super.add(new WizardsGuild()); // Arcaneum
   }
 
   /**

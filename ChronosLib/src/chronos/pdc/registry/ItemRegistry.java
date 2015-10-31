@@ -17,6 +17,7 @@ import mylib.ApplicationException;
 import mylib.pdc.Registry;
 import chronos.Chronos;
 import chronos.pdc.Item;
+import chronos.pdc.MiscKeys;
 import chronos.pdc.MiscKeys.ItemCategory;
 
 /**
@@ -40,32 +41,32 @@ public class ItemRegistry extends Registry<Item>
    * Silver, both of Category CASH
    */
   static private String[][] _heroInventory = {
-      {"CASH", "Gold pieces", "2", "15"}, // 1.875 lb
-      {"CASH", "Silver pieces", "1", "8"}, // 0.5 lb
-      {"GENERAL", "Backpack", "160", "1"}, // 10.0 lb
-      {"GENERAL", "Cloak", "32", "1"}, // 2.0 lb
-      {"GENERAL", "Belt", "5", "1"}, // 0.3125 lb
-      {"GENERAL", "Belt pouch, small", "2", "1"}, // 0.125 lb
-      {"GENERAL", "Breeches", "16", "1"}, // 1.0 lb
-      {"GENERAL", "Pair of Boots", "40", "1"}, // 2.5 lb
-      {"GENERAL", "Shirt", "8", "1"}, // 0.5 lb
-      {"GENERAL", "Tinderbox, Flint & Steel", "5", "1"}, // 0.3125 lb
-      {"GENERAL", "Torches", "8", "3"}, // 0.5 lb
-      {"PROVISION", "Rations", "2", "3"}, // 0.125 lb
-      {"PROVISION", "Water skein", "80", "1"}, // 5.0 lb
-      {"WEAPON", "Quarterstaff", "48", "1"} // 3.0 lb
+      {MiscKeys.ItemCategory.VALUABLES.name(), "Gold pieces", "2", "15"}, // 1.875 lb
+      {MiscKeys.ItemCategory.VALUABLES.name(), "Silver pieces", "1", "8"}, // 0.5 lb
+      {MiscKeys.ItemCategory.EQUIPMENT.name(), "Backpack", "160", "1"}, // 10.0 lb
+      {MiscKeys.ItemCategory.CLOTHING.name(), "Cloak", "32", "1"}, // 2.0 lb
+      {MiscKeys.ItemCategory.CLOTHING.name(), "Belt", "5", "1"}, // 0.3125 lb
+      {MiscKeys.ItemCategory.EQUIPMENT.name(), "Belt pouch, small", "2", "1"}, // 0.125 lb
+      {MiscKeys.ItemCategory.CLOTHING.name(), "Breeches", "16", "1"}, // 1.0 lb
+      {MiscKeys.ItemCategory.CLOTHING.name(), "Pair of Boots", "40", "1"}, // 2.5 lb
+      {MiscKeys.ItemCategory.CLOTHING.name(), "Shirt", "8", "1"}, // 0.5 lb
+      {MiscKeys.ItemCategory.EQUIPMENT.name(), "Tinderbox, Flint & Steel", "5", "1"}, // 0.3125 lb
+      {MiscKeys.ItemCategory.EQUIPMENT.name(), "Torches", "8", "3"}, // 0.5 lb
+      {MiscKeys.ItemCategory.EQUIPMENT.name(), "Rations", "2", "3"}, // 0.125 lb
+      {MiscKeys.ItemCategory.EQUIPMENT.name(), "Water skein", "80", "1"}, // 5.0 lb
+      {MiscKeys.ItemCategory.ARMS.name(), "Quarterstaff", "48", "1"} // 3.0 lb
   };
 
   // 6 Items for the Bank's assets, wills, and loans
   static private String[][] _bankAssets = {
       // {"CASH", "Gold pieces", "2", "5000"},
       // {"CASH", "Silver pieces", "1", "1000"},
-      {"CASH", "Platinum pieces", "2", "100"},
-      {"VALUEABLE", "Gem, topaz", "25", "10"},
-      {"VALUEABLE", "Gem, ruby", "100", "8"},
-      {"VALUEABLE", "Gem, emerald", "250", "3"},
-      {"GENERAL", "Will and Testament", "1", "1"},
-      {"GENERAL", "Loan", "1", "1"},
+      {MiscKeys.ItemCategory.VALUABLES.name(), "Platinum pieces", "2", "100"},
+      {MiscKeys.ItemCategory.VALUABLES.name(), "Gem, topaz", "25", "10"},
+      {MiscKeys.ItemCategory.VALUABLES.name(), "Gem, ruby", "100", "8"},
+      {MiscKeys.ItemCategory.VALUABLES.name(), "Gem, emerald", "250", "3"},
+      {MiscKeys.ItemCategory.EQUIPMENT.name(), "Will and Testament", "1", "1"},
+      {MiscKeys.ItemCategory.EQUIPMENT.name(), "Loan", "1", "1"},
   };
 
   // 11 Items for the Inn's menu
@@ -85,19 +86,19 @@ public class ItemRegistry extends Registry<Item>
 
   // 5 Items for the Thieves' Den equipment for the Rogues' Den building
   static private String[][] _rogueEquipment = {
-      {"WEAPON", "Dagger", "16", "15"},
-      {"WEAPON", "Poison (L1)", "4", "3"},
-      {"GENERAL", "Thieve's Kit", "8", "4"},
-      {"GENERAL", "Lockpick", "4", "2"},
-      {"GENERAL", "Skeleton Key", "4", "2"},
+      {MiscKeys.ItemCategory.ARMS.name(), "Dagger", "16", "15"},
+      {MiscKeys.ItemCategory.ARMS.name(), "Poison (L1)", "4", "3"},
+      {MiscKeys.ItemCategory.EQUIPMENT.name(), "Thieve's Kit", "8", "4"},
+      {MiscKeys.ItemCategory.EQUIPMENT.name(), "Lockpick", "4", "2"},
+      {MiscKeys.ItemCategory.EQUIPMENT.name(), "Skeleton Key", "4", "2"},
   };
 
   // TODO: Fill in this long list from the Players' Manual
   // 3 Items (for now) for the General Store's inventory
   static private String[][] _storeInventory = {
-      {"GENERAL", "Lantern", "32", "5"},
-      {"GENERAL", "Flask of Oil", "10", "5"},
-      {"GENERAL", "Water/wine skein", "16", "9"},
+      {MiscKeys.ItemCategory.EQUIPMENT.name(), "Lantern", "32", "5"},
+      {MiscKeys.ItemCategory.EQUIPMENT.name(), "Flask of Oil", "10", "5"},
+      {MiscKeys.ItemCategory.EQUIPMENT.name(), "Water/wine skein", "16", "9"},
   };
 
 
