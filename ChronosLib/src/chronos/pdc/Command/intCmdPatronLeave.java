@@ -99,6 +99,11 @@ public class intCmdPatronLeave extends Command
         }
     }
 
+    @Override
+    public boolean isUserInput()
+    {
+      return false;
+    }
 
     /**
      * Causes the Patron to leave the room if he/she is not involved in conversation. If the Patron

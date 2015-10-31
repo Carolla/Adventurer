@@ -33,7 +33,6 @@ import mylib.Constants;
 import net.miginfocom.swing.MigLayout;
 import pdc.Util;
 import civ.CommandParser;
-import civ.UserMsg;
 
 /**
  * This class serves as the text output and command line input after an Adventure is selected
@@ -75,7 +74,7 @@ public class IOPanel extends JPanel // implements IOPanelInterface
     /**
      * Creates output test panel and input CommandLine Input panel
      */
-    public IOPanel(UserMsg mfCiv, CommandParser cp)
+    public IOPanel(CommandParser cp)
     {
         _commandParser = cp;
         setLayout(new MigLayout("", "[grow]", "[][]"));

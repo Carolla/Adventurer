@@ -193,16 +193,20 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
         // Create the BuildingDisplayCiv to define the output GUI for descriptions and images
         _skedder = new Scheduler(); // Skedder first for injection
         RegistryFactory rf = new RegistryFactory(_skedder);
+
         rf.initRegistries();
         BuildingRegistry breg = (BuildingRegistry) rf.getRegistry(RegKey.BLDG);
-        ((Inn) breg.getBuilding("Ugly Ogre Inn")).initPatrons();
         _bldgCiv = new BuildingDisplayCiv(this, breg);
 
         // Create the Civ
         _mfCiv = new MainframeCiv(this, _bldgCiv, (AdventureRegistry) rf.getRegistry(RegKey.ADV));
 
         _cp = new CommandParser(_skedder, new CommandFactory(_mfCiv, _bldgCiv));
-        _iop = new IOPanel(_mfCiv, _cp);
+        _iop = new IOPanel(_cp);
+
+        Inn inn = (Inn) breg.getBuilding("Ugly Ogre Inn");
+        inn.setMsg(_mfCiv);
+        inn.initPatrons();
     }
 
     /**

@@ -104,7 +104,12 @@ public class intCmdPatronEnter extends Command
     {
     	return _inn.add(_npc);
     }
-	    
+
+    @Override
+    public boolean isUserInput()
+    {
+      return false;
+    }
 
     /** Get the Patron inside this command to which it applies. 
      * @return the Patron internal to the command

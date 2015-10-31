@@ -23,6 +23,7 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import pdc.Util;
+import chronos.civ.UserMsg;
 import chronos.pdc.Adventure;
 import chronos.pdc.registry.AdventureRegistry;
 import dmc.HeroReadWriter;
@@ -38,70 +39,70 @@ import dmc.HeroReadWriter;
  */
 public class MainframeCiv implements UserMsg
 {
-    private AdventureRegistry _advReg;
-    private BuildingDisplayCiv _bdCiv;
+  private AdventureRegistry _advReg;
+  private BuildingDisplayCiv _bdCiv;
 
-    private MainframeInterface _frame;
-    private Adventure _adv;
-    private HeroReadWriter _personRW;
+  private MainframeInterface _frame;
+  private Adventure _adv;
+  private HeroReadWriter _personRW;
 
-    private static final String TOWN_IMAGE = "ext_BiljurBaz.JPG";
+  private static final String TOWN_IMAGE = "ext_BiljurBaz.JPG";
 
-    /** Default Buildings to initialize registry with */
-    public static final String[][] DEFAULT_BUILDINGS = { {"Ugly Ogre Inn", "Bork"},
-            {"Rat's Pack", "Dewey N. Howe"}, {"The Bank", "Ogden Moneypenny"},
-            {"Stadium", "Aragon"}, {"Arcaneum", "Pendergast"}, {"Monastery", "Balthazar"},
-            {"Rogues' Den", "Ripper"}, {"Jail", "The Sheriff"}, {"Quasqueton", "Unknown"}};
+  /** Default Buildings to initialize registry with */
+  public static final String[][] DEFAULT_BUILDINGS = { {"Ugly Ogre Inn", "Bork"},
+      {"Rat's Pack", "Dewey N. Howe"}, {"The Bank", "Ogden Moneypenny"},
+      {"Stadium", "Aragon"}, {"Arcaneum", "Pendergast"}, {"Monastery", "Balthazar"},
+      {"Rogues' Den", "Ripper"}, {"Jail", "The Sheriff"}, {"Quasqueton", "Unknown"}};
 
-    private Map<String, BuildingRectangle> _buildingList = new TreeMap<String, BuildingRectangle>();
+  private Map<String, BuildingRectangle> _buildingList = new TreeMap<String, BuildingRectangle>();
 
-    private float[][] buildingLayouts = new float[][] {
-            {0.48f, 0.54f, 0.14f, 0.08f}, // Ugly Ogre Inn
-            {0.79f, 0.43f, 0.14f, 0.08f}, // Rat's Pack General Store
-            {0.60f, 0.45f, 0.07f, 0.07f}, // The Bank
-            {0.5f, 0.37f, 0.25f, 0.09f}, // Stadium
-            {0.61f, 0.73f, 0.37f, 0.20f}, // Arcaneum
-            {0.0f, 0.35f, 0.22f, 0.13f}, // Monastery
-            {0.63f, 0.53f, 0.10f, 0.05f}, // Rouge's Den
-            {0.38f, 0.53f, 0.08f, 0.07f}, // Jail
-            {0.31f, 0.08f, 0.5f, 0.25f}}; // Quasqueton
+  private float[][] buildingLayouts = new float[][] {
+      {0.48f, 0.54f, 0.14f, 0.08f}, // Ugly Ogre Inn
+      {0.79f, 0.43f, 0.14f, 0.08f}, // Rat's Pack General Store
+      {0.60f, 0.45f, 0.07f, 0.07f}, // The Bank
+      {0.5f, 0.37f, 0.25f, 0.09f}, // Stadium
+      {0.61f, 0.73f, 0.37f, 0.20f}, // Arcaneum
+      {0.0f, 0.35f, 0.22f, 0.13f}, // Monastery
+      {0.63f, 0.53f, 0.10f, 0.05f}, // Rouge's Den
+      {0.38f, 0.53f, 0.08f, 0.07f}, // Jail
+      {0.31f, 0.08f, 0.5f, 0.25f}}; // Quasqueton
 
-    private Color[] colorArray = new Color[] {Color.white, // Ugly Ogre Inn
-            Color.white, // Rat's Pack General Store
-            Color.white, // The Bank
-            Color.white, // Stadium
-            Color.white, // Arcaneum
-            Color.white, // Monastery
-            Color.white, // Rouge's Den
-            Color.white, // Jail
-            Color.white}; // Quasqueston
+  private Color[] colorArray = new Color[] {Color.white, // Ugly Ogre Inn
+      Color.white, // Rat's Pack General Store
+      Color.white, // The Bank
+      Color.white, // Stadium
+      Color.white, // Arcaneum
+      Color.white, // Monastery
+      Color.white, // Rouge's Den
+      Color.white, // Jail
+      Color.white}; // Quasqueston
 
-    /** Current Building being displayed, and can be entered */
-    private final Rectangle _townReturn = new Rectangle(0, 0, 100, 100);
+  /** Current Building being displayed, and can be entered */
+  private final Rectangle _townReturn = new Rectangle(0, 0, 100, 100);
 
-    /** Initial right-side image: Chronos logo */
-    private static final String INITIAL_IMAGE = "ChronosLogo.jpg";
-    /** Title of initial image */
-    private static final String INITIAL_TITLE = "Chronos Logo";
+  /** Initial right-side image: Chronos logo */
+  private static final String INITIAL_IMAGE = "ChronosLogo.jpg";
+  /** Title of initial image */
+  private static final String INITIAL_TITLE = "Chronos Logo";
 
 
-    // ============================================================
-    // Constructors and constructor helpers
-    // ============================================================
+  // ============================================================
+  // Constructors and constructor helpers
+  // ============================================================
 
-    /**
-     * Create the Civ associated with the mainframe
-     * 
-     * @param frame owner of the widget for which this civ applies
-     * @param personRW supports the Summon Hero and Create Hero buttons
-     * @param advReg registry to support the Adventures button
-     */
-    public MainframeCiv(MainframeInterface mf, BuildingDisplayCiv bdCiv, AdventureRegistry advReg)
-    {
-        _frame = mf;
-        _bdCiv = bdCiv;
-        _advReg = advReg;
-    }
+  /**
+   * Create the Civ associated with the mainframe
+   * 
+   * @param frame owner of the widget for which this civ applies
+   * @param personRW supports the Summon Hero and Create Hero buttons
+   * @param advReg registry to support the Adventures button
+   */
+  public MainframeCiv(MainframeInterface mf, BuildingDisplayCiv bdCiv, AdventureRegistry advReg)
+  {
+    _frame = mf;
+    _bdCiv = bdCiv;
+    _advReg = advReg;
+  }
 
 
   // ============================================================
@@ -110,21 +111,21 @@ public class MainframeCiv implements UserMsg
 
 
   /**
- * Retrieves the Adventures for selection from the Adventure Registry
- * 
- * @return the list of Adventures
- */
-public ArrayList<String> getAdventures()
-{
+   * Retrieves the Adventures for selection from the Adventure Registry
+   * 
+   * @return the list of Adventures
+   */
+  public ArrayList<String> getAdventures()
+  {
     ArrayList<Adventure> adventures = _advReg.getAdventureList();
     ArrayList<String> results = new ArrayList<String>();
     for (Adventure a : adventures) {
-        results.add(a.getKey());
+      results.add(a.getKey());
     }
     return results;
-}
+  }
 
-public BuildingDisplayCiv getBuildingDisplayCiv()
+  public BuildingDisplayCiv getBuildingDisplayCiv()
   {
     return _bdCiv;
   }
@@ -148,7 +149,7 @@ public BuildingDisplayCiv getBuildingDisplayCiv()
     }
   }
 
-    // TODO: Mouse action belong in the HIC; not in the CIV
+  // TODO: Mouse action belong in the HIC; not in the CIV
   public void handleMouseMovement(Point p)
   {
     if (_bdCiv.isOnTown()) {
@@ -167,7 +168,7 @@ public BuildingDisplayCiv getBuildingDisplayCiv()
     // TODO Why is this in the civ, and not the hic.Mainframe?
     _frame.setImageTitle(INITIAL_TITLE);
     createBuildingBoxes();
-  
+
   }
 
   /**
@@ -189,7 +190,7 @@ public BuildingDisplayCiv getBuildingDisplayCiv()
     _frame.displayErrorText(msg);
   }
 
-@Override
+  @Override
   public void msgOut(String msg)
   {
     _frame.displayText(msg);
@@ -221,8 +222,8 @@ public BuildingDisplayCiv getBuildingDisplayCiv()
   // ============================================================
   // Public methods
   // ============================================================
-  
-  
+
+
   /**
    * TODO This is the responsibility of the BuildingDisplayCiv Enter the Building specified. If the
    * Hero is at the Town level, get the {@code BuildingRegistry} and {@ocde BuildingCiv}
@@ -236,7 +237,7 @@ public BuildingDisplayCiv getBuildingDisplayCiv()
     }
   }
 
-/** Creates the standard layout to display the town image and description */
+  /** Creates the standard layout to display the town image and description */
   public void openTown()
   {
     _bdCiv.returnToTown();

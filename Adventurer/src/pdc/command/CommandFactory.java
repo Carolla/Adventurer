@@ -69,6 +69,8 @@ public class CommandFactory
     _commandMap.put("QUIT", () -> new CmdQuit(_mfCiv, _bdCiv));
     // Return to town view
     _commandMap.put("RETURN", () -> new CmdReturn(_mfCiv));
+    // Just sit there
+    _commandMap.put("WAIT", () -> new CmdWait());
 
     // Locks the command map as read-only
     _commandMap = Collections.unmodifiableMap(_commandMap);

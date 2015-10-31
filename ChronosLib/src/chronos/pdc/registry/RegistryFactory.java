@@ -66,8 +66,7 @@ public class RegistryFactory
 
     /** For creating certain registries */
     private Scheduler _skedder;
-
-
+    
     // ============================================================
     // Constructor(s) and Related Methods
     // ============================================================
@@ -77,8 +76,7 @@ public class RegistryFactory
         _skedder = skedder;
         _regMap = new HashMap<RegKey, Registry<?>>();
     }
-
-
+    
     public void initRegistries()
     {
         _regMap.put(RegKey.ITEM, new ItemRegistry());
