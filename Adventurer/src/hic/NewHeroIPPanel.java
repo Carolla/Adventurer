@@ -15,6 +15,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.EnumMap;
 
 import javax.swing.BorderFactory;
@@ -191,7 +193,9 @@ public class NewHeroIPPanel extends JPanel
 
     // Create the input text field to collect the Hero's name give it default focus
     _nameField = makeNameField();
-    _nameField.requestFocusInWindow();
+    // Ensure that the text field can have focus
+    _nameField.setFocusable(true);
+    
     add(_nameField, "push, align center, span");
 
     /* THIS GRID POPULATES HORIZONTALLY: Save all Components for later data extraction */
@@ -215,13 +219,15 @@ public class NewHeroIPPanel extends JPanel
 
     /* Add a button panel containing the Submit and Cancel buttons */
     add(makeButtonPanel(), "push, align center, span, gaptop 20%");
+    
+//    _nameField.requestFocusInWindow();
 
-    // Make textField get the focus whenever frame is activated.
-    // frame.addWindowFocusListener(new WindowAdapter() {
-    // public void windowGainedFocus(WindowEvent e) {
-    // textField.requestFocusInWindow();
-    // }
-    // });
+//     // Make textField get the focus whenever frame is activated.
+//     _mf.addWindowFocusListener(new WindowAdapter() {
+//     public void windowGainedFocus(WindowEvent e) {
+//     _nameField.requestFocusInWindow();
+//     }
+//     });
 
   } // end NewHeroIPPanel constructor
 
@@ -236,12 +242,10 @@ public class NewHeroIPPanel extends JPanel
    * invoke the default component. It calls this method to get which one should be default. This
    * method is created for this because the caller does not know what fields are available in this
    * panel, and it can change with maintenance.
-   * 
-   * @return the JTextField, in this case
    */
-  public JTextField getDefaultFocus()
+  public void setDefaultFocus()
   {
-    return _nameField;
+	  _nameField.requestFocusInWindow();
   }
 
 
@@ -422,9 +426,6 @@ public class NewHeroIPPanel extends JPanel
     _nameField.setName("heroName");
     // Collect the name when the text field goes out of focus
     _nameField.addFocusListener(new FocusOffListener());
-    // Ensure that the text scrolls as new text is appended
-    _nameField.setFocusable(true);
-    _nameField.requestFocusInWindow();
 
     // Extract Hero's name and update Hero's name into MainFrame Title
     // if Enter key is hit or text field loses focus.

@@ -405,8 +405,10 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
             {
                 try {
                     _leftHolder.removeAll();
-                    _leftHolder.add(new NewHeroIPPanel(Mainframe.this));
+                    NewHeroIPPanel hp = new NewHeroIPPanel(Mainframe.this);
+                    _leftHolder.add(hp);
                     redraw();
+                    hp.setDefaultFocus();
                 } catch (InstantiationException e) {
                     e.printStackTrace();
                     System.exit(0);
