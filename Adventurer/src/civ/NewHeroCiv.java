@@ -11,6 +11,9 @@ package civ;
 
 import java.util.EnumMap;
 
+import chronos.pdc.registry.HeroRegistry;
+import chronos.pdc.registry.RegistryFactory;
+import chronos.pdc.registry.RegistryFactory.RegKey;
 import pdc.character.Hero;
 
 /**
@@ -119,11 +122,11 @@ public class NewHeroCiv
   private ErrorCode isUnique(String name)
   {
     ErrorCode err = ErrorCode.NO_ERROR;
-
-
-    
-    
-    
+    RegistryFactory rf = RegistryFactory.getInstance();
+    HeroRegistry dorm = (HeroRegistry) rf.getRegistry(RegKey.HERO);
+    if (dorm.isUnique(name)) {
+      err = ErrorCode.NAME_NOT_UNIQUE;
+    }
     return err;
   }
 
@@ -149,7 +152,8 @@ public class NewHeroCiv
 
   
   /**
-   * Retrieve the new Hero input data for validation or Hero creation
+   * Retrieve the new Hero input data for validation or Hero creation. Biggest check is if the 
+   * hero name is unique (does not exist in the Hero registry)
    * 
    * @param heroInput contains the five input fields: name, gender, hair color, race, and klass (in
    *        that order)

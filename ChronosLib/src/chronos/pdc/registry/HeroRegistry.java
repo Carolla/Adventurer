@@ -7,7 +7,8 @@
  * by email: acline@carolla.com
  */
 
-package pdc;
+
+package chronos.pdc.registry;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,10 +16,8 @@ import java.util.List;
 
 import chronos.Chronos;
 import mylib.ApplicationException;
-import mylib.MsgCtrl;
 import mylib.dmc.IRegistryElement;
 import mylib.pdc.Registry;
-import pdc.character.Hero;
 
 /**
  * Contains all Heros in the game. {@code HeroRegistry} is a singleton and is only
@@ -53,7 +52,7 @@ public class HeroRegistry extends Registry
   @Override
   public void initialize()
   {
-    MsgCtrl.msgln("HeroRegistry.initialize() was called.");
+    // No default Heroes in HeroRegistry
   }
 
 
@@ -68,7 +67,7 @@ public class HeroRegistry extends Registry
    * @return the Hero object; or null if not unique
    * @throws ApplicationException if trying to retrieve non-unique object
    */
-  public Hero getHero(final String name)
+  public IRegistryElement getHero(final String name)
   {
     // ExtObjectContainer db = _regRW.getDB();
     // Retrieve all skills that match the skillname; should be only one
@@ -78,27 +77,28 @@ public class HeroRegistry extends Registry
 
     // Ensure uniqueness
     if (elist.size() == 1) {
-      return (Hero) elist.get(0);
+      return elist.get(0);
     } else {
       return null;
     }
   }
 
-  /**
-   * Retrieve multiple Heros
-   * 
-   * @param target the object to find in the database
-   * @return the Hero List
-   */
-  public ArrayList<Hero> getHeroList(Hero target)
-  {
-    List<IRegistryElement> HeroSet = getAll();
-    ArrayList<Hero> HeroList = new ArrayList<Hero>(HeroSet.size());
-    for (Object o : HeroSet) {
-      HeroList.add((Hero) o);
-    }
-    return HeroList;
-  }
+  // TODO: Do we really need this?
+//  /**
+//   * Retrieve multiple Heros
+//   * 
+//   * @param target the object to find in the database
+//   * @return the Hero List
+//   */
+//  public IRegistryElement> getHeroList(Hero target)
+//  {
+//    List<IRegistryElement> HeroSet = getAll();
+//    ArrayList<Hero> HeroList = new ArrayList<Hero>(HeroSet.size());
+//    for (Object o : HeroSet) {
+//      HeroList.add((Hero) o);
+//    }
+//    return HeroList;
+//  }
 
 
   /*

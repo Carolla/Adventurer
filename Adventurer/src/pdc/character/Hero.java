@@ -10,7 +10,6 @@
 
 package pdc.character;
 
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -19,7 +18,7 @@ import civ.PersonKeys;
 import mylib.pdc.MetaDie;
 import pdc.Inventory;
 import pdc.character.Thief.TSKILL;
-
+import pdc.character.Klass;
 
 /**
  * @author Alan Cline

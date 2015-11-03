@@ -82,7 +82,7 @@ public class Adventurer
         }
       }
     });
-    
+
   } // end of static main()
 
 
@@ -97,7 +97,7 @@ public class Adventurer
   /**
    * Close all database Registries (singletons)
    */
-  private static void closeRegistries()
+  static private void closeRegistries()
   {
     _rf.closeAllRegistries();
   }

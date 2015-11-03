@@ -190,7 +190,10 @@ public class NewHeroIPPanel extends JPanel
 
     // Create the input text field to collect the Hero's name give it default focus
     _nameField = makeNameField();
+    _nameField.setVisible(true);
+    _nameField.setFocusable(true);
     _nameField.requestFocusInWindow();
+    _nameField.requestFocus();
     add(_nameField, "push, align center, span");
 
     /* THIS GRID POPULATES HORIZONTALLY: Save all Components for later data extraction */
@@ -221,6 +224,11 @@ public class NewHeroIPPanel extends JPanel
     // textField.requestFocusInWindow();
     // }
     // });
+    setVisible(true);
+    _nameField.setFocusable(true);
+//    _nameField.requestFocusInWindow();
+    _nameField.requestFocus();
+
 
   } // end NewHeroIPPanel constructor
 
@@ -238,9 +246,9 @@ public class NewHeroIPPanel extends JPanel
    * 
    * @return the JTextField, in this case
    */
-  public JTextField getDefaultFocus()
+  public void setDefaultFocus()
   {
-    return _nameField;
+    _nameField.requestFocusInWindow();
   }
 
 
@@ -286,15 +294,14 @@ public class NewHeroIPPanel extends JPanel
       public void actionPerformed(ActionEvent event)
       {
         // Call the Civ to validate the attributes. If no errors, Hero is created and displayed
-        ErrorCode err = submit();
+        ErrorCode err = submit();   
         if (err == ErrorCode.NO_ERROR) {
           // Remove this panel and ignore any changes
           setVisible(false);
-          // Create the new Hero and display it
-          Hero hero = _nhCiv.createHero(_input);
-
-          HeroDisplayCiv hDispCiv = new HeroDisplayCiv(Mainframe.getInstance());
-          hDispCiv.displayHero(hero);
+            // Create the new Hero and display it
+            Hero hero = _nhCiv.createHero(_input);
+            HeroDisplayCiv hDispCiv = new HeroDisplayCiv(Mainframe.getInstance());
+            hDispCiv.displayHero(hero);
         } else {
           // Display the message
           showErrorMessage(err);

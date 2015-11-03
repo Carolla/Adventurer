@@ -433,38 +433,7 @@ public class NPCRegistry extends Registry
     super(Chronos.NPCRegPath);
   }
 
-
-  /**
-   * Creates the Patron Registry with the static tables given, converting each element to a Patron
-   * and saving it in the Patron Registry.
-   */
-  @Override
-  public void initialize()
-  {
-    // Create new Patrons and save to registry
-    for (int k = 0; k < _patronTable.length; k++) {
-      // Send one set of NPC at a time
-      NPC npc = makeNPC(k);
-      super.add(npc);
-    }
-  }
-
-
-  // /** Close db, destroy the dbReadWriter and set this registry to null
-  // * @param eraseFile if true, erase registry file; else not
-  // */
-  // public void closeRegistry()
-  // {
-  // super.close();
-  // // _thisReg = null;
-  // }
-  //
-  // public void deleteRegistry()
-  // {
-  // super.delete();
-  // // _thisReg = null;
-  // }
-
+  
   /**
    * Get a particlar NPC by name
    * 
@@ -480,6 +449,7 @@ public class NPCRegistry extends Registry
     }
   }
 
+  
   /**
    * Retrieve all NPCs in the NPCRegistry
    * 
@@ -506,6 +476,22 @@ public class NPCRegistry extends Registry
   /*
    * PRIVATE METHODS
    */
+
+  /**
+   * Creates the Patron Registry with the static tables given, converting each element to a Patron
+   * and saving it in the Patron Registry.
+   */
+  @Override
+  public void initialize()
+  {
+    // Create new Patrons and save to registry
+    for (int k = 0; k < _patronTable.length; k++) {
+      // Send one set of NPC at a time
+      NPC npc = makeNPC(k);
+      super.add(npc);
+    }
+  }
+
 
   /**
    * Create a single NPC from one entry in the init table, including rumors and retorts
