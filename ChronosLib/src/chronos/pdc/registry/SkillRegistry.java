@@ -9,12 +9,10 @@
 
 package chronos.pdc.registry;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import mylib.ApplicationException;
 import mylib.MsgCtrl;
-import mylib.dmc.IRegistryElement;
 import mylib.pdc.Registry;
 import chronos.Chronos;
 import chronos.pdc.Skill;
@@ -28,7 +26,7 @@ import com.db4o.query.Predicate;
  * @author Alan Cline
  * @version Jan 1 2010 // original <br>
  */
-public class SkillRegistry extends Registry
+public class SkillRegistry extends Registry<Skill>
 {
   /** 8 Skills that are defined for particular races: Name, Description. */
   static private final String[][] _racialSkillTable = {
@@ -85,6 +83,9 @@ public class SkillRegistry extends Registry
   protected SkillRegistry()
   {
     super(Chronos.SkillRegPath);
+    if (shouldInitialize) {
+        initialize();
+    }        
   }
 
 
@@ -138,19 +139,15 @@ public class SkillRegistry extends Registry
    * @return the skillList
    */
   @SuppressWarnings("serial")
-  public ArrayList<Skill> getSkillList()
+  public List<Skill> getSkillList()
   {
-    List<IRegistryElement> sklSet = get(new Predicate<IRegistryElement>() {
-      public boolean match(IRegistryElement candidate)
+    List<Skill> sklSet = get(new Predicate<Skill>() {
+      public boolean match(Skill candidate)
       {
         return true;
       }
     });
-    ArrayList<Skill> sklList = new ArrayList<Skill>(sklSet.size());
-    for (IRegistryElement e : sklSet) {
-      sklList.add((Skill) e);
-    }
-    return sklList;
+    return sklSet;
   }
 
 
@@ -171,9 +168,8 @@ public class SkillRegistry extends Registry
     public void dump()
     {
       // Get all skills by using null argument
-      List<IRegistryElement> sklist = getAll();
-      for (int k = 0; k < sklist.size(); k++) {
-        Skill s = (Skill) sklist.get(k);
+      List<Skill> sklist = getAll();
+      for (Skill s : sklist) {
         System.out.println("\t" + s.getName() + "\t\t" + s.getDescription());
       }
     }

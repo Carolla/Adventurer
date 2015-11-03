@@ -9,11 +9,10 @@
 
 package test;
 
+import mylib.test.MyLibraryTestSuite;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-
-import test.integ.TA00a_Initialize;
-import test.integ.TA00b_Quit;
 
 
 /**
@@ -33,16 +32,13 @@ import test.integ.TA00b_Quit;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 
-    // ChronosLib test suite (includes MyLibaryTestSuite.class)
-    // ChronosSuite.class,
+    // ChronosLib test suite
+    ChronosSuite.class,
+    /** MyLibrary test suit */
+    MyLibraryTestSuite.class,
 
     // UnitTestSuite includes all unit tests for all components
     UnitTestSuite.class,
-
-    // Individual integration tests for each use case
-    TA00a_Initialize.class,
-    TA00b_Quit.class
-
 })
 public class AdventurerSuite
 {

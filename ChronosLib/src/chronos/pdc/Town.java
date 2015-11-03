@@ -10,13 +10,11 @@
 package chronos.pdc;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import mylib.ApplicationException;
 import mylib.dmc.IRegistryElement;
 import chronos.pdc.buildings.Building;
-import chronos.pdc.registry.BuildingRegistry;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 
 /**
  * A Town is the thin container for all Buildings, and some global settings.
@@ -38,7 +36,7 @@ public class Town implements IRegistryElement
   private double _costOfLiving = 1.0;
 
   /** The name of the Buildings in Town */
-  private ArrayList<String> _buildings;
+  private List<Building> _buildings;
 
   
   /**
@@ -86,7 +84,7 @@ public class Town implements IRegistryElement
 //    _gameClock = INIT_TIME * Constants.SECS_PER_HOUR;
     
     // Create a place to store in building in town */
-    _buildings = new ArrayList<String>();
+    _buildings = new ArrayList<Building>();
   }
 
   /*
@@ -100,34 +98,10 @@ public class Town implements IRegistryElement
    * @param bldgList list of building names to add
    * @throws ApplicationException if building cannot be found
    */
-  public void addBuildings(ArrayList<String> bldgList) throws ApplicationException
+  public void addBuildings(List<Building> bldgList)
   {
-    BuildingRegistry bReg = 
-        (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
-    for (String bName : bldgList) {
-      IRegistryElement b = bReg.getUnique(bName); 
-      if (b == null) {
-        throw new ApplicationException("Cannot find " + bName + " in BuildingRegistry.");
-      } else {
-        Building bldg = (Building) b;
-        _buildings.add(bldg.getName());
-      }
-    }
+      _buildings.addAll(bldgList);
   }
-
-  
-//  /**
-//   * Add a building to the Town list for retrieval for the Building Registry after verifying that
-//   * the Building exists in the Building registry
-//   * 
-//   * @param bldgName of the building to add
-//   * @return true if the add was successful
-//   */
-//  public boolean buildingRegContainsName(String bldgName)
-//  {
-//    Building b = _bReg.getBuilding(bldgName);
-//    return b != null;
-//  }
 
   /** Two Towns are equal if their names are equal */
   @Override
@@ -138,18 +112,9 @@ public class Town implements IRegistryElement
   }
 
   /** Get a list of all the Buildings in the town */
-  public ArrayList<String> getAllBuildings()
+  public List<Building> getAllBuildings()
   {
     return _buildings;
-  }
-
-  /** Get a Building object from the Building Registry */
-  public Building getBuilding(String name)
-  {
-    BuildingRegistry bReg =
-        (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
-    Building bldg = (Building) bReg.getUnique(name);
-    return bldg;
   }
 
   /** Get the cost of living (price adjustment) for this town */

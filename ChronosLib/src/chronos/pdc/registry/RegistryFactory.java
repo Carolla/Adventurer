@@ -13,7 +13,10 @@ package chronos.pdc.registry;
 import java.util.HashMap;
 
 import mylib.pdc.Registry;
-import chronos.Chronos;
+import chronos.pdc.Item;
+import chronos.pdc.Occupation;
+import chronos.pdc.Skill;
+import chronos.pdc.Command.Scheduler;
 
 /**
  * Creates singleton registries of various kinds and keeps count of existing registries
@@ -25,217 +28,125 @@ import chronos.Chronos;
  */
 public class RegistryFactory
 {
-  private static RegistryFactory _rf = null;
+    private HashMap<RegKey, Registry<?>> _regMap = null;
 
-  private static HashMap<RegKey, Registry> _regMap = null;
+    /** Public list of all possible registries subclasses, in rough dependency order. */
+    public enum RegKey
+    {
+        SKILL("Skill", 35), // default: 8 racial, and 27 general Skills
+        OCP("Occupation", 27), // default: 26 Occupations plus "None"
+        ITEM("Item", 39), // default 14 Hero, 6 Bank, 11 Inn menu, 5 Rogue, 3 Store
+        BLDG("Building", 8), // default: 4 Guilds, Inn, Store, Jail, Bank
+        NPC("NPC", 16), // Default: 8 building masters and 8 Inn patrons
+        TOWN("Town", 1), // default: Biljur'Baz
+        ADV("Adventure", 1); // default: "The Quest for Rogahn and Zelligar" (Arena = Quasqueton)
 
-  /** Public list of all possible registries subclasses, in rough dependency order. */
-  public enum RegKey
-  {
-    SKILL("Skill", 35),     // default:  8 racial, and 27 general Skills
-    OCP("Occupation", 27),  // default: 26 Occupations plus "None"
-    ITEM("Item", 0),       // default  14 Hero, 6 Bank, 11 Inn menu, 5 Rogue, 3 Store
-    BLDG("Building", 8),    // default:  4 Guilds, Inn, Store, Jail, Bank
-    NPC("NPC", 16),         // Default:  8 building masters and 8 Inn patrons
-    TOWN("Town", 1),         // default: Biljur'Baz
-    ADV("Adventure", 1);    // default: "The Quest for Rogahn and Zelligar" (Arena = Quasqueton)
+        private String _name;
+        private int _defSize;
+
+        private RegKey(String nm, int size)
+        {
+            _name = nm;
+            _defSize = size;
+        }
+
+        @Override
+        public String toString()
+        {
+            return _name;
+        }
+
+        /** Return the number of default entries in the corresponding Registry */
+        public int getDefaultSize()
+        {
+            return _defSize;
+        }
+
+    }
+
+    /** For creating certain registries */
+    private Scheduler _skedder;
     
-    private String _name;
-    private int _defSize;
+    // ============================================================
+    // Constructor(s) and Related Methods
+    // ============================================================
 
-    private RegKey(String nm, int size)
+    public RegistryFactory(Scheduler skedder)
     {
-      _name = nm;
-      _defSize = size;
+        _skedder = skedder;
+        _regMap = new HashMap<RegKey, Registry<?>>();
     }
-
-    @Override
-    public String toString()
+    
+    public void initRegistries()
     {
-      return _name;
+        _regMap.put(RegKey.ITEM, new ItemRegistry());
+        _regMap.put(RegKey.SKILL, new SkillRegistry());
+        _regMap.put(RegKey.OCP, new OccupationRegistry((SkillRegistry) _regMap.get(RegKey.SKILL)));
+        _regMap.put(RegKey.NPC, new NPCRegistry());
+        _regMap.put(RegKey.BLDG,
+                new BuildingRegistry(_skedder, (NPCRegistry) _regMap.get(RegKey.NPC)));
+        _regMap.put(RegKey.TOWN, new TownRegistry((BuildingRegistry) _regMap.get(RegKey.BLDG)));
+        _regMap.put(RegKey.ADV, new AdventureRegistry());
+
+        Skill.setSkillRegistry((SkillRegistry) _regMap.get(RegKey.SKILL));
+        Occupation.setOccupationRegistry((OccupationRegistry) _regMap.get(RegKey.OCP));
+        Item.setItemRegistry((ItemRegistry) _regMap.get(RegKey.ITEM));
     }
 
-    /** Return the number of default entries in the corresponding Registry */
-    public int getDefaultSize()
+    // ============================================================
+    // Public Methods
+    // ============================================================
+
+    /**
+     * Close all registries currently open, and remove them from the {@code RegistryFactory}
+     * collection
+     */
+    public void closeAllRegistries()
     {
-      return _defSize;
+        for (RegKey key : RegKey.values()) {
+            Registry<?> reg = _regMap.get(key);
+            if (reg != null) {
+                reg.closeRegistry();
+            }
+        }
     }
 
-  }
 
-
-  // ============================================================
-  // Constructor(s) and Related Methods
-  // ============================================================
-
-  private RegistryFactory()
-  {
-    _regMap = new HashMap<RegKey, Registry>();
-  }
-
-
-  /** Retrieve or create the factory class, a collection of all Registries */
-  static public RegistryFactory getInstance()
-  {
-    if (_rf == null) {
-      _rf = new RegistryFactory();
+    /**
+     * Close a registry and remove it from the factory collection
+     * 
+     * @param key one of the specified registry keys
+     */
+    public void closeRegistry(RegKey key)
+    {
+        Registry<?> reg = _regMap.get(key); // get returns null if not found
+        if (reg != null) {
+            reg.closeRegistry(); // this is the registry's method, not this method it's in
+        }
     }
-    return _rf;
-  }
 
 
-  // ============================================================
-  // Public Methods
-  // ============================================================
-
-  /**
-   * Close all registries currently open, and remove them from the {@code RegistryFactory}
-   * collection
-   */
-  public void closeAllRegistries()
-  {
-    for (RegKey key : RegKey.values()) {
-      Registry reg = _regMap.get(key);
-      if (reg != null) {
-        reg.closeRegistry();
-        _regMap.remove(key);
-      }
+    /**
+     * Get the number of registries created by this {@code RegistryFactory}
+     * 
+     * @return the number of current Registries
+     */
+    public int getNumberOfRegistries()
+    {
+        return _regMap.size();
     }
-  }
 
 
-  /**
-   * Close a registry and remove it from the factory collection
-   * 
-   * @param key one of the specified registry keys
-   */
-  public void closeRegistry(RegKey key)
-  {
-    Registry reg = _regMap.get(key); // get returns null if not found
-    if (reg != null) {
-      reg.closeRegistry(); // this is the registry's method, not this method it's in
-      _regMap.remove(key);
+    /**
+     * Return the requested regsistry, or null if the registry is null or closed
+     * 
+     * @param regtype one of the canonical immutable Registries defined in <code>enum RegKey</code>
+     * @return an existing registry of the requested type, or null if it doesn't exist or can't be
+     *         found
+     */
+    public Registry<?> getRegistry(RegKey regtype)
+    {
+        return _regMap.get(regtype);
     }
-  }
-
-
-  /**
-   * Creates a registry of the given type. Registry location defaults to ChronosLib resources.
-   * Registry is stored for quick access in this factory
-   * 
-   * @param regtype defined in {@code RegistryFactory.RegKey enum}
-   * @return the requested Registry, or null if cannot be created
-   */
-  public Registry createRegistry(RegKey regtype)
-  {
-    // Guard: RegKey may be null (dumb compiler should have checked that!)
-    if (regtype == null) {
-      return null;
-    }
-    Registry reg = null;
-    String regName = Chronos.REGISTRY_CLASSPKG + regtype + "Registry";
-    try {
-      reg = (Registry) Class.forName(regName).newInstance();
-      // System.err.println("RegistryFactory.createRegistry() created = " + reg.toString());
-      _regMap.put(regtype, reg);
-
-      // TODO Figure out how to suppress these exception messages during testing
-    } catch (ClassNotFoundException ex) {
-      System.err.println("createRegistry(): Class.forName() cannot find specified registry: "
-          + ex.getMessage());
-      ex.printStackTrace();
-    } catch (IllegalAccessException ex) {
-      System.err.println("createRegistry(): cannot access specified method: " + ex.getMessage());
-    } catch (IllegalArgumentException ex) {
-      System.err.println("createRegistry(): found unexpected argument: " + ex.getMessage());
-    } catch (NullPointerException ex) {
-      System.err.println("createRegistry(): null pointer exception thrown: " + ex.getMessage());
-    } catch (InstantiationException ex) {
-      System.err.println("createRegistry(): class cannot be created with newInstance(): "
-          + ex.getMessage());
-    } // catch (Exception ex) {
-    // System.err.println("createRegistry(): possible database closed exception thrown: "
-    // + ex.getMessage());
-    // }
-    return reg;
-  }
-
-
-  /**
-   * Close all registries and delete their .reg files
-   */
-  public void deleteAllRegistries()
-  {
-    for (RegKey key : RegKey.values()) {
-      Registry reg = _regMap.get(key);
-      reg.closeRegistry();
-      _regMap.remove(reg);
-    }
-  }
-
-
-  /**
-   * Get the number of registries created by this {@code RegistryFactory}
-   * 
-   * @return the number of current Registries
-   */
-  public int getNumberOfRegistries()
-  {
-    return _regMap.size();
-  }
-
-
-  /**
-   * Return the requested regsistry, or null if the registry is null or closed
-   * 
-   * @param regtype one of the canonical immutable Registries defined in <code>enum RegKey</code>
-   * @return an existing registry of the requested type, or null if it doesn't exist or can't be
-   *         found
-   */
-  public Registry getRegistry(RegKey regtype)
-  {
-    Registry reg = getExisting(regtype);
-    if (reg == null) {
-      reg = createRegistry(regtype);
-    }
-    return reg;
-  }
-
-  // ============================================================
-  // Private Methods
-  // ============================================================
-
-  /**
-   * Get an existing Registry, else return null; do not create it
-   * 
-   * @param regtype one of the Registries defined in <code>enum RegKey</code>
-   * @return the registry of the specified type, else null if not found
-   */
-  private Registry getExisting(RegKey regtype)
-  {
-    return _regMap.get(regtype);
-  }
-
-
-  // private Registry findRegistry(RegKey regtype)
-  // {
-  // Registry reg = _regMap.get(regtype);
-  // if (isValidRegistry(reg)) {
-  // return reg;
-  // } else {
-  // return createRegistry(regtype);
-  // }
-  // }
-
-
-  // private boolean isValidRegistry(Registry reg)
-  // {
-  // if ((reg == null) || (reg.isClosed())) {
-  // _regMap.remove(reg);
-  // return false;
-  // }
-  // return true;
-  // }
-
 
 } // end of RegistryFactory class

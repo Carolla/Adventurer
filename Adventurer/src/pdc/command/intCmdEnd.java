@@ -13,6 +13,8 @@ package pdc.command;
 
 import java.util.List;
 
+import chronos.pdc.Command.Command;
+
 
 /**
  * This internal command indicates the end of execution of a user command. It's <code>exec()</code>

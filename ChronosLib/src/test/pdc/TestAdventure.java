@@ -22,7 +22,6 @@ import org.junit.Test;
 
 import chronos.pdc.Adventure;
 import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 
 /**
  * Unit tests for {@code chronos.pdc.Adventure}
@@ -62,8 +61,6 @@ public class TestAdventure
   @BeforeClass
   public static void _setUpBeforeClass() throws Exception
   {
-    initRegistries();
-
     // _rf = RegistryFactory.getInstance();
     // _treg = (TownRegistry) _rf.getRegistry(RegKey.TOWN);
   }
@@ -171,18 +168,6 @@ public class TestAdventure
   // ============================================================
   // Private Helper Methods
   // ============================================================
-
-  /**
-   * Init all the registries
-   */
-  static private void initRegistries()
-  {
-    _rf = RegistryFactory.getInstance();
-    for (RegKey key : RegKey.values()) {
-      _rf.getRegistry(key);
-    }
-  }
-
 
   /**
    * Close all database Registries (singletons)

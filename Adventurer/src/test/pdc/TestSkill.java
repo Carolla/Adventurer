@@ -11,16 +11,15 @@
 
 package test.pdc;
 
-import chronos.pdc.Skill;
-
+import junit.framework.TestCase;
 import mylib.ApplicationException;
 import mylib.MsgCtrl;
-
-import junit.framework.TestCase;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import chronos.pdc.Skill;
 
 /**
  *	Test the simple Skill class that comprises the SkillRegistry collection

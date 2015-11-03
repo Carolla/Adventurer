@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mylib.ApplicationException;
-import mylib.dmc.IRegistryElement;
 import mylib.pdc.Registry;
 import chronos.Chronos;
 import chronos.pdc.NPC;
@@ -26,7 +25,7 @@ import com.db4o.query.Predicate;
  * @author Alan Cline
  * @version Jan 21, 2013 // original <br>
  */
-public class NPCRegistry extends Registry
+public class NPCRegistry extends Registry<NPC>
 {
   /**
    * Field names for each NPC in the default NPC list of the init table NAME of the Non-Player
@@ -431,6 +430,9 @@ public class NPCRegistry extends Registry
   protected NPCRegistry()
   {
     super(Chronos.NPCRegPath);
+    if (shouldInitialize) {
+        initialize();
+    }        
   }
 
 
@@ -474,7 +476,7 @@ public class NPCRegistry extends Registry
   public NPC getNPC(String name)
   {
     try {
-      return (NPC) getUnique(name);
+      return getUnique(name);
     } catch (ApplicationException ex) {
       return null;
     }
@@ -485,21 +487,16 @@ public class NPCRegistry extends Registry
    * 
    * @return the list of NPCs
    */
-  public ArrayList<NPC> getNPCList()
+  public List<NPC> getNPCList()
   {
-    List<IRegistryElement> npcSet = get(new Predicate<IRegistryElement>() {
+    List<NPC> npcSet = get(new Predicate<NPC>() {
       private static final long serialVersionUID = 6815466908808374953L;
-
-      public boolean match(IRegistryElement candidate)
+      public boolean match(NPC candidate)
       {
         return true;
       }
     });
-    ArrayList<NPC> npcList = new ArrayList<NPC>(npcSet.size());
-    for (IRegistryElement e : npcSet) {
-      npcList.add((NPC) e);
-    }
-    return npcList;
+    return npcSet;
   }
 
 
@@ -554,36 +551,5 @@ public class NPCRegistry extends Registry
     npc.setMessages(posMsgs, negMsgs);
     return npc;
   }
-
-
-
-  /*
-   * PRIVATE METHODS
-   */
-
-  /*
-   * MockPatronRegistry INNER CLASS
-   */
-  public class MockPatronRegistry
-  {
-    /** Default ctor */
-    public MockPatronRegistry()
-    {}
-
-
-    /** Return the number of patrons in the default table */
-    public int getNbrDefaultPatrons()
-    {
-      return _patronTable.length;
-    }
-
-    /** Return the path for the registry file */
-    public String getPath()
-    {
-      return Chronos.NPCRegPath;
-    }
-
-  } // end of MockPatronRegistry class
-
 
 } // end of NPCRegistry class

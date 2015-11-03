@@ -9,11 +9,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import pdc.command.CmdReturn;
-import pdc.command.Command;
 import pdc.command.CommandFactory;
 import pdc.command.CommandInput;
-import pdc.command.NullCommand;
-import pdc.command.Scheduler;
+import chronos.pdc.Command.Command;
+import chronos.pdc.Command.NullCommand;
 import civ.CommandParser;
 
 public class TestCommandParser
@@ -91,25 +90,6 @@ public class TestCommandParser
     {
         _cp.receiveCommand("Don't do anything");
         assertEquals(new NullCommand().getName(), _fakeSkedder.command.getName());
-    }
-    
-    public class FakeScheduler extends Scheduler
-    {
-        public Command command;
-
-        public FakeScheduler()
-        {
-            super();
-        }
-        
-        @Override
-        public void run() {}
-
-        @Override
-        public void sched(Command cmd)
-        {
-            command = cmd;
-        }
     }
 
     public class FakeCommandFactory extends CommandFactory

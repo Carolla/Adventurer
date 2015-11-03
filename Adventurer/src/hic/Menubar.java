@@ -37,12 +37,16 @@ public class Menubar extends JMenuBar
   {
       _mainframe = mainframe;
       _mfCiv = mfCiv;
-    setBackground(Color.LIGHT_GRAY);
-    populateAdventureMenu();
-    // populateHeroMenu();
-    // populateEnterMenu();
-    populateHelpMenu();
+      doConstructorWork();
   }
+
+
+    public void doConstructorWork()
+    {
+        setBackground(Color.LIGHT_GRAY);
+        populateAdventureMenu();
+        populateHelpMenu();
+    }
 
 
   // ============================================================
@@ -59,12 +63,6 @@ public class Menubar extends JMenuBar
     // Populate the Adventure menu
     JMenu mnAdventure = new JMenu("Adventure");
     this.add(mnAdventure);
-    // mnAdventure.add(createMenuItemWithNoAction("New"));
-    // mnAdventure.add(createMenuItemWithNoAction("Open"));
-    // mnAdventure.add(createMenuItemWithNoAction("Close"));
-    // mnAdventure.add(createMenuItemWithNoAction("Save"));
-    // mnAdventure.add(createMenuItemWithNoAction("Save As..."));
-    // mnAdventure.add(new JMenuItem("---"));
     mnAdventure.add(createMenuItemWithAction("Quit", new ActionListener() {
       public void actionPerformed(ActionEvent e)
       {
@@ -88,7 +86,7 @@ public class Menubar extends JMenuBar
     {
       public void actionPerformed(ActionEvent evt)
       {
-          ((Mainframe) _mainframe).showHelp();
+          _mainframe.showHelp();
       }
     });
     mnHelp.add(mntmHelp);

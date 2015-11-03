@@ -10,13 +10,13 @@
  * by email: acline@carolla.com.  
  */
 
-package pdc.command;
+package chronos.pdc.Command;
 
 import java.util.Comparator;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
-import pdc.GameClock;
+import chronos.pdc.GameClock;
 
 /**
  *	Puts Events on an insertion list in the order in which the 

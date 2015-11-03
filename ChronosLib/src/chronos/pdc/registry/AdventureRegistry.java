@@ -29,7 +29,7 @@ import com.db4o.query.Predicate;
  * @version Jan 1 2010 // original <br>
  *          Jun 28 2014 // make available only through Class reflection call; some cleanup <br>
  */
-public class AdventureRegistry extends Registry
+public class AdventureRegistry extends Registry<Adventure>
 {
   /** Default Adventure */
   private final String DEF_ADVENTURE = "The Quest for Rogahn and Zelligar";
@@ -78,9 +78,12 @@ public class AdventureRegistry extends Registry
   /**
    * This method is a wrapper to the base class which passes the data file path and not the source code
    */
-  protected AdventureRegistry()
+  public AdventureRegistry()
   {
     super(Chronos.AdventureRegPath);
+    if (shouldInitialize) {
+        initialize();
+    }
   }
 
 
@@ -126,8 +129,8 @@ public class AdventureRegistry extends Registry
   public ArrayList<Adventure> getAdventureList()
   {
     @SuppressWarnings("serial")
-    List<IRegistryElement> advSet = get(new Predicate<IRegistryElement>() {
-      public boolean match(IRegistryElement candidate)
+    List<Adventure> advSet = get(new Predicate<Adventure>() {
+      public boolean match(Adventure candidate)
       {
         return true;
       }
@@ -144,36 +147,5 @@ public class AdventureRegistry extends Registry
   // ===========================================================================
   // PRIVATE METHODS
   // ===========================================================================
-
-  // ===========================================================================
-  // INNER CLASS: MockAdventureRegistry for Testing
-  // ===========================================================================
-
-  /** Inner class for testing Person */
-  public class MockAdventureRegistry
-  {
-    /** Default constructor */
-    public MockAdventureRegistry()
-    {}
-
-    /** Diagnostic to dump all skills in the Registry */
-    public void dump()
-    {}
-
-    /** Return the path for the registry file */
-    public String getPath()
-    {
-      return Chronos.AdventureRegPath;
-    }
-
-    /** Return the path for the registry file */
-    public void setPath(String testPath)
-    {
-      Chronos.AdventureRegPath = testPath;
-    }
-
-  } // end of MockAdventureRegistry class
-
-
 } // end of AdventureRegistry class
 

@@ -10,12 +10,15 @@
 
 package chronos.civ;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import chronos.pdc.Occupation;
-import chronos.pdc.Skill;
 import mylib.ApplicationException;
 import mylib.MsgCtrl;
+import chronos.pdc.Item;
+import chronos.pdc.MiscKeys.ItemCategory;
+import chronos.pdc.Occupation;
+import chronos.pdc.Skill;
+import chronos.pdc.registry.SkillRegistry;
 
 /**
  * Contains all the default information to support the Hero creation: options for hair colors,
@@ -33,16 +36,16 @@ import mylib.MsgCtrl;
  */
 public class HeroDefaults
 {
-  // /** List of hair color options */
-  // ArrayList<String> _hairColors = null;
-  // /** List of Races */
-  // ArrayList<String> _raceNames = null;
-  /** List of Occupations (one Occupation contains its associated Skill) */
-  ArrayList<Occupation> _ocpList = null;
-  /** List of racial skills */
-  ArrayList<Skill> _skillList = null;
-  /** List of default Items given to new Hero */
-//  ArrayList<Item> _inventory = null;
+    // /** List of hair color options */
+    // ArrayList<String> _hairColors = null;
+    // /** List of Races */
+    // ArrayList<String> _raceNames = null;
+    /** List of Occupations (one Occupation contains its associated Skill) */
+    List<Occupation> _ocpList = null;
+    /** List of racial skills */
+    List<Skill> _skillList = null;
+    /** List of default Items given to new Hero */
+    List<Item> _inventory = null;
 
 
   /**
@@ -146,105 +149,105 @@ public class HeroDefaults
       {"Weaver", "Appraise Tapestries"},
       // Repair or modify wooden items, e.g. repair xbows, add secret compartment to chest
       {"Woodworker", "Woodworking"}};
+  
+    private SkillRegistry _skillRegistry;
 
 
-  /*
-   * CONSTRUCTOR(S) AND RELATED METHODS
-   */
+    /*
+     * CONSTRUCTOR(S) AND RELATED METHODS
+     */
 
-  /** Constructor */
-  public HeroDefaults()
-  {}
+    /** Constructor */
+    public HeroDefaults(SkillRegistry skillRegistry)
+    {
+        _skillRegistry = skillRegistry;
+    }
 
 
-  /** Create a default Registry and load it with constant data */
-  public void initialize()
-  {
-    // // Load the Hair Colors list
-    // for (int k=0; k< _hairColorList.length; k++) {
-    // _hairColors.add(_hairColorList[k]);
+    /** Create a default Registry and load it with constant data */
+    public void initialize()
+    {
+        // // Load the Hair Colors list
+        // for (int k=0; k< _hairColorList.length; k++) {
+        // _hairColors.add(_hairColorList[k]);
+        // }
+
+        // // Load the Race names list
+        // for (int k=0; k< _races.length; k++) {
+        // _raceNames.add(_races[k]);
+        // }
+
+        // Load the Occupation names
+        try {
+            for (int k = 0; k < _occupTable.length; k++) {
+                Occupation occup =
+                        new Occupation(_occupTable[k][0],
+                                _skillRegistry.getSkill(_occupTable[k][1]));
+                _ocpList.add(occup);
+            }
+        } catch (ApplicationException ex) {
+            MsgCtrl.errMsgln(this, ex.getMessage());
+        }
+
+        // Load the Racial Skill names
+        try {
+            for (int k = 0; k < _racialSkillTable.length; k++) {
+                Skill skill = new Skill(_racialSkillTable[k][0], _racialSkillTable[k][1]);
+                _skillList.add(skill);
+            }
+        } catch (ApplicationException ex) {
+            MsgCtrl.errMsgln(this, ex.getMessage());
+        }
+
+        // Load the starting inventory Items
+        try {
+            for (int k = 0; k < _itemTable.length; k++) {
+                Item it = new Item(ItemCategory.valueOf(_itemTable[k][0]), _itemTable[k][1],
+                        Integer.parseInt(_itemTable[k][2]),
+                        Integer.parseInt(_itemTable[k][3]));
+                _inventory.add(it);
+            }
+        } catch (ApplicationException ex) {
+            MsgCtrl.errMsgln(this, ex.getMessage());
+        }
+
+    }
+
+
+    /*
+     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PUBLIC METHODS
+     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+
+    // /** Retrieve default hair color options */
+    // public ArrayList<String> getHairColors()
+    // {
+    // return _hairColors;
     // }
 
-    // // Load the Race names list
-    // for (int k=0; k< _races.length; k++) {
-    // _raceNames.add(_races[k]);
+    // /** Retrieve default hair color options */
+    // public ArrayList<String> getRacenames()
+    // {
+    // return _raceNames;
     // }
 
-    // Load the Occupation names
-    try {
-      for (int k = 0; k < _occupTable.length; k++) {
-        Occupation occup = new Occupation(_occupTable[k][0], _occupTable[k][1]);
-        _ocpList.add(occup);
-      }
-    } catch (ApplicationException ex) {
-      MsgCtrl.errMsgln(this, ex.getMessage());
+    // /** Retrieve default Occupation options */
+    // public ArrayList<Occupation> getOccupationList()
+    // {
+    // return _ocpList;
+    // }
+
+    /** Retrieve racial skills for Hero */
+    public List<Skill> getSkillList()
+    {
+        return _skillList;
     }
 
-    // Load the Racial Skill names
-    try {
-      for (int k = 0; k < _racialSkillTable.length; k++) {
-        Skill skill = new Skill(_racialSkillTable[k][0], _racialSkillTable[k][1]);
-        _skillList.add(skill);
-      }
-    } catch (ApplicationException ex) {
-      MsgCtrl.errMsgln(this, ex.getMessage());
+    /** Retrieve the Hero's default Inventory */
+    public List<Item> getDefaultInventory()
+    {
+        return _inventory;
     }
-
-    // Load the starting inventory Items
-    try {
-      for (int k = 0; k < _itemTable.length; k++) {
-//        Item it = new Item(ItemCategory.valueOf(_itemTable[k][0]), _itemTable[k][1],
-//            Integer.parseInt(_itemTable[k][2]),
-//            Integer.parseInt(_itemTable[k][3]));
-//        _inventory.add(it);
-      }
-    } catch (ApplicationException ex) {
-      MsgCtrl.errMsgln(this, ex.getMessage());
-    }
-
-  }
-
-
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PUBLIC METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
-
-  // /** Retrieve default hair color options */
-  // public ArrayList<String> getHairColors()
-  // {
-  // return _hairColors;
-  // }
-
-  // /** Retrieve default hair color options */
-  // public ArrayList<String> getRacenames()
-  // {
-  // return _raceNames;
-  // }
-
-  // /** Retrieve default Occupation options */
-  // public ArrayList<Occupation> getOccupationList()
-  // {
-  // return _ocpList;
-  // }
-
-  /** Retrieve racial skills for Hero */
-  public ArrayList<Skill> getSkillList()
-  {
-    return _skillList;
-  }
-
-//  /** Retrieve the Hero's default Inventory */
-//  public ArrayList<Item> getDefaultInventory()
-//  {
-//    return _inventory;
-//  }
-
-
-
-  /*
-   * PRIVATE METHODS
-   */
 
 }
 // end of HeroDefaults class

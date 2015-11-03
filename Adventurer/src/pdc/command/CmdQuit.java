@@ -14,6 +14,7 @@ package pdc.command;
 
 import java.util.List;
 
+import chronos.pdc.Command.Command;
 import civ.BuildingDisplayCiv;
 import civ.MainframeCiv;
 
@@ -33,77 +34,77 @@ import civ.MainframeCiv;
  */
 public class CmdQuit extends Command
 {
-    // THESE CONSTANTS MUST BE STATIC BECAUSE THEY ARE CALLED IN THE CONSTRUCTOR
-    /** The description of what the command does, used in the <code>help()</code> method. */
-    static final String CMD_DESCRIPTION = "End the program.";
-    /** This command starts immediately, requiring no delay. */
-    static final int DELAY = 0; // This command starts immediately on invocation
-    /** This command takes no time on the game clock. */
-    static final int DURATION = 0;
-    /** Format for usage string on input error */
-    // static final String FMT = "[takes no parameters]";
+  // THESE CONSTANTS MUST BE STATIC BECAUSE THEY ARE CALLED IN THE CONSTRUCTOR
+  /** The description of what the command does, used in the <code>help()</code> method. */
+  static final String CMD_DESCRIPTION = "End the program.";
+  /** This command starts immediately, requiring no delay. */
+  static final int DELAY = 0; // This command starts immediately on invocation
+  /** This command takes no time on the game clock. */
+  static final int DURATION = 0;
+  /** Format for usage string on input error */
+  // static final String FMT = "[takes no parameters]";
 
 
-    /** Error message if args are input with command */
-    private final String ERRMSG_OMIT_ARGS =
-            "If you want to exit the program, type \"Quit\" without any additional characters.";
+  /** Error message if args are input with command */
+  private final String ERRMSG_OMIT_ARGS =
+      "If you want to exit the program, type \"Quit\" without any additional characters.";
 
-    /** Error message if hero inside when command initialized */
-    private final String ERRMSG_IN_BLDG = "To quit, you must be outside.";
-    
-    private final BuildingDisplayCiv _bdCiv;
-    private final MainframeCiv _mfCiv;
+  /** Error message if hero inside when command initialized */
+  private final String ERRMSG_IN_BLDG = "To quit, you must be outside.";
 
-    // ============================================================
-    // CONSTRUCTOR(S) AND RELATED METHODS
-    // ============================================================
+  private final BuildingDisplayCiv _bdCiv;
+  private final MainframeCiv _mfCiv;
 
-    /** Constructor called by the CommandFactory. There is no delay nor duration. */
-    public CmdQuit(MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
-    {
-        super("CmdQuit", DELAY, DURATION, CMD_DESCRIPTION, null);
-        _mfCiv = mfCiv;
-        _bdCiv = bdCiv;
+  // ============================================================
+  // CONSTRUCTOR(S) AND RELATED METHODS
+  // ============================================================
+
+  /** Constructor called by the CommandFactory. There is no delay nor duration. */
+  public CmdQuit(MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
+  {
+    super("CmdQuit", DELAY, DURATION, CMD_DESCRIPTION, null);
+    _mfCiv = mfCiv;
+    _bdCiv = bdCiv;
+  }
+
+
+  // ============================================================
+  // PUBLIC METHODS
+  // ============================================================
+
+  /**
+   * In this case, no parms are needed.
+   * 
+   * @param args is empty for this command; implemented as required for abstract method
+   * 
+   * @return true if all worked and hero is outside, else returns false on input error
+   */
+  @Override
+  public boolean init(List<String> args)
+  {
+    if ((args.size() == 0) && (_bdCiv.isInside() == false)) {
+      _isInitialized = true;
+      return true;
+    } else if ((args.size() == 0) && (_bdCiv.isInside() == true)) {
+      _mfCiv.errorOut(ERRMSG_IN_BLDG);
+      return false;
+    } else {
+      _mfCiv.errorOut(ERRMSG_OMIT_ARGS);
+      return false;
     }
+  }
 
-
-    // ============================================================
-    // PUBLIC METHODS
-    // ============================================================
-
-    /**
-     * In this case, no parms are needed.
-     * 
-     * @param args is empty for this command; implemented as required for abstract method
-     * 
-     * @return true if all worked and hero is outside, else returns false on input error
-     */
-    @Override
-    public boolean init(List<String> args)
-    {
-        if ((args.size() == 0) && (_bdCiv.isInside() == false)) {
-            _isInitialized = true;
-            return true;
-        } else if ((args.size() == 0) && (_bdCiv.isInside() == true)) {
-            _mfCiv.errorOut(ERRMSG_IN_BLDG);
-            return false;
-        } else {
-            _mfCiv.errorOut(ERRMSG_OMIT_ARGS);
-            return false;
-        }
-    }
-
-    /**
-     * Forces the program to end.
-     * 
-     * @return false always to break out of the Scheduler loop
-     */
-    @Override
-    public boolean exec()
-    {
-        _mfCiv.quit();
-        return true;
-    }
+  /**
+   * Forces the program to end.
+   * 
+   * @return false always to break out of the Scheduler loop
+   */
+  @Override
+  public boolean exec()
+  {
+    _mfCiv.quit();
+    return true;
+  }
 
 } // end CmdQuit class
 

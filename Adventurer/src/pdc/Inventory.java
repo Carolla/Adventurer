@@ -12,9 +12,11 @@ package pdc;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 
 import mylib.Constants;
-import pdc.MiscKeys.ItemCategory;
+import chronos.pdc.Item;
+import chronos.pdc.MiscKeys.ItemCategory;
 
 /**
  * Contains the Person's collection of Items. All weights are in ounces; the client object must
@@ -358,10 +360,10 @@ public class Inventory implements Serializable
    * @param cat     category of item to build a subset from
    * @return the list of names for the subset inventory
    */
-  public ArrayList<String> getNameList(ItemCategory cat)
+  public List<String> getNameList(ItemCategory cat)
   {
     Inventory aList = getItemsByCategory(cat);
-    ArrayList<String> nameList = new ArrayList<String>();
+    List<String> nameList = new ArrayList<String>();
     for (int k = 0; k < aList.getNbrItems(); k++) {
       String itemName = aList.getItem(k).getName();
       nameList.add(itemName);
@@ -421,43 +423,6 @@ public class Inventory implements Serializable
     }
     return false;
   }
-
-  // /**
-  // * Assign the starting set of Items to the Person's inventory: clothing, cash, provisions, and
-  // * other minimums for adventuring. Each key is an Item containing its category, name, weight
-  // (oz),
-  // * and quantity.
-  // *
-  // * @return the ArrayList containing the items
-  // */
-  // public ArrayList<Item> initStartingInventory()
-  // {
-  // ItemRegistry ireg = (ItemRegistry) RegistryFactory.getInstance().getRegistry(RegKey.ITEM);
-  //
-  // for (int i = 0; i < _startList.length; i++) {
-  // Item it = null;
-  //
-  // // Try to create item
-  // it = ireg.getItem(_startList[i][0]);
-  //
-  // // Ensure item count is 1
-  // if (it.getQuantity() > 1) {
-  // try {
-  // it.adjustQuantity(1 - it.getQuantity());
-  // } catch (ApplicationException e) {
-  // MsgCtrl.errMsg("Could not adjust quantity");
-  // e.printStackTrace();
-  // }
-  // }
-  //
-  // // Add item to registry
-  // int numItems = Integer.parseInt(_startList[i][1]);
-  // for (int j = 0; j < numItems; j++) {
-  // this.addItem(it);
-  // }
-  // }
-  // return _inventory;
-  // }
 
   // ===========================================================================
   // INNER CLASS: MockInventory

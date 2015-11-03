@@ -9,10 +9,8 @@
 
 package test.pdc;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import mylib.ApplicationException;
-import chronos.pdc.AttributeList;
 import chronos.pdc.Race;
 import chronos.pdc.Skill;
 
@@ -57,20 +55,14 @@ public class MockRace extends Race
     return new int[] {18, 18, 18, 18, 18, 18};
   }
 
-  @Override
-  public AttributeList adjTraitsForRace(AttributeList unadjustedTraits)
-  {
-    return unadjustedTraits;
-  }
-
   /** Set the Race subclass skills of the Person */
-  public ArrayList<Skill> assignRacialSkills(ArrayList<Skill> skillList)
+  public List<Skill> assignRacialSkills(List<Skill> skillList)
   {
     return skillList;
   };
 
   /** Set the Race subclass skills of the Person */
-  public ArrayList<Skill> assignSkills(ArrayList<Skill> skillList)
+  public List<Skill> assignSkills(List<Skill> skillList)
   {
     return null;
   }
@@ -126,13 +118,6 @@ public class MockRace extends Race
     return -1;
   }
 
-  @Override
-  public AttributeList verifyTraits(AttributeList _trait)
-      throws ApplicationException
-  {
-    return null;
-  }
-
   /*
    * TEST RACE METHODS THAT ARE IMPLEMENTED ONLY IN BASE CLASS
    */
@@ -156,25 +141,25 @@ public class MockRace extends Race
   // return resultSet;
   // }
 
-  /**
-   * Run the given traits through the various starting sets for male and female
-   * 
-   * @param traitList simulated traits
-   * @param gender male or female (male is not adjusted)
-   * @return given traits adjusted by age category
-   */
-  public AttributeList adjTraitsForGender(AttributeList traitList,
-      String gender)
-  {
-    // REPLACE the original category with the given one
-    String originalGender = super._gender;
-    super._gender = gender;
-    // TEST
-    AttributeList resultSet = super.adjTraitsForGender(traitList);
-    // RESET the category back to its original
-    super._gender = originalGender;
-    return resultSet;
-  }
+//  /**
+//   * Run the given traits through the various starting sets for male and female
+//   * 
+//   * @param traitList simulated traits
+//   * @param gender male or female (male is not adjusted)
+//   * @return given traits adjusted by age category
+//   */
+//  public AttributeList adjTraitsForGender(AttributeList traitList,
+//      String gender)
+//  {
+//    // REPLACE the original category with the given one
+//    String originalGender = super._gender;
+//    super._gender = gender;
+//    // TEST
+//    AttributeList resultSet = super.adjTraitsForGender(traitList);
+//    // RESET the category back to its original
+//    super._gender = originalGender;
+//    return resultSet;
+//  }
 
   // /** Accesor to the protected method in the base class. All tests are run
   // against an initial Person,
@@ -210,25 +195,25 @@ public class MockRace extends Race
   // return Age.calcAgeCategory(age, ageBrackets);
   // }
 
-  /**
-   * Pass AP and height adjusters into base movement calculations
-   * 
-   * @param ap Action Points (AP) determine Person's speed
-   * @param height gives bonus or penalty adjustment
-   * @return base movement (before weight carried is considered)
-   */
-  public int calcBaseMovement(int ap, int height)
-  {
-    // REPLACE the original category with the given one
-    int originalHeight = super._height;
-    super._height = height;
-    // TEST
-    int bMvmt = super.calcBaseMovement(ap);
-    // RESET the category back to its original
-    super._height = originalHeight;
-
-    return bMvmt;
-  }
+//  /**
+//   * Pass AP and height adjusters into base movement calculations
+//   * 
+//   * @param ap Action Points (AP) determine Person's speed
+//   * @param height gives bonus or penalty adjustment
+//   * @return base movement (before weight carried is considered)
+//   */
+//  public int calcBaseMovement(int ap, int height)
+//  {
+//    // REPLACE the original category with the given one
+//    int originalHeight = super._height;
+//    super._height = height;
+//    // TEST
+//    int bMvmt = super.calcBaseMovement(ap);
+//    // RESET the category back to its original
+//    super._height = originalHeight;
+//
+//    return bMvmt;
+//  }
 
   // TODO: Move this method to the CIV package
   // /** Test the permutations of the CHR descriptions.
@@ -270,22 +255,29 @@ public class MockRace extends Race
   // return bodyType;
   // }
 
-  /**
-   * Test the percentile finder.
-   * 
-   * @param value the Person's specific value to be applied within the range
-   * @param minValue the smallest possible value for the range of the population
-   * @param maxValue the largest possible value for the range of the population
-   * @param descriptors the population of specific descriptions to use for range; The number of the
-   *        descriptor array determines the N to calculate the N-tile.
-   * @return the string that corresponds to the value within the segmented range specified by
-   *         maxValue and minValue
-   */
-  public String testRangeDescriptor(double value, double minValue, double maxValue, 
-      String[] descriptors)
-  {
-    return super.findRangeDescriptor(value, minValue, maxValue, descriptors);
-  }
+//  /**
+//   * Test the percentile finder.
+//   * 
+//   * @param value the Person's specific value to be applied within the range
+//   * @param minValue the smallest possible value for the range of the population
+//   * @param maxValue the largest possible value for the range of the population
+//   * @param descriptors the population of specific descriptions to use for range; The number of the
+//   *        descriptor array determines the N to calculate the N-tile.
+//   * @return the string that corresponds to the value within the segmented range specified by
+//   *         maxValue and minValue
+//   */
+//  public String testRangeDescriptor(double value, double minValue, double maxValue, 
+//      String[] descriptors)
+//  {
+//    return super.findRangeDescriptor(value, minValue, maxValue, descriptors);
+//  }
+
+@Override
+public int[] adjustTraitsForRace(int[] traits)
+{
+    // TODO Auto-generated method stub
+    return null;
+}
 
   
 } // end of MockRace class

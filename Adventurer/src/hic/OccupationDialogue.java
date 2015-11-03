@@ -155,10 +155,6 @@ public class OccupationDialogue extends JDialog
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
-  /** Default constructor */
-  public OccupationDialogue()
-  {}
-
   /**
    * Creates the dialogue fields
    * 
@@ -169,7 +165,7 @@ public class OccupationDialogue extends JDialog
     super(owner, "Occupation Dialogue", true);
 
     // Save the calling civ for later callback
-    _occCiv = new OccupationDisplayCiv();
+    _occCiv = null; //new OccupationDisplayCiv();
     _owner = owner;
 
     // GENERAL SETUP

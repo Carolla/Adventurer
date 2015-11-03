@@ -23,48 +23,51 @@ import javax.swing.JComponent;
  */
 public interface MainframeInterface
 {
+  /** Replace the button panel with the final IOPanel */
+  public void addIOPanel();
+
+  public void addPanel(JComponent component);
+
+//  /** Exit the system */
+//  public boolean approvedQuit();
+
   /** Display error text into the output panel */
   public void displayErrorText(String errText);
 
-  /** Display a prompt message asking for confirmation */ 
+  /** Display a prompt message asking for confirmation */
   public boolean displayPrompt(String msg);
 
   /** Display the text into the output panel */
   public void displayText(String s);
-  
-  /** Display the image into the image panel */
-  public void setImage(Image image);
-  
-  /** Display the title of the building aboce the image panel */
-  public void setImageTitle(String title);
 
   /** Get the size of the panel that holds the image */
   public Dimension getImagePanelSize();
 
-  /**
-   * Define a bounding rectangle to highlight a building
-   * @param rect rectangle around the building
-   */
-  public void setBuilding(BuildingRectangle rect);
-
-  /** Replace the button panel with the final IOPanel */
-  public void addIOPanel();
-
   /** Redraw the mainframe to re-init the graphics outputs */
   public void redraw();
-
-  /** Exit the system */
-  public boolean approvedQuit();
 
   /** Redraws the view */
   public void repaint();
 
-  public void addPanel(JComponent component);
+  /** Display the image into the image panel */
+  public void setImage(Image image);
+
+  /** Display the title of the building aboce the image panel */
+  public void setImageTitle(String title);
+
+  /**
+   * Define a bounding rectangle to highlight a building
+   * 
+   * @param rect rectangle around the building
+   */
+  public void setBuilding(BuildingRectangle rect);
 
   /**
    * @param object
    */
   public void setTitle(String title);
 
-  
-} // end of MainframeInterface 
+  public void showHelp();
+
+
+} // end of MainframeInterface

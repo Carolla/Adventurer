@@ -1,13 +1,6 @@
-package pdc.command;
-
-import civ.MainframeCiv;
-import civ.UserMsg;
-
-import mylib.MsgCtrl;
+package chronos.pdc.Command;
 
 import java.util.List;
-// import civ.ChronosLogger;
-//import civ.MainframeCiv;
 
 public class NullCommand extends Command
 {

@@ -27,7 +27,7 @@ public class MockMFC extends MainframeCiv
   // Create the super constructor without a Mainframe
   public MockMFC()
   {
-    super(new MainframeProxy(), null);
+    super(new MainframeProxy(), null, null);
   }
 
   /** Enter the designated building, or the current building if displayed */

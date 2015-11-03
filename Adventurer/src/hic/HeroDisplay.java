@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -26,13 +27,13 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
-import civ.HeroDisplayCiv;
-import civ.PersonKeys;
 import mylib.Constants;
 import mylib.MsgCtrl;
 import net.miginfocom.swing.MigLayout;
 import pdc.Inventory;
-import pdc.MiscKeys.ItemCategory;
+import chronos.pdc.MiscKeys.ItemCategory;
+import civ.HeroDisplayCiv;
+import civ.PersonKeys;
 
 
 /**
@@ -221,12 +222,13 @@ public class HeroDisplay extends JPanel
    * Create the GUI and populate it with various data maps
    * 
    * @param hdCiv the intermediary between this GUI and the Person
+ * @param _mf 
    * @param outputMap contains all the hero's data to be displayed
    */
-  public HeroDisplay(HeroDisplayCiv hdCiv)
+  public HeroDisplay(HeroDisplayCiv hdCiv, Mainframe mainframe)
   {
-    _mainframe = Mainframe.getInstance();
     _hdCiv = hdCiv;
+    _mainframe = mainframe;
     _ds = _hdCiv.getAttributes();
 
     // _hdCiv.resetLoadState();
@@ -283,23 +285,23 @@ public class HeroDisplay extends JPanel
   // }
 
 
-  /**
-   * Put the HeroDisplay panel into a scrollpane and add to the MainFrame
-   * 
-   * @return the scrollpane for the Person's attributes
-   */
-  public JScrollPane display()
-  {
-    // Make the display scrollable to add to the MainFrame
-    JScrollPane heroScroll = makeScrollable();
-
-    // Add the non-static scrolling panel to the main JFrame
-    _mainframe.addPanel(heroScroll);
-    _mainframe.repaint();
-    // Get the focus so the arrow keys will work
-    requestFocusInWindow();
-    return heroScroll;
-  }
+//  /**
+//   * Put the HeroDisplay panel into a scrollpane and add to the MainFrame
+//   * 
+//   * @return the scrollpane for the Person's attributes
+//   */
+//  public JScrollPane display()
+//  {
+//    // Make the display scrollable to add to the MainFrame
+//    JScrollPane heroScroll = makeScrollable();
+//
+//    // Add the non-static scrolling panel to the main JFrame
+//    _mainframe.addPanel(heroScroll);
+//    _mainframe.repaint();
+//    // Get the focus so the arrow keys will work
+//    requestFocusInWindow();
+//    return heroScroll;
+//  }
 
 
   /**
@@ -321,12 +323,12 @@ public class HeroDisplay extends JPanel
    * Add a JTextArea into a multiline grid
    * 
    * @param title of the section for a group, e.g., racial, occupational, or klass
-   * @param myList of Strings to display in this multi-line cell
+   * @param nameList of Strings to display in this multi-line cell
    */
-  private JPanel buildMultiCell(String title, ArrayList<String> myList)
+  private JPanel buildMultiCell(String title, List<String> nameList)
   {
-    JTextArea msgArea = new JTextArea(myList.size() + 1, DATA_WIDTH);
-    msgArea.setPreferredSize(new Dimension(DATA_WIDTH, myList.size() + 1));
+    JTextArea msgArea = new JTextArea(nameList.size() + 1, DATA_WIDTH);
+    msgArea.setPreferredSize(new Dimension(DATA_WIDTH, nameList.size() + 1));
     msgArea.setBackground(_backColor);
     msgArea.setEditable(false);
     msgArea.setTabSize(1);
@@ -337,12 +339,11 @@ public class HeroDisplay extends JPanel
     msgArea.append(" " + title + Constants.NEWLINE);
 
     // Display the detailed skill list
-    if (myList.size() == 0) {
-      myList.add(" None");
+    if (nameList.size() == 0) {
+      nameList.add(" None");
     }
-    for (int k = 0; k < myList.size(); k++) {
-      String s0 = myList.get(k);
-      msgArea.append(" + " + myList.get(k) + Constants.NEWLINE);
+    for (int k = 0; k < nameList.size(); k++) {
+      msgArea.append(" + " + nameList.get(k) + Constants.NEWLINE);
     }
 
     // Add the text area into a JPanel cell
@@ -704,7 +705,7 @@ public class HeroDisplay extends JPanel
 
     // Get various items from the civ
     Inventory inventory = _hdCiv.getInventory();
-    ArrayList<String> nameList = new ArrayList<String>();
+    List<String> nameList = new ArrayList<String>();
 
     // Active arms and armor: initially, none
     invenPanel.add(gridCell("Wielded Weapon:", "None"), "gaptop 10, span 6, growx, wrap 0");
@@ -750,8 +751,7 @@ public class HeroDisplay extends JPanel
     magicPanel.setBackground(_backColor);
 
     // Get maigc items from the civ
-    ArrayList<String> nameList = _hdCiv.getInventoryNames(ItemCategory.MAGIC);
-    ArrayList<String> spellList = new ArrayList<String>();
+    List<String> nameList = _hdCiv.getInventoryNames(ItemCategory.MAGIC);
 
     magicPanel.add(buildMultiCell("MAGIC ITEMS", nameList), "growx, wrap 0");
 
@@ -768,8 +768,7 @@ public class HeroDisplay extends JPanel
     magicPanel.setBackground(_backColor);
 
     // Get maigc items from the civ
-    ArrayList<String> itemList = _hdCiv.getInventoryNames(ItemCategory.SPELL_MATERIAL);
-    ArrayList<String> materialsList = new ArrayList<String>();
+    List<String> itemList = _hdCiv.getInventoryNames(ItemCategory.SPELL_MATERIAL);
 
     magicPanel.add(buildMultiCell("SPELL MATERIALS", itemList), "growx, wrap 0");
 
@@ -784,9 +783,9 @@ public class HeroDisplay extends JPanel
     skillPanel.setBackground(_backColor);
 
     // Get various skills from the civ
-    ArrayList<String> racialSkills = _hdCiv.getRaceSkills();
-    ArrayList<String> ocpSkills = _hdCiv.getOcpSkills();
-    ArrayList<String> klassSkills = _hdCiv.getKlassSkills();
+    List<String> racialSkills = _hdCiv.getRaceSkills();
+    List<String> ocpSkills = _hdCiv.getOcpSkills();
+    List<String> klassSkills = _hdCiv.getKlassSkills();
 
     // Section 1: Literacy
     skillPanel.add(gridCell("", _ds.get(PersonKeys.LITERACY)), "gaptop 10, span 6, growx, wrap");
@@ -821,13 +820,25 @@ public class HeroDisplay extends JPanel
 
     // Get maigc items from the civ
     ArrayList<String> spellList = _hdCiv.getSpellBook();
+    int known = spellList.size();
+    spellPanel.add(buildMultiCell(known + " SPELLS KNOWN", spellList), "growx, wrap 0");
 
-    spellPanel.add(buildMultiCell("SPELLS KNOWN", spellList), "growx, wrap 0");
+    // Prompt Wizard (only) to get more spells if he/she can
+    if (_ds.get(PersonKeys.KLASSNAME).equalsIgnoreCase("Wizard")) {
+      int allowed = Integer.parseInt(_ds.get(PersonKeys.MAX_MSP));
+      int diff = allowed - known;
+      if (diff != 0) {
+        String prompt =
+            String.format("Go to your local Wizard's Guild to get %d more spells", diff);
+        spellPanel.add(gridCell("", ""), "span 6, growx, wrap 0");
+        spellPanel.add(gridCell(prompt, " "), "span 6, growx, wrap 0");
+      }
+    }
 
     return spellPanel;
   }
 
-  
+
   /**
    * Delete the Person currently being displayed into a new file.
    * 
@@ -1109,19 +1120,20 @@ public class HeroDisplay extends JPanel
         "View Hero's items owned, worn, or wielded");
     tabPane.addTab("Magic Items", null, buildMagicPanel(),
         "View Hero's enchanted items");
-    tabPane.setSelectedIndex(3); // set default tab
+    tabPane.setSelectedIndex(0); // set default tab
 
     // Create the conditional tab for magic items for all klasses
     String klassname = _ds.get(PersonKeys.KLASSNAME);
     // Only for Clerics
     if (klassname.equalsIgnoreCase("Cleric")) {
-      tabPane.addTab("Sacred Satchel", null, buildMaterialsPanel(), 
+      tabPane.addTab("Sacred Satchel", null, buildMaterialsPanel(),
           "View Hero's materials needed for spells.");
       tabPane.addTab("Spell Book", null, buildSpellsPanel(), "View Hero's known spells.");
     }
     // Only for Wizards
     if (klassname.equalsIgnoreCase("Wizard")) {
-      tabPane.addTab("Magic Bag", null, buildMaterialsPanel(), "View Hero's materials needed for spells.");
+      tabPane.addTab("Magic Bag", null, buildMaterialsPanel(),
+          "View Hero's materials needed for spells.");
       tabPane.addTab("Spell Book", null, buildSpellsPanel(), "View Hero's known spells.");
     }
 

@@ -24,7 +24,6 @@ import org.junit.Test;
 
 import chronos.Chronos;
 import civ.Adventurer;
-import civ.Adventurer.MockAdventurer;
 
 /**
  * Ensure that the program exits back to the system, closing all registries, but not deleting them.
@@ -95,11 +94,6 @@ public class TA00b_Quit
 
     // Ensure that the Registries exist
     Adventurer adv = new Adventurer();
-    MockAdventurer mock = adv.new MockAdventurer();
-    mock.initRegistries();
-    
-    // Close down the registries
-    mock.closeRegistries();
 
     // VERIFY that the registries still exist
     assertTrue(registryFilesExist());

@@ -10,16 +10,9 @@
 
 package mylib.test.pdc;
 
-import java.util.List;
-
 import mylib.ApplicationException;
-import mylib.dmc.DbReadWriter;
-import mylib.dmc.DbReadWriter.MockDBRW;
-import mylib.dmc.IRegistryElement;
 import mylib.pdc.Registry;
 import mylib.test.dmc.SomeObject;
-
-import com.db4o.query.Predicate;
 
 
 /**
@@ -38,7 +31,7 @@ import com.db4o.query.Predicate;
  *          Jun 13 2011 // TAA: updated/deprecated methods <br>
  *          Sep 27 2014 // ABC removed unneeded methods and encapsulated DBRW better <br>
  */
-public class ConcreteRegistry extends Registry
+public class ConcreteRegistry extends Registry<SomeObject>
 {
 
   // ============================================================
@@ -68,95 +61,13 @@ public class ConcreteRegistry extends Registry
   protected void initialize()
   {
     // Create three objects to initialize database
-    SomeObject obj1 = new SomeObject(1.0, "one");
-    SomeObject obj2 = new SomeObject(2.0, "two");
-    SomeObject obj3 = new SomeObject(3.0, "three");
+    SomeObject obj1 = new SomeObject(1, "one");
+    SomeObject obj2 = new SomeObject(2, "two");
+    SomeObject obj3 = new SomeObject(3, "three");
     add(obj1);
     add(obj2);
     add(obj3);
   }
-
-
-  // ============================================================
-  // INNER CLASS MockRegistry
-  // ============================================================
-  /*
-   * 
-   * /** Accesses private data in test target
-   */
-  public class MockRegistry
-  {
-    /** Testing mock for the DBReadWriter component */
-    MockDBRW _dbMock = null;
-
-    /**
-     * Creates this testing mock, and a testing mock of the DbReadWriter to have access to its
-     * private methods
-     */
-    public MockRegistry()
-    {
-      _dbMock = _regRW.new MockDBRW();
-    }
-
-    /** Clear all elements in the database but leave it open */
-    @SuppressWarnings("serial")
-    public void clearElements()
-    {
-      // Get all the elements first
-      List<IRegistryElement> list = get(new Predicate<IRegistryElement>() {
-        public boolean match(IRegistryElement candidate)
-        {
-          return true;
-        }
-      });
-      // Now delete everything found from the registry
-      for (int k = 0; k < list.size(); k++) {
-        delete(list.get(k));
-      }
-    }
-
-
-//    /** Exposes the db erase method for testing purposes */
-//    public void eraseDB()
-//    {
-//      _dbMock.dbErase();
-//    }
-
-
-    /** Get all the elements in the Registry */
-    @SuppressWarnings("serial")
-    public List<IRegistryElement> getAll()
-    {
-      // Run the query using the equals method
-      List<IRegistryElement> obSet = _regRW.dbQuery(new Predicate<IRegistryElement>() {
-        public boolean match(IRegistryElement candidate)
-        {
-          return true;
-        }
-      });
-      return obSet;
-    }
-
-
-    /**
-     * Get the DbRW for test access
-     * 
-     * @return the db read-writer object reference for this registry
-     */
-    public DbReadWriter getDBRW()
-    {
-      return _regRW;
-    }
-
-
-    /** Load the registry with the initialized elements */
-    public void init()
-    {
-      ConcreteRegistry.this.initialize();
-    }
-
-  } // end of MockRegistry inner class
-
 
 } // end of ConcreteRegistry outer class
 

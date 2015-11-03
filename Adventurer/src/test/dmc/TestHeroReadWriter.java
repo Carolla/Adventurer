@@ -1,20 +1,21 @@
 package test.dmc;
 
-import pdc.character.Person;
-
-import dmc.PersonReadWriter;
-
-import chronos.Chronos;
-
-import mylib.MsgCtrl;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 
-import junit.framework.TestCase;
+import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.Before;
+
+import pdc.character.Hero;
+import chronos.Chronos;
+import dmc.HeroReadWriter;
 
 /**
  * Test that the read/writer component of the SkillRegistry class works
@@ -28,15 +29,15 @@ import org.junit.Before;
  *          <DD>
  *          </DL>
  */
-public class TestPersonReadWriter extends TestCase {
+public class TestHeroReadWriter {
 	// Create ReadWriters for the tests
-	private PersonReadWriter _persRW = null;
+	private HeroReadWriter _persRW = null;
 
 	@Before
 	public void setUp() throws Exception {
 		MsgCtrl.auditMsgsOn(false);
-		// Create PersonReadWriter
-		_persRW = new PersonReadWriter();
+		// Create HeroReadWriter
+		_persRW = new HeroReadWriter();
 		assertNotNull(_persRW);
 	}
 
@@ -52,9 +53,9 @@ public class TestPersonReadWriter extends TestCase {
 	/**
 	 * Create a SkillRegistry object by loading it from the data file.
 	 * 
-	 * @Normal PersonRW.Load() OK
-	 * @Error PersonRW.Load() OK
-	 * @Null PersonRW.Load() N/A
+	 * @Normal HeroRW.Load() OK
+	 * @Error HeroRW.Load() OK
+	 * @Null HeroRW.Load() N/A
 	 */
 	public void testLoad() throws IOException {
 		MsgCtrl.auditMsgsOn(true);
@@ -65,12 +66,12 @@ public class TestPersonReadWriter extends TestCase {
 		MsgCtrl.msgln("\tTest 1: No data file exists, should see exception message");
 		String pers = "TestBob";
 		MsgCtrl.msgln("\tNo person file to load...exception expected:");
-		assertNull(_persRW.load(pers));
+		assertTrue(null == _persRW.load(pers));
 
 		// NORMAL -- Test 2: Load a test person file.
 		MsgCtrl.msgln("\tTest 2: Load a Person file for test purposes");
 		pers = "TestClyde";
-		Person p = _persRW.load(pers);
+		Hero p = _persRW.load(pers);
 		assertNotNull(p);
 	}
 
@@ -78,9 +79,9 @@ public class TestPersonReadWriter extends TestCase {
 	 * Load a Person object, write it to a new file, then by replacing it. Not
 	 * sure how to compare Object values.
 	 * 
-	 * @Normal PersonRW.Save() OK
-	 * @Error PersonRW.Save() TODO with file locking(?)
-	 * @Null PersonRW.Save() N/A
+	 * @Normal HeroRW.Save() OK
+	 * @Error HeroRW.Save() TODO with file locking(?)
+	 * @Null HeroRW.Save() N/A
 	 */
 	public void testSave() throws IOException {
 		MsgCtrl.auditMsgsOn(true);
@@ -97,12 +98,12 @@ public class TestPersonReadWriter extends TestCase {
 		if (toDel.exists()) {
 			assertTrue(toDel.delete());
 		}
-		assertNull(_persRW.load(pers2));
+		assertTrue(null == _persRW.load(pers2));
 
 		// NORMAL -- Load person and try to save normally (beware of load()
 		// dependencies)
-		Person p = _persRW.load(pers1);
-		Person q = _persRW.load(pers1);
+		Hero p = _persRW.load(pers1);
+		Hero q = _persRW.load(pers1);
 		assertNotNull(p);
 		MsgCtrl.msgln("\tTest 1: Writing a loaded person to a test file");
 		assertTrue(_persRW.save(p, pers2));
@@ -119,18 +120,18 @@ public class TestPersonReadWriter extends TestCase {
 		q = null;
 		assertFalse(_persRW.save(q, pers2));
 
-		Person r = _persRW.load(pers2);
+		Hero r = _persRW.load(pers2);
 		assertTrue((q == r) && (r != p));
 
 		// Debugging
 		fileStr = Chronos.CHRONOS_LIB_RESOURCES_PATH + pers2 + ".chr";
 		toDel = new File(fileStr);
 		assertTrue(toDel.delete());
-		assertNull(_persRW.load(pers2));
+		assertTrue(null == _persRW.load(pers2));
 
 		MsgCtrl.auditMsgsOn(true);
 
 	}
 
-} // end of PersonReadWriter class
+} // end of HeroReadWriter class
 

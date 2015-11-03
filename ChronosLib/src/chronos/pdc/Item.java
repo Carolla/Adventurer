@@ -7,14 +7,15 @@
  * by email: acline@carolla.com
  */
 
-package pdc;
+package chronos.pdc;
 
 import java.util.EnumMap;
 
 import mylib.ApplicationException;
 import mylib.dmc.IRegistryElement;
-import pdc.MiscKeys.ItemCategory;
-import pdc.MiscKeys.ItemFields;
+import chronos.pdc.MiscKeys.ItemCategory;
+import chronos.pdc.MiscKeys.ItemFields;
+import chronos.pdc.registry.ItemRegistry;
 
 
 /**
@@ -28,9 +29,8 @@ import pdc.MiscKeys.ItemFields;
  */
 public class Item implements IRegistryElement
 {
-  // /** METADATA CONSTANTS */
-  // /** Recommended serialization constant */
-  // static final long serialVersionUID = 1002L;
+   /** Recommended serialization constant */
+   static final long serialVersionUID = 1002L;
 
   /** Weight of Item to nearest lb */
   public final int LBWT = 0;
@@ -51,14 +51,25 @@ public class Item implements IRegistryElement
   /** Standard weight (oz) for a silver piece */
   static public final int SILVER_WEIGHT = 1;
 
+  private static ItemRegistry _ireg = null;
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
-  // /** Default constructor */
-  // public Item()
-  // {}
+  /** Default constructor */
+  public Item()
+  {}
 
+  public static void setItemRegistry(ItemRegistry ireg)
+  {
+      _ireg = ireg;
+  }
+  
+  public static Item getItem(String itemName)
+  {
+      return _ireg.getItem(itemName);
+  }
+  
   /**
    * Construct an Item from its name and weight descriptor
    * 

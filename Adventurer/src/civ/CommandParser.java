@@ -15,10 +15,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import pdc.command.Command;
 import pdc.command.CommandFactory;
 import pdc.command.CommandInput;
-import pdc.command.Scheduler;
+import chronos.pdc.Command.Command;
+import chronos.pdc.Command.Scheduler;
 
 /**
  * Receives a user input string from the command window and converts it to a command object, which

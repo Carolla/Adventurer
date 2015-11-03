@@ -12,7 +12,6 @@
 package test.pdc;
 
 import junit.framework.TestCase;
-import mylib.Constants;
 import mylib.MsgCtrl;
 
 import org.junit.After;
@@ -308,56 +307,56 @@ public class TestRace extends TestCase {
 	// assertTrue(isTraitsEqual(lifetimeTraits, resultSet));
 	// }
 
-	/**
-	 * Adjust the prime traits based on gender, regardless of race. <br>
-	 * Algorithm: Males are default, so no changes are made to the traits.
-	 * Females are given +1 CON, +1 CHR, but -1 STR
-	 * 
-	 * @Normal Race.adjTraitsForGender(int[] traitList) traverse groups of
-	 *         values
-	 * @Error Race.adjTraitsForGender(int[] traitList) invalid or missing gender
-	 * @Null Race.adjTraitsForGender(int[] traitList) null input parm
-	 */
-	public void testAdjTraitsForGender() {
-		MsgCtrl.auditMsgsOn(false);
-		MsgCtrl.msgln(this, "\ttestAdjTraitsForGender()");
-		// Turn off error messages once this test passes
-		MsgCtrl.errorMsgsOn(false);
-
-		// Start low and adjust for male and female
-		final int[] femLowTraits = { 7, 8, 8, 9, 8, 9 };
-		final int[] femMedTraits = { 10, 11, 11, 12, 11, 12 };
-		final int[] femHighTraits = { 17, 18, 18, 19, 18, 19 };
-
-		// NORMAL cases
-		AttributeList resultSet = null;
-		// Test Male and Female adjustments for low traits
-		resultSet = _mr.adjTraitsForGender(_startLowTraits, MALE);
-		assertTrue(_startLowTraits.equals(resultSet));
-		resultSet = _mr.adjTraitsForGender(_startLowTraits, FEMALE);
-		assertTrue(new AttributeList(femLowTraits).equals(resultSet));
-
-		// Test Male and Female adjustments for medium traits
-		resultSet = _mr.adjTraitsForGender(_startTraits, MALE);
-		assertTrue(_startTraits.equals(resultSet));
-		resultSet = _mr.adjTraitsForGender(_startTraits, FEMALE);
-		assertTrue(new AttributeList(femMedTraits).equals(resultSet));
-
-		// Test Male and Female adjustments for high traits
-		resultSet = _mr.adjTraitsForGender(_startHighTraits, MALE);
-		assertTrue(_startHighTraits.equals(resultSet));
-		resultSet = _mr.adjTraitsForGender(_startHighTraits, FEMALE);
-		assertTrue(new AttributeList(femHighTraits).equals(resultSet));
-
-		// NULL case
-		MsgCtrl.errMsg(this, "\tExpected error:");
-		assertNull(_mr.adjTraitsForGender(null, MALE));
-
-		// // ERROR case: missing or invalid gender
-		// MsgCtrl.errMsg(this, "\tExpected error:");
-		// resultSet = _mr.adjTraitsForGender(_startTraits, "No Gender");
-		// assertTrue(Utilities.isTraitsEqual(_startTraits, resultSet));
-	}
+//	/**
+//	 * Adjust the prime traits based on gender, regardless of race. <br>
+//	 * Algorithm: Males are default, so no changes are made to the traits.
+//	 * Females are given +1 CON, +1 CHR, but -1 STR
+//	 * 
+//	 * @Normal Race.adjTraitsForGender(int[] traitList) traverse groups of
+//	 *         values
+//	 * @Error Race.adjTraitsForGender(int[] traitList) invalid or missing gender
+//	 * @Null Race.adjTraitsForGender(int[] traitList) null input parm
+//	 */
+//	public void testAdjTraitsForGender() {
+//		MsgCtrl.auditMsgsOn(false);
+//		MsgCtrl.msgln(this, "\ttestAdjTraitsForGender()");
+//		// Turn off error messages once this test passes
+//		MsgCtrl.errorMsgsOn(false);
+//
+//		// Start low and adjust for male and female
+//		final int[] femLowTraits = { 7, 8, 8, 9, 8, 9 };
+//		final int[] femMedTraits = { 10, 11, 11, 12, 11, 12 };
+//		final int[] femHighTraits = { 17, 18, 18, 19, 18, 19 };
+//
+//		// NORMAL cases
+//		AttributeList resultSet = null;
+//		// Test Male and Female adjustments for low traits
+//		resultSet = _mr.adjTraitsForGender(_startLowTraits, MALE);
+//		assertTrue(_startLowTraits.equals(resultSet));
+//		resultSet = _mr.adjTraitsForGender(_startLowTraits, FEMALE);
+//		assertTrue(new AttributeList(femLowTraits).equals(resultSet));
+//
+//		// Test Male and Female adjustments for medium traits
+//		resultSet = _mr.adjTraitsForGender(_startTraits, MALE);
+//		assertTrue(_startTraits.equals(resultSet));
+//		resultSet = _mr.adjTraitsForGender(_startTraits, FEMALE);
+//		assertTrue(new AttributeList(femMedTraits).equals(resultSet));
+//
+//		// Test Male and Female adjustments for high traits
+//		resultSet = _mr.adjTraitsForGender(_startHighTraits, MALE);
+//		assertTrue(_startHighTraits.equals(resultSet));
+//		resultSet = _mr.adjTraitsForGender(_startHighTraits, FEMALE);
+//		assertTrue(new AttributeList(femHighTraits).equals(resultSet));
+//
+//		// NULL case
+//		MsgCtrl.errMsg(this, "\tExpected error:");
+//		assertNull(_mr.adjTraitsForGender(null, MALE));
+//
+//		// // ERROR case: missing or invalid gender
+//		// MsgCtrl.errMsg(this, "\tExpected error:");
+//		// resultSet = _mr.adjTraitsForGender(_startTraits, "No Gender");
+//		// assertTrue(Utilities.isTraitsEqual(_startTraits, resultSet));
+//	}
 
 	// /** Test that certain ages fall into the proper age bracket.
 	// Interestingly, there are no
@@ -437,166 +436,166 @@ public class TestRace extends TestCase {
 	// }
 	// }
 
-	/**
-	 * Calculate the base movement speed, based on Action Points and height.
-	 * Algorithm: For each MVMT_MOD Action Points (STR+DEX), the person can move
-	 * one more block movement, to a maximum of MAX_MOVEMENT. Movement is given
-	 * +1/-1 adjustment for extra tall/short Persons. MockRace is used for
-	 * testing, so arbitrary values are given for heights.
-	 * 
-	 * @Normal Race.calcBaseMovement(int ap) ok
-	 * @Error Race.calcBaseMovement(int ap) worked within Normal test loop
-	 * @Null Race.calcBaseMovement(int ap) N/A
-	 */
-	public void testCalcBaseMovement() {
-		// Turn off normal error messages from Race class
-		MsgCtrl.auditMsgsOn(false);
-		MsgCtrl.msgln(this, "\ttestCalcBaseMovement()");
-		// Turn off error messages once this test passes
-		MsgCtrl.errorMsgsOn(false);
-
-		// Tests values to test movement
-		final int[] aps = { -1, 0, 1, 2, 3, 10, 15, 17, 25, 33, 55 };
-		final int[] bmResult = { -1, 0, 1, 1, 1, 2, 2, 3, 4, 5, 5 }; // [1-5]
-		final int[] bmLoResult = { -1, 0, 1, 1, 1, 1, 1, 2, 3, 4, 4 }; // [1-4]
-		final int[] bmHiResult = { -1, 0, 2, 2, 2, 3, 3, 4, 5, 6, 6 }; // [2-6]
-		/** Movement penalty for short Persons */
-		final int PENALTY_HEIGHT = 48;
-		/** Movement bonus for tall Persons */
-		final int BONUS_HEIGHT = 78;
-		/** Non-adjusting Height */
-		final int AVG_HEIGHT = 60;
-
-		// NORMAL cases
-		// Average height test
-		int bm = Constants.UNASSIGNED;
-		for (int k = 0; k < aps.length; k++) {
-			// ERROR cases inner loop
-			if (k < 2) {
-				MsgCtrl.errMsg("\tExpected error: ");
-			}
-			bm = _mr.calcBaseMovement(aps[k], AVG_HEIGHT);
-			assertTrue(bm == bmResult[k]);
-		}
-		// Short height test
-		bm = Constants.UNASSIGNED;
-		for (int k = 0; k < aps.length; k++) {
-			// ERROR cases inner loop
-			if (k < 2) {
-				MsgCtrl.errMsg(this, "\tExpected error:");
-			}
-			bm = _mr.calcBaseMovement(aps[k], PENALTY_HEIGHT);
-			assertTrue(bm == bmLoResult[k]);
-		}
-		// Tall height test
-		bm = Constants.UNASSIGNED;
-		for (int k = 0; k < aps.length; k++) {
-			// ERROR cases inner loop
-			if (k < 2) {
-				MsgCtrl.errMsg(this, "\tExpected error:");
-			}
-			bm = _mr.calcBaseMovement(aps[k], BONUS_HEIGHT);
-			assertTrue(bm == bmHiResult[k]);
-		}
-	}
-
-	/**
-	 * Generate a series of strings for a value that falls within a certain set
-	 * of ranges
-	 * 
-	 * @Normal Race.testRangeDesc(double value, double minValue, ok double
-	 *         maxValue, String[] descriptors)
-	 * @Normal Race.testRangeDesc(double value, double minValue, ok double
-	 *         maxValue, String[] descriptors)
-	 * @Normal Race.testRangeDesc(double value, double minValue, double
-	 *         maxValue, String[] descriptors) n/a
-	 */
-	public void testRangeDesc1() {
-		// This method is tested; can turn off messaging now
-		MsgCtrl.auditMsgsOn(false);
-		MsgCtrl.msgln(this, "\ttestRangeDesc1()");
-		MsgCtrl.errorMsgsOn(false);
-
-		// Three categories (for an odd number)
-		final String[] ranges = { "low", "medium", "high" };
-		final double[] vals = { 1, 5, 10, 20, 60, 89, 90 };
-		final String[] testResults = { "low", "low", "low", "low", "medium",
-				"high" };
-
-		// NORMAL Test target should return these values after grouping them
-		// into 1 of 3 ranges
-		for (int k = 0; k < vals.length - 1; k++) {
-			// args: target value, minvalue, maxvalue, set of ranges
-			String result = _mr.testRangeDescriptor(vals[k], vals[0],
-					vals[vals.length - 1], ranges);
-			MsgCtrl.msgln(vals[k] + " => " + result);
-			assertTrue(testResults[k].equals(result));
-		}
-		// ERROR Deliberate failed tests (suppress the error messages)
-		MsgCtrl.errMsg("\tExpected error: ");
-		assertNull(_mr.testRangeDescriptor(91, vals[0], vals[vals.length - 1],
-				ranges));
-		MsgCtrl.errMsg("\tExpected error: ");
-		assertNull(_mr.testRangeDescriptor(299, vals[0], vals[vals.length - 1],
-				ranges));
-		MsgCtrl.errMsg("\tExpected error: ");
-		assertNull(_mr.testRangeDescriptor(-1, vals[0], vals[vals.length - 1],
-				ranges));
-		MsgCtrl.errMsg("\tExpected error: ");
-		assertNull(_mr.testRangeDescriptor(0, vals[0], vals[vals.length - 1],
-				ranges));
-	} // end of test method
-
-	/**
-	 * Generate a series of strings for a value that falls within a certain set
-	 * of ranges
-	 * 
-	 * @Normal Race.testRangeDesc(double value, double minValue, ok double
-	 *         maxValue, String[] descriptors)
-	 * @Normal Race.testRangeDesc(double value, double minValue, ok double
-	 *         maxValue, String[] descriptors)
-	 * @Normal Race.testRangeDesc(double value, double minValue, double
-	 *         maxValue, String[] descriptors) n/a
-	 */
-	public void testRangeDesc2() {
-		// This method is tested; can turn off messaging now
-		MsgCtrl.auditMsgsOn(false);
-		MsgCtrl.msgln(this, "\ttestRangeDesc2()");
-		MsgCtrl.errorMsgsOn(false);
-		// Six categories (for an even number) with non-integral range
-		// boundaries
-		final String[] ranges =
-		// 0-21.5 21.6-43 43.1-64.5 64.6-86 86.1-107.6 107.7-129.0
-		{ "alpha", "beta", "gamma", "delta", "eta", "phi" };
-		final double[] vals = { 0, 5, 10, 20, 60, 64, 65, 66, 78, 114, 129 };
-		final String[] testResults = { "alpha", "alpha", "alpha", "alpha",
-				"gamma", "gamma", "delta", "delta", "delta", "phi", "phi" };
-		// NORMAL Test target should return these values after grouping them
-		// into one of the three
-		// ranges
-		for (int k = 0; k < vals.length - 1; k++) {
-			// args: target value, minvalue, maxvalue, set of ranges
-			String result = _mr.testRangeDescriptor(vals[k], vals[0],
-					vals[vals.length - 1], ranges);
-			MsgCtrl.msgln(vals[k] + " => " + result);
-			assertTrue(testResults[k].equals(result));
-		}
-		// NORMAL Deliberate failed tests (suppress the error messages)
-		MsgCtrl.errMsg("\tExpected error: ");
-		assertNull(_mr.testRangeDescriptor(129.1, vals[0],
-				vals[vals.length - 1], ranges));
-		MsgCtrl.errMsg("\tExpected error: ");
-		assertNull(_mr.testRangeDescriptor(129.2, vals[0],
-				vals[vals.length - 1], ranges));
-		MsgCtrl.errMsg("\tExpected error: ");
-		assertNull(_mr.testRangeDescriptor(-1, vals[0], vals[vals.length - 1],
-				ranges));
-		MsgCtrl.errMsg("\tExpected error: ");
-		assertNull(_mr.testRangeDescriptor(300, vals[0], vals[vals.length - 1],
-				ranges));
-		// Deliberate failed tests (suppress the error messages)
-
-	} // end of test method
+//	/**
+//	 * Calculate the base movement speed, based on Action Points and height.
+//	 * Algorithm: For each MVMT_MOD Action Points (STR+DEX), the person can move
+//	 * one more block movement, to a maximum of MAX_MOVEMENT. Movement is given
+//	 * +1/-1 adjustment for extra tall/short Persons. MockRace is used for
+//	 * testing, so arbitrary values are given for heights.
+//	 * 
+//	 * @Normal Race.calcBaseMovement(int ap) ok
+//	 * @Error Race.calcBaseMovement(int ap) worked within Normal test loop
+//	 * @Null Race.calcBaseMovement(int ap) N/A
+//	 */
+//	public void testCalcBaseMovement() {
+//		// Turn off normal error messages from Race class
+//		MsgCtrl.auditMsgsOn(false);
+//		MsgCtrl.msgln(this, "\ttestCalcBaseMovement()");
+//		// Turn off error messages once this test passes
+//		MsgCtrl.errorMsgsOn(false);
+//
+//		// Tests values to test movement
+//		final int[] aps = { -1, 0, 1, 2, 3, 10, 15, 17, 25, 33, 55 };
+//		final int[] bmResult = { -1, 0, 1, 1, 1, 2, 2, 3, 4, 5, 5 }; // [1-5]
+//		final int[] bmLoResult = { -1, 0, 1, 1, 1, 1, 1, 2, 3, 4, 4 }; // [1-4]
+//		final int[] bmHiResult = { -1, 0, 2, 2, 2, 3, 3, 4, 5, 6, 6 }; // [2-6]
+//		/** Movement penalty for short Persons */
+//		final int PENALTY_HEIGHT = 48;
+//		/** Movement bonus for tall Persons */
+//		final int BONUS_HEIGHT = 78;
+//		/** Non-adjusting Height */
+//		final int AVG_HEIGHT = 60;
+//
+//		// NORMAL cases
+//		// Average height test
+//		int bm = Constants.UNASSIGNED;
+//		for (int k = 0; k < aps.length; k++) {
+//			// ERROR cases inner loop
+//			if (k < 2) {
+//				MsgCtrl.errMsg("\tExpected error: ");
+//			}
+//			bm = _mr.calcBaseMovement(aps[k], AVG_HEIGHT);
+//			assertTrue(bm == bmResult[k]);
+//		}
+//		// Short height test
+//		bm = Constants.UNASSIGNED;
+//		for (int k = 0; k < aps.length; k++) {
+//			// ERROR cases inner loop
+//			if (k < 2) {
+//				MsgCtrl.errMsg(this, "\tExpected error:");
+//			}
+//			bm = _mr.calcBaseMovement(aps[k], PENALTY_HEIGHT);
+//			assertTrue(bm == bmLoResult[k]);
+//		}
+//		// Tall height test
+//		bm = Constants.UNASSIGNED;
+//		for (int k = 0; k < aps.length; k++) {
+//			// ERROR cases inner loop
+//			if (k < 2) {
+//				MsgCtrl.errMsg(this, "\tExpected error:");
+//			}
+//			bm = _mr.calcBaseMovement(aps[k], BONUS_HEIGHT);
+//			assertTrue(bm == bmHiResult[k]);
+//		}
+//	}
+//
+//	/**
+//	 * Generate a series of strings for a value that falls within a certain set
+//	 * of ranges
+//	 * 
+//	 * @Normal Race.testRangeDesc(double value, double minValue, ok double
+//	 *         maxValue, String[] descriptors)
+//	 * @Normal Race.testRangeDesc(double value, double minValue, ok double
+//	 *         maxValue, String[] descriptors)
+//	 * @Normal Race.testRangeDesc(double value, double minValue, double
+//	 *         maxValue, String[] descriptors) n/a
+//	 */
+//	public void testRangeDesc1() {
+//		// This method is tested; can turn off messaging now
+//		MsgCtrl.auditMsgsOn(false);
+//		MsgCtrl.msgln(this, "\ttestRangeDesc1()");
+//		MsgCtrl.errorMsgsOn(false);
+//
+//		// Three categories (for an odd number)
+//		final String[] ranges = { "low", "medium", "high" };
+//		final double[] vals = { 1, 5, 10, 20, 60, 89, 90 };
+//		final String[] testResults = { "low", "low", "low", "low", "medium",
+//				"high" };
+//
+//		// NORMAL Test target should return these values after grouping them
+//		// into 1 of 3 ranges
+//		for (int k = 0; k < vals.length - 1; k++) {
+//			// args: target value, minvalue, maxvalue, set of ranges
+//			String result = _mr.testRangeDescriptor(vals[k], vals[0],
+//					vals[vals.length - 1], ranges);
+//			MsgCtrl.msgln(vals[k] + " => " + result);
+//			assertTrue(testResults[k].equals(result));
+//		}
+//		// ERROR Deliberate failed tests (suppress the error messages)
+//		MsgCtrl.errMsg("\tExpected error: ");
+//		assertNull(_mr.testRangeDescriptor(91, vals[0], vals[vals.length - 1],
+//				ranges));
+//		MsgCtrl.errMsg("\tExpected error: ");
+//		assertNull(_mr.testRangeDescriptor(299, vals[0], vals[vals.length - 1],
+//				ranges));
+//		MsgCtrl.errMsg("\tExpected error: ");
+//		assertNull(_mr.testRangeDescriptor(-1, vals[0], vals[vals.length - 1],
+//				ranges));
+//		MsgCtrl.errMsg("\tExpected error: ");
+//		assertNull(_mr.testRangeDescriptor(0, vals[0], vals[vals.length - 1],
+//				ranges));
+//	} // end of test method
+//
+//	/**
+//	 * Generate a series of strings for a value that falls within a certain set
+//	 * of ranges
+//	 * 
+//	 * @Normal Race.testRangeDesc(double value, double minValue, ok double
+//	 *         maxValue, String[] descriptors)
+//	 * @Normal Race.testRangeDesc(double value, double minValue, ok double
+//	 *         maxValue, String[] descriptors)
+//	 * @Normal Race.testRangeDesc(double value, double minValue, double
+//	 *         maxValue, String[] descriptors) n/a
+//	 */
+//	public void testRangeDesc2() {
+//		// This method is tested; can turn off messaging now
+//		MsgCtrl.auditMsgsOn(false);
+//		MsgCtrl.msgln(this, "\ttestRangeDesc2()");
+//		MsgCtrl.errorMsgsOn(false);
+//		// Six categories (for an even number) with non-integral range
+//		// boundaries
+//		final String[] ranges =
+//		// 0-21.5 21.6-43 43.1-64.5 64.6-86 86.1-107.6 107.7-129.0
+//		{ "alpha", "beta", "gamma", "delta", "eta", "phi" };
+//		final double[] vals = { 0, 5, 10, 20, 60, 64, 65, 66, 78, 114, 129 };
+//		final String[] testResults = { "alpha", "alpha", "alpha", "alpha",
+//				"gamma", "gamma", "delta", "delta", "delta", "phi", "phi" };
+//		// NORMAL Test target should return these values after grouping them
+//		// into one of the three
+//		// ranges
+//		for (int k = 0; k < vals.length - 1; k++) {
+//			// args: target value, minvalue, maxvalue, set of ranges
+//			String result = _mr.testRangeDescriptor(vals[k], vals[0],
+//					vals[vals.length - 1], ranges);
+//			MsgCtrl.msgln(vals[k] + " => " + result);
+//			assertTrue(testResults[k].equals(result));
+//		}
+//		// NORMAL Deliberate failed tests (suppress the error messages)
+//		MsgCtrl.errMsg("\tExpected error: ");
+//		assertNull(_mr.testRangeDescriptor(129.1, vals[0],
+//				vals[vals.length - 1], ranges));
+//		MsgCtrl.errMsg("\tExpected error: ");
+//		assertNull(_mr.testRangeDescriptor(129.2, vals[0],
+//				vals[vals.length - 1], ranges));
+//		MsgCtrl.errMsg("\tExpected error: ");
+//		assertNull(_mr.testRangeDescriptor(-1, vals[0], vals[vals.length - 1],
+//				ranges));
+//		MsgCtrl.errMsg("\tExpected error: ");
+//		assertNull(_mr.testRangeDescriptor(300, vals[0], vals[vals.length - 1],
+//				ranges));
+//		// Deliberate failed tests (suppress the error messages)
+//
+//	} // end of test method
 
 	/**
 	 * Ensure proper weights for male and female Characters

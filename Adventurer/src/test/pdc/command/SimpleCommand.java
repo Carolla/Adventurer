@@ -2,7 +2,7 @@ package test.pdc.command;
 
 import java.util.List;
 
-import pdc.command.Command;
+import chronos.pdc.Command.Command;
 
 public class SimpleCommand extends Command {
 

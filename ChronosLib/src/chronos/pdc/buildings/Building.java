@@ -9,12 +9,13 @@
 
 package chronos.pdc.buildings;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import mylib.ApplicationException;
 import mylib.dmc.IRegistryElement;
 import chronos.pdc.NPC;
-import chronos.pdc.registry.NPCRegistry;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 
 
 /**
@@ -36,31 +37,28 @@ public abstract class Building implements IRegistryElement
 
   // TODO Convert these fields into final, and uninitialize them here
   /** Name of this building */
-  protected String _name = null;
+  protected final String _name;
 
   /** The non-player character (NPC) who owns or manages this Building */
-  protected NPC _buildingMaster = null;
+  protected String _buildingMaster;
 
   /** Buildings have a time in which they are open for business (military time). */
-  protected int _openTime = 0;
+  protected int _openTime;
   /** Buildings have a time in which they are not open for business (military time). */
-  protected int _closingTime = 0;
+  protected int _closingTime;
 
   /** Short phrase of the purpose of the Building (hovertext when clicked) */
-  protected String _hoverText = null;
+  protected final String _hoverText;
   /** Short description of what the Hero first sees from outside the building. */
-  protected String _intDesc = null;
+  protected final String _intDesc;
   /** Short description of what the Hero first sees inside the building. */
-  protected String _extDesc = null;
+  protected final String _extDesc;
 
   /** Path to External Display Image **/
-  protected String _externalImagePath = null;
+  protected final String _externalImagePath;
   /** Path to Internal Display Image **/
-  protected String _internalImagePath = null;
-
-  /*
-   * ABSTRACT METHODS for Derived Classes
-   */
+  protected final String _internalImagePath;
+  protected final List<NPC> _patrons;
 
 
   /*
@@ -78,41 +76,37 @@ public abstract class Building implements IRegistryElement
    * @param desc detailed description of building, usually once inside
    * @throws ApplicationException if NPC cannot be found
    **/
-  protected Building(String name, String master, String hoverText, String exterior,
-      String interior, String extImagePath, String intImagePath)
-  {
-    this(name, master, hoverText, exterior, interior);
-    _externalImagePath = extImagePath;
-    _internalImagePath = intImagePath;
-  }
-
   protected Building(String name, String masterName, String hoverText, String exterior,
-      String interior) throws ApplicationException
+      String interior, String extImagePath, String intImagePath)
   {
     if ((name == null) || (masterName == null) || (exterior == null) || (interior == null)) {
       throw new ApplicationException("Null parms in Building ctor");
     }
     _name = name;
+    _buildingMaster = masterName;
     _hoverText = hoverText;
     _extDesc = exterior;
     _intDesc = interior;
+    _externalImagePath = extImagePath;
+    _internalImagePath = intImagePath;
+    _patrons = new ArrayList<NPC>();
+
     // Set hours of operation, else return false for bad hours
     if (setBusinessHours(DEFAULT_OPENHOURS, DEFAULT_CLOSINGHOURS) == false) {
       throw new ApplicationException("Business hours are invalid.");
     }
-    // Probably not desired: Converts string to NPC object, stored with Building
-//    _buildingMaster = findBuildingMaster(masterName);
+
   }
 
-  protected NPC findBuildingMaster(String masterName)
-  {
-    NPCRegistry npcReg = (NPCRegistry) RegistryFactory.getInstance().getRegistry(RegKey.NPC);
-    NPC master = npcReg.getNPC(masterName);
-    if (master == null) {
-      throw new ApplicationException(masterName + " does not exist in the NPC Registry.");
-    }
-    return master;
-  }
+  // protected NPC findBuildingMaster(String masterName)
+  // {
+  // NPCRegistry npcReg = (NPCRegistry) RegistryFactory.getInstance().getRegistry(RegKey.NPC);
+  // NPC master = npcReg.getNPC(masterName);
+  // if (master == null) {
+  // throw new ApplicationException(masterName + " does not exist in the NPC Registry.");
+  // }
+  // return master;
+  // }
 
   /*
    * PUBLIC METHODS
@@ -222,11 +216,26 @@ public abstract class Building implements IRegistryElement
    * 
    * @see mylib.dmc.IRegistryElement#getKey()
    */
-  public NPC getMaster()
+  public String getMaster()
   {
     return _buildingMaster;
   }
 
+
+  public boolean remove(NPC npc)
+  {
+    return _patrons.remove(npc);
+  }
+
+  public boolean add(NPC npc)
+  {
+    return _patrons.add(npc);
+  }
+
+  public Collection<NPC> getPatrons()
+  {
+    return _patrons;
+  }
 
   /**
    * Convert from military time to am-pm time String. Noon is 12 pm but returns "noon; midnight is
@@ -326,6 +335,39 @@ public abstract class Building implements IRegistryElement
   public String toString()
   {
     return _name;
+  }
+
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((_buildingMaster == null) ? 0 : _buildingMaster.hashCode());
+    result = prime * result + ((_name == null) ? 0 : _name.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Building other = (Building) obj;
+    if (_buildingMaster == null) {
+      if (other._buildingMaster != null)
+        return false;
+    } else if (!_buildingMaster.equals(other._buildingMaster))
+      return false;
+    if (_name == null) {
+      if (other._name != null)
+        return false;
+    } else if (!_name.equals(other._name))
+      return false;
+    return true;
   }
 
 

@@ -1,3 +1,5 @@
+package chronos.pdc;
+
 /**
  * Race.java Copyright (c) 2009, Carolla Development, Inc. All Rights Reserved
  * 
@@ -7,7 +9,6 @@
  * by email: acline@carolla.com
  */
 
-package pdc.character;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -66,7 +67,7 @@ public abstract class Race implements Serializable
 
 
   // Assign the chances for thief skills for level 1 by race
-  protected String[][] adjustRacialThiefSkills(String[][] skills) 
+  public String[][] adjustRacialThiefSkills(String[][] skills) 
   {
     // Adjust the thief skills by the racial mods
     for (int k=0; k < skills.length; k++) {

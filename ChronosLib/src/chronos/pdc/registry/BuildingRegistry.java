@@ -12,12 +12,11 @@ package chronos.pdc.registry;
 import java.util.ArrayList;
 import java.util.List;
 
-import mylib.ApplicationException;
-import mylib.MsgCtrl;
 import mylib.dmc.IRegistryElement;
 import mylib.pdc.Registry;
 import chronos.Chronos;
 import chronos.pdc.NPC;
+import chronos.pdc.Command.Scheduler;
 import chronos.pdc.buildings.Bank;
 import chronos.pdc.buildings.Building;
 import chronos.pdc.buildings.ClericsGuild;
@@ -34,17 +33,23 @@ import chronos.pdc.buildings.WizardsGuild;
  * @author Alan Cline
  * @version April 20, 2013 // original <br>
  */
-public class BuildingRegistry extends Registry
+public class BuildingRegistry extends Registry<Building>
 {
 
   // ========================================================================
   // CONSTRUCTOR(S) AND RELATED METHODS
   // ========================================================================
 
+  private final Scheduler _skedder;
+  private final NPCRegistry _npcRegistry;
+
   /** Called by RegistryFactory class */
-  protected BuildingRegistry()
+  protected BuildingRegistry(Scheduler skedder, NPCRegistry npcRegistry)
   {
     super(Chronos.BuildingRegPath);
+    _skedder = skedder;
+    _npcRegistry = npcRegistry;
+    initialize();
   }
 
 
@@ -54,22 +59,19 @@ public class BuildingRegistry extends Registry
   @Override
   public void initialize()
   {
+    deleteAll();
     // Create each of the default buildings and save to registry
     // The constructors load the default data
-    try {
-      super.add(new Inn()); // Ugly Ogre Inn
-      super.add(new Store()); // Rat's Pack
-      super.add(new Jail()); // Jail
-      super.add(new Bank()); // The Bank
-      super.add(new FightersGuild()); // Stadium
-      super.add(new RoguesGuild()); // Rouge's Tavern
-      super.add(new ClericsGuild()); // Monastery
-      super.add(new WizardsGuild()); // Arcaneum
-    } catch (ApplicationException ex) {
-      MsgCtrl.errMsgln(this, ex.getMessage());
-    }
+    Inn inn = new Inn(_skedder, _npcRegistry);
+    super.add(inn); // Ugly Ogre Inn
+    super.add(new Store()); // Rat's Pack
+    super.add(new Jail()); // Jail
+    super.add(new Bank()); // The Bank
+    super.add(new FightersGuild()); // Stadium
+    super.add(new RoguesGuild()); // Rouge's Tavern
+    super.add(new ClericsGuild()); // Monastery
+    super.add(new WizardsGuild()); // Arcaneum
   }
-
 
   /**
    * Get all the Buildings of the registry, which will also include NPCs unfortunately as an element
@@ -88,11 +90,11 @@ public class BuildingRegistry extends Registry
    */
   public Building getBuilding(String name)
   {
-    List<IRegistryElement> buildingList = super.get(name);
+    List<Building> buildingList = super.get(name);
     if (buildingList.size() == 0) {
       return null;
     }
-    Building aBuilding = (Building) buildingList.get(0);
+    Building aBuilding = buildingList.get(0);
     return aBuilding;
   }
 
@@ -102,11 +104,11 @@ public class BuildingRegistry extends Registry
    * 
    * @return the list of Buildings only
    */
-  public ArrayList<Building> getBuildingList()
+  public List<Building> getBuildingList()
   {
     // Run the query to retrieve all buildings from the registry
-    List<IRegistryElement> result = super.getAll();
-    ArrayList<Building> bldgList = new ArrayList<Building>(result.size());
+    List<Building> result = super.getAll();
+    List<Building> bldgList = new ArrayList<Building>(result.size());
     for (int k = 0; k < result.size(); k++) {
       // Check against all building subtypes
       IRegistryElement elem = result.get(k);

@@ -19,16 +19,14 @@ import java.io.File;
 import mylib.MsgCtrl;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.Chronos;
+import chronos.pdc.Command.Scheduler;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
-import civ.Adventurer;
-import civ.Adventurer.MockAdventurer;
 
 /**
  * Test the Adventurer (Launcher) class: ensure that all Registries are created.
@@ -40,9 +38,6 @@ import civ.Adventurer.MockAdventurer;
 public class TA00a_Initialize
 {
   static private RegistryFactory _rf;
-  private Adventurer _launcher;
-  private MockAdventurer _mock;
-
   /**
    * INFO ONLY: Keys used by RegistryFactory public enum RegKey { ADV("Adventure"),
    * BLDG("Building"), ITEM("Item"), NPC("NPC"), OCP("Occupation"), SKILL("Skill"), TOWN("Town");
@@ -57,24 +52,12 @@ public class TA00a_Initialize
   // Fixtures
   // ============================================================
 
-  /**
-   * @throws java.lang.Exception
-   */
   @BeforeClass
-  public static void setUpBeforeClass() throws Exception
+  public static void setUpBeforeClass()
   {
-    assertTrue(Chronos.ECHRONOS_ROOT != null);
-    assertTrue(Chronos.ADV_RESOURCES_PATH != null);
-    assertTrue(Chronos.RESOURCES_PATH != null);
-    assertTrue(Chronos.IMAGE_PATH != null);
+      _rf = new RegistryFactory(new Scheduler());
+      _rf.initRegistries();
   }
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @AfterClass
-  public static void tearDownAfterClass() throws Exception
-  {}
 
   /**
    * @throws java.lang.Exception
@@ -82,9 +65,6 @@ public class TA00a_Initialize
   @Before
   public void setUp() throws Exception
   {
-    _rf = RegistryFactory.getInstance();
-    _launcher = new Adventurer();
-    _mock = _launcher.new MockAdventurer();
   }
 
 
@@ -96,9 +76,6 @@ public class TA00a_Initialize
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    _rf = null;
-    _mock = null;
-    _launcher = null;
   }
 
 
@@ -120,11 +97,13 @@ public class TA00a_Initialize
     MsgCtrl.msg("\tNumber of keys = " + keynum);
     MsgCtrl.msgln("\tNumber of file paths = " + pathnum);
     assertEquals(keynum, pathnum);
+    
     // Ensure that no registry files exist
     deleteRegistryFiles();
 
     // DO create the registries
-    _mock.initRegistries();
+    _rf = new RegistryFactory(new Scheduler());
+    _rf.initRegistries();
 
     // VERIFY all registry files created
     assertTrue(RegistryFilesExist());
@@ -154,13 +133,6 @@ public class TA00a_Initialize
     MsgCtrl.msgln("\tNumber of file paths = " + pathnum);
     assertEquals(keynum, pathnum);
 
-    // Create all registry files to ensure that they exist
-    _mock.initRegistries();
-    assertTrue(RegistryFilesExist());
-
-    // Try creating the registries when they already exist
-    _mock.initRegistries();
-
     // VERIFY all registry files created
     assertTrue(RegistryFilesExist());
 
@@ -184,48 +156,19 @@ public class TA00a_Initialize
     boolean retval = true;
     for (String s : paths) {
       File f = new File(s);
-      retval = (doesExist(s) && (f.length() > 0));
-      if (retval == false) {
-        break;
-      }
+      retval &= (f.exists() && (f.length() > 0));
     }
     return retval;
   }
-
-
-  // /** Create almost-empoty Registry files for testing */
-  // private void createFiles()
-  // {
-  // for (String s : paths) {
-  // FileOutputStream fos = new FileOutputStream(s);
-  // fos.wr
-  // }
-  // }
-
-
-  /** Check existence of single Registry file */
-  private boolean doesExist(String path)
-  {
-    File rf = new File(path);
-    return rf.exists();
-  }
-
 
   /** Clear all Registry files */
   private void deleteRegistryFiles()
   {
     for (String s : paths) {
-      deleteRegFile(s);
+        File rf = new File(s);
+        rf.delete();
+        assertFalse(rf.exists());
     }
-  }
-
-
-  /** Delete a Registry file */
-  private void deleteRegFile(String path)
-  {
-    File rf = new File(path);
-    rf.delete();
-    assertFalse(rf.exists());
   }
 
 
