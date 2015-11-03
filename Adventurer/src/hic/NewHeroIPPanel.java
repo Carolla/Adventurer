@@ -12,10 +12,7 @@ package hic;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.util.EnumMap;
 
@@ -32,6 +29,9 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
 import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 import javax.swing.text.StyledDocument;
 import civ.DocumentSizeFilter;
 
@@ -110,7 +110,7 @@ public class NewHeroIPPanel extends JPanel
   private final String ERRMSG_NAME_MISSING = "Your Hero must have a name!";
   /** Error message when namefield is too long */
   private final String ERRMSG_NAME_TOO_LONG =
-      "Your Hero's name is to long (45 char limit). \nTry perhaps your Hero's nickname?";
+      "Your Hero's name is too long (45 char limit). \nTry perhaps your Hero's nickname?";
       // /** Error message when an unknown error has occurred */
       // private final String ERRMSG_UNKNOWN =
       // "Hero could not be created for some unanticipated reason";
@@ -415,6 +415,12 @@ public class NewHeroIPPanel extends JPanel
   {
     // Create the text field to collect the Hero's name
     _nameField = new JTextField(HERO_NAME_WIDTH);
+    
+	  // Create DocumentFilter for restricting input length
+    AbstractDocument d = (AbstractDocument) _nameField.getDocument();
+    d.setDocumentFilter(new NewHeroIPPanel.NameFieldLimiter());
+    
+    // Set name of the field
     _nameField.setName("heroName");
     // Collect the name when the text field goes out of focus
     _nameField.addFocusListener(new FocusOffListener());
@@ -441,18 +447,10 @@ public class NewHeroIPPanel extends JPanel
       }
     });
     
-    /* Use DocumentFilter to limit the number of columns/characters that can be
-     * entered into the name field.
-     */
-//    AbstractDocument doc;
-//    StyledDocument styledDoc = (StyledDocument)_nameField.getDocument();
-//    doc = (AbstractDocument)styledDoc;
-//    doc.setDocumentFilter(new DocumentSizeFilter(HERO_NAME_WIDTH));
-    
     return _nameField;
   }
-
-
+  
+  
   /**
    * Create a combo box of Guilds (Klasses) that the Hero may want to be
    * 
@@ -618,7 +616,6 @@ public class NewHeroIPPanel extends JPanel
   // =======================================================
   // INNER CLASS: FocusAdapter
   // =======================================================
-
   /**
    * Indicates when the source component loses focus. In this case, when the Hero name JTextField
    * loses focus so that the data can be extracted. This is necessary only for widgets that cannot
@@ -645,6 +642,53 @@ public class NewHeroIPPanel extends JPanel
       setEditFlag(true);
     }
   } // end FocusLostListener
+  
+  
+  // =======================================================
+  // INNER CLASS: NameFieldLimiter
+  // =======================================================
+  	/**
+	 * Replaces the default DocumentFilter for the input value of the Hero's
+	 * name field. It limits the allowed input to the length specified by
+	 * HERO_NAME_WIDTH and causes an audio "beep" to be sounded by the system
+	 * when more input is attempted after the limit is reached.
+	 * 
+	 * @author OG
+	 *
+	 */
+  private class NameFieldLimiter extends DocumentFilter
+  {
+//     @Override  
+//      public void insertString(DocumentFilter.FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException  
+//      {
+//          if(fb.getDocument().getLength()+string.length()>HERO_NAME_WIDTH)
+//          {
+//              System.out.println("Insert String: Name Field Limit Reached");
+//              return;
+//          }
+//
+//          fb.insertString(offset, string, attr);
+//      }  
+     
+      @Override  
+      public void remove(DocumentFilter.FilterBypass fb, int offset, int length) throws BadLocationException 
+      {  
+          System.out.println("Remove");
+          fb.remove(offset, length);
+      }
+
+      @Override  
+      public void replace(DocumentFilter.FilterBypass fb, int offset, int length, String text, AttributeSet attrs)throws BadLocationException 
+      {  
+               if(fb.getDocument().getLength()+text.length()>HERO_NAME_WIDTH)
+               {
+                  System.out.println("Replace: Name Field Limit Reached");
+                  java.awt.Toolkit.getDefaultToolkit().beep();
+                  return;
+              }
+              fb.insertString(offset, text, attrs);
+      }
+  } // end NameFieldLimiter
 
 } // end NewHeroIPPanel class
 
