@@ -22,7 +22,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import pdc.Inventory;
-import pdc.Inventory.MockInventory;
 import chronos.pdc.Item;
 import chronos.pdc.MiscKeys.ItemCategory;
 
@@ -44,7 +43,6 @@ public class TestInventory extends TestCase
 {
     /** Collection used for testing */
     private Inventory _bag = null;
-    private MockInventory _mock = null;
 
     // Two Test items
     private Item _framis = null;
@@ -79,8 +77,6 @@ public class TestInventory extends TestCase
         MsgCtrl.auditMsgsOn(false);
         // Create an initial Inventory from scratch, then populate it
         _bag = new Inventory();
-        // Create a MockInventory for testing
-        _mock = _bag.new MockInventory();
         // Create two test Items
         _framis = new Item(ItemCategory.VALUABLES, "Framis",
                 FRAMIS_WT, FRAMIS_QTY);
@@ -96,8 +92,6 @@ public class TestInventory extends TestCase
     @After
     public void tearDown() throws Exception
     {
-        _bag = null;
-        _mock = null;
         // Audit messages are OFF after each test
         MsgCtrl.auditMsgsOn(false);
     }

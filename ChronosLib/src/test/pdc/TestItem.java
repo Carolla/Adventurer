@@ -109,7 +109,7 @@ public class TestItem
             // Verify name built correctly
             assertEquals(_itemTable[k][1], target.getName());
             // Verify weight built correctly
-            assertEquals(Integer.parseInt(_itemTable[k][2]), target.getWeight());
+            assertEquals(Integer.parseInt(_itemTable[k][2]), (int) target.getWeight());
             // Verify quantity built correctly
             assertEquals(Integer.parseInt(_itemTable[k][3]), target.getQuantity());
         }

@@ -12,11 +12,9 @@ package civ;
 import hic.HeroDisplay;
 import hic.Mainframe;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
-import mylib.civ.BaseCiv;
 import pdc.Inventory;
 import pdc.character.Hero;
 import chronos.pdc.AttributeList;
@@ -208,7 +206,7 @@ public class HeroDisplayCiv
   /**
    * @return the list of spells known
    */
-  public ArrayList<String> getSpellBook()
+  public List<String> getSpellBook()
   {
     return _hero.getSpellBook();
   }
@@ -261,12 +259,12 @@ public class HeroDisplayCiv
    * @param itemList list of Items to display
    * @return false is an error occurs
    */
-  public boolean populateInventory(ArrayList<Item> itemList)
+  public boolean populateInventory(List<Item> itemList)
   {
     // Create a shuttle to contain the data and convert to widget String
     // format
-    List<String> items = convertItems(itemList);
-    // _widget.displayInventory(items);
+    //List<String> items = convertItems(itemList);
+    //_widget.displayInventory(items);
     return true;
   }
 
@@ -320,29 +318,28 @@ public class HeroDisplayCiv
     return false;
   }
 
-  /**
-   * Convert the Skill object into string fields for list display. All Item fields are concatenated
-   * into a single delimited string.
-   * 
-   * @param _skills list of Skills objects to convert
-   * @return the string list of output data
-   */
-  private List<String> convertSkills(List<Skill> _skills)
-  {
-    List<String> skillList = new ArrayList<String>(_skills.size());
-    for (int k = 0; k < _skills.size(); k++) {
-      // Each Skill consists of: name, description, race, klass, and
-      // action (excluded)
-      Skill skill = _skills.get(k);
-      String name = skill.getName();
-      // String race = skill.getRace();
-      // String klass = skill.getKlass();
-      String description = skill.getDescription();
-      String skillStr = name + BaseCiv.DELIM + description; // race + BaseCiv.DELIM + klass + BaseCiv.DELIM + description;
-      skillList.add(k, skillStr);
-    }
-    return skillList;
-  }
+//  /**
+//   * Convert the Skill object into string fields for list display. All Item fields are concatenated
+//   * into a single delimited string.
+//   * 
+//   * @param _skills list of Skills objects to convert
+//   * @return the string list of output data
+//   */
+//  private List<String> convertSkills(List<Skill> _skills)
+//  {
+//    List<String> skillList = new ArrayList<String>(_skills.size());
+//    for (Skill skill : _skills) {
+//      // Each Skill consists of: name, description, race, klass, and
+//      // action (excluded)
+//      String name = skill.getName();
+//      // String race = skill.getRace();
+//      // String klass = skill.getKlass();
+//      String description = skill.getDescription();
+//      String skillStr = name + BaseCiv.DELIM + description; // race + BaseCiv.DELIM + klass + BaseCiv.DELIM + description;
+//      skillList.add(skillStr);
+//    }
+//    return skillList;
+//  }
 
   /*
    * PRIVATE METHODS
@@ -452,36 +449,35 @@ public class HeroDisplayCiv
   // }
 
 
-  /**
-   * Convert the Item objects into string fields for list display. All Item fields are concatenated
-   * into a single delimited string.
-   * 
-   * @param items list of Item object to convert
-   * @return the string list of output data
-   */
-  private List<String> convertItems(ArrayList<Item> items)
-  {
-    List<String> itemList = new ArrayList<String>(items.size());
-    for (int k = 0; k < items.size(); k++) {
-      // Each item consists of: Inventory category, name, quantity, and
-      // weight (each)
-      Item item = items.get(k);
-      String cat = item.getCategory().toString();
-      String name = item.getName();
-      String qty = String.valueOf(item.getQuantity());
-      // Convert weight from ounces to lbs and ozs
-      // int weight = item.getWeight();
-      // int lbs = weight / Constants.OUNCES_PER_POUND;
-      // int ozs = weight % Constants.OUNCES_PER_POUND;
-      // String lbWt = String.valueOf(lbs);
-      // String ozWt = String.valueOf(ozs);
-      // Build displayable string
-      // String itemStr = cat + BaseCiv.DELIM + name + BaseCiv.DELIM + qty + BaseCiv.DELIM + lbWt
-      // + BaseCiv.DELIM + ozWt;
-      // itemList.add(k, itemStr);
-    }
-    return itemList;
-  }
+//  /**
+//   * Convert the Item objects into string fields for list display. All Item fields are concatenated
+//   * into a single delimited string.
+//   * 
+//   * @param items list of Item object to convert
+//   * @return the string list of output data
+//   */
+//  private List<String> convertItems(ArrayList<Item> items)
+//  {
+//    List<String> itemList = new ArrayList<String>(items.size());
+//    for (Item item : items) {
+//      // Each item consists of: Inventory category, name, quantity, and
+//      // weight (each)
+//      String cat = item.getCategory().toString();
+//      String name = item.getName();
+//      String qty = String.valueOf(item.getQuantity());
+//      // Convert weight from ounces to lbs and ozs
+//      // int weight = item.getWeight();
+//      // int lbs = weight / Constants.OUNCES_PER_POUND;
+//      // int ozs = weight % Constants.OUNCES_PER_POUND;
+//      // String lbWt = String.valueOf(lbs);
+//      // String ozWt = String.valueOf(ozs);
+//      // Build displayable string
+//      String itemStr = cat + BaseCiv.DELIM + name + BaseCiv.DELIM + qty; // + BaseCiv.DELIM + lbWt
+//      // + BaseCiv.DELIM + ozWt;
+//      itemList.add(itemStr);
+//    }
+//    return itemList;
+//  }
 
 
   // /**

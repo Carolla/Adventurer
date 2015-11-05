@@ -21,6 +21,10 @@ import chronos.pdc.MiscKeys.ItemCategory;
  */
 public class Fighter extends Klass
 {
+  /**
+   * Generated
+   */
+  private static final long serialVersionUID = 4689555610790491304L;
   /** Starting die and initial free HP for klass */
   private String _hitDie = "d10";
   private int _freeHP = 10;

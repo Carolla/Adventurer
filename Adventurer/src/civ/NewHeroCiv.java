@@ -75,13 +75,11 @@ public class NewHeroCiv
     String raceName = _inputMap.get(HeroInput.RACE);
     String klassName = _inputMap.get(HeroInput.KLASS);
 
-    ErrorCode err = ErrorCode.NO_ERROR;
     Hero myHero = null;
     
     try {
       myHero = new Hero(name, gender, hairColor, raceName, klassName);
     } catch (InstantiationException ex) {
-      err = ErrorCode.HERO_NOT_CREATED;
       //TODO Handle error here
     }
     return myHero;

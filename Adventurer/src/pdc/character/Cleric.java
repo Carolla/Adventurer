@@ -9,7 +9,7 @@
 
 package pdc.character;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import pdc.Inventory;
 import pdc.character.Hero.PrimeTraits;
@@ -23,6 +23,11 @@ import chronos.pdc.MiscKeys.ItemCategory;
  */
 public class Cleric extends Klass
 {
+  /**
+   * Generated 
+   */
+  private static final long serialVersionUID = 271591480650071597L;
+  
   /** Starting die and initial free HP for klass */
   private String _hitDie = "d8";
   private int _freeHP = 8;
@@ -46,12 +51,12 @@ public class Cleric extends Klass
     _goldDice = _startingGold;
   }
 
-  public ArrayList<String> addClericalSpells(ArrayList<String> spellList)
+  public List<String> addClericalSpells(List<String> _spellBook)
   {
     for (String s : _clericSpells) {
-      spellList.add(s);
+      _spellBook.add(s);
     }
-    return spellList;
+    return _spellBook;
   }
 
   @Override

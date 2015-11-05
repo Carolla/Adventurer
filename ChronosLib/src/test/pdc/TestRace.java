@@ -20,7 +20,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 
 import chronos.Chronos;
-import chronos.pdc.AttributeList;
 import chronos.pdc.Race;
 
 /**
@@ -46,18 +45,18 @@ public class TestRace extends TestCase {
 	private final String[] _races = { "Human", "Dwarf", "Elf", "Gnome",
 			"Half-Elf", "Half-Orc", "Hobbit" };
 
-	/** Gender is a race attribute, more specific than Person */
-	private final String MALE = "Male";
-	private final String FEMALE = "Female";
-
-	// Three sets of starting tratis: LOW, MEDIUM, HIGH
-	private final int[] _startLow = { 8, 8, 8, 8, 8, 8 };
-	private final int[] _start = { 11, 11, 11, 11, 11, 11 };
-	private final int[] _startHigh = { 18, 18, 18, 18, 18, 18 };
-
-	private final AttributeList _startLowTraits = new AttributeList(_startLow);
-	private final AttributeList _startTraits = new AttributeList(_start);
-	private final AttributeList _startHighTraits = new AttributeList(_startHigh);
+//	// Three sets of starting tratis: LOW, MEDIUM, HIGH
+//	private final int[] _startLow = { 8, 8, 8, 8, 8, 8 };
+//	private final int[] _start = { 11, 11, 11, 11, 11, 11 };
+//	private final int[] _startHigh = { 18, 18, 18, 18, 18, 18 };
+//
+//  /** Gender is a race attribute, more specific than Person */
+//  private final String MALE = "Male";
+//  private final String FEMALE = "Female";
+//  
+//	private final AttributeList _startLowTraits = new AttributeList(_startLow);
+//	private final AttributeList _startTraits = new AttributeList(_start);
+//	private final AttributeList _startHighTraits = new AttributeList(_startHigh);
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++  
      *                  STATE HANDLING METHODS 
