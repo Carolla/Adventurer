@@ -78,8 +78,6 @@ public abstract class Klass implements Serializable
   // Assign initial klass-specific inventory
   public Inventory assignKlassInventory(Inventory inven, ArrayList<Item> items)
   {
-    // Basic inventory Items: category, name, quantity, weight (each in fractional lb)
-    inven.addItem(new Item(ItemCategory.EQUIPMENT, "backpack", 1, 7.0));
     return inven;
   }
 

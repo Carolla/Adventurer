@@ -33,15 +33,15 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
+import civ.HeroDisplayCiv;
+import civ.NewHeroCiv;
+import civ.NewHeroCiv.ErrorCode;
+import civ.NewHeroCiv.HeroInput;
 import mylib.Constants;
 import mylib.MsgCtrl;
 import mylib.hic.HelpKeyListener;
 import net.miginfocom.swing.MigLayout;
 import pdc.character.Hero;
-import civ.HeroDisplayCiv;
-import civ.NewHeroCiv;
-import civ.NewHeroCiv.ErrorCode;
-import civ.NewHeroCiv.HeroInput;
 
 /**
  * Allows the author to input a few key attributes of their Hero. A CIV object is called to validate
@@ -277,10 +277,9 @@ public class NewHeroIPPanel extends JPanel
         if (err == ErrorCode.NO_ERROR) {
           setVisible(false);
           // Create the new Hero and display it
-          _nhCiv.createHero(_input);
-          // Hero hero = _nhCiv.createHero(_input);
-          // HeroDisplayCiv hDispCiv = new HeroDisplayCiv(_mf);
-          // hDispCiv.displayHero(hero);
+           Hero hero = _nhCiv.createHero(_input);
+           HeroDisplayCiv hDispCiv = new HeroDisplayCiv(_mf);
+           hDispCiv.displayHero(hero);
         } else {
           // Display the message
           showErrorMessage(err);

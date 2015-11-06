@@ -83,7 +83,7 @@ public class NewHeroCiv
    * @param inputMap of user fields: name, gender, hairColor, race, and Klass
    * @param ErrorCode of NO_ERROR, or some ErrorCode value if a problem occured
    */
-  public void createHero(EnumMap<HeroInput, String> inputMap)
+  public Hero createHero(EnumMap<HeroInput, String> inputMap)
   {
     String name = _inputMap.get(HeroInput.NAME);
     String gender = _inputMap.get(HeroInput.GENDER);
@@ -98,16 +98,13 @@ public class NewHeroCiv
     } catch (InstantiationException ex) {
       System.err.println("NewHeroCiv.createHero(): " + ex.getMessage());
     }
-    
-    // Display the Hero
-     HeroDisplayCiv hDispCiv = new HeroDisplayCiv(_mf);
-     hDispCiv.displayHero(myHero);
+    return myHero;
   }
 
 
   /**
-   * Create the new hero panel to collect input data; pick up the input data when the input
-   * panel calls submit
+   * Create the new hero panel to collect input data; pick up the input data when the input panel
+   * calls submit
    * 
    */
   public NewHeroIPPanel createNewHeroPanel()
@@ -137,8 +134,8 @@ public class NewHeroCiv
   {
     return _raceList;
   }
-  
-  
+
+
   /**
    * Retrieve the new Hero input data for validation or Hero creation. Biggest check is if the hero
    * name is unique (does not exist in the Hero registry)

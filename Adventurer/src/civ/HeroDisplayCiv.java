@@ -32,6 +32,7 @@ import pdc.character.Hero;
  *          Jul 4 2010 // segregated HIC from PDC <br>
  *          Jan 4 2011 // removed Observer MVP model approach <br>
  *          Oct 1 2015 // revised for new Hero generation rules <br>
+ *          Nov 6, 2015 // revised to be called by NewHeroCiv <br>
  */
 public class HeroDisplayCiv
 {
@@ -41,7 +42,7 @@ public class HeroDisplayCiv
   private HeroDisplay _widget = null;
 
   /** Associated Inventory of the Person */
-  private Inventory _inventory = null;
+//  private Inventory _inventory = null;
 
   /** The categories for hunger, to convert Satiety points into a hunger state */
   enum hungerStage {
@@ -165,8 +166,7 @@ public class HeroDisplayCiv
    */
   public Inventory getInventory()
   {
-    _inventory = _hero.getInventory();
-    return _inventory;
+    return _hero.getInventory();
   }
 
 
@@ -178,7 +178,7 @@ public class HeroDisplayCiv
    */
   public List<String> getInventoryNames(ItemCategory cat)
   {
-    return _inventory.getNameList(cat);
+    return getInventory().getNameList(cat);
   }
 
   /**
@@ -203,7 +203,7 @@ public class HeroDisplayCiv
    */
   public int getInventorySize()
   {
-    return _inventory.getNbrItems();
+    return getInventory().getNbrItems();
   }
 
   /**

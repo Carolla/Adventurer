@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
-import mylib.Constants;
 import chronos.pdc.Item;
 import chronos.pdc.MiscKeys.ItemCategory;
+import mylib.Constants;
 
 /**
  * Contains the Person's collection of Items. All weights are in ounces; the client object must
@@ -51,22 +51,8 @@ public class Inventory implements Serializable
     OVERBEARING, GRAPPLING, PUMMELING, SHIELD_BASH
   }
 
-  /**
-   * The amount of money the Person has saved up; initially, it is none. Units represent gold,
-   * decimal fraction represents silver.
-   */
-  private double _goldBanked = 0.0;
-
-  /**
-   * Armor class if Person has no armor. On a scale of 1-20 (20 being highest), no armor = 10
-   * implies a 50% chance to be hit and damaged.
-   */
-  static public final int NO_ARMOR = 10;
-  /** Armor class depending on Dex and armor */
-  private int _ac = NO_ARMOR;
-
   // Holds all inventory items
-  private ArrayList<Item> _inventory;
+  private ArrayList<Item> _itemList;
 
 
   // =============================================================================
@@ -81,7 +67,7 @@ public class Inventory implements Serializable
   {
     // Create the map to hold the Items
     // Holds all inventory items
-    _inventory = new ArrayList<Item>();
+    _itemList = new ArrayList<Item>();
 
   }
 
@@ -124,30 +110,30 @@ public class Inventory implements Serializable
       return false;
     }
     // If Item is already in inventory, increase its item count (qty)
-    int ndx = _inventory.indexOf(item);
+    int ndx = _itemList.indexOf(item);
     if (ndx == Constants.NOT_FOUND) {
-      _inventory.add(item);
+      _itemList.add(item);
     } else {
       item.adjustQuantity(1);
-      _inventory.set(ndx, item);    // replace the item with updated qty
+      _itemList.set(ndx, item);    // replace the item with updated qty
     } 
     return true;
   }
 
-  /**
-   * Set the armor class, on a scale of 10 (no armor) to full plate mail and shield (18). Some low
-   * DEX values or cursed items may bring AC less than No_Armor but it can never be less than 1.
-   * Magic armor allows the AC to be higher than 18. For now, until Inventory and Items are
-   * implemented fully, the Person starts with no armor.
-   * 
-   * @param adj armor class adjustment due to Dex and armor worn
-   * @return resulting armor class
-   */
-  public int calcAC(int adj)
-  {
-    _ac = Math.max(NO_ARMOR + adj, 1);
-    return _ac;
-  }
+//  /**
+//   * Set the armor class, on a scale of 10 (no armor) to full plate mail and shield (18). Some low
+//   * DEX values or cursed items may bring AC less than No_Armor but it can never be less than 1.
+//   * Magic armor allows the AC to be higher than 18. For now, until Inventory and Items are
+//   * implemented fully, the Person starts with no armor.
+//   * 
+//   * @param adj armor class adjustment due to Dex and armor worn
+//   * @return resulting armor class
+//   */
+//  public int calcAC(int adj)
+//  {
+//    _ac = Math.max(NO_ARMOR + adj, 1);
+//    return _ac;
+//  }
 
   // TODO: Arguably, weight carried also affects overbearing potential, but it also affects speed.
   // For now, these two effects are considered to cancel out.
@@ -199,9 +185,9 @@ public class Inventory implements Serializable
   {
     int weight = 0;
     // Get the weight of each Item in the list
-    for (int k = 0; k < _inventory.size(); k++) {
+    for (int k = 0; k < _itemList.size(); k++) {
       // Get the weight of the next item in the collection (in ounces)
-      Item thing = _inventory.get(k);
+      Item thing = _itemList.get(k);
       weight += thing.getWeight() * thing.getQuantity();
     }
     return weight;
@@ -210,7 +196,7 @@ public class Inventory implements Serializable
   /** Inventory objects are self-loading, clear it for testing */
   public void clear()
   {
-    _inventory.clear();
+    _itemList.clear();
   }
 
   /**
@@ -278,15 +264,15 @@ public class Inventory implements Serializable
   // return cash;
   // }
 
-  /**
-   * Get the cash currently in inventory
-   * 
-   * @return the gold and silver pieces as a combined double gp.sp
-   */
-  public double getGoldBanked()
-  {
-    return _goldBanked;
-  }
+//  /**
+//   * Get the cash currently in inventory
+//   * 
+//   * @return the gold and silver pieces as a combined double gp.sp
+//   */
+//  public double getGoldBanked()
+//  {
+//    return _goldBanked;
+//  }
 
   /**
    * Get the list of Items in inventory
@@ -295,7 +281,7 @@ public class Inventory implements Serializable
    */
   public ArrayList<Item> getAll()
   {
-    return _inventory;
+    return _itemList;
   }
 
   /**
@@ -307,10 +293,10 @@ public class Inventory implements Serializable
    */
   public Item getItem(int index)
   {
-    if ((index < 0) || (index >= _inventory.size())) {
+    if ((index < 0) || (index >= _itemList.size())) {
       return null;
     }
-    return _inventory.get(index);
+    return _itemList.get(index);
   }
 
   /**
@@ -344,10 +330,10 @@ public class Inventory implements Serializable
    */
   public Inventory getItemsByCategory(ItemCategory category)
   {
-    int invSize = _inventory.size();
+    int invSize = _itemList.size();
     Inventory catList = new Inventory();
     for (int k = 0; k < invSize; k++) {
-      Item thing = _inventory.get(k);
+      Item thing = _itemList.get(k);
       if (thing.getCategory() == category) {
         catList.addItem(thing);
       }
@@ -378,7 +364,7 @@ public class Inventory implements Serializable
    */
   public int getNbrItems()
   {
-    return _inventory.size();
+    return _itemList.size();
   }
 
   // /**
@@ -414,9 +400,9 @@ public class Inventory implements Serializable
    */
   public boolean hasItem(String target)
   {
-    for (int k = 0; k < _inventory.size(); k++) {
+    for (int k = 0; k < _itemList.size(); k++) {
       // Extract the Item from the Inventory and lower-case it
-      Item thing = _inventory.get(k);
+      Item thing = _itemList.get(k);
       if (target.equalsIgnoreCase(thing.getName())) {
         return true;
       }
