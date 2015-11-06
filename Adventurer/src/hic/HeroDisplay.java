@@ -557,6 +557,7 @@ public class HeroDisplay extends JPanel
       {
         // Collect all the attributes and save to a new Hero file
         setVisible(false);
+        _mainframe.back();
       }
       // }
     });
