@@ -104,6 +104,10 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   private JPanel _leftHolder;
   /** Empty right-side panel holder for initial standard panels. */
   private JPanel _rightHolder;
+  /** Keep panel states to return to in case CANCEL is hit */
+  private JPanel _leftPanelState;
+  private String _leftTitleState;
+  private JPanel _rightPanelState;
   /** JPanel to hold various images; this panel resides in the _rightHolder */
   private ImagePanel _imagePanel;
 
@@ -176,7 +180,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
 
     createFrameAndMenubar(); // Depends on class members not being NULL
     addImagePanel(); // add image panel on right for adding images later
-    createButtons(); // creates three action buttons on panel
+    createActionPanel(); // creates three action buttons on panel
     redraw();
     setVisible(true);
 
@@ -217,6 +221,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   }
 
 
+  // TODO: Remove this and replace with addLeftPanel(...)
   /**
    * Layout the IOPanel on the left: scrolling text window and working Comandline input area
    */
@@ -229,19 +234,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   }
 
 
-  /**
-   * Replace the left panel with the newone provided
-   */
-  public void replaceLeftPanel(JPanel newPanel, String title)
-  {
-    _leftHolder.removeAll();
-    setLeftPanelTitle(title);
-    _leftHolder.add(newPanel);
-    redraw();
-  }
-
-  
-  // NOTE: Check addIOPanel() first if you are adding to the mainframe panel holders
+  // NOTE: Check replacePanel() first if you are adding to the mainframe panel holders
   @Override
   public void addPanel(JComponent component)
   {
@@ -255,23 +248,12 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   }
 
 
+  public void back()
+  {
+    replaceLeftPanel(_leftPanelState, _leftTitleState);
+  }
 
-  // ============================================================
-  // Public Methods
-  // ============================================================
-
-
-
-  // ============================================================
-  // Private Methods
-  // ============================================================
-
-
-
-  // ============================================================
-  // Deprecated Methods Temporarily
-  // ============================================================
-
+  
   /**
    * Display error text onto the scrolling output panel
    *
@@ -387,6 +369,18 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   }
 
 
+  /**
+   * Replace the left panel with the newone provided
+   */
+//  public void replaceLeftPanel(JPanel newPanel, String title)
+  public void replaceLeftPanel(JPanel newPanel, String title)
+  {
+    _leftHolder.removeAll();
+    setLeftPanelTitle(title);
+    _leftHolder.add(newPanel);
+    redraw();
+  }
+
   public void setHeroList(List<String> list)
   {
     _partyHeros = list;
@@ -461,6 +455,12 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     _rightHolder.add(_imagePanel);
   }
 
+  private String getBorderTitle()
+  {
+    TitledBorder border = (TitledBorder) _leftHolder.getBorder();
+    return border.getTitle();
+  }
+
   /**
    * Create the behavior for selecting an adventure, which drives the frame update. <br>
    * Warning: Known bug with MigLayout in that {@code float} font sizes can cause overruns on
@@ -492,7 +492,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   /**
    * Create the Adventure, Heroes, and Create-Hero buttons, and button panel for them
    */
-  private void createButtons()
+  private void createActionPanel()
   {
     JButton adventureButton = createAdventureButton();
     JButton summonButton = createSummonHeroesButton();
@@ -511,6 +511,9 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     buttonPanel.add(creationButton, "hmax 25%, grow");
 
     _leftHolder.add(buttonPanel);
+    _leftPanelState = buttonPanel;
+    _leftTitleState = getBorderTitle();
+    
   }
 
   private JButton createButtonWithTextAndIcon(String imageFilePath, String buttonText)

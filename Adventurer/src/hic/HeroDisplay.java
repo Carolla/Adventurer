@@ -120,7 +120,7 @@ public class HeroDisplay extends JPanel
    */
   private static final long serialVersionUID = 3532162719501483676L;
 
-//  private static final int PIX_PER_CHAR = 8;
+  // private static final int PIX_PER_CHAR = 8;
 
   /** Help message to show in panels */
   private final String HELP_LABEL = "Press F1 key for help.";
@@ -139,24 +139,24 @@ public class HeroDisplay extends JPanel
   private final String CONFIRM_DEL_MSG = " is now in a better place.";
   private final String CONFIRM_DEL_TITLE = " Hero is now Deceased";
 
-//  /** Tab sizing between inventory columns */
-//  private final int TAB_SIZE = 6;
+  // /** Tab sizing between inventory columns */
+  // private final int TAB_SIZE = 6;
   // /** Height needed for the Save and Cancel buttons */
   // private final int BUTTON_HT = 50;
   /** Height of font for vertical spacing */
   private final int FONT_HT = 14;
-//  /** Normal font height */
-//  private final int ATT_FONT_HT = 12;
-//  /** Size for name in title */
-//  private final float TITLE_HT = 14f;  
-//  /** Standard height of font and cells in display, but can be changed */
-//  private int CELL_HEIGHT = 26;
-//  /** Border width for main panel */
-//  private final int THICK_BORDER = Mainframe.PAD;
-//  /** Border width for subpanel */
-//  private final int THIN_BORDER = Mainframe.PAD / 2;
-//  /** Border width for main panel */
-//  private final int SCROLLBAR_SIZE = 20;
+  // /** Normal font height */
+  // private final int ATT_FONT_HT = 12;
+  // /** Size for name in title */
+  // private final float TITLE_HT = 14f;
+  // /** Standard height of font and cells in display, but can be changed */
+  // private int CELL_HEIGHT = 26;
+  // /** Border width for main panel */
+  // private final int THICK_BORDER = Mainframe.PAD;
+  // /** Border width for subpanel */
+  // private final int THIN_BORDER = Mainframe.PAD / 2;
+  // /** Border width for main panel */
+  // private final int SCROLLBAR_SIZE = 20;
 
   /** Set the max width of the hero panel at half screen */
   private final int PANEL_WIDTH = Mainframe.getWindowSize().width / 2;
@@ -191,7 +191,7 @@ public class HeroDisplay extends JPanel
   // is affecting it?
   /** Background color inherited from parent */
   private Color _backColor = Constants.MY_BROWN.brighter();
-  //private Color _boldBackColor = Constants.MY_BROWN;
+  // private Color _boldBackColor = Constants.MY_BROWN;
 
   /** The backend CIV for this JPanel widget */
   private HeroDisplayCiv _hdCiv = null;
@@ -202,8 +202,8 @@ public class HeroDisplay extends JPanel
   /** Six panels in each attribute row */
   private final int PANELS_IN_ROW = 6;
 
-//  /** Crude attempt to allocate space for wrapping text */
-//  private final int SPACES_PER_LINE = 27;
+  // /** Crude attempt to allocate space for wrapping text */
+  // private final int SPACES_PER_LINE = 27;
 
   /** Button panel for Save/Delete/Cancel buttons */
   private JPanel _buttonPanel;
@@ -220,7 +220,7 @@ public class HeroDisplay extends JPanel
    * Create the GUI and populate it with various data maps
    * 
    * @param hdCiv the intermediary between this GUI and the Person
- * @param _mf 
+   * @param _mf
    * @param outputMap contains all the hero's data to be displayed
    */
   public HeroDisplay(HeroDisplayCiv hdCiv, Mainframe mainframe)
@@ -283,23 +283,23 @@ public class HeroDisplay extends JPanel
   // }
 
 
-//  /**
-//   * Put the HeroDisplay panel into a scrollpane and add to the MainFrame
-//   * 
-//   * @return the scrollpane for the Person's attributes
-//   */
-//  public JScrollPane display()
-//  {
-//    // Make the display scrollable to add to the MainFrame
-//    JScrollPane heroScroll = makeScrollable();
-//
-//    // Add the non-static scrolling panel to the main JFrame
-//    _mainframe.addPanel(heroScroll);
-//    _mainframe.repaint();
-//    // Get the focus so the arrow keys will work
-//    requestFocusInWindow();
-//    return heroScroll;
-//  }
+  // /**
+  // * Put the HeroDisplay panel into a scrollpane and add to the MainFrame
+  // *
+  // * @return the scrollpane for the Person's attributes
+  // */
+  // public JScrollPane display()
+  // {
+  // // Make the display scrollable to add to the MainFrame
+  // JScrollPane heroScroll = makeScrollable();
+  //
+  // // Add the non-static scrolling panel to the main JFrame
+  // _mainframe.addPanel(heroScroll);
+  // _mainframe.repaint();
+  // // Get the focus so the arrow keys will work
+  // requestFocusInWindow();
+  // return heroScroll;
+  // }
 
 
   /**
@@ -522,14 +522,7 @@ public class HeroDisplay extends JPanel
               SAVE_ERROR_TITLE, JOptionPane.DEFAULT_OPTION,
               JOptionPane.ERROR_MESSAGE, null, sorry, null);
         }
-        // Mainframe.getInstance().setEditFlag(false);
-        // Reset menu options to original
-        // Menubar.getInstance().resetMenus();
-        // Remove this panel and ignore any changes in either case
-        // Mainframe.getInstance().
         setVisible(false);
-        // Mainframe frame = Mainframe.getInstance();
-        // frame.resetPanels();
       }
     });
 
@@ -551,41 +544,19 @@ public class HeroDisplay extends JPanel
               DEL_ERROR_TITLE, JOptionPane.DEFAULT_OPTION,
               JOptionPane.ERROR_MESSAGE, null, sorry, null);
         }
-        // Remove this panel and ignore any changes in either case
-        // Mainframe.getInstance().setEditFlag(false);
-        // Reset menu options to original
-        // MenuBar.getInstance().resetMenus();
-        // Remove this panel
-        // Mainframe frame = Mainframe.getInstance();
-        // frame.resetPanels();
         setVisible(false);
       }
-
     });
 
     /* ADD A CANCEL BUTTON TO THE BOTTOM OF THE PANEL */
     _cancelButton = new JButton("Cancel");
-    // _cancelButton.setBackground(_backColor);
 
     // Clear data and return back to mainframe if Cancel is pressed
     _cancelButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        // Audit statement
-        MsgCtrl.traceEvent(event);
         // Collect all the attributes and save to a new Hero file
         setVisible(false);
-        // Mainframe frame = Mainframe.getInstance();
-        // frame.resetPanels();
-        // int response = mf.confirmQuit();
-        // if (response == Mainframe.NOSAVE) {
-        // Mainframe.getInstance().setEditFlag(false);
-        // Reset menu options to original
-        // MenuBar.getInstance().resetMenus();
-        // Remove this panel and ignore any changes
-        // hd.setVisible(false);
-        // } else {
-        // return;
       }
       // }
     });
@@ -702,7 +673,7 @@ public class HeroDisplay extends JPanel
     invenPanel.setBackground(_backColor);
 
     // Get various items from the civ
-    //Inventory inventory = _hdCiv.getInventory();
+    // Inventory inventory = _hdCiv.getInventory();
     List<String> nameList = new ArrayList<String>();
 
     // Active arms and armor: initially, none
@@ -858,47 +829,48 @@ public class HeroDisplay extends JPanel
   }
 
 
-//  /**
-//   * Format a fixed-field space-filled display string for the Inventory list If values are zero, the
-//   * String is empty FIELDS: Quantity, Name (left-justified), wt (lb), wt (oz)
-//   * 
-//   * @param name the name of the item
-//   * @param qty the number of such items
-//   * @param lbWt the weight of the thing in pounds
-//   * @param ozWt the fractional pound-weight in ounces
-//   * @return the Item's fields in a fixed-length formatted string
-//   */
-//  private String formatItemString(String str)
-//  // private String formatItemString(String qty, String name, String lbWt,
-//  // String ozWt)
-//  {
-//    // Given format: Backpack|1|10|0
-//    // Pull out the 4 values, Qty, Name, Weight(lb), and Weight(oz)
-//    int bar = str.indexOf('|');
-//    String itemName = str.substring(0, bar);
-//    int nextBar = str.indexOf('|', bar + 1);
-//    String itemQty = str.substring(bar + 1, nextBar);
-//    bar = nextBar;
-//    nextBar = str.indexOf('|', bar + 1);
-//    String itemLbWt = str.substring(bar + 1, nextBar);
-//    bar = nextBar;
-//    String itemOzWt = str.substring(bar + 1, str.length());
-//
-//    // Now build the string
-//    String initialSpaces = "   ";
-//    StringBuilder lineItem = new StringBuilder(initialSpaces + itemQty
-//        + "\t   " + itemName);
-//
-//    // Append an appropriate number of tabs
-//    for (int i = (SPACES_PER_LINE - itemName.length()); i > 0; i--) {
-//      lineItem.append(" ");
-//    }
-//    if (itemLbWt.length() < 2) {
-//      lineItem.append(" ");
-//    }
-//    lineItem.append(itemLbWt + " lb " + itemOzWt + " oz\n");
-//    return lineItem.toString();
-//  }
+  // /**
+  // * Format a fixed-field space-filled display string for the Inventory list If values are zero,
+  // the
+  // * String is empty FIELDS: Quantity, Name (left-justified), wt (lb), wt (oz)
+  // *
+  // * @param name the name of the item
+  // * @param qty the number of such items
+  // * @param lbWt the weight of the thing in pounds
+  // * @param ozWt the fractional pound-weight in ounces
+  // * @return the Item's fields in a fixed-length formatted string
+  // */
+  // private String formatItemString(String str)
+  // // private String formatItemString(String qty, String name, String lbWt,
+  // // String ozWt)
+  // {
+  // // Given format: Backpack|1|10|0
+  // // Pull out the 4 values, Qty, Name, Weight(lb), and Weight(oz)
+  // int bar = str.indexOf('|');
+  // String itemName = str.substring(0, bar);
+  // int nextBar = str.indexOf('|', bar + 1);
+  // String itemQty = str.substring(bar + 1, nextBar);
+  // bar = nextBar;
+  // nextBar = str.indexOf('|', bar + 1);
+  // String itemLbWt = str.substring(bar + 1, nextBar);
+  // bar = nextBar;
+  // String itemOzWt = str.substring(bar + 1, str.length());
+  //
+  // // Now build the string
+  // String initialSpaces = " ";
+  // StringBuilder lineItem = new StringBuilder(initialSpaces + itemQty
+  // + "\t " + itemName);
+  //
+  // // Append an appropriate number of tabs
+  // for (int i = (SPACES_PER_LINE - itemName.length()); i > 0; i--) {
+  // lineItem.append(" ");
+  // }
+  // if (itemLbWt.length() < 2) {
+  // lineItem.append(" ");
+  // }
+  // lineItem.append(itemLbWt + " lb " + itemOzWt + " oz\n");
+  // return lineItem.toString();
+  // }
 
 
   // ======================================================================
@@ -951,37 +923,37 @@ public class HeroDisplay extends JPanel
   }
 
 
-//  /**
-//   * Set the hero display content panels inside a viewable scroll pane
-//   * 
-//   * @return HeroDisplay in a (vertical) scrollable pane
-//   */
-//  private JScrollPane makeScrollable()
-//  {
-//    // Reset the panel size based on the size of the constituent components
-//    int finalHt = getPreferredSize().height;
-//    // setPreferredSize(new Dimension(DATA_WIDTH, finalHt));
-//    setPreferredSize(new Dimension(PANEL_WIDTH - 2 * (SCROLLBAR_SIZE),
-//        finalHt));
-//
-//    /*
-//     * Put the panel in the viewport, and put the viewport in the scrollpane If everything sizes
-//     * correctly, the horizontal scrollbar will not be needed but it set to show the mis-sizing that
-//     * might occur
-//     */
-//    JScrollPane sp = new JScrollPane(this,
-//        ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-//        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-//    sp.setViewportView(this);
-//    // Resize the view to include the data width, borders, and vertical
-//    // scrollbar
-//    // sp.setPreferredSize(new Dimension(PANEL_WIDTH, finalHt));
-//
-//    // Reset the client to the top of the view (instead of the bottom)
-//    // sp.getVerticalScrollBar().setValue(sp.getVerticalScrollBar().getMinimum());
-//
-//    return sp;
-//  }
+  // /**
+  // * Set the hero display content panels inside a viewable scroll pane
+  // *
+  // * @return HeroDisplay in a (vertical) scrollable pane
+  // */
+  // private JScrollPane makeScrollable()
+  // {
+  // // Reset the panel size based on the size of the constituent components
+  // int finalHt = getPreferredSize().height;
+  // // setPreferredSize(new Dimension(DATA_WIDTH, finalHt));
+  // setPreferredSize(new Dimension(PANEL_WIDTH - 2 * (SCROLLBAR_SIZE),
+  // finalHt));
+  //
+  // /*
+  // * Put the panel in the viewport, and put the viewport in the scrollpane If everything sizes
+  // * correctly, the horizontal scrollbar will not be needed but it set to show the mis-sizing that
+  // * might occur
+  // */
+  // JScrollPane sp = new JScrollPane(this,
+  // ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+  // ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+  // sp.setViewportView(this);
+  // // Resize the view to include the data width, borders, and vertical
+  // // scrollbar
+  // // sp.setPreferredSize(new Dimension(PANEL_WIDTH, finalHt));
+  //
+  // // Reset the client to the top of the view (instead of the bottom)
+  // // sp.getVerticalScrollBar().setValue(sp.getVerticalScrollBar().getMinimum());
+  //
+  // return sp;
+  // }
 
 
   // // WRITING TO PERSON FILE (either original or new file name)

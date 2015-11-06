@@ -157,7 +157,7 @@ public class NewHeroIPPanel extends JPanel
     int height = Mainframe.getWindowSize().height;
     setPreferredSize(new Dimension(width, height));
     // Replace the mainframe title with this panel title
-    mf.setTitle(NEW_HERO_TITLE);
+    _mf.setLeftPanelTitle(NEW_HERO_TITLE);
 
     int pad = Mainframe.PAD;
     Border matte = BorderFactory.createMatteBorder(pad, pad, pad, pad, Color.WHITE);
@@ -249,19 +249,12 @@ public class NewHeroIPPanel extends JPanel
     // Create the CANCEL button
     JButton cancelButton = new JButton("CANCEL");
 
-    // TODO: Why is a dirty flag needed for input panel?
     // Clear editFlag and data, then return back to mainframe if Cancel is pressed
     cancelButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        // Reset menu options to original
-        // MenuBar.getInstance().resetMenus();
-        // Collect all the attributes and save to a new Hero file
-        setEditFlag(false);
-        // Remove this panel and ignore any changes
-        // Mainframe frame = Mainframe.getInstance();
-        // frame.resetPanels();
         setVisible(false);
+        _mf.back();
       }
     });
 

@@ -13,6 +13,7 @@ import java.awt.Dimension;
 import java.awt.Image;
 
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 
 
 /**
@@ -25,7 +26,6 @@ public interface MainframeInterface
 {
   /** Replace the button panel with the final IOPanel */
   public void addIOPanel();
-
   public void addPanel(JComponent component);
 
 //  /** Exit the system */
@@ -45,6 +45,9 @@ public interface MainframeInterface
 
   /** Redraw the mainframe to re-init the graphics outputs */
   public void redraw();
+
+  /** Redraw a Panel on the left side of the mainframe */
+  public void replaceLeftPanel(JPanel leftPanel, String title);
 
   /** Redraws the view */
   public void repaint();

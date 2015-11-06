@@ -163,13 +163,7 @@ public class NewHeroCiv
   private ErrorCode isUnique(String name)
   {
     ErrorCode err = ErrorCode.NO_ERROR;
-    // text block
-    if (_heroReg == null) {
-      System.err.println("HewHeroCiv.isUnique(): _heroReg is null");
-      System.exit(-1);
-    }
-    //
-    if (_heroReg.isUnique(name)) {
+    if (_heroReg.isUnique(name) == false) {
       err = ErrorCode.NAME_NOT_UNIQUE;
     }
     return err;

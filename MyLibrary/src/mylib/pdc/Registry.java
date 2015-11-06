@@ -12,11 +12,11 @@ package mylib.pdc;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.db4o.query.Predicate;
+
 import mylib.ApplicationException;
 import mylib.dmc.DbReadWriter;
 import mylib.dmc.IRegistryElement;
-
-import com.db4o.query.Predicate;
 
 /**
  * The base class for all Registries, contains component {@code DbReadWriter}. All derived
@@ -283,7 +283,7 @@ public abstract class Registry<E extends IRegistryElement>
     boolean retval = false;
     // Return true if single element found
     try {
-      retval = (getUnique(name) != null) ? true : false;
+      retval = (getUnique(name) == null) ? true : false;
     } catch (ApplicationException ex) {
       // Return false for multiple elements found
       return false;
