@@ -13,6 +13,7 @@ package pdc.character;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 
 import chronos.pdc.Race;
 import civ.PersonKeys;
@@ -84,14 +85,13 @@ public class Hero implements Serializable
   private int _toHitStr = 0; // to hit with melee weapon
   private int _damage = 0; // damage bonus
   private int _wtAllow = 0; // load allowed
-  private int _load = 0; // weight carried
 
   // Spells in the Cleric or Wizard's spell book
-  ArrayList<String> _spellBook = new ArrayList<String>();
+  List<String> _spellBook = new ArrayList<String>();
 
   // INT mods
   // Everyone knows Common, and perhaps a race language
-  ArrayList<String> _knownLangs = new ArrayList<String>();
+  List<String> _knownLangs = new ArrayList<String>();
   int _maxLangs; // some can learn new languages, up to this number
   // Wizard only
   private int _MSPs = 0;
@@ -138,7 +138,7 @@ public class Hero implements Serializable
   String[][] _thiefSkills = new String[NBR_THIEF_SKILLS][2];
 
   // Keys to all occupational kits
-  private enum KitNdx {
+  public enum KitNdx {
     ALCHEMIST, LEATHER, METAL, SEWING, WOOD, THIEVES
   };
 
@@ -536,17 +536,17 @@ public class Hero implements Serializable
     return _racename;
   }
 
-  public ArrayList<String> getRaceSkills()
+  public List<String> getRaceSkills()
   {
     return _raceSkills;
   }
 
-  public ArrayList<String> getOcpSkills()
+  public List<String> getOcpSkills()
   {
     return _ocpSkills;
   }
 
-  public ArrayList<String> getSpellBook()
+  public List<String> getSpellBook()
   {
     return _spellBook;
   }
@@ -653,27 +653,27 @@ public class Hero implements Serializable
   }
 
   /** Update the list with initial languages, including race langauges */
-  private ArrayList<String> addLanguages(ArrayList<String> langs)
+  private List<String> addLanguages(List<String> _knownLangs2)
   {
-    langs.add("Common");
+    _knownLangs2.add("Common");
     String s = _race.getRacialLanguage();
     if (s != null) {
       // langs.add(s);
-      addUnique(langs, s);
+      addUnique(_knownLangs2, s);
     }
-    return langs;
+    return _knownLangs2;
   }
 
   /**
    * Adds the object to the ArrayList, but does not add duplicated
    * 
-   * @param oList list to add object to
+   * @param _knownLangs2 list to add object to
    * @param obj to add to list if it isn't in the list already
    */
-  private void addUnique(ArrayList<String> oList, String obj)
+  private void addUnique(List<String> _knownLangs2, String obj)
   {
-    if (!oList.contains(obj)) {
-      oList.add(obj);
+    if (!_knownLangs2.contains(obj)) {
+      _knownLangs2.add(obj);
     }
   }
 
@@ -1102,84 +1102,24 @@ public class Hero implements Serializable
     return retflag;
   }
 
-  // ====================================================
-  // Private helper methods
-  // ====================================================
-
-  private void displayClericMods()
-  {
-    StringBuffer sb = new StringBuffer();
-    sb.append("Clerics only: ");
-    sb.append("\t CSPs per Level = " + _CSPsPerLevel);
-    sb.append("\t CSPs = " + _CSPs);
-    sb.append("\t Turn Undead: " + _turnUndead + " + ULD");
-    System.out.println("\n" + sb);
-  }
-
-  /** Display the Action Points and non-lethal combat stats */
-  private void displayCombatStats()
-  {
-    StringBuffer sb = new StringBuffer();
-    sb.append("AP = " + _AP);
-    sb.append("\t Overbearing (for " + _weight + " lbs) = " + _apMods[OVERBEAR]);
-    sb.append("\t Grappling = " + _apMods[GRAPPLE]);
-    sb.append("\t Pummeling = " + _apMods[PUMMEL]);
-    sb.append("\t Shield Bash (with no shield) = " + _apMods[BASH]);
-    System.out.println("\n" + sb);
-  }
-
-
-
-  // ====================================================
-  // Private helper methods
-  // ====================================================
-
-
-
-  // ====================================================
-  // Private helper methods
-  // ====================================================
-
   /**
    * Display a list with a header message
    * 
    * @param msg the message to display as label
-   * @param list display each element of this list
+   * @param _spellBook2 display each element of this list
    */
-  private void displayList(String msg, ArrayList<String> list)
+  private void displayList(String msg, List<String> _spellBook2)
   {
     System.out.println("\n" + msg);
-    for (int k = 0; k < list.size(); k++) {
-      System.out.println("\t" + list.get(k) + ", ");
+    for (int k = 0; k < _spellBook2.size(); k++) {
+      System.out.println("\t" + _spellBook2.get(k) + ", ");
     }
     System.out.println();
   }
-
-  private void displayRacialMods()
-  {
-    StringBuffer sb = new StringBuffer();
-    sb.append("Dwarves, Gnomes, and Hobbits only: ");
-    sb.append("\t Updated Magic Attack Mod = " + _magicAttackMod);
-    sb.append("\t Racial Poison Resist = " + _racialPoisonResist);
-    System.out.println("\n" + sb);
-  }
-
-  private void displayStrMods(int[] mods)
-  {
-    System.out.println("\n\tStr Mods: \t To Hit (melee) = " + _toHitStr + ";\t Dmg = " + _damage
-        + ";\t Wt Allownace = " + _wtAllow);
-  }
-
-  private void displayThiefSkills(String[][] thiefSkills)
-  {
-    // Put the skill name and chance into a single output string
-    System.out.println("\nThief Skills:");
-    for (int k = 0; k < thiefSkills.length; k++) {
-      String name = thiefSkills[k][0];
-      String chance = thiefSkills[k][1];
-      System.out.println("\t" + name + " = " + chance + "%");
-    }
-  }
+  
+  // ====================================================
+  // Private helper methods
+  // ====================================================
 
   /**
    * Display the Hero's prime traits
@@ -1195,18 +1135,6 @@ public class Hero implements Serializable
     for (int k = 0; k < 6; k++) {
       System.out.print("\t" + ndx[k] + " = " + traits[k] + "\t");
     }
-  }
-
-  private void displayWizardMods()
-  {
-    StringBuffer sb = new StringBuffer();
-    sb.append("Wizards only: ");
-    sb.append("\t MSPs per Level = " + _MSPsPerLevel);
-    sb.append("\t MSPs = " + _MSPs);
-    sb.append("\t % to know new spell = " + _percentToKnow);
-    sb.append("\t MSPs per Level = " + _MSPsPerLevel);
-    sb.append("\t Spells known (in Spellbook): " + _spellsKnown);
-    System.out.println("\n" + sb);
   }
 
   // Private: Extract the skills for a given skillname of the given occupation
@@ -1239,7 +1167,6 @@ public class Hero implements Serializable
     return 0;
   }
 
-
   /** Get the literacy based on intelligence; Spell casters are always literate */
   private String getLiteracy(int intel)
   {
@@ -1259,12 +1186,10 @@ public class Hero implements Serializable
     return lit;
   }
 
-
-
   // ====================================================
   // Private helper methods
   // ====================================================
-
+  
   /**
    * Build the physical appearance of the Person, without regard to what they are wearing or
    * anything that can drastically change. The description depends on height, weight, race, klass,
@@ -1285,22 +1210,82 @@ public class Hero implements Serializable
     String article = (checkFirstVowel(bodyType) == true) ? "An " : "A ";
     // Determine proper gender for descriptive statement
     String pronoun = _gender.equalsIgnoreCase("female") ? "She" : "He";
-
+  
     // Process baldness.
     String hairType = (_hairColor.equalsIgnoreCase("bald")) ? "a bald head" : _hairColor + " hair";
     String desc1 = article + bodyType + " " + getGender().toLowerCase() + " with " + hairType;
-
+  
     // Get race descriptor for suffix.
     String desc2 = _race.getRaceDescriptor();
-
+  
     // Get Charisma description
     String chrDesc = _race.initCharismaDescriptor(chr);
     String desc3 = pronoun + " is " + chrDesc + ".";
-
+  
     String desc = desc1 + " and " + desc2 + ". " + desc3;
     return desc;
   }
 
+//  private void displayClericMods()
+//  {
+//    StringBuffer sb = new StringBuffer();
+//    sb.append("Clerics only: ");
+//    sb.append("\t CSPs per Level = " + _CSPsPerLevel);
+//    sb.append("\t CSPs = " + _CSPs);
+//    sb.append("\t Turn Undead: " + _turnUndead + " + ULD");
+//    System.out.println("\n" + sb);
+//  }
+//
+//  /** Display the Action Points and non-lethal combat stats */
+//  private void displayCombatStats()
+//  {
+//    StringBuffer sb = new StringBuffer();
+//    sb.append("AP = " + _AP);
+//    sb.append("\t Overbearing (for " + _weight + " lbs) = " + _apMods[OVERBEAR]);
+//    sb.append("\t Grappling = " + _apMods[GRAPPLE]);
+//    sb.append("\t Pummeling = " + _apMods[PUMMEL]);
+//    sb.append("\t Shield Bash (with no shield) = " + _apMods[BASH]);
+//    System.out.println("\n" + sb);
+//  }
+//
+//
+//  private void displayRacialMods()
+//  {
+//    StringBuffer sb = new StringBuffer();
+//    sb.append("Dwarves, Gnomes, and Hobbits only: ");
+//    sb.append("\t Updated Magic Attack Mod = " + _magicAttackMod);
+//    sb.append("\t Racial Poison Resist = " + _racialPoisonResist);
+//    System.out.println("\n" + sb);
+//  }
+//
+//  private void displayStrMods(int[] mods)
+//  {
+//    System.out.println("\n\tStr Mods: \t To Hit (melee) = " + _toHitStr + ";\t Dmg = " + _damage
+//        + ";\t Wt Allownace = " + _wtAllow);
+//  }
+//
+//  private void displayThiefSkills(String[][] thiefSkills)
+//  {
+//    // Put the skill name and chance into a single output string
+//    System.out.println("\nThief Skills:");
+//    for (int k = 0; k < thiefSkills.length; k++) {
+//      String name = thiefSkills[k][0];
+//      String chance = thiefSkills[k][1];
+//      System.out.println("\t" + name + " = " + chance + "%");
+//    }
+//  }
+//
+//  private void displayWizardMods()
+//  {
+//    StringBuffer sb = new StringBuffer();
+//    sb.append("Wizards only: ");
+//    sb.append("\t MSPs per Level = " + _MSPsPerLevel);
+//    sb.append("\t MSPs = " + _MSPs);
+//    sb.append("\t % to know new spell = " + _percentToKnow);
+//    sb.append("\t MSPs per Level = " + _MSPsPerLevel);
+//    sb.append("\t Spells known (in Spellbook): " + _spellsKnown);
+//    System.out.println("\n" + sb);
+//  }
 
   // ====================================================
   // INNER CLASS MockHero

@@ -23,7 +23,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.Chronos;
-import civ.Adventurer;
 
 /**
  * Ensure that the program exits back to the system, closing all registries, but not deleting them.
@@ -91,9 +90,6 @@ public class TA00b_Quit
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.msgln(this, "\t testTA00b_Quit()");
-
-    // Ensure that the Registries exist
-    Adventurer adv = new Adventurer();
 
     // VERIFY that the registries still exist
     assertTrue(registryFilesExist());

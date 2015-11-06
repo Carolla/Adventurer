@@ -21,6 +21,10 @@ import chronos.pdc.MiscKeys.ItemCategory;
  */
 public class Wizard extends Klass
 {
+  /**
+   * Generated
+   */
+  private static final long serialVersionUID = 1236661286968070891L;
   /** Starting die and initial free HP for klass */
   private String _hitDie = "d4";
   private int _freeHP = 4;

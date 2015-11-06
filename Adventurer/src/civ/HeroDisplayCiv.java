@@ -209,7 +209,7 @@ public class HeroDisplayCiv
   /**
    * @return the list of spells known
    */
-  public ArrayList<String> getSpellBook()
+  public List<String> getSpellBook()
   {
     return _hero.getSpellBook();
   }
@@ -262,12 +262,12 @@ public class HeroDisplayCiv
    * @param itemList list of Items to display
    * @return false is an error occurs
    */
-  public boolean populateInventory(ArrayList<Item> itemList)
+  public boolean populateInventory(List<Item> itemList)
   {
     // Create a shuttle to contain the data and convert to widget String
     // format
-    List<String> items = convertItems(itemList);
-    // _widget.displayInventory(items);
+    //List<String> items = convertItems(itemList);
+    //_widget.displayInventory(items);
     return true;
   }
 
@@ -346,6 +346,7 @@ public class HeroDisplayCiv
     return skillList;
   }
 
+  
   /*
    * PRIVATE METHODS
    */
@@ -454,36 +455,35 @@ public class HeroDisplayCiv
   // }
 
 
-  /**
-   * Convert the Item objects into string fields for list display. All Item fields are concatenated
-   * into a single delimited string.
-   * 
-   * @param items list of Item object to convert
-   * @return the string list of output data
-   */
-  private List<String> convertItems(ArrayList<Item> items)
-  {
-    List<String> itemList = new ArrayList<String>(items.size());
-    for (int k = 0; k < items.size(); k++) {
-      // Each item consists of: Inventory category, name, quantity, and
-      // weight (each)
-      Item item = items.get(k);
-      String cat = item.getCategory().toString();
-      String name = item.getName();
-      String qty = String.valueOf(item.getQuantity());
-      // Convert weight from ounces to lbs and ozs
-      // int weight = item.getWeight();
-      // int lbs = weight / Constants.OUNCES_PER_POUND;
-      // int ozs = weight % Constants.OUNCES_PER_POUND;
-      // String lbWt = String.valueOf(lbs);
-      // String ozWt = String.valueOf(ozs);
-      // Build displayable string
-      // String itemStr = cat + BaseCiv.DELIM + name + BaseCiv.DELIM + qty + BaseCiv.DELIM + lbWt
-      // + BaseCiv.DELIM + ozWt;
-      // itemList.add(k, itemStr);
-    }
-    return itemList;
-  }
+//  /**
+//   * Convert the Item objects into string fields for list display. All Item fields are concatenated
+//   * into a single delimited string.
+//   * 
+//   * @param items list of Item object to convert
+//   * @return the string list of output data
+//   */
+//  private List<String> convertItems(ArrayList<Item> items)
+//  {
+//    List<String> itemList = new ArrayList<String>(items.size());
+//    for (Item item : items) {
+//      // Each item consists of: Inventory category, name, quantity, and
+//      // weight (each)
+//      String cat = item.getCategory().toString();
+//      String name = item.getName();
+//      String qty = String.valueOf(item.getQuantity());
+//      // Convert weight from ounces to lbs and ozs
+//      // int weight = item.getWeight();
+//      // int lbs = weight / Constants.OUNCES_PER_POUND;
+//      // int ozs = weight % Constants.OUNCES_PER_POUND;
+//      // String lbWt = String.valueOf(lbs);
+//      // String ozWt = String.valueOf(ozs);
+//      // Build displayable string
+//      String itemStr = cat + BaseCiv.DELIM + name + BaseCiv.DELIM + qty; // + BaseCiv.DELIM + lbWt
+//      // + BaseCiv.DELIM + ozWt;
+//      itemList.add(itemStr);
+//    }
+//    return itemList;
+//  }
 
 
   // /**

@@ -33,15 +33,15 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
-import civ.HeroDisplayCiv;
-import civ.NewHeroCiv;
-import civ.NewHeroCiv.ErrorCode;
-import civ.NewHeroCiv.HeroInput;
 import mylib.Constants;
 import mylib.MsgCtrl;
 import mylib.hic.HelpKeyListener;
 import net.miginfocom.swing.MigLayout;
 import pdc.character.Hero;
+import civ.HeroDisplayCiv;
+import civ.NewHeroCiv;
+import civ.NewHeroCiv.ErrorCode;
+import civ.NewHeroCiv.HeroInput;
 
 /**
  * Allows the author to input a few key attributes of their Hero. A CIV object is called to validate
