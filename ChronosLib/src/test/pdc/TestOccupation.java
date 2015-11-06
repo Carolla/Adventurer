@@ -20,15 +20,11 @@ import mylib.ApplicationException;
 import mylib.MsgCtrl;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.pdc.Occupation;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
-import chronos.pdc.registry.SkillRegistry;
+import chronos.pdc.Skill;
 
 
 /**
@@ -51,32 +47,11 @@ public class TestOccupation
     /** Overly long Test name for target */
     private final String LONGNAME = "All names are required to be within " 
                 + Occupation.OCC_NAME_LIMIT + "  characters";
-    /** Test skill for target */
-    private final String LONGSKILLNAME = "All skill names are required to be within "
-                + Occupation.OCC_NAME_LIMIT + "  characters";
-    /** Skill missing from Skill registry and associated with target */
-    private final String ERRANT_SKILLNAME = "Bugalooing";
 
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++  
      *                  SETUP / TEARDOWN 
      * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-
-    /** Create the secondary registries needed */
-    @BeforeClass
-    public static void runOnce()
-    {
-        // Create a Registry object, which will be initialized if new
-        assertNotNull((SkillRegistry) RegistryFactory.getInstance().getRegistry(RegKey.SKILL));
-    }
-    
-    /** Close down all the secondary registries needed */
-    @AfterClass
-    public static void cleanUp() 
-    {
-      RegistryFactory.getInstance().closeAllRegistries();
-    }
-
     
     /**
      * @throws java.lang.Exception for unexpected exception
@@ -84,7 +59,7 @@ public class TestOccupation
     @Before
     public void setUp() throws Exception
     {
-        _ocp = new Occupation(OCPNAME, SKILLNAME);
+        _ocp = new Occupation(OCPNAME, new FakeSkill(SKILLNAME));
         assertNotNull(_ocp);
     }
 
@@ -132,7 +107,7 @@ public class TestOccupation
         }
         // Error  name parm is null
         try {
-            _ocp = new Occupation(null, SKILLNAME);
+            _ocp = new Occupation(null, new FakeSkill(SKILLNAME));
         } catch (NullPointerException ex1) {
             MsgCtrl.msgln("\t Expected exception: " + ex1.getMessage());
         } catch (ApplicationException ex2) {
@@ -140,19 +115,7 @@ public class TestOccupation
         }
         // Error  name parm is overly long
         try {
-            _ocp = new Occupation(LONGNAME, SKILLNAME);
-        } catch (ApplicationException ex2) {
-            MsgCtrl.msgln("\t Expected exception: " + ex2.getMessage());
-        }
-        // Error  skillname parm is overly long
-        try {
-            _ocp = new Occupation(OCPNAME, LONGSKILLNAME);
-        } catch (ApplicationException ex2) {
-            MsgCtrl.msgln("\t Expected exception: " + ex2.getMessage());
-        }
-        // Error  skillname given is not part of the Registry
-        try {
-            _ocp = new Occupation(OCPNAME, ERRANT_SKILLNAME);
+            _ocp = new Occupation(LONGNAME, new FakeSkill(SKILLNAME));
         } catch (ApplicationException ex2) {
             MsgCtrl.msgln("\t Expected exception: " + ex2.getMessage());
         }
@@ -173,14 +136,14 @@ public class TestOccupation
         MsgCtrl.auditMsgsOn(false);
         MsgCtrl.errorMsgsOn(false);   
         String ocp2Name = "DM'ing";
-        String ocp2Skill = "No Occupational Skills";
+        Skill ocp2Skill = new FakeSkill("No Occupational Skills");
         
         // Normal   Verify same class, name and description returns true
-        Occupation ocpSame = new Occupation(OCPNAME, SKILLNAME);
+        Occupation ocpSame = new Occupation(OCPNAME, new FakeSkill(SKILLNAME));
         assertTrue(_ocp.equals(ocpSame));
         
         // Error   Verify different names returns false
-        Occupation ocpDiffName= new Occupation(ocp2Name, SKILLNAME);
+        Occupation ocpDiffName= new Occupation(ocp2Name, new FakeSkill(SKILLNAME));
         assertFalse(_ocp.equals(ocpDiffName));
         
         // Error   Verify different skillNames return false

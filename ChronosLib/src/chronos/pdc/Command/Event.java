@@ -10,7 +10,8 @@
  * by email: acline@carolla.com.  
  */
 
-package pdc.command;
+package chronos.pdc.Command;
+
 
 
 /** 
@@ -24,7 +25,7 @@ package pdc.command;
  * </DL>
  * @see DeltaCmdList
  */
-public class Event
+public class Event implements Comparable<Event>
 {
 	/** The key into the DeltaList, taken from Command.delay. The _delta is the
 	 * time before execution relative to the previous command's delta. 
@@ -76,6 +77,13 @@ public class Event
     public void setDelta(int value)
     {
         _delta = value;
+    }
+
+
+    @Override
+    public int compareTo(Event other)
+    {
+        return _delta - other._delta;
     }
     
 

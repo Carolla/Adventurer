@@ -13,11 +13,11 @@ package pdc.character;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import chronos.Chronos;
 import mylib.pdc.MetaDie;
 import pdc.Inventory;
-import pdc.Item;
-import pdc.MiscKeys.ItemCategory;
+import chronos.Chronos;
+import chronos.pdc.Item;
+import chronos.pdc.MiscKeys.ItemCategory;
 
 /**
  * Defines the common methods and attributes for all Klasses. Peasant is the default Klass.

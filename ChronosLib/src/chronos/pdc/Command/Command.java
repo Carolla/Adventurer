@@ -9,7 +9,7 @@
  * email: acline@carolla.com.
  */
 
-package pdc.command; // This package value is needed by the subcommands; see _cmdPackage field
+package chronos.pdc.Command; // This package value is needed by the subcommands; see _cmdPackage field
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,14 +63,13 @@ import java.util.List;
  */
 public abstract class Command
 {
-    /** The package field that allows the CommandFactory to know where the commands are */
-    static final protected String CMD_PACKAGE = "pdc.command.";
-    /** The name of the command */
-    protected String _name = null;
-    /** The amount of time before the command is triggered */
-    protected int _delay = 0;
-    /** The amount of time that passes while the command is in effect */
-    protected int _duration = 0;
+  public enum CommandStatus { INTERNAL, USER };
+  /** The name of the command */
+  protected String _name = null;
+  /** The amount of time before the command is triggered */
+  protected int _delay = 0;
+  /** The amount of time that passes while the command is in effect */
+  protected int _duration = 0;
 
     /**
      * The parameters that the subcommand needs must be wrapped in an ArrayList for the subcommand's
@@ -231,7 +230,7 @@ public abstract class Command
      * Return a generic error message if the Command itself has none.
      * The message is displayed to the User in the user IOPanel
      */
-    protected String usage()
+    public String usage()
     {
         // Do not increment the game clock for this command
         _delay = 0;
@@ -251,6 +250,26 @@ public abstract class Command
     public boolean isInitialized()
     {
         return _isInitialized;
+    }
+
+  /**
+   * By default, assume commands are UserInput.
+   * 
+   * @return whether command is input from user
+   */
+    public boolean isUserInput()
+    {
+        return true;
+    }
+
+    /**
+     * By default, assume commands are UserInput.
+     * 
+     * @return whether command is internal system commnad
+     */
+    public boolean isInternal()
+    {
+        return false;
     }
 
 

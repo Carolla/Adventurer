@@ -67,5 +67,7 @@ public interface MainframeInterface
    */
   public void setTitle(String title);
 
+  public void showHelp();
+
 
 } // end of MainframeInterface

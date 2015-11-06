@@ -12,20 +12,11 @@
 
 package test.pdc.buildings;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import mylib.ApplicationException;
 import mylib.MsgCtrl;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
-
-import chronos.pdc.buildings.WizardsGuild;
-import chronos.pdc.buildings.WizardsGuild.MockWizardsGuild;
-import chronos.pdc.registry.RegistryFactory;
 
 /**
  *    Tests the various Guild-specific methods.
@@ -37,71 +28,17 @@ import chronos.pdc.registry.RegistryFactory;
  */
 public class TestWizardsGuild
 {
-    /** Test target object */
-    private WizardsGuild  _wizGuild = null;
-    /** Associated mock */
-    private MockWizardsGuild _mock = null;
-    
-    /** Expected name of inn */
-    private final String NAME = "House on Haunted Hill";
-    /** Expected name of Innkeeper */
-    private final String OWNER = "Ripper";
-    /** Expected hovertext */
-    private final String HOVERTEXT = "Click and see!";
-    /** Introduction */
-    private final String INTRO = "This is the hover text for the building icon";
-    /** Description */
-    private final String DESC = "This is the standard description when the Hero LOOKs, " +
-                    "which is also called automatically when the Hero ENTERs.";
-    /** Business opening hour for test Inn */
-    private final int TEST_OPEN = 1000;
-    /** Business closing hour for test Inn */
-    private final int TEST_CLOSING = 1200;
-    /** Business opening hour for test Inn */
-    private final String TEST_MEROPEN = "10:00 AM";
-    /** Business closing hour for default Inn */
-    private final String TEST_MERCLOSING = "Noon";
-    
-    /** Business opening hour for default Inn */
-    private final String DEF_OPEN = "Noon";
-    /** Business closing hour for default Inn */
-    private final String DEF_CLOSING = "8:00 PM";
-    /** Name of default store name */
-    private final String DEF_NAME = "Arcaneum";
-    /** Name of default Guildmaster */
-    private final String DEF_MASTER = "Pendergast";
-    
-    
-    /** Close down all the secondary registries needed */
-    @AfterClass
-    public static void cleanUp() 
-    {
-      RegistryFactory.getInstance().closeAllRegistries();
-    }
-    
-
     /**
      * Creates the test Store, but many tests in this class create their own different stores
-     * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
+    public void setUp() 
     {
-        _wizGuild = new WizardsGuild(NAME, OWNER, HOVERTEXT, INTRO,  DESC);
-        assertNotNull(_wizGuild);
-        _wizGuild.setBusinessHours(TEST_OPEN, TEST_CLOSING);
-        _mock = _wizGuild.new MockWizardsGuild();
-        assertNotNull(_mock);
     }
-
-    /**
-     * @throws java.lang.Exception
-     */
+    
     @After
-    public void tearDown() throws Exception
+    public void tearDown() 
     {
-        _wizGuild = null;
-        _mock = null;
         MsgCtrl.auditMsgsOn(false);
         MsgCtrl.errorMsgsOn(false);
     }
@@ -111,118 +48,10 @@ public class TestWizardsGuild
  *                  TEST METHODS
  * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
-    /** Chronos.pdc.Store
-     * @Normal ensure that the test target has correct data
-     * @throws ApplicationException if unexpected ctor error occurs 
-     */
-    @Test
-    public void testStore() throws ApplicationException 
-    {
-        MsgCtrl.auditMsgsOn(false);
-        MsgCtrl.errorMsgsOn(false);
-        MsgCtrl.msgln(this, "\t testWizardsGuild()");
-    
-        // NORMAL Dump the test Inn created by setUp()
-        dump(_wizGuild);
-        // Verify the name, innkeeper, and business hours
-        assertEquals(NAME, _wizGuild.getName());
-        assertEquals(OWNER, _wizGuild.getMaster().getName());
-        // Verify the standard intro and descrption; there is no busy description yet
-        assertEquals(HOVERTEXT, INTRO,  _wizGuild.getExteriorDescription());
-        assertEquals(DESC, _wizGuild.getInteriorDescription());
-        // Verify business hours in meridian time
-        assertEquals(TEST_MEROPEN, _wizGuild.getOpeningTime());
-        assertEquals(TEST_MERCLOSING, _wizGuild.getClosingTime());
-    }    
-
-
-    /** Chronos.pdc.Store
-     * @Error   trigger exception with bad business hours
-     * @Error   trigger exception with building master not in NPC Registry
-     * @throws ApplicationException if unexpected error occurs 
-     */
-    @Test
-    public void testStoreErrors() throws ApplicationException
-    {
-        MsgCtrl.auditMsgsOn(false);
-        MsgCtrl.errorMsgsOn(false);
-        MsgCtrl.msgln(this, "\t testStoreErrors()");
-    
-        // Clear out old Inn from setUp()
-        _wizGuild = null;
-        _mock = null;
-        
-        // ERROR  Building Master does not exist in Registry
-        try {
-            _wizGuild = new WizardsGuild(NAME, "Unregistered Owner", HOVERTEXT, INTRO,  DESC);
-        } catch (ApplicationException ex) {
-            MsgCtrl.msgln("\tExpected exception: " + ex.getMessage());
-        }
-        assertNull(_wizGuild);
-    }    
-
-    
-    /** Chronos.pdc.Store
-     * @Normal ensure that the default Inn has correct data
-     * @throws ApplicationException if unexpected ctor error occurs
-     */
-    @Test
-    public void testDefaultStore()  throws ApplicationException
-    {
-        MsgCtrl.auditMsgsOn(false);
-        MsgCtrl.errorMsgsOn(false);
-        MsgCtrl.msgln(this, "\t testDefaultStore()");
-
-        // Clear out existing Store from setUp()
-        _wizGuild = null;
-        _mock = null;
-        
-        // NORMAL Create the default Inn using the default Constructor
-        _wizGuild = new WizardsGuild();
-        assertNotNull(_wizGuild);
-        _mock = _wizGuild.new MockWizardsGuild();
-        assertNotNull(_mock);
-        dump(_wizGuild);
-        // Verify the name, innkeeper, and business hours
-        assertEquals(DEF_NAME, _wizGuild.getName());
-        assertEquals(DEF_MASTER, _wizGuild.getMaster().getName());
-        // Verify the standard intro and descrption; there is no busy description yet
-        String intro =  _mock.getIntro();
-        String desc =  _mock.getDescrption();
-        assertEquals(intro, _wizGuild.getExteriorDescription());
-        assertEquals(desc, _wizGuild.getInteriorDescription());
-        // Verify business hours in meridian time
-        assertEquals(DEF_OPEN, _wizGuild.getOpeningTime());
-        assertEquals(DEF_CLOSING, _wizGuild.getClosingTime());
-    }    
-
-    
     /** Tests that are not implemented either because tests are not needed
      *  @Not_Needed getKey()                            // getter
      */
+    @Test
     public void NotNeeded() { }
 
-    
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++  
-     * 					PRIVATE METHODS 
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-
-    /** Dump the contents of the Building
-     * @param myStore   the building to display 
-     */
-    private void dump(WizardsGuild guild)
-    {
-        MsgCtrl.msg("\t Created: \t" + guild.getName());
-        MsgCtrl.msgln("\t owned by " + guild.getMaster().getName());
-        int[] hours = guild.getBusinessHours();
-        int oTime = hours[0];
-        int cTime = hours[1];
-        String opening = guild.getMeridianTime(oTime);
-        String closing = guild.getMeridianTime(cTime);
-        MsgCtrl.msgln("\t Open from " + opening + " to " + closing);
-        MsgCtrl.msgln("\tENTER: \t" + guild.getExteriorDescription());
-        MsgCtrl.msgln("\tLOOK:\t" + guild.getInteriorDescription());    
-    }    
-    
-    
 }       // end of TestStore class

@@ -9,9 +9,9 @@
 
 package pdc.character;
 
-import java.util.ArrayList;
-
 import pdc.character.Hero.PrimeTraits;
+import chronos.pdc.Race;
+
 
 /**
  * @author Al Cline
@@ -88,7 +88,4 @@ public class Hobbit extends Race
     traits[PrimeTraits.DEX.ordinal()] += 1;
     return traits;    
   };
-
-
-
 }

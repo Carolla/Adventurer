@@ -11,13 +11,16 @@ package civ;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 
 import chronos.pdc.AttributeList;
+import chronos.pdc.Item;
+import chronos.pdc.MiscKeys.ItemCategory;
+import chronos.pdc.Skill;
 import hic.HeroDisplay;
 import hic.Mainframe;
+import mylib.civ.BaseCiv;
 import pdc.Inventory;
-import pdc.Item;
-import pdc.MiscKeys.ItemCategory;
 import pdc.character.Hero;
 
 /**
@@ -52,8 +55,6 @@ public class HeroDisplayCiv
 
   /** Hero data are converted and sent to the GUI in this EnumMap */
   private EnumMap<PersonKeys, String> _outputMap;
-  /** Hero data are converted and sent to the GUI in this EnumMap */
-  private ArrayList<String> _skills;
 
   private Mainframe _mf;
 
@@ -74,7 +75,6 @@ public class HeroDisplayCiv
     }
     _mf = mf;
     _outputMap = new EnumMap<PersonKeys, String>(PersonKeys.class);
-    _skills = new ArrayList<String>();
   }
 
 
@@ -133,9 +133,10 @@ public class HeroDisplayCiv
   {
     _hero = hero;
     _outputMap = hero.loadAttributes(_outputMap);
-    _widget = new HeroDisplay(this);
-
-    _mf.addPanel(_widget);
+    _widget = new HeroDisplay(this, _mf);
+    String title = String.format("%s:  %s %s %s", _hero.getName(), _hero.getGender(),
+        _hero.getRaceName(), _hero.getKlassName());
+    _mf.replaceLeftPanel(_widget, title);
   }
 
 
@@ -144,17 +145,17 @@ public class HeroDisplayCiv
     return _outputMap;
   }
 
-  public ArrayList<String> getKlassSkills()
+  public List<String> getKlassSkills()
   {
     return _hero.getKlassSkills();
   }
 
-  public ArrayList<String> getOcpSkills()
+  public List<String> getOcpSkills()
   {
     return _hero.getOcpSkills();
   }
 
-  public ArrayList<String> getRaceSkills()
+  public List<String> getRaceSkills()
   {
     return _hero.getRaceSkills();
   }
@@ -169,17 +170,35 @@ public class HeroDisplayCiv
   }
 
 
-  /** Retrieve a list of all items in the given invenotry by name
+  /**
+   * Retrieve a list of all items in the given invenotry by name
    * 
-   * @param cat     category of item to build a subset from
+   * @param cat category of item to build a subset from
    * @return the list of names for the subset inventory
    */
-  public ArrayList<String> getInventoryNames(ItemCategory cat)
+  public List<String> getInventoryNames(ItemCategory cat)
   {
     return _inventory.getNameList(cat);
   }
 
   /**
+   * Format the Skill data and tell the widget to display it
+   * 
+   * @param _skills list of Hero's skills to display
+   * @return false is an error occurs
+   */
+  public boolean populateSkills(List<Skill> _skills)
+  {
+    // Create a shuttle to contain the data and convert to widget String
+    // format
+    // List<String> skillList = convertSkills(_skills);
+    // if (!Constants.IN_TEST) {
+    // _widget.displaySkills(skillList);
+    // }
+    return true;
+  }
+
+  /*
    * @return the length of the inventory (number of Items)
    */
   public int getInventorySize()
@@ -195,7 +214,7 @@ public class HeroDisplayCiv
     return _hero.getSpellBook();
   }
 
-  
+
   // /**
   // * Save the Person to a new file. This method pops up a file chooser so the user can select a
   // * filename; else the Hero's name is used. If the Person is newly created, then the Person is
@@ -247,7 +266,7 @@ public class HeroDisplayCiv
   {
     // Create a shuttle to contain the data and convert to widget String
     // format
-    ArrayList<String> items = convertItems(itemList);
+    List<String> items = convertItems(itemList);
     // _widget.displayInventory(items);
     return true;
   }
@@ -302,7 +321,30 @@ public class HeroDisplayCiv
     return false;
   }
 
-
+  /**
+   * Convert the Skill object into string fields for list display. All Item fields are concatenated
+   * into a single delimited string.
+   * 
+   * @param _skills list of Skills objects to convert
+   * @return the string list of output data
+   */
+  private List<String> convertSkills(List<Skill> _skills)
+  {
+    List<String> skillList = new ArrayList<String>(_skills.size());
+    for (int k = 0; k < _skills.size(); k++) {
+      // Each Skill consists of: name, description, race, klass, and
+      // action (excluded)
+      Skill skill = _skills.get(k);
+      String name = skill.getName();
+      // String race = skill.getRace();
+      // String klass = skill.getKlass();
+      String description = skill.getDescription();
+      String skillStr = name + BaseCiv.DELIM + description; // race + BaseCiv.DELIM + klass +
+                                                            // BaseCiv.DELIM + description;
+      skillList.add(k, skillStr);
+    }
+    return skillList;
+  }
 
   /*
    * PRIVATE METHODS
@@ -419,9 +461,9 @@ public class HeroDisplayCiv
    * @param items list of Item object to convert
    * @return the string list of output data
    */
-  private ArrayList<String> convertItems(ArrayList<Item> items)
+  private List<String> convertItems(ArrayList<Item> items)
   {
-    ArrayList<String> itemList = new ArrayList<String>(items.size());
+    List<String> itemList = new ArrayList<String>(items.size());
     for (int k = 0; k < items.size(); k++) {
       // Each item consists of: Inventory category, name, quantity, and
       // weight (each)

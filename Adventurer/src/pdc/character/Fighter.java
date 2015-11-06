@@ -10,9 +10,9 @@
 package pdc.character;
 
 import pdc.Inventory;
-import pdc.Item;
-import pdc.MiscKeys.ItemCategory;
 import pdc.character.Hero.PrimeTraits;
+import chronos.pdc.Item;
+import chronos.pdc.MiscKeys.ItemCategory;
 
 /**
  * @author Al Cline

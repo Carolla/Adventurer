@@ -9,7 +9,8 @@
 
 package pdc.character;
 
-import java.util.ArrayList;
+import chronos.pdc.Race;
+
 
 /**
  * @author Al Cline

@@ -1,57 +1,28 @@
 package test.pdc.command;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import civ.MainframeCiv;
 import pdc.command.CmdReturn;
-import pdc.command.CmdReturn.MockCmdReturn;
-import pdc.command.CommandFactory;
-import test.integ.MainframeProxy;
 
 public class TestCmdReturn
 {
-    
-    private static CommandFactory _cmdFac = null;
-    
     private CmdReturn _cmdReturn;
-    private MockCmdReturn _mock;
-
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception
-    {
-        MainframeProxy mfProxy = new MainframeProxy();
-        MainframeCiv mfCiv = new MainframeCiv(mfProxy);
-        _cmdFac = new CommandFactory(mfCiv);
-    }
-
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception
-    {}
+    private FakeMainframeCiv _mfCiv;
 
     @Before
-    public void setUp() throws Exception
+    public void setUp()
     {
-        _cmdReturn = (CmdReturn) _cmdFac.createCommand("cmdReturn");
-        _mock = _cmdReturn.new MockCmdReturn();
+        _mfCiv = new FakeMainframeCiv();
+        _cmdReturn = new CmdReturn(_mfCiv);
     }
 
     @After
-    public void tearDown() throws Exception
+    public void tearDown()
     {}
-    
-    @Test
-    public void testCtor()
-    {
-        
-        
-        fail("Not yet implemented");
-    }
 
     @Test
     public void testInit()

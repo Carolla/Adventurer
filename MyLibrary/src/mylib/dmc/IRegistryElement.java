@@ -51,7 +51,7 @@ public interface IRegistryElement
    * @param target to check for equality
    * @return true if the 'this' object and the target are equal; else false
    */
-  abstract public boolean equals(IRegistryElement target);
+    abstract public boolean equals(IRegistryElement target);
 
   /**
    * Return a unique field of the element to act as a search key. This method allows a retrieval by

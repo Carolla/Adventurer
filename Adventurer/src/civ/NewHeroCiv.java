@@ -14,6 +14,8 @@ import java.util.EnumMap;
 import chronos.pdc.registry.HeroRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
+import hic.Mainframe;
+import hic.NewHeroIPPanel;
 import pdc.character.Hero;
 
 /**
@@ -49,28 +51,39 @@ public class NewHeroCiv
 
 
   /** Input map for data field and keys */
-  private EnumMap<HeroInput, String> _inputMap = null;
-
+  private EnumMap<HeroInput, String> _inputMap;
+  private Mainframe _mf;
+  private HeroRegistry _heroReg;
 
   // ===========================================================================
   // CONSTRUCTOR
   // ===========================================================================
 
-  /** Standard constructor */
-  public NewHeroCiv()
+  /**
+   * Controls the creation of the new Hero input panel, data validation, and displaying the new Hero
+   * stats
+   * 
+   * @param mf to callback for placing created panels, and relinquishing final control
+   * @param regFactory to check Hero for unique name
+   */
+  public NewHeroCiv(Mainframe mainframe, RegistryFactory regFactory)
   {
     _inputMap = new EnumMap<HeroInput, String>(HeroInput.class);
+    _heroReg = (HeroRegistry) regFactory.getRegistry(RegKey.HERO);
+    _mf = mainframe;
   }
 
   // ===========================================================================
   // PUBLIC METHODS
   // ===========================================================================
 
-  /** Create the new Hero from the user's input data
+  /**
+   * Create the new Hero from the user's input data
+   * 
    * @param inputMap of user fields: name, gender, hairColor, race, and Klass
    * @param ErrorCode of NO_ERROR, or some ErrorCode value if a problem occured
    */
-  public Hero createHero(EnumMap<HeroInput, String> inputMap) 
+  public void createHero(EnumMap<HeroInput, String> inputMap)
   {
     String name = _inputMap.get(HeroInput.NAME);
     String gender = _inputMap.get(HeroInput.GENDER);
@@ -80,16 +93,30 @@ public class NewHeroCiv
 
     ErrorCode err = ErrorCode.NO_ERROR;
     Hero myHero = null;
-    
+
     try {
       myHero = new Hero(name, gender, hairColor, raceName, klassName);
     } catch (InstantiationException ex) {
       err = ErrorCode.HERO_NOT_CREATED;
-      //TODO Handle error here
+      // TODO Handle error here
     }
-    return myHero;
+    // Display the Hero
+     HeroDisplayCiv hDispCiv = new HeroDisplayCiv(_mf);
+     hDispCiv.displayHero(myHero);
   }
-  
+
+
+  /**
+   * Create the new hero panel to collect input data; pick up the input data when the input
+   * panel calls submit
+   * 
+   */
+  public NewHeroIPPanel createNewHeroPanel()
+  {
+    NewHeroIPPanel ipPanel = new NewHeroIPPanel(_mf, this);
+    return ipPanel;
+  }
+
   // Get empty map for input data
   public EnumMap<HeroInput, String> getEmptyMap()
   {
@@ -111,7 +138,25 @@ public class NewHeroCiv
   {
     return _raceList;
   }
-
+  
+  
+  /**
+   * Retrieve the new Hero input data for validation or Hero creation. Biggest check is if the hero
+   * name is unique (does not exist in the Hero registry)
+   * 
+   * @param heroInput contains the five input fields: name, gender, hair color, race, and klass (in
+   *        that order)
+   * @return false if error widget needs to be displayed
+   */
+  public ErrorCode validate(EnumMap<HeroInput, String> inputMap)
+  {
+    String name = inputMap.get(HeroInput.NAME);
+    ErrorCode err = isValid(name);
+    if (err == ErrorCode.NO_ERROR) {
+      err = isUnique(name);
+    }
+    return err;
+  }
 
   /**
    * Verify that there is no Hero with the same name in the Dormitory
@@ -122,9 +167,13 @@ public class NewHeroCiv
   private ErrorCode isUnique(String name)
   {
     ErrorCode err = ErrorCode.NO_ERROR;
-    RegistryFactory rf = RegistryFactory.getInstance();
-    HeroRegistry dorm = (HeroRegistry) rf.getRegistry(RegKey.HERO);
-    if (dorm.isUnique(name)) {
+    // text block
+    if (_heroReg == null) {
+      System.err.println("HewHeroCiv.isUnique(): _heroReg is null");
+      System.exit(-1);
+    }
+    //
+    if (_heroReg.isUnique(name)) {
       err = ErrorCode.NAME_NOT_UNIQUE;
     }
     return err;
@@ -150,24 +199,5 @@ public class NewHeroCiv
     return retflag;
   }
 
-  
-  /**
-   * Retrieve the new Hero input data for validation or Hero creation. Biggest check is if the 
-   * hero name is unique (does not exist in the Hero registry)
-   * 
-   * @param heroInput contains the five input fields: name, gender, hair color, race, and klass (in
-   *        that order)
-   * @return false if error widget needs to be displayed
-   */
-  public ErrorCode validate(EnumMap<HeroInput, String> inputMap)
-  {
-    String name = inputMap.get(HeroInput.NAME);
-    ErrorCode err = isValid(name);
-    if (err == ErrorCode.NO_ERROR) {
-      err = isUnique(name);
-    }
-    return err;
-  }
-  
-  
+
 } // end of NewHeroCiv class

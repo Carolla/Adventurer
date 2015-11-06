@@ -16,9 +16,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import chronos.pdc.Command.Command;
+import chronos.pdc.Command.NullCommand;
 import civ.BuildingDisplayCiv;
 import civ.MainframeCiv;
-import civ.UserMsg;
 
 
 /**
@@ -43,7 +44,6 @@ public class CommandFactory
 
   private final BuildingDisplayCiv _bdCiv;
   private final MainframeCiv _mfCiv;
-  private UserMsg _userOut;
 
   public CommandFactory(MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
   {
@@ -69,6 +69,8 @@ public class CommandFactory
     _commandMap.put("QUIT", () -> new CmdQuit(_mfCiv, _bdCiv));
     // Return to town view
     _commandMap.put("RETURN", () -> new CmdReturn(_mfCiv));
+    // Just sit there
+    _commandMap.put("WAIT", () -> new CmdWait());
 
     // Locks the command map as read-only
     _commandMap = Collections.unmodifiableMap(_commandMap);
@@ -92,8 +94,7 @@ public class CommandFactory
       _mfCiv.errorOut(ERRMSG_UNKNOWN);
       return command;
     } else {
-      // If map contains the command as typed, Supplier<Command> will give new Instance of
-      // that
+      // If map contains the command, Supplier<Command> will give new Instance of that
       Supplier<Command> supplier = _commandMap.get(cmdInput.commandToken);
       if (supplier != null) {
         command = supplier.get();
@@ -109,7 +110,7 @@ public class CommandFactory
 
   public boolean canCreateCommand(CommandInput ci)
   {
-    return (_commandMap.get(ci.commandToken) == null) ? false : true;
+    return _commandMap.get(ci.commandToken) != null;
   }
 
 } // end of CommandFactory class

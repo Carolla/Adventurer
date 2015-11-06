@@ -11,12 +11,10 @@ package hic;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.io.File;
 import java.util.EnumMap;
 
 import javax.swing.BorderFactory;
@@ -30,8 +28,11 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 
-import chronos.Chronos;
 import civ.HeroDisplayCiv;
 import civ.NewHeroCiv;
 import civ.NewHeroCiv.ErrorCode;
@@ -41,7 +42,6 @@ import mylib.MsgCtrl;
 import mylib.hic.HelpKeyListener;
 import net.miginfocom.swing.MigLayout;
 import pdc.character.Hero;
-
 
 /**
  * Allows the author to input a few key attributes of their Hero. A CIV object is called to validate
@@ -106,7 +106,7 @@ public class NewHeroIPPanel extends JPanel
   private final String ERRMSG_NAME_MISSING = "Your Hero must have a name!";
   /** Error message when namefield is too long */
   private final String ERRMSG_NAME_TOO_LONG =
-      "Your Hero's name is to long (45 char limit). \nTry perhaps your Hero's nickname?";
+      "Your Hero's name is too long (45 char limit). \nTry perhaps your Hero's nickname?";
       // /** Error message when an unknown error has occurred */
       // private final String ERRMSG_UNKNOWN =
       // "Hero could not be created for some unanticipated reason";
@@ -117,14 +117,14 @@ public class NewHeroIPPanel extends JPanel
   private Color _backColor = Constants.MY_BROWN.brighter();
 
   /** Input data from user */
-  private String _name = null;
-  private String _gender = null;
-  private String _hairColor = null;
-  private String _raceName = null;
-  private String _klassName = null;
+  private String _name;
+  private String _gender;
+  private String _hairColor;
+  private String _raceName;
+  private String _klassName;
 
   /** Contains user input field data */
-  EnumMap<HeroInput, String> _input = null;
+  EnumMap<HeroInput, String> _input;
 
 
   /**
@@ -134,8 +134,8 @@ public class NewHeroIPPanel extends JPanel
   private JTextField _nameField = null;
 
   /** Associated validating CIV object */
-  private NewHeroCiv _nhCiv = null;
-
+  private NewHeroCiv _nhCiv;
+  private Mainframe _mf;
 
   // ============================================================
   // Constructors and constructor helpers
@@ -145,13 +145,11 @@ public class NewHeroIPPanel extends JPanel
    * Creates the panel format and places the action components (e.g., radio buttons and drop down
    * boxes). Also creates the associated CIV object to manage the data. The action components are
    * created in private helper methods.
-   * 
-   * @throws InstantiationException if some problem occurs
    */
-  public NewHeroIPPanel() throws InstantiationException
+  public NewHeroIPPanel(Mainframe mf, NewHeroCiv nhCiv)
   {
-    // Create the associated Civ object for validating the input data (no model yet)
-    _nhCiv = new NewHeroCiv();
+    _nhCiv = nhCiv;
+    _mf = mf;
 
     // GENERAL SETUP
     // Set the preferred and max size, adjusting for panel border thickness
@@ -159,14 +157,13 @@ public class NewHeroIPPanel extends JPanel
     int height = Mainframe.getWindowSize().height;
     setPreferredSize(new Dimension(width, height));
     // Replace the mainframe title with this panel title
-    Mainframe mf = Mainframe.getInstance();
     mf.setTitle(NEW_HERO_TITLE);
 
     int pad = Mainframe.PAD;
     Border matte = BorderFactory.createMatteBorder(pad, pad, pad, pad, Color.WHITE);
     // Border titledBorder = BorderFactory.createTitledBorder(matte, PANEL_TITLE,
     // TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION);
-//    setBorder(titledBorder);
+    // setBorder(titledBorder);
     setBorder(matte);
     // _backColor = Constants.MY_BROWN;
     setBackground(_backColor);
@@ -190,10 +187,6 @@ public class NewHeroIPPanel extends JPanel
 
     // Create the input text field to collect the Hero's name give it default focus
     _nameField = makeNameField();
-    _nameField.setVisible(true);
-    _nameField.setFocusable(true);
-    _nameField.requestFocusInWindow();
-    _nameField.requestFocus();
     add(_nameField, "push, align center, span");
 
     /* THIS GRID POPULATES HORIZONTALLY: Save all Components for later data extraction */
@@ -218,18 +211,6 @@ public class NewHeroIPPanel extends JPanel
     /* Add a button panel containing the Submit and Cancel buttons */
     add(makeButtonPanel(), "push, align center, span, gaptop 20%");
 
-    // Make textField get the focus whenever frame is activated.
-    // frame.addWindowFocusListener(new WindowAdapter() {
-    // public void windowGainedFocus(WindowEvent e) {
-    // textField.requestFocusInWindow();
-    // }
-    // });
-    setVisible(true);
-    _nameField.setFocusable(true);
-//    _nameField.requestFocusInWindow();
-    _nameField.requestFocus();
-
-
   } // end NewHeroIPPanel constructor
 
 
@@ -243,8 +224,6 @@ public class NewHeroIPPanel extends JPanel
    * invoke the default component. It calls this method to get which one should be default. This
    * method is created for this because the caller does not know what fields are available in this
    * panel, and it can change with maintenance.
-   * 
-   * @return the JTextField, in this case
    */
   public void setDefaultFocus()
   {
@@ -294,14 +273,14 @@ public class NewHeroIPPanel extends JPanel
       public void actionPerformed(ActionEvent event)
       {
         // Call the Civ to validate the attributes. If no errors, Hero is created and displayed
-        ErrorCode err = submit();   
+        ErrorCode err = submit();
         if (err == ErrorCode.NO_ERROR) {
-          // Remove this panel and ignore any changes
           setVisible(false);
-            // Create the new Hero and display it
-            Hero hero = _nhCiv.createHero(_input);
-            HeroDisplayCiv hDispCiv = new HeroDisplayCiv(Mainframe.getInstance());
-            hDispCiv.displayHero(hero);
+          // Create the new Hero and display it
+          _nhCiv.createHero(_input);
+          // Hero hero = _nhCiv.createHero(_input);
+          // HeroDisplayCiv hDispCiv = new HeroDisplayCiv(_mf);
+          // hDispCiv.displayHero(hero);
         } else {
           // Display the message
           showErrorMessage(err);
@@ -419,12 +398,15 @@ public class NewHeroIPPanel extends JPanel
   {
     // Create the text field to collect the Hero's name
     _nameField = new JTextField(HERO_NAME_WIDTH);
+
+    // Create DocumentFilter for restricting input length
+    AbstractDocument d = (AbstractDocument) _nameField.getDocument();
+    d.setDocumentFilter(new NewHeroIPPanel.NameFieldLimiter());
+
+    // Set name of the field
     _nameField.setName("heroName");
     // Collect the name when the text field goes out of focus
     _nameField.addFocusListener(new FocusOffListener());
-    // Ensure that the text scrolls as new text is appended
-    _nameField.setFocusable(true);
-    _nameField.requestFocusInWindow();
 
     // Extract Hero's name and update Hero's name into MainFrame Title
     // if Enter key is hit or text field loses focus.
@@ -444,15 +426,7 @@ public class NewHeroIPPanel extends JPanel
         setEditFlag(true);
       }
     });
-    
-    /* Use DocumentFilter to limit the number of columns/characters that can be
-     * entered into the name field.
-     */
-//    AbstractDocument doc;
-//    StyledDocument styledDoc = (StyledDocument)_nameField.getDocument();
-//    doc = (AbstractDocument)styledDoc;
-//    doc.setDocumentFilter(new DocumentSizeFilter(HERO_NAME_WIDTH));
-    
+
     return _nameField;
   }
 
@@ -573,24 +547,24 @@ public class NewHeroIPPanel extends JPanel
   }
 
 
-  /**
-   * Create a Runic Font.
-   * 
-   * @param size - the font size
-   * @return Font - the runic font
-   */
-  private Font makeRunicFont(float size)
-  {
-    Font font = null;
-    try {
-      Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(
-          Chronos.RUNIC_ENGLISH2_FONT_FILE));
-      font = newFont.deriveFont(size);
-    } catch (Exception e) {
-      MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
-    }
-    return font;
-  }
+  // /**
+  // * Create a Runic Font.
+  // *
+  // * @param size - the font size
+  // * @return Font - the runic font
+  // */
+  // private Font makeRunicFont(float size)
+  // {
+  // Font font = null;
+  // try {
+  // Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(
+  // Chronos.RUNIC_ENGLISH2_FONT_FILE));
+  // font = newFont.deriveFont(size);
+  // } catch (Exception e) {
+  // MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
+  // }
+  // return font;
+  // }
 
 
   // ================================================================
@@ -622,7 +596,6 @@ public class NewHeroIPPanel extends JPanel
   // =======================================================
   // INNER CLASS: FocusAdapter
   // =======================================================
-
   /**
    * Indicates when the source component loses focus. In this case, when the Hero name JTextField
    * loses focus so that the data can be extracted. This is necessary only for widgets that cannot
@@ -649,6 +622,54 @@ public class NewHeroIPPanel extends JPanel
       setEditFlag(true);
     }
   } // end FocusLostListener
+
+
+  // =======================================================
+  // INNER CLASS: NameFieldLimiter
+  // =======================================================
+  /**
+   * Replaces the default DocumentFilter for the input value of the Hero's name field. It limits the
+   * allowed input to the length specified by HERO_NAME_WIDTH and causes an audio "beep" to be
+   * sounded by the system when more input is attempted after the limit is reached.
+   * 
+   * @author OG
+   *
+   */
+  private class NameFieldLimiter extends DocumentFilter
+  {
+    // @Override
+    // public void insertString(DocumentFilter.FilterBypass fb, int offset, String string,
+    // AttributeSet attr) throws BadLocationException
+    // {
+    // if(fb.getDocument().getLength()+string.length()>HERO_NAME_WIDTH)
+    // {
+    // System.out.println("Insert String: Name Field Limit Reached");
+    // return;
+    // }
+    //
+    // fb.insertString(offset, string, attr);
+    // }
+
+    @Override
+    public void remove(DocumentFilter.FilterBypass fb, int offset, int length)
+        throws BadLocationException
+    {
+      System.out.println("Remove");
+      fb.remove(offset, length);
+    }
+
+    @Override
+    public void replace(DocumentFilter.FilterBypass fb, int offset, int length, String text,
+        AttributeSet attrs) throws BadLocationException
+    {
+      if (fb.getDocument().getLength() + text.length() > HERO_NAME_WIDTH) {
+        System.out.println("Replace: Name Field Limit Reached");
+        java.awt.Toolkit.getDefaultToolkit().beep();
+        return;
+      }
+      fb.insertString(offset, text, attrs);
+    }
+  } // end NameFieldLimiter
 
 } // end NewHeroIPPanel class
 

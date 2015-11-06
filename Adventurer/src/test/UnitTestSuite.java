@@ -20,7 +20,6 @@ import test.pdc.command.TestCommandParser;
 import test.pdc.command.TestDeltaCmdList;
 import test.pdc.command.TestEvent;
 import test.pdc.command.TestScheduler;
-import test.pdc.registry.TestAdventureRegistry;
 
 /**
  * Run all unit tests for {@code Adventurer} components. Unit tests are grouped by their components
@@ -44,7 +43,7 @@ import test.pdc.registry.TestAdventureRegistry;
 // TestNewHeroFields.class,
 
 /** PDC test files */
-  TestAdventureRegistry.class,
+  //TestAdventureRegistry.class,
   TestCmdApproach.class,
   TestCmdEnter.class,
   TestCmdQuit.class,

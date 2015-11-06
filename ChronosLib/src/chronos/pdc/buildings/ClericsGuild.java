@@ -24,17 +24,17 @@ public class ClericsGuild extends Building
 {
   // Data to initialize the default Store; must be static because it is used in constructor
   /** Name of this fine establishment */
-  static private final String GUILD_NAME = "Monastery";
+  public static final String DEFAULT_GUILD_NAME = "Monastery";
   /** Owner of this fine establishment */
-  static private final String OWNER = "Balthazar";
+  public static final String DEFAULT_OWNER = "Balthazar";
   /** Monastery */
   static private final String HOVERTEXT = "Clerical Guild for spiritual guidance and powers";
   /** What appears as one enters the building */
-  static private final String EXTERIOR = "Beautiful arches lead the way into a white stone" +
+  public static final String DEFAULT_EXTERIOR = "Beautiful arches lead the way into a white stone" +
       " building. The entire area permeates peacefulness.";
 
   /** For this case, a non-Guild member cannot enter */
-  static private final String INTERIOR = "A cheerful looking man in a brown robe greets you. " +
+  public static final String DEFAULT_INTERIOR = "A cheerful looking man in a brown robe greets you. " +
       "His hood lays back on his shoulders. \"How can I serve you? \" he asks. ";
 
   /** Paths to the images for this building **/
@@ -58,27 +58,9 @@ public class ClericsGuild extends Building
    */
   public ClericsGuild() throws ApplicationException
   {
-    super(GUILD_NAME, OWNER, HOVERTEXT, EXTERIOR, INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
+    super(DEFAULT_GUILD_NAME, DEFAULT_OWNER, HOVERTEXT, DEFAULT_EXTERIOR, DEFAULT_INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
     setBusinessHours(OPENTIME, CLOSETIME);
   }
-
-
-  /**
-   * Constructor for typical general store with default business hours
-   * 
-   * @param name of this building
-   * @param master who runs this building
-   * @param hoverText quick phrase for purpose of the building
-   * @param intro first glance outside, or when entering
-   * @param desc detailed look of building, inside or out
-   * @throws ApplicationException if the ctor fails
-   */
-  public ClericsGuild(String name, String master, String hoverText, String intro, String desc)
-      throws ApplicationException
-  {
-    super(name, master, hoverText, intro, desc);
-  }
-
 
   /*
    * PUBLIC METHODS
@@ -98,7 +80,7 @@ public class ClericsGuild extends Building
     }
     ClericsGuild wizG = (ClericsGuild) target;
     boolean bName = this.getKey().equals(wizG.getKey());
-    boolean bMaster = this.getMaster().getName().equals(wizG.getMaster().getName());
+    boolean bMaster = this.getMaster().equals(wizG.getMaster());
     return (bName && bMaster);
   }
 

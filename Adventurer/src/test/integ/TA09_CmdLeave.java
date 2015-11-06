@@ -12,9 +12,6 @@ package test.integ;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-
 import mylib.MsgCtrl;
 
 import org.junit.After;
@@ -23,7 +20,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import pdc.command.CommandFactory;
-import pdc.command.Scheduler;
+import chronos.pdc.Command.Scheduler;
+import chronos.pdc.registry.AdventureRegistry;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.NPCRegistry;
 import chronos.pdc.registry.RegistryFactory;
@@ -50,7 +48,6 @@ public class TA09_CmdLeave
   static private BuildingRegistry _bReg = null;
 
   /** List of valid Buildings that can be entered */
-  static private List<String> _bldgs = null;
   private static Scheduler _skedder;
 
 
@@ -64,7 +61,9 @@ public class TA09_CmdLeave
     MsgCtrl.errorMsgsOn(false);
 
     // Start up the support classes
-    _regFactory = RegistryFactory.getInstance();
+    _skedder = new Scheduler();
+    _regFactory = new RegistryFactory(_skedder);
+    _regFactory.initRegistries();
     _bReg = (BuildingRegistry) _regFactory.getRegistry(RegKey.BLDG);
 
     // Replace the GUI objects with their test facades
@@ -72,8 +71,7 @@ public class TA09_CmdLeave
     // This will open the BuildingRegistry, which must be closed before exiting
     _bldgCiv = new BuildingDisplayCiv(_mfProxy, _bReg);
 
-    _mfCiv = new MainframeCiv(_mfProxy, _bldgCiv);
-    _skedder = new Scheduler();
+    _mfCiv = new MainframeCiv(_mfProxy, _bldgCiv, (AdventureRegistry) _regFactory.getRegistry(RegKey.ADV));
     _cp = new CommandParser(_skedder, new CommandFactory(_mfCiv, _bldgCiv));
 
     // // Get list of names for all buildings that can be entered
@@ -132,7 +130,7 @@ public class TA09_CmdLeave
 
     // Setup: must be inside Building (onTown = false, currentBuilding !null; isInside = true)
     _cp.receiveCommand("Enter the Bank");
-    _skedder.doOneCommand();
+    _skedder.doOneUserCommand();
 
     assertFalse(_bldgCiv.isOnTown());
     assertTrue(_bldgCiv.isInside());
@@ -140,7 +138,7 @@ public class TA09_CmdLeave
 
     // TEST
     assertTrue(_cp.receiveCommand("Leave "));
-    _skedder.doOneCommand();
+    _skedder.doOneUserCommand();
 
     // Confirm Hero is no longer on town or in building
     assertFalse(_bldgCiv.isOnTown());
@@ -162,7 +160,7 @@ public class TA09_CmdLeave
 
     // Setup: outside Building (onTown = false, currentBuilding !null; isInside = false)
     _cp.receiveCommand("Approach the Bank");
-    _skedder.doOneCommand();
+    _skedder.doOneUserCommand();
 
     assertFalse(_bldgCiv.isOnTown());
     assertNotNull(_bldgCiv.getCurrentBuilding());

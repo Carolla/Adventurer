@@ -9,6 +9,9 @@
 
 package pdc.character;
 
+import chronos.pdc.Race;
+
+
 /**
  * @author Al Cline
  * @version Sep 4, 2015 // original <br>
@@ -64,7 +67,6 @@ public class Human extends Race
     _heightFemaleMedValue = _htFemaleMedValue;
     _heightLowDice = _htLowDice;
     _heightHighDice = _htHighDice;
-    
     _descriptor = _raceDescriptor;
     _racialThiefMods = _humanThiefMods;
     _raceSkills = _humanSkills;
@@ -77,9 +79,5 @@ public class Human extends Race
   {
     return traits;
   }
-  
-  
-  
-  
   
 }

@@ -11,16 +11,15 @@
 
 package test.pdc;
 
-import pdc.character.Hunger;
-import pdc.character.Hunger.MockHunger;
-import pdc.character.Hunger.State;
-
-import mylib.MsgCtrl;
-
 import junit.framework.TestCase;
+import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.Before;
+
+import pdc.character.Hunger;
+import pdc.character.Hunger.MockHunger;
+import pdc.character.Hunger.State;
 
 /**
  * @author Alan Cline

@@ -10,10 +10,10 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
-import pdc.command.Command;
 import pdc.command.CommandFactory;
 import pdc.command.CommandInput;
-import pdc.command.NullCommand;
+import chronos.pdc.Command.Command;
+import chronos.pdc.Command.NullCommand;
 
 public class TestCommandFactory
 {
@@ -65,10 +65,18 @@ public class TestCommandFactory
     }
     
     @Test
-    public void CommandIsInitialized()
+    public void FakeCommandIsNotInitialized()
     {
         CommandInput ci = new CommandInput("Fake", new ArrayList<String>());
         NullCommand c = (NullCommand) _commandFactory.createCommand(ci);
+        assertFalse(c.isInitialized());   
+    }
+    
+    @Test
+    public void RealCommandIsInitialized()
+    {
+        CommandInput ci = new CommandInput("RETURN", new ArrayList<String>());
+        Command c = _commandFactory.createCommand(ci);
         assertTrue(c.isInitialized());   
     }
 }

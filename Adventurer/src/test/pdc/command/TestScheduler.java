@@ -4,51 +4,83 @@ package test.pdc.command;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Before;
 import org.junit.Test;
 
-import pdc.command.Scheduler;
+import chronos.pdc.Command.Command.CommandStatus;
+import chronos.pdc.Command.Scheduler;
 
 public class TestScheduler
 {
-//    TODO(timothyarm) This method is blocking, and SHOULD block rather than complete
-//    @Test(timeout=1000,expected = Exception.class)
-//    public void RunningWithoutCommandBlocks()
-//    {
-//        Scheduler s = new Scheduler();
-//        s.doOneCommand();
-//    }
+    
+    private Scheduler _s;
 
-    @Test
-    public void RunCommandIsCommandInserted()
+    @Before
+    public void setup()
     {
-        Scheduler s = new Scheduler();
-        CheckingCommand c = new CheckingCommand();
-        s.sched(c);
-        s.doOneCommand();
+        _s = new Scheduler();
+    }
+    
+    @Test
+    public void UserCommandIsRunWhenUserCommandScheduled()
+    {   
+        CheckingCommand c = new CheckingCommand(CommandStatus.USER);
+        _s.sched(c);
+        assertTrue(c.hasBeenRun);
+    }
+    
+    @Test
+    public void InternalCommandIsRunWhenUserCommandScheduled()
+    {   
+        CheckingCommand c = new CheckingCommand(CommandStatus.INTERNAL);
+        CheckingCommand c2 = new CheckingCommand();
+        _s.sched(c);
+        _s.sched(c2);
         assertTrue(c.hasBeenRun);
     }
 
     @Test
-    public void DoOneCommandOnlyDoesOneCommand()
+    public void InternalCommandIsNotRunWhenScheduled()
     {
-        Scheduler s = new Scheduler();
-        CheckingCommand c = new CheckingCommand();
-        CheckingCommand c2 = new CheckingCommand();
-        s.sched(c);
-        s.sched(c2);
-        s.doOneCommand();
-        assertFalse(c2.hasBeenRun);
+        CheckingCommand c = new CheckingCommand(CommandStatus.INTERNAL);
+        _s.sched(c);
+        assertFalse(c.hasBeenRun);
     }
 
     public class CheckingCommand extends SimpleCommand
     {
         public boolean hasBeenRun = false;
+        public boolean isInternal = false;
+
+        public CheckingCommand()
+        {
+            this(CommandStatus.USER);
+        }
+        
+        public CheckingCommand(CommandStatus status)
+        {
+            if (status == CommandStatus.INTERNAL) {
+                isInternal = true;
+            }
+        }
 
         @Override
         public boolean exec()
         {
             hasBeenRun = true;
             return true;
+        }
+        
+        @Override
+        public boolean isInternal()
+        {
+            return isInternal;
+        }
+        
+        @Override
+        public boolean isUserInput()
+        {
+            return !isInternal;
         }
 
     }

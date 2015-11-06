@@ -14,17 +14,18 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EnumMap;
 
+import chronos.pdc.Race;
 import civ.PersonKeys;
 import mylib.pdc.MetaDie;
 import pdc.Inventory;
 import pdc.character.Thief.TSKILL;
-import pdc.character.Klass;
+
 
 /**
  * @author Alan Cline
  * @version Sept 4 2015 // rewrite per revised generation rules \n\t
  */
-public class Hero implements Serializable // IRegistryElement
+public class Hero implements Serializable
 {
   // Statics and transients are not saved with the serialized Person object
   /** Recommended serialization constant */

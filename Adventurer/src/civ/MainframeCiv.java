@@ -9,6 +9,9 @@
 
 package civ;
 
+import hic.BuildingRectangle;
+import hic.MainframeInterface;
+
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.Point;
@@ -19,14 +22,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import pdc.Util;
+import chronos.civ.UserMsg;
 import chronos.pdc.Adventure;
 import chronos.pdc.registry.AdventureRegistry;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 import dmc.HeroReadWriter;
-import hic.BuildingRectangle;
-import hic.MainframeInterface;
-import pdc.Util;
 
 /**
  * The main civ behind the Mainframe screen.
@@ -39,10 +39,17 @@ import pdc.Util;
  */
 public class MainframeCiv implements UserMsg
 {
+  private AdventureRegistry _advReg;
+  private BuildingDisplayCiv _bdCiv;
+
+  private MainframeInterface _frame;
+  private Adventure _adv;
+  private HeroReadWriter _personRW;
+
   private static final String TOWN_IMAGE = "ext_BiljurBaz.JPG";
 
   /** Default Buildings to initialize registry with */
-  public static final String[][] DEFAULT_BUILDINGS = {{"Ugly Ogre Inn", "Bork"},
+  public static final String[][] DEFAULT_BUILDINGS = { {"Ugly Ogre Inn", "Bork"},
       {"Rat's Pack", "Dewey N. Howe"}, {"The Bank", "Ogden Moneypenny"},
       {"Stadium", "Aragon"}, {"Arcaneum", "Pendergast"}, {"Monastery", "Balthazar"},
       {"Rogues' Den", "Ripper"}, {"Jail", "The Sheriff"}, {"Quasqueton", "Unknown"}};
@@ -70,12 +77,6 @@ public class MainframeCiv implements UserMsg
       Color.white, // Jail
       Color.white}; // Quasqueston
 
-  private MainframeInterface _frame;
-  private Adventure _adv;
-  private HeroReadWriter _personRW;
-  private AdventureRegistry _advReg;
-  private BuildingDisplayCiv _bdCiv;
-
   /** Current Building being displayed, and can be entered */
   private final Rectangle _townReturn = new Rectangle(0, 0, 100, 100);
 
@@ -89,24 +90,38 @@ public class MainframeCiv implements UserMsg
   // Constructors and constructor helpers
   // ============================================================
 
-
   /**
    * Create the Civ associated with the mainframe
    * 
-   * @param mf link to HIC display
-   * @param bdCiv link to Building control civ
+   * @param frame owner of the widget for which this civ applies
+   * @param personRW supports the Summon Hero and Create Hero buttons
+   * @param advReg registry to support the Adventures button
    */
-  public MainframeCiv(MainframeInterface mf, BuildingDisplayCiv bdCiv)
+  public MainframeCiv(MainframeInterface mf, BuildingDisplayCiv bdCiv, AdventureRegistry advReg)
   {
     _frame = mf;
     _bdCiv = bdCiv;
+    _advReg = advReg;
   }
+
+
+  // ============================================================
+  // Constructors and constructor helpers
+  // ============================================================
+
 
   // ============================================================
   // Public methods
   // ============================================================
   
   
+  @Override
+  public void errorOut(String msg)
+  {
+    _frame.displayErrorText(msg);
+  }
+
+
   /**
    * TODO This is the responsibility of the BuildingDisplayCiv Enter the Building specified. If the
    * Hero is at the Town level, get the {@code BuildingRegistry} and {@ocde BuildingCiv}
@@ -120,27 +135,6 @@ public class MainframeCiv implements UserMsg
     }
   }
 
-  // ============================================================
-  // Public methods
-  // ============================================================
-  
-  // ============================================================
-  // Public methods
-  // ============================================================
-  
-  
-  
-  
-  // ============================================================
-  // Public methods
-  // ============================================================
-  
-  
-  @Override
-  public void errorOut(String msg)
-  {
-    _frame.displayErrorText(msg);
-  }
 
   /**
    * Retrieves the Adventures for selection from the Adventure Registry
@@ -149,7 +143,6 @@ public class MainframeCiv implements UserMsg
    */
   public ArrayList<String> getAdventures()
   {
-    _advReg = (AdventureRegistry) RegistryFactory.getInstance().getRegistry(RegKey.ADV);
     ArrayList<Adventure> adventures = _advReg.getAdventureList();
     ArrayList<String> results = new ArrayList<String>();
     for (Adventure a : adventures) {
@@ -158,30 +151,6 @@ public class MainframeCiv implements UserMsg
     return results;
   }
 
-  // ============================================================
-  // Public methods
-  // ============================================================
-  
-  
-  
-  
-  // ============================================================
-  // Public methods
-  // ============================================================
-  
-  
-  // ============================================================
-  // Public methods
-  // ============================================================
-  
-  
-  
-  
-  // ============================================================
-  // Public methods
-  // ============================================================
-  
-  
   public BuildingDisplayCiv getBuildingDisplayCiv()
   {
     return _bdCiv;
@@ -206,23 +175,6 @@ public class MainframeCiv implements UserMsg
     }
   }
 
-  
-
-  
-
-
-  // ============================================================
-  // Public methods
-  // ============================================================
-
-  
-
-
-  // ============================================================
-  // Public methods
-  // ============================================================
-
-
   // TODO: Mouse action belong in the HIC; not in the CIV
   public void handleMouseMovement(Point p)
   {
@@ -242,7 +194,7 @@ public class MainframeCiv implements UserMsg
     // TODO Why is this in the civ, and not the hic.Mainframe?
     _frame.setImageTitle(INITIAL_TITLE);
     createBuildingBoxes();
-  
+
   }
 
   /**
@@ -263,6 +215,7 @@ public class MainframeCiv implements UserMsg
   {
     _frame.displayText(msg);
   }
+
 
   /**
    * Display a prompt message asking for confirmation
@@ -285,6 +238,11 @@ public class MainframeCiv implements UserMsg
     List<String> heroes = _personRW.wakePeople();
     return heroes;
   }
+
+
+  // ============================================================
+  // Public methods
+  // ============================================================
 
 
   /** Creates the standard layout to display the town image and description */
@@ -345,25 +303,4 @@ public class MainframeCiv implements UserMsg
     _frame.redraw();
   }
 
-
-  // ============================================================
-  // Inner Classes for Testing
-  // ============================================================
-
-  private static class DefaultLogger implements UserMsg
-  {
-
-    @Override
-    public void errorOut(String msg)
-    {
-      System.err.println(msg);
-    }
-
-    @Override
-    public void msgOut(String msg)
-    {
-      System.out.println(msg);
-    }
-
-  }
 } // end of MainframeCiv class

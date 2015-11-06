@@ -10,11 +10,13 @@
 package pdc.character;
 
 import pdc.character.Hero.PrimeTraits;
+import chronos.pdc.Race;
 
 /**
  * @author Al Cline
  * @version Sep 6, 2015 // original <br>
  */
+
 public class Dwarf extends Race
 {
   // Statics and transients that are not serialized with the Race class hierarchy
@@ -91,7 +93,4 @@ public class Dwarf extends Race
     traits[PrimeTraits.CHR.ordinal()] -= 1;
     return traits;    
   };
-
-
-
 }

@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import pdc.command.Command;
-import pdc.command.Event;
+import chronos.pdc.Command.Command;
+import chronos.pdc.Command.Event;
 
 public class TestEvent {
 

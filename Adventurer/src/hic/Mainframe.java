@@ -21,6 +21,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,12 +38,17 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import chronos.Chronos;
+import chronos.pdc.Command.Scheduler;
+import chronos.pdc.buildings.Inn;
+import chronos.pdc.registry.AdventureRegistry;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
+import civ.Adventurer;
 import civ.BuildingDisplayCiv;
 import civ.CommandParser;
 import civ.MainframeCiv;
+import civ.NewHeroCiv;
 import mylib.Constants;
 import mylib.hic.HelpDialog;
 import mylib.hic.IHelpText;
@@ -49,7 +56,6 @@ import mylib.hic.ShuttleList;
 import net.miginfocom.swing.MigLayout;
 import pdc.Util;
 import pdc.command.CommandFactory;
-import pdc.command.Scheduler;
 
 /**
  * Initial frame displays three buttons and Chronos logo.<br>
@@ -66,12 +72,14 @@ import pdc.command.Scheduler;
  *          Aug 23 2014 // added methods to change titles on either panel, and images in the image
  *          pane <br>
  *          Oct 19, 2015 // repaired Cancel button on Quit prompt window <br>
+ *          Nov 6, 2015 // re-architected Mainframe so that widgets are called by civs <br>
  */
 // Mainframe serialization unnecessary
 @SuppressWarnings("serial")
 public class Mainframe extends JFrame implements MainframeInterface, MouseListener,
     MouseMotionListener, IHelpText
 {
+
   /** Singleton Help Dialog for all help text */
   private HelpDialog _helpdlg;
 
@@ -104,12 +112,15 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   private CommandParser _cp;
   private Scheduler _skedder;
   private IOPanel _iop;
+  private RegistryFactory _rf;
 
   private List<String> _partyHeros = new ArrayList<String>();
   private List<String> _summonableHeroes;
 
+  /** Title of the IOPanel of left side */
+  private final String IOPANEL_TITLE = " Transcript ";
   /** Title of the initial three-button panel on left side */
-  private final String INITIAL_OPENING_TITLE = " Select an Action from the Buttons Below ";
+  private final String INITIAL_OPENING_TITLE = " Actions ";
 
 
   /** Help Title for the mainframe */
@@ -131,19 +142,10 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
           + "in the same building when you return. If you Save your Hero, he or she can be summoned "
           + "from the Hall of Heroes next time. ";
 
-  /** Need access to this mainframe from almost every Civ */
-  private static Mainframe _mf;
 
   // ============================================================
   // Constructors and constructor helpers
   // ============================================================
-
-  /** Get access to the mainframe from afar */
-  public static Mainframe getInstance()
-  {
-    return _mf;
-  }
-
 
   /**
    * Get the size of the main window being displayed, which is used as a standard for laying out
@@ -157,7 +159,6 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     return new Dimension(USERWIN_WIDTH, USERWIN_HEIGHT);
   }
 
-
   /**
    * Creates the initial frame layout: left and right panel holders with buttons, and image panel
    * showing chronos logo on right. Creates the {@code HelpDialog} singleton, ready to receive
@@ -169,6 +170,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
    */
   public Mainframe()
   {
+    setupSizeAndBoundaries();
     // Create the support elements, e.g., the BuildingRegistry, Scheduler, etc.
     constructMembers();
 
@@ -182,9 +184,11 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
 
     // Create the one time help dialog
     prepareHelpDialog();
-    _mf = this;
   }
 
+  // ============================================================
+  // Public Methods
+  // ============================================================
 
   /**
    * Perform construction act. This wires together all the "single instance variables" for the
@@ -194,16 +198,88 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   protected void constructMembers()
   {
     // Create the BuildingDisplayCiv to define the output GUI for descriptions and images
-    BuildingRegistry breg =
-        (BuildingRegistry) RegistryFactory.getInstance().getRegistry(RegKey.BLDG);
+    _skedder = new Scheduler(); // Skedder first for injection
+    _rf = new RegistryFactory(_skedder);
+
+    _rf.initRegistries();
+    BuildingRegistry breg = (BuildingRegistry) _rf.getRegistry(RegKey.BLDG);
     _bldgCiv = new BuildingDisplayCiv(this, breg);
 
     // Create the Civ
-    _mfCiv = new MainframeCiv(this, _bldgCiv);
+    _mfCiv = new MainframeCiv(this, _bldgCiv, (AdventureRegistry) _rf.getRegistry(RegKey.ADV));
 
-    _skedder = new Scheduler();
     _cp = new CommandParser(_skedder, new CommandFactory(_mfCiv, _bldgCiv));
-    _iop = new IOPanel(_mfCiv, _cp);
+    _iop = new IOPanel(_cp);
+
+    Inn inn = (Inn) breg.getBuilding("Ugly Ogre Inn");
+    inn.setMsg(_mfCiv);
+    inn.initPatrons();
+  }
+
+
+  /**
+   * Layout the IOPanel on the left: scrolling text window and working Comandline input area
+   */
+  public void addIOPanel()
+  {
+    _leftHolder.removeAll();
+    setLeftPanelTitle(IOPANEL_TITLE);
+    _leftHolder.add(_iop);
+    redraw();
+  }
+
+
+  /**
+   * Replace the left panel with the newone provided
+   */
+  public void replaceLeftPanel(JPanel newPanel, String title)
+  {
+    _leftHolder.removeAll();
+    setLeftPanelTitle(title);
+    _leftHolder.add(newPanel);
+    redraw();
+  }
+
+  
+  // NOTE: Check addIOPanel() first if you are adding to the mainframe panel holders
+  @Override
+  public void addPanel(JComponent component)
+  {
+    add(component);
+  }
+
+  public boolean approvedQuit()
+  {
+    Adventurer.approvedQuit();
+    return true;
+  }
+
+
+
+  // ============================================================
+  // Public Methods
+  // ============================================================
+
+
+
+  // ============================================================
+  // Private Methods
+  // ============================================================
+
+
+
+  // ============================================================
+  // Deprecated Methods Temporarily
+  // ============================================================
+
+  /**
+   * Display error text onto the scrolling output panel
+   *
+   * @param msg text to append to existing text in panel
+   */
+  public void displayErrorText(String msg)
+  {
+    _iop.displayErrorText(msg);
   }
 
 
@@ -211,34 +287,34 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   // Public Methods
   // ============================================================
 
+
+
+  // ============================================================
+  // Private Methods
+  // ============================================================
+
+
+
+  // ============================================================
+  // Deprecated Methods Temporarily
+  // ============================================================
+
   /**
-   * Layout the IOPanel on the left: scrolling text window and working Comandline input area
+   * Display image and associated test to the IOPanel
+   *
+   * @param msg text to append to text in IOPanel
+   * @param image to display in Image Panel
    */
-  public void addIOPanel()
+  public void displayImageAndText(String msg, Image image)
   {
-    addPanel(_iop);
-  }
-
-  public void addPanel(JComponent panel)
-  {
-    _leftHolder.removeAll();
-
-    // setTranscriptTitle(IOPANEL_TITLE);
-    _leftHolder.add(panel);
+    displayText(msg);
+    _imagePanel.setImage(image);
     redraw();
   }
 
-
-  // public boolean approvedQuit()
-  // {
-  // // new Adventurer().approvedQuit();
-  // return true;
-  // }
-
-
   /**
    * Display a prompt, asking a question of the user
-   * 
+   *
    * @param msg the question to be asked, must be yes or no
    * @return the answer to the prompt
    */
@@ -253,21 +329,9 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     return false;
   }
 
-
-  /**
-   * Display error text onto the scrolling output panel
-   * 
-   * @param msg text to append to existing text in panel
-   */
-  public void displayErrorText(String msg)
-  {
-    _iop.displayErrorText(msg);
-  }
-
-
   /**
    * Display text onto the scrolling output panel
-   * 
+   *
    * @param msg text to append to existing text in panel
    */
   public void displayText(String msg)
@@ -277,27 +341,20 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   }
 
 
-  /**
-   * Display image and associated test to the IOPanel
-   * 
-   * @param msg text to append to text in IOPanel
-   * @param image to display in Image Panel
-   */
-  public void displayImageAndText(String msg, Image image)
-  {
-    displayText(msg);
-    _imagePanel.setImage(image);
-    redraw();
-  }
-
   public Dimension getImagePanelSize()
   {
     return _rightHolder.getSize();
   }
 
+
   public void mouseClicked(MouseEvent e)
   {
     _mfCiv.handleClick(e.getPoint());
+  }
+
+  public void mouseDragged(MouseEvent e)
+  {
+    _mfCiv.handleMouseMovement(e.getPoint());
   }
 
   public void mouseEntered(MouseEvent e)
@@ -306,21 +363,22 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   public void mouseExited(MouseEvent e)
   {}
 
+  public void mouseMoved(MouseEvent e)
+  {
+    _mfCiv.handleMouseMovement(e.getPoint());
+  }
+
   public void mousePressed(MouseEvent e)
   {}
 
   public void mouseReleased(MouseEvent e)
   {}
 
-  public void mouseDragged(MouseEvent e)
-  {
-    _mfCiv.handleMouseMovement(e.getPoint());
-  }
 
-  public void mouseMoved(MouseEvent e)
-  {
-    _mfCiv.handleMouseMovement(e.getPoint());
-  }
+
+  // ============================================================
+  // Public Methods
+  // ============================================================
 
   public void redraw()
   {
@@ -338,7 +396,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
 
   /**
    * Display an image in the Image panel
-   * 
+   *
    * @param image to display on the rightside
    */
   public void setImage(Image image)
@@ -358,7 +416,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   /**
    * Display a title onto the border of the right side image panel. Add one space char on either
    * side for aesthetics
-   * 
+   *
    * @param title of the panel to set
    */
   public void setImageTitle(String title)
@@ -368,20 +426,12 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   }
 
 
-  /** Replace the current title with the given title */
-  @Override
-  public void setTitle(String title)
-  {
-    _leftHolder = makePanelHolder(_leftHolder, Constants.MY_BROWN, title, Color.WHITE);
-  }
-
-
   /**
    * Display a title onto the border of the left side IO Panel
-   * 
+   *
    * @param title of the panel to set
    */
-  public void setTranscriptTitle(String title)
+  public void setLeftPanelTitle(String title)
   {
     TitledBorder border = (TitledBorder) _leftHolder.getBorder();
     border.setTitle(title);
@@ -397,15 +447,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     _helpdlg.showHelp(_helpTitle, _helpText);
   }
 
-  public void start()
-  {
-    new Thread(_skedder).start();
-  }
 
-
-  // ============================================================
-  // Private Methods
-  // ============================================================
 
   /**
    * Layout the image panel on the right side of the frame, with mouse listeners.
@@ -418,7 +460,6 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     _rightHolder.addMouseMotionListener(Mainframe.this);
     _rightHolder.add(_imagePanel);
   }
-
 
   /**
    * Create the behavior for selecting an adventure, which drives the frame update. <br>
@@ -448,7 +489,6 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     return button;
   }
 
-
   /**
    * Create the Adventure, Heroes, and Create-Hero buttons, and button panel for them
    */
@@ -456,7 +496,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   {
     JButton adventureButton = createAdventureButton();
     JButton summonButton = createSummonHeroesButton();
-    JButton creationButton = createHeroCreationButton();
+    JButton creationButton = createNewHeroButton();
 
     JPanel buttonPanel = new JPanel();
     // Align all buttons in a single column
@@ -473,7 +513,6 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     _leftHolder.add(buttonPanel);
   }
 
-
   private JButton createButtonWithTextAndIcon(String imageFilePath, String buttonText)
   {
     JButton button = new JButton(buttonText);
@@ -488,18 +527,16 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     return button;
   }
 
-
   /**
    * Create mainframe layout and menubar; add left and right panel holders, which have titled
    * borders
    */
   private void createFrameAndMenubar()
   {
-    setupSizeAndBoundaries();
     setupContentPane();
     // Add the frame listener to prompt and terminate the application
     setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-    // addWindowListener(new Terminator());
+    addWindowListener(new Terminator());
 
     // Add menu
     setJMenuBar(new Menubar(this, _mfCiv));
@@ -516,30 +553,35 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     _contentPane.setFocusable(true);
   }
 
-
-  private JButton createHeroCreationButton()
+  /**
+   * Create the button to call the NewHeroCiv, which will contorl the panels that collects the new
+   * Hero data, and displays the Hero's stat panel
+   * 
+   * @return the button
+   */
+  private JButton createNewHeroButton()
   {
     JButton button = createButtonWithTextAndIcon(REGISTRAR_IMAGE, "Create New Heroes");
     button.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0)
       {
         try {
+          NewHeroCiv nhCiv = new NewHeroCiv(Mainframe.this, _rf);
+          NewHeroIPPanel ipPanel = nhCiv.createNewHeroPanel();
           _leftHolder.removeAll();
-          NewHeroIPPanel hp = new NewHeroIPPanel();
-          _leftHolder.add(hp);
+          _leftHolder.add(ipPanel);
+          // Set focus on default field (nameField) only after it is displayed
           redraw();
-          // Set default focus to panel's widget
-          hp.setDefaultFocus(); 
-        } catch (InstantiationException e) {
+          ipPanel.setDefaultFocus();    
+        } catch (Exception e) {
           e.printStackTrace();
           System.exit(0);
         }
-        // changeToLeftPanel(nhd); // This my still be needed
       }
     });
     return button;
-  }
 
+  }
 
   private JButton createSummonHeroesButton()
   {
@@ -597,7 +639,6 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     return button;
   }
 
-
   /**
    * Create a holder for the left or right side of the frame, with all cosmetics. Holders will have
    * same layout manager, size, border type, and runic font title is a title is supplied.
@@ -615,7 +656,8 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     holder.setBackground(borderColor);
 
     Border matte = BorderFactory.createMatteBorder(5, 5, 5, 5, borderColor);
-    // TODO Move call to pdc.Util to mfCiv so pdc is not imported; and duplicate calls are avoided
+    // TODO Move call to pdc.Util to mfCiv so pdc is not imported; and duplicate calls are
+    // avoided
     Border titled = BorderFactory.createTitledBorder(matte, title,
         TitledBorder.CENTER, TitledBorder.TOP, Util.makeRunicFont(14f), Color.BLACK);
     holder.setBorder(titled);
@@ -623,7 +665,6 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
 
     return holder;
   }
-
 
   /**
    * Prepare the HelpDialog and HelpKey event responder
@@ -651,7 +692,6 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     });
   }
 
-
   /** Apply the layout manager to the content pane */
   private void setupContentPane()
   {
@@ -660,7 +700,6 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     setContentPane(_contentPane);
     _contentPane.setLayout(new MigLayout("", "[grow, fill]10[grow]", "[grow]"));
   }
-
 
   /** Define the mainframe layout characteristics */
   private void setupSizeAndBoundaries()
@@ -675,5 +714,39 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   }
 
 
-} // end of Mainframe outer class
 
+  // ============================================================
+  // Inner Class for catching frame events
+  // ============================================================
+  /**
+   * This is an inner class only to inherit from the {@code WindowAdaptor} class instead of
+   * implementing a lot of unneeded methods by implementing {@code WindowListener} interface.
+   *
+   * @author alancline
+   * @version Aug 29, 2014 // original <br>
+   */
+  public class Terminator extends WindowAdapter
+  {
+    /** Default constructor */
+    public Terminator()
+    {}
+
+    /**
+     * Close the window and the applicaiton by calling the {@code Adventurer.quit} method.
+     *
+     * @param event when user closes application frame
+     */
+    public void windowClosing(WindowEvent evt)
+    {
+      _mfCiv.quit();
+    }
+  }
+
+
+
+  // ============================================================
+  // Private Methods
+  // ============================================================
+
+
+} // end of Mainframe outer class

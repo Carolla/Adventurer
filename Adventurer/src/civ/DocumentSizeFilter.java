@@ -33,9 +33,10 @@ package civ;
 
 /* A 1.4 class used by TextComponentDemo.java. */
 
-import javax.swing.*;
-import javax.swing.text.*;
 import java.awt.Toolkit;
+
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
 public class DocumentSizeFilter extends DocumentFilter {

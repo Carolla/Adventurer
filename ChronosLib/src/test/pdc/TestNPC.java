@@ -19,14 +19,15 @@ import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 
-import chronos.pdc.NPC;
-import chronos.pdc.NPC.MockPatron;
 import mylib.ApplicationException;
 import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import chronos.pdc.NPC;
+import chronos.pdc.NPC.MockPatron;
 
 /**
  *    Ensure that the patron class works correctly

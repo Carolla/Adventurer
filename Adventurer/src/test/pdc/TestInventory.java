@@ -11,20 +11,20 @@
 
 package test.pdc;
 
-import pdc.Inventory;
-import pdc.Inventory.MockInventory;
-
-import chronos.civ.MiscKeys.ItemCategory;
-import chronos.pdc.Item;
-
-import mylib.ApplicationException;
-import mylib.MsgCtrl;
+import java.util.List;
 
 import junit.framework.TestCase;
+import mylib.ApplicationException;
+import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import pdc.Inventory;
+import pdc.Inventory.MockInventory;
+import chronos.pdc.Item;
+import chronos.pdc.MiscKeys.ItemCategory;
 
 /**
  * Tests the Inventory repository, a collection of Item objects.
@@ -79,13 +79,12 @@ public class TestInventory extends TestCase
         MsgCtrl.auditMsgsOn(false);
         // Create an initial Inventory from scratch, then populate it
         _bag = new Inventory();
-        _bag.initStartingInventory();
         // Create a MockInventory for testing
         _mock = _bag.new MockInventory();
         // Create two test Items
-        _framis = new Item(ItemCategory.VALUEABLE, "Framis",
+        _framis = new Item(ItemCategory.VALUABLES, "Framis",
                 FRAMIS_WT, FRAMIS_QTY);
-        _trobe = new Item(ItemCategory.WEAPON, "Trobe",
+        _trobe = new Item(ItemCategory.ARMS, "Trobe",
                 TROBE_WT, TROBE_QTY);
     }
 
@@ -123,7 +122,7 @@ public class TestInventory extends TestCase
         // NORMAL: Add a new Item to the existing inventory
 
         // Confirm that it doesn't exist in the bag
-        assertEquals(_bag.hasItem(_framis), false);
+        assertEquals(_bag.hasItem(_framis.getName()), false);
         int count = _bag.getNbrItems();
 
         // Add the new item
@@ -142,7 +141,7 @@ public class TestInventory extends TestCase
         // Normal: Add an Item that already exists
 
         // Confirm that it already exists
-        assertEquals(true, _bag.hasItem(_framis));
+        assertEquals(true, _bag.hasItem(_framis.getName()));
         count = _bag.getNbrItems();
 
         // Add the new item
@@ -179,7 +178,7 @@ public class TestInventory extends TestCase
         MsgCtrl.msgln("\ntestAddMultipleItem(): ");
         // NORMAL: Add a new multiple Item to the existing inventory
         // Confirm that it doesn't exist in the bag
-        assertEquals(_bag.hasItem(_trobe), false);
+        assertEquals(_bag.hasItem(_trobe.getName()), false);
         int count = _bag.getNbrItems();
         // Add the new item
         _bag.addItem(_trobe);
@@ -195,7 +194,7 @@ public class TestInventory extends TestCase
 
         // Normal: Add the multiple Item again
         // Confirm that it already exists
-        assertEquals(true, _bag.hasItem(_trobe));
+        assertEquals(true, _bag.hasItem(_trobe.getName()));
         count = _bag.getNbrItems();
         // Add the new item
         _bag.addItem(_trobe);
@@ -270,11 +269,11 @@ public class TestInventory extends TestCase
         assertNotNull(boots);
         // Make copy for later
         Item secondBoots = boots.copy();
-        int bootWt = boots.getWeight();
+        int bootWt = (int) boots.getWeight();
         _bag.dropItems(boots.getName(), 1);
         // Confirm that last set of boots are out of inventory
         // Do not reuse boots Item since its qty = 0;
-        assertFalse(_bag.hasItem(boots));
+        assertFalse(_bag.hasItem(boots.getName()));
         oldWt = newWt;
         newWt = _bag.calcInventoryWeight();
         MsgCtrl.msgln("\tDropping Boot wt (" + bootWt + ") reduces Bag from "
@@ -286,11 +285,11 @@ public class TestInventory extends TestCase
         assertNotNull(qstaff);
         // Make copy for later
         Item secondStaff = qstaff.copy();
-        int qstaffWt = qstaff.getWeight();
+        int qstaffWt = (int) qstaff.getWeight();
         oldWt = _bag.calcInventoryWeight();
         _bag.dropItems("Quarterstaff", 1);
         // Confirm that quarterstaff is out of inventory
-        assertFalse(_bag.hasItem(qstaff));
+        assertFalse(_bag.hasItem(qstaff.getName()));
         // Do not reuse qstaff Item since its qty = 0;
         oldWt = newWt;
         newWt = _bag.calcInventoryWeight();
@@ -301,7 +300,7 @@ public class TestInventory extends TestCase
         // Now remove the framis and two trobes; add back the boots and qstaff
         _bag.dropItems("Framis", 1);
         // Confirm that dropped Item is out of inventory
-        assertFalse(_bag.hasItem(_framis));
+        assertFalse(_bag.hasItem(_framis.getName()));
         oldWt = newWt;
         newWt = _bag.calcInventoryWeight();
         MsgCtrl.msgln("\tDropping Framis wt (" + framisWt + ") reduces Bag from "
@@ -310,7 +309,7 @@ public class TestInventory extends TestCase
 
         // Remove Trobe and confirm that dropped Item is out of inventory
         _bag.dropItems("Trobe", 2);
-        assertFalse(_bag.hasItem(_trobe));
+        assertFalse(_bag.hasItem(_trobe.getName()));
         oldWt = newWt;
         newWt = _bag.calcInventoryWeight();
         MsgCtrl.msgln("\tDropping Trobe wt (" + trobeWt + ") reduces Bag from "
@@ -364,7 +363,7 @@ public class TestInventory extends TestCase
         assertEquals(STARTING_WT, load);
 
         // Add an item and check again
-        Item blather = new Item(ItemCategory.GENERAL, "Blather", BLATHER_WT, 1);
+        Item blather = new Item(ItemCategory.PROVISION, "Blather", BLATHER_WT, 1);
         _bag.addItem(blather);
         accum += blather.getWeight();
         load = _bag.calcInventoryWeight();
@@ -373,7 +372,7 @@ public class TestInventory extends TestCase
         assertEquals(load, accum);
 
         // Add multiple gold and check again; biag starts with 15 gp already
-        Item gold = new Item(ItemCategory.CASH, GOLD_NAME, GP_WT, NBR_GOLD1);
+        Item gold = new Item(ItemCategory.VALUABLES, GOLD_NAME, GP_WT, NBR_GOLD1);
         // Get the original amount of gold
         Item au = _bag.getItem(GOLD_NAME);
         int auQty = au.getQuantity();
@@ -448,13 +447,13 @@ public class TestInventory extends TestCase
         assertEquals(count, _bag.getNbrItems());
 
         // Add some gold coins to ensure that they can be dropped
-        Item gold = new Item(ItemCategory.CASH, GOLD_NAME, 2, GOLD_CNT);
+        Item gold = new Item(ItemCategory.VALUABLES, GOLD_NAME, 2, GOLD_CNT);
         _bag.addItem(gold);
         // Qty changes but not the number of different items
         assertEquals(count, _bag.getNbrItems());
 
         // Add some silver coins to ensure that they can be dropped
-        Item silver = new Item(ItemCategory.CASH, SILVER_NAME, 1, SILVER_CNT);
+        Item silver = new Item(ItemCategory.VALUABLES, SILVER_NAME, 1, SILVER_CNT);
         _bag.addItem(silver);
         // Qty changes but not the number of different items
         assertEquals(count, _bag.getNbrItems());
@@ -481,16 +480,16 @@ public class TestInventory extends TestCase
         // Drop a mutliple items to 0 qty and confirm that it is removed
         // completely
         // The trobe is added as a pair, so qty start at 2
-        assertFalse(_bag.hasItem(_trobe));
+        assertFalse(_bag.hasItem(_trobe.getName()));
         int baseCount = _bag.getNbrItems();
         _bag.addItem(_trobe);
         // Confirm that adding two of an Item increases the item count by 1
-        assertTrue(_bag.hasItem(_trobe));
+        assertTrue(_bag.hasItem(_trobe.getName()));
         assertEquals(_bag.getNbrItems(), baseCount + 1);
         // Now drop both of them at once to remove the Item
         _bag.dropItems("Trobe", 2);
         assertEquals(_bag.getNbrItems(), baseCount);
-        assertFalse(_bag.hasItem(_trobe));
+        assertFalse(_bag.hasItem(_trobe.getName()));
 
         // NULL: try to add a null or invalid item
         assertFalse(_bag.dropItems(null, 1));
@@ -640,19 +639,19 @@ public class TestInventory extends TestCase
         // check that they are present, then remove them and check that they are
         // mising
         // NORMAL and ERROR cases, depending on if item is in inventory or not
-        assertFalse(_bag.hasItem(_framis));
-        assertFalse(_bag.hasItem(_trobe));
+        assertFalse(_bag.hasItem(_framis.getName()));
+        assertFalse(_bag.hasItem(_trobe.getName()));
         _bag.addItem(_framis);
         _bag.addItem(_trobe);       // trobes are added in pairs
         _bag.addItem(_framis);
-        assertTrue(_bag.hasItem(_framis));      // 2 framis in bag
-        assertTrue(_bag.hasItem(_trobe));       // 2 trobes in bag
+        assertTrue(_bag.hasItem(_framis.getName()));      // 2 framis in bag
+        assertTrue(_bag.hasItem(_trobe.getName()));       // 2 trobes in bag
         _bag.dropItems("Framis", 1);
         _bag.dropItems("Trobe", 2);
         // There is no 1 framis left, and 0 trobes
-        assertTrue(_bag.hasItem(_framis));      // 1 framis in bag
-        assertFalse(_bag.hasItem(_trobe));      // 0 trobes in bag
-        assertFalse(_bag.hasItem((Item) null));        // fail gracefully
+        assertTrue(_bag.hasItem(_framis.getName()));      // 1 framis in bag
+        assertFalse(_bag.hasItem(_trobe.getName()));      // 0 trobes in bag
+        assertFalse(_bag.hasItem("null"));        // fail gracefully
     }
 
     /**
@@ -688,7 +687,7 @@ public class TestInventory extends TestCase
         assertTrue(_bag.hasItem(target[5]) == false);    // partial match
         assertTrue(_bag.hasItem(target[7]) == false);     // lowercase match
         assertTrue(_bag.hasItem(target[6]) == true);    // partial match
-        assertTrue(_bag.hasItem((Item) null) == false);
+        assertTrue(_bag.hasItem("null") == false);
     }
 
     /**
@@ -704,22 +703,15 @@ public class TestInventory extends TestCase
     {
         MsgCtrl.auditMsgsOn(false);
         MsgCtrl.msgln(this, "\ttestDefaultStartingInventory():");
-        // Confirm that each starting Item is in the bag
-        assertEquals(_bag.getNbrItems(), _mock.startSize());
+        
         // Confirm that both the Inventory and the pre-load item String are
         // equal in number
-        String[][] items = _bag.getItemList();
-        assertEquals(items.length, _mock.startSize());
-
+        List<String> items = _bag.getNameList(ItemCategory.ARMS);
         // NORMAL: Confirm that each starting Item name is in the bag
-        for (int k = 0; k < items.length; k++) {
-            MsgCtrl.msgln("\tChecking for " + items[k][1]);
-            assertTrue(_bag.hasItem(items[k][1]));
+        for (int k = 0; k < items.size(); k++) {
         }
         
-        for (int k = 0; k < items.length; k++) {
-            MsgCtrl.msgln("\tChecking quantity for " + items[k][1]);
-            assertEquals(Integer.parseInt(items[k][3]), _bag.getItem(items[k][1]).getQuantity());
+        for (int k = 0; k < items.size(); k++) {
         }
     }
 

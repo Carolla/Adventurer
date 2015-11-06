@@ -11,7 +11,6 @@
 package chronos.pdc.registry;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import chronos.Chronos;
@@ -36,10 +35,8 @@ public class HeroRegistry extends Registry
 
   /**
    * Init this Hero Registry
-   * 
-   * @throws IOException if the Registry is not on the disk
    */
-  protected HeroRegistry() throws IOException
+  protected HeroRegistry() 
   {
     super(Chronos.PersonRegPath);
   }

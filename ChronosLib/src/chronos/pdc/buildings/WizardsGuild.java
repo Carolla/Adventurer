@@ -63,24 +63,6 @@ public class WizardsGuild extends Building
     setBusinessHours(OPENTIME, CLOSETIME);
   }
 
-
-  /**
-   * Constructor for typical general store with default business hours
-   * 
-   * @param name of this building
-   * @param master who runs this building
-   * @param hoverText quick phrase for purpose of building
-   * @param intro first glance outside, or when entering
-   * @param desc detailed look of building, inside or out
-   * @throws ApplicationException if the ctor fails
-   */
-  public WizardsGuild(String name, String master, String hoverText, String intro, String desc)
-      throws ApplicationException
-  {
-    super(name, master, hoverText, intro, desc);
-  }
-
-
   /*
    * PUBLIC METHODS
    */
@@ -99,7 +81,7 @@ public class WizardsGuild extends Building
     }
     WizardsGuild wizG = (WizardsGuild) target;
     boolean bName = this.getKey().equals(wizG.getKey());
-    boolean bMaster = this.getMaster().getName().equals(wizG.getMaster().getName());
+    boolean bMaster = this.getMaster().equals(wizG.getMaster());
     return (bName && bMaster);
   }
 

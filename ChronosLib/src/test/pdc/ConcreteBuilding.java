@@ -42,7 +42,7 @@ public class ConcreteBuilding extends Building
     public ConcreteBuilding(String name, String master, String hoverText, String intro, String desc) 
                         throws ApplicationException
     {
-        super(name, master, hoverText, intro, desc);
+        super(name, master, hoverText, intro, desc, null, null);
     }
 
 
@@ -52,10 +52,7 @@ public class ConcreteBuilding extends Building
     @Override
     public boolean equals(IRegistryElement target)
     {
-        Building bldg = (Building) target;
-        boolean bName = (this._name).equals(bldg.getKey());
-        boolean bMaster = (this._buildingMaster).equals(bldg.getMaster());
-        return (bName && bMaster);
+        return super.equals((Object) target);
     }
 
     

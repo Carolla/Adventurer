@@ -10,6 +10,7 @@
 package pdc.character;
 
 import mylib.pdc.MetaDie;
+import chronos.pdc.Race;
 
 /**
  * @author Al Cline

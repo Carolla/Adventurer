@@ -17,8 +17,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import chronos.civ.SkillKeys;
-import chronos.pdc.Skill;
 import mylib.ApplicationException;
 import mylib.MsgCtrl;
 
@@ -27,6 +25,9 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import chronos.civ.SkillKeys;
+import chronos.pdc.Skill;
 
 /**
  *    Test the Skill class

@@ -9,8 +9,6 @@
 
 package test;
 
-import mylib.test.MyLibraryTestSuite;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -36,8 +34,6 @@ import test.pdc.registry.RegistrySuite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
 {
-    /** MyLibrary test suit */
-    MyLibraryTestSuite.class,
 
     /** CIV test files */
     // TestDefaultLists.class,

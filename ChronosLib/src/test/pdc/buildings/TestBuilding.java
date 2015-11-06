@@ -18,7 +18,6 @@ import mylib.ApplicationException;
 import mylib.MsgCtrl;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,13 +28,11 @@ import chronos.pdc.buildings.Bank;
 import chronos.pdc.buildings.Building;
 import chronos.pdc.buildings.ClericsGuild;
 import chronos.pdc.buildings.FightersGuild;
-import chronos.pdc.buildings.Inn;
 import chronos.pdc.buildings.Jail;
 import chronos.pdc.buildings.RoguesGuild;
 import chronos.pdc.buildings.Store;
 import chronos.pdc.buildings.WizardsGuild;
 import chronos.pdc.registry.NPCRegistry;
-import chronos.pdc.registry.RegistryFactory;
 
 
 /**
@@ -78,15 +75,6 @@ public class TestBuilding
   {
     // Create a Registry object, which will be initialized if new
 //    assertNotNull((NPCRegistry) RegistryFactory.getInstance().getRegistry(RegKey.NPC));
-  }
-
-  /** Close down all the secondary registries needed for the Inn */
-  @AfterClass
-  public static void tearDownAfterClass()
-  {
-    RegistryFactory.getInstance().closeAllRegistries();
-//    // Close down the secondary, but don't delete the registry file
-//    ((NPCRegistry) RegistryFactory.getInstance().getRegistry(RegKey.NPC)).closeRegistry();
   }
 
   /**
@@ -338,10 +326,10 @@ public class TestBuilding
     dump(b);
     MsgCtrl.msgln("\n");
 
-    b = new Inn();
-    assertNotNull(b);
-    dump(b);
-    MsgCtrl.msgln("\n");
+//    b = new Inn();
+//    assertNotNull(b);
+//    dump(b);
+//    MsgCtrl.msgln("\n");
 
     b = new Jail();
     assertNotNull(b);
@@ -393,7 +381,7 @@ public class TestBuilding
   private void dump(Building bldg)
   {
     MsgCtrl.msg("\t Created: \t" + bldg.getName());
-    MsgCtrl.msgln("\t managed by " + bldg.getMaster().getName());
+    MsgCtrl.msgln("\t managed by " + bldg.getMaster());
     int[] hours = bldg.getBusinessHours();
     int oTime = hours[0];
     int cTime = hours[1];

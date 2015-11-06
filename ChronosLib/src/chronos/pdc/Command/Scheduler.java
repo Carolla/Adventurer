@@ -9,7 +9,8 @@
  * by email: acline@carolla.com
  */
 
-package pdc.command;
+package chronos.pdc.Command;
+
 
 /**
  * This {@code Scheduler} singleton is implemented with {@code DeltaCmdList}, a delta priority queue
@@ -29,7 +30,7 @@ package pdc.command;
  * @see civ.CommandParser
  * 
  */
-public class Scheduler implements Runnable
+public class Scheduler
 {
     /** Internal references: command events are queued here */
     private DeltaCmdList _dq;
@@ -44,18 +45,18 @@ public class Scheduler implements Runnable
     }
 
 
-    /**
-     * This is the main loop to pop the next command and execute it, and required for the
-     * {@code Runnable} interface. When a user command is found, the {@code Scheduler} calls its
-     * {@code Command.exec()} method, which actually triggers the subcommand's {@code exec()}
-     * because {@code Command} is abstract.
-     */
-    public void run()
-    {
-        while (true) {
-            doOneCommand();
-        }
-    }
+//    /**
+//     * This is the main loop to pop the next command and execute it, and required for the
+//     * {@code Runnable} interface. When a user command is found, the {@code Scheduler} calls its
+//     * {@code Command.exec()} method, which actually triggers the subcommand's {@code exec()}
+//     * because {@code Command} is abstract.
+//     */
+//    public void run()
+//    {
+//        while (true) {
+//            doOneCommand();
+//        }
+//    }
 
 
     /**
@@ -67,6 +68,9 @@ public class Scheduler implements Runnable
     public void sched(Command cmd)
     {
         _dq.insert(cmd);
+        if (cmd.isUserInput()) {
+           doOneUserCommand();
+        }
     }
 
     
@@ -75,9 +79,13 @@ public class Scheduler implements Runnable
      * Generally, loop through the deltaQ, retrieving commands and calling each
      * {@code Command.exec()} method.
      */
-    public void doOneCommand()
+    public void doOneUserCommand()
     {
         Command cmdToDo = _dq.getNextCmd();
+        while (cmdToDo.isInternal()) {
+            cmdToDo.exec();
+            cmdToDo = _dq.getNextCmd();
+        }
         cmdToDo.exec();
     }
 

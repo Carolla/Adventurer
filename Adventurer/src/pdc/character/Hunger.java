@@ -11,10 +11,10 @@
 
 package pdc.character;
 
+import java.io.Serializable;
+
 import mylib.Constants;
 import mylib.MsgCtrl;
-
-import java.io.Serializable;
 
 /**
  * Hunger determines if the Person needs to eat or not, measured in satiety
