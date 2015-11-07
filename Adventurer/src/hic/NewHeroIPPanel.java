@@ -272,7 +272,7 @@ public class NewHeroIPPanel extends JPanel
           // Create the new Hero and display it
            Hero hero = _nhCiv.createHero(_input);
            HeroDisplayCiv hDispCiv = new HeroDisplayCiv(_mf);
-           hDispCiv.displayHero(hero);
+           hDispCiv.displayHero(hero, true);    // first time Hero needs true arg
         } else {
           // Display the message
           showErrorMessage(err);

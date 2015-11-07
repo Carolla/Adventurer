@@ -10,6 +10,7 @@
 package hic;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Image;
 
 import javax.swing.JComponent;
@@ -51,6 +52,11 @@ public interface MainframeInterface
 
   /** Redraws the view */
   public void repaint();
+
+  /** Set the runic font to be used for user interactions */
+  public void setRunicFont(Font stdFont);
+  /** Set the standard font to be used buttons, help, etc. */
+  public void setStandardFont(Font stdFont);
 
   /** Display the image into the image panel */
   public void setImage(Image image);

@@ -10,8 +10,6 @@
 package civ;
 
 import java.awt.EventQueue;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import hic.Mainframe;
 
@@ -61,16 +59,7 @@ public class Adventurer
       {
         try {
           final Mainframe frame = new Mainframe();
-
           frame.setVisible(true);
-//          frame.addWindowListener(new WindowAdapter() {
-//            @Override
-//            public void windowClosing(WindowEvent e)
-//            {
-//              super.windowClosing(e);
-//              Adventurer.approvedQuit();
-//            }
-//          });
         } catch (Exception e) {
           e.printStackTrace();
           System.exit(-1);

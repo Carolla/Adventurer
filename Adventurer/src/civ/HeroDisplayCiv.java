@@ -17,6 +17,7 @@ import chronos.pdc.AttributeList;
 import chronos.pdc.Item;
 import chronos.pdc.MiscKeys.ItemCategory;
 import chronos.pdc.Skill;
+import chronos.pdc.registry.RegistryFactory.RegKey;
 import hic.HeroDisplay;
 import hic.Mainframe;
 import mylib.civ.BaseCiv;
@@ -40,9 +41,6 @@ public class HeroDisplayCiv
   private Hero _hero = null;
   /** Associated GUI */
   private HeroDisplay _widget = null;
-
-  /** Associated Inventory of the Person */
-//  private Inventory _inventory = null;
 
   /** The categories for hunger, to convert Satiety points into a hunger state */
   enum hungerStage {
@@ -126,15 +124,16 @@ public class HeroDisplayCiv
   }
 
   /**
-   * Display the Hero the HeroDisplay widget
+   * Display the Hero the HeroDisplay widget. 
    * 
+   * @param firstTime Heroes disable Delete button
    * @param hero to display
    */
-  public void displayHero(Hero hero)
+  public void displayHero(Hero hero, boolean firstTime)
   {
     _hero = hero;
     _outputMap = hero.loadAttributes(_outputMap);
-    _widget = new HeroDisplay(this, _mf);
+    _widget = new HeroDisplay(this, _mf, firstTime);
     String title = String.format("%s:  %s %s %s", _hero.getName(), _hero.getGender(),
         _hero.getRaceName(), _hero.getKlassName());
     _mf.replaceLeftPanel(_widget, title);
@@ -266,8 +265,8 @@ public class HeroDisplayCiv
   {
     // Create a shuttle to contain the data and convert to widget String
     // format
-    //List<String> items = convertItems(itemList);
-    //_widget.displayInventory(items);
+    // List<String> items = convertItems(itemList);
+    // _widget.displayInventory(items);
     return true;
   }
 
@@ -310,14 +309,15 @@ public class HeroDisplayCiv
   }
 
   /**
-   * Save the Persona to the filename selected
+   * Save the Hero to the filename selected
    * 
-   * @param saveName filename to use for saving the Person
+   * @param overwrite existing Hero in dormitory
    * @return true if the save worked correctly; else false
    */
   public boolean savePerson(boolean overwrite)
   {
-    // return _hero.save(overwrite);
+//    HeroRegistry heroReg = (HeroRegistry) _mf.getRegistry(RegKey.HERO);
+//    return save(overwrite);
     return false;
   }
 
@@ -346,7 +346,7 @@ public class HeroDisplayCiv
     return skillList;
   }
 
-  
+
   /*
    * PRIVATE METHODS
    */
@@ -455,35 +455,36 @@ public class HeroDisplayCiv
   // }
 
 
-//  /**
-//   * Convert the Item objects into string fields for list display. All Item fields are concatenated
-//   * into a single delimited string.
-//   * 
-//   * @param items list of Item object to convert
-//   * @return the string list of output data
-//   */
-//  private List<String> convertItems(ArrayList<Item> items)
-//  {
-//    List<String> itemList = new ArrayList<String>(items.size());
-//    for (Item item : items) {
-//      // Each item consists of: Inventory category, name, quantity, and
-//      // weight (each)
-//      String cat = item.getCategory().toString();
-//      String name = item.getName();
-//      String qty = String.valueOf(item.getQuantity());
-//      // Convert weight from ounces to lbs and ozs
-//      // int weight = item.getWeight();
-//      // int lbs = weight / Constants.OUNCES_PER_POUND;
-//      // int ozs = weight % Constants.OUNCES_PER_POUND;
-//      // String lbWt = String.valueOf(lbs);
-//      // String ozWt = String.valueOf(ozs);
-//      // Build displayable string
-//      String itemStr = cat + BaseCiv.DELIM + name + BaseCiv.DELIM + qty; // + BaseCiv.DELIM + lbWt
-//      // + BaseCiv.DELIM + ozWt;
-//      itemList.add(itemStr);
-//    }
-//    return itemList;
-//  }
+  // /**
+  // * Convert the Item objects into string fields for list display. All Item fields are
+  // concatenated
+  // * into a single delimited string.
+  // *
+  // * @param items list of Item object to convert
+  // * @return the string list of output data
+  // */
+  // private List<String> convertItems(ArrayList<Item> items)
+  // {
+  // List<String> itemList = new ArrayList<String>(items.size());
+  // for (Item item : items) {
+  // // Each item consists of: Inventory category, name, quantity, and
+  // // weight (each)
+  // String cat = item.getCategory().toString();
+  // String name = item.getName();
+  // String qty = String.valueOf(item.getQuantity());
+  // // Convert weight from ounces to lbs and ozs
+  // // int weight = item.getWeight();
+  // // int lbs = weight / Constants.OUNCES_PER_POUND;
+  // // int ozs = weight % Constants.OUNCES_PER_POUND;
+  // // String lbWt = String.valueOf(lbs);
+  // // String ozWt = String.valueOf(ozs);
+  // // Build displayable string
+  // String itemStr = cat + BaseCiv.DELIM + name + BaseCiv.DELIM + qty; // + BaseCiv.DELIM + lbWt
+  // // + BaseCiv.DELIM + ozWt;
+  // itemList.add(itemStr);
+  // }
+  // return itemList;
+  // }
 
 
   // /**

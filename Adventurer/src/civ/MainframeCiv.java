@@ -9,10 +9,8 @@
 
 package civ;
 
-import hic.BuildingRectangle;
-import hic.MainframeInterface;
-
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -22,11 +20,20 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import pdc.Util;
 import chronos.civ.UserMsg;
 import chronos.pdc.Adventure;
+import chronos.pdc.Command.Scheduler;
+import chronos.pdc.buildings.Inn;
 import chronos.pdc.registry.AdventureRegistry;
+import chronos.pdc.registry.BuildingRegistry;
+import chronos.pdc.registry.RegistryFactory;
+import chronos.pdc.registry.RegistryFactory.RegKey;
 import dmc.HeroReadWriter;
+import hic.BuildingRectangle;
+import hic.IOPanel;
+import hic.MainframeInterface;
+import pdc.Util;
+import pdc.command.CommandFactory;
 
 /**
  * The main civ behind the Mainframe screen.
@@ -42,14 +49,23 @@ public class MainframeCiv implements UserMsg
   private AdventureRegistry _advReg;
   private BuildingDisplayCiv _bdCiv;
 
-  private MainframeInterface _frame;
+  private MainframeInterface _mf;
   private Adventure _adv;
   private HeroReadWriter _personRW;
 
+  private RegistryFactory _rf;
+  private Scheduler _skedder;
+  private CommandParser _cp;
+  private BuildingDisplayCiv _bldgCiv;
+
   private static final String TOWN_IMAGE = "ext_BiljurBaz.JPG";
+  /** Initial right-side image: Chronos logo */
+  private static final String INITIAL_IMAGE = "ChronosLogo.jpg";
+  /** Title of initial image */
+  private static final String INITIAL_TITLE = "Chronos Logo";
 
   /** Default Buildings to initialize registry with */
-  public static final String[][] DEFAULT_BUILDINGS = { {"Ugly Ogre Inn", "Bork"},
+  public static final String[][] DEFAULT_BUILDINGS = {{"Ugly Ogre Inn", "Bork"},
       {"Rat's Pack", "Dewey N. Howe"}, {"The Bank", "Ogden Moneypenny"},
       {"Stadium", "Aragon"}, {"Arcaneum", "Pendergast"}, {"Monastery", "Balthazar"},
       {"Rogues' Den", "Ripper"}, {"Jail", "The Sheriff"}, {"Quasqueton", "Unknown"}};
@@ -80,11 +96,6 @@ public class MainframeCiv implements UserMsg
   /** Current Building being displayed, and can be entered */
   private final Rectangle _townReturn = new Rectangle(0, 0, 100, 100);
 
-  /** Initial right-side image: Chronos logo */
-  private static final String INITIAL_IMAGE = "ChronosLogo.jpg";
-  /** Title of initial image */
-  private static final String INITIAL_TITLE = "Chronos Logo";
-
 
   // ============================================================
   // Constructors and constructor helpers
@@ -97,29 +108,46 @@ public class MainframeCiv implements UserMsg
    * @param personRW supports the Summon Hero and Create Hero buttons
    * @param advReg registry to support the Adventures button
    */
-  public MainframeCiv(MainframeInterface mf, BuildingDisplayCiv bdCiv, AdventureRegistry advReg)
+  public MainframeCiv(MainframeInterface mf)
   {
-    _frame = mf;
-    _bdCiv = bdCiv;
-    _advReg = advReg;
+    _mf = mf;
+
+    _skedder = new Scheduler(); // Skedder first for injection
+    _rf = new RegistryFactory(_skedder);
+    _rf.initRegistries();
+
+    // Build the associated control objects
+    constructMembers();
   }
 
 
   // ============================================================
   // Constructors and constructor helpers
   // ============================================================
+  /**
+   * Perform construction act. This wires together all the "single instance variables" for the
+   * Adventurer application. None of these constructors should ever be called anywhere outside of
+   * this method and in testing.
+   */
+  private void constructMembers()
+  {
+    BuildingRegistry breg = (BuildingRegistry) _rf.getRegistry(RegKey.BLDG);
+    _bldgCiv = new BuildingDisplayCiv(_mf, breg);
+
+    _advReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
+
+    _cp = new CommandParser(_skedder, new CommandFactory(this, _bldgCiv));
+    IOPanel iop = new IOPanel(_cp);
+
+    Inn inn = (Inn) breg.getBuilding("Ugly Ogre Inn");
+    inn.setMsg(this);
+    inn.initPatrons();
+  }
 
 
   // ============================================================
   // Public methods
   // ============================================================
-  
-  
-  @Override
-  public void errorOut(String msg)
-  {
-    _frame.displayErrorText(msg);
-  }
 
 
   /**
@@ -133,6 +161,23 @@ public class MainframeCiv implements UserMsg
     if (_bdCiv.canApproach(bldName)) {
       _bdCiv.approachBuilding(bldName);
     }
+  }
+
+
+  // ============================================================
+  // Constructors and constructor helpers
+  // ============================================================
+
+
+  // ============================================================
+  // Public methods
+  // ============================================================
+
+
+  @Override
+  public void errorOut(String msg)
+  {
+    _mf.displayErrorText(msg);
   }
 
 
@@ -161,6 +206,16 @@ public class MainframeCiv implements UserMsg
    * 
    * @return the name of the town
    */
+  public RegistryFactory getRegistryFactory()
+  {
+    return _rf;
+  }
+
+  /**
+   * Get the town name
+   * 
+   * @return the name of the town
+   */
   public String getTownName()
   {
     return _adv.getTownName();
@@ -181,22 +236,26 @@ public class MainframeCiv implements UserMsg
     if (_bdCiv.isOnTown()) {
       for (BuildingRectangle rect : _buildingList.values()) {
         if (rect.contains(p)) {
-          _frame.setBuilding(rect);
+          _mf.setBuilding(rect);
           break;
         }
       }
     }
   }
 
-  public void initialize()
+  /** Set up the GUI elements needed at initialization or throughout the program */
+  public void configure()
   {
-    _frame.setImage(Util.convertToImage(INITIAL_IMAGE));
-    // TODO Why is this in the civ, and not the hic.Mainframe?
-    _frame.setImageTitle(INITIAL_TITLE);
-    createBuildingBoxes();
+    _mf.setImage(Util.convertToImage(INITIAL_IMAGE));
+    _mf.setImageTitle(INITIAL_TITLE);
+    _mf.setRunicFont(Util.makeRunicFont(14f));
+    _mf.setStandardFont(new Font("Tahoma", Font.PLAIN, 24));
 
+    
+    createBuildingBoxes();
   }
 
+  
   /**
    * Load the selected adventure from the Adventure registry. Replace the opening button panel with
    * the IOPanel (text and command line)
@@ -206,14 +265,24 @@ public class MainframeCiv implements UserMsg
   public void loadSelectedAdventure(String adventureName)
   {
     _adv = _advReg.getAdventure(adventureName);
-    _frame.addIOPanel();
+    _mf.addIOPanel();
     openTown();
   }
 
+  /** Create a font that pervades the HIC
+   * @param fontHt  size of runic font to create
+   * @return the font 
+   */
+  public Font makeRunicFont(float fontHt)
+  {
+    return Util.makeRunicFont(14f);
+  }
+
+  
   @Override
   public void msgOut(String msg)
   {
-    _frame.displayText(msg);
+    _mf.displayText(msg);
   }
 
 
@@ -225,7 +294,7 @@ public class MainframeCiv implements UserMsg
    */
   public boolean msgPrompt(String msg)
   {
-    return _frame.displayPrompt(msg);
+    return _mf.displayPrompt(msg);
   }
 
   /**
@@ -250,11 +319,11 @@ public class MainframeCiv implements UserMsg
   {
     _bdCiv.returnToTown();
     Image townImage = Util.convertToImage(TOWN_IMAGE);
-    _frame.setImage(townImage);
+    _mf.setImage(townImage);
     if (_adv != null) {
       String townTitle = " The Town of " + _adv.getTownName();
-      _frame.setImageTitle(townTitle);
-      _frame.displayText(_adv.getOverview());
+      _mf.setImageTitle(townTitle);
+      _mf.displayText(_adv.getOverview());
     }
   }
 
@@ -266,7 +335,7 @@ public class MainframeCiv implements UserMsg
   /** Close down the application if user so specified */
   public void quit()
   {
-    if (_frame.displayPrompt("Quit Adventurer?") == true) {
+    if (_mf.displayPrompt("Quit Adventurer?") == true) {
       Adventurer.approvedQuit();
     }
   }
@@ -277,7 +346,7 @@ public class MainframeCiv implements UserMsg
     for (int i = 0; i < DEFAULT_BUILDINGS.length; i++) {
       String bName = DEFAULT_BUILDINGS[i][0];
       BuildingRectangle r =
-          new BuildingRectangle(bName, colorArray[i], _frame.getImagePanelSize(),
+          new BuildingRectangle(bName, colorArray[i], _mf.getImagePanelSize(),
               buildingLayouts[i]);
       _buildingList.put(bName, r);
     }
@@ -300,7 +369,7 @@ public class MainframeCiv implements UserMsg
     if (_townReturn.contains(p)) {
       openTown();
     }
-    _frame.redraw();
+    _mf.redraw();
   }
 
 } // end of MainframeCiv class

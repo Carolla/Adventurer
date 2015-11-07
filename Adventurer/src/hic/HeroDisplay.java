@@ -25,12 +25,11 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
-import mylib.Constants;
-import mylib.MsgCtrl;
-import net.miginfocom.swing.MigLayout;
 import chronos.pdc.MiscKeys.ItemCategory;
 import civ.HeroDisplayCiv;
 import civ.PersonKeys;
+import mylib.Constants;
+import net.miginfocom.swing.MigLayout;
 
 
 /**
@@ -221,9 +220,9 @@ public class HeroDisplay extends JPanel
    * 
    * @param hdCiv the intermediary between this GUI and the Person
    * @param _mf
-   * @param outputMap contains all the hero's data to be displayed
+   * @param firstTime Hero activates buttons differently
    */
-  public HeroDisplay(HeroDisplayCiv hdCiv, Mainframe mainframe)
+  public HeroDisplay(HeroDisplayCiv hdCiv, Mainframe mainframe, boolean firstTime)
   {
     _hdCiv = hdCiv;
     _mainframe = mainframe;
@@ -231,21 +230,9 @@ public class HeroDisplay extends JPanel
 
     // _hdCiv.resetLoadState();
     // Define the overall tabbed pane and button layout
-    setupDisplay();
+    setupDisplay(firstTime);
   }
 
-
-  /** Swap the main panel title with the HeroDisplay title */
-  private void setHeroAsTitle()
-  {
-    // Two-row namePlate before Attribute grid: Name, Gender, Race, Klass
-    String namePlate = _ds.get(PersonKeys.NAME) + ": "
-        + _ds.get(PersonKeys.GENDER) + " "
-        + _ds.get(PersonKeys.RACENAME) + " "
-        + _ds.get(PersonKeys.KLASSNAME);
-
-    _mainframe.setTitle(namePlate);
-  }
 
 
   // TODO: THis may not be needed, but keep the old code here anyway. It needs to be debugged
@@ -497,10 +484,10 @@ public class HeroDisplay extends JPanel
 
   /**
    * Create Save, Delete, and Cancel buttons, then add then to a JPanel
-   * 
+   * @param firstTime Hero disables DELETE button; old Hero disables CANCEL button
    * @return button panel
    */
-  private JPanel buildButtonPanel()
+  private JPanel buildButtonPanel(boolean firstTime)
   {
     // NOTE: Save action is invoked for new Characters */
     _saveButton = new JButton("Save");
@@ -566,7 +553,14 @@ public class HeroDisplay extends JPanel
     JPanel buttonPanel = new JPanel();
     buttonPanel.setBackground(_backColor);
 
-    // Add small space at the top of the button panel
+    // Disable DELETE or CANCEL buttons depending on old or new Hero
+    if (firstTime) {
+      _delButton.setEnabled(false);
+    }
+    else {
+    _cancelButton.setEnabled(false);
+    }
+    
     buttonPanel.add(_saveButton);
     buttonPanel.add(_delButton);
     buttonPanel.add(_cancelButton);
@@ -1061,12 +1055,26 @@ public class HeroDisplay extends JPanel
   // }
   // }
 
+  /** Swap the main panel title with the HeroDisplay title */
+  private void setHeroAsTitle()
+  {
+    // Two-row namePlate before Attribute grid: Name, Gender, Race, Klass
+    String namePlate = _ds.get(PersonKeys.NAME) + ": "
+        + _ds.get(PersonKeys.GENDER) + " "
+        + _ds.get(PersonKeys.RACENAME) + " "
+        + _ds.get(PersonKeys.KLASSNAME);
+
+    _mainframe.setTitle(namePlate);
+  }
+
+
   /**
    * Creates the panel and container fields for the given Hero, using a data map from the model to
    * populate the widget. The HeroDisplay panel contains three tabs: one for attributes, one for
    * inventory, and one for magic spells
+   * @param firstTime Hero activates buttons differently than dormitory hero
    */
-  private boolean setupDisplay()
+  private boolean setupDisplay(boolean firstTime)
   {
     // GENERAL SETUP
     setLayout(new MigLayout());
@@ -1112,7 +1120,7 @@ public class HeroDisplay extends JPanel
     add(tabPane, "center, wrap");
 
     // // ADD SAVE & CANCEL BUTTONS TO THE BOTTOM OF THE PANEL
-    _buttonPanel = buildButtonPanel();
+    _buttonPanel = buildButtonPanel(firstTime);
     _buttonPanel.setPreferredSize(new Dimension(PANEL_WIDTH, _buttonPanel.getHeight()));
     add(_buttonPanel, "span, center, gapbottom 20");
 

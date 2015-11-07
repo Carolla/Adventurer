@@ -500,7 +500,6 @@ public class Hero implements Serializable
   }
 
 
-
   public String getGender()
   {
     return _gender;
@@ -1226,66 +1225,6 @@ public class Hero implements Serializable
     return desc;
   }
 
-//  private void displayClericMods()
-//  {
-//    StringBuffer sb = new StringBuffer();
-//    sb.append("Clerics only: ");
-//    sb.append("\t CSPs per Level = " + _CSPsPerLevel);
-//    sb.append("\t CSPs = " + _CSPs);
-//    sb.append("\t Turn Undead: " + _turnUndead + " + ULD");
-//    System.out.println("\n" + sb);
-//  }
-//
-//  /** Display the Action Points and non-lethal combat stats */
-//  private void displayCombatStats()
-//  {
-//    StringBuffer sb = new StringBuffer();
-//    sb.append("AP = " + _AP);
-//    sb.append("\t Overbearing (for " + _weight + " lbs) = " + _apMods[OVERBEAR]);
-//    sb.append("\t Grappling = " + _apMods[GRAPPLE]);
-//    sb.append("\t Pummeling = " + _apMods[PUMMEL]);
-//    sb.append("\t Shield Bash (with no shield) = " + _apMods[BASH]);
-//    System.out.println("\n" + sb);
-//  }
-//
-//
-//  private void displayRacialMods()
-//  {
-//    StringBuffer sb = new StringBuffer();
-//    sb.append("Dwarves, Gnomes, and Hobbits only: ");
-//    sb.append("\t Updated Magic Attack Mod = " + _magicAttackMod);
-//    sb.append("\t Racial Poison Resist = " + _racialPoisonResist);
-//    System.out.println("\n" + sb);
-//  }
-//
-//  private void displayStrMods(int[] mods)
-//  {
-//    System.out.println("\n\tStr Mods: \t To Hit (melee) = " + _toHitStr + ";\t Dmg = " + _damage
-//        + ";\t Wt Allownace = " + _wtAllow);
-//  }
-//
-//  private void displayThiefSkills(String[][] thiefSkills)
-//  {
-//    // Put the skill name and chance into a single output string
-//    System.out.println("\nThief Skills:");
-//    for (int k = 0; k < thiefSkills.length; k++) {
-//      String name = thiefSkills[k][0];
-//      String chance = thiefSkills[k][1];
-//      System.out.println("\t" + name + " = " + chance + "%");
-//    }
-//  }
-//
-//  private void displayWizardMods()
-//  {
-//    StringBuffer sb = new StringBuffer();
-//    sb.append("Wizards only: ");
-//    sb.append("\t MSPs per Level = " + _MSPsPerLevel);
-//    sb.append("\t MSPs = " + _MSPs);
-//    sb.append("\t % to know new spell = " + _percentToKnow);
-//    sb.append("\t MSPs per Level = " + _MSPsPerLevel);
-//    sb.append("\t Spells known (in Spellbook): " + _spellsKnown);
-//    System.out.println("\n" + sb);
-//  }
 
   // ====================================================
   // INNER CLASS MockHero

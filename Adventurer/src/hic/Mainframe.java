@@ -11,6 +11,7 @@ package hic;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -38,15 +39,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import chronos.Chronos;
-import chronos.pdc.Command.Scheduler;
-import chronos.pdc.buildings.Inn;
-import chronos.pdc.registry.AdventureRegistry;
-import chronos.pdc.registry.BuildingRegistry;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.Adventurer;
-import civ.BuildingDisplayCiv;
-import civ.CommandParser;
 import civ.MainframeCiv;
 import civ.NewHeroCiv;
 import mylib.Constants;
@@ -54,8 +47,6 @@ import mylib.hic.HelpDialog;
 import mylib.hic.IHelpText;
 import mylib.hic.ShuttleList;
 import net.miginfocom.swing.MigLayout;
-import pdc.Util;
-import pdc.command.CommandFactory;
 
 /**
  * Initial frame displays three buttons and Chronos logo.<br>
@@ -80,12 +71,6 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     MouseMotionListener, IHelpText
 {
 
-  /** Singleton Help Dialog for all help text */
-  private HelpDialog _helpdlg;
-
-  /** Number of pixels on empty border spacing */
-  public static final int PAD = 10;
-
   /** Icons for the left-side buttons */
   private static final String REGISTRAR_IMAGE = "raw_Register.jpg";
   private static final String HALL_IMAGE = "icn_HallOfHeroes.jpg";
@@ -97,6 +82,8 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   private static int USERWIN_HEIGHT;
   /** Amount of space in pixels around the frame and image of aesthetics */
   public static final int FRAME_PADDING = 90;
+  /** Number of pixels on empty border spacing */
+  public static final int PAD = 10;
 
   /** Common content pane for the Mainframe */
   private JPanel _contentPane;
@@ -107,16 +94,12 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   /** Keep panel states to return to in case CANCEL is hit */
   private JPanel _leftPanelState;
   private String _leftTitleState;
-  private JPanel _rightPanelState;
+  
   /** JPanel to hold various images; this panel resides in the _rightHolder */
   private ImagePanel _imagePanel;
 
   private MainframeCiv _mfCiv;
-  private BuildingDisplayCiv _bldgCiv;
-  private CommandParser _cp;
-  private Scheduler _skedder;
   private IOPanel _iop;
-  private RegistryFactory _rf;
 
   private List<String> _partyHeros = new ArrayList<String>();
   private List<String> _summonableHeroes;
@@ -125,6 +108,14 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   private final String IOPANEL_TITLE = " Transcript ";
   /** Title of the initial three-button panel on left side */
   private final String INITIAL_OPENING_TITLE = " Actions ";
+
+  /** Runic Font that pervades the text of the screens */
+  private Font _runicFont;
+  /** Standard Font for buttons, help, etc */
+  private Font _stdFont;
+
+  /** Singleton Help Dialog for all help text */
+  private HelpDialog _helpdlg;
 
 
   /** Help Title for the mainframe */
@@ -167,58 +158,58 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
    * Creates the initial frame layout: left and right panel holders with buttons, and image panel
    * showing chronos logo on right. Creates the {@code HelpDialog} singleton, ready to receive
    * context-sensitive help text when requested. Creates the {@code MainframeCiv} which takes
-   * control after an adventure is selected.
-   * <P>
-   * NOTE: The constructor is {@code protected} instead of {@code private} so that JUnit tests can
-   * derive facade classes
+   * manages program control at the highest level.
    */
   public Mainframe()
   {
+    // Define the elements
     setupSizeAndBoundaries();
-    // Create the support elements, e.g., the BuildingRegistry, Scheduler, etc.
-    constructMembers();
-
     createFrameAndMenubar(); // Depends on class members not being NULL
     addImagePanel(); // add image panel on right for adding images later
     createActionPanel(); // creates three action buttons on panel
     redraw();
-    setVisible(true);
 
-    _mfCiv.initialize();
+    // Initiate the Mainframe state within those elements
+    _mfCiv = new MainframeCiv(this);
+    _mfCiv.configure();
 
     // Create the one time help dialog
     prepareHelpDialog();
+    
+    // Display the Mainframe and panels now
+    setVisible(true);
   }
 
+  
   // ============================================================
   // Public Methods
   // ============================================================
 
-  /**
-   * Perform construction act. This wires together all the "single instance variables" for the
-   * Adventurer application. None of these constructors should ever be called anywhere outside of
-   * this method and in testing.
-   */
-  protected void constructMembers()
-  {
-    // Create the BuildingDisplayCiv to define the output GUI for descriptions and images
-    _skedder = new Scheduler(); // Skedder first for injection
-    _rf = new RegistryFactory(_skedder);
-
-    _rf.initRegistries();
-    BuildingRegistry breg = (BuildingRegistry) _rf.getRegistry(RegKey.BLDG);
-    _bldgCiv = new BuildingDisplayCiv(this, breg);
-
-    // Create the Civ
-    _mfCiv = new MainframeCiv(this, _bldgCiv, (AdventureRegistry) _rf.getRegistry(RegKey.ADV));
-
-    _cp = new CommandParser(_skedder, new CommandFactory(_mfCiv, _bldgCiv));
-    _iop = new IOPanel(_cp);
-
-    Inn inn = (Inn) breg.getBuilding("Ugly Ogre Inn");
-    inn.setMsg(_mfCiv);
-    inn.initPatrons();
-  }
+//  /**
+//   * Perform construction act. This wires together all the "single instance variables" for the
+//   * Adventurer application. None of these constructors should ever be called anywhere outside of
+//   * this method and in testing.
+//   */
+//  protected void constructMembers()
+//  {
+//    // Create the BuildingDisplayCiv to define the output GUI for descriptions and images
+//    _skedder = new Scheduler(); // Skedder first for injection
+//    _rf = new RegistryFactory(_skedder);
+//
+//    _rf.initRegistries();
+//    BuildingRegistry breg = (BuildingRegistry) _rf.getRegistry(RegKey.BLDG);
+//    _bldgCiv = new BuildingDisplayCiv(this, breg);
+//
+//    // Create the Civ
+//    _mfCiv = new MainframeCiv(this, _bldgCiv, (AdventureRegistry) _rf.getRegistry(RegKey.ADV));
+//
+//    _cp = new CommandParser(_skedder, new CommandFactory(_mfCiv, _bldgCiv));
+//    _iop = new IOPanel(_cp);
+//
+//    Inn inn = (Inn) breg.getBuilding("Ugly Ogre Inn");
+//    inn.setMsg(_mfCiv);
+//    inn.initPatrons();
+//  }
 
 
   // TODO: Remove this and replace with addLeftPanel(...)
@@ -328,7 +319,6 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     return _rightHolder.getSize();
   }
 
-
   public void mouseClicked(MouseEvent e)
   {
     _mfCiv.handleClick(e.getPoint());
@@ -381,6 +371,26 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     redraw();
   }
 
+  public void setBuilding(BuildingRectangle rect)
+  {
+    _imagePanel.setRectangle(rect);
+    redraw();
+  }
+
+  /** Inject a given runic font for all panels */
+  @Override
+  public void setRunicFont(Font font)
+  {
+    _runicFont = font;
+  }
+
+  /** Inject a standard font for buttons, help, etc. */
+  @Override
+  public void setStandardFont(Font font)
+  {
+    _stdFont = font;
+  }
+  
   public void setHeroList(List<String> list)
   {
     _partyHeros = list;
@@ -396,13 +406,6 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   public void setImage(Image image)
   {
     _imagePanel.setImage(image);
-    redraw();
-  }
-
-
-  public void setBuilding(BuildingRectangle rect)
-  {
-    _imagePanel.setRectangle(rect);
     redraw();
   }
 
@@ -521,10 +524,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     JButton button = new JButton(buttonText);
     button.setBackground(Constants.MY_BROWN.brighter().brighter());
 
-    // button.setFont(new Font("Tahoma", Font.PLAIN, 24));
-    // TODO Move call to pdc.Util to mfCiv so pdc is not imported; and duplicate calls are
-    // avoided
-    button.setFont(Util.makeRunicFont(14f));
+    button.setFont(_stdFont);
     button.setIcon(new ImageIcon(Chronos.ADV_IMAGE_PATH + imageFilePath));
     button.setIconTextGap(40);
     return button;
@@ -569,7 +569,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
       public void actionPerformed(ActionEvent arg0)
       {
         try {
-          NewHeroCiv nhCiv = new NewHeroCiv(Mainframe.this, _rf);
+          NewHeroCiv nhCiv = new NewHeroCiv(Mainframe.this, _mfCiv.getRegistryFactory());
           NewHeroIPPanel ipPanel = nhCiv.createNewHeroPanel();
           _leftHolder.removeAll();
           _leftHolder.add(ipPanel);
@@ -659,10 +659,8 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     holder.setBackground(borderColor);
 
     Border matte = BorderFactory.createMatteBorder(5, 5, 5, 5, borderColor);
-    // TODO Move call to pdc.Util to mfCiv so pdc is not imported; and duplicate calls are
-    // avoided
     Border titled = BorderFactory.createTitledBorder(matte, title,
-        TitledBorder.CENTER, TitledBorder.TOP, Util.makeRunicFont(14f), Color.BLACK);
+        TitledBorder.CENTER, TitledBorder.TOP, _runicFont, Color.BLACK);
     holder.setBorder(titled);
     holder.setBackground(backColor);
 
@@ -677,7 +675,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     _helpdlg = HelpDialog.getInstance(this);
     // TODO Move call to pdc.Util to mfCiv so pdc is not imported; and duplicate calls are
     // avoided
-    _helpdlg.setMyFont(Util.makeRunicFont(14f));
+    _helpdlg.setMyFont(_runicFont);
     _contentPane.addKeyListener(new KeyListener() {
       public void keyReleased(KeyEvent e)
       {
