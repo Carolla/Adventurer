@@ -12,15 +12,15 @@ package chronos.pdc.buildings;
 import java.util.ArrayList;
 import java.util.List;
 
-import mylib.ApplicationException;
-import mylib.dmc.IRegistryElement;
-import mylib.pdc.MetaDie;
 import chronos.civ.UserMsg;
 import chronos.pdc.NPC;
 import chronos.pdc.Command.Scheduler;
 import chronos.pdc.Command.intCmdPatronEnter;
 import chronos.pdc.Command.intCmdPatronLeave;
 import chronos.pdc.registry.NPCRegistry;
+import mylib.ApplicationException;
+import mylib.dmc.IRegistryElement;
+import mylib.pdc.MetaDie;
 
 /**
  * Main building in town for rest, food, conversation, and sometimes even a bar brawl. Heroes can be
@@ -92,24 +92,24 @@ public class Inn extends Building
   private int _patronsNow = 1;
 
   /** Used to schedule commands */
-  private final Scheduler _skedder;
+//  private final Scheduler _skedder;
   private final NPCRegistry _npcRegistry;
   private UserMsg _msg;
 
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND RELATED METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
+  // ============================================================
+  // Constructors and constructor helpers
+  // ============================================================
 
   /**
    * Default Constructor, create Inn with default data
    * 
    * @throws ApplicationException if the ctor fails
    */
-  public Inn(Scheduler skedder, NPCRegistry npcRegistry) throws ApplicationException
+//  public Inn(Scheduler skedder, NPCRegistry npcRegistry) throws ApplicationException
+  public Inn(NPCRegistry npcRegistry) throws ApplicationException
   {
     super(INN_NAME, INNKEEPER, HOVERTEXT, EXTERIOR, INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
-    _skedder = skedder;
+//    _skedder = skedder;
     _npcRegistry = npcRegistry;
     _busyDescription = BUSY_DESC;
     setBusinessHours(OPENTIME, CLOSETIME);
@@ -138,8 +138,8 @@ public class Inn extends Building
     for (intCmdPatronEnter ce : enterList) {
       // Use the generated enter commands to create the leave commands
       intCmdPatronLeave cl = new intCmdPatronLeave(ce, this);
-      _skedder.sched(ce);
-      _skedder.sched(cl);
+//      _skedder.sched(ce);
+//      _skedder.sched(cl);
     }
   }
 

@@ -29,10 +29,12 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import chronos.Chronos;
+//import pdc.Util;
+import civ.CommandParser;
+import civ.MainActionCiv;
 import mylib.Constants;
 import net.miginfocom.swing.MigLayout;
-import pdc.Util;
-import civ.CommandParser;
 
 /**
  * This class serves as the text output and command line input after an Adventure is selected
@@ -59,12 +61,12 @@ public class IOPanel extends JPanel
    * Color class does not have brown, so I have to make it. Color constuctor args = red, green, blue
    * for values 0-255, kicked up one notch of brightness
    */
-  // private final Color MY_LIGHT_BROWN = new Color(130, 100, 90).brighter();
   private Color _backColor = Constants.MY_BROWN;
   private Color _foreColor = Color.BLACK;
 
   private final SimpleAttributeSet _errorAttributes;
-  private final CommandParser _commandParser;
+  private MainActionCiv _mainActionCiv;
+  private CommandParser _commandParser;
 
 
   // ============================================================
@@ -74,9 +76,11 @@ public class IOPanel extends JPanel
   /**
    * Creates output test panel and input CommandLine Input panel
    */
-  public IOPanel(CommandParser cp)
+  public IOPanel(MainActionCiv mac)
   {
-    _commandParser = cp;
+    _mainActionCiv = mac;
+    _commandParser = _mainActionCiv.getCmdParser();
+    
     setLayout(new MigLayout("", "[grow]", "[][]"));
     _pane = new JTextPane();
     _pane.setAlignmentY(JTextArea.TOP_ALIGNMENT);
@@ -95,6 +99,10 @@ public class IOPanel extends JPanel
     this.add(inputPanel, "cell 0 2");
   }
 
+
+  // ============================================================
+  // Public Methods
+  // ============================================================
 
   /**
    * Display error text, using different Font and color, then return to standard font and color.
@@ -118,35 +126,12 @@ public class IOPanel extends JPanel
     displayText(Constants.NEWLINE + msg + Constants.NEWLINE, null);
   }
 
-  /**
-   * Wrapper method for StyledDocument insertString
-   * 
-   * @param string the message to be displayed
-   * @param attributes attributes for this text, can be null
-   */
-  private void displayText(String string, AttributeSet attributes)
-  {
-    try {
-      _output.insertString(_output.getLength(), string + Constants.NEWLINE, attributes);
-    } catch (BadLocationException e) {
-      // Shouldn't happen
-      e.printStackTrace();
-    }
-  }
-
-
   public void setFocusOnCommandWindow()
   {
     // Ensure that the text scrolls as new text is appended
     _cmdWin.setFocusable(true);
     _cmdWin.requestFocusInWindow();
   }
-
-
-  // ============================================================
-  // Public Methods
-  // ============================================================
-
 
 
   // ============================================================
@@ -201,7 +186,7 @@ public class IOPanel extends JPanel
   {
     _pane.setEditable(false);
     _pane.setFocusable(false);
-    _pane.setFont(Util.makeRunicFont(14f));
+    _pane.setFont(Chronos.RUNIC_FONT);
     // _pane.setBackground(MY_LIGHT_BROWN); // make the background my version of a nice warm brown
     _pane.setBackground(_backColor); // make the background my version of a nice warm brown
     _pane.setForeground(_foreColor); // text is colored with the setForeground statement
@@ -219,6 +204,33 @@ public class IOPanel extends JPanel
     scrollPane.setPreferredSize(new Dimension(frame.height, frame.width));
     scrollPane.setViewportView(_pane);
     return scrollPane;
+  }
+
+
+  // ============================================================
+  // Public Methods
+  // ============================================================
+  
+  
+  
+  // ============================================================
+  // Private Methods
+  // ============================================================
+  
+  /**
+   * Wrapper method for StyledDocument insertString
+   * 
+   * @param string the message to be displayed
+   * @param attributes attributes for this text, can be null
+   */
+  private void displayText(String string, AttributeSet attributes)
+  {
+    try {
+      _output.insertString(_output.getLength(), string + Constants.NEWLINE, attributes);
+    } catch (BadLocationException e) {
+      // Shouldn't happen
+      e.printStackTrace();
+    }
   }
 
   // /**

@@ -45,6 +45,7 @@ public class CommandFactory
   private final BuildingDisplayCiv _bdCiv;
   private final MainframeCiv _mfCiv;
 
+  /** Keep a table for command, as lambda functions */
   public CommandFactory(MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
   {
     _mfCiv = mfCiv;
@@ -66,9 +67,9 @@ public class CommandFactory
     // Leave the inside of the Building and go outside
     _commandMap.put("LEAVE", () -> new CmdLeave(_bdCiv));
     // End the program.
-    _commandMap.put("QUIT", () -> new CmdQuit(_mfCiv, _bdCiv));
+    _commandMap.put("QUIT", () -> new CmdQuit(_bdCiv));
     // Return to town view
-    _commandMap.put("RETURN", () -> new CmdReturn(_mfCiv));
+    _commandMap.put("RETURN", () -> new CmdReturn());
     // Just sit there
     _commandMap.put("WAIT", () -> new CmdWait());
 
@@ -91,7 +92,7 @@ public class CommandFactory
     // If the command cannot be found, then run the Null command
     if (!canCreateCommand(cmdInput)) {
       // Display the invalid command error to user
-      _mfCiv.errorOut(ERRMSG_UNKNOWN);
+      // _output.errorOut(ERRMSG_UNKNOWN);
       return command;
     } else {
       // If map contains the command, Supplier<Command> will give new Instance of that
@@ -101,7 +102,7 @@ public class CommandFactory
       }
       // Check that the parms are valid for this command
       if (command.init(cmdInput.parameters) == false) {
-        _mfCiv.errorOut(command.usage());
+        // _output.errorOut(command.usage());
       }
       return command;
     }

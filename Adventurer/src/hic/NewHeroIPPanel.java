@@ -114,7 +114,7 @@ public class NewHeroIPPanel extends JPanel
   // TODO: Constant.MY_BROWN needs to be brightened here for some reason. Perhaps a background panel
   // is affecting it?
   /** Background color inherited from parent */
-  private Color _backColor = Constants.MY_BROWN.brighter();
+  private Color _backColor = Constants.MY_BROWN;
 
   /** Input data from user */
   private String _name;

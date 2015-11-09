@@ -40,14 +40,15 @@ public class BuildingRegistry extends Registry<Building>
   // CONSTRUCTOR(S) AND RELATED METHODS
   // ========================================================================
 
-  private final Scheduler _skedder;
+//  private final Scheduler _skedder;
   private final NPCRegistry _npcRegistry;
 
   /** Called by RegistryFactory class */
-  protected BuildingRegistry(Scheduler skedder, NPCRegistry npcRegistry)
+//  protected BuildingRegistry(Scheduler skedder, NPCRegistry npcRegistry)
+  protected BuildingRegistry(NPCRegistry npcRegistry)
   {
     super(Chronos.BuildingRegPath);
-    _skedder = skedder;
+//    _skedder = skedder;
     _npcRegistry = npcRegistry;
     initialize();
   }
@@ -62,7 +63,8 @@ public class BuildingRegistry extends Registry<Building>
     deleteAll();
     // Create each of the default buildings and save to registry
     // The constructors load the default data
-    Inn inn = new Inn(_skedder, _npcRegistry);
+//    Inn inn = new Inn(_skedder, _npcRegistry);
+    Inn inn = new Inn(_npcRegistry);
     super.add(inn); // Ugly Ogre Inn
     super.add(new Store()); // Rat's Pack
     super.add(new Jail()); // Jail

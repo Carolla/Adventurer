@@ -16,6 +16,8 @@ import java.awt.Image;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import civ.MainActionCiv;
+
 
 /**
  * Used as socket for production and testing code to allow civ classes to support both.
@@ -25,12 +27,15 @@ import javax.swing.JPanel;
  */
 public interface MainframeInterface
 {
-  /** Replace the button panel with the final IOPanel */
-  public void addIOPanel();
-  public void addPanel(JComponent component);
+  public void addLeftPanel(JPanel panel);
 
-//  /** Exit the system */
-//  public boolean approvedQuit();
+  // /** Exit the system */
+  // public boolean approvedQuit();
+
+  /** Replace the main action button panel with the final IOPanel */
+    public void addIOPanel(MainActionCiv mac);
+
+  public void addPanel(JComponent component);
 
   /** Display error text into the output panel */
   public void displayErrorText(String errText);
@@ -53,11 +58,6 @@ public interface MainframeInterface
   /** Redraws the view */
   public void repaint();
 
-  /** Set the runic font to be used for user interactions */
-  public void setRunicFont(Font stdFont);
-  /** Set the standard font to be used buttons, help, etc. */
-  public void setStandardFont(Font stdFont);
-
   /** Display the image into the image panel */
   public void setImage(Image image);
 
@@ -70,6 +70,12 @@ public interface MainframeInterface
    * @param rect rectangle around the building
    */
   public void setBuilding(BuildingRectangle rect);
+
+  /** Set the runic font to be used for user interactions */
+  public void setRunicFont(Font stdFont);
+
+  /** Set the standard font to be used buttons, help, etc. */
+  public void setStandardFont(Font stdFont);
 
   /**
    * @param object

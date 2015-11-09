@@ -186,11 +186,8 @@ public class HeroDisplay extends JPanel
   /** Gets rid of unused/unwanted characters */
   private JButton _delButton;
 
-  // TODO: Constant.MY_BROWN needs to be brightened here for some reason. Perhaps a background panel
-  // is affecting it?
   /** Background color inherited from parent */
-  private Color _backColor = Constants.MY_BROWN.brighter();
-  // private Color _boldBackColor = Constants.MY_BROWN;
+   private Color _backColor = Constants.MY_BROWN;
 
   /** The backend CIV for this JPanel widget */
   private HeroDisplayCiv _hdCiv = null;

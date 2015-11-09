@@ -15,8 +15,6 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -28,8 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -38,14 +34,12 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
-import chronos.Chronos;
 import civ.Adventurer;
+import civ.MainActionCiv;
 import civ.MainframeCiv;
-import civ.NewHeroCiv;
 import mylib.Constants;
 import mylib.hic.HelpDialog;
 import mylib.hic.IHelpText;
-import mylib.hic.ShuttleList;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -64,24 +58,17 @@ import net.miginfocom.swing.MigLayout;
  *          pane <br>
  *          Oct 19, 2015 // repaired Cancel button on Quit prompt window <br>
  *          Nov 6, 2015 // re-architected Mainframe so that widgets are called by civs <br>
+ *          Nov 7, 2015 // re-architected Mainframe so no PDC classes are imported into HIC <br>
  */
-// Mainframe serialization unnecessary
 @SuppressWarnings("serial")
 public class Mainframe extends JFrame implements MainframeInterface, MouseListener,
     MouseMotionListener, IHelpText
 {
 
-  /** Icons for the left-side buttons */
-  private static final String REGISTRAR_IMAGE = "raw_Register.jpg";
-  private static final String HALL_IMAGE = "icn_HallOfHeroes.jpg";
-  private static final String ADV_IMAGE = "icn_Town.jpg";
-
   /** Width of the platform user's window frame */
   private static int USERWIN_WIDTH;
   /** Height of the platform user's window frame */
   private static int USERWIN_HEIGHT;
-  /** Amount of space in pixels around the frame and image of aesthetics */
-  public static final int FRAME_PADDING = 90;
   /** Number of pixels on empty border spacing */
   public static final int PAD = 10;
 
@@ -94,11 +81,12 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   /** Keep panel states to return to in case CANCEL is hit */
   private JPanel _leftPanelState;
   private String _leftTitleState;
-  
+
   /** JPanel to hold various images; this panel resides in the _rightHolder */
   private ImagePanel _imagePanel;
 
   private MainframeCiv _mfCiv;
+  private MainActionCiv _mainActionCiv;
   private IOPanel _iop;
 
   private List<String> _partyHeros = new ArrayList<String>();
@@ -109,10 +97,10 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   /** Title of the initial three-button panel on left side */
   private final String INITIAL_OPENING_TITLE = " Actions ";
 
-  /** Runic Font that pervades the text of the screens */
-  private Font _runicFont;
-  /** Standard Font for buttons, help, etc */
-  private Font _stdFont;
+   /** Runic Font that pervades the text of the screens */
+   private Font _runicFont;
+   /** Standard Font for buttons, help, etc */
+   private Font _stdFont;
 
   /** Singleton Help Dialog for all help text */
   private HelpDialog _helpdlg;
@@ -162,68 +150,59 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
    */
   public Mainframe()
   {
-    // Define the elements
+    // Define the graphic elements
     setupSizeAndBoundaries();
     createFrameAndMenubar(); // Depends on class members not being NULL
     addImagePanel(); // add image panel on right for adding images later
-    createActionPanel(); // creates three action buttons on panel
     redraw();
 
     // Initiate the Mainframe state within those elements
     _mfCiv = new MainframeCiv(this);
-    _mfCiv.configure();
+    // Set external elements
+    setImage(_mfCiv.getInitialImage());
+    setImageTitle(_mfCiv.getInitialTitle());
 
     // Create the one time help dialog
     prepareHelpDialog();
-    
+
     // Display the Mainframe and panels now
     setVisible(true);
+
+    // Create the mainActionCiv to generate the action button and town view
+    _mainActionCiv = new MainActionCiv(this, _mfCiv);
+    // createActionPanel(); // creates three action buttons on panel
   }
 
-  
+
   // ============================================================
   // Public Methods
   // ============================================================
 
-//  /**
-//   * Perform construction act. This wires together all the "single instance variables" for the
-//   * Adventurer application. None of these constructors should ever be called anywhere outside of
-//   * this method and in testing.
-//   */
-//  protected void constructMembers()
-//  {
-//    // Create the BuildingDisplayCiv to define the output GUI for descriptions and images
-//    _skedder = new Scheduler(); // Skedder first for injection
-//    _rf = new RegistryFactory(_skedder);
-//
-//    _rf.initRegistries();
-//    BuildingRegistry breg = (BuildingRegistry) _rf.getRegistry(RegKey.BLDG);
-//    _bldgCiv = new BuildingDisplayCiv(this, breg);
-//
-//    // Create the Civ
-//    _mfCiv = new MainframeCiv(this, _bldgCiv, (AdventureRegistry) _rf.getRegistry(RegKey.ADV));
-//
-//    _cp = new CommandParser(_skedder, new CommandFactory(_mfCiv, _bldgCiv));
-//    _iop = new IOPanel(_cp);
-//
-//    Inn inn = (Inn) breg.getBuilding("Ugly Ogre Inn");
-//    inn.setMsg(_mfCiv);
-//    inn.initPatrons();
-//  }
-
-
-  // TODO: Remove this and replace with addLeftPanel(...)
   /**
    * Layout the IOPanel on the left: scrolling text window and working Comandline input area
+   * 
+   * @param mac the controller for this widget
    */
-  public void addIOPanel()
+  public void addIOPanel(MainActionCiv mac)
   {
+    _mainActionCiv = mac;
+    _iop = new IOPanel(_mainActionCiv);
     _leftHolder.removeAll();
     setLeftPanelTitle(IOPANEL_TITLE);
     _leftHolder.add(_iop);
     redraw();
   }
 
+  /**
+   * Appends a panel to that existing in the current left holder of the frame
+   */
+  public void addLeftPanel(JPanel panel)
+  {
+    _leftHolder.add(panel);
+    redraw();
+    // Save state for later 
+    _leftPanelState = _leftHolder;
+  }
 
   // NOTE: Check replacePanel() first if you are adding to the mainframe panel holders
   @Override
@@ -244,7 +223,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     replaceLeftPanel(_leftPanelState, _leftTitleState);
   }
 
-  
+
   /**
    * Display error text onto the scrolling output panel
    *
@@ -255,22 +234,6 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     _iop.displayErrorText(msg);
   }
 
-
-  // ============================================================
-  // Public Methods
-  // ============================================================
-
-
-
-  // ============================================================
-  // Private Methods
-  // ============================================================
-
-
-
-  // ============================================================
-  // Deprecated Methods Temporarily
-  // ============================================================
 
   /**
    * Display image and associated test to the IOPanel
@@ -321,12 +284,14 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
 
   public void mouseClicked(MouseEvent e)
   {
-    _mfCiv.handleClick(e.getPoint());
+    // _mfCiv.handleClick(e.getPoint());
+    _mainActionCiv.returnToTown(e.getPoint());
   }
 
   public void mouseDragged(MouseEvent e)
   {
-    _mfCiv.handleMouseMovement(e.getPoint());
+    // _mfCiv.handleMouseMovement(e.getPoint());
+    _mainActionCiv.setBuildingSelected(e.getPoint());
   }
 
   public void mouseEntered(MouseEvent e)
@@ -337,7 +302,8 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
 
   public void mouseMoved(MouseEvent e)
   {
-    _mfCiv.handleMouseMovement(e.getPoint());
+    // _mfCiv.handleMouseMovement(e.getPoint());
+    _mainActionCiv.setBuildingSelected(e.getPoint());
   }
 
   public void mousePressed(MouseEvent e)
@@ -346,11 +312,6 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   public void mouseReleased(MouseEvent e)
   {}
 
-
-
-  // ============================================================
-  // Public Methods
-  // ============================================================
 
   public void redraw()
   {
@@ -362,7 +323,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   /**
    * Replace the left panel with the newone provided
    */
-//  public void replaceLeftPanel(JPanel newPanel, String title)
+  // public void replaceLeftPanel(JPanel newPanel, String title)
   public void replaceLeftPanel(JPanel newPanel, String title)
   {
     _leftHolder.removeAll();
@@ -390,7 +351,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   {
     _stdFont = font;
   }
-  
+
   public void setHeroList(List<String> list)
   {
     _partyHeros = list;
@@ -445,6 +406,9 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   }
 
 
+  // ============================================================
+  // Private Methods
+  // ============================================================
 
   /**
    * Layout the image panel on the right side of the frame, with mouse listeners.
@@ -458,77 +422,81 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     _rightHolder.add(_imagePanel);
   }
 
+
   private String getBorderTitle()
   {
     TitledBorder border = (TitledBorder) _leftHolder.getBorder();
     return border.getTitle();
   }
 
-  /**
-   * Create the behavior for selecting an adventure, which drives the frame update. <br>
-   * Warning: Known bug with MigLayout in that {@code float} font sizes can cause overruns on
-   * round-up calculations. "Choose your Adventure" overruns the button length, but
-   * "Select your Adventure" does not, despite being the same number of characters!
-   * 
-   * @return the button created
-   */
-  private JButton createAdventureButton()
-  {
-    JButton button = createButtonWithTextAndIcon(ADV_IMAGE, "Select your Adventure ");
-    button.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e)
-      {
-        ArrayList<String> adventures = _mfCiv.getAdventures();
-        Object[] adventuresArr = adventures.toArray();
-        Object selectedValue = JOptionPane.showInputDialog(
-            Mainframe.this, "Select an Adventure", "Adventures",
-            JOptionPane.INFORMATION_MESSAGE, null, adventuresArr, adventuresArr[0]);
-        if (selectedValue != null) {
-          // System.out.println("Adventure selected was: " + selectedValue);
-          _mfCiv.loadSelectedAdventure(selectedValue.toString());
-        }
-      }
-    });
-    return button;
-  }
+  // /**
+  // * Create the behavior for selecting an adventure, which drives the frame update. <br>
+  // * Warning: Known bug with MigLayout in that {@code float} font sizes can cause overruns on
+  // * round-up calculations. "Choose your Adventure" overruns the button length, but
+  // * "Select your Adventure" does not, despite being the same number of characters!
+  // *
+  // * @return the button created
+  // */
+  // private JButton createAdventureButton()
+  // {
+  // JButton button = createButtonWithTextAndIcon(ADV_IMAGE, "Select your Adventure ");
+  // button.addActionListener(new ActionListener() {
+  // public void actionPerformed(ActionEvent e)
+  // {
+  // ArrayList<String> adventures = _mfCiv.getAdventures();
+  // Object[] adventuresArr = adventures.toArray();
+  // Object selectedValue = JOptionPane.showInputDialog(
+  // Mainframe.this, "Select an Adventure", "Adventures",
+  // JOptionPane.INFORMATION_MESSAGE, null, adventuresArr, adventuresArr[0]);
+  // if (selectedValue != null) {
+  // // System.out.println("Adventure selected was: " + selectedValue);
+  // // _mfCiv.loadSelectedAdventure(selectedValue.toString());
+  // _mainActionCiv.loadSelectedAdventure(selectedValue.toString());
+  // }
+  // }
+  // });
+  // return button;
+  // }
+  //
+  // /**
+  // * Create the Adventure, Heroes, and Create-Hero buttons, and button panel for them
+  // */
+  // private void createActionPanel()
+  // {
+  // JButton adventureButton = createAdventureButton();
+  // JButton summonButton = createSummonHeroesButton();
+  // JButton creationButton = createNewHeroButton();
+  //
+  // // Create the Civ to handle the main action buttons
+  // _mainActionCiv = new MainActionCiv(this);
+  //
+  // JPanel buttonPanel = new JPanel();
+  // // Align all buttons in a single column
+  // buttonPanel.setLayout(new MigLayout("wrap 1"));
+  // buttonPanel.setPreferredSize(new Dimension(
+  // (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
+  // buttonPanel.setBackground(Constants.MY_BROWN.brighter());
+  //
+  // /** Buttons are at 25% to allow space for Command Line later */
+  // buttonPanel.add(adventureButton, "hmax 25%, grow");
+  // buttonPanel.add(summonButton, "hmax 25%, grow");
+  // buttonPanel.add(creationButton, "hmax 25%, grow");
+  //
+  // _leftHolder.add(buttonPanel);
+  // _leftPanelState = buttonPanel;
+  // _leftTitleState = getBorderTitle();
+  // }
 
-  /**
-   * Create the Adventure, Heroes, and Create-Hero buttons, and button panel for them
-   */
-  private void createActionPanel()
-  {
-    JButton adventureButton = createAdventureButton();
-    JButton summonButton = createSummonHeroesButton();
-    JButton creationButton = createNewHeroButton();
-
-    JPanel buttonPanel = new JPanel();
-    // Align all buttons in a single column
-    buttonPanel.setLayout(new MigLayout("wrap 1"));
-    buttonPanel.setPreferredSize(new Dimension(
-        (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
-    buttonPanel.setBackground(Constants.MY_BROWN.brighter());
-
-    /** Buttons are at 25% to allow space for Command Line later */
-    buttonPanel.add(adventureButton, "hmax 25%, grow");
-    buttonPanel.add(summonButton, "hmax 25%, grow");
-    buttonPanel.add(creationButton, "hmax 25%, grow");
-
-    _leftHolder.add(buttonPanel);
-    _leftPanelState = buttonPanel;
-    _leftTitleState = getBorderTitle();
-    
-  }
-
-  private JButton createButtonWithTextAndIcon(String imageFilePath, String buttonText)
-  {
-    JButton button = new JButton(buttonText);
-    button.setBackground(Constants.MY_BROWN.brighter().brighter());
-
-    button.setFont(_stdFont);
-    button.setIcon(new ImageIcon(Chronos.ADV_IMAGE_PATH + imageFilePath));
-    button.setIconTextGap(40);
-    return button;
-  }
+  // public JButton createButtonWithTextAndIcon(String imageFilePath, String buttonText)
+  // {
+  // JButton button = new JButton(buttonText);
+  // button.setBackground(Constants.MY_BROWN.brighter().brighter());
+  //
+  // button.setFont(_stdFont);
+  // button.setIcon(new ImageIcon(Chronos.ADV_IMAGE_PATH + imageFilePath));
+  // button.setIconTextGap(40);
+  // return button;
+  // }
 
   /**
    * Create mainframe layout and menubar; add left and right panel holders, which have titled
@@ -556,91 +524,91 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     _contentPane.setFocusable(true);
   }
 
-  /**
-   * Create the button to call the NewHeroCiv, which will contorl the panels that collects the new
-   * Hero data, and displays the Hero's stat panel
-   * 
-   * @return the button
-   */
-  private JButton createNewHeroButton()
-  {
-    JButton button = createButtonWithTextAndIcon(REGISTRAR_IMAGE, "Create New Heroes");
-    button.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent arg0)
-      {
-        try {
-          NewHeroCiv nhCiv = new NewHeroCiv(Mainframe.this, _mfCiv.getRegistryFactory());
-          NewHeroIPPanel ipPanel = nhCiv.createNewHeroPanel();
-          _leftHolder.removeAll();
-          _leftHolder.add(ipPanel);
-          // Set focus on default field (nameField) only after it is displayed
-          redraw();
-          ipPanel.setDefaultFocus();    
-        } catch (Exception e) {
-          e.printStackTrace();
-          System.exit(0);
-        }
-      }
-    });
-    return button;
-
-  }
-
-  private JButton createSummonHeroesButton()
-  {
-    JButton button = createButtonWithTextAndIcon(HALL_IMAGE, "Summon Heroes");
-    button.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e)
-      {
-        if (_partyHeros.size() == 0) {
-          _summonableHeroes = _mfCiv.openDormitory();
-          showPartyPickerWhenPartyEmpty();
-        } else {
-          showPartyPickerWhenMembersAlreadySelected();
-        }
-      }
-
-      private void showPartyPickerWhenPartyEmpty()
-      {
-        padHeroes(_summonableHeroes);
-        final ShuttleList slist = new ShuttleList(_summonableHeroes);
-        setPropsForShuttleList(slist);
-      }
-
-      private void showPartyPickerWhenMembersAlreadySelected()
-      {
-        final ShuttleList slist = new ShuttleList(_summonableHeroes, _partyHeros);
-        setPropsForShuttleList(slist);
-      }
-
-      private void setPropsForShuttleList(final ShuttleList slist)
-      {
-        slist.setTitle("Choose your Adventurers!");
-        slist.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent arg0)
-          {
-            List<String> list = new ArrayList<String>();
-            for (Object s : slist.getSelectedItems()) {
-              list.add(s.toString());
-            }
-            setHeroList(list);
-            slist.dispose();
-          }
-        });
-        slist.setVisible(true);
-      }
-
-      private void padHeroes(List<String> list)
-      {
-        if (list.size() < 3) {
-          list.add("Gronkhar the Smelly");
-          list.add("Siobhan the Obsiquious");
-          list.add("Sir Will-not-be-appearing-in-this-movie");
-        }
-      }
-    });
-    return button;
-  }
+  // /**
+  // * Create the button to call the NewHeroCiv, which will contorl the panels that collects the new
+  // * Hero data, and displays the Hero's stat panel
+  // *
+  // * @return the button
+  // */
+  // private JButton createNewHeroButton()
+  // {
+  // JButton button = createButtonWithTextAndIcon(REGISTRAR_IMAGE, "Create New Heroes");
+  // button.addActionListener(new ActionListener() {
+  // public void actionPerformed(ActionEvent arg0)
+  // {
+  // try {
+  // NewHeroCiv nhCiv = new NewHeroCiv(Mainframe.this, _mfCiv.getRegistryFactory());
+  // NewHeroIPPanel ipPanel = nhCiv.createNewHeroPanel();
+  // _leftHolder.removeAll();
+  // _leftHolder.add(ipPanel);
+  // // Set focus on default field (nameField) only after it is displayed
+  // redraw();
+  // ipPanel.setDefaultFocus();
+  // } catch (Exception e) {
+  // e.printStackTrace();
+  // System.exit(0);
+  // }
+  // }
+  // });
+  // return button;
+  //
+  // }
+  //
+  // private JButton createSummonHeroesButton()
+  // {
+  // JButton button = createButtonWithTextAndIcon(HALL_IMAGE, "Summon Heroes");
+  // button.addActionListener(new ActionListener() {
+  // public void actionPerformed(ActionEvent e)
+  // {
+  // if (_partyHeros.size() == 0) {
+  // // _summonableHeroes = _mfCiv.openDormitory();
+  // showPartyPickerWhenPartyEmpty();
+  // } else {
+  // showPartyPickerWhenMembersAlreadySelected();
+  // }
+  // }
+  //
+  // private void showPartyPickerWhenPartyEmpty()
+  // {
+  // padHeroes(_summonableHeroes);
+  // final ShuttleList slist = new ShuttleList(_summonableHeroes);
+  // setPropsForShuttleList(slist);
+  // }
+  //
+  // private void showPartyPickerWhenMembersAlreadySelected()
+  // {
+  // final ShuttleList slist = new ShuttleList(_summonableHeroes, _partyHeros);
+  // setPropsForShuttleList(slist);
+  // }
+  //
+  // private void setPropsForShuttleList(final ShuttleList slist)
+  // {
+  // slist.setTitle("Choose your Adventurers!");
+  // slist.addActionListener(new ActionListener() {
+  // public void actionPerformed(ActionEvent arg0)
+  // {
+  // List<String> list = new ArrayList<String>();
+  // for (Object s : slist.getSelectedItems()) {
+  // list.add(s.toString());
+  // }
+  // setHeroList(list);
+  // slist.dispose();
+  // }
+  // });
+  // slist.setVisible(true);
+  // }
+  //
+  // private void padHeroes(List<String> list)
+  // {
+  // if (list.size() < 3) {
+  // list.add("Gronkhar the Smelly");
+  // list.add("Siobhan the Obsiquious");
+  // list.add("Sir Will-not-be-appearing-in-this-movie");
+  // }
+  // }
+  // });
+  // return button;
+  // }
 
   /**
    * Create a holder for the left or right side of the frame, with all cosmetics. Holders will have
@@ -733,7 +701,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     {}
 
     /**
-     * Close the window and the applicaiton by calling the {@code Adventurer.quit} method.
+     * Close the window and the application by calling the {@code Adventurer.quit} method.
      *
      * @param event when user closes application frame
      */
@@ -741,13 +709,8 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     {
       _mfCiv.quit();
     }
-  }
 
-
-
-  // ============================================================
-  // Private Methods
-  // ============================================================
+  } // end of Terminator inner class
 
 
 } // end of Mainframe outer class

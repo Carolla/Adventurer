@@ -51,25 +51,25 @@ public class Util
   }
 
   
-  /**
-   * Create a Runic font that simulates English letters. <br>
-   * Warning: Be careful of character selection and float size; round-up errors for {@code float} 
-   * sizes can cause overruns on displayed Components.
-   * 
-   * @param height of the font
-   * @return the Font class
-   */
-  static public Font makeRunicFont(float fontHt)
-  {
-    Font font = null;
-    try {
-      Font newFont =
-          Font.createFont(Font.TRUETYPE_FONT, new File(Chronos.RUNIC_ENGLISH2_FONT_FILE));
-      font = newFont.deriveFont(fontHt);
-    } catch (Exception e) {
-      MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
-    }
-    return font;
-  }
+//  /**
+//   * Create a Runic font that simulates English letters. <br>
+//   * Warning: Be careful of character selection and float size; round-up errors for {@code float} 
+//   * sizes can cause overruns on displayed Components.
+//   * 
+//   * @param height of the font
+//   * @return the Font class
+//   */
+//  static public Font makeRunicFont(float fontHt)
+//  {
+//    Font font = null;
+//    try {
+//      Font newFont =
+//          Font.createFont(Font.TRUETYPE_FONT, new File(Chronos.RUNIC_ENGLISH2_FONT_FILE));
+//      font = newFont.deriveFont(fontHt);
+//    } catch (Exception e) {
+//      MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
+//    }
+//    return font;
+//  }
 
 } // end of Util class
