@@ -49,7 +49,7 @@ import net.miginfocom.swing.MigLayout;
  *          Aug 18, 2014 // ABC Removed as inner class and made stand-along class <br>
  */
 @SuppressWarnings("serial")
-public class IOPanel extends JPanel
+public class IOPanel extends ChronosPanel
 {
   private final StyledDocument _output;
   private final JTextPane _pane;
@@ -74,7 +74,7 @@ public class IOPanel extends JPanel
   // ============================================================
 
   /**
-   * Creates output test panel and input CommandLine Input panel
+   * Creates output transcript panel and input CommandLine Input panel
    */
   public IOPanel(MainActionCiv mac)
   {

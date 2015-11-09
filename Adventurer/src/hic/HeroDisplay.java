@@ -112,7 +112,7 @@ import net.miginfocom.swing.MigLayout;
  *          Oct 1 2015 // revised to accommodate new Hero character sheet <br>
  *          Oct 17 2015 // added dual tab pane for Spell casters vs non-spell casters <br>
  */
-public class HeroDisplay extends JPanel
+public class HeroDisplay extends ChronosPanel
 {
   /**
    * Generated using system clock
@@ -204,9 +204,6 @@ public class HeroDisplay extends JPanel
   /** Button panel for Save/Delete/Cancel buttons */
   private JPanel _buttonPanel;
 
-  /** Reference to the parent frame */
-  private Mainframe _mainframe;
-
 
   // ===============================================================
   // CONSTRUCTOR(S) AND RELATED METHODS
@@ -219,10 +216,10 @@ public class HeroDisplay extends JPanel
    * @param _mf
    * @param firstTime Hero activates buttons differently
    */
-  public HeroDisplay(HeroDisplayCiv hdCiv, Mainframe mainframe, boolean firstTime)
+//  public HeroDisplay(HeroDisplayCiv hdCiv, Mainframe mainframe, boolean firstTime)
+  public HeroDisplay(HeroDisplayCiv hdCiv, boolean firstTime)
   {
     _hdCiv = hdCiv;
-    _mainframe = mainframe;
     _ds = _hdCiv.getAttributes();
 
     // _hdCiv.resetLoadState();
@@ -541,7 +538,7 @@ public class HeroDisplay extends JPanel
       {
         // Collect all the attributes and save to a new Hero file
         setVisible(false);
-        _mainframe.back();
+        _hdCiv.back();
       }
       // }
     });
@@ -1061,7 +1058,7 @@ public class HeroDisplay extends JPanel
         + _ds.get(PersonKeys.RACENAME) + " "
         + _ds.get(PersonKeys.KLASSNAME);
 
-    _mainframe.setTitle(namePlate);
+    super._title = namePlate;
   }
 
 

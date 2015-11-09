@@ -67,9 +67,10 @@ import pdc.character.Hero;
  *          Jun 6 2010 // revised to support NewHeroDisplayCiv <br>
  *          Apr 2 2011 // major overhaul with non-Swing MigLayout manager <br>
  *          Sep 20 2015 // major update for new inputs and revised character generation <br>
+ *          Nov 9 2015  // separated Mainframe and ChronsPanel converns, and their civs <br>
  */
 @SuppressWarnings("serial")
-public class NewHeroIPPanel extends JPanel
+public class NewHeroIPPanel extends ChronosPanel 
 {
   /** Help message to show in panels */
   private final String HELP_LABEL1 =
@@ -80,10 +81,6 @@ public class NewHeroIPPanel extends JPanel
 
   /** Replace left-side panel with this title */
   private final String NEW_HERO_TITLE = " Create Your Kind of Hero ";
-  // /** Replace left-side panel with this title */
-  // private final String PANEL_TITLE = "Create New Hero";
-  // /** Adapt title to Hero's name when entered */
-  // private final String NEW_HERO_TITLE = PANEL_TITLE + " -- ";
   /** Prompt for hero's name */
   private final String HERO_NAME_PROMPT = "What is your Hero's Name?";
   /** Hair color prompt */
@@ -135,7 +132,7 @@ public class NewHeroIPPanel extends JPanel
 
   /** Associated validating CIV object */
   private NewHeroCiv _nhCiv;
-  private Mainframe _mf;
+  private MainframeInterface _mf;
 
   // ============================================================
   // Constructors and constructor helpers
@@ -145,19 +142,22 @@ public class NewHeroIPPanel extends JPanel
    * Creates the panel format and places the action components (e.g., radio buttons and drop down
    * boxes). Also creates the associated CIV object to manage the data. The action components are
    * created in private helper methods.
+   * 
+   * @param nhCiv controls this ChronosPanel
+   * @param mf  mainframe reference needed for displaying the panel
    */
-  public NewHeroIPPanel(Mainframe mf, NewHeroCiv nhCiv)
+  public NewHeroIPPanel(NewHeroCiv nhCiv, MainframeInterface mf) 
   {
+    super();
+    setTitle(NEW_HERO_TITLE);
     _nhCiv = nhCiv;
     _mf = mf;
-
+    
     // GENERAL SETUP
     // Set the preferred and max size, adjusting for panel border thickness
     int width = Mainframe.getWindowSize().width;// +MainFrame.PANEL_SHIFT;
     int height = Mainframe.getWindowSize().height;
     setPreferredSize(new Dimension(width, height));
-    // Replace the mainframe title with this panel title
-    _mf.setLeftPanelTitle(NEW_HERO_TITLE);
 
     int pad = Mainframe.PAD;
     Border matte = BorderFactory.createMatteBorder(pad, pad, pad, pad, Color.WHITE);
@@ -210,6 +210,9 @@ public class NewHeroIPPanel extends JPanel
 
     /* Add a button panel containing the Submit and Cancel buttons */
     add(makeButtonPanel(), "push, align center, span, gaptop 20%");
+    
+    // Replace the leftside mainframe panel with this panel
+    _mf.replaceLeftPanel(this);
 
   } // end NewHeroIPPanel constructor
 
@@ -218,6 +221,7 @@ public class NewHeroIPPanel extends JPanel
   // Public Methods
   // ============================================================
 
+  
   /**
    * The name text field should have the default focus, but that cannot be done until after the
    * panel is realized and visible. Therefore, the NewHeroPanel's caller (MenuBar.NEW Action) must
@@ -254,7 +258,7 @@ public class NewHeroIPPanel extends JPanel
       public void actionPerformed(ActionEvent event)
       {
         setVisible(false);
-        _mf.back();
+        _nhCiv.back();
       }
     });
 
@@ -382,48 +386,6 @@ public class NewHeroIPPanel extends JPanel
 
 
   /**
-   * Create the Hero's name input field and associated action before placement
-   * 
-   * @return the JTextField
-   */
-  private JTextField makeNameField()
-  {
-    // Create the text field to collect the Hero's name
-    _nameField = new JTextField(HERO_NAME_WIDTH);
-
-    // Create DocumentFilter for restricting input length
-    AbstractDocument d = (AbstractDocument) _nameField.getDocument();
-    d.setDocumentFilter(new NewHeroIPPanel.NameFieldLimiter());
-
-    // Set name of the field
-    _nameField.setName("heroName");
-    // Collect the name when the text field goes out of focus
-    _nameField.addFocusListener(new FocusOffListener());
-
-    // Extract Hero's name and update Hero's name into MainFrame Title
-    // if Enter key is hit or text field loses focus.
-    _nameField.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event)
-      {
-        // Name data is captured on submit in case mouse clicks were used
-        _name = _nameField.getText().trim();
-        // Rename the pane with the new Hero's name
-        int pad = Mainframe.PAD;
-        Border matte = BorderFactory.createMatteBorder(pad, pad, pad, pad, Color.WHITE);
-        Border heroBorder = BorderFactory.createTitledBorder(matte,
-            NEW_HERO_TITLE + _name, TitledBorder.CENTER,
-            TitledBorder.DEFAULT_POSITION);
-        setBorder(heroBorder);
-        // Set the edit change flag
-        setEditFlag(true);
-      }
-    });
-
-    return _nameField;
-  }
-
-
-  /**
    * Create a combo box of Guilds (Klasses) that the Hero may want to be
    * 
    * @return the JComboBox of Guild options
@@ -452,6 +414,48 @@ public class NewHeroIPPanel extends JPanel
       }
     });
     return klassCombo;
+  }
+
+
+  /**
+   * Create the Hero's name input field and associated action before placement
+   * 
+   * @return the JTextField
+   */
+  private JTextField makeNameField()
+  {
+    // Create the text field to collect the Hero's name
+    _nameField = new JTextField(HERO_NAME_WIDTH);
+  
+    // Create DocumentFilter for restricting input length
+    AbstractDocument d = (AbstractDocument) _nameField.getDocument();
+    d.setDocumentFilter(new NewHeroIPPanel.NameFieldLimiter());
+  
+    // Set name of the field
+    _nameField.setName("heroName");
+    // Collect the name when the text field goes out of focus
+    _nameField.addFocusListener(new FocusOffListener());
+  
+    // Extract Hero's name and update Hero's name into MainFrame Title
+    // if Enter key is hit or text field loses focus.
+    _nameField.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent event)
+      {
+        // Name data is captured on submit in case mouse clicks were used
+        _name = _nameField.getText().trim();
+        // Rename the pane with the new Hero's name
+        int pad = Mainframe.PAD;
+        Border matte = BorderFactory.createMatteBorder(pad, pad, pad, pad, Color.WHITE);
+        Border heroBorder = BorderFactory.createTitledBorder(matte,
+            NEW_HERO_TITLE + _name, TitledBorder.CENTER,
+            TitledBorder.DEFAULT_POSITION);
+        setBorder(heroBorder);
+        // Set the edit change flag
+        setEditFlag(true);
+      }
+    });
+  
+    return _nameField;
   }
 
 
@@ -497,7 +501,14 @@ public class NewHeroIPPanel extends JPanel
     // mf.setEditFlag(editState);
   }
 
+  /** Set the title for this panel */
+  @Override
+  protected void setTitle(String title)
+  {
+    super._title = NEW_HERO_TITLE;
+  }
 
+  
   /**
    * Display the error message received after submitting a new Hero.
    */

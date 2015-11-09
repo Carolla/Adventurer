@@ -37,6 +37,7 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
 import hic.BuildingRectangle;
 import hic.Mainframe;
 import hic.MainframeInterface;
+import hic.NewHeroIPPanel;
 import mylib.Constants;
 import mylib.hic.ShuttleList;
 import net.miginfocom.swing.MigLayout;
@@ -44,7 +45,8 @@ import pdc.Util;
 import pdc.command.CommandFactory;
 
 /**
- * The main civ behind the Mainframe screen.
+ * The main civ behind the Mainframe screen. It creates the MainActionPanel consisting of the
+ * primary buttons: Select an Adventure, Summon Heroes, and Create a New Hero
  * 
  * @author Alan Cline
  * @version Nov 7, 2015 // original <br>
@@ -140,149 +142,6 @@ public class MainActionCiv
   // ============================================================
   // Public methods:
   // ============================================================
-
-  /**
-   * Create the button to call the NewHeroCiv, which will contorl the panels that collects the new
-   * Hero data, and displays the Hero's stat panel
-   *
-   * @return the button
-   */
-  private JButton createNewHeroButton()
-  {
-    JButton button = createButtonWithTextAndIcon(REGISTRAR_IMAGE, "Create New Heroes");
-//    button.addActionListener(new ActionListener() {
-//      public void actionPerformed(ActionEvent arg0)
-//      {
-//        try {
-//          NewHeroCiv nhCiv = new NewHeroCiv(Mainframe.this, _mfCiv.getRegistryFactory());
-//          NewHeroIPPanel ipPanel = nhCiv.createNewHeroPanel();
-//          _leftHolder.removeAll();
-//          _leftHolder.add(ipPanel);
-//          // Set focus on default field (nameField) only after it is displayed
-//          redraw();
-//          ipPanel.setDefaultFocus();
-//        } catch (Exception e) {
-//          e.printStackTrace();
-//          System.exit(0);
-//        }
-//      }
-//    });
-    return button;
-  }
-
-  /* This button code is followed by a series of inner methods */
-  private JButton createSummonHeroesButton()
-  {
-    JButton button = createButtonWithTextAndIcon(HALL_IMAGE, "Summon Heroes");
-    button.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e)
-      {
-        // if (_partyHeros.size() == 0) {
-        // // _summonableHeroes = _mfCiv.openDormitory();
-        // showPartyPickerWhenPartyEmpty();
-        // } else {
-        // showPartyPickerWhenMembersAlreadySelected();
-        // }
-      }
-
-      private void showPartyPickerWhenPartyEmpty()
-      {
-        // padHeroes(_summonableHeroes);
-        // final ShuttleList slist = new ShuttleList(_summonableHeroes);
-        // setPropsForShuttleList(slist);
-      }
-
-      private void showPartyPickerWhenMembersAlreadySelected()
-      {
-        // final ShuttleList slist = new ShuttleList(_summonableHeroes, _partyHeros);
-        // setPropsForShuttleList(slist);
-      }
-
-      private void setPropsForShuttleList(final ShuttleList slist)
-      {
-        // slist.setTitle("Choose your Adventurers!");
-        // slist.addActionListener(new ActionListener() {
-        // public void actionPerformed(ActionEvent arg0)
-        // {
-        // List<String> list = new ArrayList<String>();
-        // for (Object s : slist.getSelectedItems()) {
-        // list.add(s.toString());
-        // }
-        // setHeroList(list);
-        // slist.dispose();
-        // }
-        // });
-        // slist.setVisible(true);
-      }
-
-      private void padHeroes(List<String> list)
-      {
-        // if (list.size() < 3) {
-        // list.add("Gronkhar the Smelly");
-        // list.add("Siobhan the Obsiquious");
-        // list.add("Sir Will-not-be-appearing-in-this-movie");
-        // }
-      }
-    });
-    return button;
-  }
-
-
-  /**
-   * Create the behavior for selecting an adventure, which drives the frame update. <br>
-   * Warning: Known bug with MigLayout in that {@code float} font sizes can cause overruns on
-   * round-up calculations. "Choose your Adventure" overruns the button length, but
-   * "Select your Adventure" does not, despite being the same number of characters!
-   * 
-   * @return the button created
-   */
-  private JButton createAdventureButton()
-  {
-    JButton button = createButtonWithTextAndIcon(ADV_IMAGE, "Select your Adventure ");
-    button.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e)
-      {
-        ArrayList<String> adventures = _mfCiv.getAdventures();
-        Object[] adventuresArr = adventures.toArray();
-        Object selectedValue =
-            JOptionPane.showInputDialog(null, "Select an Adventure", "Adventures",
-                JOptionPane.INFORMATION_MESSAGE, null, adventuresArr, adventuresArr[0]);
-        if (selectedValue != null) {
-          loadSelectedAdventure(selectedValue.toString());
-        }
-      }
-    });
-    return button;
-  }
-
-
-  /**
-   * Create the Adventure, Heroes, and Create-Hero buttons, and button panel for them
-   */
-  private JPanel createActionPanel()
-  {
-    JButton adventureButton = createAdventureButton();
-    JButton summonButton = createSummonHeroesButton();
-    JButton creationButton = createNewHeroButton();
-
-    JPanel buttonPanel = new JPanel();
-    // Align all buttons in a single column
-    buttonPanel.setLayout(new MigLayout("wrap 1"));
-    Dimension frame = Mainframe.getWindowSize();
-    buttonPanel.setPreferredSize(new Dimension(
-        (int) (frame.width - FRAME_PADDING) / 2, frame.height - FRAME_PADDING));
-    // buttonPanel.setPreferredSize(new Dimension(
-    // (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
-    buttonPanel.setBackground(Constants.MY_BROWN);
-
-    /** Buttons are at 25% to allow space for Command Line later */
-    buttonPanel.add(adventureButton, "hmax 25%, grow");
-    buttonPanel.add(summonButton, "hmax 25%, grow");
-    buttonPanel.add(creationButton, "hmax 25%, grow");
-
-    return buttonPanel;
-  }
-
 
   // TODO This is the responsibility of the BuildingDisplayCiv
   /**
@@ -440,16 +299,77 @@ public class MainActionCiv
   // Private methods
   // ============================================================
 
-  public JButton createButtonWithTextAndIcon(String imageFilePath, String buttonText)
+  /**
+   * Create the Adventure, Heroes, and Create-Hero buttons, and button panel for them
+   */
+  private JPanel createActionPanel()
+  {
+    JButton adventureButton = createAdventureButton();
+    JButton summonButton = createSummonHeroesButton();
+    JButton creationButton = createNewHeroButton();
+
+    JPanel buttonPanel = new JPanel();
+    // Align all buttons in a single column
+    buttonPanel.setLayout(new MigLayout("wrap 1"));
+    Dimension frame = Mainframe.getWindowSize();
+    buttonPanel.setPreferredSize(new Dimension(
+        (int) (frame.width - FRAME_PADDING) / 2, frame.height - FRAME_PADDING));
+    // buttonPanel.setPreferredSize(new Dimension(
+    // (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
+    buttonPanel.setBackground(Constants.MY_BROWN);
+
+    /** Buttons are at 25% to allow space for Command Line later */
+    buttonPanel.add(adventureButton, "hmax 25%, grow");
+    buttonPanel.add(summonButton, "hmax 25%, grow");
+    buttonPanel.add(creationButton, "hmax 25%, grow");
+
+    return buttonPanel;
+  }
+
+
+  /**
+   * Create the behavior for selecting an adventure, which drives the frame update. <br>
+   * Warning: Known bug with MigLayout in that {@code float} font sizes can cause overruns on
+   * round-up calculations. "Choose your Adventure" overruns the button length, but
+   * "Select your Adventure" does not, despite being the same number of characters!
+   * 
+   * @return the button created
+   */
+  private JButton createAdventureButton()
+  {
+    JButton button = createButtonWithTextAndIcon(ADV_IMAGE, "Select your Adventure ");
+    button.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e)
+      {
+        ArrayList<String> adventures = _mfCiv.getAdventures();
+        Object[] adventuresArr = adventures.toArray();
+        Object selectedValue =
+            JOptionPane.showInputDialog(null, "Select an Adventure", "Adventures",
+                JOptionPane.INFORMATION_MESSAGE, null, adventuresArr, adventuresArr[0]);
+        if (selectedValue != null) {
+          loadSelectedAdventure(selectedValue.toString());
+        }
+      }
+    });
+    return button;
+  }
+
+
+  // ============================================================
+  // Public methods:
+  // ============================================================
+  
+  private JButton createButtonWithTextAndIcon(String imageFilePath, String buttonText)
   {
     JButton button = new JButton(buttonText);
     button.setBackground(Constants.MY_BROWN);
-
+  
     button.setFont(Chronos.STANDARD_FONT);
     button.setIcon(new ImageIcon(Chronos.ADV_IMAGE_PATH + imageFilePath));
     button.setIconTextGap(40);
     return button;
   }
+
 
   /** Create the clickable areas on the town view to indicate a selected Building */
   private void createBuildingBoxes()
@@ -461,6 +381,109 @@ public class MainActionCiv
       _buildingList.put(bName, r);
     }
   }
+
+  // ============================================================
+  // Public methods:
+  // ============================================================
+
+  /**
+   * Create the button to call the NewHeroCiv, which will control the NewHeroIOPanel that collects
+   * the new Hero data, and calls HeroDisplayCiv that displays the Hero's stats panel
+   *
+   * @return the button
+   */
+  private JButton createNewHeroButton()
+  {
+    JButton button = createButtonWithTextAndIcon(REGISTRAR_IMAGE, "Create New Heroes");
+    button.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent arg0)
+      {
+        try {
+          NewHeroCiv nhCiv = new NewHeroCiv(_mf, _mfCiv.getRegistryFactory());
+          NewHeroIPPanel ipPanel = nhCiv.createNewHeroPanel();
+          _mf.replaceLeftPanel(ipPanel);
+          // Can set focus on default field (nameField) only after it is displayed
+          ipPanel.setDefaultFocus();
+        } catch (Exception e) {
+          e.printStackTrace();
+          System.exit(0);
+        }
+      }
+    });
+    return button;
+  }
+
+
+  // ============================================================
+  // Public methods:
+  // ============================================================
+
+  /* This button code is followed by a series of inner methods */
+  private JButton createSummonHeroesButton()
+  {
+    JButton button = createButtonWithTextAndIcon(HALL_IMAGE, "Summon Heroes");
+    button.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e)
+      {
+        // if (_partyHeros.size() == 0) {
+        // // _summonableHeroes = _mfCiv.openDormitory();
+        // showPartyPickerWhenPartyEmpty();
+        // } else {
+        // showPartyPickerWhenMembersAlreadySelected();
+        // }
+      }
+
+      private void showPartyPickerWhenPartyEmpty()
+      {
+        // padHeroes(_summonableHeroes);
+        // final ShuttleList slist = new ShuttleList(_summonableHeroes);
+        // setPropsForShuttleList(slist);
+      }
+
+      private void showPartyPickerWhenMembersAlreadySelected()
+      {
+        // final ShuttleList slist = new ShuttleList(_summonableHeroes, _partyHeros);
+        // setPropsForShuttleList(slist);
+      }
+
+      private void setPropsForShuttleList(final ShuttleList slist)
+      {
+        // slist.setTitle("Choose your Adventurers!");
+        // slist.addActionListener(new ActionListener() {
+        // public void actionPerformed(ActionEvent arg0)
+        // {
+        // List<String> list = new ArrayList<String>();
+        // for (Object s : slist.getSelectedItems()) {
+        // list.add(s.toString());
+        // }
+        // setHeroList(list);
+        // slist.dispose();
+        // }
+        // });
+        // slist.setVisible(true);
+      }
+
+      private void padHeroes(List<String> list)
+      {
+        // if (list.size() < 3) {
+        // list.add("Gronkhar the Smelly");
+        // list.add("Siobhan the Obsiquious");
+        // list.add("Sir Will-not-be-appearing-in-this-movie");
+        // }
+      }
+    });
+    return button;
+  }
+
+
+  private void handleClickIfOnTownReturn(Point p)
+  {
+    if (_townReturn.contains(p)) {
+      openTown();
+    }
+    _mf.redraw();
+  }
+
 
   private void handleClickIfOnBuilding(Point p)
   {
@@ -474,12 +497,9 @@ public class MainActionCiv
   }
 
 
-  private void handleClickIfOnTownReturn(Point p)
-  {
-    if (_townReturn.contains(p)) {
-      openTown();
-    }
-    _mf.redraw();
-  }
+  // ============================================================
+  // Public methods:
+  // ============================================================
+
 
 } // end of MainframeCiv class

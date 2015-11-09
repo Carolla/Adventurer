@@ -17,9 +17,8 @@ import chronos.pdc.AttributeList;
 import chronos.pdc.Item;
 import chronos.pdc.MiscKeys.ItemCategory;
 import chronos.pdc.Skill;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 import hic.HeroDisplay;
-import hic.Mainframe;
+import hic.MainframeInterface;
 import mylib.civ.BaseCiv;
 import pdc.Inventory;
 import pdc.character.Hero;
@@ -55,7 +54,8 @@ public class HeroDisplayCiv
   /** Hero data are converted and sent to the GUI in this EnumMap */
   private EnumMap<PersonKeys, String> _outputMap;
 
-  private Mainframe _mf;
+  /** Reference to parent civ */
+  private MainframeInterface _mf;
 
 
   /*
@@ -67,7 +67,7 @@ public class HeroDisplayCiv
    * 
    * @param hero the model object from which to get the display data
    */
-  public HeroDisplayCiv(Mainframe mf)
+  public HeroDisplayCiv(MainframeInterface mf)
   {
     if (!HeroDisplayCiv.LOADING_CHAR) {
       HeroDisplayCiv.NEW_CHAR = true;
@@ -81,7 +81,7 @@ public class HeroDisplayCiv
   // * Load all person names from the database Method made static because in order to create a
   // * HeroDisplayCiv, a person or person name is needed, which is currently being loaded
   // *
-  // * @return list of people in the dorimtory
+  // * @return list of people in the dormitory
   // */
   // public static List<String> openDormitory()
   // {
@@ -133,10 +133,11 @@ public class HeroDisplayCiv
   {
     _hero = hero;
     _outputMap = hero.loadAttributes(_outputMap);
-    _widget = new HeroDisplay(this, _mf, firstTime);
-    String title = String.format("%s:  %s %s %s", _hero.getName(), _hero.getGender(),
-        _hero.getRaceName(), _hero.getKlassName());
-    _mf.replaceLeftPanel(_widget, title);
+    _widget = new HeroDisplay(this, firstTime);
+//    String title = String.format("%s:  %s %s %s", _hero.getName(), _hero.getGender(),
+//        _hero.getRaceName(), _hero.getKlassName());
+//    _mf.replaceLeftPanel(_widget, title);
+    _mf.replaceLeftPanel(_widget);
   }
 
 
@@ -145,6 +146,14 @@ public class HeroDisplayCiv
     return _outputMap;
   }
 
+
+  /** Restore the mainframe panels to their previous state */
+  public void back()
+  {
+    _mf.back();
+  }
+
+  
   public List<String> getKlassSkills()
   {
     return _hero.getKlassSkills();

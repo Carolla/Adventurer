@@ -11,7 +11,6 @@ package hic;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -34,6 +33,7 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
+import chronos.Chronos;
 import civ.Adventurer;
 import civ.MainActionCiv;
 import civ.MainframeCiv;
@@ -75,12 +75,11 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   /** Common content pane for the Mainframe */
   private JPanel _contentPane;
   /** Empty left-side panel holder for initial and standard panels. */
-  private JPanel _leftHolder;
+  private ChronosPanel _leftHolder;
   /** Empty right-side panel holder for initial standard panels. */
-  private JPanel _rightHolder;
+  private ChronosPanel _rightHolder;
   /** Keep panel states to return to in case CANCEL is hit */
-  private JPanel _leftPanelState;
-  private String _leftTitleState;
+  private ChronosPanel _leftPanelState;
 
   /** JPanel to hold various images; this panel resides in the _rightHolder */
   private ImagePanel _imagePanel;
@@ -97,10 +96,10 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   /** Title of the initial three-button panel on left side */
   private final String INITIAL_OPENING_TITLE = " Actions ";
 
-   /** Runic Font that pervades the text of the screens */
-   private Font _runicFont;
-   /** Standard Font for buttons, help, etc */
-   private Font _stdFont;
+  // /** Runic Font that pervades the text of the screens */
+  // private final Font _runicFont = Chronos.RUNIC_FONT;
+  // /** Standard Font for buttons, help, etc */
+  // private final Font _stdFont = Chronos.STANDARD_FONT;
 
   /** Singleton Help Dialog for all help text */
   private HelpDialog _helpdlg;
@@ -170,7 +169,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
 
     // Create the mainActionCiv to generate the action button and town view
     _mainActionCiv = new MainActionCiv(this, _mfCiv);
-    // createActionPanel(); // creates three action buttons on panel
+    
   }
 
 
@@ -198,10 +197,13 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
    */
   public void addLeftPanel(JPanel panel)
   {
+    // Save state for later
+    _leftPanelState = _leftHolder;
+    System.out.println("addLeftPanel(): " + _leftPanelState.getTitle());
+
+        // Update current panel
     _leftHolder.add(panel);
     redraw();
-    // Save state for later 
-    _leftPanelState = _leftHolder;
   }
 
   // NOTE: Check replacePanel() first if you are adding to the mainframe panel holders
@@ -220,7 +222,13 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
 
   public void back()
   {
-    replaceLeftPanel(_leftPanelState, _leftTitleState);
+    // Restore state and redraw
+    _leftHolder = _leftPanelState;
+    System.out.println("back(): " + _leftPanelState.getTitle());
+
+    replaceLeftPanel(_leftPanelState);
+//    _leftHolder = _leftPanelState;
+//    redraw();
   }
 
 
@@ -321,16 +329,36 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
 
 
   /**
-   * Replace the left panel with the newone provided
+   * Replaces the left panel with the new one provided and displays the panel's title. Saves the
+   * state in case the user needs to back out.
+   * 
+   * @param newPanel that replaces existing panel on left side of Mainframe
    */
-  // public void replaceLeftPanel(JPanel newPanel, String title)
-  public void replaceLeftPanel(JPanel newPanel, String title)
+  public void replaceLeftPanel(ChronosPanel newPanel)
   {
+    // Save state for later
+    _leftPanelState = _leftHolder;
+    System.out.println("replaceLeftPanel(): " + _leftPanelState.getTitle());
+
     _leftHolder.removeAll();
-    setLeftPanelTitle(title);
+    setLeftPanelTitle(newPanel.getTitle());
     _leftHolder.add(newPanel);
     redraw();
   }
+
+  // /**
+  // * Replace the left panel with the newone provided
+  // *
+  // * @param newPanel that replaces existing panel on left side of Mainframe
+  // * @param title that goes into border of this new panel
+  // */
+  // public void replaceLeftPanel(JPanel newPanel, String title)
+  // {
+  // _leftHolder.removeAll();
+  // setLeftPanelTitle(title);
+  // _leftHolder.add(newPanel);
+  // redraw();
+  // }
 
   public void setBuilding(BuildingRectangle rect)
   {
@@ -338,19 +366,19 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     redraw();
   }
 
-  /** Inject a given runic font for all panels */
-  @Override
-  public void setRunicFont(Font font)
-  {
-    _runicFont = font;
-  }
-
-  /** Inject a standard font for buttons, help, etc. */
-  @Override
-  public void setStandardFont(Font font)
-  {
-    _stdFont = font;
-  }
+  // /** Inject a given runic font for all panels */
+  // @Override
+  // public void setRunicFont(Font font)
+  // {
+  // _runicFont = font;
+  // }
+  //
+  // /** Inject a standard font for buttons, help, etc. */
+  // @Override
+  // public void setStandardFont(Font font)
+  // {
+  // _stdFont = font;
+  // }
 
   public void setHeroList(List<String> list)
   {
@@ -512,11 +540,13 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     // Add menu
     setJMenuBar(new Menubar(this, _mfCiv));
 
-    _leftHolder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
-    _leftHolder =
-        makePanelHolder(_leftHolder, Constants.MY_BROWN, INITIAL_OPENING_TITLE, Color.WHITE);
+    _leftHolder = new ChronosPanel();
+    _leftHolder.setLayout(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
+    _leftHolder = makePanelHolder(_leftHolder, Constants.MY_BROWN, INITIAL_OPENING_TITLE,
+        Color.WHITE);
 
-    _rightHolder = new JPanel(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
+    _rightHolder = new ChronosPanel();
+    _rightHolder.setLayout(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
     _rightHolder = makePanelHolder(_rightHolder, Constants.MY_BROWN, "", Color.WHITE);
 
     _contentPane.add(_leftHolder, "cell 0 0, wmax 50%, grow");
@@ -620,7 +650,8 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
    * 
    * @return the JPanel that is assigned to the left or the right
    */
-  private JPanel makePanelHolder(JPanel holder, Color borderColor, String title, Color backColor)
+  private ChronosPanel makePanelHolder(ChronosPanel holder, Color borderColor, String title,
+      Color backColor)
   {
     Dimension holderSize = new Dimension(USERWIN_WIDTH / 2, USERWIN_HEIGHT);
     holder.setPreferredSize(holderSize);
@@ -628,7 +659,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
 
     Border matte = BorderFactory.createMatteBorder(5, 5, 5, 5, borderColor);
     Border titled = BorderFactory.createTitledBorder(matte, title,
-        TitledBorder.CENTER, TitledBorder.TOP, _runicFont, Color.BLACK);
+        TitledBorder.CENTER, TitledBorder.TOP, Chronos.RUNIC_FONT, Color.BLACK);
     holder.setBorder(titled);
     holder.setBackground(backColor);
 
@@ -643,7 +674,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     _helpdlg = HelpDialog.getInstance(this);
     // TODO Move call to pdc.Util to mfCiv so pdc is not imported; and duplicate calls are
     // avoided
-    _helpdlg.setMyFont(_runicFont);
+    _helpdlg.setMyFont(Chronos.RUNIC_FONT);
     _contentPane.addKeyListener(new KeyListener() {
       public void keyReleased(KeyEvent e)
       {

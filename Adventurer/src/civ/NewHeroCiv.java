@@ -14,7 +14,7 @@ import java.util.EnumMap;
 import chronos.pdc.registry.HeroRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
-import hic.Mainframe;
+import hic.MainframeInterface;
 import hic.NewHeroIPPanel;
 import pdc.character.Hero;
 
@@ -52,7 +52,7 @@ public class NewHeroCiv
 
   /** Input map for data field and keys */
   private EnumMap<HeroInput, String> _inputMap;
-  private Mainframe _mf;
+  private MainframeInterface _mf;
   private HeroRegistry _heroReg;
 
   // ===========================================================================
@@ -66,7 +66,7 @@ public class NewHeroCiv
    * @param mf to callback for placing created panels, and relinquishing final control
    * @param regFactory to check Hero for unique name
    */
-  public NewHeroCiv(Mainframe mainframe, RegistryFactory regFactory)
+  public NewHeroCiv(MainframeInterface mainframe, RegistryFactory regFactory)
   {
     _inputMap = new EnumMap<HeroInput, String>(HeroInput.class);
     _heroReg = (HeroRegistry) regFactory.getRegistry(RegKey.HERO);
@@ -101,15 +101,23 @@ public class NewHeroCiv
     return myHero;
   }
 
+  // Return the current state to the previous state
+  public void back()
+  {
+    _mf.back();
+  }
+
 
   /**
    * Create the new hero panel to collect input data; pick up the input data when the input panel
    * calls submit
    * 
+   * @param this  civ controls the NewHeroIPPanel
+   * @param mf  mainframe reference for adding panel into the main frame
    */
   public NewHeroIPPanel createNewHeroPanel()
   {
-    NewHeroIPPanel ipPanel = new NewHeroIPPanel(_mf, this);
+    NewHeroIPPanel ipPanel = new NewHeroIPPanel(this, _mf);
     return ipPanel;
   }
 
