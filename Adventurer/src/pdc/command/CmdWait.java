@@ -44,7 +44,7 @@ public class CmdWait extends Command
   /** This command starts immediately, requiring no delay. */
   private static final int DELAY = 0;
   /** Default wait time is 5 minutes, but can be overridden when desired. */
-  private static final int DURATION = 300;
+  private static final int DURATION = 0;
 
 
   /*
@@ -94,12 +94,11 @@ public class CmdWait extends Command
     int nbrParms = args.size();
     // Allow default condition to pass
     if (nbrParms == 0) {
-      return true;
+      _isInitialized = true;
     }
     // Non-default command has only two parms: Nbr and Units of time
     if (nbrParms != 2) {
       usage();
-      return false;
     }
     // Validate the two parms and save valid data into Command
     try {
@@ -111,23 +110,23 @@ public class CmdWait extends Command
       if (unit.equalsIgnoreCase("H") || unit.equalsIgnoreCase("Hr") || unit.equalsIgnoreCase("Hours")) {
         if ((lag >= 0) && (lag < 25)) {
           // Convert hours to seconds and save in Command
-          super._duration = lag * 3600;
-          return true;
+          _delay = lag * 3600;
+          _isInitialized = true;
         }
       } else if (unit.equalsIgnoreCase("M") || unit.equalsIgnoreCase("Min") || unit.equalsIgnoreCase("Minutes")) {
         // Convert minutes to seconds
         if ((lag >= 1) && (lag < 60)) {
-          super._duration = lag * 60;
-          return true;
+          _delay = lag * 60;
+          _isInitialized = true;
         }
       }
       // For whatever reason, the input line doesn't parse, so try again
     } catch (Exception e) {
       // fall through to usage() and false exit
+      usage();
     }
     // Fall through due to bad parms
-    usage();
-    return false;
+    return _isInitialized;
   }
 
 
@@ -138,7 +137,7 @@ public class CmdWait extends Command
    */
   public boolean exec()
   {
-    System.out.println("CmdWait.exec(): TimeLog is incremented " + super._duration);
+    System.out.println("CmdWait.exec(): TimeLog is incremented " + _delay);
     return true;
   }
 

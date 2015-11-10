@@ -104,7 +104,13 @@ public class intCmdPatronLeave extends Command
     {
       return false;
     }
-
+    
+    @Override
+    public boolean isInternal()
+    {
+      return true;
+    }
+    
     /**
      * Causes the Patron to leave the room if he/she is not involved in conversation. If the Patron
      * is talking, then intCmdLeave is reset for another RE_DELAY time period.

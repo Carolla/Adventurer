@@ -71,10 +71,10 @@ public class Inn extends Building
   /** Last Patron enters after no more than an hour */
   private final int MAX_DELAY = 60 * 60;
 
-  /** Patrons stay at least 10 minutes */
-  private final int MIN_DURATION = 10 * 60;
-  /** Patrons never stay longer than 30 minutes */
-  private final int MAX_DURATION = 30 * 60;
+  /** Patrons stay at least 1 hour */
+  private final int MIN_DURATION = 1 * 60 * 60;
+  /** Patrons never stay longer than 12 hour*/
+  private final int MAX_DURATION = 12 * 60 * 60;
 
   /** Max patrons starting in the Inn */
   private final int MAX_STARTERS = 2;
@@ -92,7 +92,7 @@ public class Inn extends Building
   private int _patronsNow = 1;
 
   /** Used to schedule commands */
-  private final Scheduler _skedder;
+  private Scheduler _skedder;
   private final NPCRegistry _npcRegistry;
   private UserMsg _msg;
 
@@ -133,9 +133,9 @@ public class Inn extends Building
 
     // Reassign MAX_STARTERS number of Patrons (inside the command) to delay = 0 so
     // they are in the Inn when the Hero enters.
-    List<intCmdPatronEnter> enterList = createEnterList(starterList);
+    // List<intCmdPatronEnter> enterList = createEnterList(starterList);
 
-    for (intCmdPatronEnter ce : enterList) {
+    for (intCmdPatronEnter ce : starterList) {
       // Use the generated enter commands to create the leave commands
       intCmdPatronLeave cl = new intCmdPatronLeave(ce, this);
       _skedder.sched(ce);
@@ -275,6 +275,11 @@ public class Inn extends Building
   public void setMsg(UserMsg msg)
   {
     _msg = msg;
+  }
+
+  public void setScheduler(Scheduler skedder)
+  {
+    _skedder = skedder;
   }
 
 } // end of Inn class

@@ -206,6 +206,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
 
         Inn inn = (Inn) breg.getBuilding("Ugly Ogre Inn");
         inn.setMsg(_mfCiv);
+        inn.setScheduler(_skedder);
         inn.initPatrons();
     }
 

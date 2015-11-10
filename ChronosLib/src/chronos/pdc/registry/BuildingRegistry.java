@@ -59,7 +59,6 @@ public class BuildingRegistry extends Registry<Building>
   @Override
   public void initialize()
   {
-    deleteAll();
     // Create each of the default buildings and save to registry
     // The constructors load the default data
     Inn inn = new Inn(_skedder, _npcRegistry);
