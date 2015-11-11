@@ -46,7 +46,7 @@ public class ChronosPanel extends JPanel
   // ====================================================================================
 
   /** Get the panel's title for display */
-  protected String getTitle()
+  public String getTitle()
   {
     return _title;
   }
@@ -57,7 +57,7 @@ public class ChronosPanel extends JPanel
    * 
    * @param title of the panel
    */
-  protected void setTitle(String title)
+  public void setTitle(String title)
   {
     _title = title;
   };

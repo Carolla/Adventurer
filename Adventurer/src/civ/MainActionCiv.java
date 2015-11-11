@@ -25,7 +25,6 @@ import java.util.TreeMap;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
 import chronos.Chronos;
 import chronos.pdc.Adventure;
@@ -35,6 +34,8 @@ import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import hic.BuildingRectangle;
+import hic.ChronosPanel;
+import hic.IOPanel;
 import hic.Mainframe;
 import hic.MainframeInterface;
 import hic.NewHeroIPPanel;
@@ -65,6 +66,9 @@ public class MainActionCiv
 
   /** Amount of space in pixels around the frame and image of aesthetics */
   public static final int FRAME_PADDING = 90;
+
+  /** Title of the initial three-button panel on left side */
+  private final String INITIAL_OPENING_TITLE = " Select Your Action ";
 
   // TODO: Why does these need to be static?
   /** Image of the Town containing the Buildings */
@@ -124,7 +128,8 @@ public class MainActionCiv
     _mf = mf;
     _mfCiv = mfciv;
     _rf = _mfCiv.getRegistryFactory();
-    _mf.addLeftPanel(createActionPanel());
+    // Create the panel with the main buttons: Load Adventure, Summons, and Create Hero
+    _mf.replaceLeftPanel(createActionPanel());
 
     createBuildingBoxes(); // this probably needs to be elsewhere
 
@@ -238,7 +243,7 @@ public class MainActionCiv
   public void loadSelectedAdventure(String adventureName)
   {
     _adv = _advReg.getAdventure(adventureName);
-    _mf.addIOPanel(this);
+    _mf.replaceLeftPanel(new IOPanel(this));
     openTown();
   }
 
@@ -302,27 +307,26 @@ public class MainActionCiv
   /**
    * Create the Adventure, Heroes, and Create-Hero buttons, and button panel for them
    */
-  private JPanel createActionPanel()
+  private ChronosPanel createActionPanel()
   {
     JButton adventureButton = createAdventureButton();
     JButton summonButton = createSummonHeroesButton();
     JButton creationButton = createNewHeroButton();
 
-    JPanel buttonPanel = new JPanel();
+    ChronosPanel buttonPanel = new ChronosPanel();
+    buttonPanel.setTitle(INITIAL_OPENING_TITLE );
     // Align all buttons in a single column
     buttonPanel.setLayout(new MigLayout("wrap 1"));
     Dimension frame = Mainframe.getWindowSize();
     buttonPanel.setPreferredSize(new Dimension(
         (int) (frame.width - FRAME_PADDING) / 2, frame.height - FRAME_PADDING));
-    // buttonPanel.setPreferredSize(new Dimension(
-    // (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
     buttonPanel.setBackground(Constants.MY_BROWN);
 
     /** Buttons are at 25% to allow space for Command Line later */
     buttonPanel.add(adventureButton, "hmax 25%, grow");
     buttonPanel.add(summonButton, "hmax 25%, grow");
     buttonPanel.add(creationButton, "hmax 25%, grow");
-
+    
     return buttonPanel;
   }
 

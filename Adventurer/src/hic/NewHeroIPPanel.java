@@ -211,9 +211,6 @@ public class NewHeroIPPanel extends ChronosPanel
     /* Add a button panel containing the Submit and Cancel buttons */
     add(makeButtonPanel(), "push, align center, span, gaptop 20%");
     
-    // Replace the leftside mainframe panel with this panel
-    _mf.replaceLeftPanel(this);
-
   } // end NewHeroIPPanel constructor
 
 
@@ -252,8 +249,7 @@ public class NewHeroIPPanel extends ChronosPanel
 
     // Create the CANCEL button
     JButton cancelButton = new JButton("CANCEL");
-
-    // Clear editFlag and data, then return back to mainframe if Cancel is pressed
+    // Clear editFlag and data, then return back to main action panel if Cancel is pressed
     cancelButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
@@ -503,7 +499,7 @@ public class NewHeroIPPanel extends ChronosPanel
 
   /** Set the title for this panel */
   @Override
-  protected void setTitle(String title)
+  public void setTitle(String title)
   {
     super._title = NEW_HERO_TITLE;
   }

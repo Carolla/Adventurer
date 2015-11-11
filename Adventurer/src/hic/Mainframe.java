@@ -21,7 +21,9 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -79,7 +81,8 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   /** Empty right-side panel holder for initial standard panels. */
   private ChronosPanel _rightHolder;
   /** Keep panel states to return to in case CANCEL is hit */
-  private ChronosPanel _leftPanelState;
+  private Deque<ChronosPanel> _panelStack = new ArrayDeque<ChronosPanel>();
+
 
   /** JPanel to hold various images; this panel resides in the _rightHolder */
   private ImagePanel _imagePanel;
@@ -93,8 +96,6 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
 
   /** Title of the IOPanel of left side */
   private final String IOPANEL_TITLE = " Transcript ";
-  /** Title of the initial three-button panel on left side */
-  private final String INITIAL_OPENING_TITLE = " Actions ";
 
   // /** Runic Font that pervades the text of the screens */
   // private final Font _runicFont = Chronos.RUNIC_FONT;
@@ -155,7 +156,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     addImagePanel(); // add image panel on right for adding images later
     redraw();
 
-    // Initiate the Mainframe state within those elements
+    // Initiate the MainframeCiv's state (validation and data management) within those elements
     _mfCiv = new MainframeCiv(this);
     // Set external elements
     setImage(_mfCiv.getInitialImage());
@@ -167,9 +168,9 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     // Display the Mainframe and panels now
     setVisible(true);
 
-    // Create the mainActionCiv to generate the action button and town view
+    // Create the mainActionCiv to manage the action buttons and town view
     _mainActionCiv = new MainActionCiv(this, _mfCiv);
-    
+
   }
 
 
@@ -177,8 +178,11 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   // Public Methods
   // ============================================================
 
+  // TODO: Replace this method with replaceLeftPanel()
   /**
-   * Layout the IOPanel on the left: scrolling text window and working Comandline input area
+   * Layout the IOPanel on the left: scrolling text window and working Comandline input area. The
+   * IOPanel contains a transcript of user inputs and output on top, and a commandline for commands
+   * on the bottom.
    * 
    * @param mac the controller for this widget
    */
@@ -190,21 +194,11 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     setLeftPanelTitle(IOPANEL_TITLE);
     _leftHolder.add(_iop);
     redraw();
+
+    // Save the panel state for later
+    _panelStack.push(_iop);
   }
 
-  /**
-   * Appends a panel to that existing in the current left holder of the frame
-   */
-  public void addLeftPanel(JPanel panel)
-  {
-    // Save state for later
-    _leftPanelState = _leftHolder;
-    System.out.println("addLeftPanel(): " + _leftPanelState.getTitle());
-
-        // Update current panel
-    _leftHolder.add(panel);
-    redraw();
-  }
 
   // NOTE: Check replacePanel() first if you are adding to the mainframe panel holders
   @Override
@@ -220,15 +214,25 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   }
 
 
+  /**
+   * Remove the current panel and return to the previous panel. This currently works only for the
+   * left side of the mainframe.
+   */
   public void back()
   {
-    // Restore state and redraw
-    _leftHolder = _leftPanelState;
-    System.out.println("back(): " + _leftPanelState.getTitle());
+    // Remove the current panel
+    ChronosPanel oldPanel = null;
+    if (!_panelStack.isEmpty()) {
+      oldPanel = _panelStack.pop(); // remove the current panel
+      // System.out.println("PanelStack after pop: " + oldPanel.getTitle());
+      // } else {
+      // System.out.println("PanelStack is empty");
+    }
 
-    replaceLeftPanel(_leftPanelState);
-//    _leftHolder = _leftPanelState;
-//    redraw();
+    // Pop a second time to get to the previous panel
+    if (!_panelStack.isEmpty()) {
+      replaceLeftPanel(_panelStack.pop());
+    }
   }
 
 
@@ -336,29 +340,18 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
    */
   public void replaceLeftPanel(ChronosPanel newPanel)
   {
-    // Save state for later
-    _leftPanelState = _leftHolder;
-    System.out.println("replaceLeftPanel(): " + _leftPanelState.getTitle());
-
+    // Replace the panel with the existing one
     _leftHolder.removeAll();
-    setLeftPanelTitle(newPanel.getTitle());
     _leftHolder.add(newPanel);
+    setLeftPanelTitle(newPanel.getTitle());
+
+    // Save the state for later
+    _panelStack.push(newPanel);
+//    System.out.println("PanelStack after push: " + _panelStack.peekFirst().getTitle());
+
     redraw();
   }
 
-  // /**
-  // * Replace the left panel with the newone provided
-  // *
-  // * @param newPanel that replaces existing panel on left side of Mainframe
-  // * @param title that goes into border of this new panel
-  // */
-  // public void replaceLeftPanel(JPanel newPanel, String title)
-  // {
-  // _leftHolder.removeAll();
-  // setLeftPanelTitle(title);
-  // _leftHolder.add(newPanel);
-  // redraw();
-  // }
 
   public void setBuilding(BuildingRectangle rect)
   {
@@ -366,19 +359,6 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     redraw();
   }
 
-  // /** Inject a given runic font for all panels */
-  // @Override
-  // public void setRunicFont(Font font)
-  // {
-  // _runicFont = font;
-  // }
-  //
-  // /** Inject a standard font for buttons, help, etc. */
-  // @Override
-  // public void setStandardFont(Font font)
-  // {
-  // _stdFont = font;
-  // }
 
   public void setHeroList(List<String> list)
   {
@@ -451,11 +431,11 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   }
 
 
-  private String getBorderTitle()
-  {
-    TitledBorder border = (TitledBorder) _leftHolder.getBorder();
-    return border.getTitle();
-  }
+  // private String getBorderTitle()
+  // {
+  // TitledBorder border = (TitledBorder) _leftHolder.getBorder();
+  // return border.getTitle();
+  // }
 
   // /**
   // * Create the behavior for selecting an adventure, which drives the frame update. <br>
@@ -527,11 +507,11 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   // }
 
   /**
-   * Create mainframe layout and menubar; add left and right panel holders, which have titled
-   * borders
+   * Create mainframe layout and menubar; add left and right panel holders
    */
   private void createFrameAndMenubar()
   {
+    // Define the contentPane and cast as JPanel
     setupContentPane();
     // Add the frame listener to prompt and terminate the application
     setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -540,109 +520,28 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     // Add menu
     setJMenuBar(new Menubar(this, _mfCiv));
 
+    // Define a left and right ChronosPanel to manage subordinate right- and left-side panels
     _leftHolder = new ChronosPanel();
     _leftHolder.setLayout(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
-    _leftHolder = makePanelHolder(_leftHolder, Constants.MY_BROWN, INITIAL_OPENING_TITLE,
-        Color.WHITE);
+    _leftHolder = makePanelAsHolder(_leftHolder, Constants.MY_BROWN, Color.WHITE);
 
     _rightHolder = new ChronosPanel();
     _rightHolder.setLayout(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
-    _rightHolder = makePanelHolder(_rightHolder, Constants.MY_BROWN, "", Color.WHITE);
+    _rightHolder.setTitle(" ");
+    _rightHolder = makePanelAsHolder(_rightHolder, Constants.MY_BROWN, Color.WHITE);
 
     _contentPane.add(_leftHolder, "cell 0 0, wmax 50%, grow");
     _contentPane.add(_rightHolder, "cell 1 0, wmax 50%, grow");
     _contentPane.setFocusable(true);
+    // TODO Add backout state for right side also
+    // . . .
   }
 
-  // /**
-  // * Create the button to call the NewHeroCiv, which will contorl the panels that collects the new
-  // * Hero data, and displays the Hero's stat panel
-  // *
-  // * @return the button
-  // */
-  // private JButton createNewHeroButton()
-  // {
-  // JButton button = createButtonWithTextAndIcon(REGISTRAR_IMAGE, "Create New Heroes");
-  // button.addActionListener(new ActionListener() {
-  // public void actionPerformed(ActionEvent arg0)
-  // {
-  // try {
-  // NewHeroCiv nhCiv = new NewHeroCiv(Mainframe.this, _mfCiv.getRegistryFactory());
-  // NewHeroIPPanel ipPanel = nhCiv.createNewHeroPanel();
-  // _leftHolder.removeAll();
-  // _leftHolder.add(ipPanel);
-  // // Set focus on default field (nameField) only after it is displayed
-  // redraw();
-  // ipPanel.setDefaultFocus();
-  // } catch (Exception e) {
-  // e.printStackTrace();
-  // System.exit(0);
-  // }
-  // }
-  // });
-  // return button;
-  //
-  // }
-  //
-  // private JButton createSummonHeroesButton()
-  // {
-  // JButton button = createButtonWithTextAndIcon(HALL_IMAGE, "Summon Heroes");
-  // button.addActionListener(new ActionListener() {
-  // public void actionPerformed(ActionEvent e)
-  // {
-  // if (_partyHeros.size() == 0) {
-  // // _summonableHeroes = _mfCiv.openDormitory();
-  // showPartyPickerWhenPartyEmpty();
-  // } else {
-  // showPartyPickerWhenMembersAlreadySelected();
-  // }
-  // }
-  //
-  // private void showPartyPickerWhenPartyEmpty()
-  // {
-  // padHeroes(_summonableHeroes);
-  // final ShuttleList slist = new ShuttleList(_summonableHeroes);
-  // setPropsForShuttleList(slist);
-  // }
-  //
-  // private void showPartyPickerWhenMembersAlreadySelected()
-  // {
-  // final ShuttleList slist = new ShuttleList(_summonableHeroes, _partyHeros);
-  // setPropsForShuttleList(slist);
-  // }
-  //
-  // private void setPropsForShuttleList(final ShuttleList slist)
-  // {
-  // slist.setTitle("Choose your Adventurers!");
-  // slist.addActionListener(new ActionListener() {
-  // public void actionPerformed(ActionEvent arg0)
-  // {
-  // List<String> list = new ArrayList<String>();
-  // for (Object s : slist.getSelectedItems()) {
-  // list.add(s.toString());
-  // }
-  // setHeroList(list);
-  // slist.dispose();
-  // }
-  // });
-  // slist.setVisible(true);
-  // }
-  //
-  // private void padHeroes(List<String> list)
-  // {
-  // if (list.size() < 3) {
-  // list.add("Gronkhar the Smelly");
-  // list.add("Siobhan the Obsiquious");
-  // list.add("Sir Will-not-be-appearing-in-this-movie");
-  // }
-  // }
-  // });
-  // return button;
-  // }
 
   /**
    * Create a holder for the left or right side of the frame, with all cosmetics. Holders will have
-   * same layout manager, size, border type, and runic font title is a title is supplied.
+   * same layout manager, size, border type, and runic font title. <br>
+   * TODO: Currently, each ChronosPanel requires a title, and is accessible by {@code getTitle()}.
    * 
    * @param borderColor background Color for the border
    * @param title to be positioned top center in Runic font
@@ -650,15 +549,16 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
    * 
    * @return the JPanel that is assigned to the left or the right
    */
-  private ChronosPanel makePanelHolder(ChronosPanel holder, Color borderColor, String title,
-      Color backColor)
+  // private ChronosPanel makePanelHolder(ChronosPanel holder, Color borderColor, String title,
+  // Color backColor)
+  private ChronosPanel makePanelAsHolder(ChronosPanel holder, Color borderColor, Color backColor)
   {
     Dimension holderSize = new Dimension(USERWIN_WIDTH / 2, USERWIN_HEIGHT);
     holder.setPreferredSize(holderSize);
     holder.setBackground(borderColor);
 
     Border matte = BorderFactory.createMatteBorder(5, 5, 5, 5, borderColor);
-    Border titled = BorderFactory.createTitledBorder(matte, title,
+    Border titled = BorderFactory.createTitledBorder(matte, holder.getTitle(),
         TitledBorder.CENTER, TitledBorder.TOP, Chronos.RUNIC_FONT, Color.BLACK);
     holder.setBorder(titled);
     holder.setBackground(backColor);
@@ -695,6 +595,7 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   /** Apply the layout manager to the content pane */
   private void setupContentPane()
   {
+    // Update the content pane with borders and layout manager
     _contentPane = (JPanel) getContentPane();
     _contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
     setContentPane(_contentPane);
@@ -712,7 +613,6 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     setExtendedState(Frame.MAXIMIZED_BOTH);
     setResizable(false);
   }
-
 
 
   // ============================================================

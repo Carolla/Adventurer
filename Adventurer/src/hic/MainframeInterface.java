@@ -10,11 +10,9 @@
 package hic;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Image;
 
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 
 import civ.MainActionCiv;
 
@@ -29,8 +27,6 @@ public interface MainframeInterface
 {
   /** Replace the main action button panel with the final IOPanel */
   public void addIOPanel(MainActionCiv mac);
-
-  public void addLeftPanel(JPanel panel);
 
   public void addPanel(JComponent component);
 

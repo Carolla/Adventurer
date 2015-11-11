@@ -9,13 +9,11 @@
 
 package civ;
 
-import java.awt.Font;
 import java.awt.Image;
 import java.util.ArrayList;
 
 import chronos.civ.UserMsg;
 import chronos.pdc.Adventure;
-import chronos.pdc.buildings.Inn;
 import chronos.pdc.registry.AdventureRegistry;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
@@ -96,33 +94,34 @@ public class MainframeCiv implements UserMsg
   public MainframeCiv(MainframeInterface mf)
   {
     _mf = mf;
-//    _rf = new RegistryFactory(_skedder);
-    
     _rf = new RegistryFactory();
     _rf.initRegistries();
 
-    // Build the associated control objects
-    constructMembers();
-  }
-
-
-  /**
-   * Perform construction act. This wires together all the "single instance variables" for the
-   * Adventurer application. None of these constructors should ever be called anywhere outside of
-   * this method and in testing.
-   */
-  private void constructMembers()
-  {
+    // Build the associated registries needed
+//  constructMembers();
     BuildingRegistry breg = (BuildingRegistry) _rf.getRegistry(RegKey.BLDG);
     _bldgCiv = new BuildingDisplayCiv(_mf, breg);
-
     _advReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
-
-    // TODO: Move this to outside this class, perhaps the BuildingDisplayCiv
-    Inn inn = (Inn) breg.getBuilding("Ugly Ogre Inn");
-    inn.setMsg(this);
-    inn.initPatrons();
   }
+
+
+//  /**
+//   * Perform construction act. This wires together all the "single instance variables" for the
+//   * Adventurer application. None of these constructors should ever be called anywhere outside of
+//   * this method and in testing.
+//   */
+//  private void constructMembers()
+//  {
+//    BuildingRegistry breg = (BuildingRegistry) _rf.getRegistry(RegKey.BLDG);
+//    _bldgCiv = new BuildingDisplayCiv(_mf, breg);
+//
+//    _advReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
+//
+//    // TODO: Move this to outside this class, perhaps the BuildingDisplayCiv
+//    Inn inn = (Inn) breg.getBuilding("Ugly Ogre Inn");
+//    inn.setMsg(this);
+//    inn.initPatrons();
+//  }
 
   
   /**
@@ -274,7 +273,7 @@ public class MainframeCiv implements UserMsg
     return _mf.displayPrompt(msg);
   }
 
-  // TODO: Move this to FormitoryCiv
+  // TODO: Move this to MainACtionCiv
 //  /**
 //   * Find a list of heroes that can be summoned
 //   * 
