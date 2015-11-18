@@ -14,7 +14,7 @@ package pdc.command;
 import java.util.List;
 
 import chronos.pdc.Command.Command;
-import civ.MainframeCiv;
+import civ.MainActionCiv;
 
 
 /**
@@ -38,15 +38,14 @@ public class CmdReturn extends Command
     /** Format for this command */
     static private final String CMDFMT = "RETURN [to Town]";
 
-    private final MainframeCiv _mfCiv;
+    private final MainActionCiv _mfCiv;
 
     /*
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND RELATED METHODS
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     *CONSTRUCTOR(S) AND RELATED METHODS
      */
 
     /** Constructor called by the CommandFactory. There is no delay nor duration. */
-    public CmdReturn(MainframeCiv mfCiv)
+    public CmdReturn(MainActionCiv   mfCiv)
     {
         super("CmdReturn", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
         _mfCiv = mfCiv;

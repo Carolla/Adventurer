@@ -19,6 +19,7 @@ import java.util.function.Supplier;
 import chronos.pdc.Command.Command;
 import chronos.pdc.Command.NullCommand;
 import civ.BuildingDisplayCiv;
+import civ.MainActionCiv;
 import civ.MainframeCiv;
 
 
@@ -44,18 +45,20 @@ public class CommandFactory
 
   private final BuildingDisplayCiv _bdCiv;
   private final MainframeCiv _mfCiv;
+  private final MainActionCiv _maCiv;
 
-  public CommandFactory(MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
+  /** Keep a table for command, as lambda functions */
+  public CommandFactory(MainActionCiv maCiv, MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
   {
+    _maCiv = maCiv;
     _mfCiv = mfCiv;
     _bdCiv = bdCiv;
-    initMap();
   }
 
   /**
    * Provide initial values for the commandMap. This can be set up differently as needed for test.
    */
-  protected void initMap()
+  public void initMap()
   {
     // Display the description and image of Building exterior
     _commandMap.put("APPROACH", () -> new CmdApproach(_bdCiv));
@@ -68,7 +71,7 @@ public class CommandFactory
     // End the program.
     _commandMap.put("QUIT", () -> new CmdQuit(_mfCiv, _bdCiv));
     // Return to town view
-    _commandMap.put("RETURN", () -> new CmdReturn(_mfCiv));
+    _commandMap.put("RETURN", () -> new CmdReturn(_maCiv));
     // Just sit there
     _commandMap.put("WAIT", () -> new CmdWait());
 
@@ -91,7 +94,7 @@ public class CommandFactory
     // If the command cannot be found, then run the Null command
     if (!canCreateCommand(cmdInput)) {
       // Display the invalid command error to user
-      _mfCiv.errorOut(ERRMSG_UNKNOWN);
+      // _output.errorOut(ERRMSG_UNKNOWN);
       return command;
     } else {
       // If map contains the command, Supplier<Command> will give new Instance of that
@@ -101,7 +104,7 @@ public class CommandFactory
       }
       // Check that the parms are valid for this command
       if (command.init(cmdInput.parameters) == false) {
-        _mfCiv.errorOut(command.usage());
+        // _output.errorOut(command.usage());
       }
       return command;
     }

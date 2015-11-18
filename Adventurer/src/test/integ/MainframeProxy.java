@@ -10,12 +10,15 @@
 package test.integ;
 
 import hic.BuildingRectangle;
+import hic.ChronosPanel;
 import hic.MainframeInterface;
 
 import java.awt.Dimension;
 import java.awt.Image;
 
 import javax.swing.JComponent;
+
+import civ.MainActionCiv;
 
 
 
@@ -185,6 +188,38 @@ public class MainframeProxy implements MainframeInterface
     {
         // TODO Auto-generated method stub
         
+    }
+
+
+    @Override
+    public void addIOPanel(MainActionCiv mac)
+    {
+      // TODO Auto-generated method stub
+      
+    }
+
+
+    @Override
+    public void back()
+    {
+      // TODO Auto-generated method stub
+      
+    }
+
+
+    @Override
+    public void replaceLeftPanel(ChronosPanel leftPanel)
+    {
+      // TODO Auto-generated method stub
+      
+    }
+
+
+    @Override
+    public void setLeftPanelTitle(String title)
+    {
+      // TODO Auto-generated method stub
+      
     }
 
 

@@ -33,63 +33,66 @@ import civ.MainframeCiv;
  */
 public class CmdExit extends Command
 {
-    // THESE CONSTANTS MUST BE STATIC BECAUSE THEY ARE CALLED IN THE CONSTRUCTOR
-    /** The description of what the command does, used in the <code>help()</code> method. */
-    static final String CMD_DESCRIPTION = "Exit prompts user to leaves the game.";
-    /** This command starts immediately, requiring no delay. */
-    static final int DELAY = 0;
-    /** This command takes 10 seconds on the game clock. */
-    static final int DURATION = 0;
-    /** Command format */
-    static private final String CMDFMT = "EXIT";
+  // THESE CONSTANTS MUST BE STATIC BECAUSE THEY ARE CALLED IN THE CONSTRUCTOR
+  /** The description of what the command does, used in the <code>help()</code> method. */
+  static final String CMD_DESCRIPTION = "Exit prompts user to leaves the game.";
+  /** This command starts immediately, requiring no delay. */
+  static final int DELAY = 0;
+  /** This command takes 10 seconds on the game clock. */
+  static final int DURATION = 0;
+  /** Command format */
+  static private final String CMDFMT = "EXIT";
 
-    private MainframeCiv _mfCiv;
-    private BuildingDisplayCiv _bldgCiv;
-    
-    /*
-     * CONSTRUCTOR(S) AND RELATED METHODS
-     */
+  private MainframeCiv _mfCiv;
+  private BuildingDisplayCiv _bldgCiv;
 
-    /** Constructor called by the CommandFactory. There is no delay nor duration. */
-    public CmdExit(MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
-    {
-        super("CmdExit", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
-        _mfCiv = mfCiv;
-        _bldgCiv = bdCiv;
-    }
+  /*
+   * CONSTRUCTOR(S) AND RELATED METHODS
+   */
 
-
-    // ============================================================
-    // Public methods
-    // ============================================================
-
-    /**
-     * Enters the current building. There can be 0 or 1 args in the arglist. If an arg is specified,
-     * then checks if it is a Building class, or the name of a particular Building. It then converts
-     * the name into the Building class.
-     * 
-     * @param args if empty, then use current Building; otherwise get Building specified
-     * @return true if all worked, else returns false on input error
-     */
-    @Override
-    public boolean init(List<String> args)
-    {
-        _isInitialized = true;
-        return true;
-    }
+  /** Constructor called by the CommandFactory. There is no delay nor duration. 
+   * @param mfCiv needed for a call to quit prompt
+   * @param bdCiv needed to handle Building requests 
+   */
+  public CmdExit(MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
+  {
+    super("CmdExit", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
+    _mfCiv = mfCiv;
+    _bldgCiv = bdCiv;
+  }
 
 
-    /**
-     * Forces the program to end.
-     * 
-     * @return false always to break out of the Scheduler loop
-     */
-    public boolean exec()
-    {
-        _bldgCiv.leaveBuilding();
-        _mfCiv.quit();
-        return false;
-    }
+  // ============================================================
+  // Public methods
+  // ============================================================
+
+  /**
+   * Enters the current building. There can be 0 or 1 args in the arglist. If an arg is specified,
+   * then checks if it is a Building class, or the name of a particular Building. It then converts
+   * the name into the Building class.
+   * 
+   * @param args if empty, then use current Building; otherwise get Building specified
+   * @return true if all worked, else returns false on input error
+   */
+  @Override
+  public boolean init(List<String> args)
+  {
+    _isInitialized = true;
+    return true;
+  }
+
+
+  /**
+   * Forces the program to end.
+   * 
+   * @return false always to break out of the Scheduler loop
+   */
+  public boolean exec()
+  {
+    _bldgCiv.leaveBuilding();
+    _mfCiv.quit();
+    return false;
+  }
 
 } // end CmdExit class
 

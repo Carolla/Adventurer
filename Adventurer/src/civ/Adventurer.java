@@ -9,11 +9,7 @@
 
 package civ;
 
-import hic.Mainframe;
-
 import java.awt.EventQueue;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 /**
  * This Launcher class detects command line arguments, takes appropriate loading action, initializes
@@ -32,77 +28,65 @@ import java.awt.event.WindowEvent;
  */
 public class Adventurer
 {
-    /** Launcher class does not require a constructor--it has the {@code main} method. */
-    public Adventurer()
-    {}
+  /** Launcher class does not require a constructor--it has the {@code main} method. */
+  public Adventurer()
+  {}
 
 
-    /**
-     * Creates the main frame and passes control to it.
-     * <UL>
-     * <LI>Starts a separate Swing thread for the GUI's {@code Swing Event Queue} (SEQ), per Swing's
-     * "strict single-thread rule". All Swing processing occurs from the single SEQ thread. Unlike
-     * older versions of Java, Swing must now be invoked inside an EventQueue {@code Runnable}. As
-     * <i>Core Java</i> (Volume 1, Horstmann & Cornell, (c) 2008, p287) states: "For now, you should
-     * simply consider it a magic incantation that is used to start a Swing program."</LI>
-     * <LI>
-     * The Event {@code Scheduler} runs a second thread concurrently to poll the
-     * {@code CommandParser} for user command inputs.</LI>
-     * <LI>
-     * Initializes the system by creating necessary singletons, registries, and data files; on exit,
-     * closes all registries.</LI>
-     * </UL>
-     * 
-     * @param args unused command line arguments
-     */
-    public static void main(String[] args)
-    {
-        /** All Swing processing occurs from the single EventQueue thread. */
-        EventQueue.invokeLater(new Runnable() {
-            public void run()
-            {
-                try {
-                    final Mainframe frame = new Mainframe();
-                 
-                    frame.setVisible(true);
-                    frame.addWindowListener(new WindowAdapter() {
-                        @Override
-                        public void windowClosing(WindowEvent e)
-                        {
-                            super.windowClosing(e);
-                            Adventurer.approvedQuit();
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.exit(-1);
-                }
-            }
-        });
+  /**
+   * Creates the main frame and passes control to it.
+   * <UL>
+   * <LI>Starts a separate Swing thread for the GUI's {@code Swing Event Queue} (SEQ), per Swing's
+   * "strict single-thread rule". All Swing processing occurs from the single SEQ thread. Unlike
+   * older versions of Java, Swing must now be invoked inside an EventQueue {@code Runnable}. As
+   * <i>Core Java</i> (Volume 1, Horstmann & Cornell, (c) 2008, p287) states: "For now, you should
+   * simply consider it a magic incantation that is used to start a Swing program."</LI>
+   * <LI>The Event {@code Scheduler} runs a second thread concurrently to poll the
+   * {@code CommandParser} for user command inputs.</LI>
+   * <LI>Initializes the system by creating necessary singletons, registries, and data files; on
+   * exit, closes all registries.</LI>
+   * </UL>
+   * 
+   * @param args unused command line arguments
+   */
+  public static void main(String[] args)
+  {
+    /** All Swing processing occurs from the single EventQueue thread. */
+    EventQueue.invokeLater(new Runnable() {
+      public void run()
+      {
+        try {
+          new MainframeCiv();
+        } catch (Exception e) {
+          e.printStackTrace();
+          System.exit(-1);
+        }
+      }
+    });
 
-    } // end of static main()
+  } // end of static main()
 
 
-    /** Close all registries and shutdown the system */
-    public static void approvedQuit()
-    {
-        System.exit(0);
-    }
+  /** Close all registries and shutdown the system */
+  public static void approvedQuit()
+  {
+    System.exit(0);
+  }
 
 
-    // /**
-    // * Dump the contents of all the registries for viewing
-    // */
-    // static private void dumpAllRegistries()
-    // {
-    // _rf = RegistryFactory.getInstance();
-    // for (RegKey key : RegKey.values()) {
-    // Registry reg = _rf.getRegistry(key);
-    // List<IRegistryElement> reglist = reg.getAll();
-    // System.out.print("Registry " + key.name());
-    // System.out.println("\t" + reglist.size() + " elements");
-    // System.out.println("\t" + reglist.toString());
-    // }
-    // }
+  // /**
+  // * Dump the contents of all the registries for viewing
+  // */
+  // static private void dumpAllRegistries()
+  // {
+  // _rf = RegistryFactory.getInstance();
+  // for (RegKey key : RegKey.values()) {
+  // Registry reg = _rf.getRegistry(key);
+  // List<IRegistryElement> reglist = reg.getAll();
+  // System.out.print("Registry " + key.name());
+  // System.out.println("\t" + reglist.size() + " elements");
+  // System.out.println("\t" + reglist.toString());
+  // }
+  // }
 } // end of Adventurer class
 

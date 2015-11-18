@@ -22,10 +22,11 @@ import mylib.civ.DataShuttle;
 import org.junit.After;
 import org.junit.Before;
 
-import pdc.character.Hero;
+import chronos.civ.PersonKeys;
+import chronos.pdc.character.Hero;
+import chronos.pdc.character.Hero.MockHero;
 import civ.HeroDisplayCiv;
 import civ.HeroDisplayCiv.MockHeroDisplayCiv;
-import civ.PersonKeys;
 
 /**
  * 

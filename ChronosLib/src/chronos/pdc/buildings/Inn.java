@@ -76,9 +76,6 @@ public class Inn extends Building
   /** Patrons never stay longer than 12 hour*/
   private final int MAX_DURATION = 12 * 60 * 60;
 
-  /** Max patrons starting in the Inn */
-  private final int MAX_STARTERS = 2;
-
   /** Minimum number of patrons that indicate if the Inn is busy or not */
   private int NBR_PATRONS_TO_BE_BUSY = 3;
 
@@ -93,23 +90,22 @@ public class Inn extends Building
 
   /** Used to schedule commands */
   private Scheduler _skedder;
+  
   private final NPCRegistry _npcRegistry;
   private UserMsg _msg;
 
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND RELATED METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
+  // ============================================================
+  // Constructors and constructor helpers
+  // ============================================================
 
   /**
    * Default Constructor, create Inn with default data
    * 
    * @throws ApplicationException if the ctor fails
    */
-  public Inn(Scheduler skedder, NPCRegistry npcRegistry) throws ApplicationException
+  public Inn(NPCRegistry npcRegistry) throws ApplicationException
   {
     super(INN_NAME, INNKEEPER, HOVERTEXT, EXTERIOR, INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
-    _skedder = skedder;
     _npcRegistry = npcRegistry;
     _busyDescription = BUSY_DESC;
     setBusinessHours(OPENTIME, CLOSETIME);
@@ -130,10 +126,6 @@ public class Inn extends Building
     // The starterList has no zero-delay intCmdEnter commands, each containing the
     // Patron who shall enter at the designated delay time.
     List<intCmdPatronEnter> starterList = createStarterList();
-
-    // Reassign MAX_STARTERS number of Patrons (inside the command) to delay = 0 so
-    // they are in the Inn when the Hero enters.
-    // List<intCmdPatronEnter> enterList = createEnterList(starterList);
 
     for (intCmdPatronEnter ce : starterList) {
       // Use the generated enter commands to create the leave commands
@@ -169,33 +161,6 @@ public class Inn extends Building
 
     return cmdStarterList;
   }
-
-  /**
-   * Creates an interim list <code>of intCmdEnter</code> commands with a random delay and duration
-   * for all the <code>Patron</code>s in the <code>PatronRegistry</code>. Each intCmdEnter is
-   * assigned a Patron to enter the Inn when it is their time. <br>
-   * A CommandList is created instead of a Patron list because Events wrap Commands, not Patrons.
-   * 
-   * @return List of random non-zero <code>intCmdEnter</code> commands for each <code>Patron</code>
-   */
-  private List<intCmdPatronEnter> createEnterList(List<intCmdPatronEnter> list)
-  {
-    // Generate a zero-entry Patron up to MAX_STARTER times
-    for (int k = 0; k < MAX_STARTERS;) {
-      // Generate the index of the starting Patrons; adjust for zero-based indexing
-      int enterIndex = _md.roll(1, _patrons.size()) - 1;
-
-      // Get the command and reset the delay for that Command
-      intCmdPatronEnter cmd = list.get(enterIndex);
-      if (cmd.getDelay() != 0) {
-        cmd.setDelay(0);
-        k++;
-      }
-    }
-
-    return list;
-  }
-
 
 
   /*

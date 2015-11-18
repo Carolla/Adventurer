@@ -8,16 +8,15 @@
  */
 
 
-package pdc.character;
+package chronos.pdc.character;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import mylib.pdc.MetaDie;
-import pdc.Inventory;
 import chronos.Chronos;
 import chronos.pdc.Item;
-import chronos.pdc.MiscKeys.ItemCategory;
 
 /**
  * Defines the common methods and attributes for all Klasses. Peasant is the default Klass.
@@ -32,8 +31,7 @@ public abstract class Klass implements Serializable
   static final long serialVersionUID = 1100L;
 
   /** Assign klass specific inventory items */
-  protected abstract Inventory addKlassItems(Inventory inventory);
-  
+  public abstract Inventory addKlassItems(Inventory inventory);  
   
   // KLASS-SPECIFIC ATTRIBUTES and METHODS
   /** Name of the subclass of Klass, e.g, Peasant or Fighter */
@@ -51,6 +49,48 @@ public abstract class Klass implements Serializable
   /** Special klass-specific table of items */
   protected String[] _klassItems = null; 
   
+  
+  public String[][] assignKlassSkills()
+  {
+    return new String[0][0];
+  }
+
+
+  public List<String> addKlassSpells(List<String> spellbook)
+  {
+    return spellbook;
+  }
+
+
+  /**
+   * Swap the largest trait for the prime trait of the klass: <br>
+   * Fighter (STR), Cleric (WIS), Wizard (INT), and Thief (DEX)
+   * 
+   * @param _traits raw traits to rearrange
+   * @return traits after klass adjusted
+   */
+  public int[] adjustTraitsForKlass(int[] _traits)
+  {
+    // Walk the list and find the largest trait
+    int largest = -1;
+    int ndx = -1;
+    for (int k = 0; k < _traits.length; k++) {
+      if (largest < _traits[k]) {
+        largest = _traits[k];
+        ndx = k;
+      }
+    }
+    // Swap the prime trait
+    _traits = swapPrime(_traits, ndx, _primeNdx);
+    return _traits;
+  }
+
+
+  // Assign initial klass-specific inventory
+  public Inventory assignKlassInventory(Inventory inven, ArrayList<Item> items)
+  {
+    return inven;
+  }
   
   /**
    * Create a specific subclass of Klass based on its klass name. <br>
@@ -129,37 +169,6 @@ public abstract class Klass implements Serializable
     MetaDie md = new MetaDie();
     int HP = md.roll(_hpDie) + mod + _initialHP;
     return HP;
-  }
-
-  // Assign initial klass-specific inventory
-  public Inventory assignKlassInventory(Inventory inven, ArrayList<Item> items)
-  {
-    // Basic inventory Items: category, name, quantity, weight (each in fractional lb)
-    inven.addItem(new Item(ItemCategory.EQUIPMENT, "backpack", 1, 7.0));
-    return inven;
-  }
-
-  /**
-   * Swap the largest trait for the prime trait of the klass: <br>
-   * Fighter (STR), Cleric (WIS), Wizard (INT), and Thief (DEX)
-   * 
-   * @param _traits raw traits to rearrange
-   * @return traits after klass adjusted
-   */
-  public int[] adjustTraitsForKlass(int[] _traits)
-  {
-    // Walk the list and find the largest trait
-    int largest = -1;
-    int ndx = -1;
-    for (int k = 0; k < _traits.length; k++) {
-      if (largest < _traits[k]) {
-        largest = _traits[k];
-        ndx = k;
-      }
-    }
-    // Swap the prime trait
-    _traits = swapPrime(_traits, ndx, _primeNdx);
-    return _traits;
   }
 
   /**

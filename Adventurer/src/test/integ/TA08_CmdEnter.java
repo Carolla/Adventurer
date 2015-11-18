@@ -19,17 +19,15 @@ import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.Test;
 
-import pdc.command.CommandFactory;
 import chronos.pdc.Command.Scheduler;
-import chronos.pdc.registry.AdventureRegistry;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.BuildingDisplayCiv;
 import civ.CommandParser;
+import civ.MainActionCiv;
 import civ.MainframeCiv;
 
 /**
@@ -57,6 +55,7 @@ public class TA08_CmdEnter
     private BuildingDisplayCiv _bldgCiv = null;
     private MainframeProxy _mfProxy = null;
     private MainframeCiv _mfCiv;
+    private MainActionCiv _maCiv;
     private BuildingRegistry _bReg = null;
 
     /** List of valid Buildings that can be entered */
@@ -64,29 +63,29 @@ public class TA08_CmdEnter
     private static Scheduler _skedder = new Scheduler();
     private static RegistryFactory _regFactory = new RegistryFactory(_skedder);
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUpBeforeClass() throws Exception
-    {
-        MsgCtrl.auditMsgsOn(false);
-        MsgCtrl.errorMsgsOn(false);
-        
-        _regFactory.initRegistries();
-        _bReg = (BuildingRegistry) _regFactory.getRegistry(RegKey.BLDG);
-
-        // Replace the GUI objects with their test facades
-        _mfProxy = new MainframeProxy();
-        // This will open the BuildingRegistry, which must be closed before exiting
-        _bldgCiv = new BuildingDisplayCiv(_mfProxy, _bReg);
-
-        _mfCiv = new MainframeCiv(_mfProxy, _bldgCiv, (AdventureRegistry) _regFactory.getRegistry(RegKey.ADV));
-        _cp = new CommandParser(_skedder, new CommandFactory(_mfCiv, _bldgCiv));
-        
-        // Get list of names for all buildings that can be entered
-        _bldgs = _bReg.getElementNames();
-    }
+//    /**
+//     * @throws java.lang.Exception
+//     */
+//    @Before
+//    public void setUpBeforeClass() throws Exception
+//    {
+//        MsgCtrl.auditMsgsOn(false);
+//        MsgCtrl.errorMsgsOn(false);
+//        
+//        _regFactory.initRegistries();
+//        _bReg = (BuildingRegistry) _regFactory.getRegistry(RegKey.BLDG);
+//
+//        // Replace the GUI objects with their test facades
+//        _mfProxy = new MainframeProxy();
+//        // This will open the BuildingRegistry, which must be closed before exiting
+//        _bldgCiv = new BuildingDisplayCiv(_mfProxy, _bReg);
+//
+//        _mfCiv = new MainframeCiv(_mfProxy, _bldgCiv, (AdventureRegistry) _regFactory.getRegistry(RegKey.ADV));
+//        _cp = new CommandParser(_skedder, new CommandFactory(_mfCiv, _bldgCiv));
+//        
+//        // Get list of names for all buildings that can be entered
+//        _bldgs = _bReg.getElementNames();
+//    }
 
 
     /**
@@ -244,7 +243,7 @@ public class TA08_CmdEnter
     /** Hero is onTwon, with not current Building, and not inside one */
     private void resetBuildingState()
     {
-        _mfCiv.openTown();
+        _maCiv.openTown();
     }
 
 

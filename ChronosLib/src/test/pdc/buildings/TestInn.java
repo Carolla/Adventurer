@@ -73,7 +73,8 @@ public class TestInn
     @Before
     public void setUp() throws Exception
     {
-        _inn = new Inn(_fakeScheduler, fakeNpcRegistry);
+        _inn = new Inn(fakeNpcRegistry);
+        _inn.setScheduler(_fakeScheduler);
         assertNotNull(_inn);
         _inn.setBusinessHours(TEST_OPEN, TEST_CLOSING);
     }

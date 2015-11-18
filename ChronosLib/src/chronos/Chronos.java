@@ -9,10 +9,12 @@
 
 package chronos;
 
+import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
 
 import mylib.Constants;
+import mylib.MsgCtrl;
 
 
 /**
@@ -29,6 +31,7 @@ import mylib.Constants;
  *          July 19, 2014 // ABC: Refactored after architectural changes to source <br>
  *          July 25, 2014 // ABC: Moved AdvHelpRegistry from Adventurer to shared registry area<br>
  *          Dec 7, 2014 // ABC: Moved platform-independent directory variables to Contants.java <br>
+ *          Oct 28, 2015 // ABC: Added Hero registry path
  */
 public class Chronos
 {
@@ -90,6 +93,8 @@ public class Chronos
 //   System.out.println("ADV_IMAGE_PATH = " + ADV_IMAGE_PATH);
    }
 
+   /** Location of HeroRegistry is uniquely set for now */
+   public static String HeroRegPath = "resources" + FS + "Heroes.reg";
   /** Location of AdventureRegistry */
   public static String AdventureRegPath = REGISTRY_PATH + "Adventures.reg";
   /** Building Registry location. This location can change for test purposes. */
@@ -145,13 +150,38 @@ public class Chronos
   public static final String FONT_PATH = CHRONOS_LIB_RESOURCES_PATH + FS +"fonts" + FS;
   /** Location of font file used for name display */
   static public final String RUNIC_FONT_FILE = RESOURCES_PATH + FS + "fonts" + FS + "RUNE_A.ttf";
-
   /** Location of font file used for English-runic display */
   static public final String RUNIC_ENGLISH_FONT_FILE = FONT_PATH + "RUNENG1.ttf";
-
   /** Location of font file used for English-runic, mixed-case display */
   static public final String RUNIC_ENGLISH2_FONT_FILE = FONT_PATH + "RUNENG2.ttf";
+  /** Global standard font for buttons and widgets */
+  static public final Font STANDARD_FONT = new Font("Tahoma", Font.PLAIN, 24);
+  /** Global Runic font for user interactions */
+  
+  static public final Font RUNIC_FONT = makeRunicFont(14f);
+  /**
+   * Create a Runic font that simulates English letters. <br>
+   * Warning: Be careful of character selection and float size; round-up errors for {@code float} 
+   * sizes can cause overruns on displayed Components.
+   * 
+   * @param height of the font
+   * @return the Font class
+   */
+  static public Font makeRunicFont(float fontHt)
+  {
+    Font font = null;
+    try {
+      Font newFont =
+          Font.createFont(Font.TRUETYPE_FONT, new File(Chronos.RUNIC_ENGLISH2_FONT_FILE));
+      font = newFont.deriveFont(fontHt);
+    } catch (Exception e) {
+      MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
+    }
+    return font;
+  }
 
+
+  
   /** Define half standard deviation range boundary for normal distribution */
   static public final double HALF_SIGMA = (1.0 / 6.0) * 100.0;
   /** Weight and height minimums fall about 84% of average (-half-sigma). */

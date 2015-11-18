@@ -29,24 +29,24 @@ public class Menubar extends JMenuBar
   private MainframeCiv _mfCiv;
 
 
-// ============================================================
+  // ============================================================
   // Constructor and constructor helpers
   // ============================================================
 
   public Menubar(MainframeInterface mainframe, MainframeCiv mfCiv)
   {
-      _mainframe = mainframe;
-      _mfCiv = mfCiv;
-      doConstructorWork();
+    _mainframe = mainframe;
+    _mfCiv = mfCiv;
+    doConstructorWork();
   }
 
 
-    public void doConstructorWork()
-    {
-        setBackground(Color.LIGHT_GRAY);
-        populateAdventureMenu();
-        populateHelpMenu();
-    }
+  public void doConstructorWork()
+  {
+    setBackground(Color.LIGHT_GRAY);
+    populateAdventureMenu();
+    populateHelpMenu();
+  }
 
 
   // ============================================================
@@ -66,7 +66,7 @@ public class Menubar extends JMenuBar
     mnAdventure.add(createMenuItemWithAction("Quit", new ActionListener() {
       public void actionPerformed(ActionEvent e)
       {
-          _mfCiv.quit();
+        _mfCiv.quit();
       }
     }));
   }
@@ -82,19 +82,17 @@ public class Menubar extends JMenuBar
 
     // Setup About Help action
     JMenuItem mntmHelp = new JMenuItem("Help");
-    mntmHelp.addActionListener(new ActionListener()
-    {
+    mntmHelp.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt)
       {
-          _mainframe.showHelp();
+        _mainframe.showHelp();
       }
     });
     mnHelp.add(mntmHelp);
 
     // Setup About Item action
     JMenuItem mntmAbout = new JMenuItem("About...");
-    mntmAbout.addActionListener(new ActionListener()
-    {
+    mntmAbout.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt)
       {
         JDialog dialog = new AboutDialog((JFrame) getParent().getParent().getParent());
@@ -113,18 +111,18 @@ public class Menubar extends JMenuBar
   }
 
 
-//  /**
-//   * Create a menu item that is disabled--until it is implemented
-//   * 
-//   * @param string the name of the menu item
-//   * @return a menu item
-//   */
-//  private JMenuItem createMenuItemWithNoAction(String string)
-//  {
-//    JMenuItem item = new JMenuItem(string);
-//    item.setEnabled(false);
-//    return item;
-//  }
+  // /**
+  // * Create a menu item that is disabled--until it is implemented
+  // *
+  // * @param string the name of the menu item
+  // * @return a menu item
+  // */
+  // private JMenuItem createMenuItemWithNoAction(String string)
+  // {
+  // JMenuItem item = new JMenuItem(string);
+  // item.setEnabled(false);
+  // return item;
+  // }
 
 
   // ============================================================

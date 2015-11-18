@@ -11,12 +11,12 @@ import pdc.command.CmdReturn;
 public class TestCmdReturn
 {
     private CmdReturn _cmdReturn;
-    private FakeMainframeCiv _mfCiv;
+    private FakeMainActionCiv _mfCiv;
 
     @Before
     public void setUp()
     {
-        _mfCiv = new FakeMainframeCiv();
+        _mfCiv = new FakeMainActionCiv();
         _cmdReturn = new CmdReturn(_mfCiv);
     }
 

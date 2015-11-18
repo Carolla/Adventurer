@@ -10,17 +10,20 @@
 package civ;
 
 import hic.HeroDisplay;
-import hic.Mainframe;
+import hic.MainframeInterface;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
-import pdc.Inventory;
-import pdc.character.Hero;
+import mylib.civ.BaseCiv;
+import chronos.civ.PersonKeys;
 import chronos.pdc.AttributeList;
 import chronos.pdc.Item;
 import chronos.pdc.MiscKeys.ItemCategory;
 import chronos.pdc.Skill;
+import chronos.pdc.character.Hero;
+import chronos.pdc.character.Inventory;
 
 /**
  * Output Civ: Creates the GUI widget <code>HeroDisplay</code>, passing output data to it, which
@@ -31,6 +34,7 @@ import chronos.pdc.Skill;
  *          Jul 4 2010 // segregated HIC from PDC <br>
  *          Jan 4 2011 // removed Observer MVP model approach <br>
  *          Oct 1 2015 // revised for new Hero generation rules <br>
+ *          Nov 6, 2015 // revised to be called by NewHeroCiv <br>
  */
 public class HeroDisplayCiv
 {
@@ -38,9 +42,6 @@ public class HeroDisplayCiv
   private Hero _hero = null;
   /** Associated GUI */
   private HeroDisplay _widget = null;
-
-  /** Associated Inventory of the Person */
-  private Inventory _inventory = null;
 
   /** The categories for hunger, to convert Satiety points into a hunger state */
   enum hungerStage {
@@ -55,7 +56,8 @@ public class HeroDisplayCiv
   /** Hero data are converted and sent to the GUI in this EnumMap */
   private EnumMap<PersonKeys, String> _outputMap;
 
-  private Mainframe _mf;
+  /** Reference to parent civ */
+  private MainframeInterface _mf;
 
 
   /*
@@ -67,7 +69,7 @@ public class HeroDisplayCiv
    * 
    * @param hero the model object from which to get the display data
    */
-  public HeroDisplayCiv(Mainframe mf)
+  public HeroDisplayCiv(MainframeInterface mf)
   {
     if (!HeroDisplayCiv.LOADING_CHAR) {
       HeroDisplayCiv.NEW_CHAR = true;
@@ -81,7 +83,7 @@ public class HeroDisplayCiv
   // * Load all person names from the database Method made static because in order to create a
   // * HeroDisplayCiv, a person or person name is needed, which is currently being loaded
   // *
-  // * @return list of people in the dorimtory
+  // * @return list of people in the dormitory
   // */
   // public static List<String> openDormitory()
   // {
@@ -124,17 +126,20 @@ public class HeroDisplayCiv
   }
 
   /**
-   * Display the Hero the HeroDisplay widget
+   * Display the Hero the HeroDisplay widget. 
    * 
+   * @param firstTime Heroes disable Delete button
    * @param hero to display
    */
-  public void displayHero(Hero hero)
+  public void displayHero(Hero hero, boolean firstTime)
   {
     _hero = hero;
     _outputMap = hero.loadAttributes(_outputMap);
-    _widget = new HeroDisplay(this, _mf);
-
-    _mf.addPanel(_widget);
+    _widget = new HeroDisplay(this, firstTime);
+//    String title = String.format("%s:  %s %s %s", _hero.getName(), _hero.getGender(),
+//        _hero.getRaceName(), _hero.getKlassName());
+//    _mf.replaceLeftPanel(_widget, title);
+    _mf.replaceLeftPanel(_widget);
   }
 
 
@@ -143,6 +148,14 @@ public class HeroDisplayCiv
     return _outputMap;
   }
 
+
+  /** Restore the mainframe panels to their previous state */
+  public void back()
+  {
+    _mf.back();
+  }
+
+  
   public List<String> getKlassSkills()
   {
     return _hero.getKlassSkills();
@@ -163,19 +176,19 @@ public class HeroDisplayCiv
    */
   public Inventory getInventory()
   {
-    _inventory = _hero.getInventory();
-    return _inventory;
+    return _hero.getInventory();
   }
 
 
-  /** Retrieve a list of all items in the given invenotry by name
+  /**
+   * Retrieve a list of all items in the given invenotry by name
    * 
-   * @param cat     category of item to build a subset from
+   * @param cat category of item to build a subset from
    * @return the list of names for the subset inventory
    */
   public List<String> getInventoryNames(ItemCategory cat)
   {
-    return _inventory.getNameList(cat);
+    return getInventory().getNameList(cat);
   }
 
   /**
@@ -188,19 +201,19 @@ public class HeroDisplayCiv
   {
     // Create a shuttle to contain the data and convert to widget String
     // format
-    //List<String> skillList = convertSkills(_skills);
+    // List<String> skillList = convertSkills(_skills);
     // if (!Constants.IN_TEST) {
-    //_widget.displaySkills(skillList);
+    // _widget.displaySkills(skillList);
     // }
     return true;
   }
-    
+
   /*
    * @return the length of the inventory (number of Items)
    */
   public int getInventorySize()
   {
-    return _inventory.getNbrItems();
+    return getInventory().getNbrItems();
   }
 
   /**
@@ -211,7 +224,7 @@ public class HeroDisplayCiv
     return _hero.getSpellBook();
   }
 
-  
+
   // /**
   // * Save the Person to a new file. This method pops up a file chooser so the user can select a
   // * filename; else the Hero's name is used. If the Person is newly created, then the Person is
@@ -263,8 +276,8 @@ public class HeroDisplayCiv
   {
     // Create a shuttle to contain the data and convert to widget String
     // format
-    //List<String> items = convertItems(itemList);
-    //_widget.displayInventory(items);
+    // List<String> items = convertItems(itemList);
+    // _widget.displayInventory(items);
     return true;
   }
 
@@ -307,39 +320,43 @@ public class HeroDisplayCiv
   }
 
   /**
-   * Save the Persona to the filename selected
+   * Save the Hero to the filename selected
    * 
-   * @param saveName filename to use for saving the Person
+   * @param overwrite existing Hero in dormitory
    * @return true if the save worked correctly; else false
    */
   public boolean savePerson(boolean overwrite)
   {
-    // return _hero.save(overwrite);
+//    HeroRegistry heroReg = (HeroRegistry) _mf.getRegistry(RegKey.HERO);
+//    return save(overwrite);
     return false;
   }
 
-//  /**
-//   * Convert the Skill object into string fields for list display. All Item fields are concatenated
-//   * into a single delimited string.
-//   * 
-//   * @param _skills list of Skills objects to convert
-//   * @return the string list of output data
-//   */
-//  private List<String> convertSkills(List<Skill> _skills)
-//  {
-//    List<String> skillList = new ArrayList<String>(_skills.size());
-//    for (Skill skill : _skills) {
-//      // Each Skill consists of: name, description, race, klass, and
-//      // action (excluded)
-//      String name = skill.getName();
-//      // String race = skill.getRace();
-//      // String klass = skill.getKlass();
-//      String description = skill.getDescription();
-//      String skillStr = name + BaseCiv.DELIM + description; // race + BaseCiv.DELIM + klass + BaseCiv.DELIM + description;
-//      skillList.add(skillStr);
-//    }
-//    return skillList;
-//  }
+  /**
+   * Convert the Skill object into string fields for list display. All Item fields are concatenated
+   * into a single delimited string.
+   * 
+   * @param _skills list of Skills objects to convert
+   * @return the string list of output data
+   */
+  private List<String> convertSkills(List<Skill> _skills)
+  {
+    List<String> skillList = new ArrayList<String>(_skills.size());
+    for (int k = 0; k < _skills.size(); k++) {
+      // Each Skill consists of: name, description, race, klass, and
+      // action (excluded)
+      Skill skill = _skills.get(k);
+      String name = skill.getName();
+      // String race = skill.getRace();
+      // String klass = skill.getKlass();
+      String description = skill.getDescription();
+      String skillStr = name + BaseCiv.DELIM + description; // race + BaseCiv.DELIM + klass +
+                                                            // BaseCiv.DELIM + description;
+      skillList.add(k, skillStr);
+    }
+    return skillList;
+  }
+
 
   /*
    * PRIVATE METHODS
@@ -449,35 +466,36 @@ public class HeroDisplayCiv
   // }
 
 
-//  /**
-//   * Convert the Item objects into string fields for list display. All Item fields are concatenated
-//   * into a single delimited string.
-//   * 
-//   * @param items list of Item object to convert
-//   * @return the string list of output data
-//   */
-//  private List<String> convertItems(ArrayList<Item> items)
-//  {
-//    List<String> itemList = new ArrayList<String>(items.size());
-//    for (Item item : items) {
-//      // Each item consists of: Inventory category, name, quantity, and
-//      // weight (each)
-//      String cat = item.getCategory().toString();
-//      String name = item.getName();
-//      String qty = String.valueOf(item.getQuantity());
-//      // Convert weight from ounces to lbs and ozs
-//      // int weight = item.getWeight();
-//      // int lbs = weight / Constants.OUNCES_PER_POUND;
-//      // int ozs = weight % Constants.OUNCES_PER_POUND;
-//      // String lbWt = String.valueOf(lbs);
-//      // String ozWt = String.valueOf(ozs);
-//      // Build displayable string
-//      String itemStr = cat + BaseCiv.DELIM + name + BaseCiv.DELIM + qty; // + BaseCiv.DELIM + lbWt
-//      // + BaseCiv.DELIM + ozWt;
-//      itemList.add(itemStr);
-//    }
-//    return itemList;
-//  }
+  // /**
+  // * Convert the Item objects into string fields for list display. All Item fields are
+  // concatenated
+  // * into a single delimited string.
+  // *
+  // * @param items list of Item object to convert
+  // * @return the string list of output data
+  // */
+  // private List<String> convertItems(ArrayList<Item> items)
+  // {
+  // List<String> itemList = new ArrayList<String>(items.size());
+  // for (Item item : items) {
+  // // Each item consists of: Inventory category, name, quantity, and
+  // // weight (each)
+  // String cat = item.getCategory().toString();
+  // String name = item.getName();
+  // String qty = String.valueOf(item.getQuantity());
+  // // Convert weight from ounces to lbs and ozs
+  // // int weight = item.getWeight();
+  // // int lbs = weight / Constants.OUNCES_PER_POUND;
+  // // int ozs = weight % Constants.OUNCES_PER_POUND;
+  // // String lbWt = String.valueOf(lbs);
+  // // String ozWt = String.valueOf(ozs);
+  // // Build displayable string
+  // String itemStr = cat + BaseCiv.DELIM + name + BaseCiv.DELIM + qty; // + BaseCiv.DELIM + lbWt
+  // // + BaseCiv.DELIM + ozWt;
+  // itemList.add(itemStr);
+  // }
+  // return itemList;
+  // }
 
 
   // /**

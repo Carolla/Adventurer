@@ -7,12 +7,11 @@
  * by email: acline@carolla.com
  */
 
-package pdc.character;
+package chronos.pdc.character;
 
-import pdc.Inventory;
-import pdc.character.Hero.PrimeTraits;
 import chronos.pdc.Item;
 import chronos.pdc.MiscKeys.ItemCategory;
+import chronos.pdc.character.Hero.PrimeTraits;
 
 /**
  * @author Al Cline

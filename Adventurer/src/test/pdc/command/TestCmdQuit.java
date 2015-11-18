@@ -2,7 +2,6 @@ package test.pdc.command;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import hic.MainframeInterface;
 
 import java.util.ArrayList;
 
@@ -14,7 +13,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import pdc.command.CmdQuit;
-import test.integ.MainframeProxy;
 import civ.MainframeCiv;
 
 public class TestCmdQuit
@@ -28,9 +26,8 @@ public class TestCmdQuit
     @BeforeClass
     public static void setUpBeforeClass() throws Exception
     {
-        MainframeInterface mfInterface = new MainframeProxy();
         _bdciv = new FakeBuildingDisplayCiv();
-        _mfCiv = new MainframeCiv(mfInterface, _bdciv, null);
+        _mfCiv = new FakeMainframeCiv();
     }
 
     @Before
