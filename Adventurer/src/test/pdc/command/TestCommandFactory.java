@@ -30,6 +30,7 @@ public class TestCommandFactory
         _fakeMfCiv = new FakeMainframeCiv();
         _fakeMaCiv = new FakeMainActionCiv();
         _commandFactory = new CommandFactory(_fakeMaCiv, _fakeMfCiv, _fakeBdCiv);
+        _commandFactory.initMap();
     }
 
     @Test
