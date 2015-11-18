@@ -13,14 +13,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import pdc.command.CmdQuit;
-import civ.MainframeCiv;
 
 public class TestCmdQuit
 {
     
     //iVars
     private CmdQuit _cmdQuit;
-    private static MainframeCiv _mfCiv;
+    private static FakeMainframeCiv _mfCiv;
     private static FakeBuildingDisplayCiv _bdciv;
     
     @BeforeClass
@@ -86,12 +85,10 @@ public class TestCmdQuit
         assertFalse(_cmdQuit.init(emptyArgs));
     }
 
-//    @Test
-//    public void testExec()
-//    {
-//        MsgCtrl.where(this);
-//        
-//        assertTrue(_cmdQuit.exec());
-//    }
+    @Test
+    public void testExec()
+    {
+        assertTrue(_cmdQuit.exec());
+    }
 
 }

@@ -38,17 +38,17 @@ public class CmdReturn extends Command
     /** Format for this command */
     static private final String CMDFMT = "RETURN [to Town]";
 
-    private final MainActionCiv _mfCiv;
+    private final MainActionCiv _maCiv;
 
     /*
      *CONSTRUCTOR(S) AND RELATED METHODS
      */
 
     /** Constructor called by the CommandFactory. There is no delay nor duration. */
-    public CmdReturn(MainActionCiv   mfCiv)
+    public CmdReturn(MainActionCiv maCiv)
     {
         super("CmdReturn", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
-        _mfCiv = mfCiv;
+        _maCiv = maCiv;
     }
 
 
@@ -81,7 +81,7 @@ public class CmdReturn extends Command
     @Override
     public boolean exec()
     {
-        _mfCiv.openTown();
+        _maCiv.openTown();
         return true;
     }
 

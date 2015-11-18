@@ -67,7 +67,7 @@ public class MainframeCiv implements UserMsg
    * Adventurer application. None of these constructors should ever be called anywhere outside of
    * this method and in testing.
    */
-  private void constructMembers()
+  protected void constructMembers()
   {
     _mf = new Mainframe(this);
     

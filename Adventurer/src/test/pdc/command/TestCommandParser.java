@@ -72,9 +72,12 @@ public class TestCommandParser
     @Test
     public void CommandIsScheduledWhenFound()
     {
-        _cp = new CommandParser(_fakeSkedder, new CommandFactory(null, null, null));
+        CommandFactory realCommandFactory = new CommandFactory(null, null, null);
+        realCommandFactory.initMap();
+        _cp = new CommandParser(_fakeSkedder, realCommandFactory);
         _cp.receiveCommand("Return");
-        assertEquals(new CmdReturn(null).getName(), _fakeSkedder.command.getName());
+        CmdReturn expectedCommand = new CmdReturn(new FakeMainActionCiv());
+        assertEquals(expectedCommand.getName(), _fakeSkedder.command.getName());
     }
     
     @Test
@@ -89,6 +92,7 @@ public class TestCommandParser
         public FakeCommandFactory()
         {
             super(null, null, null);
+            initMap();
         }
 
         @Override
