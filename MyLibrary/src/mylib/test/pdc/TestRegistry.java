@@ -162,8 +162,8 @@ public class TestRegistry
     @Test
     public void testAdd()
     {
-        MsgCtrl.auditMsgsOn(false);
-        MsgCtrl.errorMsgsOn(false);
+        MsgCtrl.auditMsgsOn(true);
+        MsgCtrl.errorMsgsOn(true);
         MsgCtrl.where(this);
 
         // Normal Create an object to add and verify

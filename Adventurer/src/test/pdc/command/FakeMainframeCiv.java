@@ -1,10 +1,14 @@
 
 package test.pdc.command;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import civ.MainframeCiv;
 
 public class FakeMainframeCiv extends MainframeCiv
 {
+  List<String> _errors = new ArrayList<String>();
   
   @Override
   protected void constructMembers()
@@ -21,6 +25,6 @@ public class FakeMainframeCiv extends MainframeCiv
   @Override
   public void errorOut(String msg)
   {
-    System.err.println(msg);
+    _errors.add(msg);
   }
 }

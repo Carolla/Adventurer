@@ -260,10 +260,6 @@ public class TestUtilities
   @Test
   public void testFormatDistance()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
-    MsgCtrl.where(this);
-    
     double[] expected = {0.0, 0.0};
     double[] actual = {0.0, 0.0};
     double numFeet = 0.0;

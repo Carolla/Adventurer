@@ -95,8 +95,6 @@ public class TestBuilding
   @After
   public void tearDown() throws Exception
   {
-    _mock = null;
-    _cb = null;
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
   }
@@ -116,8 +114,6 @@ public class TestBuilding
   @Test
   public void testBuilding() throws ApplicationException
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.msgln(this, "\n testBuilding()");
 
     // Normal: Ensure Building is created as expected
@@ -170,10 +166,6 @@ public class TestBuilding
   @Test
   public void testEnter() throws ApplicationException
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\n testEnter()");
-
     // NORMAL Enter during business hours of 9am - 6pm
     MsgCtrl.msgln("\tHero enters at " + _cb.getMeridianTime(1000));
     assertEquals(_cb.getInteriorDescription(), _cb.enter(1000));
@@ -202,10 +194,6 @@ public class TestBuilding
   @Test
   public void testEquals() throws ApplicationException
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\n testEquals()");
-
     // NORMAL compare two identical buildings but different instances
     ConcreteBuilding cb2 = new ConcreteBuilding(NAME, MASTER, HOVERTEXT, INTRO, DESC);
     assertTrue(cb2.equals(_cb));
@@ -228,10 +216,6 @@ public class TestBuilding
   @Test
   public void testGetMeridianTime() throws ApplicationException
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\n testGetMeridiantTime()");
-
     // NORMAL
     int testOpen = 800;
     int testClose = 1700;
@@ -305,10 +289,6 @@ public class TestBuilding
   @Test
   public void testAllBuildingDescs() throws ApplicationException
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
-    MsgCtrl.msgln(this, "\n testAllBuildingDescs()");
-
     Building b = null;
     // Create the buildings and dump their contents
     b = new Bank();
