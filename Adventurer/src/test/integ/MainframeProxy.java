@@ -25,167 +25,158 @@ import java.awt.Dimension;
  */
 public class MainframeProxy implements MainframeInterface
 {
-    /** Buffer for holding messages for auditing */
-    private String _msg;
-    private String _errMsg;
+  /** Buffer for holding messages for auditing */
+  private String _msg;
+  private String _errMsg;
 
 
-    /** Default constructor */
-    public MainframeProxy()
-    {
-        // MsgCtrl.auditMsgsOn(false);
-        // MsgCtrl.errorMsgsOn(false);
-    }
+  /** Default constructor */
+  public MainframeProxy()
+  {
+    // MsgCtrl.auditMsgsOn(false);
+    // MsgCtrl.errorMsgsOn(false);
+  }
 
 
-    /** Replace the button panel with the final IOPanel */
-    public void addIOPanel()
-    {
-        // MsgCtrl.where(this);
-    }
+  /** Replace the button panel with the final IOPanel */
+  public void addIOPanel()
+  {
+    // MsgCtrl.where(this);
+  }
 
 
-    /**
-     * Display error text into the output panel
-     * 
-     * @param imagePath text description of image location
-     */
-    public void displayErrorText(String errText)
-    {
-        // MsgCtrl.where(this);
-        // MsgCtrl.errMsgln("\t" + errText);
-        _errMsg = errText;
-    }
+  /**
+   * Display error text into the output panel
+   * 
+   * @param imagePath text description of image location
+   */
+  public void displayErrorText(String errText)
+  {
+    // MsgCtrl.where(this);
+    // MsgCtrl.errMsgln("\t" + errText);
+    _errMsg = errText;
+  }
 
-    /**
-     * Display the text into the output panel
-     * 
-     * @param text to be displayed
-     */
-    public void displayText(String text)
-    {
-        // MsgCtrl.where(this);
-        _msg = text;
-    }
+  /**
+   * Display the text into the output panel
+   * 
+   * @param text to be displayed
+   */
+  public void displayText(String text)
+  {
+    // MsgCtrl.where(this);
+    _msg = text;
+  }
 
-    public String errMsgOut()
-    {
-        // MsgCtrl.where(this);
-        return _errMsg;
-    }
+  public String errMsgOut()
+  {
+    // MsgCtrl.where(this);
+    return _errMsg;
+  }
 
-    /**
-     * Return last message out and clear buffer
-     * 
-     * @return whatever message was last intended for the GUI
-     */
-    public String msgOut()
-    {
-        // MsgCtrl.where(this);
-        return _msg;
-    }
-
-
-    /**
-     * Display a prompt message asking for confirmation
-     * 
-     * @param mesg question to ask for confirmation
-     * @return true if the user selected YES
-     */
-    public boolean msgPrompt(String msg)
-    {
-        // MsgCtrl.where(this);
-        return true;
-    }
+  /**
+   * Return last message out and clear buffer
+   * 
+   * @return whatever message was last intended for the GUI
+   */
+  public String msgOut()
+  {
+    // MsgCtrl.where(this);
+    return _msg;
+  }
 
 
-    /**
-     * Define a bounding rectangle to highlight a building
-     * 
-     * @param rect rectangle around the building
-     */
-    public void setBuilding(BuildingRectangle rect)
-    {
-        // MsgCtrl.where(this);
-    }
+  /**
+   * Display a prompt message asking for confirmation
+   * 
+   * @param mesg question to ask for confirmation
+   * @return true if the user selected YES
+   */
+  public boolean msgPrompt(String msg)
+  {
+    // MsgCtrl.where(this);
+    return true;
+  }
 
 
-    public String getMsg()
-    {
-      return _msg;
-    }
+  /**
+   * Define a bounding rectangle to highlight a building
+   * 
+   * @param rect rectangle around the building
+   */
+  public void setBuilding(BuildingRectangle rect)
+  {
+    // MsgCtrl.where(this);
+  }
 
 
-    /** Return the size of the image space; set here temporarily */
-    public Dimension getImagePanelSize()
-    {
-        // MsgCtrl.where(this);
-        return new Dimension(800, 600);
-    }
-
-    /**
-     * Display a prompt for user to asnwer YES or NO
-     * 
-     * @param text to be displayed
-     */
-    @Override
-    public boolean displayPrompt(String text)
-    {
-        // MsgCtrl.where(this);
-        return true;
-    }
+  public String getMsg()
+  {
+    return _msg;
+  }
 
 
-    /*
-     * Misplaced redraw command in BuildingDisplayCiv
-     */
-    @Override
-    public void redraw()
-    {
-        // MsgCtrl.where(this);
-    }
+  /** Return the size of the image space; set here temporarily */
+  public Dimension getImagePanelSize()
+  {
+    // MsgCtrl.where(this);
+    return new Dimension(800, 600);
+  }
 
-    @Override
-    public void repaint()
-    {}
-
-
-    @Override
-    public void setTitle(String title)
-    {
-        // TODO Auto-generated method stub
-
-    }
+  /**
+   * Display a prompt for user to asnwer YES or NO
+   * 
+   * @param text to be displayed
+   */
+  @Override
+  public boolean displayPrompt(String text)
+  {
+    // MsgCtrl.where(this);
+    return true;
+  }
 
 
-    @Override
-    public void showHelp()
-    {
-        // TODO Auto-generated method stub
-        
-    }
+  /*
+   * Misplaced redraw command in BuildingDisplayCiv
+   */
+  @Override
+  public void redraw()
+  {
+    // MsgCtrl.where(this);
+  }
+
+  @Override
+  public void setTitle(String title)
+  {
+    // MsgCtrl.where(this);
+  }
 
 
-    @Override
-    public void back()
-    {
-      // TODO Auto-generated method stub
-      
-    }
+  @Override
+  public void showHelp()
+  {
+    // MsgCtrl.where(this);
+  }
 
 
-    @Override
-    public void replaceLeftPanel(ChronosPanel leftPanel)
-    {
-      // TODO Auto-generated method stub
-      
-    }
-    @Override
-    public void replaceRightPanel(ChronosPanel rightPanel)
-    {
-      // TODO Auto-generated method stub
-      
-    }
+  @Override
+  public void back()
+  {
+    // MsgCtrl.where(this);
+  }
+
+
+  @Override
+  public void replaceLeftPanel(ChronosPanel leftPanel)
+  {
+    // MsgCtrl.where(this);
+  }
+
+  @Override
+  public void replaceRightPanel(ChronosPanel rightPanel)
+  {
+    // MsgCtrl.where(this);
+  }
 
 } // end of MainframeProxy class
 

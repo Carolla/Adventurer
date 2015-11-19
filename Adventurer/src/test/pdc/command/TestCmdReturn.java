@@ -4,22 +4,19 @@ package test.pdc.command;
 import static org.junit.Assert.fail;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-
-import pdc.command.CmdReturn;
 
 public class TestCmdReturn
 {
-  private CmdReturn _cmdReturn;
-  private FakeBuildingDisplayCiv _bdCiv;
-
-  @Before
-  public void setUp()
-  {
-    _bdCiv = new FakeBuildingDisplayCiv();
-    _cmdReturn = new CmdReturn(_bdCiv);
-  }
+//  private CmdReturn _cmdReturn;
+//  private FakeBuildingDisplayCiv _bdCiv;
+//
+//  @Before
+//  public void setUp()
+//  {
+//    _bdCiv = new FakeBuildingDisplayCiv();
+//    _cmdReturn = new CmdReturn(_bdCiv);
+//  }
 
   @After
   public void tearDown()

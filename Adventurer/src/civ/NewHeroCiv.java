@@ -124,14 +124,14 @@ public class NewHeroCiv extends BaseCiv
    *        that order)
    * @return false if error widget needs to be displayed
    */
-  public boolean validate(EnumMap<HeroInput, String> inputMap)
+  public ErrorCode validate(EnumMap<HeroInput, String> inputMap)
   {
     String name = inputMap.get(HeroInput.NAME);
     ErrorCode err = isValid(name);
     if (err == ErrorCode.NO_ERROR) {
       err = isUnique(name);
     }
-    return err == ErrorCode.NO_ERROR;
+    return err;
   }
 
   /**

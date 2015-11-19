@@ -19,7 +19,6 @@ import java.util.function.Supplier;
 import chronos.pdc.Command.Command;
 import chronos.pdc.Command.NullCommand;
 import civ.BuildingDisplayCiv;
-import civ.MainActionCiv;
 import civ.MainframeCiv;
 
 
@@ -45,12 +44,10 @@ public class CommandFactory
 
   private final BuildingDisplayCiv _bdCiv;
   private final MainframeCiv _mfCiv;
-  private final MainActionCiv _maCiv;
 
   /** Keep a table for command, as lambda functions */
-  public CommandFactory(MainActionCiv maCiv, MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
+  public CommandFactory(MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
   {
-    _maCiv = maCiv;
     _mfCiv = mfCiv;
     _bdCiv = bdCiv;
   }

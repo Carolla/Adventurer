@@ -15,7 +15,6 @@ import java.util.List;
 
 import chronos.pdc.Command.Command;
 import civ.BuildingDisplayCiv;
-import civ.MainframeCiv;
 
 
 /**
@@ -43,7 +42,6 @@ public class CmdExit extends Command
   /** Command format */
   static private final String CMDFMT = "EXIT";
 
-  private MainframeCiv _mfCiv;
   private BuildingDisplayCiv _bldgCiv;
 
   /*
@@ -58,7 +56,6 @@ public class CmdExit extends Command
   public CmdExit(BuildingDisplayCiv bdCiv)
   {
     super("CmdExit", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
-//    _mfCiv = mfCiv;
     _bldgCiv = bdCiv;
   }
 
@@ -92,7 +89,6 @@ public class CmdExit extends Command
   {
     _bldgCiv.leaveBuilding();
     _bldgCiv.quit();
-//    _mfCiv.quit();
     return false;
   }
 

@@ -24,7 +24,6 @@ import org.junit.Before;
 
 import chronos.civ.PersonKeys;
 import chronos.pdc.character.Hero;
-import chronos.pdc.character.Hero.MockHero;
 import civ.HeroDisplayCiv;
 import civ.HeroDisplayCiv.MockHeroDisplayCiv;
 

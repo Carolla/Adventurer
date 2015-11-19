@@ -72,7 +72,7 @@ public class TestCommandParser
     @Test
     public void CommandIsScheduledWhenFound()
     {
-        CommandFactory realCommandFactory = new CommandFactory(null, null, null);
+        CommandFactory realCommandFactory = new CommandFactory(null, null);
         realCommandFactory.initMap();
         _cp = new CommandParser(_fakeSkedder, realCommandFactory);
         _cp.receiveCommand("Return");
@@ -91,7 +91,7 @@ public class TestCommandParser
     {
         public FakeCommandFactory()
         {
-            super(null, null, null);
+            super(null, null);
             initMap();
         }
 

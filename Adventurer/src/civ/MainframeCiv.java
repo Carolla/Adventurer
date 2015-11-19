@@ -10,7 +10,6 @@
 package civ;
 
 import hic.ChronosPanel;
-import hic.HeroDisplay;
 import hic.IOPanel;
 import hic.ImagePanel;
 import hic.Mainframe;
@@ -82,7 +81,7 @@ public class MainframeCiv extends BaseCiv
     // Create the left side panel to hold the main action buttons */
     mainActionCiv = new MainActionCiv(this, (AdventureRegistry) _rf.getRegistry(RegKey.ADV));    
     
-    CommandFactory cmdFactory = new CommandFactory(mainActionCiv, this, _bldgCiv);
+    CommandFactory cmdFactory = new CommandFactory(this, _bldgCiv);
     cmdFactory.initMap();
     _cp = new CommandParser(skedder, cmdFactory);
 

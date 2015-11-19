@@ -1,6 +1,5 @@
 package test.pdc.command;
 
-import test.integ.MainframeProxy;
 import chronos.pdc.buildings.Building;
 import civ.BuildingDisplayCiv;
 
@@ -18,7 +17,6 @@ public class FakeBuildingDisplayCiv extends BuildingDisplayCiv
     public String _displayedBldg;
     public String _displayedImg;
     public String _displayedText;
-    private Building _currentBldg;
     
     @Override
     public void enterBuilding(String name)
@@ -84,9 +82,10 @@ public class FakeBuildingDisplayCiv extends BuildingDisplayCiv
     }
         
     @Override
-    public void inspectTarget(String target)
+    public String inspectTarget(String target)
     {
-      super.inspectTarget(target);
-      _displayedText = ((MainframeProxy) _frame).getMsg();
+      String result = super.inspectTarget(target);
+      _displayedText = result;
+      return result;
     }
 }

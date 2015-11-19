@@ -11,8 +11,11 @@
 
 package civ;
 
+import hic.BuildingRectangle;
+import hic.Mainframe;
+
 import java.awt.Color;
-import java.awt.Image;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
@@ -23,12 +26,6 @@ import java.util.TreeMap;
 import chronos.pdc.Adventure;
 import chronos.pdc.buildings.Building;
 import chronos.pdc.registry.BuildingRegistry;
-import hic.BuildingRectangle;
-import hic.ChronosPanel;
-import hic.IOPanel;
-import hic.MainframeInterface;
-import pdc.Util;
-import pdc.command.CommandFactory;
 
 /**
  * Manages the town and buildings displays and text descriptions, both interior and exterior.
@@ -52,7 +49,7 @@ public class BuildingDisplayCiv extends BaseCiv
   /** The Hero is on town, not at any particular building */
   private boolean _onTown = true;
   /** The building that is currently displayed, either inside or outside */
-  private Building _currentBldg;
+  protected Building _currentBldg;
   /** Flag to indicate whether here is inside the building (ENTER) or outside (APPROACH) */
   private boolean _insideBldg = false;
 
@@ -149,10 +146,7 @@ public class BuildingDisplayCiv extends BaseCiv
       _insideBldg = false;
       _onTown = false;
 
-      // Show the building description and image
-      _mfCiv.displayImage(targetBuilding.getName(), targetBuilding.getExtImagePath());
-      _mfCiv.displayText(targetBuilding.getExteriorDescription());
-
+      displayBuilding(targetBuilding, EXTERIOR);
       return true;
     } else {
       _mfCiv.displayText(ERRMSG_NOBLDG);
@@ -362,10 +356,12 @@ public class BuildingDisplayCiv extends BaseCiv
   /** Create the clickable areas on the town view to indicate a selected Building */
   private void createBuildingBoxes()
   {
+    Dimension displaySize = Mainframe.getWindowSize();
+    Dimension halfDisplaySize = new Dimension(displaySize.height, displaySize.width / 2);
     for (int i = 0; i < DEFAULT_BUILDINGS.length; i++) {
       String bName = DEFAULT_BUILDINGS[i][0];
       BuildingRectangle r =
-          new BuildingRectangle(bName, colorArray[i], _imagePanel.getPreferredSize(),
+          new BuildingRectangle(bName, colorArray[i], halfDisplaySize,
               buildingLayouts[i]);
       _buildingList.put(bName, r);
     }
@@ -413,11 +409,14 @@ public class BuildingDisplayCiv extends BaseCiv
   }
 
 
-  public void inspectTarget(String target)
+  public String inspectTarget(String target)
   {
+    String result = "";
     if (_currentBldg != null) {
-      String result = _currentBldg.inspect(target);
+      result = _currentBldg.inspect(target);
       _mfCiv.displayText(result);
+      return result;
     }
+    return result;
   }
 } // end of BuildingDisplayCiv class

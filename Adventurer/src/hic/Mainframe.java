@@ -34,7 +34,6 @@ import mylib.hic.IHelpText;
 import net.miginfocom.swing.MigLayout;
 import chronos.Chronos;
 import civ.Adventurer;
-import civ.MainActionCiv;
 import civ.MainframeCiv;
 
 /**
@@ -84,27 +83,7 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
 
 
   /** JPanel to hold various images; this panel resides in the _rightHolder */
-  private ChronosPanel _imagePanel;
-
   private MainframeCiv _mfCiv;
-  private MainActionCiv _mainActionCiv;
-  // private IOPanel _iop;
-
-<<<<<<< HEAD
-  /** Title of the IOPanel of left side */
-  private final String IOPANEL_TITLE = " Transcript ";
-=======
-  // private List<String> _partyHeros = new ArrayList<String>();
-  // private List<String> _summonableHeroes;
-
-  // /** Title of the IOPanel of left side */
-  // private final String IOPANEL_TITLE = " Transcript ";
->>>>>>> origin/master
-
-//   /** Runic Font that pervades the text of the screens */
-//   private final Font _runicFont = Chronos.RUNIC_FONT;
-//   /** Standard Font for buttons, help, etc */
-//   private final Font _stdFont = Chronos.STANDARD_FONT;
 
   /** Singleton Help Dialog for all help text */
   private HelpDialog _helpdlg;
@@ -152,36 +131,19 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
    * context-sensitive help text when requested. Creates the {@code MainframeCiv} which takes
    * manages program control at the highest level.
    */
-<<<<<<< HEAD
-  public Mainframe(MainframeCiv mfCiv)
-=======
   public Mainframe(MainframeCiv mfciv)
->>>>>>> origin/master
   {
     _mfCiv = mfciv;
     // Define the graphic elements
     setupSizeAndBoundaries();
-    createFrameAndMenubar(); // Depends on class members not being NULL
-<<<<<<< HEAD
-    addImagePanel(); // add image panel on right for adding images later
-    redraw();
-
-    // Initiate the MainframeCiv's state (validation and data management) within those elements
-    _mfCiv = mfCiv;
-=======
->>>>>>> origin/master
+    createFrameAndMenubar();
 
     // Create the one time help dialog
     prepareHelpDialog();
 
     // Display the Mainframe and panels now
-    redraw();
     setVisible(true);
-<<<<<<< HEAD
-
-
-=======
->>>>>>> origin/master
+    redraw();
   }
 
 
@@ -204,15 +166,9 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
    */
   public void back()
   {
-<<<<<<< HEAD
-    //Remove old panel
-    if (!_panelStack.isEmpty()) {
-      _panelStack.pop();
-=======
     // Remove the current panel
     if (!_leftPanelStack.isEmpty()) {
       _leftPanelStack.pop();
->>>>>>> origin/master
     }
 
     // Pop a second time to get to the previous panel
@@ -221,31 +177,6 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     }
   }
 
-
-  // /**
-  // * Display error text onto the scrolling output panel
-  // *
-  // * @param msg text to append to existing text in panel
-  // */
-  // public void displayErrorText(String msg)
-  // {
-  // _iop.displayErrorText(msg);
-  // }
-  //
-  //
-  // /**
-  // * Display image and associated test to the IOPanel
-  // *
-  // * @param msg text to append to text in IOPanel
-  // * @param image to display in Image Panel
-  // */
-  // public void displayImageAndText(String msg, Image image)
-  // {
-  // displayText(msg);
-  // _imagePanel.setImage(image);
-  // redraw();
-  // }
-  //
   /**
    * Display a prompt, asking a question of the user
    *
@@ -263,52 +194,6 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     }
     return false;
   }
-
-  // /**
-  // * Display text onto the scrolling output panel
-  // *
-  // * @param msg text to append to existing text in panel
-  // */
-  // public void displayText(String msg)
-  // {
-  // _iop.displayText(msg);
-  // _iop.setFocusOnCommandWindow();
-  // }
-
-
-  public Dimension getImagePanelSize()
-  {
-    return _rightHolder.getSize();
-  }
-
-  // public void mouseClicked(MouseEvent e)
-  // {
-  // _mainActionCiv.returnToTown(e.getPoint());
-  // }
-  //
-  // public void mouseDragged(MouseEvent e)
-  // {
-  // _mainActionCiv.setBuildingSelected(e.getPoint());
-  // }
-  //
-  // public void mouseEntered(MouseEvent e)
-  // {}
-  //
-  // public void mouseExited(MouseEvent e)
-  // {}
-  //
-  // public void mouseMoved(MouseEvent e)
-  // {
-  // // _mfCiv.handleMouseMovement(e.getPoint());
-  // _mainActionCiv.setBuildingSelected(e.getPoint());
-  // }
-  //
-  // public void mousePressed(MouseEvent e)
-  // {}
-  //
-  // public void mouseReleased(MouseEvent e)
-  // {}
-
 
   public void redraw()
   {
@@ -376,38 +261,8 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     // Save the state for later
     _rightPanelStack.push(newPanel);
 
-<<<<<<< HEAD
-  public void setHeroList(List<String> list)
-  {
-=======
     newPanel.setVisible(true);
     redraw();
->>>>>>> origin/master
-  }
-
-
-//  /**
-//   * Display an image in the Image panel
-//   *
-//   * @param image to display on the rightside
-//   */
-//  public void setImage(Image image)
-//  {
-//    _imagePanel.setImage(image);
-//    redraw();
-//  }
-
-
-  /**
-   * Display a title onto the border of the right side image panel. Add one space char on either
-   * side for aesthetics
-   *
-   * @param title of the panel to set
-   */
-  public void setImageTitle(String title)
-  {
-    TitledBorder border = (TitledBorder) _rightHolder.getBorder();
-    border.setTitle(" " + title + " ");
   }
 
 
@@ -425,18 +280,6 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
   }
 
   /**
-   * Display a title onto the border of the right side Panel
-   *
-   * @param title of the panel to set
-   */
-  public void setRightLeftPanelTitle(String title)
-  {
-    TitledBorder border = (TitledBorder) _leftHolder.getBorder();
-    border.setTitle(title);
-  }
-
-
-  /**
    * Display the help text for this mainframe; implements {@code IHelpText}
    */
   public void showHelp()
@@ -449,94 +292,6 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
   // ============================================================
   // Private Methods
   // ============================================================
-
-  // /**
-  // * Layout the image panel on the right side of the frame, with mouse listeners.
-  // */
-  // private void addImagePanel()
-  // {
-  // _imagePanel = ImagePanel.getInstance();
-  //
-  // _rightHolder.addMouseListener(Mainframe.this);
-  // _rightHolder.addMouseMotionListener(Mainframe.this);
-  // _rightHolder.add(_imagePanel);
-  // }
-
-
-  // private String getBorderTitle()
-  // {
-  // TitledBorder border = (TitledBorder) _leftHolder.getBorder();
-  // return border.getTitle();
-  // }
-
-  // /**
-  // * Create the behavior for selecting an adventure, which drives the frame update. <br>
-  // * Warning: Known bug with MigLayout in that {@code float} font sizes can cause overruns on
-  // * round-up calculations. "Choose your Adventure" overruns the button length, but
-  // * "Select your Adventure" does not, despite being the same number of characters!
-  // *
-  // * @return the button created
-  // */
-  // private JButton createAdventureButton()
-  // {
-  // JButton button = createButtonWithTextAndIcon(ADV_IMAGE, "Select your Adventure ");
-  // button.addActionListener(new ActionListener() {
-  // public void actionPerformed(ActionEvent e)
-  // {
-  // ArrayList<String> adventures = _mfCiv.getAdventures();
-  // Object[] adventuresArr = adventures.toArray();
-  // Object selectedValue = JOptionPane.showInputDialog(
-  // Mainframe.this, "Select an Adventure", "Adventures",
-  // JOptionPane.INFORMATION_MESSAGE, null, adventuresArr, adventuresArr[0]);
-  // if (selectedValue != null) {
-  // // System.out.println("Adventure selected was: " + selectedValue);
-  // // _mfCiv.loadSelectedAdventure(selectedValue.toString());
-  // _mainActionCiv.loadSelectedAdventure(selectedValue.toString());
-  // }
-  // }
-  // });
-  // return button;
-  // }
-  //
-  // /**
-  // * Create the Adventure, Heroes, and Create-Hero buttons, and button panel for them
-  // */
-  // private void createActionPanel()
-  // {
-  // JButton adventureButton = createAdventureButton();
-  // JButton summonButton = createSummonHeroesButton();
-  // JButton creationButton = createNewHeroButton();
-  //
-  // // Create the Civ to handle the main action buttons
-  // _mainActionCiv = new MainActionCiv(this);
-  //
-  // JPanel buttonPanel = new JPanel();
-  // // Align all buttons in a single column
-  // buttonPanel.setLayout(new MigLayout("wrap 1"));
-  // buttonPanel.setPreferredSize(new Dimension(
-  // (int) (USERWIN_WIDTH - FRAME_PADDING) / 2, USERWIN_HEIGHT - FRAME_PADDING));
-  // buttonPanel.setBackground(Constants.MY_BROWN.brighter());
-  //
-  // /** Buttons are at 25% to allow space for Command Line later */
-  // buttonPanel.add(adventureButton, "hmax 25%, grow");
-  // buttonPanel.add(summonButton, "hmax 25%, grow");
-  // buttonPanel.add(creationButton, "hmax 25%, grow");
-  //
-  // _leftHolder.add(buttonPanel);
-  // _leftPanelState = buttonPanel;
-  // _leftTitleState = getBorderTitle();
-  // }
-
-  // public JButton createButtonWithTextAndIcon(String imageFilePath, String buttonText)
-  // {
-  // JButton button = new JButton(buttonText);
-  // button.setBackground(Constants.MY_BROWN.brighter().brighter());
-  //
-  // button.setFont(_stdFont);
-  // button.setIcon(new ImageIcon(Chronos.ADV_IMAGE_PATH + imageFilePath));
-  // button.setIconTextGap(40);
-  // return button;
-  // }
 
   /**
    * Create mainframe layout and menubar; add left and right panel holders
@@ -553,11 +308,11 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     setJMenuBar(new Menubar(this, _mfCiv));
 
     // Define a left and right ChronosPanel to manage subordinate right- and left-side panels
-    _leftHolder = new ChronosPanel(_mfCiv);
+    _leftHolder = new ChronosPanel();
     _leftHolder.setLayout(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
     _leftHolder = makePanelAsHolder(_leftHolder, Constants.MY_BROWN, Color.WHITE);
 
-    _rightHolder = new ChronosPanel(_mfCiv);
+    _rightHolder = new ChronosPanel();
     _rightHolder.setLayout(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
     _rightHolder.setTitle(" ");
     _rightHolder = makePanelAsHolder(_rightHolder, Constants.MY_BROWN, Color.WHITE);
@@ -567,27 +322,6 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     _contentPane.setFocusable(true);
   }
 
-//  /**
-//   * Create the main button panel and civ for the top-level buttons and insert on left side of
-//   * mainframe
-//   */
-//  private void createActionPanel()
-//  {
-//    // Get the action panel from its civ
-//    MainActionCiv mainActionCiv = new MainActionCiv(this, _mfCiv);
-//    replaceLeftPanel(mainActionCiv.getActionPanel());
-//  }
-
-
-
-//  /** Create the image panel civ and widget, and set initial image */
-//  private void createImagePanel()
-//  {
-//    // Get the image panel from its civ
-//    _imagePanel = _mfCiv.getImagePanel();
-//    setImage(_mfCiv.getInitialImage());
-//    setImageTitle(_mfCiv.getInitialTitle());
-//  }
 
   /**
    * Create a holder for the left or right side of the frame, with all cosmetics. Holders will have
@@ -693,6 +427,4 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     }
 
   } // end of Terminator inner class
-
-
 } // end of Mainframe outer class

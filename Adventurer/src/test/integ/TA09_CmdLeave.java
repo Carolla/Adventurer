@@ -25,8 +25,6 @@ import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.BuildingDisplayCiv;
 import civ.CommandParser;
-import civ.MainActionCiv;
-import civ.MainframeCiv;
 
 /**
  * Leave the interior of a Building. The EXIT command is a synonym.
@@ -40,9 +38,6 @@ public class TA09_CmdLeave
 {
   static private CommandParser _cp = null;
   static private BuildingDisplayCiv _bldgCiv = null;
-  static private MainframeProxy _mfProxy = null;
-  static private MainframeCiv _mfCiv;
-  static private MainActionCiv _maCiv;
   static private RegistryFactory _regFactory = null;
   static private BuildingRegistry _bReg = null;
 

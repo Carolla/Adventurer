@@ -25,14 +25,10 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
 import mylib.Constants;
-import mylib.hic.ShuttleList;
 import net.miginfocom.swing.MigLayout;
-import pdc.command.CommandFactory;
 import chronos.Chronos;
 import chronos.pdc.Adventure;
-import chronos.pdc.Command.Scheduler;
 import chronos.pdc.registry.AdventureRegistry;
-import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.HeroRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
@@ -298,45 +294,45 @@ public class MainActionCiv extends BaseCiv
         // showPartyPickerWhenMembersAlreadySelected();
         // }
       }
-
-      private void showPartyPickerWhenPartyEmpty()
-      {
-        // padHeroes(_summonableHeroes);
-        // final ShuttleList slist = new ShuttleList(_summonableHeroes);
-        // setPropsForShuttleList(slist);
-      }
-
-      private void showPartyPickerWhenMembersAlreadySelected()
-      {
-        // final ShuttleList slist = new ShuttleList(_summonableHeroes, _partyHeros);
-        // setPropsForShuttleList(slist);
-      }
-
-      private void setPropsForShuttleList(final ShuttleList slist)
-      {
-        // slist.setTitle("Choose your Adventurers!");
-        // slist.addActionListener(new ActionListener() {
-        // public void actionPerformed(ActionEvent arg0)
-        // {
-        // List<String> list = new ArrayList<String>();
-        // for (Object s : slist.getSelectedItems()) {
-        // list.add(s.toString());
-        // }
-        // setHeroList(list);
-        // slist.dispose();
-        // }
-        // });
-        // slist.setVisible(true);
-      }
-
-      private void padHeroes(List<String> list)
-      {
-        // if (list.size() < 3) {
-        // list.add("Gronkhar the Smelly");
-        // list.add("Siobhan the Obsiquious");
-        // list.add("Sir Will-not-be-appearing-in-this-movie");
-        // }
-      }
+//
+//      private void showPartyPickerWhenPartyEmpty()
+//      {
+//        // padHeroes(_summonableHeroes);
+//        // final ShuttleList slist = new ShuttleList(_summonableHeroes);
+//        // setPropsForShuttleList(slist);
+//      }
+//
+//      private void showPartyPickerWhenMembersAlreadySelected()
+//      {
+//        // final ShuttleList slist = new ShuttleList(_summonableHeroes, _partyHeros);
+//        // setPropsForShuttleList(slist);
+//      }
+//
+//      private void setPropsForShuttleList(final ShuttleList slist)
+//      {
+//        // slist.setTitle("Choose your Adventurers!");
+//        // slist.addActionListener(new ActionListener() {
+//        // public void actionPerformed(ActionEvent arg0)
+//        // {
+//        // List<String> list = new ArrayList<String>();
+//        // for (Object s : slist.getSelectedItems()) {
+//        // list.add(s.toString());
+//        // }
+//        // setHeroList(list);
+//        // slist.dispose();
+//        // }
+//        // });
+//        // slist.setVisible(true);
+//      }
+//
+//      private void padHeroes(List<String> list)
+//      {
+//        // if (list.size() < 3) {
+//        // list.add("Gronkhar the Smelly");
+//        // list.add("Siobhan the Obsiquious");
+//        // list.add("Sir Will-not-be-appearing-in-this-movie");
+//        // }
+//      }
     });
     return button;
   }

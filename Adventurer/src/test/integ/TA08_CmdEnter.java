@@ -22,13 +22,10 @@ import org.junit.AfterClass;
 import org.junit.Test;
 
 import chronos.pdc.Command.Scheduler;
-import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.BuildingDisplayCiv;
 import civ.CommandParser;
-import civ.MainActionCiv;
-import civ.MainframeCiv;
 
 /**
  * Enter a specified building from the building's exterior or from the town. If the Hero is outside
@@ -53,11 +50,7 @@ public class TA08_CmdEnter
 {
     private CommandParser _cp = null;
     private BuildingDisplayCiv _bldgCiv = null;
-    private MainframeProxy _mfProxy = null;
-    private MainframeCiv _mfCiv;
-    private MainActionCiv _maCiv;
-    private BuildingRegistry _bReg = null;
-
+    
     /** List of valid Buildings that can be entered */
     private List<String> _bldgs = null;
     private static Scheduler _skedder = new Scheduler();

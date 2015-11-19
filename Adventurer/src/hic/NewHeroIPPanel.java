@@ -539,9 +539,11 @@ public class NewHeroIPPanel extends ChronosPanel
     input.put(HeroInput.KLASS, _klassName);
 
     // Call the Civ to validate. If good, Civ creates the Hero; else display error widget
-    if (!_nhCiv.validate(input)) {
-      input.clear();
-    }
+    ErrorCode err = _nhCiv.validate(input);
+    if (err != ErrorCode.NO_ERROR) {
+      input.clear(); //empty input is a failure
+      showErrorMessage(err);
+    } 
     return input;
   }
 
