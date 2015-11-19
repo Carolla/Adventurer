@@ -10,8 +10,8 @@
 package pdc.character;
 
 import mylib.pdc.MetaDie;
-import pdc.character.Hero.PrimeTraits;
 import chronos.pdc.Race;
+import chronos.pdc.character.Hero.PrimeTraits;
 
 /**
  * @author Al Cline

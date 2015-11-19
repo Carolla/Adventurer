@@ -13,8 +13,8 @@ import mylib.MsgCtrl;
 import org.junit.After;
 import org.junit.Before;
 
-import pdc.character.Hero;
 import chronos.Chronos;
+import chronos.pdc.character.Hero;
 import dmc.HeroReadWriter;
 
 /**
