@@ -12,21 +12,15 @@ package hic;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -60,10 +54,11 @@ import civ.MainframeCiv;
  *          Oct 19, 2015 // repaired Cancel button on Quit prompt window <br>
  *          Nov 6, 2015 // re-architected Mainframe so that widgets are called by civs <br>
  *          Nov 7, 2015 // re-architected Mainframe so no PDC classes are imported into HIC <br>
+ *          Nov 14, 2015 // re-architected Mainframe so that MainframeCiv starts first, and has
+ *          program control <br>
  */
 @SuppressWarnings("serial")
-public class Mainframe extends JFrame implements MainframeInterface, MouseListener,
-    MouseMotionListener, IHelpText
+public class Mainframe extends JFrame implements MainframeInterface, IHelpText
 {
 
   /** Width of the platform user's window frame */
@@ -80,23 +75,36 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   /** Empty right-side panel holder for initial standard panels. */
   private ChronosPanel _rightHolder;
   /** Keep panel states to return to in case CANCEL is hit */
-  private Deque<ChronosPanel> _panelStack = new ArrayDeque<ChronosPanel>();
+  private Deque<ChronosPanel> _leftPanelStack = new ArrayDeque<ChronosPanel>(5);
+  private Deque<ChronosPanel> _rightPanelStack = new ArrayDeque<ChronosPanel>(5);
+
+  // /** Indicate which side of the mainframe is in question */
+   private final boolean LEFT = true;
+   private final boolean RIGHT = false;
 
 
   /** JPanel to hold various images; this panel resides in the _rightHolder */
-  private ImagePanel _imagePanel;
+  private ChronosPanel _imagePanel;
 
   private MainframeCiv _mfCiv;
   private MainActionCiv _mainActionCiv;
-  private IOPanel _iop;
+  // private IOPanel _iop;
 
+<<<<<<< HEAD
   /** Title of the IOPanel of left side */
   private final String IOPANEL_TITLE = " Transcript ";
+=======
+  // private List<String> _partyHeros = new ArrayList<String>();
+  // private List<String> _summonableHeroes;
 
-  // /** Runic Font that pervades the text of the screens */
-  // private final Font _runicFont = Chronos.RUNIC_FONT;
-  // /** Standard Font for buttons, help, etc */
-  // private final Font _stdFont = Chronos.STANDARD_FONT;
+  // /** Title of the IOPanel of left side */
+  // private final String IOPANEL_TITLE = " Transcript ";
+>>>>>>> origin/master
+
+//   /** Runic Font that pervades the text of the screens */
+//   private final Font _runicFont = Chronos.RUNIC_FONT;
+//   /** Standard Font for buttons, help, etc */
+//   private final Font _stdFont = Chronos.STANDARD_FONT;
 
   /** Singleton Help Dialog for all help text */
   private HelpDialog _helpdlg;
@@ -144,59 +152,44 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
    * context-sensitive help text when requested. Creates the {@code MainframeCiv} which takes
    * manages program control at the highest level.
    */
+<<<<<<< HEAD
   public Mainframe(MainframeCiv mfCiv)
+=======
+  public Mainframe(MainframeCiv mfciv)
+>>>>>>> origin/master
   {
+    _mfCiv = mfciv;
     // Define the graphic elements
     setupSizeAndBoundaries();
     createFrameAndMenubar(); // Depends on class members not being NULL
+<<<<<<< HEAD
     addImagePanel(); // add image panel on right for adding images later
     redraw();
 
     // Initiate the MainframeCiv's state (validation and data management) within those elements
     _mfCiv = mfCiv;
+=======
+>>>>>>> origin/master
 
     // Create the one time help dialog
     prepareHelpDialog();
 
     // Display the Mainframe and panels now
+    redraw();
     setVisible(true);
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> origin/master
   }
+
 
 
   // ============================================================
   // Public Methods
   // ============================================================
 
-  // TODO: Replace this method with replaceLeftPanel()
-  /**
-   * Layout the IOPanel on the left: scrolling text window and working Comandline input area. The
-   * IOPanel contains a transcript of user inputs and output on top, and a commandline for commands
-   * on the bottom.
-   * 
-   * @param mac the controller for this widget
-   */
-  public void addIOPanel(MainActionCiv mac)
-  {
-    _mainActionCiv = mac;
-    _iop = new IOPanel(_mainActionCiv);
-    _leftHolder.removeAll();
-    setLeftPanelTitle(IOPANEL_TITLE);
-    _leftHolder.add(_iop);
-    redraw();
-
-    // Save the panel state for later
-    _panelStack.push(_iop);
-  }
-
-
-  // NOTE: Check replacePanel() first if you are adding to the mainframe panel holders
-  @Override
-  public void addPanel(JComponent component)
-  {
-    add(component);
-  }
 
   public boolean approvedQuit()
   {
@@ -211,48 +204,55 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
    */
   public void back()
   {
+<<<<<<< HEAD
     //Remove old panel
     if (!_panelStack.isEmpty()) {
       _panelStack.pop();
+=======
+    // Remove the current panel
+    if (!_leftPanelStack.isEmpty()) {
+      _leftPanelStack.pop();
+>>>>>>> origin/master
     }
 
     // Pop a second time to get to the previous panel
-    if (!_panelStack.isEmpty()) {
-      replaceLeftPanel(_panelStack.pop());
+    if (!_leftPanelStack.isEmpty()) {
+      replaceLeftPanel(_leftPanelStack.pop());
     }
   }
 
 
-  /**
-   * Display error text onto the scrolling output panel
-   *
-   * @param msg text to append to existing text in panel
-   */
-  public void displayErrorText(String msg)
-  {
-    _iop.displayErrorText(msg);
-  }
-
-
-  /**
-   * Display image and associated test to the IOPanel
-   *
-   * @param msg text to append to text in IOPanel
-   * @param image to display in Image Panel
-   */
-  public void displayImageAndText(String msg, Image image)
-  {
-    displayText(msg);
-    _imagePanel.setImage(image);
-    redraw();
-  }
-
+  // /**
+  // * Display error text onto the scrolling output panel
+  // *
+  // * @param msg text to append to existing text in panel
+  // */
+  // public void displayErrorText(String msg)
+  // {
+  // _iop.displayErrorText(msg);
+  // }
+  //
+  //
+  // /**
+  // * Display image and associated test to the IOPanel
+  // *
+  // * @param msg text to append to text in IOPanel
+  // * @param image to display in Image Panel
+  // */
+  // public void displayImageAndText(String msg, Image image)
+  // {
+  // displayText(msg);
+  // _imagePanel.setImage(image);
+  // redraw();
+  // }
+  //
   /**
    * Display a prompt, asking a question of the user
    *
    * @param msg the question to be asked, must be yes or no
    * @return the answer to the prompt
    */
+  @Override
   public boolean displayPrompt(String msg)
   {
     int selection =
@@ -264,16 +264,16 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     return false;
   }
 
-  /**
-   * Display text onto the scrolling output panel
-   *
-   * @param msg text to append to existing text in panel
-   */
-  public void displayText(String msg)
-  {
-    _iop.displayText(msg);
-    _iop.setFocusOnCommandWindow();
-  }
+  // /**
+  // * Display text onto the scrolling output panel
+  // *
+  // * @param msg text to append to existing text in panel
+  // */
+  // public void displayText(String msg)
+  // {
+  // _iop.displayText(msg);
+  // _iop.setFocusOnCommandWindow();
+  // }
 
 
   public Dimension getImagePanelSize()
@@ -281,35 +281,33 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     return _rightHolder.getSize();
   }
 
-  public void mouseClicked(MouseEvent e)
-  {
-    // _mfCiv.handleClick(e.getPoint());
-    _mainActionCiv.returnToTown(e.getPoint());
-  }
-
-  public void mouseDragged(MouseEvent e)
-  {
-    // _mfCiv.handleMouseMovement(e.getPoint());
-    _mainActionCiv.setBuildingSelected(e.getPoint());
-  }
-
-  public void mouseEntered(MouseEvent e)
-  {}
-
-  public void mouseExited(MouseEvent e)
-  {}
-
-  public void mouseMoved(MouseEvent e)
-  {
-    // _mfCiv.handleMouseMovement(e.getPoint());
-    _mainActionCiv.setBuildingSelected(e.getPoint());
-  }
-
-  public void mousePressed(MouseEvent e)
-  {}
-
-  public void mouseReleased(MouseEvent e)
-  {}
+  // public void mouseClicked(MouseEvent e)
+  // {
+  // _mainActionCiv.returnToTown(e.getPoint());
+  // }
+  //
+  // public void mouseDragged(MouseEvent e)
+  // {
+  // _mainActionCiv.setBuildingSelected(e.getPoint());
+  // }
+  //
+  // public void mouseEntered(MouseEvent e)
+  // {}
+  //
+  // public void mouseExited(MouseEvent e)
+  // {}
+  //
+  // public void mouseMoved(MouseEvent e)
+  // {
+  // // _mfCiv.handleMouseMovement(e.getPoint());
+  // _mainActionCiv.setBuildingSelected(e.getPoint());
+  // }
+  //
+  // public void mousePressed(MouseEvent e)
+  // {}
+  //
+  // public void mouseReleased(MouseEvent e)
+  // {}
 
 
   public void redraw()
@@ -319,49 +317,85 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   }
 
 
+  // TODO Finish genericizing this method
+  // /**
+  // * Replaces a panel on left or right side of mainframe with the new one provided and displays
+  // the
+  // * panel's title. Saves the state in case the user needs to back out.
+  // *
+  // * @param newPanel that replaces existing panel on left side of Mainframe
+  // * @param side either LEFT OR RIGHT side to replace
+  // */
+  // public void replacePanel(ChronosPanel newPanel, boolean side)
+  // {
+  // ChronosPanel holder = LEFT ? _leftHolder : _rightHolder;
+  // setPanelTitle(newPanel.getTitle());
+  // _holder.removeAll();
+  // _holder.add(newPanel);
+  //
+  // redraw();
+  // newPanel.setVisible(true);
+  //
+  // // Save the state for later
+  // Deque<ChronosPanel> _panelStack = LEFT ? _leftPanelStack : _rightPanelStack;
+  // _panelStack.push(newPanel);
+  // }
+
+
   /**
-   * Replaces the left panel with the new one provided and displays the panel's title. Saves the
-   * state in case the user needs to back out.
+   * Replaces a panel on left side of mainframe with the new one provided and displays the panel's
+   * title. Saves the state in case the user needs to back out.
    * 
    * @param newPanel that replaces existing panel on left side of Mainframe
    */
   public void replaceLeftPanel(ChronosPanel newPanel)
   {
-    // Replace the panel with the existing one
+    setPanelTitle(newPanel.getTitle(), LEFT);
     _leftHolder.removeAll();
     _leftHolder.add(newPanel);
-    setLeftPanelTitle(newPanel.getTitle());
 
     // Save the state for later
-    _panelStack.push(newPanel);
-//    System.out.println("PanelStack after push: " + _panelStack.peekFirst().getTitle());
-
+    _leftPanelStack.push(newPanel);
+    
+    newPanel.setVisible(true);
     redraw();
   }
-
-
-  public void setBuilding(BuildingRectangle rect)
-  {
-    _imagePanel.setRectangle(rect);
-    redraw();
-  }
-
-
-  public void setHeroList(List<String> list)
-  {
-  }
-
 
   /**
-   * Display an image in the Image panel
-   *
-   * @param image to display on the rightside
+   * Replaces an image on the right side of mainframe with the new one provided and displays the
+   * panel's title. Saves the state in case the user needs to back out.
+   * 
+   * @param newPanel that replaces existing panel on left side of Mainframe
    */
-  public void setImage(Image image)
+  public void replaceRightPanel(ChronosPanel newPanel)
   {
-    _imagePanel.setImage(image);
+    setPanelTitle(newPanel.getTitle(), RIGHT);
+    _rightHolder.removeAll();
+    _rightHolder.add(newPanel);
+
+    // Save the state for later
+    _rightPanelStack.push(newPanel);
+
+<<<<<<< HEAD
+  public void setHeroList(List<String> list)
+  {
+=======
+    newPanel.setVisible(true);
     redraw();
+>>>>>>> origin/master
   }
+
+
+//  /**
+//   * Display an image in the Image panel
+//   *
+//   * @param image to display on the rightside
+//   */
+//  public void setImage(Image image)
+//  {
+//    _imagePanel.setImage(image);
+//    redraw();
+//  }
 
 
   /**
@@ -378,11 +412,24 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
 
 
   /**
-   * Display a title onto the border of the left side IO Panel
+   * Display a title onto the border of a panel in one of the panel holders
+   *
+   * @param title of the panel to set
+   * @param side left or right side for title placement
+   */
+  public void setPanelTitle(String title, boolean side)
+  {
+    TitledBorder border = (side == LEFT) ? (TitledBorder) _leftHolder.getBorder()
+        : (TitledBorder) _rightHolder.getBorder();;
+    border.setTitle(title);
+  }
+
+  /**
+   * Display a title onto the border of the right side Panel
    *
    * @param title of the panel to set
    */
-  public void setLeftPanelTitle(String title)
+  public void setRightLeftPanelTitle(String title)
   {
     TitledBorder border = (TitledBorder) _leftHolder.getBorder();
     border.setTitle(title);
@@ -403,17 +450,17 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
   // Private Methods
   // ============================================================
 
-  /**
-   * Layout the image panel on the right side of the frame, with mouse listeners.
-   */
-  private void addImagePanel()
-  {
-    _imagePanel = ImagePanel.getInstance();
-
-    _rightHolder.addMouseListener(Mainframe.this);
-    _rightHolder.addMouseMotionListener(Mainframe.this);
-    _rightHolder.add(_imagePanel);
-  }
+  // /**
+  // * Layout the image panel on the right side of the frame, with mouse listeners.
+  // */
+  // private void addImagePanel()
+  // {
+  // _imagePanel = ImagePanel.getInstance();
+  //
+  // _rightHolder.addMouseListener(Mainframe.this);
+  // _rightHolder.addMouseMotionListener(Mainframe.this);
+  // _rightHolder.add(_imagePanel);
+  // }
 
 
   // private String getBorderTitle()
@@ -506,11 +553,11 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     setJMenuBar(new Menubar(this, _mfCiv));
 
     // Define a left and right ChronosPanel to manage subordinate right- and left-side panels
-    _leftHolder = new ChronosPanel();
+    _leftHolder = new ChronosPanel(_mfCiv);
     _leftHolder.setLayout(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
     _leftHolder = makePanelAsHolder(_leftHolder, Constants.MY_BROWN, Color.WHITE);
 
-    _rightHolder = new ChronosPanel();
+    _rightHolder = new ChronosPanel(_mfCiv);
     _rightHolder.setLayout(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
     _rightHolder.setTitle(" ");
     _rightHolder = makePanelAsHolder(_rightHolder, Constants.MY_BROWN, Color.WHITE);
@@ -518,10 +565,29 @@ public class Mainframe extends JFrame implements MainframeInterface, MouseListen
     _contentPane.add(_leftHolder, "cell 0 0, wmax 50%, grow");
     _contentPane.add(_rightHolder, "cell 1 0, wmax 50%, grow");
     _contentPane.setFocusable(true);
-    // TODO Add backout state for right side also
-    // . . .
   }
 
+//  /**
+//   * Create the main button panel and civ for the top-level buttons and insert on left side of
+//   * mainframe
+//   */
+//  private void createActionPanel()
+//  {
+//    // Get the action panel from its civ
+//    MainActionCiv mainActionCiv = new MainActionCiv(this, _mfCiv);
+//    replaceLeftPanel(mainActionCiv.getActionPanel());
+//  }
+
+
+
+//  /** Create the image panel civ and widget, and set initial image */
+//  private void createImagePanel()
+//  {
+//    // Get the image panel from its civ
+//    _imagePanel = _mfCiv.getImagePanel();
+//    setImage(_mfCiv.getInitialImage());
+//    setImageTitle(_mfCiv.getInitialTitle());
+//  }
 
   /**
    * Create a holder for the left or right side of the frame, with all cosmetics. Holders will have

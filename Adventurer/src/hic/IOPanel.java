@@ -29,12 +29,11 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-import chronos.Chronos;
-//import pdc.Util;
-import civ.CommandParser;
-import civ.MainActionCiv;
 import mylib.Constants;
 import net.miginfocom.swing.MigLayout;
+import chronos.Chronos;
+// import pdc.Util;
+import civ.CommandParser;
 
 /**
  * This class serves as the text output and command line input after an Adventure is selected
@@ -47,15 +46,18 @@ import net.miginfocom.swing.MigLayout;
  *          Aug 6, 2014 // ABC Merged {@code Mainframe.StandardLayout} inner class with this class
  *          <br>
  *          Aug 18, 2014 // ABC Removed as inner class and made stand-along class <br>
+ *          Nov 11 2015 // ABC modified to be displayed with {@code Mainframe.replaceLeftPanel()}
+ *          instead of its own method <br>
  */
 @SuppressWarnings("serial")
 public class IOPanel extends ChronosPanel
 {
   private final StyledDocument _output;
-  private final JTextPane _pane;
+  private final JTextPane _transcriptPane;
   private final JScrollPane _scrollpane;
 
   private JTextField _cmdWin = null;
+  private final String IOPANEL_TITLE = "Commands & Transcript";
 
   /**
    * Color class does not have brown, so I have to make it. Color constuctor args = red, green, blue
@@ -65,7 +67,6 @@ public class IOPanel extends ChronosPanel
   private Color _foreColor = Color.BLACK;
 
   private final SimpleAttributeSet _errorAttributes;
-  private MainActionCiv _mainActionCiv;
   private CommandParser _commandParser;
 
 
@@ -74,17 +75,20 @@ public class IOPanel extends ChronosPanel
   // ============================================================
 
   /**
-   * Creates output transcript panel and input CommandLine Input panel
+   * Creates output transcript panel and input CommandLine Input panel The IOPanel is used for user
+   * commands both inside and outside buildings, so the
+   * 
+   * @param bldgCiv manages the IOPanel and its input/output messages.
    */
-  public IOPanel(MainActionCiv mac)
+  public IOPanel(CommandParser cp)
   {
-    _mainActionCiv = mac;
-    _commandParser = _mainActionCiv.getCmdParser();
-    
+    _commandParser = cp;
+
     setLayout(new MigLayout("", "[grow]", "[][]"));
-    _pane = new JTextPane();
-    _pane.setAlignmentY(JTextArea.TOP_ALIGNMENT);
-    _output = _pane.getStyledDocument();
+    this.setTitle(IOPANEL_TITLE);
+    _transcriptPane = new JTextPane();
+    _transcriptPane.setAlignmentY(JTextArea.TOP_ALIGNMENT);
+    _output = _transcriptPane.getStyledDocument();
 
     _errorAttributes = new SimpleAttributeSet();
     StyleConstants.setForeground(_errorAttributes, Color.RED.darker());
@@ -178,45 +182,40 @@ public class IOPanel extends ChronosPanel
   }
 
   /**
-   * Create the north panel transcript output window: scollable, non-editable output area
+   * Create the top (north) panel transcript output window: scollable, non-editable output area
    * 
    * @return the primary user output window
    */
   private JScrollPane createOutputPanel()
   {
-    _pane.setEditable(false);
-    _pane.setFocusable(false);
-    _pane.setFont(Chronos.RUNIC_FONT);
+    _transcriptPane.setEditable(false);
+    _transcriptPane.setFocusable(false);
+    _transcriptPane.setFont(Chronos.RUNIC_FONT);
     // _pane.setBackground(MY_LIGHT_BROWN); // make the background my version of a nice warm brown
-    _pane.setBackground(_backColor); // make the background my version of a nice warm brown
-    _pane.setForeground(_foreColor); // text is colored with the setForeground statement
+    _transcriptPane.setBackground(_backColor); // make the background my version of a nice warm
+                                               // brown
+    _transcriptPane.setForeground(_foreColor); // text is colored with the setForeground statement
 
     // Ensure that the text always autoscrolls as more text is added
-    DefaultCaret caret = (DefaultCaret) _pane.getCaret();
+    DefaultCaret caret = (DefaultCaret) _transcriptPane.getCaret();
     caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
     // Make text output scrollable-savvy
     JPanel panel = new JPanel();
-    panel.add(_pane, BorderLayout.SOUTH);
+    panel.add(_transcriptPane, BorderLayout.SOUTH);
     JScrollPane scrollPane = new JScrollPane(panel);
     scrollPane.setAlignmentY(BOTTOM_ALIGNMENT);
     Dimension frame = Mainframe.getWindowSize();
     scrollPane.setPreferredSize(new Dimension(frame.height, frame.width));
-    scrollPane.setViewportView(_pane);
+    scrollPane.setViewportView(_transcriptPane);
     return scrollPane;
   }
 
 
   // ============================================================
-  // Public Methods
-  // ============================================================
-  
-  
-  
-  // ============================================================
   // Private Methods
   // ============================================================
-  
+
   /**
    * Wrapper method for StyledDocument insertString
    * 
@@ -232,33 +231,6 @@ public class IOPanel extends ChronosPanel
       e.printStackTrace();
     }
   }
-
-  // /**
-  // * Redirect System out messages (user output) to the window area. Define a PrintStream that
-  // sends
-  // * its bytes to the output text area
-  // *
-  // * @return reference to output stream
-  // */
-  // private PrintStream redirectIO()
-  // {
-  // PrintStream op = new PrintStream(new OutputStream()
-  // {
-  // public void write(int b)
-  // {} // never called
-  //
-  // public void write(byte[] b, int off, int len)
-  // {
-  // _output.append(new String(b, off, len));
-  // // Ensure that the text scrolls as new text is appended
-  // _cmdWin.setFocusable(true);
-  // _cmdWin.requestFocusInWindow();
-  // _cmdWin.setCaretPosition(0);
-  // }
-  // });
-  //
-  // return op;
-  // }
 
 
 } // end OutputPanel class

@@ -219,6 +219,7 @@ public abstract class Command
         return _name;
     }
 
+
     /**
      * Resets the delay (when Patrons initialize in the Inn).
      * 

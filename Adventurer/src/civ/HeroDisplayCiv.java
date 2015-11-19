@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
-import mylib.civ.BaseCiv;
+import mylib.Constants;
 import chronos.civ.PersonKeys;
 import chronos.pdc.AttributeList;
 import chronos.pdc.Item;
@@ -36,7 +36,7 @@ import chronos.pdc.character.Inventory;
  *          Oct 1 2015 // revised for new Hero generation rules <br>
  *          Nov 6, 2015 // revised to be called by NewHeroCiv <br>
  */
-public class HeroDisplayCiv
+public class HeroDisplayCiv extends BaseCiv
 {
   /** Associated Hero */
   private Hero _hero = null;
@@ -350,7 +350,7 @@ public class HeroDisplayCiv
       // String race = skill.getRace();
       // String klass = skill.getKlass();
       String description = skill.getDescription();
-      String skillStr = name + BaseCiv.DELIM + description; // race + BaseCiv.DELIM + klass +
+      String skillStr = name + Constants.DELIM + description; // race + BaseCiv.DELIM + klass +
                                                             // BaseCiv.DELIM + description;
       skillList.add(k, skillStr);
     }

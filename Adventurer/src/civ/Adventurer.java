@@ -56,6 +56,7 @@ public class Adventurer
       public void run()
       {
         try {
+          // Create the MainframeCiv and turn contol over to it
           new MainframeCiv();
         } catch (Exception e) {
           e.printStackTrace();
@@ -65,6 +66,26 @@ public class Adventurer
     });
 
   } // end of static main()
+
+
+
+  // public static void main(String[] args)
+  // {
+  // /** All Swing processing occurs from the single EventQueue thread. */
+  // EventQueue.invokeLater(new Runnable() {
+  // public void run()
+  // {
+  // try {
+  // final Mainframe frame = new Mainframe();
+  // frame.setVisible(true);
+  // } catch (Exception e) {
+  // e.printStackTrace();
+  // System.exit(-1);
+  // }
+  // }
+  // });
+  //
+  // } // end of static main()
 
 
   /** Close all registries and shutdown the system */
@@ -88,5 +109,6 @@ public class Adventurer
   // System.out.println("\t" + reglist.toString());
   // }
   // }
+  
 } // end of Adventurer class
 

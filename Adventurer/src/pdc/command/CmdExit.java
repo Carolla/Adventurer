@@ -54,10 +54,11 @@ public class CmdExit extends Command
    * @param mfCiv needed for a call to quit prompt
    * @param bdCiv needed to handle Building requests 
    */
-  public CmdExit(MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
+//  public CmdExit(MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
+  public CmdExit(BuildingDisplayCiv bdCiv)
   {
     super("CmdExit", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
-    _mfCiv = mfCiv;
+//    _mfCiv = mfCiv;
     _bldgCiv = bdCiv;
   }
 
@@ -90,7 +91,8 @@ public class CmdExit extends Command
   public boolean exec()
   {
     _bldgCiv.leaveBuilding();
-    _mfCiv.quit();
+    _bldgCiv.quit();
+//    _mfCiv.quit();
     return false;
   }
 
