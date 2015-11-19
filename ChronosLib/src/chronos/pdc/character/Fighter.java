@@ -24,6 +24,8 @@ public class Fighter extends Klass
    * Generated
    */
   private static final long serialVersionUID = 4689555610790491304L;
+  
+  
   /** Starting die and initial free HP for klass */
   private String _hitDie = "d10";
   private int _freeHP = 10;
@@ -50,6 +52,11 @@ public class Fighter extends Klass
     inven.addItem(new Item(ItemCategory.ARMS, "Sword, short, w/scabbard (dmg=d6, attack=1)", 1, 7.0));
     inven.addItem(new Item(ItemCategory.ARMOR, "Leather (AC=12)", 1, 10.0));
     return inven;
+  }
+
+  public static String className()
+  {
+    return "Fighter";
   }
 
 } // end of Fighter class
