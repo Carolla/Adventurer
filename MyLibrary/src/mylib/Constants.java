@@ -32,6 +32,8 @@ public class Constants
   /** Platform-dependent constants */
   public static final String NEWLINE = System.getProperty("line.separator");
   public static final String FS = System.getProperty("file.separator");
+  // Used for converting internal format to delimited strings
+  public static final String DELIM = "|";
 
   /** Initializer for MYLIB_ROOT */
   private static String findMyLibRootDir()

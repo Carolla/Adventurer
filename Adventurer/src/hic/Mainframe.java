@@ -12,7 +12,6 @@ package hic;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -521,11 +520,11 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     setJMenuBar(new Menubar(this, _mfCiv));
 
     // Define a left and right ChronosPanel to manage subordinate right- and left-side panels
-    _leftHolder = new ChronosPanel();
+    _leftHolder = new ChronosPanel(_mfCiv);
     _leftHolder.setLayout(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
     _leftHolder = makePanelAsHolder(_leftHolder, Constants.MY_BROWN, Color.WHITE);
 
-    _rightHolder = new ChronosPanel();
+    _rightHolder = new ChronosPanel(_mfCiv);
     _rightHolder.setLayout(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
     _rightHolder.setTitle(" ");
     _rightHolder = makePanelAsHolder(_rightHolder, Constants.MY_BROWN, Color.WHITE);
@@ -535,16 +534,16 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     _contentPane.setFocusable(true);
   }
 
-  /**
-   * Create the main button panel and civ for the top-level buttons and insert on left side of
-   * mainframe
-   */
-  private void createActionPanel()
-  {
-    // Get the action panel from its civ
-    MainActionCiv mainActionCiv = new MainActionCiv(this, _mfCiv);
-    replaceLeftPanel(mainActionCiv.getActionPanel());
-  }
+//  /**
+//   * Create the main button panel and civ for the top-level buttons and insert on left side of
+//   * mainframe
+//   */
+//  private void createActionPanel()
+//  {
+//    // Get the action panel from its civ
+//    MainActionCiv mainActionCiv = new MainActionCiv(this, _mfCiv);
+//    replaceLeftPanel(mainActionCiv.getActionPanel());
+//  }
 
 
 

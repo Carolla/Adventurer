@@ -26,7 +26,6 @@ import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import hic.ChronosPanel;
-import hic.ImagePanel;
 import hic.Mainframe;
 import hic.MainframeInterface;
 import hic.NewHeroIPPanel;
@@ -41,12 +40,12 @@ import net.miginfocom.swing.MigLayout;
  * @author Alan Cline
  * @version Nov 7, 2015 // original <br>
  */
-public class MainActionCiv
+public class MainActionCiv extends BaseCiv
 {
   private MainframeInterface _mf;
-  private ImagePanel _imagePanel;
+  private ChronosPanel _imagePanel;
   private ChronosPanel _mainButtonPanel;
-  
+
   private Adventure _adv;
   private AdventureRegistry _advReg;
   private BuildingDisplayCiv _bldgCiv;
@@ -84,6 +83,11 @@ public class MainActionCiv
     _rf = _mfCiv.getRegistryFactory();
     // Create the panel with the main buttons: Load Adventure, Summons, and Create Hero
     _mf.replaceLeftPanel(createActionPanel());
+
+    // // Open the Dormitory registries needed for Summon Heroes button
+    //
+    // // Open the registries needed for Create Hero button
+
   }
 
 
@@ -136,13 +140,13 @@ public class MainActionCiv
     return _rf;
   }
 
-  
+
   public ChronosPanel getActionPanel()
   {
     return _mainButtonPanel;
   }
 
-  
+
   /**
    * Get the town name
    * 
@@ -154,30 +158,30 @@ public class MainActionCiv
   }
 
 
-//  /** Return to town when icon clicked */
-//  // public void handleClick(Point p)
-//  public void returnToTown(Point p)
-//  {
-//    handleClickIfOnTownReturn(p);
-//    if (_bldgCiv.isOnTown()) {
-//      handleClickIfOnBuilding(p);
-//    }
-//  }
+  // /** Return to town when icon clicked */
+  // // public void handleClick(Point p)
+  // public void returnToTown(Point p)
+  // {
+  // handleClickIfOnTownReturn(p);
+  // if (_bldgCiv.isOnTown()) {
+  // handleClickIfOnBuilding(p);
+  // }
+  // }
 
 
-//  /** Define the building to APPROACH based on where the user clicked */
-//  // public void handleMouseMovement(Point p)
-//  public void setBuildingSelected(Point p)
-//  {
-//    if (_bldgCiv.isOnTown()) {
-//      for (BuildingRectangle rect : _buildingList.values()) {
-//        if (rect.contains(p)) {
-//          _mf.setBuilding(rect);
-//          break;
-//        }
-//      }
-//    }
-//  }
+  // /** Define the building to APPROACH based on where the user clicked */
+  // // public void handleMouseMovement(Point p)
+  // public void setBuildingSelected(Point p)
+  // {
+  // if (_bldgCiv.isOnTown()) {
+  // for (BuildingRectangle rect : _buildingList.values()) {
+  // if (rect.contains(p)) {
+  // _mf.setBuilding(rect);
+  // break;
+  // }
+  // }
+  // }
+  // }
 
   /**
    * Load the selected adventure from the Adventure registry. Replace the opening button panel with
@@ -189,12 +193,11 @@ public class MainActionCiv
   {
     // Get the selected adventure
     _adv = _advReg.getAdventure(adventureName);
-    
+
     // BuildingCiv creates the IOPanel for all user input (commands) and messages (output)
     BuildingRegistry bldgReg = (BuildingRegistry) _rf.getRegistry(RegKey.BLDG);
-    _bldgCiv = new BuildingDisplayCiv(_mfCiv, bldgReg, _imagePanel, _adv);
-    
-//    openTown();
+    _bldgCiv = new BuildingDisplayCiv(this, bldgReg);
+    _bldgCiv.openTown();
   }
 
 
@@ -204,18 +207,18 @@ public class MainActionCiv
   // }
   //
 
-//  /** Creates the standard layout to display the town image and description */
-//  public void openTown()
-//  {
-//    _bldgCiv.returnToTown();
-//    Image townImage = Util.convertToImage(TOWN_IMAGE);
-//    _mf.setImage(townImage);
-//    if (_adv != null) {
-//      String townTitle = " The Town of " + _adv.getTownName();
-//      _mf.setImageTitle(townTitle);
-//      _ioPanel.displayText(_adv.getOverview());
-//    }
-//  }
+  // /** Creates the standard layout to display the town image and description */
+  // public void openTown()
+  // {
+  // _bldgCiv.returnToTown();
+  // Image townImage = Util.convertToImage(TOWN_IMAGE);
+  // _mf.setImage(townImage);
+  // if (_adv != null) {
+  // String townTitle = " The Town of " + _adv.getTownName();
+  // _mf.setImageTitle(townTitle);
+  // _ioPanel.displayText(_adv.getOverview());
+  // }
+  // }
 
 
   // /** Close down the application if user so specified */
@@ -240,7 +243,7 @@ public class MainActionCiv
     JButton summonButton = createSummonHeroesButton();
     JButton creationButton = createNewHeroButton();
 
-    _mainButtonPanel = new ChronosPanel();
+    _mainButtonPanel = new ChronosPanel(this);
     _mainButtonPanel.setTitle(INITIAL_OPENING_TITLE);
     // Align all buttons in a single column
     _mainButtonPanel.setLayout(new MigLayout("wrap 1"));
@@ -272,7 +275,8 @@ public class MainActionCiv
     button.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e)
       {
-        ArrayList<String> adventures = _mfCiv.getAdventures();
+        _advReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
+        List<Adventure> adventures = _advReg.getAdventureList();
         Object[] adventuresArr = adventures.toArray();
         Object selectedValue =
             JOptionPane.showInputDialog(null, "Select an Adventure", "Adventures",
@@ -302,16 +306,16 @@ public class MainActionCiv
   }
 
 
-//  /** Create the clickable areas on the town view to indicate a selected Building */
-//  private void createBuildingBoxes()
-//  {
-//    for (int i = 0; i < DEFAULT_BUILDINGS.length; i++) {
-//      String bName = DEFAULT_BUILDINGS[i][0];
-//      BuildingRectangle r =
-//          new BuildingRectangle(bName, colorArray[i], _mf.getImagePanelSize(), buildingLayouts[i]);
-//      _buildingList.put(bName, r);
-//    }
-//  }
+  // /** Create the clickable areas on the town view to indicate a selected Building */
+  // private void createBuildingBoxes()
+  // {
+  // for (int i = 0; i < DEFAULT_BUILDINGS.length; i++) {
+  // String bName = DEFAULT_BUILDINGS[i][0];
+  // BuildingRectangle r =
+  // new BuildingRectangle(bName, colorArray[i], _mf.getImagePanelSize(), buildingLayouts[i]);
+  // _buildingList.put(bName, r);
+  // }
+  // }
 
   // ============================================================
   // Public methods:
@@ -407,25 +411,25 @@ public class MainActionCiv
   }
 
 
-//  private void handleClickIfOnTownReturn(Point p)
-//  {
-//    if (_townReturn.contains(p)) {
-//      openTown();
-//    }
-//    _mf.redraw();
-//  }
-//
-//
-//  private void handleClickIfOnBuilding(Point p)
-//  {
-//    for (Entry<String, BuildingRectangle> entry : _buildingList.entrySet()) {
-//      BuildingRectangle rect = entry.getValue();
-//      if (rect.contains(p)) {
-//        enterBuilding(entry.getKey());
-//        return;
-//      }
-//    }
-//  }
+  // private void handleClickIfOnTownReturn(Point p)
+  // {
+  // if (_townReturn.contains(p)) {
+  // openTown();
+  // }
+  // _mf.redraw();
+  // }
+  //
+  //
+  // private void handleClickIfOnBuilding(Point p)
+  // {
+  // for (Entry<String, BuildingRectangle> entry : _buildingList.entrySet()) {
+  // BuildingRectangle rect = entry.getValue();
+  // if (rect.contains(p)) {
+  // enterBuilding(entry.getKey());
+  // return;
+  // }
+  // }
+  // }
 
 
   // ============================================================

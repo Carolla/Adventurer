@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import chronos.pdc.Adventure;
 import chronos.pdc.registry.AdventureRegistry;
 import chronos.pdc.registry.RegistryFactory;
+import chronos.pdc.registry.RegistryFactory.RegKey;
 import hic.ChronosPanel;
-import hic.ImagePanel;
 import hic.Mainframe;
 import hic.MainframeInterface;
 import pdc.Util;
@@ -71,7 +71,8 @@ public class MainframeCiv extends BaseCiv
     _mf = new Mainframe(this);
 
     // Create the right side image panel to be used by many Civs */
-    _imagePanel = new ImagePanel(this);
+//    _imagePanel = new ImagePanel(this);
+    _imagePanel = new ChronosPanel(this);
     _imagePanel.setImage(Util.convertToImage(INITIAL_IMAGE));
     _imagePanel.setTitle(INITIAL_TITLE);
     _mf.replaceRightPanel(_imagePanel);
@@ -82,7 +83,6 @@ public class MainframeCiv extends BaseCiv
     _mf.replaceLeftPanel(_mainActionPanel);
 
     // Build the associated registries needed
-    // constructMembers();
 //     BuildingRegistry breg = (BuildingRegistry) _rf.getRegistry(RegKey.BLDG);
 //     _bldgCiv = new BuildingDisplayCiv(this, breg);
 //     _advReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);

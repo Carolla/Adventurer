@@ -26,7 +26,6 @@ import chronos.pdc.registry.BuildingRegistry;
 import hic.BuildingRectangle;
 import hic.ChronosPanel;
 import hic.IOPanel;
-import hic.ImagePanel;
 import hic.MainframeInterface;
 import pdc.Util;
 import pdc.command.CommandFactory;
@@ -127,13 +126,13 @@ public class BuildingDisplayCiv extends BaseCiv
    * 
    * @param mainframe
    */
-  public BuildingDisplayCiv(MainframeCiv mfCiv, BuildingRegistry breg, ChronosPanel imagePanel,
-      Adventure adv)
+  public BuildingDisplayCiv(MainActionCiv mainActionCiv, BuildingRegistry breg)
   {
-    _mfCiv = mfCiv;
+//    _mfCiv = mfCiv;
     _breg = breg;
-    _imagePanel = imagePanel;
-    _adv = adv;
+    _imagePanel =  mainActionCiv.getImagePanel();
+    _imagePanel.replaceControllerCiv(this);
+//    _adv = adv;
 
     _currentBldg = null;
   }
@@ -325,7 +324,7 @@ public class BuildingDisplayCiv extends BaseCiv
   /** Set a building's rectangle onto the panel showing the town's image */
   public void setBuilding(BuildingRectangle rect)
   {
-    ((ImagePanel) _imagePanel).setRectangle(rect);
+//    _imagePanel.setRectangle(rect);
   }
 
 

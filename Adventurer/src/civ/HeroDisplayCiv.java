@@ -19,7 +19,7 @@ import chronos.pdc.MiscKeys.ItemCategory;
 import chronos.pdc.Skill;
 import hic.HeroDisplay;
 import hic.MainframeInterface;
-import mylib.civ.BaseCiv;
+import mylib.Constants;
 import pdc.Inventory;
 import pdc.character.Hero;
 
@@ -34,7 +34,7 @@ import pdc.character.Hero;
  *          Oct 1 2015 // revised for new Hero generation rules <br>
  *          Nov 6, 2015 // revised to be called by NewHeroCiv <br>
  */
-public class HeroDisplayCiv
+public class HeroDisplayCiv extends BaseCiv
 {
   /** Associated Hero */
   private Hero _hero = null;
@@ -348,7 +348,7 @@ public class HeroDisplayCiv
       // String race = skill.getRace();
       // String klass = skill.getKlass();
       String description = skill.getDescription();
-      String skillStr = name + BaseCiv.DELIM + description; // race + BaseCiv.DELIM + klass +
+      String skillStr = name + Constants.DELIM + description; // race + BaseCiv.DELIM + klass +
                                                             // BaseCiv.DELIM + description;
       skillList.add(k, skillStr);
     }

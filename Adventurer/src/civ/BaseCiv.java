@@ -13,6 +13,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
+import hic.ChronosPanel;
+
 /**
  * Base class for all Civs that monitor and manage the HIC wigets
  * 
@@ -21,11 +23,17 @@ import java.awt.event.MouseMotionListener;
  */
 public class BaseCiv implements MouseListener, MouseMotionListener
 {
+  private ChronosPanel _panel;
 
   public BaseCiv()
   {}
 
+  public ChronosPanel getImagePanel()
+  {
+    return _panel;
+  }
 
+  
   public void mouseClicked(MouseEvent e)
   {}
 

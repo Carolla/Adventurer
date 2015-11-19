@@ -148,7 +148,7 @@ public class NewHeroIPPanel extends ChronosPanel
    */
   public NewHeroIPPanel(NewHeroCiv nhCiv, MainframeInterface mf) 
   {
-    super();
+    super(nhCiv);
     setTitle(NEW_HERO_TITLE);
     _nhCiv = nhCiv;
     _mf = mf;

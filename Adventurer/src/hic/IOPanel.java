@@ -33,7 +33,6 @@ import chronos.Chronos;
 import civ.BuildingDisplayCiv;
 // import pdc.Util;
 import civ.CommandParser;
-import civ.MainActionCiv;
 import mylib.Constants;
 import net.miginfocom.swing.MigLayout;
 
@@ -85,6 +84,7 @@ public class IOPanel extends ChronosPanel
    */
   public IOPanel(BuildingDisplayCiv bldgCiv, CommandParser cp)
   {
+    super(bldgCiv);
     _bldgCiv = bldgCiv;
     _commandParser = cp;
 

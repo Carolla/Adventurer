@@ -24,7 +24,7 @@ import pdc.character.Hero;
  * @author Al Cline
  * @version Sep 20, 2015 // rewrite of more complicated {@code NewHeroCiv} class <br>
  */
-public class NewHeroCiv
+public class NewHeroCiv extends BaseCiv
 {
   /** Max length of name for Hero */
   public final int MAX_NAMELEN = 45;
