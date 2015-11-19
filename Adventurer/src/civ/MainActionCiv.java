@@ -188,12 +188,7 @@ public class MainActionCiv
     }
     return results;
   }
-
-  public BuildingDisplayCiv getBuildingDisplayCiv()
-  {
-    return _bldgCiv;
-  }
-
+  
   public CommandParser getCmdParser()
   {
     return _cp;

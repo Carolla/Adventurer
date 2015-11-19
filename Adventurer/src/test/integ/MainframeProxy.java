@@ -222,6 +222,10 @@ public class MainframeProxy implements MainframeInterface
       
     }
 
+    public String getMsg()
+    {
+      return _msg;
+    }
 
 } // end of MainframeProxy class
 

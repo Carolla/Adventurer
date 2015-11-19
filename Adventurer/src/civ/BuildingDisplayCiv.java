@@ -30,11 +30,11 @@ import chronos.pdc.registry.BuildingRegistry;
 public class BuildingDisplayCiv
 {
     /** Reference to socket for Mainframe or test proxy */
-    private MainframeInterface _frame = null;
+    protected MainframeInterface _frame = null;
     /** The Hero is on town, not at any particular building */
     private boolean _onTown = true;
     /** The building that is currently displayed, either inside or outside */
-    private Building _currentBldg;
+    protected Building _currentBldg;
     /** Flag to indicate whether here is inside the building (ENTER) or outside (APPROACH) */
     private boolean _insideBldg = false;
     /** BuildingDisplayCiv knows about buildings */
@@ -177,7 +177,7 @@ public class BuildingDisplayCiv
             _currentBldg = targetBuilding;
             _insideBldg = true;
             _onTown = false;
-            displayBuilding(targetBuilding);
+            displayBuilding();
         }
         else {
             _frame.displayErrorText(ERRMSG_NOBLDG);
@@ -223,19 +223,32 @@ public class BuildingDisplayCiv
      * @param description description of the building's interior or exterior
      * @param imagePath image of the building's exterior or interior room
      */
-    private void displayBuilding(Building building)
+    public void displayBuilding()
     {
-        if (building != null) {
-            String description = building.getInteriorDescription();
-            String imagePath = building.getIntImagePath();
-            String bldgName = building.getName();
+        if (_currentBldg != null) {
+            String description = _currentBldg.getInteriorDescription();
+            String imagePath = _currentBldg.getIntImagePath();
+            String bldgName = _currentBldg.getName();
             
-            _frame.setBuilding(null); // Confusing, I know. This sets the building RECTANGLE
-            _frame.setImage(Util.convertToImage(imagePath));
-            _frame.setImageTitle(bldgName);
-            _frame.displayText(description);
-            _frame.redraw(); // this is pure GUI, s.b. in Mainframe, not here
+            tellFrameToDisplayBuilding(description, imagePath, bldgName);
         }
+    }
+
+    protected void tellFrameToDisplayBuilding(String description, String imagePath, String bldgName)
+    {
+      _frame.setBuilding(null); // Confusing, I know. This sets the building RECTANGLE
+      _frame.setImage(Util.convertToImage(imagePath));
+      _frame.setImageTitle(bldgName);
+      _frame.displayText(description);
+      _frame.redraw(); // this is pure GUI, s.b. in Mainframe, not here
+    }
+
+    public void inspectTarget(String target)
+    {
+      if (_currentBldg != null) {
+        String result = _currentBldg.inspect(target);
+        _frame.displayText(result);
+      }
     }
 
     

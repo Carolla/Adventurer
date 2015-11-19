@@ -1,52 +1,62 @@
 package test.pdc.command;
 
+import test.integ.MainframeProxy;
+import chronos.pdc.buildings.Building;
 import civ.BuildingDisplayCiv;
 
 public class FakeBuildingDisplayCiv extends BuildingDisplayCiv
 {
     public FakeBuildingDisplayCiv()
     {
-        super(null, null);
+        super(new MainframeProxy(), null);
     }
 
-    private String _currentBuilding = "";
+    private String _currentBuildingName = "";
     public boolean _canApproach = true;
     public boolean _canEnter = true;
     private boolean _isInside;
+    public String _displayedBldg;
+    public String _displayedImg;
+    public String _displayedText;
     
     @Override
     public void enterBuilding(String name)
     {
-        _currentBuilding = name;
+        _currentBuildingName = name;
     }
     
+    public void setBuilding(Building bldg)
+    {
+      _currentBldg = bldg;
+    }
+        
     @Override
     public boolean approachBuilding(String bldg)
     {
-        if (_currentBuilding.isEmpty()) {
-            _currentBuilding = bldg;
+        if (_currentBuildingName.isEmpty()) {
+            _currentBuildingName = bldg;
             return true;
         } else {
-            _currentBuilding = bldg;
-            return _currentBuilding.equals(bldg);
+            _currentBuildingName = bldg;
+            return _currentBuildingName.equals(bldg);
         }
     }
     
-    public void setCurrentBuilding(String name)
+    public void setBuildingName(String name)
     {
-        _currentBuilding = name;
+        _currentBuildingName = name;
     }
     
     @Override
     public void returnToTown()
     {
-        _currentBuilding = null;
+        _currentBuildingName = null;
     }
     
     @Override
     public String getCurrentBuilding()
     {
-        return _currentBuilding;
+        return _currentBuildingName;
     }
     
     void setInside(boolean inside)
@@ -72,4 +82,18 @@ public class FakeBuildingDisplayCiv extends BuildingDisplayCiv
         return _canEnter;
     }
     
+    @Override
+    protected void tellFrameToDisplayBuilding(String description, String imagePath, String bldgName)
+    {
+      _displayedText = description;
+      _displayedImg = imagePath;
+      _displayedBldg = bldgName;
+    }
+    
+    @Override
+    public void inspectTarget(String target)
+    {
+      super.inspectTarget(target);
+      _displayedText = ((MainframeProxy) _frame).getMsg();
+    }
 }

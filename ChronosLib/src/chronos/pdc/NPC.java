@@ -109,6 +109,10 @@ public class NPC implements IRegistryElement
     _note = note;
   }
 
+  public String getDescription()
+  {
+    return "You see " + _farDescription;
+  }
 
   /*
    * PUBLIC METHODS

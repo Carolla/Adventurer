@@ -19,8 +19,9 @@ public class CmdLook extends Command
   static private final int DELAY = 0;
   /** This command takes 10 seconds on the game clock. */
   static private final int DURATION = 10;
-  
+
   private final BuildingDisplayCiv _bdciv;
+  private String _target = "";
 
   public CmdLook(BuildingDisplayCiv bdciv)
   {
@@ -31,16 +32,19 @@ public class CmdLook extends Command
   @Override
   public boolean init(List<String> args)
   {
+    if (args.size() > 0) {
+      _target = args.get(0);
+    }
     return true;
   }
 
   @Override
   public boolean exec()
   {
-    if (_bdciv.isInside()) {
-      
+    if (_target.isEmpty()) {
+      _bdciv.displayBuilding();
     } else {
-      
+      _bdciv.inspectTarget(_target);
     }
     return true;
   }

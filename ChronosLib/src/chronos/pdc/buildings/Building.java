@@ -164,7 +164,16 @@ public abstract class Building implements IRegistryElement
    */
   public String getInteriorDescription()
   {
-    return _intDesc;
+    String description = _intDesc;
+    if (_patrons.size() > 0) {
+      description += " You see patrons inside: ";
+      for (int i = 0; i < _patrons.size(); i++) {
+        description += _patrons.get(i).getName();
+        if (i < _patrons.size() - 1) description += ", ";
+      }
+    }
+    
+    return description;
   }
 
 
@@ -368,6 +377,16 @@ public abstract class Building implements IRegistryElement
     } else if (!_name.equals(other._name))
       return false;
     return true;
+  }
+
+  public String inspect(String target)
+  {
+    for (NPC npc : _patrons) {
+      if (npc.getName().equals(target)) {
+        return npc.getDescription();
+      }
+    }
+    return "";
   }
 
 
