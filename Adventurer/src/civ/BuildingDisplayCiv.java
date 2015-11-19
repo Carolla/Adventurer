@@ -32,8 +32,8 @@ import pdc.command.CommandFactory;
 
 /**
  * Manages the town and buildings displays and text descriptions, both interior and exterior.
- * {@code {@ImagePanel} manages the images, and {@code IOPanel} manages the user text input and
- * output.
+ * {@code {@ImagePanel} manages the images, and {@code IOPanel} manages the user text
+ * input and output.
  * 
  * @author Al Cline
  * @version Feb 20, 2015 // updated from earlier version by Tim Armstrong <br>
@@ -41,15 +41,13 @@ import pdc.command.CommandFactory;
  */
 public class BuildingDisplayCiv extends BaseCiv
 {
-
-  /** Reference to socket for Mainframe or test proxy */
-  private MainframeInterface _mf = null;
   /** MainframeCiv to access frame actions */
   private MainframeCiv _mfCiv;
-  /** Handles image display */
-  private ChronosPanel _imagePanel;
-  /** Handles text input and output */
-  private IOPanel _ioPanel;
+  /** BuildingDisplayCiv knows about buildings */
+  private BuildingRegistry _breg;
+  /** Adventure that defines the town and buildings */
+  private Adventure _adv;
+
 
   /** The Hero is on town, not at any particular building */
   private boolean _onTown = true;
@@ -58,16 +56,10 @@ public class BuildingDisplayCiv extends BaseCiv
   /** Flag to indicate whether here is inside the building (ENTER) or outside (APPROACH) */
   private boolean _insideBldg = false;
 
-  /** BuildingDisplayCiv knows about buildings */
-  private BuildingRegistry _breg;
-  /** CommandParser to handle user's commands */
-  private CommandParser _cp;
-  /** Adventure that defines the town and buildings */
-  private Adventure _adv;
+
 
   /** Image of the Town containing the Buildings */
   private static final String TOWN_IMAGE = "ext_BiljurBaz.JPG";
-
   // private static final String NO_BLDG_FOUND = "Could not find that building.\n";
   /** Error message if no arguments or multiple arguments specified */
   private final String ERRMSG_NOBLDG =
@@ -84,7 +76,7 @@ public class BuildingDisplayCiv extends BaseCiv
   private final boolean EXTERIOR = false;
 
   /** Default Buildings to initialize registry with */
-  public static final String[][] DEFAULT_BUILDINGS = {{"Ugly Ogre Inn", "Bork"},
+  public static final String[][] DEFAULT_BUILDINGS = { {"Ugly Ogre Inn", "Bork"},
       {"Rat's Pack", "Dewey N. Howe"}, {"The Bank", "Ogden Moneypenny"},
       {"Stadium", "Aragon"}, {"Arcaneum", "Pendergast"}, {"Monastery", "Balthazar"},
       {"Rogues' Den", "Ripper"}, {"Jail", "The Sheriff"}, {"Quasqueton", "Unknown"}};
@@ -127,13 +119,11 @@ public class BuildingDisplayCiv extends BaseCiv
    * 
    * @param mainframe
    */
-  public BuildingDisplayCiv(MainframeCiv mfCiv, BuildingRegistry breg)
+  public BuildingDisplayCiv(MainframeCiv mfCiv, Adventure adv, BuildingRegistry breg)
   {
     _mfCiv = mfCiv;
     _breg = breg;
-//    _imagePanel =  mainActionCiv.getImagePanel();
-//    _imagePanel.replaceControllerCiv(this);
-//    _adv = adv;
+    _adv = adv;
 
     _currentBldg = null;
   }
@@ -153,18 +143,19 @@ public class BuildingDisplayCiv extends BaseCiv
     if (targetBuilding == null) {
       targetBuilding = _currentBldg;
     }
+
     if (targetBuilding != null) {
       _currentBldg = targetBuilding;
       _insideBldg = false;
       _onTown = false;
+
       // Show the building description and image
-      String description = targetBuilding.getExteriorDescription();
-      String imagePath = targetBuilding.getExtImagePath();
-      _imagePanel.setImageByName(imagePath);
-      _ioPanel.displayText(description);
+      _mfCiv.displayImage(targetBuilding.getName(), targetBuilding.getExtImagePath());
+      _mfCiv.displayText(targetBuilding.getExteriorDescription());
+
       return true;
     } else {
-      _ioPanel.displayText(ERRMSG_NOBLDG);
+      _mfCiv.displayText(ERRMSG_NOBLDG);
       return false;
     }
   }
@@ -174,7 +165,7 @@ public class BuildingDisplayCiv extends BaseCiv
   {
     // The Hero cannot be inside a building already
     if (isInside() == true) {
-      _ioPanel.displayErrorText(ERRMSG_JUMPBLDG);
+      _mfCiv.displayErrorText(ERRMSG_JUMPBLDG);
       return false;
     }
 
@@ -184,14 +175,14 @@ public class BuildingDisplayCiv extends BaseCiv
 
       // Check that the building specified actually exists
       if (b == null) {
-        _ioPanel.displayErrorText(ERRMSG_UNKNOWN_BLDG);
+        _mfCiv.displayErrorText(ERRMSG_UNKNOWN_BLDG);
         return false;
       } else {
         return true;
       }
     } else {
       // Case 2: No building specified
-      _ioPanel.displayErrorText(ERRMSG_NOBLDG);
+      _mfCiv.displayErrorText(ERRMSG_NOBLDG);
       return false;
     }
   }
@@ -200,7 +191,7 @@ public class BuildingDisplayCiv extends BaseCiv
   {
     // The Hero cannot be inside a building already
     if (isInside()) {
-      _ioPanel.displayErrorText(ERRMSG_JUMPBLDG);
+      _mfCiv.displayErrorText(ERRMSG_JUMPBLDG);
       return false;
     }
 
@@ -209,7 +200,7 @@ public class BuildingDisplayCiv extends BaseCiv
       // Check that the building specified actually exists
       Building b = _breg.getBuilding(bldgParm);
       if (b == null) {
-        _ioPanel.displayErrorText(ERRMSG_UNKNOWN_BLDG);
+        _mfCiv.displayErrorText(ERRMSG_UNKNOWN_BLDG);
         return false;
       } else {
         return true;
@@ -217,7 +208,7 @@ public class BuildingDisplayCiv extends BaseCiv
     } else {
       // Case 2: Building defaults to current building
       if (_currentBldg == null) {
-        _ioPanel.displayErrorText(ERRMSG_NOBLDG);
+        _mfCiv.displayErrorText(ERRMSG_NOBLDG);
         return false;
       } else {
         return true;
@@ -242,7 +233,7 @@ public class BuildingDisplayCiv extends BaseCiv
       _onTown = false;
       displayBuilding(targetBuilding, INTERIOR);
     } else {
-      _ioPanel.displayErrorText(ERRMSG_NOBLDG);
+      _mfCiv.displayErrorText(ERRMSG_NOBLDG);
       System.err.println("error case of enterBuilding");
     }
   }
@@ -294,7 +285,7 @@ public class BuildingDisplayCiv extends BaseCiv
   {
     setBuildingSelected(e.getPoint());
   }
-  
+
   /** Creates the standard layout to display the town image and description */
   public void openTown()
   {
@@ -307,9 +298,9 @@ public class BuildingDisplayCiv extends BaseCiv
   }
 
   /** Set a building's rectangle onto the panel showing the town's image */
-  public void setBuilding(BuildingRectangle rect)
+  public void setBuildingRectangle(BuildingRectangle rect)
   {
-//    _imagePanel.setRectangle(rect);
+    // _imagePanel.setRectangle(rect);
   }
 
 
@@ -332,7 +323,6 @@ public class BuildingDisplayCiv extends BaseCiv
 
 
   /** Return to town when icon clicked */
-  // public void handleClick(Point p)
   public void returnToTown(Point p)
   {
     handleClickIfOnTownReturn(p);
@@ -341,28 +331,27 @@ public class BuildingDisplayCiv extends BaseCiv
     }
   }
 
-    /**
-     * Display the bulding's image (exterior or interior) in the frame's image panel
-     * 
-     * @param description description of the building's interior or exterior
-     * @param imagePath image of the building's exterior or interior room
-     */
-    public void displayBuilding()
-    {
-        if (_currentBldg != null) {
-          _mfCiv.displayImage(_currentBldg.getName(), _currentBldg.getIntImagePath());
-          _mfCiv.displayText(_currentBldg.getInteriorDescription());
-        }
-      }
+  /**
+   * Display the bulding's image (exterior or interior) in the frame's image panel
+   * 
+   * @param description description of the building's interior or exterior
+   * @param imagePath image of the building's exterior or interior room
+   */
+  public void displayBuilding()
+  {
+    if (_currentBldg != null) {
+      _mfCiv.displayImage(_currentBldg.getName(), _currentBldg.getIntImagePath());
+      _mfCiv.displayText(_currentBldg.getInteriorDescription());
+    }
+  }
 
   /** Define the building to APPROACH based on where the user clicked */
-  // public void handleMouseMovement(Point p)
   public void setBuildingSelected(Point p)
   {
     if (isOnTown()) {
       for (BuildingRectangle rect : _buildingList.values()) {
         if (rect.contains(p)) {
-          setBuilding(rect);
+          setBuildingRectangle(rect);
           break;
         }
       }
@@ -397,10 +386,9 @@ public class BuildingDisplayCiv extends BaseCiv
       String imagePath = interior ? building.getIntImagePath() : building.getExtImagePath();
       String bldgName = building.getName();
 
-      setBuilding(null); // Confusing, I know. This sets the building RECTANGLE
-      _imagePanel.setImageByName(imagePath);
-      _imagePanel.setTitle(bldgName);
-      _ioPanel.displayText(description);
+      setBuildingRectangle(null);
+      _mfCiv.displayImage(bldgName, imagePath);
+      _mfCiv.displayText(description);
     }
   }
 
@@ -425,11 +413,11 @@ public class BuildingDisplayCiv extends BaseCiv
   }
 
 
-    public void inspectTarget(String target)
-    {
-      if (_currentBldg != null) {
-        String result = _currentBldg.inspect(target);
-        _mfCiv.displayText(result);
-      }
+  public void inspectTarget(String target)
+  {
+    if (_currentBldg != null) {
+      String result = _currentBldg.inspect(target);
+      _mfCiv.displayText(result);
     }
+  }
 } // end of BuildingDisplayCiv class

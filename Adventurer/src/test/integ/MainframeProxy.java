@@ -14,11 +14,6 @@ import hic.ChronosPanel;
 import hic.MainframeInterface;
 
 import java.awt.Dimension;
-import java.awt.Image;
-
-import javax.swing.JComponent;
-
-import civ.MainActionCiv;
 
 
 
@@ -49,11 +44,6 @@ public class MainframeProxy implements MainframeInterface
         // MsgCtrl.where(this);
     }
 
-    @Override
-    public void addPanel(JComponent comonent)
-    {
-        // MsgCtrl.where(this);
-    }
 
     /**
      * Display error text into the output panel
@@ -65,18 +55,6 @@ public class MainframeProxy implements MainframeInterface
         // MsgCtrl.where(this);
         // MsgCtrl.errMsgln("\t" + errText);
         _errMsg = errText;
-    }
-
-    /**
-     * Display a prompt for user to asnwer YES or NO
-     * 
-     * @param text to be displayed
-     */
-    @Override
-    public boolean displayPrompt(String text)
-    {
-        // MsgCtrl.where(this);
-        return true;
     }
 
     /**
@@ -96,13 +74,6 @@ public class MainframeProxy implements MainframeInterface
         return _errMsg;
     }
 
-    /** Return the size of the image space; set here temporarily */
-    public Dimension getImagePanelSize()
-    {
-        // MsgCtrl.where(this);
-        return new Dimension(800, 600);
-    }
-
     /**
      * Return last message out and clear buffer
      * 
@@ -113,6 +84,7 @@ public class MainframeProxy implements MainframeInterface
         // MsgCtrl.where(this);
         return _msg;
     }
+
 
     /**
      * Display a prompt message asking for confirmation
@@ -126,14 +98,6 @@ public class MainframeProxy implements MainframeInterface
         return true;
     }
 
-    /*
-     * Misplaced redraw command in BuildingDisplayCiv
-     */
-    @Override
-    public void redraw()
-    {
-        // MsgCtrl.where(this);
-    }
 
     /**
      * Define a bounding rectangle to highlight a building
@@ -146,29 +110,40 @@ public class MainframeProxy implements MainframeInterface
     }
 
 
-    /*
-     * (non-Javadoc)
+    public String getMsg()
+    {
+      return _msg;
+    }
+
+
+    /** Return the size of the image space; set here temporarily */
+    public Dimension getImagePanelSize()
+    {
+        // MsgCtrl.where(this);
+        return new Dimension(800, 600);
+    }
+
+    /**
+     * Display a prompt for user to asnwer YES or NO
      * 
-     * @see hic.IOPanelInterface#setImage(java.lang.String)
+     * @param text to be displayed
      */
     @Override
-    public void setImage(Image image)
+    public boolean displayPrompt(String text)
+    {
+        // MsgCtrl.where(this);
+        return true;
+    }
+
+
+    /*
+     * Misplaced redraw command in BuildingDisplayCiv
+     */
+    @Override
+    public void redraw()
     {
         // MsgCtrl.where(this);
     }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see hic.IOPanelInterface#setImageTitle(java.lang.String)
-     */
-    @Override
-    public void setImageTitle(String bldgName)
-    {
-        // MsgCtrl.where(this);
-        // MsgCtrl.msgln("\tbuilding name = " + bldgName + "\n");
-    }
-
 
     @Override
     public void repaint()
@@ -192,14 +167,6 @@ public class MainframeProxy implements MainframeInterface
 
 
     @Override
-    public void addIOPanel(MainActionCiv mac)
-    {
-      // TODO Auto-generated method stub
-      
-    }
-
-
-    @Override
     public void back()
     {
       // TODO Auto-generated method stub
@@ -213,18 +180,11 @@ public class MainframeProxy implements MainframeInterface
       // TODO Auto-generated method stub
       
     }
-
-
     @Override
-    public void setLeftPanelTitle(String title)
+    public void replaceRightPanel(ChronosPanel rightPanel)
     {
       // TODO Auto-generated method stub
       
-    }
-
-    public String getMsg()
-    {
-      return _msg;
     }
 
 } // end of MainframeProxy class

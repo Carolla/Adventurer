@@ -183,7 +183,7 @@ public class TA09_CmdLeave
   /** Hero is onTwon, with not current Building, and not inside one */
   private void resetBuildingState()
   {
-    _maCiv.openTown();
+    _bldgCiv.openTown();
   }
 
 

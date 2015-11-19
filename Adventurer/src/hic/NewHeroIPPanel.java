@@ -39,6 +39,7 @@ import mylib.hic.HelpKeyListener;
 import net.miginfocom.swing.MigLayout;
 import chronos.pdc.character.Hero;
 import civ.HeroDisplayCiv;
+import civ.MainframeCiv;
 import civ.NewHeroCiv;
 import civ.NewHeroCiv.ErrorCode;
 import civ.NewHeroCiv.HeroInput;
@@ -121,7 +122,7 @@ public class NewHeroIPPanel extends ChronosPanel
   private String _klassName;
 
   /** Contains user input field data */
-  EnumMap<HeroInput, String> _input;
+  EnumMap<HeroInput, String> input;
 
 
   /**
@@ -132,7 +133,7 @@ public class NewHeroIPPanel extends ChronosPanel
 
   /** Associated validating CIV object */
   private NewHeroCiv _nhCiv;
-  private MainframeInterface _mf;
+  private MainframeCiv _mfCiv;
 
   // ============================================================
   // Constructors and constructor helpers
@@ -144,14 +145,13 @@ public class NewHeroIPPanel extends ChronosPanel
    * created in private helper methods.
    * 
    * @param nhCiv controls this ChronosPanel
-   * @param mf  mainframe reference needed for displaying the panel
+   * @param mfCiv  mainframeCiv needed for displaying the panel
    */
-  public NewHeroIPPanel(NewHeroCiv nhCiv, MainframeInterface mf) 
+  public NewHeroIPPanel(NewHeroCiv nhCiv, MainframeCiv mfCiv) 
   {
-    super(nhCiv);
     setTitle(NEW_HERO_TITLE);
     _nhCiv = nhCiv;
-    _mf = mf;
+    _mfCiv = mfCiv;
     
     // GENERAL SETUP
     // Set the preferred and max size, adjusting for panel border thickness
@@ -266,16 +266,13 @@ public class NewHeroIPPanel extends ChronosPanel
       public void actionPerformed(ActionEvent event)
       {
         // Call the Civ to validate the attributes. If no errors, Hero is created and displayed
-        ErrorCode err = submit();
-        if (err == ErrorCode.NO_ERROR) {
+        EnumMap<HeroInput, String> input = submit();
+        if (input.size() > 0) {
           setVisible(false);
           // Create the new Hero and display it
-           Hero hero = _nhCiv.createHero(_input);
-           HeroDisplayCiv hDispCiv = new HeroDisplayCiv(_mf);
+           Hero hero = _nhCiv.createHero(input);
+           HeroDisplayCiv hDispCiv = new HeroDisplayCiv(_mfCiv);
            hDispCiv.displayHero(hero, true);    // first time Hero needs true arg
-        } else {
-          // Display the message
-          showErrorMessage(err);
         }
       }
     });
@@ -530,19 +527,22 @@ public class NewHeroIPPanel extends ChronosPanel
    * 
    * @return One of the ErrorCode enum values (NO_ERROR if all went well)
    */
-  private ErrorCode submit()
+  private EnumMap<HeroInput, String> submit()
   {
-    _input = _nhCiv.getEmptyMap();
-    _input.put(HeroInput.NAME, _name);
-    _input.put(HeroInput.GENDER, _gender);
-    _input.put(HeroInput.HAIR, _hairColor);
-    _input.put(HeroInput.RACE, _raceName);
+    EnumMap<HeroInput, String> input = new EnumMap<HeroInput, String>(HeroInput.class);
+    input.put(HeroInput.NAME, _name);
+    input.put(HeroInput.GENDER, _gender);
+    input.put(HeroInput.HAIR, _hairColor);
+    input.put(HeroInput.RACE, _raceName);
     // Rogue is the pseudonym for the Thief class
     _klassName = (_klassName.equalsIgnoreCase("Rogue")) ? _klassName = "Thief" : _klassName;
-    _input.put(HeroInput.KLASS, _klassName);
+    input.put(HeroInput.KLASS, _klassName);
 
     // Call the Civ to validate. If good, Civ creates the Hero; else display error widget
-    return _nhCiv.validate(_input);
+    if (!_nhCiv.validate(input)) {
+      input.clear();
+    }
+    return input;
   }
 
 

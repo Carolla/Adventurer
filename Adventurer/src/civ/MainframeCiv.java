@@ -10,7 +10,9 @@
 package civ;
 
 import hic.ChronosPanel;
+import hic.HeroDisplay;
 import hic.IOPanel;
+import hic.ImagePanel;
 import hic.Mainframe;
 import hic.MainframeInterface;
 
@@ -18,7 +20,9 @@ import java.util.ArrayList;
 
 import pdc.command.CommandFactory;
 import chronos.pdc.Adventure;
+import chronos.pdc.Command.Scheduler;
 import chronos.pdc.registry.AdventureRegistry;
+import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 
@@ -40,6 +44,8 @@ public class MainframeCiv extends BaseCiv
   private MainActionCiv mainActionCiv;
   private CommandParser _cp;
   private IOPanel _ioPanel;
+  private ImagePanel _imagePanel;
+  private BuildingDisplayCiv _bldgCiv;
 
   /** Initial right-side image: Chronos logo */
   private static final String INITIAL_IMAGE = "ChronosLogo.jpg";
@@ -67,47 +73,31 @@ public class MainframeCiv extends BaseCiv
   protected void constructMembers()
   {
     _mf = new Mainframe(this);
+    // Create the CommandLine support
+    Scheduler skedder = new Scheduler(); // Skedder first for injection
 
-    // Create the right side image panel to be used by many Civs */
-    ChronosPanel imagePanel = new ImagePanel(INITIAL_IMAGE, INITIAL_TITLE);
-    imagePanel.replaceControllerCiv(this);
-    _mf.replaceRightPanel(imagePanel);
+    _rf = new RegistryFactory(skedder);
+    _rf.initRegistries();
     
     // Create the left side panel to hold the main action buttons */
-    mainActionCiv = new MainActionCiv(_mf, this);    
-    _rf = mainActionCiv.getRegistryFactory();
+    mainActionCiv = new MainActionCiv(this, (AdventureRegistry) _rf.getRegistry(RegKey.ADV));    
+    
+    CommandFactory cmdFactory = new CommandFactory(mainActionCiv, this, _bldgCiv);
+    cmdFactory.initMap();
+    _cp = new CommandParser(skedder, cmdFactory);
+
+    // Create the IOPanel for input commands via commandParser and output messages
+    _ioPanel = new IOPanel(_cp);
+
+    // Create the right side image panel to be used by many Civs */
+    _imagePanel = new ImagePanel(INITIAL_IMAGE, INITIAL_TITLE);
+    _imagePanel.replaceControllerCiv(this);
+    _mf.replaceRightPanel(_imagePanel);
   }
 
   // ============================================================
   // Public methods
   // ============================================================
-
-  protected void tellFrameToDisplayBuilding(String description, String imagePath, String bldgName)
-  {
-    _frame.setBuilding(null); // Confusing, I know. This sets the building RECTANGLE
-    _frame.setImageByName(imagePath);
-    _frame.setImageTitle(bldgName);
-    _frame.displayText(description);
-  }
-  
-
-
-  /**
-   * Create the IOPanel and link it with the command parser for handling user input and output
-   * 
-   * @return
-   */
-  private IOPanel initIOPanel()
-  {
-    // Create the IOPanel for input commands via commandParser and output messages
-    _cp = new CommandParser(new CommandFactory(this));
-    _ioPanel = new IOPanel(this, _cp);
-
-    // Display the IOPanel on the left side of the mainframe
-    _mf.replaceLeftPanel(_ioPanel);
-
-    return _ioPanel;
-  }
   
   /**
    * Retrieves the Adventures for selection from the Adventure Registry
@@ -140,4 +130,43 @@ public class MainframeCiv extends BaseCiv
   {
     _ioPanel.displayText(result);    
   }
+
+
+  public void displayImage(String title, String imageName)
+  {
+    _imagePanel.setTitle(title);
+    _imagePanel.setImageByName(imageName);
+  }
+
+
+  public void displayTown(Adventure adv)
+  {
+    // Display the IOPanel on the left side of the mainframe
+    _mf.replaceLeftPanel(_ioPanel);
+    
+    // BuildingCiv creates the IOPanel for all user input (commands) and messages (output)
+    BuildingRegistry bldgReg = (BuildingRegistry) _rf.getRegistry(RegKey.BLDG);
+    _bldgCiv = new BuildingDisplayCiv(this, adv, bldgReg);
+    _bldgCiv.openTown();    
+  }
+
+
+  public void displayErrorText(String msg)
+  {
+    _ioPanel.displayErrorText(msg);
+    
+  }
+
+
+  public void replaceLeftPanel(ChronosPanel panel)
+  {
+    _mf.replaceLeftPanel(panel);    
+  }
+
+
+  public void back()
+  {
+    _mf.back(); 
+  }
+  
 } // end of MainframeCiv class

@@ -44,21 +44,6 @@ public class Scheduler
         _dq = new DeltaCmdList();
     }
 
-
-//    /**
-//     * This is the main loop to pop the next command and execute it, and required for the
-//     * {@code Runnable} interface. When a user command is found, the {@code Scheduler} calls its
-//     * {@code Command.exec()} method, which actually triggers the subcommand's {@code exec()}
-//     * because {@code Command} is abstract.
-//     */
-//    public void run()
-//    {
-//        while (true) {
-//            doOneCommand();
-//        }
-//    }
-
-
     /**
      * Wrap the {@code Command} in an Event wrapper and put it on the {@code DeltaQueue}.
      * {@code Command} and {@code intCmdEnd} both are pushed onto the DQ.

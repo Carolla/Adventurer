@@ -8,7 +8,7 @@ public class CheckingBuildingDisplayCiv extends BuildingDisplayCiv
 {
     public CheckingBuildingDisplayCiv()
     {
-        super(null, null);
+        super(null, null, null);
     }
 
     private String _currentBuilding;

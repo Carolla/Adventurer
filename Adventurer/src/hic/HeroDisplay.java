@@ -219,7 +219,7 @@ public class HeroDisplay extends ChronosPanel
 //  public HeroDisplay(HeroDisplayCiv hdCiv, Mainframe mainframe, boolean firstTime)
   public HeroDisplay(HeroDisplayCiv hdCiv, boolean firstTime)
   {
-    super(hdCiv);
+    super();
     _hdCiv = hdCiv;
     _ds = _hdCiv.getAttributes();
 

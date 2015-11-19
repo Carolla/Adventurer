@@ -21,10 +21,4 @@ public class FakeMainframeCiv extends MainframeCiv
   {
     // Don't exit the program!
   }
-  
-  @Override
-  public void errorOut(String msg)
-  {
-    _errors.add(msg);
-  }
 }

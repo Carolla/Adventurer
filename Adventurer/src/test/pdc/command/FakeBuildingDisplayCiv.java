@@ -8,7 +8,7 @@ public class FakeBuildingDisplayCiv extends BuildingDisplayCiv
 {
     public FakeBuildingDisplayCiv()
     {
-        super(new MainframeProxy(), null);
+        super(new FakeMainframeCiv(), null, null);
     }
 
     private String _currentBuildingName = "";
@@ -18,6 +18,7 @@ public class FakeBuildingDisplayCiv extends BuildingDisplayCiv
     public String _displayedBldg;
     public String _displayedImg;
     public String _displayedText;
+    private Building _currentBldg;
     
     @Override
     public void enterBuilding(String name)
@@ -81,15 +82,7 @@ public class FakeBuildingDisplayCiv extends BuildingDisplayCiv
     {
         return _canEnter;
     }
-    
-    @Override
-    protected void tellFrameToDisplayBuilding(String description, String imagePath, String bldgName)
-    {
-      _displayedText = description;
-      _displayedImg = imagePath;
-      _displayedBldg = bldgName;
-    }
-    
+        
     @Override
     public void inspectTarget(String target)
     {

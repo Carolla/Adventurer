@@ -18,43 +18,61 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import civ.BaseCiv;
 import chronos.Chronos;
 
 /**
- * The {@code ImagePanel} class extends {@code ChronosPanel} so that it is easy to draw onto. It is a
- * singleton because it is created once and different images are displayed on it for the duration of
- * the program.
+ * The {@code ImagePanel} class extends {@code ChronosPanel} so that it is easy to draw onto. It is
+ * a singleton because it is created once and different images are displayed on it for the duration
+ * of the program.
  * 
  * @author Al Cline
  * @version Aug 16, 2014 // original <br>
  */
 @SuppressWarnings("serial")
-public class ImagePanel extends ChronosPanel 
-{  
+public class ImagePanel extends ChronosPanel
+{
   /** Box to be drawn over the current image */
   private BuildingRectangle _buildingRectangle;
 
   /** Image shown in panel */
   protected Image _image;
 
+  /** Civ that manages the images and mouse action in this display */
+  protected BaseCiv _ctrlCiv;
+
   // ============================================================
   // Constructors and constructor helpers
   // ============================================================
 
-  /** Private singleton constructor 
+  /**
+   * Private singleton constructor
    * 
-   * @param BaseCiv  base class for all civs that can control this panel 
+   * @param BaseCiv base class for all civs that can control this panel
    */
   public ImagePanel(String imageName, String title)
   {
     _title = title;
     setImageByName(imageName);
   }
-  
+
   // ============================================================
   // Public methods
   // ============================================================
   
+  public void replaceControllerCiv(BaseCiv newCiv)
+  {
+    // No action if listeners are null
+    removeMouseListener(_ctrlCiv);
+    removeMouseMotionListener(_ctrlCiv);
+
+    // Add new control civ and save for later
+    addMouseListener(newCiv);
+    addMouseMotionListener(newCiv);
+    _ctrlCiv = newCiv;
+  }
+
+
   public void setRectangle(BuildingRectangle rect)
   {
     _buildingRectangle = rect;
@@ -87,12 +105,12 @@ public class ImagePanel extends ChronosPanel
     _image = convertToImage(imageName);
   }
 
-  
-  
+
+
   // ============================================================
   // Private methods
   // ============================================================
-  
+
   /**
    * Create an {@code Image} type from its filename
    * 

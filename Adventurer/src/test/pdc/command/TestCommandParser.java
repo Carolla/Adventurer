@@ -76,7 +76,7 @@ public class TestCommandParser
         realCommandFactory.initMap();
         _cp = new CommandParser(_fakeSkedder, realCommandFactory);
         _cp.receiveCommand("Return");
-        CmdReturn expectedCommand = new CmdReturn(new FakeMainActionCiv());
+        CmdReturn expectedCommand = new CmdReturn(new FakeBuildingDisplayCiv());
         assertEquals(expectedCommand.getName(), _fakeSkedder.command.getName());
     }
     

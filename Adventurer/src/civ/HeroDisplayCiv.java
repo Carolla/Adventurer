@@ -10,13 +10,10 @@
 package civ;
 
 import hic.HeroDisplay;
-import hic.MainframeInterface;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
-import mylib.Constants;
 import chronos.civ.PersonKeys;
 import chronos.pdc.AttributeList;
 import chronos.pdc.Item;
@@ -57,7 +54,7 @@ public class HeroDisplayCiv extends BaseCiv
   private EnumMap<PersonKeys, String> _outputMap;
 
   /** Reference to parent civ */
-  private MainframeInterface _mf;
+  private MainframeCiv _mfCiv;
 
 
   /*
@@ -69,12 +66,12 @@ public class HeroDisplayCiv extends BaseCiv
    * 
    * @param hero the model object from which to get the display data
    */
-  public HeroDisplayCiv(MainframeInterface mf)
+  public HeroDisplayCiv(MainframeCiv mfCiv)
   {
     if (!HeroDisplayCiv.LOADING_CHAR) {
       HeroDisplayCiv.NEW_CHAR = true;
     }
-    _mf = mf;
+    _mfCiv = mfCiv;
     _outputMap = new EnumMap<PersonKeys, String>(PersonKeys.class);
   }
 
@@ -138,8 +135,7 @@ public class HeroDisplayCiv extends BaseCiv
     _widget = new HeroDisplay(this, firstTime);
 //    String title = String.format("%s:  %s %s %s", _hero.getName(), _hero.getGender(),
 //        _hero.getRaceName(), _hero.getKlassName());
-//    _mf.replaceLeftPanel(_widget, title);
-    _mf.replaceLeftPanel(_widget);
+    _mfCiv.replaceLeftPanel(_widget);
   }
 
 
@@ -152,7 +148,7 @@ public class HeroDisplayCiv extends BaseCiv
   /** Restore the mainframe panels to their previous state */
   public void back()
   {
-    _mf.back();
+    _mfCiv.back();
   }
 
   
@@ -332,30 +328,30 @@ public class HeroDisplayCiv extends BaseCiv
     return false;
   }
 
-  /**
-   * Convert the Skill object into string fields for list display. All Item fields are concatenated
-   * into a single delimited string.
-   * 
-   * @param _skills list of Skills objects to convert
-   * @return the string list of output data
-   */
-  private List<String> convertSkills(List<Skill> _skills)
-  {
-    List<String> skillList = new ArrayList<String>(_skills.size());
-    for (int k = 0; k < _skills.size(); k++) {
-      // Each Skill consists of: name, description, race, klass, and
-      // action (excluded)
-      Skill skill = _skills.get(k);
-      String name = skill.getName();
-      // String race = skill.getRace();
-      // String klass = skill.getKlass();
-      String description = skill.getDescription();
-      String skillStr = name + Constants.DELIM + description; // race + BaseCiv.DELIM + klass +
-                                                            // BaseCiv.DELIM + description;
-      skillList.add(k, skillStr);
-    }
-    return skillList;
-  }
+//  /**
+//   * Convert the Skill object into string fields for list display. All Item fields are concatenated
+//   * into a single delimited string.
+//   * 
+//   * @param _skills list of Skills objects to convert
+//   * @return the string list of output data
+//   */
+//  private List<String> convertSkills(List<Skill> _skills)
+//  {
+//    List<String> skillList = new ArrayList<String>(_skills.size());
+//    for (int k = 0; k < _skills.size(); k++) {
+//      // Each Skill consists of: name, description, race, klass, and
+//      // action (excluded)
+//      Skill skill = _skills.get(k);
+//      String name = skill.getName();
+//      // String race = skill.getRace();
+//      // String klass = skill.getKlass();
+//      String description = skill.getDescription();
+//      String skillStr = name + Constants.DELIM + description; // race + BaseCiv.DELIM + klass +
+//                                                            // BaseCiv.DELIM + description;
+//      skillList.add(k, skillStr);
+//    }
+//    return skillList;
+//  }
 
 
   /*

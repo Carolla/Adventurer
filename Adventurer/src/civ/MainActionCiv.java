@@ -33,6 +33,7 @@ import chronos.pdc.Adventure;
 import chronos.pdc.Command.Scheduler;
 import chronos.pdc.registry.AdventureRegistry;
 import chronos.pdc.registry.BuildingRegistry;
+import chronos.pdc.registry.HeroRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 
@@ -50,7 +51,6 @@ public class MainActionCiv extends BaseCiv
 
   private Adventure _adv;
   private AdventureRegistry _advReg;
-  private BuildingDisplayCiv _bldgCiv;
   private MainframeCiv _mfCiv;
   private RegistryFactory _rf;
 
@@ -78,9 +78,9 @@ public class MainActionCiv extends BaseCiv
    * @param personRW supports the Summon Hero and Create Hero buttons
    * @param advReg registry to support the Adventures button
    */
-  public MainActionCiv(MainframeInterface mf, MainframeCiv mfciv)
+  public MainActionCiv(MainframeCiv mfciv, AdventureRegistry advReg)
   {
-    _mf = mf;
+    _advReg = advReg;
     _mfCiv = mfciv;
     createMembers();
   }
@@ -90,40 +90,6 @@ public class MainActionCiv extends BaseCiv
   {
     // Create the panel with the main buttons: Load Adventure, Summons, and Create Hero
     _mf.replaceLeftPanel(createActionPanel());
-
-    // Init the registries needed
-    _advReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
-    BuildingRegistry bldgReg = (BuildingRegistry) _rf.getRegistry(RegKey.BLDG);
-    _bldgCiv = new BuildingDisplayCiv(this, bldgReg);
-
-    // Create the CommandLine support
-    Scheduler skedder = new Scheduler(); // Skedder first for injection
-
-    _rf = new RegistryFactory(skedder);
-    _rf.initRegistries();
-    
-    CommandFactory cmdFactory = new CommandFactory(this, _mfCiv, _bldgCiv);
-    cmdFactory.initMap();
-    new CommandParser(skedder, cmdFactory);
-  }
-
-
-  // ============================================================
-  // Public methods:
-  // ============================================================
-
-  // TODO This is the responsibility of the BuildingDisplayCiv
-  /**
-   * Enter the Building specified. If the Hero is at the Town level, get the
-   * {@code BuildingRegistry} and {@ocde BuildingCiv}
-   *
-   * @param bldName the name of the building to open
-   */
-  public void enterBuilding(String bldName)
-  {
-    if (_bldgCiv.canApproach(bldName)) {
-      _bldgCiv.approachBuilding(bldName);
-    }
   }
 
 
@@ -140,33 +106,6 @@ public class MainActionCiv extends BaseCiv
       results.add(a.getKey());
     }
     return results;
-  }
-
-  public BuildingDisplayCiv getBuildingDisplayCiv()
-  {
-    return _bldgCiv;
-  }
-
-  public RegistryFactory getRegistryFactory()
-  {
-    return _rf;
-  }
-
-
-  public ChronosPanel getActionPanel()
-  {
-    return _mainButtonPanel;
-  }
-
-
-  /**
-   * Get the town name
-   * 
-   * @return the name of the town
-   */
-  public String getTownName()
-  {
-    return _adv.getTownName();
   }
 
 
@@ -205,19 +144,9 @@ public class MainActionCiv extends BaseCiv
   {
     // Get the selected adventure
     _adv = _advReg.getAdventure(adventureName);
-
-    // BuildingCiv creates the IOPanel for all user input (commands) and messages (output)
-    BuildingRegistry bldgReg = (BuildingRegistry) _rf.getRegistry(RegKey.BLDG);
-    _bldgCiv = new BuildingDisplayCiv(this, bldgReg);
-    _bldgCiv.openTown();
+    _mfCiv.displayTown(_adv);
   }
 
-
-  // public void msgOut(String msg)
-  // {
-  // _mf.displayText(msg);
-  // }
-  //
 
   // /** Creates the standard layout to display the town image and description */
   // public void openTown()
@@ -246,7 +175,7 @@ public class MainActionCiv extends BaseCiv
     JButton summonButton = createSummonHeroesButton();
     JButton creationButton = createNewHeroButton();
 
-    _mainButtonPanel = new ChronosPanel(this);
+    _mainButtonPanel = new ChronosPanel();
     _mainButtonPanel.setTitle(INITIAL_OPENING_TITLE);
     // Align all buttons in a single column
     _mainButtonPanel.setLayout(new MigLayout("wrap 1"));
@@ -278,7 +207,6 @@ public class MainActionCiv extends BaseCiv
     button.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e)
       {
-        _advReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
         List<Adventure> adventures = _advReg.getAdventureList();
         Object[] adventuresArr = adventures.toArray();
         Object selectedValue =
@@ -337,8 +265,8 @@ public class MainActionCiv extends BaseCiv
       public void actionPerformed(ActionEvent arg0)
       {
         try {
-          NewHeroCiv nhCiv = new NewHeroCiv(_mf, _rf);
-          NewHeroIPPanel ipPanel = nhCiv.createNewHeroPanel();
+          NewHeroCiv nhCiv = new NewHeroCiv(_mfCiv, (HeroRegistry) _rf.getRegistry(RegKey.HERO));
+          NewHeroIPPanel ipPanel = new NewHeroIPPanel(nhCiv, _mfCiv);
           _mf.replaceLeftPanel(ipPanel);
           // Can set focus on default field (nameField) only after it is displayed
           ipPanel.setDefaultFocus();

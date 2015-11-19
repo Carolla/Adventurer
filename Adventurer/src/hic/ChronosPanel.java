@@ -11,8 +11,6 @@ package hic;
 
 import javax.swing.JPanel;
 
-import civ.BaseCiv;
-
 /**
  * Adds a title method to JPanel for Chronos panels. Instead of using various constructor parms, the
  * attributes are added as set() functions. <br>
@@ -37,8 +35,8 @@ public class ChronosPanel extends JPanel
   /** Default title field for all ChronosPanels, to be overwritten */
   protected String _title = " ";
 
-  /** Civ that manages the images and mouse action in this display */
-  protected BaseCiv _ctrlCiv;
+//  /** Civ that manages the images and mouse action in this display */
+//  protected BaseCiv _ctrlCiv;
 
 
   // ====================================================================================
@@ -53,22 +51,22 @@ public class ChronosPanel extends JPanel
   {
     return _title;
   }
-
-  // ====================================================================================
-  // Default methods in common for a base class of ChronosPanels
-  // ====================================================================================
-
-  public void replaceControllerCiv(BaseCiv newCiv)
-  {
-    // No action if listeners are null
-    removeMouseListener(_ctrlCiv);
-    removeMouseMotionListener(_ctrlCiv);
-
-    // Add new control civ and save for later
-    addMouseListener(newCiv);
-    addMouseMotionListener(newCiv);
-    _ctrlCiv = newCiv;
-  }
+//
+//  // ====================================================================================
+//  // Default methods in common for a base class of ChronosPanels
+//  // ====================================================================================
+//
+//  public void replaceControllerCiv(BaseCiv newCiv)
+//  {
+//    // No action if listeners are null
+//    removeMouseListener(_ctrlCiv);
+//    removeMouseMotionListener(_ctrlCiv);
+//
+//    // Add new control civ and save for later
+//    addMouseListener(newCiv);
+//    addMouseMotionListener(newCiv);
+//    _ctrlCiv = newCiv;
+//  }
 
 
   /**

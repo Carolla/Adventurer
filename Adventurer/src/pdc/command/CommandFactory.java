@@ -72,7 +72,7 @@ public class CommandFactory
     // End the program.
     _commandMap.put("QUIT", () -> new CmdQuit(_mfCiv, _bdCiv));
     // Return to town view
-    _commandMap.put("RETURN", () -> new CmdReturn(_maCiv));
+    _commandMap.put("RETURN", () -> new CmdReturn(_bdCiv));
     // Just sit there
     _commandMap.put("WAIT", () -> new CmdWait());
 

@@ -9,15 +9,10 @@
 
 package civ;
 
-import hic.MainframeInterface;
-import hic.NewHeroIPPanel;
-
 import java.util.EnumMap;
 
 import chronos.pdc.character.Hero;
 import chronos.pdc.registry.HeroRegistry;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 
 /**
  * Input CIV: Allows the user to enter input data, validates it and creates a new Hero.
@@ -50,10 +45,7 @@ public class NewHeroCiv extends BaseCiv
     NO_ERROR, NAME_MISSING, NAME_TOO_LONG, NAME_NOT_UNIQUE, HERO_NOT_CREATED
   };
 
-
-  /** Input map for data field and keys */
-  private EnumMap<HeroInput, String> _inputMap;
-  private MainframeInterface _mf;
+  private MainframeCiv _mfCiv;
   private HeroRegistry _heroReg;
 
   // ===========================================================================
@@ -65,13 +57,12 @@ public class NewHeroCiv extends BaseCiv
    * stats
    * 
    * @param mf to callback for placing created panels, and relinquishing final control
-   * @param regFactory to check Hero for unique name
+   * @param heroReg to check Hero for unique name
    */
-  public NewHeroCiv(MainframeInterface mainframe, RegistryFactory regFactory)
+  public NewHeroCiv(MainframeCiv mfCiv, HeroRegistry heroReg)
   {
-    _inputMap = new EnumMap<HeroInput, String>(HeroInput.class);
-    _heroReg = (HeroRegistry) regFactory.getRegistry(RegKey.HERO);
-    _mf = mainframe;
+    _heroReg = heroReg;
+    _mfCiv = mfCiv;
   }
 
   // ===========================================================================
@@ -86,11 +77,11 @@ public class NewHeroCiv extends BaseCiv
    */
   public Hero createHero(EnumMap<HeroInput, String> inputMap)
   {
-    String name = _inputMap.get(HeroInput.NAME);
-    String gender = _inputMap.get(HeroInput.GENDER);
-    String hairColor = _inputMap.get(HeroInput.HAIR);
-    String raceName = _inputMap.get(HeroInput.RACE);
-    String klassName = _inputMap.get(HeroInput.KLASS);
+    String name = inputMap.get(HeroInput.NAME);
+    String gender = inputMap.get(HeroInput.GENDER);
+    String hairColor = inputMap.get(HeroInput.HAIR);
+    String raceName = inputMap.get(HeroInput.RACE);
+    String klassName = inputMap.get(HeroInput.KLASS);
 
     Hero myHero = null;
 
@@ -105,27 +96,7 @@ public class NewHeroCiv extends BaseCiv
   // Return the current state to the previous state
   public void back()
   {
-    _mf.back();
-  }
-
-
-  /**
-   * Create the new hero panel to collect input data; pick up the input data when the input panel
-   * calls submit
-   * 
-   * @param this  civ controls the NewHeroIPPanel
-   * @param mf  mainframe reference for adding panel into the main frame
-   */
-  public NewHeroIPPanel createNewHeroPanel()
-  {
-    NewHeroIPPanel ipPanel = new NewHeroIPPanel(this, _mf);
-    return ipPanel;
-  }
-
-  // Get empty map for input data
-  public EnumMap<HeroInput, String> getEmptyMap()
-  {
-    return _inputMap;
+    _mfCiv.back();
   }
 
   // Getters for the input data options
@@ -153,14 +124,14 @@ public class NewHeroCiv extends BaseCiv
    *        that order)
    * @return false if error widget needs to be displayed
    */
-  public ErrorCode validate(EnumMap<HeroInput, String> inputMap)
+  public boolean validate(EnumMap<HeroInput, String> inputMap)
   {
     String name = inputMap.get(HeroInput.NAME);
     ErrorCode err = isValid(name);
     if (err == ErrorCode.NO_ERROR) {
       err = isUnique(name);
     }
-    return err;
+    return err == ErrorCode.NO_ERROR;
   }
 
   /**
