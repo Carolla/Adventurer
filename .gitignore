@@ -10,6 +10,7 @@ doc/
 build/
 bin/
 target/
+.recommenders/
 
 *.class
 

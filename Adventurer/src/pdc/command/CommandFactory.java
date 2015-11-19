@@ -43,12 +43,13 @@ public class CommandFactory
   private Map<String, Supplier<Command>> _commandMap = new HashMap<String, Supplier<Command>>();
 
   private final BuildingDisplayCiv _bdCiv;
-  private final MainframeCiv _mfCiv;
+//  private final MainframeCiv _mfCiv;
 
   /** Keep a table for command, as lambda functions */
-  public CommandFactory(MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
+//  public CommandFactory(MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
+  public CommandFactory(BuildingDisplayCiv bdCiv)
   {
-    _mfCiv = mfCiv;
+//    _mfCiv = mfCiv;
     _bdCiv = bdCiv;
     initMap();
   }
@@ -63,7 +64,8 @@ public class CommandFactory
     // Enter the interior of the Building
     _commandMap.put("ENTER", () -> new CmdEnter(_bdCiv));
     // Synonym for Leave and then Quit the program
-    _commandMap.put("EXIT", () -> new CmdExit(_mfCiv, _bdCiv));
+//    _commandMap.put("EXIT", () -> new CmdExit(_mfCiv, _bdCiv));
+    _commandMap.put("EXIT", () -> new CmdExit(_bdCiv));
     // Leave the inside of the Building and go outside
     _commandMap.put("LEAVE", () -> new CmdLeave(_bdCiv));
     // End the program.

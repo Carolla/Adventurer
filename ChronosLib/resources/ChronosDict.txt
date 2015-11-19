@@ -10,3 +10,4 @@ guilds
 parms
 subfolder
 orchestrates
+architected

@@ -12,9 +12,7 @@ package chronos.pdc.buildings;
 import java.util.ArrayList;
 import java.util.List;
 
-import chronos.civ.UserMsg;
 import chronos.pdc.NPC;
-import chronos.pdc.Command.Scheduler;
 import chronos.pdc.Command.intCmdPatronEnter;
 import chronos.pdc.Command.intCmdPatronLeave;
 import chronos.pdc.registry.NPCRegistry;
@@ -59,7 +57,9 @@ public class Inn extends Building
   static private final String EXTERIOR_IMAGE = "raw_ext_Ugly Ogre Inn.jpg";
   static private final String INTERIOR_IMAGE = "int_Inn.jpg";
 
-  /** The standard description is saved in the base class, but the busy description is stored here */
+  /**
+   * The standard description is saved in the base class, but the busy description is stored here
+   */
   private String _busyDescription = null;
 
   /** The Inn opens at 6am and closes at midnight */
@@ -92,9 +92,8 @@ public class Inn extends Building
   private int _patronsNow = 1;
 
   /** Used to schedule commands */
-//  private final Scheduler _skedder;
+  // private final Scheduler _skedder;
   private final NPCRegistry _npcRegistry;
-  private UserMsg _msg;
 
   // ============================================================
   // Constructors and constructor helpers
@@ -105,11 +104,11 @@ public class Inn extends Building
    * 
    * @throws ApplicationException if the ctor fails
    */
-//  public Inn(Scheduler skedder, NPCRegistry npcRegistry) throws ApplicationException
+  // public Inn(Scheduler skedder, NPCRegistry npcRegistry) throws ApplicationException
   public Inn(NPCRegistry npcRegistry) throws ApplicationException
   {
     super(INN_NAME, INNKEEPER, HOVERTEXT, EXTERIOR, INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
-//    _skedder = skedder;
+    // _skedder = skedder;
     _npcRegistry = npcRegistry;
     _busyDescription = BUSY_DESC;
     setBusinessHours(OPENTIME, CLOSETIME);
@@ -138,8 +137,6 @@ public class Inn extends Building
     for (intCmdPatronEnter ce : enterList) {
       // Use the generated enter commands to create the leave commands
       intCmdPatronLeave cl = new intCmdPatronLeave(ce, this);
-//      _skedder.sched(ce);
-//      _skedder.sched(cl);
     }
   }
 
@@ -260,21 +257,21 @@ public class Inn extends Building
   public boolean add(NPC npc)
   {
     System.out.println(npc.getName() + " entered the Inn");
-    _msg.msgOut(npc.getName() + " entered the Inn");
+//    _msg.msgOut(npc.getName() + " entered the Inn");
     return super.add(npc);
   }
-  
+
   @Override
   public boolean remove(NPC npc)
   {
     System.out.println(npc.getName() + " left the Inn");
-    _msg.msgOut(npc.getName() + " left the Inn");
+//    _msg.msgOut(npc.getName() + " left the Inn");
     return super.remove(npc);
   }
-  
-  public void setMsg(UserMsg msg)
-  {
-    _msg = msg;
-  }
+
+//  public void setMsg(UserMsg msg)
+//  {
+//    _msg = msg;
+//  }
 
 } // end of Inn class

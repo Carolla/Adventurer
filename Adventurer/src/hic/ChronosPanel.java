@@ -9,6 +9,8 @@
 
 package hic;
 
+import java.awt.Image;
+
 import javax.swing.JPanel;
 
 /**
@@ -35,10 +37,16 @@ public class ChronosPanel extends JPanel
   /** Default title field for all ChronosPanels, to be overwritten */
   protected String _title = " ";
 
-  
+  /** If image is shown in panel... */
+  protected Image _image;
+
+
   // ====================================================================================
   // Constructor
   // ====================================================================================
+
+  /** Default constructor */
+  public ChronosPanel() {} 
   
   
   // ====================================================================================
@@ -60,7 +68,18 @@ public class ChronosPanel extends JPanel
   public void setTitle(String title)
   {
     _title = title;
-  };
+  }
+
+  /**
+   * Display the image in the calling panel using JPanel's method
+   * 
+   * @param image to be displayed
+   */
+  public void setImage(Image image)
+  {
+    _image = image;
+  }
+
 
 
 } // end of ChronosPanel
