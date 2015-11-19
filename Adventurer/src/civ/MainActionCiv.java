@@ -11,8 +11,6 @@ package civ;
 
 import hic.ChronosPanel;
 import hic.Mainframe;
-import hic.MainframeInterface;
-import hic.NewHeroIPPanel;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -29,9 +27,6 @@ import net.miginfocom.swing.MigLayout;
 import chronos.Chronos;
 import chronos.pdc.Adventure;
 import chronos.pdc.registry.AdventureRegistry;
-import chronos.pdc.registry.HeroRegistry;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 
 /**
  * The main civ behind the Mainframe screen. It creates the MainActionPanel consisting of the
@@ -42,13 +37,11 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
  */
 public class MainActionCiv extends BaseCiv
 {
-  private MainframeInterface _mf;
   private ChronosPanel _mainButtonPanel;
 
   private Adventure _adv;
   private AdventureRegistry _advReg;
   private MainframeCiv _mfCiv;
-  private RegistryFactory _rf;
 
   /** Amount of space in pixels around the frame and image of aesthetics */
   public static final int FRAME_PADDING = 90;
@@ -78,14 +71,15 @@ public class MainActionCiv extends BaseCiv
   {
     _advReg = advReg;
     _mfCiv = mfciv;
-    createMembers();
+    createActionPanel();
+    
+    setActivePanel();
   }
 
 
-  protected void createMembers()
+  protected void setActivePanel()
   {
-    // Create the panel with the main buttons: Load Adventure, Summons, and Create Hero
-    _mf.replaceLeftPanel(createActionPanel());
+    _mfCiv.replaceLeftPanel(_mainButtonPanel);
   }
 
 
@@ -165,7 +159,7 @@ public class MainActionCiv extends BaseCiv
   /**
    * Create the Adventure, Heroes, and Create-Hero buttons, and button panel for them
    */
-  private ChronosPanel createActionPanel()
+  protected ChronosPanel createActionPanel()
   {
     JButton adventureButton = createAdventureButton();
     JButton summonButton = createSummonHeroesButton();
@@ -260,16 +254,7 @@ public class MainActionCiv extends BaseCiv
     button.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0)
       {
-        try {
-          NewHeroCiv nhCiv = new NewHeroCiv(_mfCiv, (HeroRegistry) _rf.getRegistry(RegKey.HERO));
-          NewHeroIPPanel ipPanel = new NewHeroIPPanel(nhCiv, _mfCiv);
-          _mf.replaceLeftPanel(ipPanel);
-          // Can set focus on default field (nameField) only after it is displayed
-          ipPanel.setDefaultFocus();
-        } catch (Exception e) {
-          e.printStackTrace();
-          System.exit(0);
-        }
+        _mfCiv.createHero();
       }
     });
     return button;

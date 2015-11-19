@@ -17,6 +17,12 @@ public class FakeMainframeCiv extends MainframeCiv
   }
   
   @Override
+  public void displayErrorText(String msg)
+  {
+    _errors.add(msg);
+  }
+  
+  @Override
   public void quit()
   {
     // Don't exit the program!

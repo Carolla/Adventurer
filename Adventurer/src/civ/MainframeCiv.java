@@ -14,6 +14,7 @@ import hic.IOPanel;
 import hic.ImagePanel;
 import hic.Mainframe;
 import hic.MainframeInterface;
+import hic.NewHeroIPPanel;
 
 import java.util.ArrayList;
 
@@ -22,6 +23,7 @@ import chronos.pdc.Adventure;
 import chronos.pdc.Command.Scheduler;
 import chronos.pdc.registry.AdventureRegistry;
 import chronos.pdc.registry.BuildingRegistry;
+import chronos.pdc.registry.HeroRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 
@@ -40,7 +42,6 @@ public class MainframeCiv extends BaseCiv
 {
   private MainframeInterface _mf;
   private RegistryFactory _rf;
-  private MainActionCiv mainActionCiv;
   private CommandParser _cp;
   private IOPanel _ioPanel;
   private ImagePanel _imagePanel;
@@ -77,10 +78,10 @@ public class MainframeCiv extends BaseCiv
 
     _rf = new RegistryFactory(skedder);
     _rf.initRegistries();
-    
+
     // Create the left side panel to hold the main action buttons */
-    mainActionCiv = new MainActionCiv(this, (AdventureRegistry) _rf.getRegistry(RegKey.ADV));    
-    
+    new MainActionCiv(this, (AdventureRegistry) _rf.getRegistry(RegKey.ADV));
+
     CommandFactory cmdFactory = new CommandFactory(this, _bldgCiv);
     cmdFactory.initMap();
     _cp = new CommandParser(skedder, cmdFactory);
@@ -97,7 +98,7 @@ public class MainframeCiv extends BaseCiv
   // ============================================================
   // Public methods
   // ============================================================
-  
+
   /**
    * Retrieves the Adventures for selection from the Adventure Registry
    * 
@@ -105,8 +106,8 @@ public class MainframeCiv extends BaseCiv
    */
   public ArrayList<String> getAdventures()
   {
-   AdventureRegistry aReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
-    
+    AdventureRegistry aReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
+
     ArrayList<Adventure> adventures = aReg.getAdventureList();
     ArrayList<String> results = new ArrayList<String>();
     for (Adventure a : adventures) {
@@ -127,7 +128,7 @@ public class MainframeCiv extends BaseCiv
 
   public void displayText(String result)
   {
-    _ioPanel.displayText(result);    
+    _ioPanel.displayText(result);
   }
 
 
@@ -142,30 +143,37 @@ public class MainframeCiv extends BaseCiv
   {
     // Display the IOPanel on the left side of the mainframe
     _mf.replaceLeftPanel(_ioPanel);
-    
+
     // BuildingCiv creates the IOPanel for all user input (commands) and messages (output)
     BuildingRegistry bldgReg = (BuildingRegistry) _rf.getRegistry(RegKey.BLDG);
     _bldgCiv = new BuildingDisplayCiv(this, adv, bldgReg);
-    _bldgCiv.openTown();    
+    _bldgCiv.openTown();
   }
 
 
   public void displayErrorText(String msg)
   {
     _ioPanel.displayErrorText(msg);
-    
   }
 
 
   public void replaceLeftPanel(ChronosPanel panel)
   {
-    _mf.replaceLeftPanel(panel);    
+    _mf.replaceLeftPanel(panel);
   }
 
 
   public void back()
   {
-    _mf.back(); 
+    _mf.back();
   }
-  
+
+
+  public void createHero()
+  {
+    NewHeroCiv nhCiv = new NewHeroCiv(this, (HeroRegistry) _rf.getRegistry(RegKey.HERO));
+    NewHeroIPPanel ipPanel = new NewHeroIPPanel(nhCiv, this);
+    replaceLeftPanel(ipPanel);
+  }
+
 } // end of MainframeCiv class
