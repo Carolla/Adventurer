@@ -134,6 +134,30 @@ public class NPC implements IRegistryElement
     boolean bfriend = (_affinity == p._affinity) && (_peacekeeper == p._peacekeeper);
     return (bName && bFarDesc && bNearDesc && bfriend);
   }
+  
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    return equals((IRegistryElement) obj);
+  }
+
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((_farDescription == null) ? 0 : _farDescription.hashCode());
+    result = prime * result + ((_name == null) ? 0 : _name.hashCode());
+    result = prime * result + ((_nearDescription == null) ? 0 : _nearDescription.hashCode());
+    result = prime * result + (_peacekeeper ? 1231 : 1237);
+    return result;
+  }
 
   /*
    * (non-Javadoc)

@@ -386,7 +386,7 @@ public abstract class Building implements IRegistryElement
         return npc.getDescription();
       }
     }
-    return "";
+    return _intDesc;
   }
 
 
