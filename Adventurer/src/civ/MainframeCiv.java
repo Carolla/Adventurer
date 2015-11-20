@@ -82,6 +82,9 @@ public class MainframeCiv extends BaseCiv
     // Create the left side panel to hold the main action buttons */
     new MainActionCiv(this, (AdventureRegistry) _rf.getRegistry(RegKey.ADV));
 
+    BuildingRegistry bldgReg = (BuildingRegistry) _rf.getRegistry(RegKey.BLDG);
+    _bldgCiv = new BuildingDisplayCiv(this, adv, bldgReg);
+    
     CommandFactory cmdFactory = new CommandFactory(this, _bldgCiv);
     cmdFactory.initMap();
     _cp = new CommandParser(skedder, cmdFactory);
@@ -145,8 +148,6 @@ public class MainframeCiv extends BaseCiv
     _mf.replaceLeftPanel(_ioPanel);
 
     // BuildingCiv creates the IOPanel for all user input (commands) and messages (output)
-    BuildingRegistry bldgReg = (BuildingRegistry) _rf.getRegistry(RegKey.BLDG);
-    _bldgCiv = new BuildingDisplayCiv(this, adv, bldgReg);
     _bldgCiv.openTown();
   }
 

@@ -12,7 +12,6 @@ package chronos.pdc.character;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import mylib.pdc.MetaDie;
@@ -31,13 +30,13 @@ public abstract class Klass implements Serializable
   static final long serialVersionUID = 1100L;
 
   /** Assign klass specific inventory items */
-  public abstract Inventory addKlassItems(Inventory inventory);  
+  public abstract Inventory addKlassItems(Inventory inventory);
 
-  public static String FIGHTER_CLASS_NAME = "Fighter";
-  public static String CLERIC_CLASS_NAME = "Fighter";
-  public static String MAGIC_USER_CLASS_NAME = "Fighter";
-  public static String THIEF_CLASS_NAME = "Fighter";
-  
+  public static final String FIGHTER_CLASS_NAME = "Fighter";
+  public static final String CLERIC_CLASS_NAME = "Cleric";
+  public static final String WIZARD_CLASS_NAME = "Wizard";
+  public static final String THIEF_CLASS_NAME = "Thief";
+
   // KLASS-SPECIFIC ATTRIBUTES and METHODS
   /** Name of the subclass of Klass, e.g, Peasant or Fighter */
   protected String _klassName = null;
@@ -52,9 +51,9 @@ public abstract class Klass implements Serializable
   protected String _goldDice = null;
 
   /** Special klass-specific table of items */
-  protected String[] _klassItems = null; 
-  
-  
+  protected String[] _klassItems = null;
+
+
   public String[][] assignKlassSkills()
   {
     return new String[0][0];
@@ -96,7 +95,7 @@ public abstract class Klass implements Serializable
   {
     return inven;
   }
-  
+
   /**
    * Create a specific subclass of Klass based on its klass name. <br>
    * NOTE: The subclass must be in the same package as the Klass class.
@@ -106,37 +105,28 @@ public abstract class Klass implements Serializable
    */
   static public Klass createKlass(String klassName)
   {
-    // Display the description and image of Building exterior
-    _commandMap.put("APPROACH", () -> new CmdApproach(_bdCiv));
-    // Enter the interior of the Building
-    _commandMap.put("ENTER", () -> new CmdEnter(_bdCiv));
-    // Synonym for Leave and then Quit the program
-//    _commandMap.put("EXIT", () -> new CmdExit(_mfCiv, _bdCiv));
-    _commandMap.put("EXIT", () -> new CmdExit(_bdCiv));
-    // Leave the inside of the Building and go outside
-    _commandMap.put("LEAVE", () -> new CmdLeave(_bdCiv));
-    // End the program.
-    _commandMap.put("QUIT", () -> new CmdQuit(_mfCiv, _bdCiv));
-    // Return to town view
-    _commandMap.put("RETURN", () -> new CmdReturn(_bdCiv));
-    // Just sit there
-    _commandMap.put("WAIT", () -> new CmdWait());
+    switch (klassName) {
+      case FIGHTER_CLASS_NAME:
+        return new Fighter();
+      case CLERIC_CLASS_NAME:
+        return new Cleric();
+      case WIZARD_CLASS_NAME:
+        return new Wizard();
+      case THIEF_CLASS_NAME:
+        return new Thief();
 
-    // Locks the command map as read-only
-    _commandMap = Collections.unmodifiableMap(_commandMap);
- 
-    Klass newKlass = null;
-
-    System.err.println("Klass.createKlass(): Cannot find class requested: " + e.getMessage());
-    return newKlass;
+      default:
+        System.err.println("Klass.createKlass(): Cannot find class requested: klassName");
+        return null;
+    }
   }
 
-  
-//  // Add an element to an array
-//  protected ArrayList<String> addItem(inven, item) {
-//    inven.add(item);
-//    return inven;
-//  }
+
+  // // Add an element to an array
+  // protected ArrayList<String> addItem(inven, item) {
+  // inven.add(item);
+  // return inven;
+  // }
 
   // // Now klass specific items
   // switch(klass) {
