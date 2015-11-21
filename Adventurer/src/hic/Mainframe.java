@@ -311,7 +311,7 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     _leftPanelStack.push(newPanel);
 
     redraw();
-    setVisible(true);
+    newPanel.setVisible(true);
   }
 
   /**

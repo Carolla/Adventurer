@@ -188,7 +188,7 @@ public class HeroDisplay extends ChronosPanel
   private JButton _delButton;
 
   /** Background color inherited from parent */
-   private Color _backColor = Constants.MY_BROWN;
+  private Color _backColor = Constants.MY_BROWN;
 
   /** The backend CIV for this JPanel widget */
   private HeroDisplayCiv _hdCiv = null;
@@ -217,7 +217,7 @@ public class HeroDisplay extends ChronosPanel
    * @param _mf
    * @param firstTime Hero activates buttons differently
    */
-//  public HeroDisplay(HeroDisplayCiv hdCiv, Mainframe mainframe, boolean firstTime)
+  // public HeroDisplay(HeroDisplayCiv hdCiv, Mainframe mainframe, boolean firstTime)
   public HeroDisplay(HeroDisplayCiv hdCiv, boolean firstTime)
   {
     super(hdCiv, "Hero nameplate goes here", Side.LEFT);
@@ -297,43 +297,6 @@ public class HeroDisplay extends ChronosPanel
   public JButton getDefaultFocus()
   {
     return _cancelButton;
-  }
-
-
-  /**
-   * Add a JTextArea into a multiline grid
-   * 
-   * @param title of the section for a group, e.g., racial, occupational, or klass
-   * @param nameList of Strings to display in this multi-line cell
-   */
-  private JPanel buildMultiCell(String title, List<String> nameList)
-  {
-    JTextArea msgArea = new JTextArea(nameList.size() + 1, DATA_WIDTH);
-    msgArea.setPreferredSize(new Dimension(DATA_WIDTH, nameList.size() + 1));
-    msgArea.setBackground(_backColor);
-    msgArea.setEditable(false);
-    msgArea.setTabSize(1);
-    msgArea.setLineWrap(true); // auto line wrapping doesn't seem to work
-    msgArea.setWrapStyleWord(true);
-
-    // Display the title
-    msgArea.append(" " + title + Constants.NEWLINE);
-
-    // Display the detailed skill list
-    if (nameList.size() == 0) {
-      nameList.add(" None");
-    }
-    for (int k = 0; k < nameList.size(); k++) {
-      msgArea.append(" + " + nameList.get(k) + Constants.NEWLINE);
-    }
-
-    // Add the text area into a JPanel cell
-    JPanel cell = new JPanel(new MigLayout("ins 0"));
-    cell.add(msgArea, "growx, wrap");
-
-    gridSetCellBorder(cell);
-    cell.validate();
-    return cell;
   }
 
 
@@ -478,8 +441,14 @@ public class HeroDisplay extends ChronosPanel
   } // End of buildAttribute panel
 
 
+
+  // =================================================================
+  // PRIVATE METHODS
+  // =================================================================
+
   /**
    * Create Save, Delete, and Cancel buttons, then add then to a JPanel
+   * 
    * @param firstTime Hero disables DELETE button; old Hero disables CANCEL button
    * @return button panel
    */
@@ -552,11 +521,10 @@ public class HeroDisplay extends ChronosPanel
     // Disable DELETE or CANCEL buttons depending on old or new Hero
     if (firstTime) {
       _delButton.setEnabled(false);
+    } else {
+      _cancelButton.setEnabled(false);
     }
-    else {
-    _cancelButton.setEnabled(false);
-    }
-    
+
     buttonPanel.add(_saveButton);
     buttonPanel.add(_delButton);
     buttonPanel.add(_cancelButton);
@@ -734,6 +702,44 @@ public class HeroDisplay extends ChronosPanel
 
     return magicPanel;
   }
+
+
+  /**
+   * Add a JTextArea into a multiline grid
+   * 
+   * @param title of the section for a group, e.g., racial, occupational, or klass
+   * @param nameList of Strings to display in this multi-line cell
+   */
+  private JPanel buildMultiCell(String title, List<String> nameList)
+  {
+    JTextArea msgArea = new JTextArea(nameList.size() + 1, DATA_WIDTH);
+    msgArea.setPreferredSize(new Dimension(DATA_WIDTH, nameList.size() + 1));
+    msgArea.setBackground(_backColor);
+    msgArea.setEditable(false);
+    msgArea.setTabSize(1);
+    msgArea.setLineWrap(true); // auto line wrapping doesn't seem to work
+    msgArea.setWrapStyleWord(true);
+
+    // Display the title
+    msgArea.append(" " + title + Constants.NEWLINE);
+
+    // Display the detailed skill list
+    if (nameList.size() == 0) {
+      nameList.add(" None");
+    }
+    for (int k = 0; k < nameList.size(); k++) {
+      msgArea.append(" + " + nameList.get(k) + Constants.NEWLINE);
+    }
+
+    // Add the text area into a JPanel cell
+    JPanel cell = new JPanel(new MigLayout("ins 0"));
+    cell.add(msgArea, "growx, wrap");
+
+    gridSetCellBorder(cell);
+    cell.validate();
+    return cell;
+  }
+
 
 
   // Build panel of skills: literacy, racial skills, occupational skills, and klass skills
@@ -1068,6 +1074,7 @@ public class HeroDisplay extends ChronosPanel
    * Creates the panel and container fields for the given Hero, using a data map from the model to
    * populate the widget. The HeroDisplay panel contains three tabs: one for attributes, one for
    * inventory, and one for magic spells
+   * 
    * @param firstTime Hero activates buttons differently than dormitory hero
    */
   private boolean setupDisplay(boolean firstTime)

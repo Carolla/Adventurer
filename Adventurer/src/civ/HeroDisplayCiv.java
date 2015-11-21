@@ -9,7 +9,6 @@
 
 package civ;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
@@ -19,7 +18,6 @@ import chronos.pdc.MiscKeys.ItemCategory;
 import chronos.pdc.Skill;
 import hic.HeroDisplay;
 import hic.MainframeInterface;
-import mylib.Constants;
 import pdc.Inventory;
 import pdc.character.Hero;
 
@@ -112,6 +110,13 @@ public class HeroDisplayCiv extends BaseCiv
   // }
 
 
+  /** Restore the mainframe panels to their previous state */
+  public void back()
+  {
+    _mf.back();
+  }
+
+
   /**
    * Delete the Person
    * 
@@ -147,13 +152,6 @@ public class HeroDisplayCiv extends BaseCiv
   }
 
 
-  /** Restore the mainframe panels to their previous state */
-  public void back()
-  {
-    _mf.back();
-  }
-
-  
   public List<String> getKlassSkills()
   {
     return _hero.getKlassSkills();
@@ -189,22 +187,6 @@ public class HeroDisplayCiv extends BaseCiv
     return getInventory().getNameList(cat);
   }
 
-  /**
-   * Format the Skill data and tell the widget to display it
-   * 
-   * @param _skills list of Hero's skills to display
-   * @return false is an error occurs
-   */
-  public boolean populateSkills(List<Skill> _skills)
-  {
-    // Create a shuttle to contain the data and convert to widget String
-    // format
-    // List<String> skillList = convertSkills(_skills);
-    // if (!Constants.IN_TEST) {
-    // _widget.displaySkills(skillList);
-    // }
-    return true;
-  }
 
   /*
    * @return the length of the inventory (number of Items)
@@ -213,6 +195,7 @@ public class HeroDisplayCiv extends BaseCiv
   {
     return getInventory().getNbrItems();
   }
+
 
   /**
    * @return the list of spells known
@@ -297,6 +280,24 @@ public class HeroDisplayCiv extends BaseCiv
   // }
 
   /**
+   * Format the Skill data and tell the widget to display it
+   * 
+   * @param _skills list of Hero's skills to display
+   * @return false is an error occurs
+   */
+  public boolean populateSkills(List<Skill> _skills)
+  {
+    // Create a shuttle to contain the data and convert to widget String
+    // format
+    // List<String> skillList = convertSkills(_skills);
+    // if (!Constants.IN_TEST) {
+    // _widget.displaySkills(skillList);
+    // }
+    return true;
+  }
+
+
+  /**
    * Rename the Hero to the name selected
    * 
    * @param name the new name for the character
@@ -330,30 +331,30 @@ public class HeroDisplayCiv extends BaseCiv
     return false;
   }
 
-  /**
-   * Convert the Skill object into string fields for list display. All Item fields are concatenated
-   * into a single delimited string.
-   * 
-   * @param _skills list of Skills objects to convert
-   * @return the string list of output data
-   */
-  private List<String> convertSkills(List<Skill> _skills)
-  {
-    List<String> skillList = new ArrayList<String>(_skills.size());
-    for (int k = 0; k < _skills.size(); k++) {
-      // Each Skill consists of: name, description, race, klass, and
-      // action (excluded)
-      Skill skill = _skills.get(k);
-      String name = skill.getName();
-      // String race = skill.getRace();
-      // String klass = skill.getKlass();
-      String description = skill.getDescription();
-      String skillStr = name + Constants.DELIM + description; // race + BaseCiv.DELIM + klass +
-                                                            // BaseCiv.DELIM + description;
-      skillList.add(k, skillStr);
-    }
-    return skillList;
-  }
+//  /**
+//   * Convert the Skill object into string fields for list display. All Item fields are concatenated
+//   * into a single delimited string.
+//   * 
+//   * @param _skills list of Skills objects to convert
+//   * @return the string list of output data
+//   */
+//  private List<String> convertSkills(List<Skill> _skills)
+//  {
+//    List<String> skillList = new ArrayList<String>(_skills.size());
+//    for (int k = 0; k < _skills.size(); k++) {
+//      // Each Skill consists of: name, description, race, klass, and
+//      // action (excluded)
+//      Skill skill = _skills.get(k);
+//      String name = skill.getName();
+//      // String race = skill.getRace();
+//      // String klass = skill.getKlass();
+//      String description = skill.getDescription();
+//      String skillStr = name + Constants.DELIM + description; // race + BaseCiv.DELIM + klass +
+//                                                            // BaseCiv.DELIM + description;
+//      skillList.add(k, skillStr);
+//    }
+//    return skillList;
+//  }
 
 
   /*

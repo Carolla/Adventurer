@@ -19,19 +19,8 @@ import mylib.Constants;
 import mylib.Constants.Side;
 
 /**
- * Adds a title method to JPanel for Chronos panels. Instead of using various constructor parms, the
- * attributes are added as set() functions. <br>
- * For example, instead of
- * <P>
- * {@code JPanel myPanel = new JPanel(LayoutManager lm);}
- * <P>
- * use
- * <P>
- * {@code ChronosPanel myPanel = new ChronosPanel();} <br>
- * {@code myPanel.set(LayoutManagerlm);}.
- * <P>
- * 
- * @see {@code Mainframe.setFrameAndMenubar() for a better example.
+ * Base class for most panels used in {@code Adventurer}. Each civ controls two
+ * {@code ChronosPanels}, one on the left for user interaction, and one of the right for images.
  * 
  * @author Al Cline
  * @version Nov 9, 2015 // original <br>
@@ -59,7 +48,7 @@ public class ChronosPanel extends JPanel
     replaceControllerCiv(_ctrlCiv);
     _ctrlCiv.setPanel(this, side);
     setTitle(title);
-    System.out.println("Creating ChronosPanal " + _title + "; controlled by " + ctrlCiv);
+//    System.out.println("Creating ChronosPanal " + _title + "; controlled by " + ctrlCiv);
   }
 
 

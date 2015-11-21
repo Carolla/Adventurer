@@ -88,12 +88,13 @@ public class IOPanel extends ChronosPanel
   {
     // IOPanel is controlled by the BuildingDisplayCiv, and placed on the left side 
     super(bldgCiv, IOPANEL_TITLE, Side.LEFT);
+    // TODO: Replace mundane title with name of Adventure on left side
+//  this.setTitle(bldgciv.getAdventureName());
     
     _bldgCiv = bldgCiv;
     _commandParser = cp;
 
     setLayout(new MigLayout("", "[grow]", "[][]"));
-//    this.setTitle(IOPANEL_TITLE);
     _transcriptPane = new JTextPane();
     _transcriptPane.setAlignmentY(JTextArea.TOP_ALIGNMENT);
     _output = _transcriptPane.getStyledDocument();

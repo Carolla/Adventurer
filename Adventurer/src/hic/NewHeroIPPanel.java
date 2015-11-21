@@ -237,6 +237,14 @@ public class NewHeroIPPanel extends ChronosPanel
   // Private Methods
   // ============================================================
 
+  /** Set the title for this panel */
+  @Override
+  public void setTitle(String title)
+  {
+    super._title = NEW_HERO_TITLE;
+  }
+
+
   /**
    * Create a button panel containing Submit and Cancel buttons
    * 
@@ -498,14 +506,6 @@ public class NewHeroIPPanel extends ChronosPanel
     // mf.setEditFlag(editState);
   }
 
-  /** Set the title for this panel */
-  @Override
-  public void setTitle(String title)
-  {
-    super._title = NEW_HERO_TITLE;
-  }
-
-  
   /**
    * Display the error message received after submitting a new Hero.
    */
