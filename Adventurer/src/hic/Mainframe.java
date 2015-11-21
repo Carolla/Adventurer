@@ -174,7 +174,21 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     }
   }
 
+  
+  /**
+   * Remove the current panel and return to the main action panel, as many levels as it takes
+   */
+  public void backToMain()
+  {
+    // Remove all panels until the first (main action) panel is found
+    while (_leftPanelStack.size() > 1) {
+      _leftPanelStack.pop();
+    }
+    // Put the main action panel in place and display
+    replaceLeftPanel(_leftPanelStack.pop());
+  }
 
+  
   // /**
   // * Display error text onto the scrolling output panel
   // *

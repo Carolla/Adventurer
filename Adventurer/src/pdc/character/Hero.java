@@ -344,7 +344,7 @@ public class Hero implements Serializable
 
     // 5. ENSURE ALL ADJUSTMENTS REMAIN WITH RACIAL LIMITS
     _traits = _race.verifyRaceLimits(_traits);
-    displayTraits("Race-verified final Traits: ", _traits);
+//    displayTraits("Race-verified final Traits: ", _traits);
 
     // 6. ASSIGN THE STRENGTH MODIFIERS: To Hit Mod, Damage Mod, and Wt Allowance
     int[] strMods = calcStrengthMods(_traits);
@@ -528,6 +528,13 @@ public class Hero implements Serializable
   public String getName()
   {
     return _name;
+  }
+
+  /** Remove the description after the delimeter to return only the name */
+  public String getOccupationName()
+  {
+    String ocpName = _occupation.substring(0,_occupation.indexOf(':'));
+    return ocpName;
   }
 
   public String getRaceName()

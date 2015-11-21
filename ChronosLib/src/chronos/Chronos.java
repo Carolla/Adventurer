@@ -94,7 +94,7 @@ public class Chronos
    }
 
    /** Location of HeroRegistry is uniquely set for now */
-   public static String HeroRegPath = "resources" + FS + "Heroes.reg";
+   public static String HeroRegPath = "resources" + FS + "Dormitory.reg";
   /** Location of AdventureRegistry */
   public static String AdventureRegPath = REGISTRY_PATH + "Adventures.reg";
   /** Building Registry location. This location can change for test purposes. */

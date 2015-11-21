@@ -26,6 +26,7 @@ public interface MainframeInterface
 //  public void addPanel(JComponent component);
 
   public void back();
+  public void backToMain();
 
 //  /** Display error text into the output panel */
 //  public void displayErrorText(String errText);

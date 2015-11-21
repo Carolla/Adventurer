@@ -16,14 +16,15 @@ import chronos.pdc.AttributeList;
 import chronos.pdc.Item;
 import chronos.pdc.MiscKeys.ItemCategory;
 import chronos.pdc.Skill;
+import dmc.HeroReadWriter;
 import hic.HeroDisplay;
 import hic.MainframeInterface;
 import pdc.Inventory;
 import pdc.character.Hero;
 
 /**
- * Output Civ: Creates the GUI widget <code>HeroDisplay</code>, passing output data to it, which
- * then formats and displays the Hero because the GUI has no knowledge of PDC objects.
+ * Output Civ: Creates the GUI widget <code>HeroDisplay</code>, passing output data to it from a new
+ * or existing Hero.
  * 
  * @author Alan Cline
  * @version May 31 2010 // original <br>
@@ -31,6 +32,7 @@ import pdc.character.Hero;
  *          Jan 4 2011 // removed Observer MVP model approach <br>
  *          Oct 1 2015 // revised for new Hero generation rules <br>
  *          Nov 6, 2015 // revised to be called by NewHeroCiv <br>
+ *          Nov 21, 2015 // updated JPanel to ChronosPanel and edited accordingly <br>
  */
 public class HeroDisplayCiv extends BaseCiv
 {
@@ -54,6 +56,8 @@ public class HeroDisplayCiv extends BaseCiv
 
   /** Reference to parent civ */
   private MainframeInterface _mf;
+  // /** Reference to RegistryFactory for access to the Dormitory */
+  // private RegistryFactory _rf;
 
 
   /*
@@ -63,7 +67,8 @@ public class HeroDisplayCiv extends BaseCiv
   /**
    * Displays a newly created Hero before it is saved in the Dormitory
    * 
-   * @param hero the model object from which to get the display data
+   * @param mf mainframe connection for displaying widgets
+   * @param regFact to access the Dormitory, where Heroes are stoed
    */
   public HeroDisplayCiv(MainframeInterface mf)
   {
@@ -72,6 +77,8 @@ public class HeroDisplayCiv extends BaseCiv
     }
     _mf = mf;
     _outputMap = new EnumMap<PersonKeys, String>(PersonKeys.class);
+
+    // Create the HeroDisplay
   }
 
 
@@ -116,6 +123,11 @@ public class HeroDisplayCiv extends BaseCiv
     _mf.back();
   }
 
+  /** Restore the mainframe panels to their previous state */
+  public void backToMain()
+  {
+    _mf.backToMain();
+  }
 
   /**
    * Delete the Person
@@ -129,7 +141,7 @@ public class HeroDisplayCiv extends BaseCiv
   }
 
   /**
-   * Display the Hero the HeroDisplay widget. 
+   * Display the Hero the HeroDisplay widget.
    * 
    * @param firstTime Heroes disable Delete button
    * @param hero to display
@@ -139,9 +151,9 @@ public class HeroDisplayCiv extends BaseCiv
     _hero = hero;
     _outputMap = hero.loadAttributes(_outputMap);
     _widget = new HeroDisplay(this, firstTime);
-//    String title = String.format("%s:  %s %s %s", _hero.getName(), _hero.getGender(),
-//        _hero.getRaceName(), _hero.getKlassName());
-//    _mf.replaceLeftPanel(_widget, title);
+    // String title = String.format("%s: %s %s %s", _hero.getName(), _hero.getGender(),
+    // _hero.getRaceName(), _hero.getKlassName());
+    // _mf.replaceLeftPanel(_widget, title);
     _mf.replaceLeftPanel(_widget);
   }
 
@@ -233,6 +245,8 @@ public class HeroDisplayCiv extends BaseCiv
     return true;
   }
 
+
+
   // /**
   // * Format the model data and tell the widget to display it
   // *
@@ -309,52 +323,42 @@ public class HeroDisplayCiv extends BaseCiv
     return false;
   }
 
-  /**
-   * Sets both load/new fields to false
-   */
-  public void resetLoadState()
-  {
-    HeroDisplayCiv.LOADING_CHAR = false;
-    HeroDisplayCiv.NEW_CHAR = false;
-  }
 
-  /**
-   * Save the Hero to the filename selected
-   * 
-   * @param overwrite existing Hero in dormitory
-   * @return true if the save worked correctly; else false
-   */
-  public boolean savePerson(boolean overwrite)
-  {
-//    HeroRegistry heroReg = (HeroRegistry) _mf.getRegistry(RegKey.HERO);
-//    return save(overwrite);
-    return false;
-  }
+  // /**
+  // * Sets both load/new fields to false
+  // */
+  // public void resetLoadState()
+  // {
+  // HeroDisplayCiv.LOADING_CHAR = false;
+  // HeroDisplayCiv.NEW_CHAR = false;
+  // }
 
-//  /**
-//   * Convert the Skill object into string fields for list display. All Item fields are concatenated
-//   * into a single delimited string.
-//   * 
-//   * @param _skills list of Skills objects to convert
-//   * @return the string list of output data
-//   */
-//  private List<String> convertSkills(List<Skill> _skills)
-//  {
-//    List<String> skillList = new ArrayList<String>(_skills.size());
-//    for (int k = 0; k < _skills.size(); k++) {
-//      // Each Skill consists of: name, description, race, klass, and
-//      // action (excluded)
-//      Skill skill = _skills.get(k);
-//      String name = skill.getName();
-//      // String race = skill.getRace();
-//      // String klass = skill.getKlass();
-//      String description = skill.getDescription();
-//      String skillStr = name + Constants.DELIM + description; // race + BaseCiv.DELIM + klass +
-//                                                            // BaseCiv.DELIM + description;
-//      skillList.add(k, skillStr);
-//    }
-//    return skillList;
-//  }
+
+  // /**
+  // * Convert the Skill object into string fields for list display. All Item fields are
+  // concatenated
+  // * into a single delimited string.
+  // *
+  // * @param _skills list of Skills objects to convert
+  // * @return the string list of output data
+  // */
+  // private List<String> convertSkills(List<Skill> _skills)
+  // {
+  // List<String> skillList = new ArrayList<String>(_skills.size());
+  // for (int k = 0; k < _skills.size(); k++) {
+  // // Each Skill consists of: name, description, race, klass, and
+  // // action (excluded)
+  // Skill skill = _skills.get(k);
+  // String name = skill.getName();
+  // // String race = skill.getRace();
+  // // String klass = skill.getKlass();
+  // String description = skill.getDescription();
+  // String skillStr = name + Constants.DELIM + description; // race + BaseCiv.DELIM + klass +
+  // // BaseCiv.DELIM + description;
+  // skillList.add(k, skillStr);
+  // }
+  // return skillList;
+  // }
 
 
   /*
@@ -545,50 +549,23 @@ public class HeroDisplayCiv extends BaseCiv
   // }
 
 
-
-  /** Inner class used for testing private methods */
-  public class MockHeroDisplayCiv
+  /** Save the Hero into the Dormitory, adding a new Hero or overwriting an old one
+   * 
+   * @param overwrite if true, then will overwrite an existing Hero
+   * @return true if all save operations worked as expected
+   */
+  public boolean savePerson(boolean overwrite)
   {
-    /** Default ctor */
-    public MockHeroDisplayCiv()
-    {}
+    boolean retflag = false;
+    HeroReadWriter dorm = new HeroReadWriter(); 
+    dorm.dumpDB();
+    if (overwrite == false) {
+      retflag = dorm.save(_hero, _hero.getName());
+    } else {
+      retflag = dorm.overwrite(_hero,  _hero.getName());
+    }
+    return retflag;
+  }
 
-    // /**
-    // * Get the data shuttle for this civ
-    // *
-    // * @return data shutle
-    // */
-    // public List<PersonKeys> getList()
-    // {
-    // return HeroDisplayCiv.this._ds;
-    // }
-
-    // // TODO: Move to MockCiv
-    // /* Verify correct adjective for given height
-    // * @param height of the Person
-    // * @param gender of the person to return different values for testing
-    // * @return word that describes the person in terms of height
-    // */
-    // public String initHeightDescriptor(double height, String gender)
-    // {
-    // setGender(gender);
-    // return Human.this.initHeightDescriptor(height);
-    // }
-    //
-    //
-    // // TODO: Move to MockCiv
-    // /* Verify correct adjective for given weight
-    // * @param weight of the Person
-    // * @param gender of the person to return different values for testing
-    // * @return word that describes the person in terms of height
-    // */
-    // public String initWeightDescriptor(double weight, String gender)
-    // {
-    // setGender(gender);
-    // return Human.this.initWeightDescriptor(weight);
-    // }
-
-  } // end of MockHeroDisplayClass
-
-} // end of HeroDisplayCiv class
+}  // end of HeroDisplayCiv class
 

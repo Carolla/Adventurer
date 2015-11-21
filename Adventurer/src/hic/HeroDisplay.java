@@ -113,15 +113,9 @@ import net.miginfocom.swing.MigLayout;
  *          Oct 1 2015 // revised to accommodate new Hero character sheet <br>
  *          Oct 17 2015 // added dual tab pane for Spell casters vs non-spell casters <br>
  */
+@SuppressWarnings("serial")
 public class HeroDisplay extends ChronosPanel
 {
-  /**
-   * Generated using system clock
-   */
-  private static final long serialVersionUID = 3532162719501483676L;
-
-  // private static final int PIX_PER_CHAR = 8;
-
   /** Help message to show in panels */
   private final String HELP_LABEL = "Press F1 key for help.";
 
@@ -139,24 +133,8 @@ public class HeroDisplay extends ChronosPanel
   private final String CONFIRM_DEL_MSG = " is now in a better place.";
   private final String CONFIRM_DEL_TITLE = " Hero is now Deceased";
 
-  // /** Tab sizing between inventory columns */
-  // private final int TAB_SIZE = 6;
-  // /** Height needed for the Save and Cancel buttons */
-  // private final int BUTTON_HT = 50;
   /** Height of font for vertical spacing */
   private final int FONT_HT = 14;
-  // /** Normal font height */
-  // private final int ATT_FONT_HT = 12;
-  // /** Size for name in title */
-  // private final float TITLE_HT = 14f;
-  // /** Standard height of font and cells in display, but can be changed */
-  // private int CELL_HEIGHT = 26;
-  // /** Border width for main panel */
-  // private final int THICK_BORDER = Mainframe.PAD;
-  // /** Border width for subpanel */
-  // private final int THIN_BORDER = Mainframe.PAD / 2;
-  // /** Border width for main panel */
-  // private final int SCROLLBAR_SIZE = 20;
 
   /** Set the max width of the hero panel at half screen */
   private final int PANEL_WIDTH = Mainframe.getWindowSize().width / 2;
@@ -177,9 +155,6 @@ public class HeroDisplay extends ChronosPanel
   // /** Set the default HelpKey for the general panel */
   // private HelpKeyListener _helpKey = new HelpKeyListener("HeroDsp");
 
-  // /** Maximum size of cell in attribute panel */
-  // private final int CELL_MAX_WIDTH = 17;
-
   /** Disable SaveAs at some time . */
   private JButton _saveButton;
   /** Change Cancel Button to OK Button at some time . */
@@ -190,7 +165,7 @@ public class HeroDisplay extends ChronosPanel
   /** Background color inherited from parent */
   private Color _backColor = Constants.MY_BROWN;
 
-  /** The backend CIV for this JPanel widget */
+  /** The backend CIV for this panel */
   private HeroDisplayCiv _hdCiv = null;
 
   /** Keys to Hero data to be displayed */
@@ -217,10 +192,10 @@ public class HeroDisplay extends ChronosPanel
    * @param _mf
    * @param firstTime Hero activates buttons differently
    */
-  // public HeroDisplay(HeroDisplayCiv hdCiv, Mainframe mainframe, boolean firstTime)
   public HeroDisplay(HeroDisplayCiv hdCiv, boolean firstTime)
   {
     super(hdCiv, "Hero nameplate goes here", Side.LEFT);
+
     _hdCiv = hdCiv;
     _ds = _hdCiv.getAttributes();
 
@@ -454,30 +429,30 @@ public class HeroDisplay extends ChronosPanel
    */
   private JPanel buildButtonPanel(boolean firstTime)
   {
-    // NOTE: Save action is invoked for new Characters */
+    // SAVE a new Hero to the Dormitory */
     _saveButton = new JButton("Save");
-    // _saveButton.setBackground(_backColor);
     _saveButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
         if (savePerson() == true) {
           // Display confirmation message
-          JOptionPane.showMessageDialog(null,
-              _ds.get(PersonKeys.NAME) + CONFIRM_SAVE_MSG,
+          JOptionPane.showMessageDialog(null, _ds.get(PersonKeys.NAME) + CONFIRM_SAVE_MSG,
               CONFIRM_SAVE_TITLE, JOptionPane.INFORMATION_MESSAGE);
         } else {
           // Display an error message with a Sorry button instead of OK
           String[] sorry = new String[1];
           sorry[0] = "SORRY!";
-          JOptionPane.showOptionDialog(null,
-              _saveMsg + _ds.get(PersonKeys.NAME),
-              SAVE_ERROR_TITLE, JOptionPane.DEFAULT_OPTION,
-              JOptionPane.ERROR_MESSAGE, null, sorry, null);
+          JOptionPane.showOptionDialog(null, _saveMsg + _ds.get(PersonKeys.NAME),
+              SAVE_ERROR_TITLE, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE,
+              null, sorry, null);
         }
         setVisible(false);
+        // Return two levels back to main action
+        _hdCiv.backToMain();
       }
     });
 
+    // DELETE an existing Hero from the Dormitory */
     _delButton = new JButton("Delete");
     _delButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
@@ -509,9 +484,9 @@ public class HeroDisplay extends ChronosPanel
       {
         // Collect all the attributes and save to a new Hero file
         setVisible(false);
-        _hdCiv.back();
+        // Return two levels back to main action
+        _hdCiv.backToMain();
       }
-      // }
     });
 
     // Add buttons to buttonPanel
@@ -990,7 +965,7 @@ public class HeroDisplay extends ChronosPanel
 
 
   /**
-   * Save the Person currently being displayed into a new file.
+   * Saves the Person currently being displayed into a new file.
    * 
    * @return true if the Person was created and saved successfully, else false
    */
@@ -1122,7 +1097,7 @@ public class HeroDisplay extends ChronosPanel
     // Add the tabs to the HeroDisplay panel
     add(tabPane, "center, wrap");
 
-    // // ADD SAVE & CANCEL BUTTONS TO THE BOTTOM OF THE PANEL
+    // ADD SAVE, DELETE, & CANCEL BUTTONS TO THE BOTTOM OF THE PANEL
     _buttonPanel = buildButtonPanel(firstTime);
     _buttonPanel.setPreferredSize(new Dimension(PANEL_WIDTH, _buttonPanel.getHeight()));
     add(_buttonPanel, "span, center, gapbottom 20");
