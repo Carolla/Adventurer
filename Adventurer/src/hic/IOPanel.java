@@ -34,6 +34,7 @@ import civ.BuildingDisplayCiv;
 // import pdc.Util;
 import civ.CommandParser;
 import mylib.Constants;
+import mylib.Constants.Side;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -58,7 +59,7 @@ public class IOPanel extends ChronosPanel
   private final JScrollPane _scrollpane;
 
   private JTextField _cmdWin = null;
-  private final String IOPANEL_TITLE = "Commands & Transcript";
+  static private final String IOPANEL_TITLE = "Commands & Transcript";
 
   /**
    * Color class does not have brown, so I have to make it. Color constuctor args = red, green, blue
@@ -81,15 +82,18 @@ public class IOPanel extends ChronosPanel
    * commands both inside and outside buildings, so the
    * 
    * @param bldgCiv manages the IOPanel and its input/output messages.
+   * @param cp  handles all input commands from the user
    */
   public IOPanel(BuildingDisplayCiv bldgCiv, CommandParser cp)
   {
-    super(bldgCiv);
+    // IOPanel is controlled by the BuildingDisplayCiv, and placed on the left side 
+    super(bldgCiv, IOPANEL_TITLE, Side.LEFT);
+    
     _bldgCiv = bldgCiv;
     _commandParser = cp;
 
     setLayout(new MigLayout("", "[grow]", "[][]"));
-    this.setTitle(IOPANEL_TITLE);
+//    this.setTitle(IOPANEL_TITLE);
     _transcriptPane = new JTextPane();
     _transcriptPane.setAlignmentY(JTextArea.TOP_ALIGNMENT);
     _output = _transcriptPane.getStyledDocument();
@@ -195,19 +199,19 @@ public class IOPanel extends ChronosPanel
     _transcriptPane.setEditable(false);
     _transcriptPane.setFocusable(false);
     _transcriptPane.setFont(Chronos.RUNIC_FONT);
-    // _pane.setBackground(MY_LIGHT_BROWN); // make the background my version of a nice warm brown
-    _transcriptPane.setBackground(_backColor); // make the background my version of a nice warm
-                                               // brown
-    _transcriptPane.setForeground(_foreColor); // text is colored with the setForeground statement
+    _transcriptPane.setBackground(_backColor); 
+    _transcriptPane.setForeground(_foreColor); 
 
     // Ensure that the text always autoscrolls as more text is added
     DefaultCaret caret = (DefaultCaret) _transcriptPane.getCaret();
     caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
     // Make text output scrollable-savvy
-    JPanel panel = new JPanel();
-    panel.add(_transcriptPane, BorderLayout.SOUTH);
-    JScrollPane scrollPane = new JScrollPane(panel);
+//    ChronosPanel panel = new ChronosPanel(_bldgCiv, Side.LEFT);
+//    panel.add(_transcriptPane, BorderLayout.SOUTH);
+    add(_transcriptPane, BorderLayout.SOUTH);
+//    JScrollPane scrollPane = new JScrollPane(panel);
+    JScrollPane scrollPane = new JScrollPane(this);
     scrollPane.setAlignmentY(BOTTOM_ALIGNMENT);
     Dimension frame = Mainframe.getWindowSize();
     scrollPane.setPreferredSize(new Dimension(frame.height, frame.width));

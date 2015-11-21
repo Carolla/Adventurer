@@ -30,6 +30,7 @@ import hic.Mainframe;
 import hic.MainframeInterface;
 import hic.NewHeroIPPanel;
 import mylib.Constants;
+import mylib.Constants.Side;
 import mylib.hic.ShuttleList;
 import net.miginfocom.swing.MigLayout;
 
@@ -43,15 +44,17 @@ import net.miginfocom.swing.MigLayout;
 public class MainActionCiv extends BaseCiv
 {
   private MainframeInterface _mf;
-  private ChronosPanel _imagePanel;
-  private ChronosPanel _mainButtonPanel;
 
   private Adventure _adv;
   private AdventureRegistry _advReg;
   private BuildingDisplayCiv _bldgCiv;
   private MainframeCiv _mfCiv;
   private RegistryFactory _rf;
-
+  
+  /** Controls left side and right side panels */
+  private ChronosPanel _actionPanel;
+  private ChronosPanel _imagePanel;
+  
   /** Amount of space in pixels around the frame and image of aesthetics */
   public static final int FRAME_PADDING = 90;
 
@@ -70,7 +73,7 @@ public class MainActionCiv extends BaseCiv
   // ============================================================
 
   /**
-   * Create the Civ associated with the mainframe
+   * Create the Civ associated with the mainframe and main button panel
    * 
    * @param frame owner of the widget for which this civ applies
    * @param personRW supports the Summon Hero and Create Hero buttons
@@ -81,12 +84,18 @@ public class MainActionCiv extends BaseCiv
     _mf = mf;
     _mfCiv = mfciv;
     _rf = _mfCiv.getRegistryFactory();
-    // Create the panel with the main buttons: Load Adventure, Summons, and Create Hero
-    _mf.replaceLeftPanel(createActionPanel());
 
-    // // Open the Dormitory registries needed for Summon Heroes button
-    //
-    // // Open the registries needed for Create Hero button
+    // Create the panel with the main buttons: Load Adventure, Summons, and Create Hero
+    _actionPanel = createActionPanel();
+    _mf.replaceLeftPanel(_actionPanel);
+
+//    // Take control of the right side panel for images
+//    _imagePanel = _mfCiv.getImagePanel();
+//    _imagePanel.replaceControllerCiv(this);
+    
+    // Open the Dormitory registries needed for Summon Heroes button
+
+    // Open the registries needed for Create Hero button
 
   }
 
@@ -141,12 +150,6 @@ public class MainActionCiv extends BaseCiv
   }
 
 
-  public ChronosPanel getActionPanel()
-  {
-    return _mainButtonPanel;
-  }
-
-
   /**
    * Get the town name
    * 
@@ -194,9 +197,9 @@ public class MainActionCiv extends BaseCiv
     // Get the selected adventure
     _adv = _advReg.getAdventure(adventureName);
 
-    // BuildingCiv creates the IOPanel for all user input (commands) and messages (output)
+    // Create the BuildingCiv and pass control to it
     BuildingRegistry bldgReg = (BuildingRegistry) _rf.getRegistry(RegKey.BLDG);
-    _bldgCiv = new BuildingDisplayCiv(this, bldgReg);
+    _bldgCiv = new BuildingDisplayCiv(_mf, this, bldgReg, _adv);
     _bldgCiv.openTown();
   }
 
@@ -243,21 +246,21 @@ public class MainActionCiv extends BaseCiv
     JButton summonButton = createSummonHeroesButton();
     JButton creationButton = createNewHeroButton();
 
-    _mainButtonPanel = new ChronosPanel(this);
-    _mainButtonPanel.setTitle(INITIAL_OPENING_TITLE);
+    _actionPanel = new ChronosPanel(this, INITIAL_OPENING_TITLE, Side.RIGHT);
+    _actionPanel.setTitle(INITIAL_OPENING_TITLE);
     // Align all buttons in a single column
-    _mainButtonPanel.setLayout(new MigLayout("wrap 1"));
+    _actionPanel.setLayout(new MigLayout("wrap 1"));
     Dimension frame = Mainframe.getWindowSize();
-    _mainButtonPanel.setPreferredSize(new Dimension(
+    _actionPanel.setPreferredSize(new Dimension(
         (int) (frame.width - FRAME_PADDING) / 2, frame.height - FRAME_PADDING));
-    _mainButtonPanel.setBackground(Constants.MY_BROWN);
+    _actionPanel.setBackground(Constants.MY_BROWN);
 
     /** Buttons are at 25% to allow space for Command Line later */
-    _mainButtonPanel.add(adventureButton, "hmax 25%, grow");
-    _mainButtonPanel.add(summonButton, "hmax 25%, grow");
-    _mainButtonPanel.add(creationButton, "hmax 25%, grow");
+    _actionPanel.add(adventureButton, "hmax 25%, grow");
+    _actionPanel.add(summonButton, "hmax 25%, grow");
+    _actionPanel.add(creationButton, "hmax 25%, grow");
 
-    return _mainButtonPanel;
+    return _actionPanel;
   }
 
 

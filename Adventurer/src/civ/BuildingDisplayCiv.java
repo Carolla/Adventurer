@@ -27,6 +27,7 @@ import hic.BuildingRectangle;
 import hic.ChronosPanel;
 import hic.IOPanel;
 import hic.MainframeInterface;
+import mylib.Constants.Side;
 import pdc.Util;
 import pdc.command.CommandFactory;
 
@@ -42,13 +43,13 @@ import pdc.command.CommandFactory;
 public class BuildingDisplayCiv extends BaseCiv
 {
   /** Reference to socket for Mainframe or test proxy */
-  private MainframeInterface _mf = null;
+  private MainframeInterface _mf;
   /** MainframeCiv to access frame actions */
   private MainframeCiv _mfCiv;
-  /** Handles image display */
-  private ChronosPanel _imagePanel;
   /** Handles text input and output */
   private IOPanel _ioPanel;
+  /** Handles building images and the town image */
+  private ChronosPanel _imagePanel;
 
   /** The Hero is on town, not at any particular building */
   private boolean _onTown = true;
@@ -66,6 +67,7 @@ public class BuildingDisplayCiv extends BaseCiv
 
   /** Image of the Town containing the Buildings */
   private static final String TOWN_IMAGE = "ext_BiljurBaz.JPG";
+  /** Title for town Image */
 
   // private static final String NO_BLDG_FOUND = "Could not find that building.\n";
   /** Error message if no arguments or multiple arguments specified */
@@ -124,17 +126,28 @@ public class BuildingDisplayCiv extends BaseCiv
    * almost all cases, the output GUI is {@code hic.Mainframe}, which implements
    * {@code MainframeInterface}.
    * 
-   * @param mainframe
+   * @param mainframe connects to the frame that holds all panels
+   * @param mainActionCiv handles the main button panel
+   * @param breg is needed for building registries for loading the town
+   * @param adv the adventure selected by the user
    */
-  public BuildingDisplayCiv(MainActionCiv mainActionCiv, BuildingRegistry breg)
+  public BuildingDisplayCiv(MainframeInterface mf, MainActionCiv mainActionCiv,
+      BuildingRegistry breg, Adventure adv)
   {
-//    _mfCiv = mfCiv;
     _breg = breg;
-    _imagePanel =  mainActionCiv.getImagePanel();
-    _imagePanel.replaceControllerCiv(this);
-//    _adv = adv;
+    _mf = mf;
+    _adv = adv;
+    
+    // Create the IOPanel for input commands via commandParser and output messages
+    _cp = new CommandParser(new CommandFactory(this));
+    _ioPanel = new IOPanel(this, _cp);
+    _mf.replaceLeftPanel(_ioPanel);
 
-    _currentBldg = null;
+    // Create the town and building image display panel
+//    _imagePanel = new ChronosPanel(this, "<town name>", Side.RIGHT);
+    _imagePanel = new ChronosPanel(this, _adv.getTownName(), Side.RIGHT);
+    _mf.replaceRightPanel(_imagePanel);
+
   }
 
   // ======================================================================
@@ -247,21 +260,25 @@ public class BuildingDisplayCiv extends BaseCiv
     }
   }
 
+  public String getAdventureName()
+  {
+    return _adv.getName();
+  }
+
+  
   public String getCurrentBuilding()
   {
     return _currentBldg.getName();
   }
 
 
+  /** Init the town display and IOPanel with adventure overview. */
   public void initAdventure()
   {
-    /* Init the adventure, town display and IOPanel */
-    initAdventure();
     // Create the boxes that highlight the building in the town image
     createBuildingBoxes();
     // Set up the IOPanel
     _ioPanel = initIOPanel();
-
     // Display the town and description for the selected adventure
     openTown();
 
@@ -324,7 +341,7 @@ public class BuildingDisplayCiv extends BaseCiv
   /** Set a building's rectangle onto the panel showing the town's image */
   public void setBuilding(BuildingRectangle rect)
   {
-//    _imagePanel.setRectangle(rect);
+    // _imagePanel.setRectangle(rect);
   }
 
 
@@ -434,13 +451,13 @@ public class BuildingDisplayCiv extends BaseCiv
    */
   private IOPanel initIOPanel()
   {
-    // Create the IOPanel for input commands via commandParser and output messages
-    _cp = new CommandParser(new CommandFactory(this));
-    _ioPanel = new IOPanel(this, _cp);
+    // // Create the IOPanel for input commands via commandParser and output messages
+    // _cp = new CommandParser(new CommandFactory(this));
+    // _ioPanel = new IOPanel(this, _cp);
 
-    // Display the IOPanel on the left side of the mainframe
-    _mf = _mfCiv.getMainframe();
-    _mf.replaceLeftPanel(_ioPanel);
+    // // Display the IOPanel on the left side of the mainframe
+    // _mf = _mfCiv.getMainframe();
+    // _mf.replaceLeftPanel(_ioPanel);
 
     return _ioPanel;
   }

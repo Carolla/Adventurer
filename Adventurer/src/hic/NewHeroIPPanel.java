@@ -38,6 +38,7 @@ import civ.NewHeroCiv;
 import civ.NewHeroCiv.ErrorCode;
 import civ.NewHeroCiv.HeroInput;
 import mylib.Constants;
+import mylib.Constants.Side;
 import mylib.MsgCtrl;
 import mylib.hic.HelpKeyListener;
 import net.miginfocom.swing.MigLayout;
@@ -80,7 +81,7 @@ public class NewHeroIPPanel extends ChronosPanel
       "Press F1 key for specific help.";
 
   /** Replace left-side panel with this title */
-  private final String NEW_HERO_TITLE = " Create Your Kind of Hero ";
+  static private final String NEW_HERO_TITLE = " Create Your Kind of Hero ";
   /** Prompt for hero's name */
   private final String HERO_NAME_PROMPT = "What is your Hero's Name?";
   /** Hair color prompt */
@@ -148,7 +149,7 @@ public class NewHeroIPPanel extends ChronosPanel
    */
   public NewHeroIPPanel(NewHeroCiv nhCiv, MainframeInterface mf) 
   {
-    super(nhCiv);
+    super(nhCiv, NEW_HERO_TITLE, Side.LEFT);
     setTitle(NEW_HERO_TITLE);
     _nhCiv = nhCiv;
     _mf = mf;

@@ -29,6 +29,7 @@ import chronos.pdc.MiscKeys.ItemCategory;
 import civ.HeroDisplayCiv;
 import civ.PersonKeys;
 import mylib.Constants;
+import mylib.Constants.Side;
 import net.miginfocom.swing.MigLayout;
 
 
@@ -219,7 +220,7 @@ public class HeroDisplay extends ChronosPanel
 //  public HeroDisplay(HeroDisplayCiv hdCiv, Mainframe mainframe, boolean firstTime)
   public HeroDisplay(HeroDisplayCiv hdCiv, boolean firstTime)
   {
-    super(hdCiv);
+    super(hdCiv, "Hero nameplate goes here", Side.LEFT);
     _hdCiv = hdCiv;
     _ds = _hdCiv.getAttributes();
 

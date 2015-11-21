@@ -15,10 +15,10 @@ import java.util.ArrayList;
 import chronos.pdc.Adventure;
 import chronos.pdc.registry.AdventureRegistry;
 import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 import hic.ChronosPanel;
 import hic.Mainframe;
 import hic.MainframeInterface;
+import mylib.Constants.Side;
 import pdc.Util;
 
 /**
@@ -41,9 +41,9 @@ public class MainframeCiv extends BaseCiv
   private BuildingDisplayCiv _bldgCiv;
   private RegistryFactory _rf;
 
-  private ChronosPanel _imagePanel;
-  private ChronosPanel _mainActionPanel;
-  private MainActionCiv _mainActionCiv;
+   private ChronosPanel _imagePanel;
+  // private MainActionCiv _mainActionCiv;
+  // private ChronosPanel _mainActionPanel;
 
   /** Initial right-side image: Chronos logo */
   private static final String INITIAL_IMAGE = "ChronosLogo.jpg";
@@ -56,36 +56,28 @@ public class MainframeCiv extends BaseCiv
   // ============================================================
 
   /**
-   * Create the Civ associated with the mainframe
-   * 
-   * @param frame owner of the widget for which this civ applies
-   * @param personRW supports the Summon Hero and Create Hero buttons
-   * @param advReg registry to support the Adventures button
+   * Creates the Civ that creates the mainframe, and the left and right panel holders.
    */
   public MainframeCiv()
   {
     _rf = new RegistryFactory();
     _rf.initRegistries();
 
-    // Create the Mainframe window with holders for subordinate panels */
+    // Create and display the Mainframe window with holders for subordinate panels */
     _mf = new Mainframe(this);
 
-    // Create the right side image panel to be used by many Civs */
-//    _imagePanel = new ImagePanel(this);
-    _imagePanel = new ChronosPanel(this);
-    _imagePanel.setImage(Util.convertToImage(INITIAL_IMAGE));
-    _imagePanel.setTitle(INITIAL_TITLE);
-    _mf.replaceRightPanel(_imagePanel);
+    // Create the right side panel holder to hold the Chronos Logo image */
+    ChronosPanel imagePanel = new ChronosPanel(this, INITIAL_TITLE, Side.RIGHT);
+    imagePanel.setImage(Util.convertToImage(INITIAL_IMAGE));
+    imagePanel.setTitle(INITIAL_TITLE);
+    _mf.replaceRightPanel(imagePanel);
 
-    // Create the left side panel to hold the main action buttons */
-    _mainActionCiv = new MainActionCiv(_mf, this);
-    _mainActionPanel = _mainActionCiv.getActionPanel();
-    _mf.replaceLeftPanel(_mainActionPanel);
+    // Create main action panel to hold the main action buttons */
+    new MainActionCiv(_mf, this);
+    // // Control is turned over to the MainActionCiv when a button is selected
+    // _mainActionPanel = _mainActionCiv.getActionPanel();
+    // _mf.replaceLeftPanel(_mainActionPanel);
 
-    // Build the associated registries needed
-//     BuildingRegistry breg = (BuildingRegistry) _rf.getRegistry(RegKey.BLDG);
-//     _bldgCiv = new BuildingDisplayCiv(this, breg);
-//     _advReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
   }
 
 
@@ -108,15 +100,15 @@ public class MainframeCiv extends BaseCiv
   // }
 
 
-//  /** Create the image panel civ and widget */
-//  private ChronosPanel createImagePanel()
-//  {
-//    // Get the image panel from its civ
-//    _imagePanel = new ImagePanel(this);
-//    _imagePanel.setImage(getInitialImage());
-//    _imagePanel.setTitle(getInitialTitle());
-//    return _imagePanel;
-//  }
+  // /** Create the image panel civ and widget */
+  // private ChronosPanel createImagePanel()
+  // {
+  // // Get the image panel from its civ
+  // _imagePanel = new ImagePanel(this);
+  // _imagePanel.setImage(getInitialImage());
+  // _imagePanel.setTitle(getInitialTitle());
+  // return _imagePanel;
+  // }
 
 
   /**
@@ -138,14 +130,14 @@ public class MainframeCiv extends BaseCiv
   // ============================================================
 
 
-//  /** Set up the GUI elements needed at throughout the program */
-//  public void setInitialImage()
-//  {
-//    _imagePanel.setImage(Util.convertToImage(INITIAL_IMAGE));
-//    _imagePanel.setTitle(INITIAL_TITLE);
-//  }
+  // /** Set up the GUI elements needed at throughout the program */
+  // public void setInitialImage()
+  // {
+  // _imagePanel.setImage(Util.convertToImage(INITIAL_IMAGE));
+  // _imagePanel.setTitle(INITIAL_TITLE);
+  // }
 
-  
+
   // ============================================================
   // Public methods
   // ============================================================

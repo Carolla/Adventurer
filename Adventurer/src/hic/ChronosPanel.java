@@ -15,6 +15,8 @@ import java.awt.Image;
 import javax.swing.JPanel;
 
 import civ.BaseCiv;
+import mylib.Constants;
+import mylib.Constants.Side;
 
 /**
  * Adds a title method to JPanel for Chronos panels. Instead of using various constructor parms, the
@@ -38,7 +40,7 @@ import civ.BaseCiv;
 public class ChronosPanel extends JPanel
 {
   /** Default title field for all ChronosPanels, to be overwritten */
-  protected String _title = " ";
+  protected String _title;
 
   /** Image shown in panel */
   protected Image _image;
@@ -46,18 +48,19 @@ public class ChronosPanel extends JPanel
   /** Civ that manages the images and mouse action in this display */
   protected BaseCiv _ctrlCiv;
 
-
   // ====================================================================================
   // Constructor
   // ====================================================================================
 
-  /** Default constructor */
-  public ChronosPanel(BaseCiv ctrlCiv)
+  /** Default constructor sets the controlling civ and whether this panel is left or right side */
+  public ChronosPanel(BaseCiv ctrlCiv, String title, Side side)
   {
     _ctrlCiv = ctrlCiv;
     replaceControllerCiv(_ctrlCiv);
+    _ctrlCiv.setPanel(this, side);
+    setTitle(title);
+    System.out.println("Creating ChronosPanal " + _title + "; controlled by " + ctrlCiv);
   }
-
 
 
   // ====================================================================================
@@ -121,8 +124,15 @@ public class ChronosPanel extends JPanel
    */
   public void setTitle(String title)
   {
+    if (!title.startsWith(Constants.SPACE)) {
+      title = Constants.SPACE + title;
+    }
+    if (!title.endsWith(Constants.SPACE)) {
+      title = title + Constants.SPACE;
+    }
     _title = title;
   }
+
 
   /**
    * Display the image in the calling panel using JPanel's method

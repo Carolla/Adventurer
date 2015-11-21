@@ -30,9 +30,9 @@ import javax.swing.border.TitledBorder;
 
 import chronos.Chronos;
 import civ.Adventurer;
-import civ.MainActionCiv;
 import civ.MainframeCiv;
 import mylib.Constants;
+import mylib.Constants.Side;
 import mylib.hic.HelpDialog;
 import mylib.hic.IHelpText;
 import net.miginfocom.swing.MigLayout;
@@ -78,32 +78,13 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
   private Deque<ChronosPanel> _leftPanelStack = new ArrayDeque<ChronosPanel>(5);
   private Deque<ChronosPanel> _rightPanelStack = new ArrayDeque<ChronosPanel>(5);
 
-  // /** Indicate which side of the mainframe is in question */
-   private final boolean LEFT = true;
-   private final boolean RIGHT = false;
-
-
   /** JPanel to hold various images; this panel resides in the _rightHolder */
-  private ChronosPanel _imagePanel;
+  // private ChronosPanel _imagePanel;
 
   private MainframeCiv _mfCiv;
-  private MainActionCiv _mainActionCiv;
-  // private IOPanel _iop;
-
-  // private List<String> _partyHeros = new ArrayList<String>();
-  // private List<String> _summonableHeroes;
-
-  // /** Title of the IOPanel of left side */
-  // private final String IOPANEL_TITLE = " Transcript ";
-
-//   /** Runic Font that pervades the text of the screens */
-//   private final Font _runicFont = Chronos.RUNIC_FONT;
-//   /** Standard Font for buttons, help, etc */
-//   private final Font _stdFont = Chronos.STANDARD_FONT;
 
   /** Singleton Help Dialog for all help text */
   private HelpDialog _helpdlg;
-
 
   /** Help Title for the mainframe */
   private static final String _helpTitle = "GREETINGS ADVENTURER!";
@@ -322,15 +303,15 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
    */
   public void replaceLeftPanel(ChronosPanel newPanel)
   {
-    setPanelTitle(newPanel.getTitle(), LEFT);
+    setPanelTitle(newPanel.getTitle(), Side.LEFT);
     _leftHolder.removeAll();
     _leftHolder.add(newPanel);
 
     // Save the state for later
     _leftPanelStack.push(newPanel);
-    
-    newPanel.setVisible(true);
+
     redraw();
+    setVisible(true);
   }
 
   /**
@@ -341,7 +322,7 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
    */
   public void replaceRightPanel(ChronosPanel newPanel)
   {
-    setPanelTitle(newPanel.getTitle(), RIGHT);
+    setPanelTitle(newPanel.getTitle(), Side.RIGHT);
     _rightHolder.removeAll();
     _rightHolder.add(newPanel);
 
@@ -353,16 +334,16 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
   }
 
 
-//  /**
-//   * Display an image in the Image panel
-//   *
-//   * @param image to display on the rightside
-//   */
-//  public void setImage(Image image)
-//  {
-//    _imagePanel.setImage(image);
-//    redraw();
-//  }
+  // /**
+  // * Display an image in the Image panel
+  // *
+  // * @param image to display on the rightside
+  // */
+  // public void setImage(Image image)
+  // {
+  // _imagePanel.setImage(image);
+  // redraw();
+  // }
 
 
   /**
@@ -384,10 +365,10 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
    * @param title of the panel to set
    * @param side left or right side for title placement
    */
-  public void setPanelTitle(String title, boolean side)
+  public void setPanelTitle(String title, Side side)
   {
-    TitledBorder border = (side == LEFT) ? (TitledBorder) _leftHolder.getBorder()
-        : (TitledBorder) _rightHolder.getBorder();;
+    TitledBorder border = (side == Side.LEFT) ? (TitledBorder) _leftHolder.getBorder()
+        : (TitledBorder) _rightHolder.getBorder();
     border.setTitle(title);
   }
 
@@ -520,11 +501,11 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     setJMenuBar(new Menubar(this, _mfCiv));
 
     // Define a left and right ChronosPanel to manage subordinate right- and left-side panels
-    _leftHolder = new ChronosPanel(_mfCiv);
+    _leftHolder = new ChronosPanel(_mfCiv, "LEFT HOLDER", Side.LEFT);
     _leftHolder.setLayout(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
     _leftHolder = makePanelAsHolder(_leftHolder, Constants.MY_BROWN, Color.WHITE);
 
-    _rightHolder = new ChronosPanel(_mfCiv);
+    _rightHolder = new ChronosPanel(_mfCiv, "RIGHT HOLDER", Side.RIGHT);
     _rightHolder.setLayout(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
     _rightHolder.setTitle(" ");
     _rightHolder = makePanelAsHolder(_rightHolder, Constants.MY_BROWN, Color.WHITE);
@@ -534,27 +515,27 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     _contentPane.setFocusable(true);
   }
 
-//  /**
-//   * Create the main button panel and civ for the top-level buttons and insert on left side of
-//   * mainframe
-//   */
-//  private void createActionPanel()
-//  {
-//    // Get the action panel from its civ
-//    MainActionCiv mainActionCiv = new MainActionCiv(this, _mfCiv);
-//    replaceLeftPanel(mainActionCiv.getActionPanel());
-//  }
+  // /**
+  // * Create the main button panel and civ for the top-level buttons and insert on left side of
+  // * mainframe
+  // */
+  // private void createActionPanel()
+  // {
+  // // Get the action panel from its civ
+  // MainActionCiv mainActionCiv = new MainActionCiv(this, _mfCiv);
+  // replaceLeftPanel(mainActionCiv.getActionPanel());
+  // }
 
 
 
-//  /** Create the image panel civ and widget, and set initial image */
-//  private void createImagePanel()
-//  {
-//    // Get the image panel from its civ
-//    _imagePanel = _mfCiv.getImagePanel();
-//    setImage(_mfCiv.getInitialImage());
-//    setImageTitle(_mfCiv.getInitialTitle());
-//  }
+  // /** Create the image panel civ and widget, and set initial image */
+  // private void createImagePanel()
+  // {
+  // // Get the image panel from its civ
+  // _imagePanel = _mfCiv.getImagePanel();
+  // setImage(_mfCiv.getInitialImage());
+  // setImageTitle(_mfCiv.getInitialTitle());
+  // }
 
   /**
    * Create a holder for the left or right side of the frame, with all cosmetics. Holders will have

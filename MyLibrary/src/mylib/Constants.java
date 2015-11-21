@@ -28,7 +28,11 @@ public class Constants
   public static final int ERROR = -1;
   public static final int NOT_FOUND = -1;
   public static final int UNASSIGNED = -99;
-
+  public static final String SPACE = " ";
+  
+  /** General directions, particular for left and right panels */
+  public static enum Side { LEFT, RIGHT};
+  
   /** Platform-dependent constants */
   public static final String NEWLINE = System.getProperty("line.separator");
   public static final String FS = System.getProperty("file.separator");
