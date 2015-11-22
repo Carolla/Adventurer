@@ -162,21 +162,27 @@ public class HeroReadWriter
   {
     // Guards against bad input
     if (p == null) {
-      MsgCtrl.errMsgln(this, "There  is no Hero to save. Null received");
       return false;
     }
     if ((pName == null) || (pName.trim().length() == 0)) {
-      MsgCtrl.errMsgln(this, "This Hero has no name!. Cannot save him or her.");
       return false;
     }
 
     // Open db4o for transaction
     ObjectContainer db =
         Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), Chronos.PersonRegPath);
+    // retrieveComplexSODA
+    Query query = db.query();
+    query.constrain(Hero.class);
+    // TODO: remove hard-coded reference to _name field
+    query.descend("_name").constrain(pName);
+    ObjectSet<Hero> result = query.execute();
+    if (result.size() > 0) {
+      Hero oldHero = result.get(0);
+      db.delete(oldHero);
+    }
     try {
-//      this.delete(p);
       db.store(p);
-      MsgCtrl.msgln(this, "Saved " + pName + " to the Dormitory");
     } finally {
       db.close();
     }
@@ -196,11 +202,9 @@ public class HeroReadWriter
   {
     // Guards against bad input
     if (p == null) {
-      MsgCtrl.errMsgln(this, "There  is no Hero to save. Null received");
       return false;
     }
     if ((pName == null) || (pName.trim().length() == 0)) {
-      MsgCtrl.errMsgln(this, "This Hero has no name!. Cannot save him or her.");
       return false;
     }
 
@@ -220,7 +224,6 @@ public class HeroReadWriter
         return false;
       } else {
         db.store(p);
-        MsgCtrl.msgln(this, "Saved " + pName + " to the Dormitory");
       }
     } finally {
       db.close();
