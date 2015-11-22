@@ -66,8 +66,7 @@ public class HeroReadWriter
     }
 
     ObjectContainer db =
-        Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), Chronos.REGISTRY_PATH
-            + Chronos.PersonRegPath);
+        Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), Chronos.PersonRegPath);
     try {
       String pName = p.getName();
       Hero pToDel = null;
@@ -171,13 +170,11 @@ public class HeroReadWriter
       return false;
     }
 
-    // db4o code inserted here
-    // accessDb4o
+    // Open db4o for transaction
     ObjectContainer db =
-        Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), Chronos.REGISTRY_PATH
-            + Chronos.PersonRegPath);
+        Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), Chronos.PersonRegPath);
     try {
-      this.delete(p);
+//      this.delete(p);
       db.store(p);
       MsgCtrl.msgln(this, "Saved " + pName + " to the Dormitory");
     } finally {

@@ -121,10 +121,12 @@ public class HeroDisplay extends ChronosPanel
 
   // Specific file error messages not handled by FileChooser
   private String _saveMsg = "";
+  private final String PROMPT_HERO_EXISTS = "Hero already exists. Do you want to overwrite?";
   private final String SAVE_ERROR_MSG = "Error! Problem saving ";
   private final String SAVE_CANCEL_MSG = "Overwrite cancelled for ";
   private final String SAVE_ERROR_TITLE = "FILE SAVE ERROR";
   private final String CONFIRM_SAVE_MSG = " is resting in the dormitory until later.";
+  private final String CONFIRM_OVERWRITE_MSG = " has been overwritten in the dormitory.";
   private final String CONFIRM_SAVE_TITLE = " Hero is now Registered";
 
   // Specific file error messages not handled by FileChooser
@@ -980,23 +982,32 @@ public class HeroDisplay extends ChronosPanel
     if (_hdCiv.savePerson(noOverwrite)) {
       return true;
     }
-    // If person exists, prompt for overwrite/(rename?)
+    // If person exists in Dormitory, prompt for Overwrite/Rename/Cancel
     else {
-      // Custom button text
+      // Ask to Overwrite, Cancel, or Rename 
       Object[] options = {"Yes", "No", "Rename"};
-      int n = JOptionPane.showOptionDialog(this,
-          "Hero already exists. Do you want to overwrite?",
-          "Overwrite prompt", JOptionPane.YES_NO_CANCEL_OPTION,
-          JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
+      int choice = JOptionPane.showOptionDialog(this, PROMPT_HERO_EXISTS, "Overwrite prompt",
+          JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options,
+          options[1]);
 
-      if (n == JOptionPane.YES_OPTION) {
-        return _hdCiv.savePerson(overwrite);
-      } else if (n == JOptionPane.CANCEL_OPTION) {
-        return renamePerson();
-      } else {
-        // change save message to avoid throwing error message
-        _saveMsg = this.SAVE_CANCEL_MSG;
+      // User chose to OVERWRITE
+      if (choice == JOptionPane.YES_OPTION) {
+        boolean retflag = _hdCiv.savePerson(overwrite);
+        // Display confirmation message
+        JOptionPane.showMessageDialog(null, _ds.get(PersonKeys.NAME) + CONFIRM_SAVE_MSG,
+            CONFIRM_SAVE_TITLE, JOptionPane.INFORMATION_MESSAGE);
+        return retflag;
+      }
+      // User chose to CANCEL
+      else if (choice == JOptionPane.NO_OPTION) {
+        _hdCiv.back();
         return false;
+      }
+      // User chose to RENAME
+      else {
+        return renamePerson();
+        // // change save message to avoid throwing error message
+        // _saveMsg = this.SAVE_CANCEL_MSG;
       }
     }
   }

@@ -68,10 +68,10 @@ import pdc.character.Hero;
  *          Jun 6 2010 // revised to support NewHeroDisplayCiv <br>
  *          Apr 2 2011 // major overhaul with non-Swing MigLayout manager <br>
  *          Sep 20 2015 // major update for new inputs and revised character generation <br>
- *          Nov 9 2015  // separated Mainframe and ChronsPanel converns, and their civs <br>
+ *          Nov 9 2015 // separated Mainframe and ChronsPanel converns, and their civs <br>
  */
 @SuppressWarnings("serial")
-public class NewHeroIPPanel extends ChronosPanel 
+public class NewHeroIPPanel extends ChronosPanel
 {
   /** Help message to show in panels */
   private final String HELP_LABEL1 =
@@ -145,15 +145,15 @@ public class NewHeroIPPanel extends ChronosPanel
    * created in private helper methods.
    * 
    * @param nhCiv controls this ChronosPanel
-   * @param mf  mainframe reference needed for displaying the panel
+   * @param mf mainframe reference needed for displaying the panel
    */
-  public NewHeroIPPanel(NewHeroCiv nhCiv, MainframeInterface mf) 
+  public NewHeroIPPanel(NewHeroCiv nhCiv, MainframeInterface mf)
   {
     super(nhCiv, NEW_HERO_TITLE, Side.LEFT);
     setTitle(NEW_HERO_TITLE);
     _nhCiv = nhCiv;
     _mf = mf;
-    
+
     // GENERAL SETUP
     // Set the preferred and max size, adjusting for panel border thickness
     int width = Mainframe.getWindowSize().width;// +MainFrame.PANEL_SHIFT;
@@ -211,7 +211,7 @@ public class NewHeroIPPanel extends ChronosPanel
 
     /* Add a button panel containing the Submit and Cancel buttons */
     add(makeButtonPanel(), "push, align center, span, gaptop 20%");
-    
+
   } // end NewHeroIPPanel constructor
 
 
@@ -219,7 +219,7 @@ public class NewHeroIPPanel extends ChronosPanel
   // Public Methods
   // ============================================================
 
-  
+
   /**
    * The name text field should have the default focus, but that cannot be done until after the
    * panel is realized and visible. Therefore, the NewHeroPanel's caller (MenuBar.NEW Action) must
@@ -279,9 +279,9 @@ public class NewHeroIPPanel extends ChronosPanel
         if (err == ErrorCode.NO_ERROR) {
           setVisible(false);
           // Create the new Hero and display it
-           Hero hero = _nhCiv.createHero(_input);
-           HeroDisplayCiv hDispCiv = new HeroDisplayCiv(_mf);
-           hDispCiv.displayHero(hero, true);    // first time Hero needs true arg
+          Hero hero = _nhCiv.createHero(_input);
+          HeroDisplayCiv hDispCiv = new HeroDisplayCiv(_mf);
+          hDispCiv.displayHero(hero, true); // first time Hero needs true arg
         } else {
           // Display the message
           showErrorMessage(err);
@@ -326,7 +326,6 @@ public class NewHeroIPPanel extends ChronosPanel
     maleButt.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        MsgCtrl.traceEvent(event);
         _gender = "Male";
         setEditFlag(true);
       }
@@ -339,7 +338,6 @@ public class NewHeroIPPanel extends ChronosPanel
     femaleButt.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        MsgCtrl.traceEvent(event);
         _gender = "Female";
         setEditFlag(true);
       }
@@ -381,7 +379,6 @@ public class NewHeroIPPanel extends ChronosPanel
     hairCombo.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        MsgCtrl.traceEvent(event);
         _hairColor = ((String) hairCombo.getSelectedItem()).trim();
         setEditFlag(true);
       }
@@ -411,8 +408,6 @@ public class NewHeroIPPanel extends ChronosPanel
     klassCombo.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        // Audit statement
-        MsgCtrl.traceEvent(event);
         _klassName = ((String) klassCombo.getSelectedItem()).trim();
         // Set the edit change flag
         setEditFlag(true);
@@ -431,16 +426,16 @@ public class NewHeroIPPanel extends ChronosPanel
   {
     // Create the text field to collect the Hero's name
     _nameField = new JTextField(HERO_NAME_WIDTH);
-  
+
     // Create DocumentFilter for restricting input length
     AbstractDocument d = (AbstractDocument) _nameField.getDocument();
     d.setDocumentFilter(new NewHeroIPPanel.NameFieldLimiter());
-  
+
     // Set name of the field
     _nameField.setName("heroName");
     // Collect the name when the text field goes out of focus
     _nameField.addFocusListener(new FocusOffListener());
-  
+
     // Extract Hero's name and update Hero's name into MainFrame Title
     // if Enter key is hit or text field loses focus.
     _nameField.addActionListener(new ActionListener() {
@@ -459,7 +454,7 @@ public class NewHeroIPPanel extends ChronosPanel
         setEditFlag(true);
       }
     });
-  
+
     return _nameField;
   }
 
@@ -485,8 +480,6 @@ public class NewHeroIPPanel extends ChronosPanel
     raceCombo.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        // Audit statement
-        MsgCtrl.traceEvent(event);
         _raceName = ((String) raceCombo.getSelectedItem()).trim();
         // Set the edit change flag
         setEditFlag(true);
@@ -616,7 +609,6 @@ public class NewHeroIPPanel extends ChronosPanel
      */
     public void focusLost(FocusEvent event)
     {
-      MsgCtrl.traceEvent(event);
       _name = _nameField.getText().trim();
       // Set the change flag
       setEditFlag(true);
@@ -654,7 +646,7 @@ public class NewHeroIPPanel extends ChronosPanel
     public void remove(DocumentFilter.FilterBypass fb, int offset, int length)
         throws BadLocationException
     {
-      System.out.println("Remove");
+      // System.out.println("Remove");
       fb.remove(offset, length);
     }
 

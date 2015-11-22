@@ -230,7 +230,6 @@ public class OccupationDialogue extends JDialog
     _saveButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        MsgCtrl.traceEvent(event);
         doSave();
       }
     });
@@ -241,7 +240,6 @@ public class OccupationDialogue extends JDialog
     _deleteButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        MsgCtrl.traceEvent(event);
         doDelete();
       }
     });
@@ -254,9 +252,7 @@ public class OccupationDialogue extends JDialog
     _cancelButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        MsgCtrl.traceEvent(event);
         doCancel();
-
       }
     });
 

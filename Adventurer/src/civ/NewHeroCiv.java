@@ -156,26 +156,23 @@ public class NewHeroCiv extends BaseCiv
   {
     String name = inputMap.get(HeroInput.NAME);
     ErrorCode err = isValid(name);
-    if (err == ErrorCode.NO_ERROR) {
-      err = isUnique(name);
-    }
     return err;
   }
 
-  /**
-   * Verify that there is no Hero with the same name in the Dormitory
-   * 
-   * @param name to verify
-   * @return errorCode for duplicate name
-   */
-  private ErrorCode isUnique(String name)
-  {
-    ErrorCode err = ErrorCode.NO_ERROR;
-    if (_heroReg.isUnique(name) == false) {
-      err = ErrorCode.NAME_NOT_UNIQUE;
-    }
-    return err;
-  }
+//  /**
+//   * Verify that there is no Hero with the same name in the Dormitory
+//   * 
+//   * @param name to verify
+//   * @return errorCode for duplicate name
+//   */
+//  private ErrorCode isUnique(String name)
+//  {
+//    ErrorCode err = ErrorCode.NO_ERROR;
+//    if (_heroReg.isUnique(name) == false) {
+//      err = ErrorCode.NAME_NOT_UNIQUE;
+//    }
+//    return err;
+//  }
 
   /**
    * Verify the name is valid, which means <br>

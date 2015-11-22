@@ -181,6 +181,7 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
   public void backToMain()
   {
     // Remove all panels until the first (main action) panel is found
+
     while (_leftPanelStack.size() > 1) {
       _leftPanelStack.pop();
     }
