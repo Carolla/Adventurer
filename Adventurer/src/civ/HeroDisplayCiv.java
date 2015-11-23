@@ -317,10 +317,9 @@ public class HeroDisplayCiv extends BaseCiv
    * @param name the new name for the character
    * @return true if the rename worked correctly; else false
    */
-  public boolean renamePerson(String name)
+  public void renamePerson(String name)
   {
-    // return _hero.rename(name);
-    return false;
+    _hero.setName(name);
   }
 
 
@@ -549,7 +548,8 @@ public class HeroDisplayCiv extends BaseCiv
   // }
 
 
-  /** Save the Hero into the Dormitory, adding a new Hero or overwriting an old one
+  /**
+   * Save the Hero into the Dormitory, adding a new Hero or overwriting an old one
    * 
    * @param overwrite if true, then will overwrite an existing Hero
    * @return true if all save operations worked as expected
@@ -557,15 +557,14 @@ public class HeroDisplayCiv extends BaseCiv
   public boolean savePerson(boolean overwrite)
   {
     boolean retflag = false;
-    HeroReadWriter dorm = new HeroReadWriter(); 
-    dorm.dumpDB();
+    HeroReadWriter dorm = new HeroReadWriter();
     if (overwrite == false) {
       retflag = dorm.save(_hero, _hero.getName());
     } else {
-      retflag = dorm.overwrite(_hero,  _hero.getName());
+      retflag = dorm.overwrite(_hero, _hero.getName());
     }
     return retflag;
   }
 
-}  // end of HeroDisplayCiv class
+} // end of HeroDisplayCiv class
 

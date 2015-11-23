@@ -530,6 +530,11 @@ public class Hero implements Serializable
     return _name;
   }
 
+  public void setName(String newName)
+  {
+    _name = newName;
+  }
+
   /** Remove the description after the delimeter to return only the name */
   public String getOccupationName()
   {

@@ -28,6 +28,7 @@ import javax.swing.border.Border;
 import chronos.pdc.MiscKeys.ItemCategory;
 import civ.HeroDisplayCiv;
 import civ.PersonKeys;
+import dmc.HeroReadWriter;
 import mylib.Constants;
 import mylib.Constants.Side;
 import net.miginfocom.swing.MigLayout;
@@ -131,9 +132,9 @@ public class HeroDisplay extends ChronosPanel
   private final String CONFIRM_SAVE_MSG = " is resting in the dormitory until later.";
   private final String CONFIRM_SAVE_TITLE = " Hero is now Registered";
   private final String CONFIRM_OVERWRITE_MSG = " has been overwritten in the dormitory.";
-  private final String CONFIRM_OVERWRITE_TITLE = " Overwriting Hero";
+  private final String CONFIRM_OVERWRITE_TITLE = "Overwriting Hero";
   private final String CONFIRM_RENAME_MSG = " has been renamed";
-  private final String CONFIRM_RENAME_TITLE = " Renaming Hero";
+  private final String CONFIRM_RENAME_TITLE = "Renaming Hero";
 
   // Specific file error messages not handled by FileChooser
   private final String DEL_ERROR_MSG = "Error! Problem deleting ";
@@ -192,6 +193,10 @@ public class HeroDisplay extends ChronosPanel
   /** Button panel for Save/Delete/Cancel buttons */
   private JPanel _buttonPanel;
 
+  // /** Codes to handle dispensation of the Hero */
+  // private enum WriteOption {
+  // CANCEL, SAVE, OVERWRITE, RENAMRE, ERROR
+  // };
 
   // ===============================================================
   // CONSTRUCTOR(S) AND RELATED METHODS
@@ -446,23 +451,53 @@ public class HeroDisplay extends ChronosPanel
     _saveButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        if (savePerson() == true) {
+        // Try to save the new Hero
+        if (savePerson()) {
           // Display confirmation message
           JOptionPane.showMessageDialog(null, _ds.get(PersonKeys.NAME) + CONFIRM_SAVE_MSG,
               CONFIRM_SAVE_TITLE, JOptionPane.INFORMATION_MESSAGE);
+          // Return two levels back to main action
+          _hdCiv.backToMain();
         } else {
-          // Display an error message with a Sorry button instead of OK
-          String[] sorry = new String[1];
-          sorry[0] = "SORRY!";
-          JOptionPane.showOptionDialog(null, _saveMsg + _ds.get(PersonKeys.NAME),
-              SAVE_ERROR_TITLE, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE,
-              null, sorry, null);
+          // Respond to save attempt failure to Rename or Overwrite the Hero
+          doAlternateSaveAction();
         }
+        // For testing
+        HeroReadWriter dorm = new HeroReadWriter();
+        dorm.dumpDB();
         setVisible(false);
-        // Return two levels back to main action
-        _hdCiv.backToMain();
       }
     });
+
+
+    // switch (choice)
+    // {
+    // case PROMPT_CANCEL:
+    // System.out.println("Cancel chosen");
+    // _hdCiv.back();
+    // break;
+    // case PROMPT_OVERWRITE:
+    // System.out.println("Overwrite chosen");
+    // break;
+    // case PROMPT_RENAME:
+    // System.out.println("Rename chosen");
+    // break;
+    // default:
+    // System.out.println("Default case reached");
+    // _hdCiv.backToMain();
+    // break;
+    // }
+    // }
+
+
+    // else {
+    // // Display an error message with a Sorry button instead of OK
+    // String[] sorry = new String[1];
+    // sorry[0] = "SORRY!";
+    // JOptionPane.showOptionDialog(null, _saveMsg + _ds.get(PersonKeys.NAME),
+    // SAVE_ERROR_TITLE, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE,
+    // null, sorry, null);
+    // }
 
     // DELETE an existing Hero from the Dormitory */
     _delButton = new JButton("Delete");
@@ -862,49 +897,47 @@ public class HeroDisplay extends ChronosPanel
   // ======================================================================
 
   // Ask to Overwrite, Cancel, or Rename, the do it=e
-  private boolean doAlternateSaveAction()
+  private void doAlternateSaveAction()
   {
-    boolean retflag = false;
+    /** Code for user's secltion of saving a new Hero */
+    final int PROMPT_CANCEL = 0;
+    final int PROMPT_RENAME = 1;
+    final int PROMPT_OVERWRITE = 2;
+
     Object[] options = {"Cancel", "Rename", "Overwrite"};
-    final int OVERWRITE = 2;
-    final int RENAME = 1;
-    final int CANCEL = 0;
     // For some reason, buttons are produced in reverse order of the options[]
     int choice = JOptionPane.showOptionDialog(null,
         PROMPT_HERO_EXISTS_MSG, PROMPT_HERO_EXISTS_TITLE, JOptionPane.YES_NO_CANCEL_OPTION,
         JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
 
-    // Traverse the options list until a matching choice is found
-    int counter = 0;
-    for (; counter < options.length; counter++) {
-      if (options[counter].equals(choice))
-        break;
-    }
-    // Perform the chosen operation
-    switch (counter-1)
+    // Perform requested action
+    switch (choice)
     {
-      case OVERWRITE:
-        retflag = _hdCiv.savePerson(true);
-        // Display confirmation
-        JOptionPane.showMessageDialog(null, _ds.get(PersonKeys.NAME) + CONFIRM_OVERWRITE_MSG,
-            CONFIRM_OVERWRITE_MSG, JOptionPane.INFORMATION_MESSAGE);
-        break;
-      case RENAME:
-        retflag = renameHero();
-        // Display confirmation
-        JOptionPane.showMessageDialog(null, _ds.get(PersonKeys.NAME) + CONFIRM_RENAME_MSG,
-            CONFIRM_RENAME_MSG, JOptionPane.INFORMATION_MESSAGE);
-        break;
-      case CANCEL:
+      case PROMPT_CANCEL:
+        System.out.println("Cancel selected, choice = " + choice);
+        // Return one level to create new Hero
         _hdCiv.back();
-        retflag = false;
+        break;
+      case PROMPT_RENAME:
+        System.out.println("Rename selected, choice = " + choice);
+        renameHero();
+        JOptionPane.showMessageDialog(null, _ds.get(PersonKeys.NAME) + CONFIRM_RENAME_MSG,
+            CONFIRM_RENAME_TITLE, JOptionPane.INFORMATION_MESSAGE);
+        // Return to main action buttons
+        _hdCiv.backToMain();
+        break;
+      case PROMPT_OVERWRITE:
+        System.out.println("Overwrite selected, choice = " + choice);
+        _hdCiv.savePerson(OVERWRITE);
+        JOptionPane.showMessageDialog(null, _ds.get(PersonKeys.NAME) + CONFIRM_OVERWRITE_MSG,
+            CONFIRM_OVERWRITE_TITLE, JOptionPane.INFORMATION_MESSAGE);
+        // Return to main action buttons
+        _hdCiv.backToMain();
         break;
       default:
         _hdCiv.backToMain();
-        retflag = false;
         break;
     }
-    return retflag;
   }
 
 
@@ -1004,23 +1037,21 @@ public class HeroDisplay extends ChronosPanel
   // }
 
   /**
-   * Displays the Person attributes in the shuttle, including inventory and skill set
-   * 
-   * @param ws shuttle of PersonKeys containing only String data
+   * Prompts for a new name for the Hero
    */
-  private boolean renamePerson()
+  private void renameHero()
   {
+    final String RENAME_MSG = "Enter new name: ";
+    final String RENAME_TITLE = "RENAME HERO";
+    
     // Pop up window for rename
-    String newName = JOptionPane.showInputDialog(this,
-        "Please input new name: ");
+    String newName = JOptionPane.showInputDialog(this, RENAME_MSG, RENAME_TITLE, 
+        JOptionPane.QUESTION_MESSAGE);
 
-    // Call hdCiv.renamePerson()
-    if (_hdCiv.renamePerson(newName)) {
-      // Now update the display
-      _ds.put(PersonKeys.NAME, newName);
-    }
-
-    return this.savePerson();
+    _hdCiv.renamePerson(newName);
+    // Replace the Hero in storage Update the display
+    _hdCiv.savePerson(OVERWRITE);
+//    _hdCiv.redisplayHero();
   }
 
 
@@ -1034,22 +1065,11 @@ public class HeroDisplay extends ChronosPanel
     boolean retflag = false;
     // Save Hero is he/she doesn't exist in the Dormitory
     if (_hdCiv.savePerson(NO_OVERWRITE)) {
-      return true;
-    }
-    // If person exists in Dormitory, prompt for other actions: Overwrite/Rename/Cancel
-    else {
-      retflag = doAlternateSaveAction();
+      retflag = true;
     }
     return retflag;
   }
 
-
-  /** Rename the new Hero */
-  private boolean renameHero()
-  {
-    System.out.println("renameHero() called from HeroDisplay.savePerson()");
-    return false;
-  }
 
   // // User chose to OVERWRITE
   // if (choice == JOptionPane.YES_OPTION) {
