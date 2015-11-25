@@ -121,6 +121,13 @@ public class intCmdPatronLeave extends Command
     {
         return _inn.remove(_npc);
     }
+    
+
+    @Override
+    public String toString()
+    {
+      return _npc.getName() + " will leave the Inn in " + _delay;
+    }
 
 } // end of intCmdLeave class
 

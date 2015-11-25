@@ -71,6 +71,7 @@ public class CommandFactory
     _commandMap.put("RETURN", () -> new CmdReturn(_bdCiv));
     // Just sit there
     _commandMap.put("WAIT", () -> new CmdWait());
+    _commandMap.put("LOOK", () -> new CmdLook(_bdCiv));
 
     // Locks the command map as read-only
     _commandMap = Collections.unmodifiableMap(_commandMap);

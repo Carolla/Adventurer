@@ -129,6 +129,11 @@ public class IOPanel extends ChronosPanel
     displayText(Constants.NEWLINE + msg + Constants.NEWLINE, null);
   }
 
+  @Override
+  public boolean requestFocusInWindow()
+  {
+    return _cmdWin.requestFocusInWindow();
+  }
   // ============================================================
   // Private Methods
   // ============================================================

@@ -32,10 +32,11 @@ public class CmdLook extends Command
   @Override
   public boolean init(List<String> args)
   {
-    if (args.size() > 0) {
-      _target = args.get(0);
+    for (String s : args) {
+      _target += s + " ";
     }
-    return true;
+    _isInitialized = true;
+    return _isInitialized;
   }
 
   @Override

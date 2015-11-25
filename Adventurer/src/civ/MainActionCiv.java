@@ -160,6 +160,7 @@ public class MainActionCiv extends BaseCiv
     
     IOPanel iop = new IOPanel(parser);
     _mfCiv.replaceLeftPanel(iop);
+    iop.requestFocusInWindow();
     
     // Wait until everything created to finally display the town
     bldgCiv.openTown();

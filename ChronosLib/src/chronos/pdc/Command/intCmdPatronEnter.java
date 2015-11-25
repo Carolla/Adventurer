@@ -128,7 +128,7 @@ public class intCmdPatronEnter extends Command
     @Override
     public String toString()
     {
-      return _npc.getName() + " will enter the Inn";
+      return _npc.getName() + " will enter the Inn in " + _delay;
     }
 }	// end of intCmdEnter class
 

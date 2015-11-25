@@ -208,25 +208,6 @@ public class NewHeroIPPanel extends ChronosPanel
 
   } // end NewHeroIPPanel constructor
 
-
-  // ============================================================
-  // Public Methods
-  // ============================================================
-
-
-  /**
-   * The name text field should have the default focus, but that cannot be done until after the
-   * panel is realized and visible. Therefore, the NewHeroPanel's caller (MenuBar.NEW Action) must
-   * invoke the default component. It calls this method to get which one should be default. This
-   * method is created for this because the caller does not know what fields are available in this
-   * panel, and it can change with maintenance.
-   */
-  public void setDefaultFocus()
-  {
-    _nameField.requestFocusInWindow();
-  }
-
-
   // ============================================================
   // Private Methods
   // ============================================================
@@ -499,14 +480,13 @@ public class NewHeroIPPanel extends ChronosPanel
     if (error == ErrorCode.NAME_MISSING) {
       JOptionPane.showMessageDialog(null, ERRMSG_NAME_MISSING,
           HERO_ERROR_TITLE, JOptionPane.ERROR_MESSAGE);
-      _nameField.requestFocusInWindow();
     }
     // Display overly long name error, then set control to name field
     else if (error == ErrorCode.NAME_TOO_LONG) {
       JOptionPane.showMessageDialog(null, ERRMSG_NAME_TOO_LONG,
           HERO_ERROR_TITLE, JOptionPane.ERROR_MESSAGE);
-      _nameField.requestFocusInWindow();
     }
+    _nameField.requestFocusInWindow();
 
   }
 

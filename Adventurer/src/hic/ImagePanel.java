@@ -53,9 +53,12 @@ public class ImagePanel extends ChronosPanel
 
   public void setImageByName(String imageName)
   {
-    if (imageName.equals(_imageName)) {
+    if (!imageName.equals(_imageName)) {
       _imageName = imageName;
       _image = convertToImage(imageName);
+      
+      revalidate();
+      repaint();
     }
   }
 
