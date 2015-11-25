@@ -164,11 +164,9 @@ public abstract class Registry<E extends IRegistryElement>
    * @param name of the target object to match against for comparison
    * @return the list of all elements that match the name
    */
+  @SuppressWarnings("serial")
   public List<E> get(final String name)
   {
-    // Suppression needed for the annoymous inner class to turn off warnings
-    @SuppressWarnings("serial")
-    // Run the query using the getKey method
     Predicate<E> pred = new Predicate<E>() {
       public boolean match(E candidate)
       {
@@ -257,7 +255,13 @@ public abstract class Registry<E extends IRegistryElement>
     if ((name == null) || (name.trim().length() == 0)) {
       return null;
     }
-    E regElem = null;
+    
+    E regElem = getFromMemory(name);
+    if (regElem != null) {
+      System.out.println("Found name in registry");
+      return regElem;
+    }
+    
     List<E> elementList = get(name);
     int nbrFound = elementList.size();
     // If single element found, return it
@@ -272,6 +276,17 @@ public abstract class Registry<E extends IRegistryElement>
     // If no element found, return null
     return regElem;
   }
+
+  private E getFromMemory(String name)
+  {
+    for (E element : _inMemoryList) {
+      if (element.getKey().equals(name)) {
+        return element;
+      }
+    }
+    return null;
+  }
+
 
   /**
    * Verifies if the string (key) is unique to the Registry Calls getUnique() to return a boolean
