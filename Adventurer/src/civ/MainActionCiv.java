@@ -11,7 +11,6 @@ package civ;
 
 import hic.ChronosPanel;
 import hic.IOPanel;
-import hic.ImagePanel;
 import hic.Mainframe;
 import hic.NewHeroIPPanel;
 

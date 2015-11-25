@@ -1,5 +1,6 @@
 package test.pdc.command;
 
+import test.pdc.FakeAdventure;
 import chronos.pdc.buildings.Building;
 import civ.BuildingDisplayCiv;
 
@@ -7,7 +8,7 @@ public class FakeBuildingDisplayCiv extends BuildingDisplayCiv
 {
     public FakeBuildingDisplayCiv()
     {
-        super(new FakeMainframeCiv(), null, null);
+        super(new FakeMainframeCiv(), new FakeAdventure(), null);
     }
 
     private String _currentBuildingName = "";
