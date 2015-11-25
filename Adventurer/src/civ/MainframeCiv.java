@@ -52,7 +52,10 @@ public class MainframeCiv extends BaseCiv
   protected void constructMembers()
   {
     _mf = new Mainframe(this);
+    
     _imagePanel = new ImagePanel();
+    _mf.replaceRightPanel(_imagePanel);
+    
     new MainActionCiv(this);
   }
 

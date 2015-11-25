@@ -10,6 +10,7 @@
 
 package hic;
 
+import java.awt.Graphics;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
@@ -54,7 +55,7 @@ public class ImagePanel extends ChronosPanel
   {
     _image = convertToImage(imageName);
   }
-
+  
   // ============================================================
   // Private methods
   // ============================================================
@@ -75,4 +76,20 @@ public class ImagePanel extends ChronosPanel
     return myImage;
   }
 
+  /**
+   * Required override method to draw on {@code JComponent.ImagePanel}
+   */
+  @Override
+  public void paintComponent(Graphics g)
+  {
+    super.paintComponent(g);
+
+    // Find top-left corner to image panel to overlay image onto
+    int pWidth = getWidth();
+    int pHeight = getHeight();
+
+    // Draw the image at the top-left corner of the ImagePanel when JComponent gets its turn
+    g.drawImage(_image, 0, 0, pWidth, pHeight, this);
+
+  }
 }

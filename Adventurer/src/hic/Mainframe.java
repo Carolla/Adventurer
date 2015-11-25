@@ -116,6 +116,7 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
   public Mainframe(MainframeCiv mfciv)
   {
     _mfCiv = mfciv;
+    
     // Define the graphic elements
     setupSizeAndBoundaries();
     createFrameAndMenubar();
@@ -196,8 +197,9 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     // Save the state for later
     _leftPanelStack.push(newPanel);
 
-    redraw();
     newPanel.setVisible(true);
+    newPanel.requestFocusInWindow();
+    redraw();
   }
 
   /**

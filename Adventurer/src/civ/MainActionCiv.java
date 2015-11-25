@@ -154,6 +154,7 @@ public class MainActionCiv extends BaseCiv
     BuildingDisplayCiv bldgCiv = new BuildingDisplayCiv(_mfCiv, adv, (BuildingRegistry) _rf.getRegistry(RegKey.BLDG));
     
     CommandFactory cmdFac = new CommandFactory(_mfCiv, bldgCiv);
+    cmdFac.initMap();
     CommandParser parser = new CommandParser(_skedder, cmdFac);
     
     IOPanel iop = new IOPanel(parser);

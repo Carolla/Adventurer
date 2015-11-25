@@ -160,13 +160,13 @@ public class IOPanel extends ChronosPanel
     _cmdWin.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        // Save the user's input to be retrieved by the command parser
-        _cmdWin.requestFocusInWindow();
         String in = _cmdWin.getText();
+        displayText(in);
+
         _commandParser.receiveCommand(in);
-        // Echo the text and clear the command line
-        displayText(in, null);
+
         _cmdWin.setText("");
+        _cmdWin.requestFocusInWindow();
       }
     });
     return southPanel;
