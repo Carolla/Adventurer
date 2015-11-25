@@ -41,10 +41,9 @@ public class ImagePanel extends ChronosPanel
    * 
    * @param BaseCiv base class for all civs that can control this panel
    */
-  public ImagePanel(String imageName, String title)
+  public ImagePanel()
   {
-    super(title);
-    setImageByName(imageName);
+    super(" ");
   }
 
   // ============================================================

@@ -10,6 +10,8 @@
 package civ;
 
 import hic.ChronosPanel;
+import hic.IOPanel;
+import hic.ImagePanel;
 import hic.Mainframe;
 import hic.NewHeroIPPanel;
 
@@ -24,6 +26,7 @@ import javax.swing.JOptionPane;
 
 import mylib.Constants;
 import net.miginfocom.swing.MigLayout;
+import pdc.command.CommandFactory;
 import chronos.Chronos;
 import chronos.pdc.Adventure;
 import chronos.pdc.Command.Scheduler;
@@ -48,7 +51,7 @@ public class MainActionCiv extends BaseCiv
   
   /** Controls left side and right side panels */
   private ChronosPanel _actionPanel;
-  private ChronosPanel _imagePanel;
+  private ImagePanel _imagePanel;
   
   /** Amount of space in pixels around the frame and image of aesthetics */
   public static final int FRAME_PADDING = 90;
@@ -62,6 +65,7 @@ public class MainActionCiv extends BaseCiv
   
   private final String INITIAL_IMAGE   = "ChronosLogo.jpg";
   private final String INITIAL_IMAGE_TITLE   = "Chronos Logo";
+  private Scheduler _skedder;
 
   // ============================================================
   // Constructors and constructor helpers
@@ -83,12 +87,12 @@ public class MainActionCiv extends BaseCiv
     createActionPanel();
     setActivePanel();
   }
-  
-  private void constructMembers()
-  {    
-    Scheduler skedder = new Scheduler(); // Skedder first for injection
 
-    _rf = new RegistryFactory(skedder);
+  protected void constructMembers()
+  {    
+    _skedder = new Scheduler(); // Skedder first for injection
+
+    _rf = new RegistryFactory(_skedder);
     _rf.initRegistries();
   }
 
@@ -144,12 +148,16 @@ public class MainActionCiv extends BaseCiv
    */
   private void loadSelectedAdventure(String adventureName)
   {
-    // Get the selected adventure
     Adventure adv = _advReg.getAdventure(adventureName);
 
-    // Create the BuildingCiv and pass control to it
-    BuildingRegistry bldgReg = (BuildingRegistry) _rf.getRegistry(RegKey.BLDG);
-    BuildingDisplayCiv bldgCiv = new BuildingDisplayCiv(_mfCiv, adv, bldgReg);
+    // Create all the objects used in town
+    BuildingDisplayCiv bldgCiv = new BuildingDisplayCiv(_mfCiv, adv, (BuildingRegistry) _rf.getRegistry(RegKey.BLDG));
+    
+    CommandFactory cmdFac = new CommandFactory(_mfCiv, bldgCiv);
+    CommandParser parser = new CommandParser(_skedder, cmdFac);
+    IOPanel iop = new IOPanel(parser);
+    
+    _mfCiv.replaceLeftPanel(iop);
     bldgCiv.openTown();
   }
 

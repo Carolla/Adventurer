@@ -62,8 +62,7 @@ public class CommandFactory
     // Enter the interior of the Building
     _commandMap.put("ENTER", () -> new CmdEnter(_bdCiv));
     // Synonym for Leave and then Quit the program
-//    _commandMap.put("EXIT", () -> new CmdExit(_mfCiv, _bdCiv));
-    _commandMap.put("EXIT", () -> new CmdExit(_bdCiv));
+    _commandMap.put("EXIT", () -> new CmdExit(_mfCiv));
     // Leave the inside of the Building and go outside
     _commandMap.put("LEAVE", () -> new CmdLeave(_bdCiv));
     // End the program.

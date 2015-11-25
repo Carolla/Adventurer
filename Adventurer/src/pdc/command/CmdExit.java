@@ -14,7 +14,7 @@ package pdc.command;
 import java.util.List;
 
 import chronos.pdc.Command.Command;
-import civ.BuildingDisplayCiv;
+import civ.MainframeCiv;
 
 
 /**
@@ -42,21 +42,19 @@ public class CmdExit extends Command
   /** Command format */
   static private final String CMDFMT = "EXIT";
 
-  private BuildingDisplayCiv _bldgCiv;
+  private MainframeCiv _mfCiv;
 
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
   /** Constructor called by the CommandFactory. There is no delay nor duration. 
-   * @param mfCiv needed for a call to quit prompt
-   * @param bdCiv needed to handle Building requests 
+   * @param mfCiv needed for a call to quit prompt 
    */
-//  public CmdExit(MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
-  public CmdExit(BuildingDisplayCiv bdCiv)
+  public CmdExit(MainframeCiv mfCiv)
   {
     super("CmdExit", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
-    _bldgCiv = bdCiv;
+    _mfCiv = mfCiv;
   }
 
 
@@ -87,8 +85,7 @@ public class CmdExit extends Command
    */
   public boolean exec()
   {
-    _bldgCiv.leaveBuilding();
-    _bldgCiv.quit();
+    _mfCiv.quit();
     return false;
   }
 

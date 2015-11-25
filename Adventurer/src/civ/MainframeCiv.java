@@ -52,6 +52,7 @@ public class MainframeCiv extends BaseCiv
   protected void constructMembers()
   {
     _mf = new Mainframe(this);
+    _imagePanel = new ImagePanel();
     new MainActionCiv(this);
   }
 
@@ -96,6 +97,11 @@ public class MainframeCiv extends BaseCiv
   public void backToMain()
   {
     _mf.backToMain();
+  }
+
+  public void setImagePanel(ImagePanel imagePanel)
+  {
+    _imagePanel = imagePanel; 
   }
 
 } // end of MainframeCiv class
