@@ -88,6 +88,13 @@ public class MainframeCiv extends BaseCiv
   {
     _mf.replaceLeftPanel(panel);
   }
+  
+  public void replaceLeftPanel(IOPanel panel)
+  {
+    _ioPanel = panel;
+    _mf.replaceLeftPanel(panel);
+  }
+
 
   public void back()
   {

@@ -92,6 +92,8 @@ public class MainActionCiv extends BaseCiv
 
     _rf = new RegistryFactory(_skedder);
     _rf.initRegistries();
+    
+    _advReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
   }
 
   /**
