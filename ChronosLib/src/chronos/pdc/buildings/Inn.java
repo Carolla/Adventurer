@@ -58,11 +58,6 @@ public class Inn extends Building
   static private final String EXTERIOR_IMAGE = "raw_ext_Ugly Ogre Inn.jpg";
   static private final String INTERIOR_IMAGE = "int_Inn.jpg";
 
-  /**
-   * The standard description is saved in the base class, but the busy description is stored here
-   */
-  private String _busyDescription = null;
-
   /** The Inn opens at 6am and closes at midnight */
   private int OPENTIME = 600;
   private int CLOSETIME = 2400;
@@ -86,9 +81,6 @@ public class Inn extends Building
   /** Patrons */
   private List<NPC> _patrons = new ArrayList<NPC>();
 
-  /** Current number of patrons in the Inn plus the Innkeeper */
-  private int _patronsNow = 1;
-
   /** Used to schedule commands */
   private Scheduler _skedder;
   
@@ -107,7 +99,6 @@ public class Inn extends Building
   {
     super(INN_NAME, INNKEEPER, HOVERTEXT, EXTERIOR, INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
     _npcRegistry = npcRegistry;
-    _busyDescription = BUSY_DESC;
     setBusinessHours(OPENTIME, CLOSETIME);
   }
 
@@ -164,7 +155,8 @@ public class Inn extends Building
 
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PUBLIC METHODS
+   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+   *                      PUBLIC METHODS
    * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
    */
 
@@ -197,50 +189,31 @@ public class Inn extends Building
     return _name;
   }
 
-
-  /**
-   * When the Hero enters the building, he or she sees what the inside looks like. For the Inn, the
-   * description changes depending on whether it is busy or not. This conditional method overrides
-   * the base class method.
-   * 
-   * @return the standard description or the busy description
-   */
-  @Override
-  public String getInteriorDescription()
-  {
-    return (_patronsNow >= NBR_PATRONS_TO_BE_BUSY) ? _busyDescription : _intDesc;
-  }
-
-  /**
-   * Set the description seen when the Inn is busy
-   * 
-   * @param bdesc description of a busy Inn
-   */
-  public void setBusyDescription(String bdesc)
-  {
-    _busyDescription = bdesc;
-  }
-
   @Override
   public boolean add(NPC npc)
   {
     System.out.println(npc.getName() + " entered the Inn");
-//    _msg.msgOut(npc.getName() + " entered the Inn");
-    return super.add(npc);
+    boolean added = super.add(npc);
+
+    if (_patrons.size() < NBR_PATRONS_TO_BE_BUSY) {
+      _intDesc = BUSY_DESC;
+    }
+    
+    return added;
   }
 
   @Override
   public boolean remove(NPC npc)
   {
     System.out.println(npc.getName() + " left the Inn");
-//    _msg.msgOut(npc.getName() + " left the Inn");
-    return super.remove(npc);
+    boolean removed = super.remove(npc);
+    
+    if (_patrons.size() < NBR_PATRONS_TO_BE_BUSY) {
+      _intDesc = INTERIOR;
+    }
+    
+    return removed;
   }
-
-//  public void setMsg(UserMsg msg)
-//  {
-//    _msg = msg;
-//  }
 
   public void setScheduler(Scheduler skedder)
   {

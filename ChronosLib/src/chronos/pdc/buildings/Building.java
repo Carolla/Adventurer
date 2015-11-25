@@ -51,7 +51,7 @@ public abstract class Building implements IRegistryElement
   /** Short phrase of the purpose of the Building (hovertext when clicked) */
   protected final String _hoverText;
   /** Short description of what the Hero first sees from outside the building. */
-  protected final String _intDesc;
+  protected String _intDesc;
   /** Short description of what the Hero first sees inside the building. */
   protected final String _extDesc;
 
