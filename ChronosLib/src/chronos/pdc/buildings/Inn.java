@@ -78,9 +78,6 @@ public class Inn extends Building
   /** Randomizer */
   private static final MetaDie _md = new MetaDie();
 
-  /** Patrons */
-  private List<NPC> _patrons = new ArrayList<NPC>();
-
   /** Used to schedule commands */
   private Scheduler _skedder;
   
@@ -113,10 +110,10 @@ public class Inn extends Building
    */
   public void initPatrons()
   {
-    _patrons = _npcRegistry.getNPCList();
+    List<NPC> patrons = _npcRegistry.getNPCList();
     // The starterList has no zero-delay intCmdEnter commands, each containing the
     // Patron who shall enter at the designated delay time.
-    List<intCmdPatronEnter> starterList = createStarterList();
+    List<intCmdPatronEnter> starterList = createStarterList(patrons);
 
     for (intCmdPatronEnter ce : starterList) {
       // Use the generated enter commands to create the leave commands
@@ -131,16 +128,17 @@ public class Inn extends Building
    * for all the <code>Patron</code>s in the <code>PatronRegistry</code>. Each intCmdEnter is
    * assigned a Patron to enter the Inn when it is their time. <br>
    * A CommandList is created instead of a Patron list because Events wrap Commands, not Patrons.
+   * @param patrons 
    * 
    * @return List of random non-zero <code>intCmdEnter</code> commands for each <code>Patron</code>
    */
-  private List<intCmdPatronEnter> createStarterList()
+  private List<intCmdPatronEnter> createStarterList(List<NPC> patrons)
   {
     // Create a list to hold the Enter commands
     List<intCmdPatronEnter> cmdStarterList = new ArrayList<intCmdPatronEnter>();
 
     // Walk the PatronRegistry for all Patrons and assign their Enter commands
-    for (NPC npc : _patrons) {
+    for (NPC npc : patrons) {
       int delay = _md.getRandom(MIN_DELAY, MAX_DELAY);
       int duration = _md.getRandom(MIN_DURATION, MAX_DURATION);
       intCmdPatronEnter cmd = new intCmdPatronEnter(delay, duration, npc, this);
@@ -195,7 +193,7 @@ public class Inn extends Building
     System.out.println(npc.getName() + " entered the Inn");
     boolean added = super.add(npc);
 
-    if (_patrons.size() < NBR_PATRONS_TO_BE_BUSY) {
+    if (_patrons.size() >= NBR_PATRONS_TO_BE_BUSY) {
       _intDesc = BUSY_DESC;
     }
     
