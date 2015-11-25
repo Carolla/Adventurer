@@ -11,20 +11,11 @@ package hic;
 
 import javax.swing.JPanel;
 
+import mylib.Constants;
+
 /**
- * Adds a title method to JPanel for Chronos panels. Instead of using various constructor parms, the
- * attributes are added as set() functions. <br>
- * For example, instead of
- * <P>
- * {@code JPanel myPanel = new JPanel(LayoutManager lm);}
- * <P>
- * use
- * <P>
- * {@code ChronosPanel myPanel = new ChronosPanel();} <br>
- * {@code myPanel.set(LayoutManagerlm);}.
- * <P>
- * 
- * @see {@code Mainframe.setFrameAndMenubar() for a better example.
+ * Base class for most panels used in {@code Adventurer}. Each civ controls two
+ * {@code ChronosPanels}, one on the left for user interaction, and one of the right for images.
  * 
  * @author Al Cline
  * @version Nov 9, 2015 // original <br>
@@ -33,41 +24,28 @@ import javax.swing.JPanel;
 public class ChronosPanel extends JPanel
 {
   /** Default title field for all ChronosPanels, to be overwritten */
-  protected String _title = " ";
-
-//  /** Civ that manages the images and mouse action in this display */
-//  protected BaseCiv _ctrlCiv;
-
+  protected String _title;
 
   // ====================================================================================
   // Constructor
   // ====================================================================================
 
   /** Default constructor */
-  public ChronosPanel()  {  }
+  public ChronosPanel(String title)  
+  {
+    _title = title;  
+  }
+
+
+  // ====================================================================================
+  // Default methods in common for a base class of ChronosPanels
+  // ====================================================================================
 
   /** Get the panel's title for display */
   public String getTitle()
   {
     return _title;
   }
-//
-//  // ====================================================================================
-//  // Default methods in common for a base class of ChronosPanels
-//  // ====================================================================================
-//
-//  public void replaceControllerCiv(BaseCiv newCiv)
-//  {
-//    // No action if listeners are null
-//    removeMouseListener(_ctrlCiv);
-//    removeMouseMotionListener(_ctrlCiv);
-//
-//    // Add new control civ and save for later
-//    addMouseListener(newCiv);
-//    addMouseMotionListener(newCiv);
-//    _ctrlCiv = newCiv;
-//  }
-
 
   /**
    * Force ChronosPanel implementers to set a title, either in the Panel itself of in the Panel's
@@ -77,7 +55,12 @@ public class ChronosPanel extends JPanel
    */
   public void setTitle(String title)
   {
+    if (!title.startsWith(Constants.SPACE)) {
+      title = Constants.SPACE + title;
+    }
+    if (!title.endsWith(Constants.SPACE)) {
+      title = title + Constants.SPACE;
+    }
     _title = title;
   }
-
 } // end of ChronosPanel

@@ -29,6 +29,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import mylib.Constants;
+import mylib.Constants.Side;
 import mylib.hic.HelpDialog;
 import mylib.hic.IHelpText;
 import net.miginfocom.swing.MigLayout;
@@ -77,17 +78,10 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
   private Deque<ChronosPanel> _leftPanelStack = new ArrayDeque<ChronosPanel>(5);
   private Deque<ChronosPanel> _rightPanelStack = new ArrayDeque<ChronosPanel>(5);
 
-  // /** Indicate which side of the mainframe is in question */
-   private final boolean LEFT = true;
-   private final boolean RIGHT = false;
-
-
-  /** JPanel to hold various images; this panel resides in the _rightHolder */
   private MainframeCiv _mfCiv;
 
   /** Singleton Help Dialog for all help text */
   private HelpDialog _helpdlg;
-
 
   /** Help Title for the mainframe */
   private static final String _helpTitle = "GREETINGS ADVENTURER!";
@@ -178,6 +172,20 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
   }
 
   /**
+   * Remove the current panel and return to the main action panel, as many levels as it takes
+   */
+  public void backToMain()
+  {
+    // Remove all panels until the first (main action) panel is found
+
+    while (_leftPanelStack.size() > 1) {
+      _leftPanelStack.pop();
+    }
+    // Put the main action panel in place and display
+    replaceLeftPanel(_leftPanelStack.pop());
+  }
+
+  /**
    * Display a prompt, asking a question of the user
    *
    * @param msg the question to be asked, must be yes or no
@@ -235,15 +243,15 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
    */
   public void replaceLeftPanel(ChronosPanel newPanel)
   {
-    setPanelTitle(newPanel.getTitle(), LEFT);
+    setPanelTitle(newPanel.getTitle(), Side.LEFT);
     _leftHolder.removeAll();
     _leftHolder.add(newPanel);
 
     // Save the state for later
     _leftPanelStack.push(newPanel);
-    
-    newPanel.setVisible(true);
+
     redraw();
+    newPanel.setVisible(true);
   }
 
   /**
@@ -254,7 +262,7 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
    */
   public void replaceRightPanel(ChronosPanel newPanel)
   {
-    setPanelTitle(newPanel.getTitle(), RIGHT);
+    setPanelTitle(newPanel.getTitle(), Side.RIGHT);
     _rightHolder.removeAll();
     _rightHolder.add(newPanel);
 
@@ -265,6 +273,17 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     redraw();
   }
 
+  /**
+   * Display a title onto the border of the right side image panel. Add one space char on either
+   * side for aesthetics
+   *
+   * @param title of the panel to set
+   */
+  public void setImageTitle(String title)
+  {
+    TitledBorder border = (TitledBorder) _rightHolder.getBorder();
+    border.setTitle(" " + title + " ");
+  }
 
   /**
    * Display a title onto the border of a panel in one of the panel holders
@@ -272,10 +291,10 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
    * @param title of the panel to set
    * @param side left or right side for title placement
    */
-  public void setPanelTitle(String title, boolean side)
+  public void setPanelTitle(String title, Side side)
   {
-    TitledBorder border = (side == LEFT) ? (TitledBorder) _leftHolder.getBorder()
-        : (TitledBorder) _rightHolder.getBorder();;
+    TitledBorder border = (side == Side.LEFT) ? (TitledBorder) _leftHolder.getBorder()
+        : (TitledBorder) _rightHolder.getBorder();
     border.setTitle(title);
   }
 
@@ -308,20 +327,18 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     setJMenuBar(new Menubar(this, _mfCiv));
 
     // Define a left and right ChronosPanel to manage subordinate right- and left-side panels
-    _leftHolder = new ChronosPanel();
+    _leftHolder = new ChronosPanel(" ");
     _leftHolder.setLayout(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
     _leftHolder = makePanelAsHolder(_leftHolder, Constants.MY_BROWN, Color.WHITE);
 
-    _rightHolder = new ChronosPanel();
+    _rightHolder = new ChronosPanel(" ");
     _rightHolder.setLayout(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
-    _rightHolder.setTitle(" ");
     _rightHolder = makePanelAsHolder(_rightHolder, Constants.MY_BROWN, Color.WHITE);
 
     _contentPane.add(_leftHolder, "cell 0 0, wmax 50%, grow");
     _contentPane.add(_rightHolder, "cell 1 0, wmax 50%, grow");
     _contentPane.setFocusable(true);
   }
-
 
   /**
    * Create a holder for the left or right side of the frame, with all cosmetics. Holders will have

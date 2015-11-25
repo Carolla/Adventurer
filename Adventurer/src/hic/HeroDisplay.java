@@ -30,6 +30,7 @@ import net.miginfocom.swing.MigLayout;
 import chronos.civ.PersonKeys;
 import chronos.pdc.MiscKeys.ItemCategory;
 import civ.HeroDisplayCiv;
+import dmc.HeroReadWriter;
 
 
 /**
@@ -111,26 +112,29 @@ import civ.HeroDisplayCiv;
  *          Oct 6 2011 // minor changes to support MVP Stack <br>
  *          Oct 1 2015 // revised to accommodate new Hero character sheet <br>
  *          Oct 17 2015 // added dual tab pane for Spell casters vs non-spell casters <br>
+ *          Nov 22 2015 // updated Save, Overwrite, Rename, and Cancel buttons for new Hero <br>
  */
+@SuppressWarnings("serial")
 public class HeroDisplay extends ChronosPanel
 {
-  /**
-   * Generated using system clock
-   */
-  private static final long serialVersionUID = 3532162719501483676L;
-
-  // private static final int PIX_PER_CHAR = 8;
-
   /** Help message to show in panels */
   private final String HELP_LABEL = "Press F1 key for help.";
 
   // Specific file error messages not handled by FileChooser
   private String _saveMsg = "";
-  private final String SAVE_ERROR_MSG = "Error! Problem saving ";
-  private final String SAVE_CANCEL_MSG = "Overwrite cancelled for ";
+  
+  private final String PROMPT_HERO_EXISTS_MSG =
+      "Do you want to overwrite, rename, or create a new Hero?";
+  private final String PROMPT_HERO_EXISTS_TITLE = "Hero already exists.";
+  
   private final String SAVE_ERROR_TITLE = "FILE SAVE ERROR";
+  
   private final String CONFIRM_SAVE_MSG = " is resting in the dormitory until later.";
   private final String CONFIRM_SAVE_TITLE = " Hero is now Registered";
+  private final String CONFIRM_OVERWRITE_MSG = " has been overwritten in the dormitory.";
+  private final String CONFIRM_OVERWRITE_TITLE = "Overwriting Hero";
+  private final String CONFIRM_RENAME_MSG = " has been renamed";
+  private final String CONFIRM_RENAME_TITLE = "Renaming Hero";
 
   // Specific file error messages not handled by FileChooser
   private final String DEL_ERROR_MSG = "Error! Problem deleting ";
@@ -138,24 +142,12 @@ public class HeroDisplay extends ChronosPanel
   private final String CONFIRM_DEL_MSG = " is now in a better place.";
   private final String CONFIRM_DEL_TITLE = " Hero is now Deceased";
 
-  // /** Tab sizing between inventory columns */
-  // private final int TAB_SIZE = 6;
-  // /** Height needed for the Save and Cancel buttons */
-  // private final int BUTTON_HT = 50;
+  /** Option to overwrite a new Hero or not */
+  private final boolean OVERWRITE = true;
+  private final boolean NO_OVERWRITE = false;
+
   /** Height of font for vertical spacing */
   private final int FONT_HT = 14;
-  // /** Normal font height */
-  // private final int ATT_FONT_HT = 12;
-  // /** Size for name in title */
-  // private final float TITLE_HT = 14f;
-  // /** Standard height of font and cells in display, but can be changed */
-  // private int CELL_HEIGHT = 26;
-  // /** Border width for main panel */
-  // private final int THICK_BORDER = Mainframe.PAD;
-  // /** Border width for subpanel */
-  // private final int THIN_BORDER = Mainframe.PAD / 2;
-  // /** Border width for main panel */
-  // private final int SCROLLBAR_SIZE = 20;
 
   /** Set the max width of the hero panel at half screen */
   private final int PANEL_WIDTH = Mainframe.getWindowSize().width / 2;
@@ -176,9 +168,6 @@ public class HeroDisplay extends ChronosPanel
   // /** Set the default HelpKey for the general panel */
   // private HelpKeyListener _helpKey = new HelpKeyListener("HeroDsp");
 
-  // /** Maximum size of cell in attribute panel */
-  // private final int CELL_MAX_WIDTH = 17;
-
   /** Disable SaveAs at some time . */
   private JButton _saveButton;
   /** Change Cancel Button to OK Button at some time . */
@@ -187,9 +176,9 @@ public class HeroDisplay extends ChronosPanel
   private JButton _delButton;
 
   /** Background color inherited from parent */
-   private Color _backColor = Constants.MY_BROWN;
+  private Color _backColor = Constants.MY_BROWN;
 
-  /** The backend CIV for this JPanel widget */
+  /** The backend CIV for this panel */
   private HeroDisplayCiv _hdCiv = null;
 
   /** Keys to Hero data to be displayed */
@@ -204,6 +193,10 @@ public class HeroDisplay extends ChronosPanel
   /** Button panel for Save/Delete/Cancel buttons */
   private JPanel _buttonPanel;
 
+  // /** Codes to handle dispensation of the Hero */
+  // private enum WriteOption {
+  // CANCEL, SAVE, OVERWRITE, RENAMRE, ERROR
+  // };
 
   // ===============================================================
   // CONSTRUCTOR(S) AND RELATED METHODS
@@ -216,10 +209,10 @@ public class HeroDisplay extends ChronosPanel
    * @param _mf
    * @param firstTime Hero activates buttons differently
    */
-//  public HeroDisplay(HeroDisplayCiv hdCiv, Mainframe mainframe, boolean firstTime)
   public HeroDisplay(HeroDisplayCiv hdCiv, boolean firstTime)
   {
-    super();
+    super("Hero nameplate goes here");
+
     _hdCiv = hdCiv;
     _ds = _hdCiv.getAttributes();
 
@@ -296,43 +289,6 @@ public class HeroDisplay extends ChronosPanel
   public JButton getDefaultFocus()
   {
     return _cancelButton;
-  }
-
-
-  /**
-   * Add a JTextArea into a multiline grid
-   * 
-   * @param title of the section for a group, e.g., racial, occupational, or klass
-   * @param nameList of Strings to display in this multi-line cell
-   */
-  private JPanel buildMultiCell(String title, List<String> nameList)
-  {
-    JTextArea msgArea = new JTextArea(nameList.size() + 1, DATA_WIDTH);
-    msgArea.setPreferredSize(new Dimension(DATA_WIDTH, nameList.size() + 1));
-    msgArea.setBackground(_backColor);
-    msgArea.setEditable(false);
-    msgArea.setTabSize(1);
-    msgArea.setLineWrap(true); // auto line wrapping doesn't seem to work
-    msgArea.setWrapStyleWord(true);
-
-    // Display the title
-    msgArea.append(" " + title + Constants.NEWLINE);
-
-    // Display the detailed skill list
-    if (nameList.size() == 0) {
-      nameList.add(" None");
-    }
-    for (int k = 0; k < nameList.size(); k++) {
-      msgArea.append(" + " + nameList.get(k) + Constants.NEWLINE);
-    }
-
-    // Add the text area into a JPanel cell
-    JPanel cell = new JPanel(new MigLayout("ins 0"));
-    cell.add(msgArea, "growx, wrap");
-
-    gridSetCellBorder(cell);
-    cell.validate();
-    return cell;
   }
 
 
@@ -477,37 +433,73 @@ public class HeroDisplay extends ChronosPanel
   } // End of buildAttribute panel
 
 
+
+  // =================================================================
+  // PRIVATE METHODS
+  // =================================================================
+
   /**
    * Create Save, Delete, and Cancel buttons, then add then to a JPanel
+   * 
    * @param firstTime Hero disables DELETE button; old Hero disables CANCEL button
    * @return button panel
    */
   private JPanel buildButtonPanel(boolean firstTime)
   {
-    // NOTE: Save action is invoked for new Characters */
+    // SAVE a new Hero to the Dormitory */
     _saveButton = new JButton("Save");
-    // _saveButton.setBackground(_backColor);
     _saveButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        if (savePerson() == true) {
+        // Try to save the new Hero
+        if (savePerson()) {
           // Display confirmation message
-          JOptionPane.showMessageDialog(null,
-              _ds.get(PersonKeys.NAME) + CONFIRM_SAVE_MSG,
+          JOptionPane.showMessageDialog(null, _ds.get(PersonKeys.NAME) + CONFIRM_SAVE_MSG,
               CONFIRM_SAVE_TITLE, JOptionPane.INFORMATION_MESSAGE);
+          // Return two levels back to main action
+          _hdCiv.backToMain();
         } else {
-          // Display an error message with a Sorry button instead of OK
-          String[] sorry = new String[1];
-          sorry[0] = "SORRY!";
-          JOptionPane.showOptionDialog(null,
-              _saveMsg + _ds.get(PersonKeys.NAME),
-              SAVE_ERROR_TITLE, JOptionPane.DEFAULT_OPTION,
-              JOptionPane.ERROR_MESSAGE, null, sorry, null);
+          // Respond to save attempt failure to Rename or Overwrite the Hero
+          doAlternateSaveAction();
         }
+        // For testing
+        HeroReadWriter dorm = new HeroReadWriter();
+        dorm.dumpDB();
         setVisible(false);
       }
     });
 
+
+    // switch (choice)
+    // {
+    // case PROMPT_CANCEL:
+    // System.out.println("Cancel chosen");
+    // _hdCiv.back();
+    // break;
+    // case PROMPT_OVERWRITE:
+    // System.out.println("Overwrite chosen");
+    // break;
+    // case PROMPT_RENAME:
+    // System.out.println("Rename chosen");
+    // break;
+    // default:
+    // System.out.println("Default case reached");
+    // _hdCiv.backToMain();
+    // break;
+    // }
+    // }
+
+
+    // else {
+    // // Display an error message with a Sorry button instead of OK
+    // String[] sorry = new String[1];
+    // sorry[0] = "SORRY!";
+    // JOptionPane.showOptionDialog(null, _saveMsg + _ds.get(PersonKeys.NAME),
+    // SAVE_ERROR_TITLE, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE,
+    // null, sorry, null);
+    // }
+
+    // DELETE an existing Hero from the Dormitory */
     _delButton = new JButton("Delete");
     _delButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
@@ -539,9 +531,9 @@ public class HeroDisplay extends ChronosPanel
       {
         // Collect all the attributes and save to a new Hero file
         setVisible(false);
-        _hdCiv.back();
+        // Return two levels back to main action
+        _hdCiv.backToMain();
       }
-      // }
     });
 
     // Add buttons to buttonPanel
@@ -551,11 +543,10 @@ public class HeroDisplay extends ChronosPanel
     // Disable DELETE or CANCEL buttons depending on old or new Hero
     if (firstTime) {
       _delButton.setEnabled(false);
+    } else {
+      _cancelButton.setEnabled(false);
     }
-    else {
-    _cancelButton.setEnabled(false);
-    }
-    
+
     buttonPanel.add(_saveButton);
     buttonPanel.add(_delButton);
     buttonPanel.add(_cancelButton);
@@ -735,6 +726,44 @@ public class HeroDisplay extends ChronosPanel
   }
 
 
+  /**
+   * Add a JTextArea into a multiline grid
+   * 
+   * @param title of the section for a group, e.g., racial, occupational, or klass
+   * @param nameList of Strings to display in this multi-line cell
+   */
+  private JPanel buildMultiCell(String title, List<String> nameList)
+  {
+    JTextArea msgArea = new JTextArea(nameList.size() + 1, DATA_WIDTH);
+    msgArea.setPreferredSize(new Dimension(DATA_WIDTH, nameList.size() + 1));
+    msgArea.setBackground(_backColor);
+    msgArea.setEditable(false);
+    msgArea.setTabSize(1);
+    msgArea.setLineWrap(true); // auto line wrapping doesn't seem to work
+    msgArea.setWrapStyleWord(true);
+
+    // Display the title
+    msgArea.append(" " + title + Constants.NEWLINE);
+
+    // Display the detailed skill list
+    if (nameList.size() == 0) {
+      nameList.add(" None");
+    }
+    for (int k = 0; k < nameList.size(); k++) {
+      msgArea.append(" + " + nameList.get(k) + Constants.NEWLINE);
+    }
+
+    // Add the text area into a JPanel cell
+    JPanel cell = new JPanel(new MigLayout("ins 0"));
+    cell.add(msgArea, "growx, wrap");
+
+    gridSetCellBorder(cell);
+    cell.validate();
+    return cell;
+  }
+
+
+
   // Build panel of skills: literacy, racial skills, occupational skills, and klass skills
   private JPanel buildSkillsPanel()
   {
@@ -867,6 +896,52 @@ public class HeroDisplay extends ChronosPanel
   // PRIVATE METHODS
   // ======================================================================
 
+  // Ask to Overwrite, Cancel, or Rename, the do it=e
+  private void doAlternateSaveAction()
+  {
+    /** Code for user's secltion of saving a new Hero */
+    final int PROMPT_CANCEL = 0;
+    final int PROMPT_RENAME = 1;
+    final int PROMPT_OVERWRITE = 2;
+
+    Object[] options = {"Cancel", "Rename", "Overwrite"};
+    // For some reason, buttons are produced in reverse order of the options[]
+    int choice = JOptionPane.showOptionDialog(null,
+        PROMPT_HERO_EXISTS_MSG, PROMPT_HERO_EXISTS_TITLE, JOptionPane.YES_NO_CANCEL_OPTION,
+        JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
+
+    // Perform requested action
+    switch (choice)
+    {
+      case PROMPT_CANCEL:
+        System.out.println("Cancel selected, choice = " + choice);
+        // Return one level to create new Hero
+        _hdCiv.back();
+        break;
+      case PROMPT_RENAME:
+        System.out.println("Rename selected, choice = " + choice);
+        renameHero();
+        JOptionPane.showMessageDialog(null, _ds.get(PersonKeys.NAME) + CONFIRM_RENAME_MSG,
+            CONFIRM_RENAME_TITLE, JOptionPane.INFORMATION_MESSAGE);
+        // Return to main action buttons
+        _hdCiv.backToMain();
+        break;
+      case PROMPT_OVERWRITE:
+        System.out.println("Overwrite selected, choice = " + choice);
+        _hdCiv.savePerson(OVERWRITE);
+        JOptionPane.showMessageDialog(null, _ds.get(PersonKeys.NAME) + CONFIRM_OVERWRITE_MSG,
+            CONFIRM_OVERWRITE_TITLE, JOptionPane.INFORMATION_MESSAGE);
+        // Return to main action buttons
+        _hdCiv.backToMain();
+        break;
+      default:
+        _hdCiv.backToMain();
+        break;
+    }
+  }
+
+
+
   /**
    * Creates a lined bordered cell containing a label and its value. The label and its value can be
    * aligned within the component. A JPanel type is returned so that the cell can also get the focus
@@ -962,62 +1037,60 @@ public class HeroDisplay extends ChronosPanel
   // }
 
   /**
-   * Displays the Person attributes in the shuttle, including inventory and skill set
-   * 
-   * @param ws shuttle of PersonKeys containing only String data
+   * Prompts for a new name for the Hero
    */
-  private boolean renamePerson()
+  private void renameHero()
   {
+    final String RENAME_MSG = "Enter new name: ";
+    final String RENAME_TITLE = "RENAME HERO";
+    
     // Pop up window for rename
-    String newName = JOptionPane.showInputDialog(this,
-        "Please input new name: ");
+    String newName = JOptionPane.showInputDialog(this, RENAME_MSG, RENAME_TITLE, 
+        JOptionPane.QUESTION_MESSAGE);
 
-    // Call hdCiv.renamePerson()
-    if (_hdCiv.renamePerson(newName)) {
-      // Now update the display
-      _ds.put(PersonKeys.NAME, newName);
-    }
-
-    return this.savePerson();
+    _hdCiv.renamePerson(newName);
+    // Replace the Hero in storage Update the display
+    _hdCiv.savePerson(OVERWRITE);
+//    _hdCiv.redisplayHero();
   }
 
 
   /**
-   * Save the Person currently being displayed into a new file.
+   * Saves the Person currently being displayed into the Dormitory
    * 
    * @return true if the Person was created and saved successfully, else false
    */
   private boolean savePerson()
   {
-    // Try to save without overwriting
-    boolean noOverwrite = false;
-    boolean overwrite = true;
-    _saveMsg = this.SAVE_ERROR_MSG;
-
-    // Check if person exists
-    if (_hdCiv.savePerson(noOverwrite)) {
-      return true;
+    boolean retflag = false;
+    // Save Hero is he/she doesn't exist in the Dormitory
+    if (_hdCiv.savePerson(NO_OVERWRITE)) {
+      retflag = true;
     }
-    // If person exists, prompt for overwrite/(rename?)
-    else {
-      // Custom button text
-      Object[] options = {"Yes", "No", "Rename"};
-      int n = JOptionPane.showOptionDialog(this,
-          "Hero already exists. Do you want to overwrite?",
-          "Overwrite prompt", JOptionPane.YES_NO_CANCEL_OPTION,
-          JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
-
-      if (n == JOptionPane.YES_OPTION) {
-        return _hdCiv.savePerson(overwrite);
-      } else if (n == JOptionPane.CANCEL_OPTION) {
-        return renamePerson();
-      } else {
-        // change save message to avoid throwing error message
-        _saveMsg = this.SAVE_CANCEL_MSG;
-        return false;
-      }
-    }
+    return retflag;
   }
+
+
+  // // User chose to OVERWRITE
+  // if (choice == JOptionPane.YES_OPTION) {
+  // boolean retflag = _hdCiv.savePerson(overwrite);
+  // // Display confirmation message
+  // JOptionPane.showMessageDialog(null, _ds.get(PersonKeys.NAME) + CONFIRM_OVERWRITE_MSG,
+  // CONFIRM_OVERWRITE_TITLE, JOptionPane.INFORMATION_MESSAGE);
+  // return retflag;
+  // }
+  // // User chose to CANCEL
+  // else if (choice == JOptionPane.NO_OPTION) {
+  // _hdCiv.back();
+  // return false;
+  // }
+  // // User chose to RENAME
+  // else {
+  // return renamePerson();
+  // // // change save message to avoid throwing error message
+  // // _saveMsg = this.SAVE_CANCEL_MSG;
+  // }
+  // }}
 
 
   // // WRITING TO PERSON FILE (either original or new file name)
@@ -1067,6 +1140,7 @@ public class HeroDisplay extends ChronosPanel
    * Creates the panel and container fields for the given Hero, using a data map from the model to
    * populate the widget. The HeroDisplay panel contains three tabs: one for attributes, one for
    * inventory, and one for magic spells
+   * 
    * @param firstTime Hero activates buttons differently than dormitory hero
    */
   private boolean setupDisplay(boolean firstTime)
@@ -1114,7 +1188,7 @@ public class HeroDisplay extends ChronosPanel
     // Add the tabs to the HeroDisplay panel
     add(tabPane, "center, wrap");
 
-    // // ADD SAVE & CANCEL BUTTONS TO THE BOTTOM OF THE PANEL
+    // ADD SAVE, DELETE, & CANCEL BUTTONS TO THE BOTTOM OF THE PANEL
     _buttonPanel = buildButtonPanel(firstTime);
     _buttonPanel.setPreferredSize(new Dimension(PANEL_WIDTH, _buttonPanel.getHeight()));
     add(_buttonPanel, "span, center, gapbottom 20");

@@ -3,6 +3,7 @@ package test.pdc.command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,6 @@ import test.pdc.FakeNPC;
 
 public class TestCmdLook
 {
-
   private static final String EXAMPLE_DESC = "A fat man";
   private static final String EXAMPLE_NAME = "Bob";
   private static final FakeNPC BOB = new FakeNPC(EXAMPLE_NAME, EXAMPLE_DESC);
@@ -66,8 +66,9 @@ public class TestCmdLook
   }
 
   @Test
-  public void whenTargetNotFoundGenericLookIsPerformed()
+  public void whenTargetNotFoundGetTargetNotFoundMessage()
   {
+    fail("Not working");
     _cmdLook.init(fredList);
     _bdciv.setBuilding(BUILDING);
 
@@ -94,7 +95,4 @@ public class TestCmdLook
     _cmdLook.exec();
     assertTrue(_bdciv._displayedText.contains(EXAMPLE_DESC));
   }
-
-
-
 }

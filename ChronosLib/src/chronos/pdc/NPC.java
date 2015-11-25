@@ -111,7 +111,7 @@ public class NPC implements IRegistryElement
 
   public String getDescription()
   {
-    return "You see " + _farDescription;
+    return _farDescription;
   }
 
   /*

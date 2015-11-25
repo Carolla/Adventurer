@@ -27,7 +27,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import mylib.MsgCtrl;
 import mylib.civ.DataShuttle;
 import net.miginfocom.swing.MigLayout;
 import chronos.civ.SkillKeys;
@@ -75,8 +74,8 @@ public class SkillDialogue extends JDialog
   /** Set the width of the data panels within the display borders */
   final int DATA_WIDTH = PANEL_WIDTH - SCROLLBAR_SIZE - 2
       * (THICK_BORDER + THIN_BORDER);
-  // /** Keep a reference to this scrollpane that contains this display*/
-  // private JScrollPane _heroScroll = null;
+      // /** Keep a reference to this scrollpane that contains this display*/
+      // private JScrollPane _heroScroll = null;
 
   // /** HelpDialog reference for all widgets that have context help */
   // private HelpDialog _help = null;
@@ -319,7 +318,6 @@ public class SkillDialogue extends JDialog
     _saveButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        MsgCtrl.traceEvent(event);
         doSave();
       }
     });
@@ -330,7 +328,6 @@ public class SkillDialogue extends JDialog
     _deleteButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        MsgCtrl.traceEvent(event);
         doDelete();
       }
     });
@@ -343,7 +340,6 @@ public class SkillDialogue extends JDialog
     _cancelButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        MsgCtrl.traceEvent(event);
         doCancel();
 
       }
@@ -356,7 +352,6 @@ public class SkillDialogue extends JDialog
     // {
     // public void actionPerformed(ActionEvent event)
     // {
-    // MsgCtrl.traceEvent(event);
     // doRefresh(parent);
     // getContentPane().setVisible(true);
     // }

@@ -339,7 +339,7 @@ public class Hero implements IRegistryElement
 
     // 5. ENSURE ALL ADJUSTMENTS REMAIN WITH RACIAL LIMITS
     _traits = _race.verifyRaceLimits(_traits);
-    displayTraits("Race-verified final Traits: ", _traits);
+//    displayTraits("Race-verified final Traits: ", _traits);
 
     // 6. ASSIGN THE STRENGTH MODIFIERS: To Hit Mod, Damage Mod, and Wt Allowance
     int[] strMods = calcStrengthMods(_traits);
@@ -518,6 +518,18 @@ public class Hero implements IRegistryElement
   public String getName()
   {
     return _name;
+  }
+
+  public void setName(String newName)
+  {
+    _name = newName;
+  }
+
+  /** Remove the description after the delimeter to return only the name */
+  public String getOccupationName()
+  {
+    String ocpName = _occupation.substring(0,_occupation.indexOf(':'));
+    return ocpName;
   }
 
   public String getRaceName()

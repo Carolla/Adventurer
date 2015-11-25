@@ -13,6 +13,8 @@ public class SnottyHelloWorld
             "You waste my time with no arguments!?\nFah! I bid you adieu!";
     
     private String[] _myArgs;
+	
+	//Arbitrary comment added for testing git
 
     // private final String snottyMessage = "Fah! I am SOOOOO beyond this exercise!";
     public SnottyHelloWorld(String[] theArgs)

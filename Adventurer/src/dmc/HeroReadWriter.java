@@ -24,16 +24,10 @@ import com.db4o.query.Query;
  * Handles Hero serializations from Hero files.
  * 
  * @author Alan Cline
- * @version <DL>
- *          <DT>Build 1.0 Oct 5 2008 // original
- *          <DD>
- *          <DT>Build 1.1 Nov 27 2008 // removed intermediate class and inserted SAXStream directly
- *          <DD>
- *          <DT>Build 2.0 Feb 22 2009 // updated for Adventurer module and Hero class
- *          <DD>
- *          <DT>Build 2.1 Mar 5 2009 // revised for serialization instead of XML file
- *          <DD>
- *          </DL>
+ * @version Build 1.0 Oct 5 2008 // original <br>
+ *          Nov 27 2008 // removed intermediate class and inserted SAXStream directly <br>
+ *          Feb 22 2009 // updated for Adventurer module and Hero class <br>
+ *          Mar 5 2009 // revised for serialization instead of XML file <br>
  */
 public class HeroReadWriter
 {
@@ -62,6 +56,62 @@ public class HeroReadWriter
    */
   public HeroReadWriter()
   {}
+
+  public boolean delete(Hero p)
+  {
+    // Guards against bad input
+    if (p == null) {
+      MsgCtrl.errMsgln(this, "There  is no Hero to remove. Null received");
+      return false;
+    }
+
+    ObjectContainer db =
+        Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), Chronos.PersonRegPath);
+    try {
+      String pName = p.getName();
+      Hero pToDel = null;
+
+      // Now retrieve that Hero from the database
+      Query query = db.query();
+      query.constrain(Hero.class);
+      // TODO: remove hard-coded reference to _name field
+      query.descend("_name").constrain(pName);
+      ObjectSet<Hero> result = query.execute();
+      if (result.size() > 0) {
+        pToDel = result.get(0);
+      }
+
+      db.delete(pToDel);
+      MsgCtrl.msgln(this, "Deleted " + p.getName() + " from the Dormitory");
+    } finally {
+      db.close();
+    }
+    return true;
+  }
+
+  public void dumpDB()
+  {
+    ObjectContainer db =
+        Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), Chronos.PersonRegPath);
+    try {
+      // Make a new query
+      Query query = db.query();
+
+      // Restrict it to the Hero class
+      query.constrain(Hero.class);
+      ObjectSet<Hero> result = query.execute();
+
+      // Get all the names of the people in the database
+      System.out.println("Dormitory contains");
+      if (result.size() > 0) {
+        for (Hero p : result) {
+          System.out.println("\t" + p.getName() + ", " + p.getOccupationName());
+        }
+      }
+    } finally {
+      db.close();
+    }
+  }
 
   /**
    * De-serialize a Hero object and repopulate it. It will need to have the transient values
@@ -100,6 +150,88 @@ public class HeroReadWriter
   }
 
   /**
+   * Serialize the Hero to a file, using his/her name. A Hero_EXT suffix is added when saving to the
+   * file system The Klass and Race will be stored with it as components. The Inventory for the Hero
+   * is saved with the Hero.
+   * 
+   * @param p Hero object to serialize
+   * @param HeroName filename only; path will be expanded
+   * @return false if the save goes awry, else return true
+   */
+  public boolean overwrite(Hero p, String pName)
+  {
+    // Guards against bad input
+    if (p == null) {
+      return false;
+    }
+    if ((pName == null) || (pName.trim().length() == 0)) {
+      return false;
+    }
+
+    // Open db4o for transaction
+    ObjectContainer db =
+        Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), Chronos.PersonRegPath);
+    // retrieveComplexSODA
+    Query query = db.query();
+    query.constrain(Hero.class);
+    // TODO: remove hard-coded reference to _name field
+    query.descend("_name").constrain(pName);
+    ObjectSet<Hero> result = query.execute();
+    if (result.size() > 0) {
+      Hero oldHero = result.get(0);
+      db.delete(oldHero);
+    }
+    try {
+      db.store(p);
+    } finally {
+      db.close();
+    }
+    return true;
+  }
+
+  /**
+   * Serialize the Hero to a file, using his/her name. A Hero_EXT suffix is added when saving to the
+   * file system The Klass and Race will be stored with it as components. The Inventory for the Hero
+   * is saved with the Hero.
+   * 
+   * @param p Hero object to serialize
+   * @param pName filename only; path will be expanded
+   * @return false if the Hero exists, else return true for no errors
+   */
+  public boolean save(Hero p, String pName)
+  {
+    // Guards against bad input
+    if (p == null) {
+      return false;
+    }
+    if ((pName == null) || (pName.trim().length() == 0)) {
+      return false;
+    }
+
+    // Check if the Hero exists
+    ObjectContainer db =
+        Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), Chronos.PersonRegPath);
+    try {
+      // Now retrieve that Hero from the database
+      Query query = db.query();
+      query.constrain(Hero.class);
+      // TODO: remove hard-coded reference to _name field
+      query.descend("_name").constrain(pName);
+      ObjectSet<Hero> result = query.execute();
+
+      // Return false, prompting for overwrite if Hero exists
+      if (result.size() > 0) {
+        return false;
+      } else {
+        db.store(p);
+      }
+    } finally {
+      db.close();
+    }
+    return true;
+  }
+
+  /**
    * Return a list of all the names of people saved in the dormitory
    * 
    * @return a list of the names of all the characters in the dormitory
@@ -127,120 +259,6 @@ public class HeroReadWriter
       db.close();
     }
     return sleepers;
-  }
-
-  /**
-   * Serialize the Hero to a file, using his/her name. A Hero_EXT suffix is added when saving to
-   * the file system The Klass and Race will be stored with it as components. The Inventory for the
-   * Hero is saved with the Hero.
-   * 
-   * @param p Hero object to serialize
-   * @param pName filename only; path will be expanded
-   * @return false if the Hero exists, else return true for no errors
-   */
-  public boolean save(Hero p, String pName)
-  {
-    // Guards against bad input
-    if (p == null) {
-      MsgCtrl.errMsgln(this, "There  is no Hero to save. Null received");
-      return false;
-    }
-    if ((pName == null) || (pName.trim().length() == 0)) {
-      MsgCtrl.errMsgln(this, "This Hero has no name!. Cannot save him or her.");
-      return false;
-    }
-
-    // Check if the Hero exists
-    ObjectContainer db =
-        Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), Chronos.PersonRegPath);
-    try {
-      // Now retrieve that Hero from the database
-      Query query = db.query();
-      query.constrain(Hero.class);
-      // TODO: remove hard-coded reference to _name field
-      query.descend("_name").constrain(pName);
-      ObjectSet<Hero> result = query.execute();
-
-      // Return false, prompting for overwrite if Hero exists
-      if (result.size() > 0) {
-        return false;
-      } else {
-        db.store(p);
-        MsgCtrl.msgln(this, "Saved " + pName + " to the Dormitory");
-      }
-    } finally {
-      db.close();
-    }
-    return true;
-  }
-
-  /**
-   * Serialize the Hero to a file, using his/her name. A Hero_EXT suffix is added when saving to
-   * the file system The Klass and Race will be stored with it as components. The Inventory for the
-   * Hero is saved with the Hero.
-   * 
-   * @param p Hero object to serialize
-   * @param HeroName filename only; path will be expanded
-   * @return false if the save goes awry, else return true
-   */
-  public boolean overwrite(Hero p, String pName)
-  {
-    // Guards against bad input
-    if (p == null) {
-      MsgCtrl.errMsgln(this, "There  is no Hero to save. Null received");
-      return false;
-    }
-    if ((pName == null) || (pName.trim().length() == 0)) {
-      MsgCtrl.errMsgln(this, "This Hero has no name!. Cannot save him or her.");
-      return false;
-    }
-
-    // db4o code inserted here
-    // accessDb4o
-    ObjectContainer db =
-        Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), Chronos.REGISTRY_PATH
-            + Chronos.PersonRegPath);
-    try {
-      this.delete(p);
-      db.store(p);
-      MsgCtrl.msgln(this, "Saved " + pName + " to the Dormitory");
-    } finally {
-      db.close();
-    }
-    return true;
-  }
-
-  public boolean delete(Hero p)
-  {
-    // Guards against bad input
-    if (p == null) {
-      MsgCtrl.errMsgln(this, "There  is no Hero to remove. Null received");
-      return false;
-    }
-
-    ObjectContainer db =
-        Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), Chronos.REGISTRY_PATH
-            + Chronos.PersonRegPath);
-    try {
-      String pName = p.getName();
-      Hero pToDel = null;
-
-      // Now retrieve that Hero from the database
-      Query query = db.query();
-      query.constrain(Hero.class);
-      // TODO: remove hard-coded reference to _name field
-      query.descend("_name").constrain(pName);
-      ObjectSet<Hero> result = query.execute();
-      if (result.size() > 0) {
-        pToDel = result.get(0);
-      }
-
-      db.delete(pToDel);
-      MsgCtrl.msgln(this, "Deleted " + p.getName() + " from the Dormitory");
-    } finally {
-      db.close();
-    }
-    return true;
   }
 
 } // end of HeroReadWriter class

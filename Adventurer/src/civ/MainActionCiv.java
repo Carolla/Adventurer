@@ -11,11 +11,11 @@ package civ;
 
 import hic.ChronosPanel;
 import hic.Mainframe;
+import hic.NewHeroIPPanel;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -26,7 +26,12 @@ import mylib.Constants;
 import net.miginfocom.swing.MigLayout;
 import chronos.Chronos;
 import chronos.pdc.Adventure;
+import chronos.pdc.Command.Scheduler;
 import chronos.pdc.registry.AdventureRegistry;
+import chronos.pdc.registry.BuildingRegistry;
+import chronos.pdc.registry.HeroRegistry;
+import chronos.pdc.registry.RegistryFactory;
+import chronos.pdc.registry.RegistryFactory.RegKey;
 
 /**
  * The main civ behind the Mainframe screen. It creates the MainActionPanel consisting of the
@@ -37,124 +42,55 @@ import chronos.pdc.registry.AdventureRegistry;
  */
 public class MainActionCiv extends BaseCiv
 {
-  private ChronosPanel _mainButtonPanel;
-
-  private Adventure _adv;
   private AdventureRegistry _advReg;
   private MainframeCiv _mfCiv;
-
+  private RegistryFactory _rf;
+  
+  /** Controls left side and right side panels */
+  private ChronosPanel _actionPanel;
+  private ChronosPanel _imagePanel;
+  
   /** Amount of space in pixels around the frame and image of aesthetics */
   public static final int FRAME_PADDING = 90;
 
   /** Title of the initial three-button panel on left side */
   private final String INITIAL_OPENING_TITLE = " Select Your Action ";
 
-  // TODO: Why does these need to be static?
-  /** Icons for the left-side buttons */
-  private static final String REGISTRAR_IMAGE = "raw_Register.jpg";
-  private static final String HALL_IMAGE = "icn_HallOfHeroes.jpg";
-  private static final String ADV_IMAGE = "icn_Town.jpg";
-
+  private final String REGISTRAR_IMAGE = "raw_Register.jpg";
+  private final String HALL_IMAGE      = "icn_HallOfHeroes.jpg";
+  private final String ADV_IMAGE       = "icn_Town.jpg";
+  
+  private final String INITIAL_IMAGE   = "ChronosLogo.jpg";
+  private final String INITIAL_IMAGE_TITLE   = "Chronos Logo";
 
   // ============================================================
   // Constructors and constructor helpers
   // ============================================================
 
+  
+  
   /**
-   * Create the Civ associated with the mainframe
+   * Create the Civ associated with the mainframe and main button panel
    * 
    * @param frame owner of the widget for which this civ applies
    * @param personRW supports the Summon Hero and Create Hero buttons
-   * @param advReg registry to support the Adventures button
    */
-  public MainActionCiv(MainframeCiv mfciv, AdventureRegistry advReg)
+  public MainActionCiv(MainframeCiv mfciv)
   {
-    _advReg = advReg;
     _mfCiv = mfciv;
-    createActionPanel();
+    constructMembers();
     
+    createActionPanel();
     setActivePanel();
   }
+  
+  private void constructMembers()
+  {    
+    Scheduler skedder = new Scheduler(); // Skedder first for injection
 
-
-  protected void setActivePanel()
-  {
-    _mfCiv.replaceLeftPanel(_mainButtonPanel);
+    _rf = new RegistryFactory(skedder);
+    _rf.initRegistries();
   }
-
-
-  /**
-   * Retrieves the Adventures for selection from the Adventure Registry
-   * 
-   * @return the list of Adventures
-   */
-  public ArrayList<String> getAdventures()
-  {
-    ArrayList<Adventure> adventures = _advReg.getAdventureList();
-    ArrayList<String> results = new ArrayList<String>();
-    for (Adventure a : adventures) {
-      results.add(a.getKey());
-    }
-    return results;
-  }
-
-
-  // /** Return to town when icon clicked */
-  // // public void handleClick(Point p)
-  // public void returnToTown(Point p)
-  // {
-  // handleClickIfOnTownReturn(p);
-  // if (_bldgCiv.isOnTown()) {
-  // handleClickIfOnBuilding(p);
-  // }
-  // }
-
-
-  // /** Define the building to APPROACH based on where the user clicked */
-  // // public void handleMouseMovement(Point p)
-  // public void setBuildingSelected(Point p)
-  // {
-  // if (_bldgCiv.isOnTown()) {
-  // for (BuildingRectangle rect : _buildingList.values()) {
-  // if (rect.contains(p)) {
-  // _mf.setBuilding(rect);
-  // break;
-  // }
-  // }
-  // }
-  // }
-
-  /**
-   * Load the selected adventure from the Adventure registry. Replace the opening button panel with
-   * the IOPanel (text and command line)
-   * 
-   * @param adventureName selected from the Adventure by the user
-   */
-  public void loadSelectedAdventure(String adventureName)
-  {
-    // Get the selected adventure
-    _adv = _advReg.getAdventure(adventureName);
-    _mfCiv.displayTown(_adv);
-  }
-
-
-  // /** Creates the standard layout to display the town image and description */
-  // public void openTown()
-  // {
-  // _bldgCiv.returnToTown();
-  // Image townImage = Util.convertToImage(TOWN_IMAGE);
-  // _mf.setImage(townImage);
-  // if (_adv != null) {
-  // String townTitle = " The Town of " + _adv.getTownName();
-  // _mf.setImageTitle(townTitle);
-  // _ioPanel.displayText(_adv.getOverview());
-  // }
-  // }
-
-
-  // ============================================================
-  // Private methods
-  // ============================================================
 
   /**
    * Create the Adventure, Heroes, and Create-Hero buttons, and button panel for them
@@ -164,24 +100,62 @@ public class MainActionCiv extends BaseCiv
     JButton adventureButton = createAdventureButton();
     JButton summonButton = createSummonHeroesButton();
     JButton creationButton = createNewHeroButton();
-
-    _mainButtonPanel = new ChronosPanel();
-    _mainButtonPanel.setTitle(INITIAL_OPENING_TITLE);
+  
+    _actionPanel = new ChronosPanel(INITIAL_OPENING_TITLE);
+  
     // Align all buttons in a single column
-    _mainButtonPanel.setLayout(new MigLayout("wrap 1"));
+    _actionPanel.setLayout(new MigLayout("wrap 1"));
     Dimension frame = Mainframe.getWindowSize();
-    _mainButtonPanel.setPreferredSize(new Dimension(
+    _actionPanel.setPreferredSize(new Dimension(
         (int) (frame.width - FRAME_PADDING) / 2, frame.height - FRAME_PADDING));
-    _mainButtonPanel.setBackground(Constants.MY_BROWN);
-
+    _actionPanel.setBackground(Constants.MY_BROWN);
+  
     /** Buttons are at 25% to allow space for Command Line later */
-    _mainButtonPanel.add(adventureButton, "hmax 25%, grow");
-    _mainButtonPanel.add(summonButton, "hmax 25%, grow");
-    _mainButtonPanel.add(creationButton, "hmax 25%, grow");
-
-    return _mainButtonPanel;
+    _actionPanel.add(adventureButton, "hmax 25%, grow");
+    _actionPanel.add(summonButton, "hmax 25%, grow");
+    _actionPanel.add(creationButton, "hmax 25%, grow");
+  
+    return _actionPanel;
   }
 
+
+  protected void setActivePanel()
+  {
+    _mfCiv.replaceLeftPanel(_actionPanel);
+    _mfCiv.displayImage(INITIAL_IMAGE_TITLE, INITIAL_IMAGE);
+  }
+
+  // ============================================================
+  // Private methods
+  // ============================================================
+  
+  private void createHero()
+  {
+    NewHeroCiv nhCiv = new NewHeroCiv(_mfCiv, (HeroRegistry) _rf.getRegistry(RegKey.HERO));
+    NewHeroIPPanel ipPanel = new NewHeroIPPanel(nhCiv, _mfCiv);
+    _mfCiv.replaceLeftPanel(ipPanel);
+  }
+
+  /**
+   * Load the selected adventure from the Adventure registry. Replace the opening button panel with
+   * the IOPanel (text and command line)
+   * 
+   * @param adventureName selected from the Adventure by the user
+   */
+  private void loadSelectedAdventure(String adventureName)
+  {
+    // Get the selected adventure
+    Adventure adv = _advReg.getAdventure(adventureName);
+
+    // Create the BuildingCiv and pass control to it
+    BuildingRegistry bldgReg = (BuildingRegistry) _rf.getRegistry(RegKey.BLDG);
+    BuildingDisplayCiv bldgCiv = new BuildingDisplayCiv(_mfCiv, adv, bldgReg);
+    bldgCiv.openTown();
+  }
+
+  // ============================================================
+  // Private methods
+  // ============================================================
 
   /**
    * Create the behavior for selecting an adventure, which drives the frame update. <br>
@@ -226,18 +200,6 @@ public class MainActionCiv extends BaseCiv
     return button;
   }
 
-
-  // /** Create the clickable areas on the town view to indicate a selected Building */
-  // private void createBuildingBoxes()
-  // {
-  // for (int i = 0; i < DEFAULT_BUILDINGS.length; i++) {
-  // String bName = DEFAULT_BUILDINGS[i][0];
-  // BuildingRectangle r =
-  // new BuildingRectangle(bName, colorArray[i], _mf.getImagePanelSize(), buildingLayouts[i]);
-  // _buildingList.put(bName, r);
-  // }
-  // }
-
   // ============================================================
   // Public methods:
   // ============================================================
@@ -251,12 +213,7 @@ public class MainActionCiv extends BaseCiv
   private JButton createNewHeroButton()
   {
     JButton button = createButtonWithTextAndIcon(REGISTRAR_IMAGE, "Create New Heroes");
-    button.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent arg0)
-      {
-        _mfCiv.createHero();
-      }
-    });
+    button.addActionListener(action -> createHero()); 
     return button;
   }
 
@@ -321,32 +278,4 @@ public class MainActionCiv extends BaseCiv
     });
     return button;
   }
-
-
-  // private void handleClickIfOnTownReturn(Point p)
-  // {
-  // if (_townReturn.contains(p)) {
-  // openTown();
-  // }
-  // _mf.redraw();
-  // }
-  //
-  //
-  // private void handleClickIfOnBuilding(Point p)
-  // {
-  // for (Entry<String, BuildingRectangle> entry : _buildingList.entrySet()) {
-  // BuildingRectangle rect = entry.getValue();
-  // if (rect.contains(p)) {
-  // enterBuilding(entry.getKey());
-  // return;
-  // }
-  // }
-  // }
-
-
-  // ============================================================
-  // Public methods:
-  // ============================================================
-
-
-} // end of MainframeCiv class
+} // end of MainActionCiv class

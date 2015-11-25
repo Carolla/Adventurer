@@ -14,18 +14,6 @@ import hic.IOPanel;
 import hic.ImagePanel;
 import hic.Mainframe;
 import hic.MainframeInterface;
-import hic.NewHeroIPPanel;
-
-import java.util.ArrayList;
-
-import pdc.command.CommandFactory;
-import chronos.pdc.Adventure;
-import chronos.pdc.Command.Scheduler;
-import chronos.pdc.registry.AdventureRegistry;
-import chronos.pdc.registry.BuildingRegistry;
-import chronos.pdc.registry.HeroRegistry;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 
 /**
  * The main civ behind the Mainframe screen.
@@ -41,16 +29,8 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
 public class MainframeCiv extends BaseCiv
 {
   private MainframeInterface _mf;
-  private RegistryFactory _rf;
-  private CommandParser _cp;
   private IOPanel _ioPanel;
   private ImagePanel _imagePanel;
-  private BuildingDisplayCiv _bldgCiv;
-
-  /** Initial right-side image: Chronos logo */
-  private static final String INITIAL_IMAGE = "ChronosLogo.jpg";
-  /** Title of initial image */
-  private static final String INITIAL_TITLE = "Chronos Logo";
 
   // ============================================================
   // Constructors and constructor helpers
@@ -64,7 +44,6 @@ public class MainframeCiv extends BaseCiv
     constructMembers();
   }
 
-
   /**
    * Perform construction act. This wires together all the "single instance variables" for the
    * Adventurer application. None of these constructors should ever be called anywhere outside of
@@ -73,52 +52,12 @@ public class MainframeCiv extends BaseCiv
   protected void constructMembers()
   {
     _mf = new Mainframe(this);
-    // Create the CommandLine support
-    Scheduler skedder = new Scheduler(); // Skedder first for injection
-
-    _rf = new RegistryFactory(skedder);
-    _rf.initRegistries();
-
-    // Create the left side panel to hold the main action buttons */
-    new MainActionCiv(this, (AdventureRegistry) _rf.getRegistry(RegKey.ADV));
-
-    BuildingRegistry bldgReg = (BuildingRegistry) _rf.getRegistry(RegKey.BLDG);
-    _bldgCiv = new BuildingDisplayCiv(this, adv, bldgReg);
-    
-    CommandFactory cmdFactory = new CommandFactory(this, _bldgCiv);
-    cmdFactory.initMap();
-    _cp = new CommandParser(skedder, cmdFactory);
-
-    // Create the IOPanel for input commands via commandParser and output messages
-    _ioPanel = new IOPanel(_cp);
-
-    // Create the right side image panel to be used by many Civs */
-    _imagePanel = new ImagePanel(INITIAL_IMAGE, INITIAL_TITLE);
-    _imagePanel.replaceControllerCiv(this);
-    _mf.replaceRightPanel(_imagePanel);
+    new MainActionCiv(this);
   }
 
   // ============================================================
   // Public methods
   // ============================================================
-
-  /**
-   * Retrieves the Adventures for selection from the Adventure Registry
-   * 
-   * @return the list of Adventures
-   */
-  public ArrayList<String> getAdventures()
-  {
-    AdventureRegistry aReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
-
-    ArrayList<Adventure> adventures = aReg.getAdventureList();
-    ArrayList<String> results = new ArrayList<String>();
-    for (Adventure a : adventures) {
-      results.add(a.getKey());
-    }
-    return results;
-  }
-
 
   /** Close down the application if user so specified */
   public void quit()
@@ -128,12 +67,15 @@ public class MainframeCiv extends BaseCiv
     }
   }
 
-
   public void displayText(String result)
   {
     _ioPanel.displayText(result);
   }
 
+  public void displayErrorText(String msg)
+  {
+    _ioPanel.displayErrorText(msg);
+  }
 
   public void displayImage(String title, String imageName)
   {
@@ -141,40 +83,19 @@ public class MainframeCiv extends BaseCiv
     _imagePanel.setImageByName(imageName);
   }
 
-
-  public void displayTown(Adventure adv)
-  {
-    // Display the IOPanel on the left side of the mainframe
-    _mf.replaceLeftPanel(_ioPanel);
-
-    // BuildingCiv creates the IOPanel for all user input (commands) and messages (output)
-    _bldgCiv.openTown();
-  }
-
-
-  public void displayErrorText(String msg)
-  {
-    _ioPanel.displayErrorText(msg);
-  }
-
-
   public void replaceLeftPanel(ChronosPanel panel)
   {
     _mf.replaceLeftPanel(panel);
   }
 
-
   public void back()
   {
     _mf.back();
   }
-
-
-  public void createHero()
+  
+  public void backToMain()
   {
-    NewHeroCiv nhCiv = new NewHeroCiv(this, (HeroRegistry) _rf.getRegistry(RegKey.HERO));
-    NewHeroIPPanel ipPanel = new NewHeroIPPanel(nhCiv, this);
-    replaceLeftPanel(ipPanel);
+    _mf.backToMain();
   }
 
 } // end of MainframeCiv class

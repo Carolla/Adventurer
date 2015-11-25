@@ -45,7 +45,6 @@ public class BuildingDisplayCiv extends BaseCiv
   /** Adventure that defines the town and buildings */
   private Adventure _adv;
 
-
   /** The Hero is on town, not at any particular building */
   private boolean _onTown = true;
   /** The building that is currently displayed, either inside or outside */
@@ -57,7 +56,7 @@ public class BuildingDisplayCiv extends BaseCiv
 
   /** Image of the Town containing the Buildings */
   private static final String TOWN_IMAGE = "ext_BiljurBaz.JPG";
-  // private static final String NO_BLDG_FOUND = "Could not find that building.\n";
+
   /** Error message if no arguments or multiple arguments specified */
   private final String ERRMSG_NOBLDG =
       "Sure, but you've gotta say WHICH building to approach.";
@@ -114,15 +113,15 @@ public class BuildingDisplayCiv extends BaseCiv
    * almost all cases, the output GUI is {@code hic.Mainframe}, which implements
    * {@code MainframeInterface}.
    * 
-   * @param mainframe
+   * @param mainframeCiv handles things
+   * @param breg is needed for building registries for loading the town
+   * @param adv the adventure selected by the user
    */
   public BuildingDisplayCiv(MainframeCiv mfCiv, Adventure adv, BuildingRegistry breg)
   {
     _mfCiv = mfCiv;
     _breg = breg;
     _adv = adv;
-
-    _currentBldg = null;
   }
 
   // ======================================================================
@@ -232,12 +231,19 @@ public class BuildingDisplayCiv extends BaseCiv
     }
   }
 
+  public String getAdventureName()
+  {
+    return _adv.getName();
+  }
+
+  
   public String getCurrentBuilding()
   {
     return _currentBldg.getName();
   }
 
 
+  /** Init the town display and IOPanel with adventure overview. */
   public void initAdventure()
   {
     // Create the boxes that highlight the building in the town image

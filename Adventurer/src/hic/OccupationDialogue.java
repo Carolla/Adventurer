@@ -27,7 +27,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import mylib.MsgCtrl;
 import mylib.civ.DataShuttle;
 import net.miginfocom.swing.MigLayout;
 import chronos.civ.OccupationKeys;
@@ -230,7 +229,6 @@ public class OccupationDialogue extends JDialog
     _saveButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        MsgCtrl.traceEvent(event);
         doSave();
       }
     });
@@ -241,7 +239,6 @@ public class OccupationDialogue extends JDialog
     _deleteButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        MsgCtrl.traceEvent(event);
         doDelete();
       }
     });
@@ -254,9 +251,7 @@ public class OccupationDialogue extends JDialog
     _cancelButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        MsgCtrl.traceEvent(event);
         doCancel();
-
       }
     });
 

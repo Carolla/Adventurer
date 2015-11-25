@@ -20,6 +20,7 @@ package hic;
 public interface MainframeInterface
 {
   public void back();
+  public void backToMain();
 
   /** Display a prompt message asking for confirmation */
   public boolean displayPrompt(String msg);
