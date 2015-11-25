@@ -30,11 +30,13 @@ public class BuildingDisplayCiv extends BaseCiv
   private BuildingRegistry _breg;
   private Adventure _adv;
 
-  private boolean _onTown = true;
-  private boolean _insideBldg = false;
-  
+  protected boolean _onTown = true;
+  protected boolean _insideBldg = false;
+
   /** The building that is currently displayed, either inside or outside */
   protected Building _currentBldg;
+  protected String _townTitle;
+
 
   /** Image of the Town containing the Buildings */
   private static final String TOWN_IMAGE = "ext_BiljurBaz.JPG";
@@ -48,11 +50,6 @@ public class BuildingDisplayCiv extends BaseCiv
   /** Message if trying to jump from interior to exterior of buildings */
   private final String ERRMSG_JUMPBLDG =
       "You must leave this building before you approach another.";
-
-  // State for building descriptions and images
-  private final boolean INTERIOR = true;
-  private final boolean EXTERIOR = false;
-  private String _townTitle;
 
   /** Default Buildings to initialize registry with */
   public static final String[][] DEFAULT_BUILDINGS = { {"Ugly Ogre Inn", "Bork"},
@@ -115,7 +112,7 @@ public class BuildingDisplayCiv extends BaseCiv
   // ======================================================================
   // Public methods
   // ======================================================================
-  
+
   /**
    * Show the exterior image and description of the Building
    * 
@@ -127,13 +124,13 @@ public class BuildingDisplayCiv extends BaseCiv
     if (targetBuilding == null) {
       targetBuilding = _currentBldg;
     }
-  
+
     if (targetBuilding != null) {
       _currentBldg = targetBuilding;
       _insideBldg = false;
       _onTown = false;
-  
-      displayBuilding(targetBuilding, EXTERIOR);
+
+      displayBuildingExterior();
       return true;
     } else {
       _mfCiv.displayText(ERRMSG_NOBLDG);
@@ -185,7 +182,7 @@ public class BuildingDisplayCiv extends BaseCiv
       _currentBldg = targetBuilding;
       _insideBldg = true;
       _onTown = false;
-      displayBuilding(targetBuilding, INTERIOR);
+      displayBuildingInterior();
     } else {
       _mfCiv.displayErrorText(ERRMSG_NOBLDG);
       System.err.println("error case of enterBuilding");
@@ -233,12 +230,9 @@ public class BuildingDisplayCiv extends BaseCiv
   }
 
   /**
-   * Display the bulding's image (exterior or interior) in the frame's image panel
-   * 
-   * @param description description of the building's interior or exterior
-   * @param imagePath image of the building's exterior or interior room
+   * Display the bulding's interior
    */
-  public void displayBuilding()
+  public void displayBuildingInterior()
   {
     if (_currentBldg != null) {
       _mfCiv.displayImage(_currentBldg.getName(), _currentBldg.getIntImagePath());
@@ -247,21 +241,13 @@ public class BuildingDisplayCiv extends BaseCiv
   }
 
   /**
-   * Display the bulding's image (exterior or interior) in the frame's image panel
-   * 
-   * @param building to be displayed
-   * @param interior if flag is true, else exterior, is displayed
+   * Display the bulding's image exterior
    */
-  private void displayBuilding(Building building, boolean interior)
+  private void displayBuildingExterior()
   {
-    if (building != null) {
-      String description =
-          interior ? building.getInteriorDescription() : building.getExteriorDescription();
-      String imagePath = interior ? building.getIntImagePath() : building.getExtImagePath();
-      String bldgName = building.getName();
-
-      _mfCiv.displayImage(bldgName, imagePath);
-      _mfCiv.displayText(description);
+    if (_currentBldg != null) {
+      _mfCiv.displayImage(_currentBldg.getName(), _currentBldg.getExtImagePath());
+      _mfCiv.displayText(_currentBldg.getExteriorDescription());
     }
   }
 

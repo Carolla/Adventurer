@@ -30,8 +30,8 @@ import chronos.Chronos;
 @SuppressWarnings("serial")
 public class ImagePanel extends ChronosPanel
 {
-  /** Image shown in panel */
-  protected Image _image;
+  private Image _image;
+  private String _imageName;
 
   // ============================================================
   // Constructors and constructor helpers
@@ -53,12 +53,34 @@ public class ImagePanel extends ChronosPanel
 
   public void setImageByName(String imageName)
   {
-    _image = convertToImage(imageName);
+    if (imageName.equals(_imageName)) {
+      _imageName = imageName;
+      _image = convertToImage(imageName);
+    }
   }
+
+  
   
   // ============================================================
   // Private methods
   // ============================================================
+
+  /**
+   * Required override method to draw on {@code JComponent.ImagePanel}
+   */
+  @Override
+  public void paintComponent(Graphics g)
+  {
+    super.paintComponent(g);
+  
+    // Find top-left corner to image panel to overlay image onto
+    int pWidth = getWidth();
+    int pHeight = getHeight();
+  
+    // Draw the image at the top-left corner of the ImagePanel when JComponent gets its turn
+    g.drawImage(_image, 0, 0, pWidth, pHeight, this);
+  
+  }
 
   /**
    * Create an {@code Image} type from its filename
@@ -74,22 +96,5 @@ public class ImagePanel extends ChronosPanel
       System.err.println("ImagePanel: problems reading the image file" + imageName);
     }
     return myImage;
-  }
-
-  /**
-   * Required override method to draw on {@code JComponent.ImagePanel}
-   */
-  @Override
-  public void paintComponent(Graphics g)
-  {
-    super.paintComponent(g);
-
-    // Find top-left corner to image panel to overlay image onto
-    int pWidth = getWidth();
-    int pHeight = getHeight();
-
-    // Draw the image at the top-left corner of the ImagePanel when JComponent gets its turn
-    g.drawImage(_image, 0, 0, pWidth, pHeight, this);
-
   }
 }

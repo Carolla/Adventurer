@@ -127,6 +127,7 @@ public class MainActionCiv extends BaseCiv
   {
     _mfCiv.replaceLeftPanel(_actionPanel);
     _mfCiv.displayImage(INITIAL_IMAGE_TITLE, INITIAL_IMAGE);
+    loadSelectedAdventure("The Quest for Rogahn and Zelligar");
   }
 
   // ============================================================

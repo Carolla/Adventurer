@@ -42,7 +42,7 @@ public class CmdLook extends Command
   public boolean exec()
   {
     if (_target.isEmpty()) {
-      _bdciv.displayBuilding();
+      _bdciv.displayBuildingInterior();
     } else {
       _bdciv.inspectTarget(_target);
     }
