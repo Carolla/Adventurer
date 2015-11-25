@@ -10,8 +10,6 @@
 
 package chronos.pdc.registry;
 
-import java.util.List;
-
 import mylib.ApplicationException;
 import mylib.pdc.Registry;
 import chronos.Chronos;
@@ -65,18 +63,7 @@ public class HeroRegistry extends Registry<Hero>
    */
   public Hero getHero(final String name)
   {
-    // ExtObjectContainer db = _regRW.getDB();
-    // Retrieve all skills that match the skillname; should be only one
-    // List<Hero> list = db.query(new HeroPredicate(name));
-
-    List<Hero> elist = get(name);
-
-    // Ensure uniqueness
-    if (elist.size() == 1) {
-      return elist.get(0);
-    } else {
-      return null;
-    }
+    return getUnique(name);
   }
 
   // TODO: Do we really need this?

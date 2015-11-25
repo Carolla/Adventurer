@@ -91,12 +91,7 @@ public class BuildingRegistry extends Registry<Building>
    */
   public Building getBuilding(String name)
   {
-    List<Building> buildingList = super.get(name);
-    if (buildingList.size() == 0) {
-      return null;
-    }
-    Building aBuilding = buildingList.get(0);
-    return aBuilding;
+    return getUnique(name);
   }
 
   /**
