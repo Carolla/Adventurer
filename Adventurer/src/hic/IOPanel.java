@@ -129,14 +129,6 @@ public class IOPanel extends ChronosPanel
     displayText(Constants.NEWLINE + msg + Constants.NEWLINE, null);
   }
 
-  public void setFocusOnCommandWindow()
-  {
-    // Ensure that the text scrolls as new text is appended
-    _cmdWin.setFocusable(true);
-    _cmdWin.requestFocusInWindow();
-  }
-
-
   // ============================================================
   // Private Methods
   // ============================================================

@@ -52,6 +52,7 @@ public class BuildingDisplayCiv extends BaseCiv
   // State for building descriptions and images
   private final boolean INTERIOR = true;
   private final boolean EXTERIOR = false;
+  private String _townTitle;
 
   /** Default Buildings to initialize registry with */
   public static final String[][] DEFAULT_BUILDINGS = { {"Ugly Ogre Inn", "Bork"},
@@ -78,6 +79,7 @@ public class BuildingDisplayCiv extends BaseCiv
     _mfCiv = mfCiv;
     _breg = breg;
     _adv = adv;
+    _townTitle = " The Town of " + _adv.getTownName();
   }
 
   // ======================================================================
@@ -216,19 +218,9 @@ public class BuildingDisplayCiv extends BaseCiv
   public void openTown()
   {
     returnToTown();
-    if (_adv != null) {
-      String townTitle = " The Town of " + _adv.getTownName();
-      _mfCiv.displayImage(townTitle, TOWN_IMAGE);
-      _mfCiv.displayText(_adv.getOverview());
-    }
+    _mfCiv.displayImage(_townTitle, TOWN_IMAGE);
+    _mfCiv.displayText(_adv.getOverview());
   }
-
-  /** Exit the program */
-  public void quit()
-  {
-    _mfCiv.quit();
-  }
-
 
   /**
    * Provides a way to clear the current Building

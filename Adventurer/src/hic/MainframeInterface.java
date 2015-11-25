@@ -25,10 +25,6 @@ public interface MainframeInterface
   /** Display a prompt message asking for confirmation */
   public boolean displayPrompt(String msg);
 
-  /** Redraw the mainframe to re-init the graphics outputs */
-  public void redraw();
-
-  /** Redraw a Panel on the left side of the mainframe */
   public void replaceLeftPanel(ChronosPanel leftPanel);
   public void replaceRightPanel(ChronosPanel rightPanel);
   

@@ -140,7 +140,6 @@ public class TA08_CmdEnter
             String bName = _bldgCiv.getCurrentBuilding();
             MsgCtrl.msg("\tBuilding name = " + bName);
             assertTrue("Expected " + _bldgs.get(k) + ", got " + bName, bName.equals(_bldgs.get(k)));
-
         }
     }
 

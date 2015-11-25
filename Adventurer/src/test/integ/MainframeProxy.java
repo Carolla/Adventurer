@@ -42,16 +42,6 @@ public class MainframeProxy implements MainframeInterface
     return true;
   }
 
-
-  /*
-   * Misplaced redraw command in BuildingDisplayCiv
-   */
-  @Override
-  public void redraw()
-  {
-    // MsgCtrl.where(this);
-  }
-
   @Override
   public void setTitle(String title)
   {

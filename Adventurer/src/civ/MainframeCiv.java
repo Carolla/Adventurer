@@ -98,10 +98,4 @@ public class MainframeCiv extends BaseCiv
   {
     _mf.backToMain();
   }
-
-  public void setImagePanel(ImagePanel imagePanel)
-  {
-    _imagePanel = imagePanel; 
-  }
-
 } // end of MainframeCiv class

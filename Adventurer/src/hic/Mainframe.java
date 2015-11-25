@@ -29,12 +29,10 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import mylib.Constants;
-import mylib.Constants.Side;
 import mylib.hic.HelpDialog;
 import mylib.hic.IHelpText;
 import net.miginfocom.swing.MigLayout;
 import chronos.Chronos;
-import civ.Adventurer;
 import civ.MainframeCiv;
 
 /**
@@ -74,6 +72,8 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
   private ChronosPanel _leftHolder;
   /** Empty right-side panel holder for initial standard panels. */
   private ChronosPanel _rightHolder;
+  
+  
   /** Keep panel states to return to in case CANCEL is hit */
   private Deque<ChronosPanel> _leftPanelStack = new ArrayDeque<ChronosPanel>(5);
   private Deque<ChronosPanel> _rightPanelStack = new ArrayDeque<ChronosPanel>(5);
@@ -108,18 +108,6 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
   // ============================================================
 
   /**
-   * Get the size of the main window being displayed, which is used as a standard for laying out
-   * subcomponents and panels.
-   * 
-   * @return {@code Dimension} object; retrieve int values with {@code Dimension.width} and
-   *         {@code Dimension.height}
-   */
-  static public Dimension getWindowSize()
-  {
-    return new Dimension(USERWIN_WIDTH, USERWIN_HEIGHT);
-  }
-
-  /**
    * Creates the initial frame layout: left and right panel holders with buttons, and image panel
    * showing chronos logo on right. Creates the {@code HelpDialog} singleton, ready to receive
    * context-sensitive help text when requested. Creates the {@code MainframeCiv} which takes
@@ -146,14 +134,6 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
   // Public Methods
   // ============================================================
 
-
-  public boolean approvedQuit()
-  {
-    Adventurer.approvedQuit();
-    return true;
-  }
-
-
   /**
    * Remove the current panel and return to the previous panel. This currently works only for the
    * left side of the mainframe.
@@ -176,12 +156,10 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
    */
   public void backToMain()
   {
-    // Remove all panels until the first (main action) panel is found
-
     while (_leftPanelStack.size() > 1) {
       _leftPanelStack.pop();
     }
-    // Put the main action panel in place and display
+
     replaceLeftPanel(_leftPanelStack.pop());
   }
 
@@ -203,38 +181,6 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     return false;
   }
 
-  public void redraw()
-  {
-    validate();
-    repaint();
-  }
-
-
-  // TODO Finish genericizing this method
-  // /**
-  // * Replaces a panel on left or right side of mainframe with the new one provided and displays
-  // the
-  // * panel's title. Saves the state in case the user needs to back out.
-  // *
-  // * @param newPanel that replaces existing panel on left side of Mainframe
-  // * @param side either LEFT OR RIGHT side to replace
-  // */
-  // public void replacePanel(ChronosPanel newPanel, boolean side)
-  // {
-  // ChronosPanel holder = LEFT ? _leftHolder : _rightHolder;
-  // setPanelTitle(newPanel.getTitle());
-  // _holder.removeAll();
-  // _holder.add(newPanel);
-  //
-  // redraw();
-  // newPanel.setVisible(true);
-  //
-  // // Save the state for later
-  // Deque<ChronosPanel> _panelStack = LEFT ? _leftPanelStack : _rightPanelStack;
-  // _panelStack.push(newPanel);
-  // }
-
-
   /**
    * Replaces a panel on left side of mainframe with the new one provided and displays the panel's
    * title. Saves the state in case the user needs to back out.
@@ -243,7 +189,7 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
    */
   public void replaceLeftPanel(ChronosPanel newPanel)
   {
-    setPanelTitle(newPanel.getTitle(), Side.LEFT);
+    setPanelTitle(newPanel.getTitle());
     _leftHolder.removeAll();
     _leftHolder.add(newPanel);
 
@@ -262,7 +208,7 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
    */
   public void replaceRightPanel(ChronosPanel newPanel)
   {
-    setPanelTitle(newPanel.getTitle(), Side.RIGHT);
+    setImageTitle(newPanel.getTitle());
     _rightHolder.removeAll();
     _rightHolder.add(newPanel);
 
@@ -271,31 +217,6 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
 
     newPanel.setVisible(true);
     redraw();
-  }
-
-  /**
-   * Display a title onto the border of the right side image panel. Add one space char on either
-   * side for aesthetics
-   *
-   * @param title of the panel to set
-   */
-  public void setImageTitle(String title)
-  {
-    TitledBorder border = (TitledBorder) _rightHolder.getBorder();
-    border.setTitle(" " + title + " ");
-  }
-
-  /**
-   * Display a title onto the border of a panel in one of the panel holders
-   *
-   * @param title of the panel to set
-   * @param side left or right side for title placement
-   */
-  public void setPanelTitle(String title, Side side)
-  {
-    TitledBorder border = (side == Side.LEFT) ? (TitledBorder) _leftHolder.getBorder()
-        : (TitledBorder) _rightHolder.getBorder();
-    border.setTitle(title);
   }
 
   /**
@@ -311,6 +232,45 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
   // ============================================================
   // Private Methods
   // ============================================================
+
+  // ============================================================
+  // Constructors and constructor helpers
+  // ============================================================
+  
+  /**
+   * Get the size of the main window being displayed, which is used as a standard for laying out
+   * subcomponents and panels.
+   * 
+   * @return {@code Dimension} object; retrieve int values with {@code Dimension.width} and
+   *         {@code Dimension.height}
+   */
+  static public Dimension getWindowSize()
+  {
+    return new Dimension(USERWIN_WIDTH, USERWIN_HEIGHT);
+  }
+
+  /**
+   * Display a title onto the border of the right side image panel. Add one space char on either
+   * side for aesthetics
+   *
+   * @param title of the panel to set
+   */
+  private void setImageTitle(String title)
+  {
+    TitledBorder border = (TitledBorder) _rightHolder.getBorder();
+    border.setTitle(" " + title + " ");
+  }
+
+  /**
+   * Display a title onto the border of a panel in one of the panel holders
+   *
+   * @param title of the panel to set
+   */
+  private void setPanelTitle(String title)
+  {
+    TitledBorder border = (TitledBorder) _leftHolder.getBorder();
+    border.setTitle(title);
+  }
 
   /**
    * Create mainframe layout and menubar; add left and right panel holders
@@ -343,7 +303,6 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
   /**
    * Create a holder for the left or right side of the frame, with all cosmetics. Holders will have
    * same layout manager, size, border type, and runic font title. <br>
-   * TODO: Currently, each ChronosPanel requires a title, and is accessible by {@code getTitle()}.
    * 
    * @param borderColor background Color for the border
    * @param title to be positioned top center in Runic font
@@ -351,8 +310,6 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
    * 
    * @return the JPanel that is assigned to the left or the right
    */
-  // private ChronosPanel makePanelHolder(ChronosPanel holder, Color borderColor, String title,
-  // Color backColor)
   private ChronosPanel makePanelAsHolder(ChronosPanel holder, Color borderColor, Color backColor)
   {
     Dimension holderSize = new Dimension(USERWIN_WIDTH / 2, USERWIN_HEIGHT);
@@ -374,8 +331,6 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
   private void prepareHelpDialog()
   {
     _helpdlg = HelpDialog.getInstance(this);
-    // TODO Move call to pdc.Util to mfCiv so pdc is not imported; and duplicate calls are
-    // avoided
     _helpdlg.setMyFont(Chronos.RUNIC_FONT);
     _contentPane.addKeyListener(new KeyListener() {
       public void keyReleased(KeyEvent e)
@@ -392,6 +347,12 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
       public void keyTyped(KeyEvent e)
       {}
     });
+  }
+
+  private void redraw()
+  {
+    validate();
+    repaint();
   }
 
   /** Apply the layout manager to the content pane */

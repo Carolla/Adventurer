@@ -51,7 +51,6 @@ public class MainActionCiv extends BaseCiv
   
   /** Controls left side and right side panels */
   private ChronosPanel _actionPanel;
-  private ImagePanel _imagePanel;
   
   /** Amount of space in pixels around the frame and image of aesthetics */
   public static final int FRAME_PADDING = 90;
@@ -155,9 +154,11 @@ public class MainActionCiv extends BaseCiv
     
     CommandFactory cmdFac = new CommandFactory(_mfCiv, bldgCiv);
     CommandParser parser = new CommandParser(_skedder, cmdFac);
-    IOPanel iop = new IOPanel(parser);
     
+    IOPanel iop = new IOPanel(parser);
     _mfCiv.replaceLeftPanel(iop);
+    
+    // Wait until everything created to finally display the town
     bldgCiv.openTown();
   }
 
