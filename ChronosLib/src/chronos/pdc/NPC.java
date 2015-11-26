@@ -114,6 +114,11 @@ public class NPC implements IRegistryElement
     return _farDescription;
   }
 
+  public String getNearDescription()
+  {
+    return _nearDescription;
+  }
+  
   /*
    * PUBLIC METHODS
    */

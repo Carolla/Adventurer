@@ -167,10 +167,9 @@ public abstract class Building implements IRegistryElement
   {
     String description = _intDesc;
     if (_patrons.size() > 0) {
-      description += " You see patrons inside: ";
-      for (int i = 0; i < _patrons.size(); i++) {
-        description += _patrons.get(i).getDescription();
-        if (i < _patrons.size() - 1) description += ", ";
+      description += "\nYou see patrons inside:\n";
+      for (NPC npc : _patrons) {
+        description += npc.getName() + ": " + npc.getDescription() + "\n";
       }
     }
     
@@ -383,7 +382,8 @@ public abstract class Building implements IRegistryElement
   public String inspect(String target)
   {
     for (NPC npc : _patrons) {
-      if (npc.getName().equals(target)) {
+      String name = npc.getName();
+      if (name.equalsIgnoreCase(target)) {
         return npc.getDescription();
       }
     }

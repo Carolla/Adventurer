@@ -107,7 +107,7 @@ public abstract class Registry<E extends IRegistryElement>
   public boolean add(E obj)
   {
     boolean retval = false;
-    
+
     _inMemoryList.add(obj);
     // Ensure that a null or an empty key is not being added
     if ((obj == null) || (obj.getKey().trim().length() == 0)) {
@@ -258,7 +258,6 @@ public abstract class Registry<E extends IRegistryElement>
     
     E regElem = getFromMemory(name);
     if (regElem != null) {
-      System.out.println("Found name in registry");
       return regElem;
     }
     
@@ -280,7 +279,7 @@ public abstract class Registry<E extends IRegistryElement>
   private E getFromMemory(String name)
   {
     for (E element : _inMemoryList) {
-      if (element.getKey().equals(name)) {
+      if (element.getKey().equalsIgnoreCase(name)) {
         return element;
       }
     }

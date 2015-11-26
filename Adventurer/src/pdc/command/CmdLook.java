@@ -35,6 +35,7 @@ public class CmdLook extends Command
     for (String s : args) {
       _target += s + " ";
     }
+    _target = _target.trim();
     _isInitialized = true;
     return _isInitialized;
   }
