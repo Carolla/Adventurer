@@ -12,13 +12,14 @@ package chronos.pdc.buildings;
 import java.util.ArrayList;
 import java.util.List;
 
-import chronos.pdc.NPC;
-import chronos.pdc.Command.intCmdPatronEnter;
-import chronos.pdc.Command.intCmdPatronLeave;
-import chronos.pdc.registry.NPCRegistry;
 import mylib.ApplicationException;
 import mylib.dmc.IRegistryElement;
 import mylib.pdc.MetaDie;
+import chronos.pdc.NPC;
+import chronos.pdc.Command.Scheduler;
+import chronos.pdc.Command.intCmdPatronEnter;
+import chronos.pdc.Command.intCmdPatronLeave;
+import chronos.pdc.registry.NPCRegistry;
 
 /**
  * Main building in town for rest, food, conversation, and sometimes even a bar brawl. Heroes can be
@@ -57,11 +58,6 @@ public class Inn extends Building
   static private final String EXTERIOR_IMAGE = "raw_ext_Ugly Ogre Inn.jpg";
   static private final String INTERIOR_IMAGE = "int_Inn.jpg";
 
-  /**
-   * The standard description is saved in the base class, but the busy description is stored here
-   */
-  private String _busyDescription = null;
-
   /** The Inn opens at 6am and closes at midnight */
   private int OPENTIME = 600;
   private int CLOSETIME = 2400;
@@ -71,13 +67,10 @@ public class Inn extends Building
   /** Last Patron enters after no more than an hour */
   private final int MAX_DELAY = 60 * 60;
 
-  /** Patrons stay at least 10 minutes */
-  private final int MIN_DURATION = 10 * 60;
-  /** Patrons never stay longer than 30 minutes */
-  private final int MAX_DURATION = 30 * 60;
-
-  /** Max patrons starting in the Inn */
-  private final int MAX_STARTERS = 2;
+  /** Patrons stay at least 1 hour */
+  private final int MIN_DURATION = 1 * 60 * 60;
+  /** Patrons never stay longer than 12 hour*/
+  private final int MAX_DURATION = 12 * 60 * 60;
 
   /** Minimum number of patrons that indicate if the Inn is busy or not */
   private int NBR_PATRONS_TO_BE_BUSY = 3;
@@ -85,14 +78,9 @@ public class Inn extends Building
   /** Randomizer */
   private static final MetaDie _md = new MetaDie();
 
-  /** Patrons */
-  private List<NPC> _patrons = new ArrayList<NPC>();
-
-  /** Current number of patrons in the Inn plus the Innkeeper */
-  private int _patronsNow = 1;
-
   /** Used to schedule commands */
-  // private final Scheduler _skedder;
+  private Scheduler _skedder;
+  
   private final NPCRegistry _npcRegistry;
 
   // ============================================================
@@ -104,13 +92,10 @@ public class Inn extends Building
    * 
    * @throws ApplicationException if the ctor fails
    */
-  // public Inn(Scheduler skedder, NPCRegistry npcRegistry) throws ApplicationException
   public Inn(NPCRegistry npcRegistry) throws ApplicationException
   {
     super(INN_NAME, INNKEEPER, HOVERTEXT, EXTERIOR, INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
-    // _skedder = skedder;
     _npcRegistry = npcRegistry;
-    _busyDescription = BUSY_DESC;
     setBusinessHours(OPENTIME, CLOSETIME);
   }
 
@@ -125,18 +110,16 @@ public class Inn extends Building
    */
   public void initPatrons()
   {
-    _patrons = _npcRegistry.getNPCList();
+    List<NPC> patrons = _npcRegistry.getNPCList();
     // The starterList has no zero-delay intCmdEnter commands, each containing the
     // Patron who shall enter at the designated delay time.
-    List<intCmdPatronEnter> starterList = createStarterList();
+    List<intCmdPatronEnter> starterList = createStarterList(patrons);
 
-    // Reassign MAX_STARTERS number of Patrons (inside the command) to delay = 0 so
-    // they are in the Inn when the Hero enters.
-    List<intCmdPatronEnter> enterList = createEnterList(starterList);
-
-    for (intCmdPatronEnter ce : enterList) {
+    for (intCmdPatronEnter ce : starterList) {
       // Use the generated enter commands to create the leave commands
       intCmdPatronLeave cl = new intCmdPatronLeave(ce, this);
+      _skedder.sched(ce);
+      _skedder.sched(cl);
     }
   }
 
@@ -145,16 +128,17 @@ public class Inn extends Building
    * for all the <code>Patron</code>s in the <code>PatronRegistry</code>. Each intCmdEnter is
    * assigned a Patron to enter the Inn when it is their time. <br>
    * A CommandList is created instead of a Patron list because Events wrap Commands, not Patrons.
+   * @param patrons 
    * 
    * @return List of random non-zero <code>intCmdEnter</code> commands for each <code>Patron</code>
    */
-  private List<intCmdPatronEnter> createStarterList()
+  private List<intCmdPatronEnter> createStarterList(List<NPC> patrons)
   {
     // Create a list to hold the Enter commands
     List<intCmdPatronEnter> cmdStarterList = new ArrayList<intCmdPatronEnter>();
 
     // Walk the PatronRegistry for all Patrons and assign their Enter commands
-    for (NPC npc : _patrons) {
+    for (NPC npc : patrons) {
       int delay = _md.getRandom(MIN_DELAY, MAX_DELAY);
       int duration = _md.getRandom(MIN_DURATION, MAX_DURATION);
       intCmdPatronEnter cmd = new intCmdPatronEnter(delay, duration, npc, this);
@@ -167,36 +151,10 @@ public class Inn extends Building
     return cmdStarterList;
   }
 
-  /**
-   * Creates an interim list <code>of intCmdEnter</code> commands with a random delay and duration
-   * for all the <code>Patron</code>s in the <code>PatronRegistry</code>. Each intCmdEnter is
-   * assigned a Patron to enter the Inn when it is their time. <br>
-   * A CommandList is created instead of a Patron list because Events wrap Commands, not Patrons.
-   * 
-   * @return List of random non-zero <code>intCmdEnter</code> commands for each <code>Patron</code>
-   */
-  private List<intCmdPatronEnter> createEnterList(List<intCmdPatronEnter> list)
-  {
-    // Generate a zero-entry Patron up to MAX_STARTER times
-    for (int k = 0; k < MAX_STARTERS;) {
-      // Generate the index of the starting Patrons; adjust for zero-based indexing
-      int enterIndex = _md.roll(1, _patrons.size()) - 1;
-
-      // Get the command and reset the delay for that Command
-      intCmdPatronEnter cmd = list.get(enterIndex);
-      if (cmd.getDelay() != 0) {
-        cmd.setDelay(0);
-        k++;
-      }
-    }
-
-    return list;
-  }
-
-
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PUBLIC METHODS
+   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+   *                      PUBLIC METHODS
    * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
    */
 
@@ -229,49 +187,35 @@ public class Inn extends Building
     return _name;
   }
 
-
-  /**
-   * When the Hero enters the building, he or she sees what the inside looks like. For the Inn, the
-   * description changes depending on whether it is busy or not. This conditional method overrides
-   * the base class method.
-   * 
-   * @return the standard description or the busy description
-   */
-  @Override
-  public String getInteriorDescription()
-  {
-    return (_patronsNow >= NBR_PATRONS_TO_BE_BUSY) ? _busyDescription : _intDesc;
-  }
-
-  /**
-   * Set the description seen when the Inn is busy
-   * 
-   * @param bdesc description of a busy Inn
-   */
-  public void setBusyDescription(String bdesc)
-  {
-    _busyDescription = bdesc;
-  }
-
   @Override
   public boolean add(NPC npc)
   {
     System.out.println(npc.getName() + " entered the Inn");
-//    _msg.msgOut(npc.getName() + " entered the Inn");
-    return super.add(npc);
+    boolean added = super.add(npc);
+
+    if (_patrons.size() >= NBR_PATRONS_TO_BE_BUSY) {
+      _intDesc = BUSY_DESC;
+    }
+    
+    return added;
   }
 
   @Override
   public boolean remove(NPC npc)
   {
     System.out.println(npc.getName() + " left the Inn");
-//    _msg.msgOut(npc.getName() + " left the Inn");
-    return super.remove(npc);
+    boolean removed = super.remove(npc);
+    
+    if (_patrons.size() < NBR_PATRONS_TO_BE_BUSY) {
+      _intDesc = INTERIOR;
+    }
+    
+    return removed;
   }
 
-//  public void setMsg(UserMsg msg)
-//  {
-//    _msg = msg;
-//  }
+  public void setScheduler(Scheduler skedder)
+  {
+    _skedder = skedder;
+  }
 
 } // end of Inn class

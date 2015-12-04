@@ -22,10 +22,9 @@ import mylib.civ.DataShuttle;
 import org.junit.After;
 import org.junit.Before;
 
-import pdc.character.Hero;
+import chronos.civ.PersonKeys;
+import chronos.pdc.character.Hero;
 import civ.HeroDisplayCiv;
-import civ.HeroDisplayCiv.MockHeroDisplayCiv;
-import civ.PersonKeys;
 
 /**
  * 
@@ -52,7 +51,6 @@ public class TestHeroDisplayCiv extends TestCase
     // private JPanel _widget = null;
     // CIV reference and mock
     private HeroDisplayCiv _civ = null;
-    private MockHeroDisplayCiv _mock = null;
     // Data shuttle for transfering person data
     DataShuttle<PersonKeys> _ds = null;
 
@@ -146,11 +144,7 @@ public class TestHeroDisplayCiv extends TestCase
         MsgCtrl.auditMsgsOn(true);
         MsgCtrl.errorMsgsOn(true);
         _p = new Hero(NAME, GENDER, OCCUP, HAIRCOLOR, RACENAME);
-        assertNotNull(_p);
         _civ = new HeroDisplayCiv(null);
-        assertNotNull(_civ);
-        _mock = _civ.new MockHeroDisplayCiv();
-        assertTrue(_mock != null);
     }
 
     /**
@@ -159,10 +153,6 @@ public class TestHeroDisplayCiv extends TestCase
     @After
     public void tearDown() throws Exception
     {
-        _p = null;
-        _civ = null;
-        _mock = null;
-        _ds = null;
         MsgCtrl.auditMsgsOn(false);
     }
 

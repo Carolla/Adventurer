@@ -27,7 +27,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import mylib.MsgCtrl;
 import mylib.civ.DataShuttle;
 import net.miginfocom.swing.MigLayout;
 import chronos.civ.SkillKeys;

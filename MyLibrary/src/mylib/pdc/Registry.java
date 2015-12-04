@@ -12,11 +12,11 @@ package mylib.pdc;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.db4o.query.Predicate;
-
 import mylib.ApplicationException;
 import mylib.dmc.DbReadWriter;
 import mylib.dmc.IRegistryElement;
+
+import com.db4o.query.Predicate;
 
 /**
  * The base class for all Registries, contains component {@code DbReadWriter}. All derived
@@ -44,6 +44,7 @@ public abstract class Registry<E extends IRegistryElement>
    * own ReadWriter
    */
   protected DbReadWriter<E> _regRW = null;
+  protected List<E> _inMemoryList = new ArrayList<E>();
 
   /** Number of elements in the Registry collection */
   private int _nbrElements = 0;
@@ -103,9 +104,11 @@ public abstract class Registry<E extends IRegistryElement>
    * @param obj object to add to database
    * @return true if the add was successful, else false (as with duplicate attempts)
    */
-  public boolean add(IRegistryElement obj)
+  public boolean add(E obj)
   {
     boolean retval = false;
+
+    _inMemoryList.add(obj);
     // Ensure that a null or an empty key is not being added
     if ((obj == null) || (obj.getKey().trim().length() == 0)) {
       return retval;
@@ -131,7 +134,7 @@ public abstract class Registry<E extends IRegistryElement>
    * @param target object to match against for comparison
    * @return true if the registry contains the element, else false
    */
-  public boolean contains(final IRegistryElement target)
+  public boolean contains(E target)
   {
     return _regRW.containsElement(target);
   }
@@ -142,7 +145,7 @@ public abstract class Registry<E extends IRegistryElement>
    * @param obj object to delete
    * @throws NullPointerException if the obj is null
    */
-  public void delete(IRegistryElement obj) throws NullPointerException
+  public void delete(E obj) throws NullPointerException
   {
     // Reduce the number of elements only if the delete worked
     if (_regRW.deleteElement(obj) == true) {
@@ -161,11 +164,9 @@ public abstract class Registry<E extends IRegistryElement>
    * @param name of the target object to match against for comparison
    * @return the list of all elements that match the name
    */
+  @SuppressWarnings("serial")
   public List<E> get(final String name)
   {
-    // Suppression needed for the annoymous inner class to turn off warnings
-    @SuppressWarnings("serial")
-    // Run the query using the getKey method
     Predicate<E> pred = new Predicate<E>() {
       public boolean match(E candidate)
       {
@@ -254,7 +255,12 @@ public abstract class Registry<E extends IRegistryElement>
     if ((name == null) || (name.trim().length() == 0)) {
       return null;
     }
-    E regElem = null;
+    
+    E regElem = getFromMemory(name);
+    if (regElem != null) {
+      return regElem;
+    }
+    
     List<E> elementList = get(name);
     int nbrFound = elementList.size();
     // If single element found, return it
@@ -269,6 +275,17 @@ public abstract class Registry<E extends IRegistryElement>
     // If no element found, return null
     return regElem;
   }
+
+  private E getFromMemory(String name)
+  {
+    for (E element : _inMemoryList) {
+      if (element.getKey().equalsIgnoreCase(name)) {
+        return element;
+      }
+    }
+    return null;
+  }
+
 
   /**
    * Verifies if the string (key) is unique to the Registry Calls getUnique() to return a boolean
@@ -301,7 +318,7 @@ public abstract class Registry<E extends IRegistryElement>
    * @param target replacement for modified object
    * @return false if the update failed becuase original was not found; else true
    */
-  public boolean update(final IRegistryElement target) // throws
+  public boolean update(final E target) // throws
   // ApplicationException
   {
     boolean retval = false;

@@ -21,9 +21,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import pdc.Inventory;
 import chronos.pdc.Item;
 import chronos.pdc.MiscKeys.ItemCategory;
+import chronos.pdc.character.Inventory;
 
 /**
  * Tests the Inventory repository, a collection of Item objects.

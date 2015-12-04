@@ -110,6 +110,12 @@ public class intCmdPatronEnter extends Command
     {
       return false;
     }
+    
+    @Override
+    public boolean isInternal()
+    {
+      return true;
+    }
 
     /** Get the Patron inside this command to which it applies. 
      * @return the Patron internal to the command
@@ -117,6 +123,12 @@ public class intCmdPatronEnter extends Command
     public NPC getNPC()
     {
     	return _npc;
+    }
+    
+    @Override
+    public String toString()
+    {
+      return _npc.getName() + " will enter the Inn in " + _delay;
     }
 }	// end of intCmdEnter class
 

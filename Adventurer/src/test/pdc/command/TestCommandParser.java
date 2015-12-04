@@ -27,14 +27,6 @@ public class TestCommandParser
         _fakeSkedder = new FakeScheduler();
         _cp = new CommandParser(_fakeSkedder, new FakeCommandFactory());
     }
-
-    @Test
-    public void UserInputIsSetWhenCommandReceived()
-    {
-        String testCmd = "Test command";
-        _cp.receiveCommand(testCmd);
-        assertEquals(_cp.new MockCP().getInput(), testCmd);
-    }
     
     @Test
     public void FirstStringIsCommandTokenInCommandInput()
@@ -80,9 +72,12 @@ public class TestCommandParser
     @Test
     public void CommandIsScheduledWhenFound()
     {
-        _cp = new CommandParser(_fakeSkedder, new CommandFactory(null, null));
+        CommandFactory realCommandFactory = new CommandFactory(null, null);
+        realCommandFactory.initMap();
+        _cp = new CommandParser(_fakeSkedder, realCommandFactory);
         _cp.receiveCommand("Return");
-        assertEquals(new CmdReturn(null).getName(), _fakeSkedder.command.getName());
+        CmdReturn expectedCommand = new CmdReturn(new FakeBuildingDisplayCiv());
+        assertEquals(expectedCommand.getName(), _fakeSkedder.command.getName());
     }
     
     @Test
@@ -97,6 +92,7 @@ public class TestCommandParser
         public FakeCommandFactory()
         {
             super(null, null);
+            initMap();
         }
 
         @Override

@@ -40,15 +40,14 @@ public class BuildingRegistry extends Registry<Building>
   // CONSTRUCTOR(S) AND RELATED METHODS
   // ========================================================================
 
-//  private final Scheduler _skedder;
+  private final Scheduler _skedder;
   private final NPCRegistry _npcRegistry;
 
   /** Called by RegistryFactory class */
-//  protected BuildingRegistry(Scheduler skedder, NPCRegistry npcRegistry)
-  protected BuildingRegistry(NPCRegistry npcRegistry)
+  protected BuildingRegistry(Scheduler skedder, NPCRegistry npcRegistry)
   {
     super(Chronos.BuildingRegPath);
-//    _skedder = skedder;
+    _skedder = skedder;
     _npcRegistry = npcRegistry;
     initialize();
   }
@@ -60,11 +59,11 @@ public class BuildingRegistry extends Registry<Building>
   @Override
   public void initialize()
   {
-    deleteAll();
     // Create each of the default buildings and save to registry
     // The constructors load the default data
-//    Inn inn = new Inn(_skedder, _npcRegistry);
     Inn inn = new Inn(_npcRegistry);
+    inn.setScheduler(_skedder);
+    inn.initPatrons();
     super.add(inn); // Ugly Ogre Inn
     super.add(new Store()); // Rat's Pack
     super.add(new Jail()); // Jail
@@ -92,12 +91,7 @@ public class BuildingRegistry extends Registry<Building>
    */
   public Building getBuilding(String name)
   {
-    List<Building> buildingList = super.get(name);
-    if (buildingList.size() == 0) {
-      return null;
-    }
-    Building aBuilding = buildingList.get(0);
-    return aBuilding;
+    return getUnique(name);
   }
 
   /**

@@ -10,13 +10,10 @@
 
 package chronos.pdc.registry;
 
-import java.io.IOException;
-import java.util.List;
-
-import chronos.Chronos;
 import mylib.ApplicationException;
-import mylib.dmc.IRegistryElement;
 import mylib.pdc.Registry;
+import chronos.Chronos;
+import chronos.pdc.character.Hero;
 
 /**
  * Contains all Heros in the game. {@code HeroRegistry} is a singleton and is only
@@ -25,7 +22,7 @@ import mylib.pdc.Registry;
  * @author Tim Armstrong
  * @version Mar 13, 2013 // original <br>
  */
-public class HeroRegistry extends Registry
+public class HeroRegistry extends Registry<Hero>
 {
 
 
@@ -64,20 +61,9 @@ public class HeroRegistry extends Registry
    * @return the Hero object; or null if not unique
    * @throws ApplicationException if trying to retrieve non-unique object
    */
-  public IRegistryElement getHero(final String name)
+  public Hero getHero(final String name)
   {
-    // ExtObjectContainer db = _regRW.getDB();
-    // Retrieve all skills that match the skillname; should be only one
-    // List<Hero> list = db.query(new HeroPredicate(name));
-
-    List<IRegistryElement> elist = get(name);
-
-    // Ensure uniqueness
-    if (elist.size() == 1) {
-      return elist.get(0);
-    } else {
-      return null;
-    }
+    return getUnique(name);
   }
 
   // TODO: Do we really need this?
@@ -141,42 +127,6 @@ public class HeroRegistry extends Registry
   // }
   // }
 
-
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ INNER CLASS: MockHeroRegistry for
-   * Testing ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
-
-  /** Inner class for testing Hero */
-  public class MockHeroRegistry
-  {
-    /** Default constructor */
-    public MockHeroRegistry()
-    {}
-    //
-    // /** Total number of objects expected to be stored in the db */
-    // public long getOverhead()
-    // {
-    // return HeroRegistry.this.getOverhead();
-    // }
-
-  } // end of MockHeroRegistry inner class
-
-
-  // /** Close db, destroy the dbReadWriter and set this registry to null
-  // * @param eraseFile if true, erase registry file; else not
-  // */
-  // public void closeRegistry()
-  // {
-  // super.close();
-  // // _thisReg = null;
-  // }
-  //
-  // public void deleteRegistry()
-  // {
-  // super.delete();
-  // // _thisReg = null;
-  // }
 
 } // end of HeroRegistry class
 

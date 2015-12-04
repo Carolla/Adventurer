@@ -163,10 +163,11 @@ public class OccupationRegistry extends Registry<Occupation>
      * Add a new Occupation to the Registry
      * 
      * @param occup new Occupation to add. It must a a registered Skill and not null
+     * @return 
      * @throws ApplicationException if the Skill does not exist in the Skill Registry, or Occupation
      *         is null
      */
-    public void add(Occupation occup) throws ApplicationException
+    public boolean add(Occupation occup) throws ApplicationException
     {
         if (occup == null) {
             throw new ApplicationException("add(): Received illegal null Occupation");
@@ -174,7 +175,7 @@ public class OccupationRegistry extends Registry<Occupation>
 
         // Create new Occupations and save to registry
         if (verifySkill(_skillRegistry, occup.getSkillName()) == true) {
-            super.add(occup); // super is used to highlight inheritance
+            return super.add(occup); // super is used to highlight inheritance
         } else {
             throw (new ApplicationException("Skill not found in Skill Registry"));
         }

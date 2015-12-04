@@ -7,12 +7,13 @@
  * by email: acline@carolla.com
  */
 
-package pdc.character;
+package chronos.pdc.character;
 
-import pdc.Inventory;
-import pdc.character.Hero.PrimeTraits;
+import java.util.List;
+
 import chronos.pdc.Item;
 import chronos.pdc.MiscKeys.ItemCategory;
+import chronos.pdc.character.Hero.PrimeTraits;
 
 /**
  * @author Al Cline
@@ -29,19 +30,19 @@ public class Wizard extends Klass
   private String _hitDie = "d4";
   private int _freeHP = 4;
   private String _startingGold = "2d4";
-  
-  
+
+
   /**
    * Default constructor, called reflectively by Klass
    */
-  public Wizard() 
+  public Wizard()
   {
     _klassName = "Wizard";
     _primeNdx = PrimeTraits.INT.ordinal();
     _hpDie = _hitDie;
     _initialHP = _freeHP;
     _goldDice = _startingGold;
-  } 
+  }
 
   @Override
   /** Assign initial inventory to Wizard (8 gpw = 1 lb) */
@@ -56,5 +57,10 @@ public class Wizard extends Klass
     return inven;
   }
 
-
+  @Override
+  public List<String> addKlassSpells(List<String> spellbook)
+  {
+    spellbook.add("Read Magic");
+    return spellbook;
+  }
 } // end of Wizard class

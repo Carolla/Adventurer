@@ -96,7 +96,7 @@ public class AdventureRegistry extends Registry<Adventure>
   {
     // Load the default data into this Adventure
     Adventure adv = new Adventure(DEF_ADVENTURE, DEF_TOWN, DEF_ARENA, DEF_OVERVIEW);
-    super.add((IRegistryElement) adv);
+    super.add(adv);
   }
 
 

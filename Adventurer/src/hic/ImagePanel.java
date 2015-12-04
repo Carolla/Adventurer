@@ -10,86 +10,94 @@
 
 package hic;
 
+import java.awt.Graphics;
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+import chronos.Chronos;
+
 /**
- * The {@code ImagePanel} class extends {@code ChronosPanel} so that it is easy to draw onto. It is a
- * singleton because it is created once and different images are displayed on it for the duration of
- * the program.
+ * The {@code ImagePanel} class extends {@code ChronosPanel} so that it is easy to draw onto. It is
+ * a singleton because it is created once and different images are displayed on it for the duration
+ * of the program.
  * 
  * @author Al Cline
  * @version Aug 16, 2014 // original <br>
  */
-//@SuppressWarnings("serial")
-//public class ImagePanel extends ChronosPanel 
-//{
-//  private BaseCiv _ctrlCiv; 
-//  
-//  /** Box to be drawn over the current image */
-//  private BuildingRectangle _buildingRectangle;
-//
-//
-//  // ============================================================
-//  // Constructors and constructor helpers
-//  // ============================================================
-//
-//  /** Private singleton constructor 
-//   * 
-//   * @param BaseCiv  base class for all civs that can control this panel 
-//   */
-//  public ImagePanel(BaseCiv ctrlCiv)
-//  {
-//    _ctrlCiv = ctrlCiv;
-//    replaceControllerCiv(_ctrlCiv);
-//  }
-//
-////  public void replaceControllerCiv(BaseCiv newCiv) 
-////  {
-////    // No action if listeners are null
-////    removeMouseListener(_ctrlCiv);
-////    removeMouseMotionListener(_ctrlCiv);
-////
-////    // Add new control civ and save for later
-////    addMouseListener(newCiv);
-////    addMouseMotionListener(newCiv);
-////    _ctrlCiv = newCiv;
-////  }
-//
-//  // ============================================================
-//  // Public methods
-//  // ============================================================
-//
-//
-//  
-//  public void setRectangle(BuildingRectangle rect)
-//  {
-//    _buildingRectangle = rect;
-//  }
-//
-////  /**
-////   * Required override method to draw on {@code JComponent.ImagePanel}
-////   */
-////  @Override
-////  public void paintComponent(Graphics g)
-////  {
-////    super.paintComponent(g);
-////    // System.out.println("ImagePanel.paintComponent");
-////    // Find top-left corner to image panel to overlay image onto
-////    int pWidth = getWidth();
-////    int pHeight = getHeight();
-////
-////    // Draw the image at the top-left corner of the ImagePanel when JComponent gets its turn
-////    g.drawImage(_image, 0, 0, pWidth, pHeight, this);
-////
-////    if (_buildingRectangle != null) {
-////      // System.out.println("Drawing " + _buildingRectangle._name);
-////      _buildingRectangle.drawBuildingBox((Graphics2D) g);
-////    }
-//
-//  }
-//
-//
-//  // ============================================================
-//  // Private methods
-//  // ============================================================
-//
-//
-//}
+@SuppressWarnings("serial")
+public class ImagePanel extends ChronosPanel
+{
+  private Image _image;
+  private String _imageName;
+
+  // ============================================================
+  // Constructors and constructor helpers
+  // ============================================================
+
+  /**
+   * Private singleton constructor
+   * 
+   * @param BaseCiv base class for all civs that can control this panel
+   */
+  public ImagePanel()
+  {
+    super(" ");
+  }
+
+  // ============================================================
+  // Public methods
+  // ============================================================
+
+  public void setImageByName(String imageName)
+  {
+    if (!imageName.equals(_imageName)) {
+      _imageName = imageName;
+      _image = convertToImage(imageName);
+      
+      revalidate();
+      repaint();
+    }
+  }
+
+  
+  
+  // ============================================================
+  // Private methods
+  // ============================================================
+
+  /**
+   * Required override method to draw on {@code JComponent.ImagePanel}
+   */
+  @Override
+  public void paintComponent(Graphics g)
+  {
+    super.paintComponent(g);
+  
+    // Find top-left corner to image panel to overlay image onto
+    int pWidth = getWidth();
+    int pHeight = getHeight();
+  
+    // Draw the image at the top-left corner of the ImagePanel when JComponent gets its turn
+    g.drawImage(_image, 0, 0, pWidth, pHeight, this);
+  
+  }
+
+  /**
+   * Create an {@code Image} type from its filename
+   * 
+   * @param imageName the name of the image to convert
+   */
+  private Image convertToImage(String imageName)
+  {
+    Image myImage = null;
+    try {
+      myImage = ImageIO.read(new File(Chronos.ADV_IMAGE_PATH + imageName));
+    } catch (IOException ioex) {
+      System.err.println("ImagePanel: problems reading the image file" + imageName);
+    }
+    return myImage;
+  }
+}

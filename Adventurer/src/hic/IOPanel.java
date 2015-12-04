@@ -29,14 +29,10 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-import chronos.Chronos;
-import civ.BuildingDisplayCiv;
-// import pdc.Util;
-import civ.CommandParser;
 import mylib.Constants;
-import mylib.Constants.Side;
 import net.miginfocom.swing.MigLayout;
-
+import chronos.Chronos;
+import civ.CommandParser;
 /**
  * This class serves as the text output and command line input after an Adventure is selected
  * 
@@ -69,7 +65,6 @@ public class IOPanel extends ChronosPanel
   private Color _foreColor = Color.BLACK;
 
   private final SimpleAttributeSet _errorAttributes;
-  private BuildingDisplayCiv _bldgCiv;
   private CommandParser _commandParser;
 
 
@@ -84,14 +79,9 @@ public class IOPanel extends ChronosPanel
    * @param bldgCiv manages the IOPanel and its input/output messages.
    * @param cp  handles all input commands from the user
    */
-  public IOPanel(BuildingDisplayCiv bldgCiv, CommandParser cp)
+  public IOPanel(CommandParser cp)
   {
-    // IOPanel is controlled by the BuildingDisplayCiv, and placed on the left side 
-    super(bldgCiv, IOPANEL_TITLE, Side.LEFT);
-    // TODO: Replace mundane title with name of Adventure on left side
-//  this.setTitle(bldgciv.getAdventureName());
-    
-    _bldgCiv = bldgCiv;
+    super(IOPANEL_TITLE);
     _commandParser = cp;
 
     setLayout(new MigLayout("", "[grow]", "[][]"));
@@ -139,14 +129,11 @@ public class IOPanel extends ChronosPanel
     displayText(Constants.NEWLINE + msg + Constants.NEWLINE, null);
   }
 
-  public void setFocusOnCommandWindow()
+  @Override
+  public boolean requestFocusInWindow()
   {
-    // Ensure that the text scrolls as new text is appended
-    _cmdWin.setFocusable(true);
-    _cmdWin.requestFocusInWindow();
+    return _cmdWin.requestFocusInWindow();
   }
-
-
   // ============================================================
   // Private Methods
   // ============================================================
@@ -178,13 +165,13 @@ public class IOPanel extends ChronosPanel
     _cmdWin.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        // Save the user's input to be retrieved by the command parser
-        _cmdWin.requestFocusInWindow();
         String in = _cmdWin.getText();
+        displayText(in);
+
         _commandParser.receiveCommand(in);
-        // Echo the text and clear the command line
-        displayText(in, null);
+
         _cmdWin.setText("");
+        _cmdWin.requestFocusInWindow();
       }
     });
     return southPanel;
@@ -208,10 +195,7 @@ public class IOPanel extends ChronosPanel
     caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
     // Make text output scrollable-savvy
-//    ChronosPanel panel = new ChronosPanel(_bldgCiv, Side.LEFT);
-//    panel.add(_transcriptPane, BorderLayout.SOUTH);
     add(_transcriptPane, BorderLayout.SOUTH);
-//    JScrollPane scrollPane = new JScrollPane(panel);
     JScrollPane scrollPane = new JScrollPane(this);
     scrollPane.setAlignmentY(BOTTOM_ALIGNMENT);
     Dimension frame = Mainframe.getWindowSize();

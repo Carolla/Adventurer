@@ -43,37 +43,35 @@ public class CommandFactory
   private Map<String, Supplier<Command>> _commandMap = new HashMap<String, Supplier<Command>>();
 
   private final BuildingDisplayCiv _bdCiv;
-//  private final MainframeCiv _mfCiv;
+  private final MainframeCiv _mfCiv;
 
   /** Keep a table for command, as lambda functions */
-//  public CommandFactory(MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
-  public CommandFactory(BuildingDisplayCiv bdCiv)
+  public CommandFactory(MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
   {
-//    _mfCiv = mfCiv;
+    _mfCiv = mfCiv;
     _bdCiv = bdCiv;
-    initMap();
   }
 
   /**
    * Provide initial values for the commandMap. This can be set up differently as needed for test.
    */
-  protected void initMap()
+  public void initMap()
   {
     // Display the description and image of Building exterior
     _commandMap.put("APPROACH", () -> new CmdApproach(_bdCiv));
     // Enter the interior of the Building
     _commandMap.put("ENTER", () -> new CmdEnter(_bdCiv));
     // Synonym for Leave and then Quit the program
-//    _commandMap.put("EXIT", () -> new CmdExit(_mfCiv, _bdCiv));
-    _commandMap.put("EXIT", () -> new CmdExit(_bdCiv));
+    _commandMap.put("EXIT", () -> new CmdExit(_mfCiv));
     // Leave the inside of the Building and go outside
     _commandMap.put("LEAVE", () -> new CmdLeave(_bdCiv));
     // End the program.
-    _commandMap.put("QUIT", () -> new CmdQuit(_bdCiv));
+    _commandMap.put("QUIT", () -> new CmdQuit(_mfCiv, _bdCiv));
     // Return to town view
-    _commandMap.put("RETURN", () -> new CmdReturn());
+    _commandMap.put("RETURN", () -> new CmdReturn(_bdCiv));
     // Just sit there
     _commandMap.put("WAIT", () -> new CmdWait());
+    _commandMap.put("LOOK", () -> new CmdLook(_bdCiv));
 
     // Locks the command map as read-only
     _commandMap = Collections.unmodifiableMap(_commandMap);

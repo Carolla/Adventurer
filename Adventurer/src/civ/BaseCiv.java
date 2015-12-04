@@ -13,9 +13,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-import hic.ChronosPanel;
-import mylib.Constants.Side;
-
 /**
  * Base class for all Civs that monitor and manage the HIC wigets
  * 
@@ -24,11 +21,6 @@ import mylib.Constants.Side;
  */
 public class BaseCiv implements MouseListener, MouseMotionListener
 {
-  /** All Civs manage some HIC panel on the right for images */
-  protected ChronosPanel _leftPanel;
-
-  /** All Civs manage some HIC panel on the left for I/O */
-  protected ChronosPanel _rightPanel;
 
   // ============================================================
   // Constructors and constructor helpers
@@ -36,33 +28,6 @@ public class BaseCiv implements MouseListener, MouseMotionListener
 
   public BaseCiv()
   {}
-
-
-  // ============================================================
-  // Public methods
-  // ============================================================
-
-  public ChronosPanel getLeftPanel()
-  {
-    return _leftPanel;
-  }
-
-  public ChronosPanel getRightPanel()
-  {
-    return _rightPanel;
-  }
-
-  /** Attaches the given panel to the designated side and sets the controller for it */
-  public void setPanel(ChronosPanel panel, Side side)
-  {
-    if (side == Side.LEFT) {
-      _leftPanel = panel;
-    } else {
-      _rightPanel = panel;
-    }
-    panel.replaceControllerCiv(this);
-  }
-
   
   // ============================================================
   // Mouse handler methods

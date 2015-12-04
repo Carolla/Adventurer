@@ -8,25 +8,25 @@
  */
 
 
-package pdc.character;
+package chronos.pdc.character;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 
-import chronos.pdc.Race;
-import civ.PersonKeys;
+import mylib.dmc.IRegistryElement;
 import mylib.pdc.MetaDie;
-import pdc.Inventory;
-import pdc.character.Thief.TSKILL;
+import chronos.civ.PersonKeys;
+import chronos.pdc.Race;
+
 
 
 /**
  * @author Alan Cline
  * @version Sept 4 2015 // rewrite per revised generation rules \n\t
  */
-public class Hero implements Serializable
+public class Hero implements IRegistryElement
 {
   // Statics and transients are not saved with the serialized Person object
   /** Recommended serialization constant */
@@ -131,11 +131,6 @@ public class Hero implements Serializable
   private ArrayList<String> _klassSkills = new ArrayList<String>();
   // Inventory object containing map with ItemCategory key
   private Inventory _inven; 
-
-  // Number of skills only the thief has
-  final int NBR_THIEF_SKILLS = TSKILL.values().length;
-  // The first index is the skill name, the second is the chance of success
-  String[][] _thiefSkills = new String[NBR_THIEF_SKILLS][2];
 
   // Keys to all occupational kits
   public enum KitNdx {
@@ -361,14 +356,13 @@ public class Hero implements Serializable
     // System.out.println("Hero can learn an additional " + _maxLangs + " languages.");
     _literacy = getLiteracy(intel);
     // displayList("Skills: \t", _skills);
+    
     // 7b. FOR WIZARDS ONLY: PercentToKnow, MSPs/Level, MSPS, Spells Known
     if (_klassname.equalsIgnoreCase("Wizard")) {
       int[] wizMods = calcWizardMods(intel);
       _MSPsPerLevel = wizMods[0];
       _percentToKnow = wizMods[1];
       _MSPs = _MSPsPerLevel; // for first level
-      addUnique(_spellBook, "Read Magic");
-      _spellsKnown = _spellBook.size();
       // displayWizardMods();
       displayList(String.format("Spell book contains: %s spells: ", _spellsKnown), _spellBook);
     }
@@ -446,15 +440,8 @@ public class Hero implements Serializable
     // System.out.println("\nInitial gold for " + _klassname + " = " + _gold + " gp");
 
     // 18. ASSIGN SPECIAL THIEF ABILITIES
-    if (_klassname.equalsIgnoreCase("Thief")) {
-      int dexterity = _traits[PrimeTraits.DEX.ordinal()];
-      _thiefSkills = ((Thief) _klass).assignThiefSkills(dexterity); // one subclass of Klass only
-      // displayThiefSkills(_thiefSkills);
-      _thiefSkills = _race.adjustRacialThiefSkills(_thiefSkills);
-      // displayThiefSkills(_thiefSkills);
-      // Convert from String[][] to ArrayList<String>
-      _klassSkills = toArrayList(_thiefSkills);
-    }
+    String[][] klassSkills = _klass.assignKlassSkills();
+    _klassSkills = toArrayList(klassSkills);
 
     // 19. ADD RACIAL ABILITIES
     // TESTING: Set Spot Detail
@@ -471,12 +458,15 @@ public class Hero implements Serializable
     // displayList("Inventory in backpack: ", _inventory);
 
     // 21. ASSIGN SPELLS TO CLERICS (WIZARDS ALREADY WERE ASSIgned 'READ MAGIC')
-    if (_klassname.equalsIgnoreCase("Cleric")) {
-      _spellBook = ((Cleric) _klass).addClericalSpells(_spellBook);
-      _spellsKnown = _spellBook.size();
-      // displayList(String.format("Clerical spells knowns: %s spells: ", _spellsKnown),
-      // _spellBook);
-    }
+    _spellBook = _klass.addKlassSpells(_spellBook);
+    _spellsKnown = _spellBook.size();
+//    if (_klassname.equalsIgnoreCase("Cleric")) {
+//      _spellBook = ((Cleric) _klass).addClericalSpells(_spellBook);
+//      _spellsKnown = _spellBook.size();
+//      // displayList(String.format("Clerical spells knowns: %s spells: ", _spellsKnown),
+//      // _spellBook);
+//    }
+    
     // 22. Assign initial inventory
     _inven = new Inventory();
     _inven = _inven.assignBasicInventory(_inven);
@@ -1276,5 +1266,90 @@ public class Hero implements Serializable
     }
 
   } // end of MockHero inner class
+
+
+  @Override
+  public boolean equals(IRegistryElement target)
+  {
+    return equals((Object) target);
+  }
+
+  @Override
+  public String getKey()
+  {
+    return _name;
+  }
+
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((_description == null) ? 0 : _description.hashCode());
+    result = prime * result + ((_gender == null) ? 0 : _gender.hashCode());
+    result = prime * result + ((_hairColor == null) ? 0 : _hairColor.hashCode());
+    result = prime * result + _height;
+    result = prime * result + ((_klassname == null) ? 0 : _klassname.hashCode());
+    result = prime * result + ((_name == null) ? 0 : _name.hashCode());
+    result = prime * result + ((_occupation == null) ? 0 : _occupation.hashCode());
+    result = prime * result + ((_racename == null) ? 0 : _racename.hashCode());
+    result = prime * result + Arrays.hashCode(_traits);
+    result = prime * result + _weight;
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Hero other = (Hero) obj;
+    if (_description == null) {
+      if (other._description != null)
+        return false;
+    } else if (!_description.equals(other._description))
+      return false;
+    if (_gender == null) {
+      if (other._gender != null)
+        return false;
+    } else if (!_gender.equals(other._gender))
+      return false;
+    if (_hairColor == null) {
+      if (other._hairColor != null)
+        return false;
+    } else if (!_hairColor.equals(other._hairColor))
+      return false;
+    if (_height != other._height)
+      return false;
+    if (_klassname == null) {
+      if (other._klassname != null)
+        return false;
+    } else if (!_klassname.equals(other._klassname))
+      return false;
+    if (_name == null) {
+      if (other._name != null)
+        return false;
+    } else if (!_name.equals(other._name))
+      return false;
+    if (_occupation == null) {
+      if (other._occupation != null)
+        return false;
+    } else if (!_occupation.equals(other._occupation))
+      return false;
+    if (_racename == null) {
+      if (other._racename != null)
+        return false;
+    } else if (!_racename.equals(other._racename))
+      return false;
+    if (!Arrays.equals(_traits, other._traits))
+      return false;
+    if (_weight != other._weight)
+      return false;
+    return true;
+  }
 
 } // end of Hero class

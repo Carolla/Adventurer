@@ -25,13 +25,12 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
+import mylib.Constants;
+import net.miginfocom.swing.MigLayout;
+import chronos.civ.PersonKeys;
 import chronos.pdc.MiscKeys.ItemCategory;
 import civ.HeroDisplayCiv;
-import civ.PersonKeys;
 import dmc.HeroReadWriter;
-import mylib.Constants;
-import mylib.Constants.Side;
-import net.miginfocom.swing.MigLayout;
 
 
 /**
@@ -123,12 +122,13 @@ public class HeroDisplay extends ChronosPanel
 
   // Specific file error messages not handled by FileChooser
   private String _saveMsg = "";
+  
   private final String PROMPT_HERO_EXISTS_MSG =
       "Do you want to overwrite, rename, or create a new Hero?";
   private final String PROMPT_HERO_EXISTS_TITLE = "Hero already exists.";
-  private final String SAVE_ERROR_MSG = "Error! Problem saving ";
-  // private final String SAVE_CANCEL_MSG = "Overwrite cancelled for ";
+  
   private final String SAVE_ERROR_TITLE = "FILE SAVE ERROR";
+  
   private final String CONFIRM_SAVE_MSG = " is resting in the dormitory until later.";
   private final String CONFIRM_SAVE_TITLE = " Hero is now Registered";
   private final String CONFIRM_OVERWRITE_MSG = " has been overwritten in the dormitory.";
@@ -211,7 +211,7 @@ public class HeroDisplay extends ChronosPanel
    */
   public HeroDisplay(HeroDisplayCiv hdCiv, boolean firstTime)
   {
-    super(hdCiv, "Hero nameplate goes here", Side.LEFT);
+    super("Hero nameplate goes here");
 
     _hdCiv = hdCiv;
     _ds = _hdCiv.getAttributes();

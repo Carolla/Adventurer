@@ -2,7 +2,6 @@ package test.pdc.command;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import hic.MainframeInterface;
 
 import java.util.ArrayList;
 
@@ -14,23 +13,20 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import pdc.command.CmdQuit;
-import test.integ.MainframeProxy;
-import civ.MainframeCiv;
 
 public class TestCmdQuit
 {
     
     //iVars
     private CmdQuit _cmdQuit;
-    private static MainframeCiv _mfCiv;
+    private static FakeMainframeCiv _mfCiv;
     private static FakeBuildingDisplayCiv _bdciv;
     
     @BeforeClass
     public static void setUpBeforeClass() throws Exception
     {
-        MainframeInterface mfInterface = new MainframeProxy();
         _bdciv = new FakeBuildingDisplayCiv();
-        _mfCiv = new MainframeCiv(mfInterface, _bdciv, null);
+        _mfCiv = new FakeMainframeCiv();
     }
 
     @Before
@@ -89,12 +85,10 @@ public class TestCmdQuit
         assertFalse(_cmdQuit.init(emptyArgs));
     }
 
-//    @Test
-//    public void testExec()
-//    {
-//        MsgCtrl.where(this);
-//        
-//        assertTrue(_cmdQuit.exec());
-//    }
+    @Test
+    public void testExec()
+    {
+        assertTrue(_cmdQuit.exec());
+    }
 
 }

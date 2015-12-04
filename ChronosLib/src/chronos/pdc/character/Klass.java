@@ -8,16 +8,14 @@
  */
 
 
-package pdc.character;
+package chronos.pdc.character;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import mylib.pdc.MetaDie;
-import pdc.Inventory;
-import chronos.Chronos;
 import chronos.pdc.Item;
-import chronos.pdc.MiscKeys.ItemCategory;
 
 /**
  * Defines the common methods and attributes for all Klasses. Peasant is the default Klass.
@@ -32,8 +30,13 @@ public abstract class Klass implements Serializable
   static final long serialVersionUID = 1100L;
 
   /** Assign klass specific inventory items */
-  protected abstract Inventory addKlassItems(Inventory inventory);  
-  
+  public abstract Inventory addKlassItems(Inventory inventory);
+
+  public static final String FIGHTER_CLASS_NAME = "Fighter";
+  public static final String CLERIC_CLASS_NAME = "Cleric";
+  public static final String WIZARD_CLASS_NAME = "Wizard";
+  public static final String THIEF_CLASS_NAME = "Thief";
+
   // KLASS-SPECIFIC ATTRIBUTES and METHODS
   /** Name of the subclass of Klass, e.g, Peasant or Fighter */
   protected String _klassName = null;
@@ -48,9 +51,21 @@ public abstract class Klass implements Serializable
   protected String _goldDice = null;
 
   /** Special klass-specific table of items */
-  protected String[] _klassItems = null; 
-  
-  
+  protected String[] _klassItems = null;
+
+
+  public String[][] assignKlassSkills()
+  {
+    return new String[0][0];
+  }
+
+
+  public List<String> addKlassSpells(List<String> spellbook)
+  {
+    return spellbook;
+  }
+
+
   /**
    * Swap the largest trait for the prime trait of the klass: <br>
    * Fighter (STR), Cleric (WIS), Wizard (INT), and Thief (DEX)
@@ -81,7 +96,6 @@ public abstract class Klass implements Serializable
     return inven;
   }
 
-
   /**
    * Create a specific subclass of Klass based on its klass name. <br>
    * NOTE: The subclass must be in the same package as the Klass class.
@@ -91,23 +105,28 @@ public abstract class Klass implements Serializable
    */
   static public Klass createKlass(String klassName)
   {
-    Klass newKlass = null;
-    try {
-      // Class Commands must have empty constructors (no formal input arguments)
-      String klassPath = Chronos.getPackageName() + klassName;
-      newKlass = (Klass) Class.forName(klassPath).newInstance();
-    } catch (Exception e) {
-      System.err.println("Klass.createKlass(): Cannot find class requested: " + e.getMessage());
+    switch (klassName) {
+      case FIGHTER_CLASS_NAME:
+        return new Fighter();
+      case CLERIC_CLASS_NAME:
+        return new Cleric();
+      case WIZARD_CLASS_NAME:
+        return new Wizard();
+      case THIEF_CLASS_NAME:
+        return new Thief();
+
+      default:
+        System.err.println("Klass.createKlass(): Cannot find class requested: klassName");
+        return null;
     }
-    return newKlass;
   }
 
-  
-//  // Add an element to an array
-//  protected ArrayList<String> addItem(inven, item) {
-//    inven.add(item);
-//    return inven;
-//  }
+
+  // // Add an element to an array
+  // protected ArrayList<String> addItem(inven, item) {
+  // inven.add(item);
+  // return inven;
+  // }
 
   // // Now klass specific items
   // switch(klass) {

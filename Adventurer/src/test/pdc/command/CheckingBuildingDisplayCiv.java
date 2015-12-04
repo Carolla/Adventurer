@@ -1,5 +1,6 @@
 package test.pdc.command;
 
+import test.pdc.FakeAdventure;
 import civ.BuildingDisplayCiv;
 
 
@@ -8,7 +9,7 @@ public class CheckingBuildingDisplayCiv extends BuildingDisplayCiv
 {
     public CheckingBuildingDisplayCiv()
     {
-        super(null, null);
+        super(null,  new FakeAdventure(), null);
     }
 
     private String _currentBuilding;

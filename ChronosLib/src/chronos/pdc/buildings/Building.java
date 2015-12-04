@@ -27,6 +27,7 @@ import chronos.pdc.NPC;
  */
 public abstract class Building implements IRegistryElement
 {
+  private static final String MISSING_PERSON = "I don't see that person here";
   /** Default Opening Time for all buildings */
   private final int DEFAULT_OPENHOURS = 900;
   /** Default Closing Time for all buildings */
@@ -50,7 +51,7 @@ public abstract class Building implements IRegistryElement
   /** Short phrase of the purpose of the Building (hovertext when clicked) */
   protected final String _hoverText;
   /** Short description of what the Hero first sees from outside the building. */
-  protected final String _intDesc;
+  protected String _intDesc;
   /** Short description of what the Hero first sees inside the building. */
   protected final String _extDesc;
 
@@ -164,7 +165,15 @@ public abstract class Building implements IRegistryElement
    */
   public String getInteriorDescription()
   {
-    return _intDesc;
+    String description = _intDesc;
+    if (_patrons.size() > 0) {
+      description += "\nYou see patrons inside:\n";
+      for (NPC npc : _patrons) {
+        description += npc.getName() + ": " + npc.getDescription() + "\n";
+      }
+    }
+    
+    return description;
   }
 
 
@@ -368,6 +377,17 @@ public abstract class Building implements IRegistryElement
     } else if (!_name.equals(other._name))
       return false;
     return true;
+  }
+
+  public String inspect(String target)
+  {
+    for (NPC npc : _patrons) {
+      String name = npc.getName();
+      if (name.equalsIgnoreCase(target)) {
+        return npc.getDescription();
+      }
+    }
+    return MISSING_PERSON;
   }
 
 

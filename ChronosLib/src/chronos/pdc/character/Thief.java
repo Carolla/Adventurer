@@ -7,12 +7,11 @@
  * by email: acline@carolla.com
  */
 
-package pdc.character;
+package chronos.pdc.character;
 
-import pdc.Inventory;
-import pdc.character.Hero.PrimeTraits;
 import chronos.pdc.Item;
 import chronos.pdc.MiscKeys.ItemCategory;
+import chronos.pdc.character.Hero.PrimeTraits;
 
 /**
  * @author Al Cline
@@ -27,7 +26,6 @@ public class Thief extends Klass
   private String _hitDie = "d6";
   private int _freeHP = 6;
   private String _startingGold = "2d6";
-
   
   /** Indices into the Hero's prime traits */
   public enum TSKILL {
@@ -55,6 +53,7 @@ public class Thief extends Klass
     _hpDie = _hitDie;
     _initialHP = _freeHP;
     _goldDice = _startingGold;
+    
   }
 
 

@@ -52,7 +52,7 @@ public class TestCmdEnter
     {
         _bdciv = new FakeBuildingDisplayCiv();
         _cmdEnter = new CmdEnter(_bdciv);
-        _bdciv.setCurrentBuilding("");
+        _bdciv.setBuildingName("");
     }
 
     /**
@@ -159,7 +159,7 @@ public class TestCmdEnter
         // Set context to be inside valid building: Jail
         List<String> bNames = new ArrayList<String>();
         _cmdEnter.init(bNames);
-        _bdciv.setCurrentBuilding("Arcaneum");
+        _bdciv.setBuildingName("Arcaneum");
         
         assertTrue(_cmdEnter.exec());
     }

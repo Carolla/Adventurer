@@ -33,16 +33,15 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
+import mylib.Constants;
+import mylib.hic.HelpKeyListener;
+import net.miginfocom.swing.MigLayout;
+import chronos.pdc.character.Hero;
 import civ.HeroDisplayCiv;
+import civ.MainframeCiv;
 import civ.NewHeroCiv;
 import civ.NewHeroCiv.ErrorCode;
 import civ.NewHeroCiv.HeroInput;
-import mylib.Constants;
-import mylib.Constants.Side;
-import mylib.MsgCtrl;
-import mylib.hic.HelpKeyListener;
-import net.miginfocom.swing.MigLayout;
-import pdc.character.Hero;
 
 /**
  * Allows the author to input a few key attributes of their Hero. A CIV object is called to validate
@@ -122,7 +121,7 @@ public class NewHeroIPPanel extends ChronosPanel
   private String _klassName;
 
   /** Contains user input field data */
-  EnumMap<HeroInput, String> _input;
+  EnumMap<HeroInput, String> input;
 
 
   /**
@@ -133,7 +132,7 @@ public class NewHeroIPPanel extends ChronosPanel
 
   /** Associated validating CIV object */
   private NewHeroCiv _nhCiv;
-  private MainframeInterface _mf;
+  private MainframeCiv _mfCiv;
 
   // ============================================================
   // Constructors and constructor helpers
@@ -145,15 +144,14 @@ public class NewHeroIPPanel extends ChronosPanel
    * created in private helper methods.
    * 
    * @param nhCiv controls this ChronosPanel
-   * @param mf mainframe reference needed for displaying the panel
+   * @param mfCiv  mainframeCiv needed for displaying the panel
    */
-  public NewHeroIPPanel(NewHeroCiv nhCiv, MainframeInterface mf)
+  public NewHeroIPPanel(NewHeroCiv nhCiv, MainframeCiv mfCiv) 
   {
-    super(nhCiv, NEW_HERO_TITLE, Side.LEFT);
-    setTitle(NEW_HERO_TITLE);
+    super(NEW_HERO_TITLE);
     _nhCiv = nhCiv;
-    _mf = mf;
-
+    _mfCiv = mfCiv;
+    
     // GENERAL SETUP
     // Set the preferred and max size, adjusting for panel border thickness
     int width = Mainframe.getWindowSize().width;// +MainFrame.PANEL_SHIFT;
@@ -162,11 +160,7 @@ public class NewHeroIPPanel extends ChronosPanel
 
     int pad = Mainframe.PAD;
     Border matte = BorderFactory.createMatteBorder(pad, pad, pad, pad, Color.WHITE);
-    // Border titledBorder = BorderFactory.createTitledBorder(matte, PANEL_TITLE,
-    // TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION);
-    // setBorder(titledBorder);
     setBorder(matte);
-    // _backColor = Constants.MY_BROWN;
     setBackground(_backColor);
 
     // Define context controls
@@ -214,25 +208,6 @@ public class NewHeroIPPanel extends ChronosPanel
 
   } // end NewHeroIPPanel constructor
 
-
-  // ============================================================
-  // Public Methods
-  // ============================================================
-
-
-  /**
-   * The name text field should have the default focus, but that cannot be done until after the
-   * panel is realized and visible. Therefore, the NewHeroPanel's caller (MenuBar.NEW Action) must
-   * invoke the default component. It calls this method to get which one should be default. This
-   * method is created for this because the caller does not know what fields are available in this
-   * panel, and it can change with maintenance.
-   */
-  public void setDefaultFocus()
-  {
-    _nameField.requestFocusInWindow();
-  }
-
-
   // ============================================================
   // Private Methods
   // ============================================================
@@ -275,16 +250,13 @@ public class NewHeroIPPanel extends ChronosPanel
       public void actionPerformed(ActionEvent event)
       {
         // Call the Civ to validate the attributes. If no errors, Hero is created and displayed
-        ErrorCode err = submit();
-        if (err == ErrorCode.NO_ERROR) {
+        EnumMap<HeroInput, String> input = submit();
+        if (input.size() > 0) {
           setVisible(false);
           // Create the new Hero and display it
-          Hero hero = _nhCiv.createHero(_input);
-          HeroDisplayCiv hDispCiv = new HeroDisplayCiv(_mf);
-          hDispCiv.displayHero(hero, true); // first time Hero needs true arg
-        } else {
-          // Display the message
-          showErrorMessage(err);
+           Hero hero = _nhCiv.createHero(input);
+           HeroDisplayCiv hDispCiv = new HeroDisplayCiv(_mfCiv);
+           hDispCiv.displayHero(hero, true);    // first time Hero needs true arg
         }
       }
     });
@@ -508,14 +480,13 @@ public class NewHeroIPPanel extends ChronosPanel
     if (error == ErrorCode.NAME_MISSING) {
       JOptionPane.showMessageDialog(null, ERRMSG_NAME_MISSING,
           HERO_ERROR_TITLE, JOptionPane.ERROR_MESSAGE);
-      _nameField.requestFocusInWindow();
     }
     // Display overly long name error, then set control to name field
     else if (error == ErrorCode.NAME_TOO_LONG) {
       JOptionPane.showMessageDialog(null, ERRMSG_NAME_TOO_LONG,
           HERO_ERROR_TITLE, JOptionPane.ERROR_MESSAGE);
-      _nameField.requestFocusInWindow();
     }
+    _nameField.requestFocusInWindow();
 
   }
 
@@ -524,19 +495,24 @@ public class NewHeroIPPanel extends ChronosPanel
    * 
    * @return One of the ErrorCode enum values (NO_ERROR if all went well)
    */
-  private ErrorCode submit()
+  private EnumMap<HeroInput, String> submit()
   {
-    _input = _nhCiv.getEmptyMap();
-    _input.put(HeroInput.NAME, _name);
-    _input.put(HeroInput.GENDER, _gender);
-    _input.put(HeroInput.HAIR, _hairColor);
-    _input.put(HeroInput.RACE, _raceName);
+    EnumMap<HeroInput, String> input = new EnumMap<HeroInput, String>(HeroInput.class);
+    input.put(HeroInput.NAME, _name);
+    input.put(HeroInput.GENDER, _gender);
+    input.put(HeroInput.HAIR, _hairColor);
+    input.put(HeroInput.RACE, _raceName);
     // Rogue is the pseudonym for the Thief class
     _klassName = (_klassName.equalsIgnoreCase("Rogue")) ? _klassName = "Thief" : _klassName;
-    _input.put(HeroInput.KLASS, _klassName);
+    input.put(HeroInput.KLASS, _klassName);
 
     // Call the Civ to validate. If good, Civ creates the Hero; else display error widget
-    return _nhCiv.validate(_input);
+    ErrorCode err = _nhCiv.validate(input);
+    if (err != ErrorCode.NO_ERROR) {
+      input.clear(); //empty input is a failure
+      showErrorMessage(err);
+    } 
+    return input;
   }
 
 

@@ -1,14 +1,30 @@
+
 package test.pdc.command;
 
-import test.integ.MainframeProxy;
+import java.util.ArrayList;
+import java.util.List;
+
 import civ.MainframeCiv;
 
 public class FakeMainframeCiv extends MainframeCiv
 {
-
-    public FakeMainframeCiv()
-    {
-        super(new MainframeProxy(), null, null);
-    }
-
+  List<String> _errors = new ArrayList<String>();
+  
+  @Override
+  protected void constructMembers()
+  {
+    // None to make :-)
+  }
+  
+  @Override
+  public void displayErrorText(String msg)
+  {
+    _errors.add(msg);
+  }
+  
+  @Override
+  public void quit()
+  {
+    // Don't exit the program!
+  }
 }

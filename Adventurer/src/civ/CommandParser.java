@@ -15,10 +15,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import chronos.pdc.Command.Command;
-import chronos.pdc.Command.Scheduler;
 import pdc.command.CommandFactory;
 import pdc.command.CommandInput;
+import chronos.pdc.Command.Command;
+import chronos.pdc.Command.Scheduler;
 
 /**
  * Receives a user input string from the command window and converts it to a command object, which
@@ -38,15 +38,13 @@ import pdc.command.CommandInput;
  */
 public class CommandParser
 {
-  private String _userInput = ""; // buffer to hold user input string
-
   private final CommandFactory _factory;
 
   /** Start the Scheduler up when the CommandParser starts */
-  static private Scheduler _skedder = null;
+  private final Scheduler _skedder;
 
-  /** All commands and the Parser send error and user messages this "device" */
-  private MainActionCiv _mainActionCiv;
+//  /** All commands and the Parser send error and user messages this "device" */
+//  private MainActionCiv _mainActionCiv;
 
   // ============================================================
   // Constructors and constructor helpers
@@ -55,16 +53,16 @@ public class CommandParser
   /**
    * Creates the singleton CommandParser, and connects to the {@code CommandFactory} and the
    * {@code MainframeCiv} for displaying parser output to {@code IOPanel}.
+   * @param _fakeSkedder 
    * 
    * @param skedder Command Scheduler executes the commands
    * @param factory the CommandFactory for creating commands
    * @param mac to receive all messages that go to the user
    * 
    */
-  // public CommandParser(Scheduler skedder, CommandFactory factory)
-  public CommandParser(CommandFactory factory)
+  public CommandParser(Scheduler skedder, CommandFactory factory)
   {
-    _skedder = new Scheduler();
+    _skedder = skedder;
     _factory = factory;
   }
 
@@ -81,7 +79,6 @@ public class CommandParser
    */
   public boolean receiveCommand(String textIn)
   {
-    _userInput = textIn;
     CommandInput cmdInput = createCommandInput(textIn);
     Command cmd = _factory.createCommand(cmdInput);
 
@@ -104,22 +101,6 @@ public class CommandParser
 
     return new CommandInput(commandToken, tokens);
   }
-
-
-  // ============================================================
-  // Mock inner class
-  // ============================================================
-  public class MockCP
-  {
-    /** Get the input command */
-    public String getInput()
-    {
-      return CommandParser.this._userInput;
-    }
-
-  } // end of MockCP inner class
-
-
 
 } // end of CommandParser class
 

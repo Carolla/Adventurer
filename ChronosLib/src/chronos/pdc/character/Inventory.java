@@ -7,7 +7,7 @@
  * by email: acline@carolla.com
  */
 
-package pdc;
+package chronos.pdc.character;
 
 import java.io.Serializable;
 import java.util.ArrayList;

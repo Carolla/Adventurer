@@ -16,6 +16,7 @@ import java.util.List;
 
 import chronos.pdc.Command.Command;
 import civ.BuildingDisplayCiv;
+import civ.MainframeCiv;
 
 
 /**
@@ -52,18 +53,17 @@ public class CmdQuit extends Command
   private final String ERRMSG_IN_BLDG = "To quit, you must be outside.";
 
   private final BuildingDisplayCiv _bdCiv;
-//  private final MainframeCiv _mfCiv;
+  private final MainframeCiv _mfCiv;
 
   // ============================================================
   // CONSTRUCTOR(S) AND RELATED METHODS
   // ============================================================
 
   /** Constructor called by the CommandFactory. There is no delay nor duration. */
-//  public CmdQuit(MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
-  public CmdQuit(BuildingDisplayCiv bdCiv)
+  public CmdQuit(MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
   {
     super("CmdQuit", DELAY, DURATION, CMD_DESCRIPTION, null);
-//    _mfCiv = mfCiv;
+    _mfCiv = mfCiv;
     _bdCiv = bdCiv;
   }
 
@@ -86,10 +86,10 @@ public class CmdQuit extends Command
       _isInitialized = true;
       return true;
     } else if ((args.size() == 0) && (_bdCiv.isInside() == true)) {
-//      _mfCiv.errorOut(ERRMSG_IN_BLDG);
+      _mfCiv.displayErrorText(ERRMSG_IN_BLDG);
       return false;
     } else {
-//      _mfCiv.errorOut(ERRMSG_OMIT_ARGS);
+      _mfCiv.displayErrorText(ERRMSG_OMIT_ARGS);
       return false;
     }
   }
@@ -102,7 +102,7 @@ public class CmdQuit extends Command
   @Override
   public boolean exec()
   {
-//    _mfCiv.quit();
+    _mfCiv.quit();
     return true;
   }
 

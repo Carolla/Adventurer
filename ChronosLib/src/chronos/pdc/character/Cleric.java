@@ -7,14 +7,13 @@
  * by email: acline@carolla.com
  */
 
-package pdc.character;
+package chronos.pdc.character;
 
 import java.util.List;
 
-import pdc.Inventory;
-import pdc.character.Hero.PrimeTraits;
 import chronos.pdc.Item;
 import chronos.pdc.MiscKeys.ItemCategory;
+import chronos.pdc.character.Hero.PrimeTraits;
 
 /**
  * @author Al Cline
@@ -50,13 +49,19 @@ public class Cleric extends Klass
     _initialHP = _freeHP;
     _goldDice = _startingGold;
   }
+  
+  @Override
+  public List<String> addKlassSpells(List<String> spellbook)
+  {
+    return addClericalSpells(spellbook);
+  }
 
-  public List<String> addClericalSpells(List<String> _spellBook)
+  public List<String> addClericalSpells(List<String> spellbook)
   {
     for (String s : _clericSpells) {
-      _spellBook.add(s);
+      spellbook.add(s);
     }
-    return _spellBook;
+    return spellbook;
   }
 
   @Override
