@@ -20,13 +20,17 @@ import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
 
-
+/**
+ * ShuttleList is a pop-up dialog for selecting party members when the Summon
+ * Heroes Button is activated.
+ * 
+ * @author unknown
+ *
+ */
 @SuppressWarnings("serial")
 public class ShuttleList extends JDialog
 {
-  /**
-   * Launch the application.
-   */
+  /* Code in main is for testing only */
   public static void main(String[] args)
   {
     try {
@@ -45,14 +49,23 @@ public class ShuttleList extends JDialog
       e.printStackTrace();
     }
   }
-
+  
+  
   private final JPanel _contentPanel = new JPanel();
+  
+  // List of Hero names that will appear on the left side of the dialog
   @SuppressWarnings("rawtypes")
   private final JList _leftList = new JList();
+  
+  // List of Hero names that will appear on the right side of the dialog
   @SuppressWarnings("rawtypes")
   private final JList _rightList = new JList();
+  
+  // Indicates the currently selected list between the "left" and "right" lists
   @SuppressWarnings("rawtypes")
   private JList _selectedList;
+  
+  // User buttons that appear on the dialog
   private JButton _okButton = new JButton("OK");
   private JButton _xferLeft = new JButton("<");
   private JButton _xferRight = new JButton(">");;
@@ -61,12 +74,17 @@ public class ShuttleList extends JDialog
    * Create a ShuttleList with a single list. When this dialog is displayed, user can manipulate the
    * selected items by placing them in the right side list.
    * 
-   * @param list the list of items to display
+   * @param list the list of Hero names
    */
   @SuppressWarnings({"unchecked", "rawtypes"})
   public ShuttleList(List<String> list)
   {
+	  // Set "left" list as currently selected
     _selectedList = _leftList;
+    
+    /*
+     * Display and operation settings for dialog
+     */
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     setBounds(100, 100, 525, 400);
     getContentPane().setLayout(new BorderLayout());
@@ -75,6 +93,8 @@ public class ShuttleList extends JDialog
     _contentPanel.setLayout(new MigLayout("",
         "[grow,sizegroup lists,center][][grow,sizegroup lists,center]",
         "[grow][]"));
+    
+    //TODO Dave split up sections and add comments below as makes sense to you
     {
       JPanel panel = new JPanel();
       _contentPanel.add(panel, "cell 0 0,grow");

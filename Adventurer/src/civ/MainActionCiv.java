@@ -51,6 +51,8 @@ public class MainActionCiv extends BaseCiv
   private MainframeCiv _mfCiv;
   private RegistryFactory _rf;
   
+//  private ArrayList<String> _partyHeros;
+  
   /** Controls left side and right side panels */
   private ChronosPanel _actionPanel;
   private ChronosPanel _imagePanel;
@@ -363,12 +365,13 @@ public class MainActionCiv extends BaseCiv
     button.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e)
       {
-        // if (_partyHeros.size() == 0) {
-        // // _summonableHeroes = _mfCiv.openDormitory();
-        // showPartyPickerWhenPartyEmpty();
-        // } else {
-        // showPartyPickerWhenMembersAlreadySelected();
-        // }
+//         _partyHeros = 
+//    	  if (_partyHeros.size() == 0) {
+//         // _summonableHeroes = _mfCiv.openDormitory();
+//         showPartyPickerWhenPartyEmpty();
+//         } else {
+//         showPartyPickerWhenMembersAlreadySelected();
+//         }
       }
 
       private void showPartyPickerWhenPartyEmpty()
