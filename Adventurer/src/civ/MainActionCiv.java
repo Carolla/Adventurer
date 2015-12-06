@@ -236,11 +236,12 @@ public class MainActionCiv extends BaseCiv {
 	private JButton createSummonHeroesButton() {
 		JButton button = createButtonWithTextAndIcon(HALL_IMAGE, "Summon Heroes");
 		button.addActionListener(new ActionListener() {
-			private List<Hero> _summonableHeroes;
+			HeroRegistry heroReg = (HeroRegistry) _rf.getRegistry(RegKey.HERO);
+			private List<Hero> summonableHeroes;
 
+			// This happens when SummonHeros is clicked
 			public void actionPerformed(ActionEvent e) {
-				HeroRegistry heroReg = (HeroRegistry) _rf.getRegistry(RegKey.HERO);
-				_summonableHeroes = heroReg.getAll();
+				summonableHeroes = heroReg.getAll();
 
 				if (_partyHeros.size() == 0) {
 					showPartyPickerWhenPartyEmpty();
@@ -251,21 +252,22 @@ public class MainActionCiv extends BaseCiv {
 
 			private void showPartyPickerWhenPartyEmpty() {
 				// padHeroes(_summonableHeroes);
-				final ShuttleList slist = new ShuttleList(_summonableHeroes);
+				final ShuttleList slist = new ShuttleList(summonableHeroes);
 				setPropsForShuttleList(slist);
 			}
 
 			private void showPartyPickerWhenMembersAlreadySelected() {
-				final ShuttleList slist = new ShuttleList(_summonableHeroes, _partyHeros);
+				final ShuttleList slist = new ShuttleList(summonableHeroes, _partyHeros);
 				setPropsForShuttleList(slist);
 			}
-
+			
+			// Additional settings for the ShuttleList
 			private void setPropsForShuttleList(final ShuttleList slist) {
 				slist.setTitle("Choose your Adventurers!");
 				slist.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						List<Hero> list = new ArrayList<Hero>();
-						for (Hero s : slist.getSelectedItems()) {
+						for (Hero s : slist.getSelectedHeroes(heroReg)) {
 							list.add(s);
 						}
 						_partyHeros = list;
