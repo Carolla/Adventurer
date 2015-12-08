@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mylib.ApplicationException;
+import mylib.Constants;
 import mylib.dmc.IRegistryElement;
 import mylib.pdc.MetaDie;
 import chronos.pdc.NPC;
@@ -62,15 +63,15 @@ public class Inn extends Building
   private int OPENTIME = 600;
   private int CLOSETIME = 2400;
 
-  /** Patrons start entering after these few minutes */
-  private final int MIN_DELAY = 3 * 60;
-  /** Last Patron enters after no more than an hour */
-  private final int MAX_DELAY = 60 * 60;
+  /** Patrons start entering right away */
+  private final int MIN_DELAY = 1;
+  /** Last Patron enters after no more than 6 hours */
+  private final int MAX_DELAY = (int) (6 * Constants.SECS_PER_HOUR);
 
-  /** Patrons stay at least 1 hour */
-  private final int MIN_DURATION = 1 * 60 * 60;
-  /** Patrons never stay longer than 12 hour*/
-  private final int MAX_DURATION = 12 * 60 * 60;
+  /** Patrons stay at least 10 minutes */
+  private final int MIN_DURATION = 10 * 60;
+  /** Patrons never stay longer than 2 hour*/
+  private final int MAX_DURATION = (int) (2 * Constants.SECS_PER_HOUR);
 
   /** Minimum number of patrons that indicate if the Inn is busy or not */
   private int NBR_PATRONS_TO_BE_BUSY = 3;
@@ -200,6 +201,7 @@ public class Inn extends Building
     return added;
   }
 
+  //TODO(timothyarm) When patrons leave, they should be rescheduled (if there is time?)
   @Override
   public boolean remove(NPC npc)
   {
