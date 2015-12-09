@@ -24,22 +24,31 @@ import org.junit.Test;
 import chronos.pdc.character.Hero;
 import civ.MainActionCiv;
 import civ.MainframeCiv;
-import hic.MainframeInterface;
 import mylib.MsgCtrl;
 
 
 /**
- * Use Case 3: Summon Hero <br>
- * The player selects an existing Hero from the Dormitory to activate and use for play.
+ * The player selects an existing Hero from the Dormitory to activate and use for play. <br>
+ * There are two parts to this test:
+ * <OL>
+ * <LI>The user requests to summon a hero from the dormitory, and gets a list of Heroes to choose
+ * from.</li>
+ * <LI>The user then selects one of the heroes. The hero is removed from the dormitory and his or
+ * her name plate (name, gender, klass, and race) is displayed as the title of the IOPanel.</li>
+ * </OL>
  * <P>
- * PRE: Hero exists in the Dormitory
+ * PRE-CONDITIONS: <P>
+ * At least one Hero exists in the Dormitory.
  * <P>
- * POST: Hero is not in the Dormitory, but active (can interact) with the game elements.
+ * POST-CONDITIONS:
+ * <UL>
+ * <LI>Hero is not in the Dormitory, but is active (can interact) with the game elements; AND</li>
+ * <li>The Hero's nameplate is displayed as title to the IOPanel.</li>
+ * </ul>
  * <P>
- * INPUT: Hero name selected
+ * INPUT: Name of selected Hero.
  * <P>
- * OUTPUT: Stats for the Hero selected (Hero Display)
- * <P>
+ * OUTPUT: Hero's nameplate
  * 
  * @author Al Cline
  * @version Dec 8, 2015 // original <br>
@@ -95,19 +104,17 @@ public class TA03a_SummonHero
 
   /** Get a list of all Heroes in the Dormitory. There should be at least three. */
   @Test
-  public void getHeroes()
+  public void getAllHeroes()
   {
     MsgCtrl.auditMsgsOn(true);
     MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
-    
-//    MainframeInterface mfProxy = (MainframeInterface) new MainframeProxy();
-//    MainActionCiv mac = new MainActionCiv(mfProxy, new MainframeCiv());
-//    assertNotNull(mac);
-//    ArrayList<Hero> heroList = mac.getAllHeroes();
-//    assertNotNull(heroList);
-    
-    
+
+    MainActionCiv mac = new MainActionCiv(new MainframeCiv());
+    assertNotNull(mac);
+    ArrayList<Hero> heroList = mac.getAllHeroes();
+    assertNotNull(heroList);
+
   }
 
 } // end of TA03a_SummonHero integration test
