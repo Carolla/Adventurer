@@ -39,7 +39,8 @@ import mylib.MsgCtrl;
  * her name plate (name, gender, klass, and race) is displayed as the title of the IOPanel.</li>
  * </OL>
  * <P>
- * PRE-CONDITIONS: <P>
+ * PRE-CONDITIONS:
+ * <P>
  * At least one Hero exists in the Dormitory.
  * <P>
  * POST-CONDITIONS:
@@ -67,9 +68,11 @@ public class TA03a_SummonHero
   {
     MsgCtrl.auditMsgsOn(true);
     MsgCtrl.errorMsgsOn(true);
-    MsgCtrl.msgln("setUpBeforeClass()");
-    
+
     setPreconditions();
+
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
   }
 
   /**
@@ -80,7 +83,14 @@ public class TA03a_SummonHero
   @AfterClass
   public static void tearDownAfterClass() throws Exception
   {
-    MsgCtrl.msgln("tearDownAfterClass()");
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+
+    verifyPostconditions();
+    unsetPreconditions();
+
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
   }
 
   /**
@@ -104,9 +114,9 @@ public class TA03a_SummonHero
   }
 
   // ==============================================================================
-  //  TESTS BEGIN
+  // TESTS BEGIN
   // ==============================================================================
-  
+
   /** Get a list of all Heroes in the Dormitory. There should be at least three. */
   @Test
   public void getAllHeroes()
@@ -122,13 +132,14 @@ public class TA03a_SummonHero
   }
 
   // ==============================================================================
-  //  Private helper
+  // Private helper
   // ==============================================================================
 
   /** At least one Hero exists in the Dormitory. */
   static private boolean setPreconditions()
   {
-    MsgCtrl.where("setPreconditions:");
+    MsgCtrl.msg("Setting pre-conditions: ");
+    MsgCtrl.msgln("\tAt least one Hero exists in the Dormitory.");
 
     HeroRegistry dorm = new HeroRegistry();
     assertNotNull(dorm);
@@ -136,7 +147,7 @@ public class TA03a_SummonHero
     MsgCtrl.msgln("Dormitory contains " + nbr + " Heroes");
     if (nbr > 0) {
       return false;
-    }    
+    }
     // Force three Heroes into the dorm
     try {
       Hero hero1 = new Hero("Falsoon", "male", "black", "Human", "Cleric");
@@ -151,12 +162,32 @@ public class TA03a_SummonHero
 
     List<Hero> heroList = dorm.getAll();
     MsgCtrl.msgln("Dormitory contains " + heroList.size() + " Heroes");
-    for (int k=0; k < nbr; k++) {
+    for (int k = 0; k < nbr; k++) {
       MsgCtrl.msgln("\t" + heroList.get(k).getName());
     }
 
     return true;
 
   }
+
+
+  /** The dormitory is returned to its original size and the test hero is removed */
+  static private void unsetPreconditions()
+  {
+    MsgCtrl.msg("Unsetting pre-conditions: ");
+    MsgCtrl.msgln("\tThe dormitory is returned to its original size and the test hero is removed.");
+  }
+
+
+  /**
+   * Test Hero is not in the Dormitory, but is active (can interact) with the game elements
+   */
+  static private void verifyPostconditions()
+  {
+    MsgCtrl.msgln("Verifying post-conditions: ");
+    MsgCtrl.msgln("\tTest Hero is not in the Dormitory but is active in the game");
+  }
+
+
 
 } // end of TA03a_SummonHero integration test
