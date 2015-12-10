@@ -14,6 +14,7 @@ package test.integ;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -22,6 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.pdc.character.Hero;
+import chronos.pdc.registry.HeroRegistry;
 import civ.MainActionCiv;
 import civ.MainframeCiv;
 import mylib.MsgCtrl;
@@ -43,19 +45,18 @@ import mylib.MsgCtrl;
  * POST-CONDITIONS:
  * <UL>
  * <LI>Hero is not in the Dormitory, but is active (can interact) with the game elements; AND</li>
- * <li>The Hero's nameplate is displayed as title to the IOPanel.</li>
+ * <li>The Hero's name, gender, klass, and race is displayed as title to the IOPanel.</li>
  * </ul>
  * <P>
  * INPUT: Name of selected Hero.
  * <P>
- * OUTPUT: Hero's nameplate
+ * OUTPUT: Hero's "name plate" (name, gender, klass, and race)
  * 
  * @author Al Cline
  * @version Dec 8, 2015 // original <br>
  */
 public class TA03a_SummonHero
 {
-
   /**
    * Puts three Heroes into the Dormitory to provide a selection base
    * 
@@ -67,8 +68,9 @@ public class TA03a_SummonHero
     MsgCtrl.auditMsgsOn(true);
     MsgCtrl.errorMsgsOn(true);
     MsgCtrl.msgln("setUpBeforeClass()");
+    
+    setPreconditions();
   }
-
 
   /**
    * Removes all test Heroes from the Dormitory to provide a selection base
@@ -101,7 +103,10 @@ public class TA03a_SummonHero
     MsgCtrl.errorMsgsOn(false);
   }
 
-
+  // ==============================================================================
+  //  TESTS BEGIN
+  // ==============================================================================
+  
   /** Get a list of all Heroes in the Dormitory. There should be at least three. */
   @Test
   public void getAllHeroes()
@@ -114,6 +119,43 @@ public class TA03a_SummonHero
     assertNotNull(mac);
     ArrayList<Hero> heroList = mac.getAllHeroes();
     assertNotNull(heroList);
+  }
+
+  // ==============================================================================
+  //  Private helper
+  // ==============================================================================
+
+  /** At least one Hero exists in the Dormitory. */
+  static private boolean setPreconditions()
+  {
+    MsgCtrl.where("setPreconditions:");
+
+    HeroRegistry dorm = new HeroRegistry();
+    assertNotNull(dorm);
+    int nbr = dorm.getNbrElements();
+    MsgCtrl.msgln("Dormitory contains " + nbr + " Heroes");
+    if (nbr > 0) {
+      return false;
+    }    
+    // Force three Heroes into the dorm
+    try {
+      Hero hero1 = new Hero("Falsoon", "male", "black", "Human", "Cleric");
+      Hero hero2 = new Hero("Galadriel", "female", "blonde", "Elf", "Thief");
+      Hero hero3 = new Hero("Blonk", "male", "black", "Dwarf", "Fighter");
+      dorm.save(hero1);
+      dorm.save(hero2);
+      dorm.save(hero3);
+    } catch (Exception ex) {
+      MsgCtrl.errMsgln(ex.getMessage());
+    }
+
+    List<Hero> heroList = dorm.getAll();
+    MsgCtrl.msgln("Dormitory contains " + heroList.size() + " Heroes");
+    for (int k=0; k < nbr; k++) {
+      MsgCtrl.msgln("\t" + heroList.get(k).getName());
+    }
+
+    return true;
 
   }
 

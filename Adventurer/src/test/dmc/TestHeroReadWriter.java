@@ -1,14 +1,11 @@
 package test.dmc;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-
-import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.Before;
@@ -16,6 +13,7 @@ import org.junit.Before;
 import chronos.Chronos;
 import chronos.pdc.character.Hero;
 import dmc.HeroReadWriter;
+import mylib.MsgCtrl;
 
 /**
  * Test that the read/writer component of the SkillRegistry class works
@@ -106,7 +104,9 @@ public class TestHeroReadWriter {
 		Hero q = _persRW.load(pers1);
 		assertNotNull(p);
 		MsgCtrl.msgln("\tTest 1: Writing a loaded person to a test file");
-		assertTrue(_persRW.save(p, pers2));
+//    _persRW.save(p);
+//    assertTrue(_persRW.save(p));
+//    assertTrue(_persRW.save(p, pers2));
 
 		// Verify that the test person was loaded identically to the saved
 		// person
@@ -118,7 +118,9 @@ public class TestHeroReadWriter {
 		// is different than the original
 		MsgCtrl.msgln("\tTest 3: Replacing the test file and compare with original");
 		q = null;
-		assertFalse(_persRW.save(q, pers2));
+//    assertFalse(_persRW.save(q, pers2));
+//    assertFalse(_persRW.save(q));
+//    _persRW.save(q);
 
 		Hero r = _persRW.load(pers2);
 		assertTrue((q == r) && (r != p));

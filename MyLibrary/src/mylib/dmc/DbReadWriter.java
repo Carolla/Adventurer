@@ -52,7 +52,6 @@ public class DbReadWriter<E extends IRegistryElement>
     if (filepath == null) {
       throw new NullPointerException();
     }
-
     _regPath = filepath;
   }
 
@@ -210,12 +209,11 @@ public class DbReadWriter<E extends IRegistryElement>
   /**
    * Gets one or more of elements that match the predicate provided.
    * 
-   * @param pred predicate objet containing the comparison function to match for retrieval
+   * @param pred predicate object containing the comparison function to match for retrieval
    * @return the list of elements that match the predicate provided; else returns null.
    */
   public List<E> query(Predicate<E> pred)
   {
-
     List<E> elementList = new ArrayList<E>();
     // Guards: db and predicate must exist
     if (pred == null) {
@@ -231,6 +229,7 @@ public class DbReadWriter<E extends IRegistryElement>
       objectContanier.close();
     }
   }
+
 
   /**
    * Set the database to ReadOnly (true) or ReadWrite (false), depending on the parm. Reset the

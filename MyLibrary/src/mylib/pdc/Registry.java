@@ -12,11 +12,11 @@ package mylib.pdc;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.db4o.query.Predicate;
+
 import mylib.ApplicationException;
 import mylib.dmc.DbReadWriter;
 import mylib.dmc.IRegistryElement;
-
-import com.db4o.query.Predicate;
 
 /**
  * The base class for all Registries, contains component {@code DbReadWriter}. All derived
@@ -255,7 +255,6 @@ public abstract class Registry<E extends IRegistryElement>
     if ((name == null) || (name.trim().length() == 0)) {
       return null;
     }
-    
     E regElem = getFromMemory(name);
     if (regElem != null) {
       return regElem;

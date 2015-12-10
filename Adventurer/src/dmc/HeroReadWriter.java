@@ -9,16 +9,17 @@
 
 package dmc;
 
-import java.util.ArrayList;
-
-import mylib.MsgCtrl;
-import chronos.Chronos;
-import chronos.pdc.character.Hero;
+import java.util.List;
 
 import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
 import com.db4o.query.Query;
+
+import chronos.Chronos;
+import chronos.pdc.character.Hero;
+import chronos.pdc.registry.HeroRegistry;
+import mylib.MsgCtrl;
 
 /**
  * Handles Hero serializations from Hero files.
@@ -28,6 +29,7 @@ import com.db4o.query.Query;
  *          Nov 27 2008 // removed intermediate class and inserted SAXStream directly <br>
  *          Feb 22 2009 // updated for Adventurer module and Hero class <br>
  *          Mar 5 2009 // revised for serialization instead of XML file <br>
+ *          Dec 9 2015 // added getAllHeroes() for integration testing <br>
  */
 public class HeroReadWriter
 {
@@ -51,11 +53,16 @@ public class HeroReadWriter
   static public final String KLASS_ELEMENT = "Klass";
   static public final String KLASSNAME_ATTRIB = "klassname";
 
+  /** DbReadWriter interface to the OODBMS */
+  private HeroRegistry _dorm;
+  
   /**
    * Receive Hero PDC object so that this loader has back-reference to its owner.
    */
   public HeroReadWriter()
-  {}
+  {
+    _dorm = new HeroRegistry();
+  }
 
   public boolean delete(Hero p)
   {
@@ -189,77 +196,86 @@ public class HeroReadWriter
     return true;
   }
 
-  /**
-   * Serialize the Hero to a file, using his/her name. A Hero_EXT suffix is added when saving to the
-   * file system The Klass and Race will be stored with it as components. The Inventory for the Hero
-   * is saved with the Hero.
-   * 
-   * @param p Hero object to serialize
-   * @param pName filename only; path will be expanded
-   * @return false if the Hero exists, else return true for no errors
-   */
-  public boolean save(Hero p, String pName)
-  {
-    // Guards against bad input
-    if (p == null) {
-      return false;
-    }
-    if ((pName == null) || (pName.trim().length() == 0)) {
-      return false;
-    }
+//  /**
+//   * Serialize the Hero to a file, using his/her name. A Hero_EXT suffix is added when saving to the
+//   * file system The Klass and Race will be stored with it as components. The Inventory for the Hero
+//   * is saved with the Hero.
+//   * 
+//   * @param p Hero object to serialize
+//   * @param pName filename only; path will be expanded
+//   * @return false if the Hero exists, else return true for no errors
+//   */
+//  // public boolean save(Hero p, String pName)
+//  public boolean save(Hero p)
+//  {
+//    // Guards against bad input
+//    if (p == null) {
+//      return false;
+//    }
+//    // if ((pName == null) || (pName.trim().length() == 0)) {
+//    // return false;
+//    // }
+//
+//    // Check if the Hero exists
+//    ObjectContainer db =
+//        Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), Chronos.PersonRegPath);
+//    try {
+//      // Now retrieve that Hero from the database
+//      Query query = db.query();
+//      query.constrain(Hero.class);
+//      query.descend("_name").constrain(p.getName());
+//      ObjectSet<Hero> result = query.execute();
+//
+//      // Return false, prompting for overwrite if Hero exists
+//      if (result.size() > 0) {
+//        return false;
+//      } else {
+//        db.store(p);
+//      }
+//    } finally {
+//      db.close();
+//    }
+//    return true;
+//  }
 
-    // Check if the Hero exists
-    ObjectContainer db =
-        Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), Chronos.PersonRegPath);
-    try {
-      // Now retrieve that Hero from the database
-      Query query = db.query();
-      query.constrain(Hero.class);
-      // TODO: remove hard-coded reference to _name field
-      query.descend("_name").constrain(pName);
-      ObjectSet<Hero> result = query.execute();
+  
+//  public void save(Hero p) 
+//  {
+//    _dorm.addElement(p);
+//  }
+  
 
-      // Return false, prompting for overwrite if Hero exists
-      if (result.size() > 0) {
-        return false;
-      } else {
-        db.store(p);
-      }
-    } finally {
-      db.close();
-    }
-    return true;
-  }
-
-  /**
-   * Return a list of all the names of people saved in the dormitory
-   * 
-   * @return a list of the names of all the characters in the dormitory
-   */
-  public ArrayList<String> wakePeople()
-  {
-    ArrayList<String> sleepers = new ArrayList<String>();
-    ObjectContainer db =
-        Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), Chronos.PersonRegPath);
-    try {
+//  /**
+//   * Return a list of all the Hero objects in the dormitory
+//   * 
+//   * @return the Hero list
+//   */
+//  public List<Hero> getAllHeroes()
+//  {
+//    List<Hero> heroes = _dbrw.getAll(Hero);
+//
+    // ArrayList<Hero> sleepers = new ArrayList<Hero>();
+//    List<Hero> heroes;
+//    ObjectContainer db =
+//        Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), Chronos.PersonRegPath);
+//    try {
+//      heroes = db.query(Hero.class);
       // Make a new query
-      Query query = db.query();
-
-      // Restrict it to the Hero class
-      query.constrain(Hero.class);
-      ObjectSet<Hero> result = query.execute();
-
-      // Get all the names of the people in the database
-      if (result.size() > 0) {
-        for (Hero p : result) {
-          sleepers.add(p.getName());
-        }
-      }
-    } finally {
-      db.close();
-    }
-    return sleepers;
-  }
+      // Query query = db.query();
+      // // Restrict it to the Hero class
+      // query.constrain(Hero.class);
+      // result = query.execute();
+      // // Get all the names of the people in the database
+      // if (result.size() > 0) {
+      // for (Hero p : result) {
+      // sleepers.add(p);
+      // }
+      // }
+//    } finally {
+//      db.close();
+//    }
+//    return heroes;
+//  }
 
 } // end of HeroReadWriter class
 

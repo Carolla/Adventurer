@@ -10,8 +10,6 @@
 package civ;
 
 
-import hic.HeroDisplay;
-
 import java.util.EnumMap;
 import java.util.List;
 
@@ -22,7 +20,8 @@ import chronos.pdc.MiscKeys.ItemCategory;
 import chronos.pdc.Skill;
 import chronos.pdc.character.Hero;
 import chronos.pdc.character.Inventory;
-import dmc.HeroReadWriter;
+import chronos.pdc.registry.HeroRegistry;
+import hic.HeroDisplay;
 
 
 /**
@@ -235,11 +234,15 @@ public class HeroDisplayCiv extends BaseCiv
   public boolean savePerson(boolean overwrite)
   {
     boolean retflag = false;
-    HeroReadWriter dorm = new HeroReadWriter();
+//    HeroReadWriter dorm = new HeroReadWriter();
+    HeroRegistry dorm = new HeroRegistry();
     if (overwrite == false) {
-      retflag = dorm.save(_hero, _hero.getName());
+//      retflag = dorm.save(_hero, _hero.getName());
+//      dorm.save(_hero);
+      dorm.add(_hero);
+      retflag = true;
     } else {
-      retflag = dorm.overwrite(_hero, _hero.getName());
+//      retflag = dorm.overwrite(_hero, _hero.getName());
     }
     return retflag;
   }

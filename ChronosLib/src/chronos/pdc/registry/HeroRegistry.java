@@ -10,22 +10,20 @@
 
 package chronos.pdc.registry;
 
-import mylib.ApplicationException;
-import mylib.pdc.Registry;
 import chronos.Chronos;
 import chronos.pdc.character.Hero;
+import mylib.ApplicationException;
+import mylib.pdc.Registry;
 
 /**
- * Contains all Heros in the game. {@code HeroRegistry} is a singleton and is only
- * initialized once.
+ * Contains all Heros in the game.
  * 
  * @author Tim Armstrong
  * @version Mar 13, 2013 // original <br>
+ *          Dec 9 2015 // added a few interfacing methods to Registry <br>
  */
 public class HeroRegistry extends Registry<Hero>
 {
-
-
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
@@ -33,15 +31,15 @@ public class HeroRegistry extends Registry<Hero>
   /**
    * Init this Hero Registry
    */
-  protected HeroRegistry() 
+  public HeroRegistry()
   {
     super(Chronos.PersonRegPath);
   }
 
 
   /**
-   * Create the Hero Registry with the tables given (none), converting each element to a Hero
-   * object and saving it in the database.
+   * Create the Hero Registry with the tables given (none), converting each element to a Hero object
+   * and saving it in the database.
    */
   @Override
   public void initialize()
@@ -66,22 +64,12 @@ public class HeroRegistry extends Registry<Hero>
     return getUnique(name);
   }
 
-  // TODO: Do we really need this?
-//  /**
-//   * Retrieve multiple Heros
-//   * 
-//   * @param target the object to find in the database
-//   * @return the Hero List
-//   */
-//  public IRegistryElement> getHeroList(Hero target)
-//  {
-//    List<IRegistryElement> HeroSet = getAll();
-//    ArrayList<Hero> HeroList = new ArrayList<Hero>(HeroSet.size());
-//    for (Object o : HeroSet) {
-//      HeroList.add((Hero) o);
-//    }
-//    return HeroList;
-//  }
+
+  /** Save a Hero into the HeroRegistry */
+  public boolean save(Hero h)
+  {
+    return add(h);
+  }
 
 
   /*
@@ -89,21 +77,21 @@ public class HeroRegistry extends Registry<Hero>
    */
 
 
-//  @SuppressWarnings("serial")
-//  private final class HeroPredicate extends Predicate<Hero>
-//  {
-//    private final String name;
-//
-//    private HeroPredicate(String name)
-//    {
-//      this.name = name;
-//    }
-//
-//    public boolean match(Hero candidate)
-//    {
-//      return candidate.getName().equals(name);
-//    }
-//  }
+  // @SuppressWarnings("serial")
+  // private final class HeroPredicate extends Predicate<Hero>
+  // {
+  // private final String name;
+  //
+  // private HeroPredicate(String name)
+  // {
+  // this.name = name;
+  // }
+  //
+  // public boolean match(Hero candidate)
+  // {
+  // return candidate.getName().equals(name);
+  // }
+  // }
 
   // /** Load a table of Heros into the HeroRegistry
   // *
