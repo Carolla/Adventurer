@@ -11,8 +11,8 @@
 
 package chronos.pdc.Command;
 
+import chronos.civ.UserMsg;
 import chronos.pdc.GameClock;
-import civ.UserMsg;
 
 
 /**

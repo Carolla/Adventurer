@@ -9,6 +9,7 @@
 
 package civ;
 
+import chronos.civ.UserMsg;
 import hic.ChronosPanel;
 import hic.IOPanel;
 import hic.ImagePanel;

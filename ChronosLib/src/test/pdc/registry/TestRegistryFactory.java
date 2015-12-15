@@ -26,6 +26,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.Chronos;
+import chronos.civ.DefaultUserMsg;
 import chronos.pdc.Command.Scheduler;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
@@ -61,7 +62,7 @@ public class TestRegistryFactory
     @Before
     public void setUp() throws Exception
     {
-        skedder = new Scheduler();
+        skedder = new Scheduler(new DefaultUserMsg());
         _rf = new RegistryFactory(skedder);
         _rf.initRegistries();
         assertNotNull(_rf);

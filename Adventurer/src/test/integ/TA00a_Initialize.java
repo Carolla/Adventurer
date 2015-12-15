@@ -24,6 +24,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.Chronos;
+import chronos.civ.DefaultUserMsg;
 import chronos.pdc.Command.Scheduler;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
@@ -55,7 +56,7 @@ public class TA00a_Initialize
   @BeforeClass
   public static void setUpBeforeClass()
   {
-      _rf = new RegistryFactory(new Scheduler());
+      _rf = new RegistryFactory(new Scheduler(new DefaultUserMsg()));
       _rf.initRegistries();
   }
 
@@ -102,7 +103,7 @@ public class TA00a_Initialize
     deleteRegistryFiles();
 
     // DO create the registries
-    _rf = new RegistryFactory(new Scheduler());
+    _rf = new RegistryFactory(new Scheduler(new DefaultUserMsg()));
     _rf.initRegistries();
 
     // VERIFY all registry files created

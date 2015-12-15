@@ -9,6 +9,12 @@
 
 package civ;
 
+import hic.ChronosPanel;
+import hic.IOPanel;
+import hic.Mainframe;
+import hic.NewHeroIPPanel;
+import hic.ShuttleList;
+
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,9 +25,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
+import mylib.Constants;
+import net.miginfocom.swing.MigLayout;
+import pdc.command.CommandFactory;
 import chronos.Chronos;
 import chronos.pdc.Adventure;
-import chronos.pdc.Command.Command;
 import chronos.pdc.Command.Scheduler;
 import chronos.pdc.character.Hero;
 import chronos.pdc.registry.AdventureRegistry;
@@ -29,14 +37,6 @@ import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.HeroRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
-import hic.ChronosPanel;
-import hic.IOPanel;
-import hic.Mainframe;
-import hic.NewHeroIPPanel;
-import hic.ShuttleList;
-import mylib.Constants;
-import net.miginfocom.swing.MigLayout;
-import pdc.command.CommandFactory;
 
 /**
  * The main civ behind the Mainframe screen. It creates the MainActionPanel

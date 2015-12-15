@@ -21,6 +21,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Test;
 
+import chronos.civ.DefaultUserMsg;
 import chronos.pdc.Command.Scheduler;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
@@ -53,7 +54,7 @@ public class TA08_CmdEnter
     
     /** List of valid Buildings that can be entered */
     private List<String> _bldgs = null;
-    private static Scheduler _skedder = new Scheduler();
+    private static Scheduler _skedder = new Scheduler(new DefaultUserMsg());
     private static RegistryFactory _regFactory = new RegistryFactory(_skedder);
 
 //    /**

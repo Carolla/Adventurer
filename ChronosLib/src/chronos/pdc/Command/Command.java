@@ -14,7 +14,7 @@ package chronos.pdc.Command; // This package value is needed by the subcommands;
 import java.util.ArrayList;
 import java.util.List;
 
-import civ.UserMsg;
+import chronos.civ.UserMsg;
 
 /**
  * An abstract base class from which all Commands originate. All abstract services must be defined
