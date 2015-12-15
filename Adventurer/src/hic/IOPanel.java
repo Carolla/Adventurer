@@ -126,7 +126,7 @@ public class IOPanel extends ChronosPanel
    */
   public void displayText(String msg)
   {
-    displayText(Constants.NEWLINE + msg + Constants.NEWLINE, null);
+    displayText(Constants.NEWLINE + msg, null);
   }
 
   @Override
