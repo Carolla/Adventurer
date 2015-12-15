@@ -99,6 +99,7 @@ public class CommandFactory
       Supplier<Command> supplier = _commandMap.get(cmdInput.commandToken);
       if (supplier != null) {
         command = supplier.get();
+        command.setOutput(_mfCiv);
       }
       // Check that the parms are valid for this command
       if (command.init(cmdInput.parameters) == false) {

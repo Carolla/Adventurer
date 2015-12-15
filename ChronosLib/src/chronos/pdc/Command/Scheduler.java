@@ -11,6 +11,9 @@
 
 package chronos.pdc.Command;
 
+import chronos.pdc.GameClock;
+import civ.UserMsg;
+
 
 /**
  * This {@code Scheduler} singleton is implemented with {@code DeltaCmdList}, a delta priority queue
@@ -34,14 +37,17 @@ public class Scheduler
 {
     /** Internal references: command events are queued here */
     private DeltaCmdList _dq;
+    private UserMsg _output;
 
     /**
      * Creates the {@code Scheduler} and its components. However, if a {@code Scheduler} does not
      * exist, it cannot be created without a {@code CommandParser} (parm), so null is returned.
+     * @param _mfCiv 
      */
-    public Scheduler()
+    public Scheduler(UserMsg output)
     {
         _dq = new DeltaCmdList();
+        _output = output;
     }
 
     /**
@@ -66,12 +72,17 @@ public class Scheduler
      */
     public void doOneUserCommand()
     {
+        GameClock clock = GameClock.getInstance();
         Command cmdToDo = _dq.getNextCmd();
         while (cmdToDo.isInternal()) {
             cmdToDo.exec();
+            clock.increment(cmdToDo.getDuration());
+            
             cmdToDo = _dq.getNextCmd();
         }
         cmdToDo.exec();
+        clock.increment(cmdToDo.getDuration());
+        _output.displayText("Time: " + clock.getFormattedTime());
     }
 
 

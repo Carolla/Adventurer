@@ -21,6 +21,7 @@ import javax.swing.JOptionPane;
 
 import chronos.Chronos;
 import chronos.pdc.Adventure;
+import chronos.pdc.Command.Command;
 import chronos.pdc.Command.Scheduler;
 import chronos.pdc.character.Hero;
 import chronos.pdc.registry.AdventureRegistry;
@@ -91,7 +92,7 @@ public class MainActionCiv extends BaseCiv {
 	}
 
 	protected void constructMembers() {
-		_skedder = new Scheduler(); // Skedder first for injection
+		_skedder = new Scheduler(_mfCiv); // Skedder first for injection
 
 		_rf = new RegistryFactory(_skedder);
 		_rf.initRegistries();

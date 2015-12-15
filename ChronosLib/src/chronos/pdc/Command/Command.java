@@ -14,6 +14,8 @@ package chronos.pdc.Command; // This package value is needed by the subcommands;
 import java.util.ArrayList;
 import java.util.List;
 
+import civ.UserMsg;
+
 /**
  * An abstract base class from which all Commands originate. All abstract services must be defined
  * in the subclass commands. All derived commands are assumed to be in the same package as this
@@ -83,7 +85,7 @@ public abstract class Command
     protected boolean _isInitialized = false;
 
     /** Every command sends user messages to this object */
-    protected Object _output;
+    protected UserMsg _output;
     
     // ============================================================
     // PUBLIC METHODS
@@ -116,9 +118,9 @@ public abstract class Command
         _parms = new ArrayList<String>();
     }
 
-    public void setOutput(Object mac) 
+    public void setOutput(UserMsg output) 
     {
-      _output = mac;
+      _output = output;
     }
     
     

@@ -26,7 +26,7 @@ import hic.MainframeInterface;
  *          Nov 7, 2015 // re-architected HIC.Mainframe to separate better CIV.MainframeCiv <br>
  *          Nov 13, 2015 // allow BuildingDisplayCiv to talk to this object. <br>
  */
-public class MainframeCiv extends BaseCiv
+public class MainframeCiv extends BaseCiv implements UserMsg
 {
   private MainframeInterface _mf;
   private IOPanel _ioPanel;
@@ -71,11 +71,13 @@ public class MainframeCiv extends BaseCiv
     }
   }
 
+  @Override
   public void displayText(String result)
   {
     _ioPanel.displayText(result);
   }
 
+  @Override
   public void displayErrorText(String msg)
   {
     _ioPanel.displayErrorText(msg);
