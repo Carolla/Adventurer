@@ -13,7 +13,6 @@ package test.integ;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.After;
@@ -127,7 +126,7 @@ public class TA03a_SummonHero
 
     MainActionCiv mac = new MainActionCiv(new MainframeCiv());
     assertNotNull(mac);
-    ArrayList<Hero> heroList = mac.getAllHeroes();
+    List<Hero> heroList = mac.getAllHeroes();
     assertNotNull(heroList);
   }
 

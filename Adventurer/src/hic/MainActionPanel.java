@@ -185,7 +185,6 @@ public class MainActionPanel extends ChronosPanel
   {
     JButton button = createButtonWithTextAndIcon(HALL_IMAGE, "Summon Heroes");
     button.addActionListener(new ActionListener() {
-      // HeroRegistry heroReg = (HeroRegistry) _rf.getRegistry(RegKey.HERO);
       HeroRegistry heroReg = _mac.getDormitory();
       private List<Hero> summonableHeroes;
 
