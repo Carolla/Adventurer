@@ -30,6 +30,7 @@ import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import hic.ChronosPanel;
 import hic.IOPanel;
+import hic.MainActionPanel;
 import hic.Mainframe;
 import hic.NewHeroIPPanel;
 import hic.ShuttleList;
@@ -81,7 +82,7 @@ public class MainActionCiv extends BaseCiv
    * @param frame owner of the widget for which this civ applies
    * @param personRW supports the Summon Hero and Create Hero buttons
    */
-  public MainActionCiv(MainframeCiv mfciv)
+  public MainActionCiv(MainActionPanel map, MainframeCiv mfciv)
   {
     _mfCiv = mfciv;
     constructMembers();

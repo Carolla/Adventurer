@@ -58,7 +58,6 @@ import net.miginfocom.swing.MigLayout;
 @SuppressWarnings("serial")
 public class Mainframe extends JFrame implements MainframeInterface, IHelpText
 {
-
   /** Width of the platform user's window frame */
   private static int USERWIN_WIDTH;
   /** Height of the platform user's window frame */
@@ -72,8 +71,7 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
   private ChronosPanel _leftHolder;
   /** Empty right-side panel holder for initial standard panels. */
   private ChronosPanel _rightHolder;
-  
-  
+    
   /** Keep panel states to return to in case CANCEL is hit */
   private Deque<ChronosPanel> _leftPanelStack = new ArrayDeque<ChronosPanel>(5);
   private Deque<ChronosPanel> _rightPanelStack = new ArrayDeque<ChronosPanel>(5);
@@ -125,6 +123,12 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     // Display the Mainframe and panels now
     setVisible(true);
     redraw();
+    
+    // Create this frame's handler
+    _mfCiv = new MainframeCiv(this);
+    
+    // Create the panel for the main buttons with access to the mainframe's handler too 
+    MainActionPanel map = new MainActionPanel(this, _mfCiv);    
   }
 
 

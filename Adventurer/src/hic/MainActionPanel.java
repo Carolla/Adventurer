@@ -44,9 +44,9 @@ import net.miginfocom.swing.MigLayout;
 public class MainActionPanel extends ChronosPanel
 {
   private MainActionCiv _mac;
-  private Mainframe _mf;
+  private MainframeInterface _mf;
   private MainframeCiv _mfCiv;
-  
+
   private List<Hero> _partyHeros = new ArrayList<Hero>();
 
   /** Controls left side and right side panels */
@@ -62,10 +62,10 @@ public class MainActionPanel extends ChronosPanel
   private final String HALL_IMAGE = "icn_HallOfHeroes.jpg";
   private final String ADV_IMAGE = "icn_Town.jpg";
 
-   private final String INITIAL_IMAGE = "ChronosLogo.jpg";
-   private final String INITIAL_IMAGE_TITLE = "Chronos Logo";
+  private final String INITIAL_IMAGE = "ChronosLogo.jpg";
+  private final String INITIAL_IMAGE_TITLE = "Chronos Logo";
 
-  
+
   // ============================================================
   // Constructor and constructor helper methods
   // ============================================================
@@ -75,20 +75,21 @@ public class MainActionPanel extends ChronosPanel
    * Hero, or Create a new Hero.
    * 
    * @param mac civ to handle data
-   * @param mg  reference to frame that displays resulting input and output panels
+   * @param mg reference to frame that displays resulting input and output panels
    */
-  public MainActionPanel(MainActionCiv mac, Mainframe mf, MainframeCiv mfciv)
+  public MainActionPanel(MainframeInterface mf, MainframeCiv mfciv)
   {
     super(INITIAL_OPENING_TITLE);
-    _mac = mac;
     _mf = mf;
     _mfCiv = mfciv;
-    
+
+    _mac = new MainActionCiv(this, _mfCiv);
+
     JButton adventureButton = createAdventureButton();
     JButton summonButton = createSummonHeroesButton();
     JButton creationButton = createNewHeroButton();
 
-     _actionPanel = new ChronosPanel(INITIAL_OPENING_TITLE);
+    _actionPanel = new ChronosPanel(INITIAL_OPENING_TITLE);
 
     // Align all buttons in a single column
     _actionPanel.setLayout(new MigLayout("wrap 1"));
@@ -107,11 +108,11 @@ public class MainActionPanel extends ChronosPanel
 
   private void setActivePanel()
   {
-     _mf.replaceLeftPanel(_actionPanel);
-     _mfCiv.displayImage(INITIAL_IMAGE_TITLE, INITIAL_IMAGE);
-//     ChronosPanel actionPanel = new MainActionPanel(this);
-     _mf.replaceLeftPanel(_actionPanel);
-     _mfCiv.displayImage(INITIAL_IMAGE_TITLE, INITIAL_IMAGE);
+    _mf.replaceLeftPanel(_actionPanel);
+    _mfCiv.displayImage(INITIAL_IMAGE_TITLE, INITIAL_IMAGE);
+    // ChronosPanel actionPanel = new MainActionPanel(this);
+    _mf.replaceLeftPanel(_actionPanel);
+    _mfCiv.displayImage(INITIAL_IMAGE_TITLE, INITIAL_IMAGE);
   }
 
 
@@ -136,8 +137,8 @@ public class MainActionPanel extends ChronosPanel
                 JOptionPane.INFORMATION_MESSAGE, null, adventuresArr, adventuresArr[0]);
         if (selectedValue != null) {
           _mac.loadSelectedAdventure(selectedValue.toString().trim());
-          // Create the image panel and civ for the town          
-          // Create the IOPanel and civ for the 
+          // Create the image panel and civ for the town
+          // Create the IOPanel and civ for the
         }
       }
     });
@@ -147,18 +148,18 @@ public class MainActionPanel extends ChronosPanel
   // ============================================================
   // Public methods:
   // ============================================================
-  
+
   // NONE
-  
+
   // ============================================================
   // Private methods:
   // ============================================================
-  
+
   private JButton createButtonWithTextAndIcon(String imageFilePath, String buttonText)
   {
     JButton button = new JButton(buttonText);
     button.setBackground(Constants.MY_BROWN);
-  
+
     button.setFont(Chronos.STANDARD_FONT);
     button.setIcon(new ImageIcon(Chronos.ADV_IMAGE_PATH + imageFilePath));
     button.setIconTextGap(40);
@@ -179,7 +180,7 @@ public class MainActionPanel extends ChronosPanel
     return button;
   }
 
-  
+
   /* This button code is followed by a series of inner methods */
   private JButton createSummonHeroesButton()
   {
