@@ -11,9 +11,12 @@ public class FakeMainframeCiv extends MainframeCiv
 {
   List<String> _errors = new ArrayList<String>();
 
-  /**
-   * @param mf
-   */
+  public FakeMainframeCiv()
+  {
+    super(null);
+  }
+  
+
   public FakeMainframeCiv(MainframeInterface mf)
   {
     super(mf);
