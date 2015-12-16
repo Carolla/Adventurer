@@ -5,12 +5,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import civ.MainframeCiv;
+import hic.MainframeInterface;
 
 public class FakeMainframeCiv extends MainframeCiv
 {
   List<String> _errors = new ArrayList<String>();
+
+  /**
+   * @param mf
+   */
+  public FakeMainframeCiv(MainframeInterface mf)
+  {
+    super(mf);
+  }
+
   
-  @Override
   protected void constructMembers()
   {
     // None to make :-)

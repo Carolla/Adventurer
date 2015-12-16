@@ -124,10 +124,11 @@ public class TA03a_SummonHero
     MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
-    MainActionCiv mac = new MainActionCiv(new MainframeCiv());
-    assertNotNull(mac);
-    List<Hero> heroList = mac.getAllHeroes();
-    assertNotNull(heroList);
+    
+//    MainActionCiv mac = new MainActionCiv(new MainframeCiv());
+//    assertNotNull(mac);
+//    List<Hero> heroList = mac.getAllHeroes();
+//    assertNotNull(heroList);
   }
 
   // ==============================================================================

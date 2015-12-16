@@ -254,13 +254,12 @@ public class MainActionCiv extends BaseCiv
   {
     JButton button = createButtonWithTextAndIcon(HALL_IMAGE, "Summon Heroes");
     button.addActionListener(new ActionListener() {
-      HeroRegistry heroReg = (HeroRegistry) _rf.getRegistry(RegKey.HERO);
       private List<Hero> summonableHeroes;
 
       // This happens when SummonHeros is clicked
       public void actionPerformed(ActionEvent e)
       {
-        summonableHeroes = heroReg.getAll();
+        summonableHeroes = _dorm.getAll();
 
         if (_partyHeros.size() == 0) {
           showPartyPickerWhenPartyEmpty();
@@ -290,7 +289,7 @@ public class MainActionCiv extends BaseCiv
           public void actionPerformed(ActionEvent arg0)
           {
             List<Hero> list = new ArrayList<Hero>();
-            for (Hero s : slist.getSelectedHeroes(heroReg)) {
+            for (Hero s : slist.getSelectedHeroes(_dorm)) {
               list.add(s);
             }
             _partyHeros = list;
