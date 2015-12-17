@@ -183,7 +183,8 @@ public class NewHeroIPPanel extends ChronosPanel
     // Create the input text field to collect the Hero's name give it default focus
     _nameField = makeNameField();
     add(_nameField, "push, align center, span");
-
+    _nameField.requestFocus();
+    
     /* THIS GRID POPULATES HORIZONTALLY: Save all Components for later data extraction */
     // Prompts for gender radio buttons and air color combo box */
     add(new JLabel(HERO_GENDER_PROMPT), "push, align center, gaptop 5%");

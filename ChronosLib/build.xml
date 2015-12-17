@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="ChronosLib">
+    <property environment="env"/>
+    <property name="Adventurer.location" value="../Adventurer"/>
+    <property name="ECLIPSE_HOME" value="../../../Applications/EclipseKepler"/>
+    <property name="junit.output.dir" value="junit"/>
+    <property name="MyLibrary.location" value="../MyLibrary"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.8"/>
+    <property name="source" value="1.8"/>
+    <path id="JUnit 4.libraryclasspath">
+        <pathelement location="../../../Applications/Eclipse.app/Contents/Eclipse/plugins/org.junit_4.12.0.v201504281640/junit.jar"/>
+        <pathelement location="../../../Applications/Eclipse.app/Contents/Eclipse/plugins/org.hamcrest.core_1.3.0.v201303031735.jar"/>
+    </path>
+    <path id="MyLibrary.classpath">
+        <pathelement location="${MyLibrary.location}/bin"/>
+        <pathelement location="${MyLibrary.location}/src/mylib/libResources/db4o-8.0.249.16098-core-java5.jar"/>
+        <pathelement location="${MyLibrary.location}/src/mylib/libResources/hamcrest-all-1.3.jar"/>
+        <pathelement location="${MyLibrary.location}/src/mylib/libResources/miglayout-3.7.3.1-swing.jar"/>
+        <path refid="JUnit 4.libraryclasspath"/>
+    </path>
+    <path id="ChronosLib.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="../MyLibrary/src/mylib/libResources/db4o-8.0.249.16098-core-java5.jar"/>
+        <pathelement location="../MyLibrary/src/mylib/libResources/hamcrest-all-1.3.jar"/>
+        <pathelement location="../MyLibrary/src/mylib/libResources/miglayout-3.7.3.1-swing.jar"/>
+        <path refid="MyLibrary.classpath"/>
+        <path refid="JUnit 4.libraryclasspath"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall">
+        <ant antfile="build.xml" dir="${MyLibrary.location}" inheritAll="false" target="clean"/>
+    </target>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects">
+        <ant antfile="build.xml" dir="${MyLibrary.location}" inheritAll="false" target="build-project">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+    </target>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="ChronosLib.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects">
+        <ant antfile="build.xml" dir="${Adventurer.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${Adventurer.location}" inheritAll="false" target="build">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+    </target>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+    <target name="BuildingsSuite">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="test.pdc.buildings.BuildingsSuite" todir="${junit.output.dir}"/>
+            <classpath refid="ChronosLib.classpath"/>
+        </junit>
+    </target>
+    <target name="Chronos">
+        <java classname="chronos.Chronos" failonerror="true" fork="yes">
+            <classpath refid="ChronosLib.classpath"/>
+        </java>
+    </target>
+    <target name="ChronosSuite">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="test.ChronosSuite" todir="${junit.output.dir}"/>
+            <classpath refid="ChronosLib.classpath"/>
+        </junit>
+    </target>
+    <target name="RegistrySuite">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="test.pdc.registry.RegistrySuite" todir="${junit.output.dir}"/>
+            <classpath refid="ChronosLib.classpath"/>
+        </junit>
+    </target>
+    <target name="TestRegistryFactory">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="test.pdc.registry.TestRegistryFactory" todir="${junit.output.dir}"/>
+            <classpath refid="ChronosLib.classpath"/>
+        </junit>
+    </target>
+    <target name="Town">
+        <java classname="chronos.pdc.Town" failonerror="true" fork="yes">
+            <classpath refid="ChronosLib.classpath"/>
+        </java>
+    </target>
+    <target name="junitreport">
+        <junitreport todir="${junit.output.dir}">
+            <fileset dir="${junit.output.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${junit.output.dir}"/>
+        </junitreport>
+    </target>
+</project>

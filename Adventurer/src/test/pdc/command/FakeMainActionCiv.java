@@ -8,16 +8,16 @@ public class FakeMainActionCiv extends MainActionCiv
 
     public FakeMainActionCiv()
     {
-        super(null, null);
+        super(null);
     }
 
-    @Override
+    
     protected void setActivePanel()
     {
       //Don't use nulls :-)
     }
     
-    @Override
+    
     protected ChronosPanel createActionPanel()
     {
       //Sit here

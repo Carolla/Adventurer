@@ -13,14 +13,14 @@ public class FakeMainframeCiv extends MainframeCiv
 
   public FakeMainframeCiv()
   {
-    super(null);
+    super();
   }
   
 
-  public FakeMainframeCiv(MainframeInterface mf)
-  {
-    super(mf);
-  }
+//  public FakeMainframeCiv(MainframeInterface mf)
+//  {
+//    super(mf);
+//  }
 
   
   protected void constructMembers()

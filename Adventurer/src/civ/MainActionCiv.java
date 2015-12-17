@@ -30,7 +30,6 @@ import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import hic.ChronosPanel;
 import hic.IOPanel;
-import hic.MainActionPanel;
 import hic.Mainframe;
 import hic.NewHeroIPPanel;
 import hic.ShuttleList;
@@ -52,11 +51,9 @@ public class MainActionCiv extends BaseCiv
   private HeroRegistry _dorm;
   private MainframeCiv _mfCiv;
   private RegistryFactory _rf;
+  private Scheduler _skedder;
 
   private List<Hero> _partyHeros;
-
-  /** Controls left side and right side panels */
-  private ChronosPanel _actionPanel;
 
   /** Amount of space in pixels around the frame and image of aesthetics */
   public static final int FRAME_PADDING = 90;
@@ -68,30 +65,24 @@ public class MainActionCiv extends BaseCiv
   private final String HALL_IMAGE = "icn_HallOfHeroes.jpg";
   private final String ADV_IMAGE = "icn_Town.jpg";
 
-  private final String INITIAL_IMAGE = "ChronosLogo.jpg";
-  private final String INITIAL_IMAGE_TITLE = "Chronos Logo";
-  private Scheduler _skedder;
-
   // ============================================================
   // Constructors and constructor helpers
   // ============================================================
 
   /**
-   * Create the Civ associated with the mainframe and main button panel
+   * Create the Civ to display and handle the MainActionPanel of buttons
    * 
-   * @param frame owner of the widget for which this civ applies
-   * @param personRW supports the Summon Hero and Create Hero buttons
+   * @param mfCiv handler for the mainframe
    */
-  public MainActionCiv(MainActionPanel map, MainframeCiv mfciv)
+  public MainActionCiv(MainframeCiv mfciv)
   {
     _mfCiv = mfciv;
-    constructMembers();
-
-    createActionPanel();
-    setActivePanel();
+    constructCoreMembers();
+    _mfCiv.replaceLeftPanel(createActionPanel());
   }
 
-  protected void constructMembers()
+  
+  private void constructCoreMembers()
   {
     _skedder = new Scheduler(_mfCiv); // Skedder first for injection
 
@@ -102,43 +93,50 @@ public class MainActionCiv extends BaseCiv
     _dorm = (HeroRegistry) _rf.getRegistry(RegKey.HERO);
   }
 
+  
   /**
    * Create the Adventure, Heroes, and Create-Hero buttons, and button panel for them
    */
-  protected ChronosPanel createActionPanel()
+  private ChronosPanel createActionPanel()
   {
     JButton adventureButton = createAdventureButton();
     JButton summonButton = createSummonHeroesButton();
     JButton creationButton = createNewHeroButton();
 
-    _actionPanel = new ChronosPanel(INITIAL_OPENING_TITLE);
+    ChronosPanel actionPanel = new ChronosPanel(INITIAL_OPENING_TITLE);
 
     // Align all buttons in a single column
-    _actionPanel.setLayout(new MigLayout("wrap 1"));
+    actionPanel.setLayout(new MigLayout("wrap 1"));
     Dimension frame = Mainframe.getWindowSize();
-    _actionPanel
-        .setPreferredSize(
-            new Dimension((int) (frame.width - FRAME_PADDING) / 2, frame.height - FRAME_PADDING));
-    _actionPanel.setBackground(Constants.MY_BROWN);
+    actionPanel.setPreferredSize(
+        new Dimension((int) (frame.width - FRAME_PADDING) / 2, frame.height - FRAME_PADDING));
+    actionPanel.setBackground(Constants.MY_BROWN);
 
     /** Buttons are at 25% to allow space for Command Line later */
-    _actionPanel.add(adventureButton, "hmax 25%, grow");
-    _actionPanel.add(summonButton, "hmax 25%, grow");
-    _actionPanel.add(creationButton, "hmax 25%, grow");
+    actionPanel.add(adventureButton, "hmax 25%, grow");
+    actionPanel.add(summonButton, "hmax 25%, grow");
+    actionPanel.add(creationButton, "hmax 25%, grow");
 
-    return _actionPanel;
+    return actionPanel;
   }
 
-  protected void setActivePanel()
+  
+  // ============================================================
+  // Public methods
+  // ============================================================
+
+  public void createHero()
   {
-    _mfCiv.replaceLeftPanel(_actionPanel);
-    _mfCiv.displayImage(INITIAL_IMAGE_TITLE, INITIAL_IMAGE);
+    NewHeroCiv nhCiv = new NewHeroCiv(_mfCiv, (HeroRegistry) _rf.getRegistry(RegKey.HERO));
+    NewHeroIPPanel ipPanel = new NewHeroIPPanel(nhCiv, _mfCiv);
+    _mfCiv.replaceLeftPanel(ipPanel);
   }
 
-
-  // ============================================================
-  // Private methods
-  // ============================================================
+  public List<Adventure> getAdventureList()
+  {
+    List<Adventure> adventures = _advReg.getAdventureList();
+    return adventures;
+  }
 
   public List<Hero> getAllHeroes()
   {
@@ -150,11 +148,9 @@ public class MainActionCiv extends BaseCiv
   // Private methods
   // ============================================================
 
-  public void createHero()
+  public HeroRegistry getDormitory()
   {
-    NewHeroCiv nhCiv = new NewHeroCiv(_mfCiv, (HeroRegistry) _rf.getRegistry(RegKey.HERO));
-    NewHeroIPPanel ipPanel = new NewHeroIPPanel(nhCiv, _mfCiv);
-    _mfCiv.replaceLeftPanel(ipPanel);
+    return _dorm;
   }
 
   /**
@@ -313,16 +309,4 @@ public class MainActionCiv extends BaseCiv
   }
 
 
-  public List<Adventure> getAdventureList()
-  {
-    List<Adventure> adventures = _advReg.getAdventureList();
-    return adventures;
-  }
-
-  public HeroRegistry getDormitory()
-  {
-    return _dorm;
-  }
-  
-  
 } // end of MainActionCiv class

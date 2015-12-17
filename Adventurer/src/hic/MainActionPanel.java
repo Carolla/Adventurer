@@ -62,9 +62,6 @@ public class MainActionPanel extends ChronosPanel
   private final String HALL_IMAGE = "icn_HallOfHeroes.jpg";
   private final String ADV_IMAGE = "icn_Town.jpg";
 
-  private final String INITIAL_IMAGE = "ChronosLogo.jpg";
-  private final String INITIAL_IMAGE_TITLE = "Chronos Logo";
-
 
   // ============================================================
   // Constructor and constructor helper methods
@@ -77,7 +74,8 @@ public class MainActionPanel extends ChronosPanel
    * @param mac civ to handle data
    * @param mg reference to frame that displays resulting input and output panels
    */
-  public MainActionPanel(MainframeInterface mf, MainframeCiv mfciv)
+//  public MainActionPanel(MainframeInterface mf, MainframeCiv mfciv)
+  public MainActionPanel(MainframeInterface mf)
   {
     super(INITIAL_OPENING_TITLE);
     _mf = mf;
@@ -103,16 +101,16 @@ public class MainActionPanel extends ChronosPanel
     _actionPanel.add(summonButton, "hmax 25%, grow");
     _actionPanel.add(creationButton, "hmax 25%, grow");
 
-    _mf.replaceLeftPanel(this);
+//    _mf.replaceLeftPanel(this);
+    setActivePanel();
   }
 
+  
   private void setActivePanel()
   {
     _mf.replaceLeftPanel(_actionPanel);
     _mfCiv.displayImage(INITIAL_IMAGE_TITLE, INITIAL_IMAGE);
     // ChronosPanel actionPanel = new MainActionPanel(this);
-    _mf.replaceLeftPanel(_actionPanel);
-    _mfCiv.displayImage(INITIAL_IMAGE_TITLE, INITIAL_IMAGE);
   }
 
 
@@ -137,8 +135,6 @@ public class MainActionPanel extends ChronosPanel
                 JOptionPane.INFORMATION_MESSAGE, null, adventuresArr, adventuresArr[0]);
         if (selectedValue != null) {
           _mac.loadSelectedAdventure(selectedValue.toString().trim());
-          // Create the image panel and civ for the town
-          // Create the IOPanel and civ for the
         }
       }
     });

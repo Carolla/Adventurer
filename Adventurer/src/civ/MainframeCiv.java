@@ -13,6 +13,7 @@ import chronos.civ.UserMsg;
 import hic.ChronosPanel;
 import hic.IOPanel;
 import hic.ImagePanel;
+import hic.Mainframe;
 import hic.MainframeInterface;
 
 /**
@@ -29,24 +30,36 @@ import hic.MainframeInterface;
 public class MainframeCiv extends BaseCiv implements UserMsg
 {
   private MainframeInterface _mf;
+  private MainActionCiv _mac;
   private IOPanel _ioPanel;
   private ImagePanel _imagePanel;
+  
+  private final String INITIAL_IMAGE = "ChronosLogo.jpg";
+  private final String INITIAL_IMAGE_TITLE = "Chronos Logo";
+
 
   // ============================================================
   // Constructors and constructor helpers
   // ============================================================
 
   /**
-   * Create the Civ to handle mainframe responses
+   * Create the mainframe, right-side image panel, and left side action panel civ
+   * The image panel is handled by this mainframeCiv
    */
-  public MainframeCiv(MainframeInterface mf)
+  public MainframeCiv()
   {
-    _mf = mf;
-    _imagePanel = new ImagePanel();
-    _mf.replaceRightPanel(_imagePanel);
+    _mf = new Mainframe(this);
+    displayInitialImagePanel();
+    // Create the main button panel and its handler
+    _mac = new MainActionCiv(this);
   }
 
-  
+  private void displayInitialImagePanel()
+  {
+    _imagePanel = new ImagePanel();
+    displayImage(INITIAL_IMAGE_TITLE, INITIAL_IMAGE);
+    _mf.replaceRightPanel(_imagePanel);
+  }
   
   // ============================================================
   // Public methods

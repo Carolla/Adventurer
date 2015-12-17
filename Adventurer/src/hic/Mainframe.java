@@ -111,24 +111,29 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
    * context-sensitive help text when requested. Creates the {@code MainframeCiv} which takes
    * manages program control at the highest level.
    */
-  public Mainframe()
+  public Mainframe(MainframeCiv mfciv)
   {
+    _mfCiv = mfciv;
+    
     // Define the graphic elements
     setupSizeAndBoundaries();
     createFrameAndMenubar();
 
     // Create the one time help dialog
     prepareHelpDialog();
+        
+    // Create the right side image panel and title
+//    _imagePanel = new ImagePanel();
+//    replaceRightPanel(_imagePanel);
 
+//    // Create the left side button panel and its handler 
+//    MainActionPanel map = new MainActionPanel(this);
+//    replaceLeftPanel(map);
+    
     // Display the Mainframe and panels now
     setVisible(true);
     redraw();
-    
-    // Create this frame's handler
-    _mfCiv = new MainframeCiv(this);
-    
-    // Create the panel for the main buttons with access to the mainframe's handler too 
-    MainActionPanel map = new MainActionPanel(this, _mfCiv);    
+
   }
 
 
@@ -406,4 +411,5 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     }
 
   } // end of Terminator inner class
+  
 } // end of Mainframe outer class
