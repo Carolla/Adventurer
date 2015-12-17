@@ -13,7 +13,6 @@ import chronos.civ.UserMsg;
 import hic.ChronosPanel;
 import hic.IOPanel;
 import hic.ImagePanel;
-import hic.Mainframe;
 import hic.MainframeInterface;
 
 /**
@@ -38,32 +37,54 @@ public class MainframeCiv extends BaseCiv implements UserMsg
   // ============================================================
 
   /**
-   * Create the Civ associated with the mainframe
+   * Create the Civ to handle mainframe responses
    */
-  public MainframeCiv()
+  public MainframeCiv(MainframeInterface mf)
   {
-    constructMembers();
-  }
-
-  /**
-   * Perform construction act. This wires together all the "single instance variables" for the
-   * Adventurer application. None of these constructors should ever be called anywhere outside of
-   * this method and in testing.
-   */
-  protected void constructMembers()
-  {
-    _mf = new Mainframe(this);
-    
+    _mf = mf;
     _imagePanel = new ImagePanel();
     _mf.replaceRightPanel(_imagePanel);
-    
-    new MainActionCiv(this);
   }
 
+  
+  
   // ============================================================
   // Public methods
   // ============================================================
 
+  public void back()
+  {
+    _mf.back();
+  }
+
+  
+  public void backToMain()
+  {
+    _mf.backToMain();
+  }
+
+  
+  @Override
+  public void displayErrorText(String msg)
+  {
+    _ioPanel.displayErrorText(msg);
+  }
+
+  
+  public void displayImage(String title, String imageName)
+  {
+    _imagePanel.setTitle(title);
+    _imagePanel.setImageByName(imageName);
+  }
+
+  
+  @Override
+  public void displayText(String result)
+  {
+    _ioPanel.displayText(result);
+  }
+
+  
   /** Close down the application if user so specified */
   public void quit()
   {
@@ -72,43 +93,18 @@ public class MainframeCiv extends BaseCiv implements UserMsg
     }
   }
 
-  @Override
-  public void displayText(String result)
-  {
-    _ioPanel.displayText(result);
-  }
-
-  @Override
-  public void displayErrorText(String msg)
-  {
-    _ioPanel.displayErrorText(msg);
-  }
-
-  public void displayImage(String title, String imageName)
-  {
-    _imagePanel.setTitle(title);
-    _imagePanel.setImageByName(imageName);
-  }
-
+  
   public void replaceLeftPanel(ChronosPanel panel)
   {
     _mf.replaceLeftPanel(panel);
   }
+  
   
   public void replaceLeftPanel(IOPanel panel)
   {
     _ioPanel = panel;
     _mf.replaceLeftPanel(panel);
   }
-
-
-  public void back()
-  {
-    _mf.back();
-  }
   
-  public void backToMain()
-  {
-    _mf.backToMain();
-  }
+  
 } // end of MainframeCiv class
