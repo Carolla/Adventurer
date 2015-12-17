@@ -33,15 +33,15 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
-import mylib.Constants;
-import mylib.hic.HelpKeyListener;
-import net.miginfocom.swing.MigLayout;
 import chronos.pdc.character.Hero;
 import civ.HeroDisplayCiv;
 import civ.MainframeCiv;
 import civ.NewHeroCiv;
 import civ.NewHeroCiv.ErrorCode;
 import civ.NewHeroCiv.HeroInput;
+import mylib.Constants;
+import mylib.hic.HelpKeyListener;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Allows the author to input a few key attributes of their Hero. A CIV object is called to validate
@@ -183,8 +183,7 @@ public class NewHeroIPPanel extends ChronosPanel
     // Create the input text field to collect the Hero's name give it default focus
     _nameField = makeNameField();
     add(_nameField, "push, align center, span");
-    _nameField.requestFocus();
-    
+
     /* THIS GRID POPULATES HORIZONTALLY: Save all Components for later data extraction */
     // Prompts for gender radio buttons and air color combo box */
     add(new JLabel(HERO_GENDER_PROMPT), "push, align center, gaptop 5%");
@@ -213,6 +212,15 @@ public class NewHeroIPPanel extends ChronosPanel
   // Private Methods
   // ============================================================
 
+  /** Set the name field to have the default focus
+   * NOTE: For some reason, requestFocusInWindow() does not work here
+   */
+  public void setDefaultFocus()
+  {
+    _nameField.requestFocus();
+  }
+  
+  
   /** Set the title for this panel */
   @Override
   public void setTitle(String title)
@@ -408,7 +416,7 @@ public class NewHeroIPPanel extends ChronosPanel
     _nameField.setName("heroName");
     // Collect the name when the text field goes out of focus
     _nameField.addFocusListener(new FocusOffListener());
-
+    
     // Extract Hero's name and update Hero's name into MainFrame Title
     // if Enter key is hit or text field loses focus.
     _nameField.addActionListener(new ActionListener() {
@@ -606,18 +614,17 @@ public class NewHeroIPPanel extends ChronosPanel
    */
   private class NameFieldLimiter extends DocumentFilter
   {
-    // @Override
-    // public void insertString(DocumentFilter.FilterBypass fb, int offset, String string,
-    // AttributeSet attr) throws BadLocationException
-    // {
-    // if(fb.getDocument().getLength()+string.length()>HERO_NAME_WIDTH)
-    // {
-    // System.out.println("Insert String: Name Field Limit Reached");
-    // return;
-    // }
-    //
-    // fb.insertString(offset, string, attr);
-    // }
+    @Override
+    public void insertString(DocumentFilter.FilterBypass fb, int offset, String string,
+        AttributeSet attr) throws BadLocationException
+    {
+      if (fb.getDocument().getLength() + string.length() > HERO_NAME_WIDTH) {
+        System.out.println("Insert String: Name Field Limit Reached");
+        return;
+      }
+
+      fb.insertString(offset, string, attr);
+    }
 
     @Override
     public void remove(DocumentFilter.FilterBypass fb, int offset, int length)

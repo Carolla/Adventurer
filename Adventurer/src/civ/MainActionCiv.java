@@ -94,42 +94,16 @@ public class MainActionCiv extends BaseCiv
   }
 
   
-  /**
-   * Create the Adventure, Heroes, and Create-Hero buttons, and button panel for them
-   */
-  private ChronosPanel createActionPanel()
-  {
-    JButton adventureButton = createAdventureButton();
-    JButton summonButton = createSummonHeroesButton();
-    JButton creationButton = createNewHeroButton();
-
-    ChronosPanel actionPanel = new ChronosPanel(INITIAL_OPENING_TITLE);
-
-    // Align all buttons in a single column
-    actionPanel.setLayout(new MigLayout("wrap 1"));
-    Dimension frame = Mainframe.getWindowSize();
-    actionPanel.setPreferredSize(
-        new Dimension((int) (frame.width - FRAME_PADDING) / 2, frame.height - FRAME_PADDING));
-    actionPanel.setBackground(Constants.MY_BROWN);
-
-    /** Buttons are at 25% to allow space for Command Line later */
-    actionPanel.add(adventureButton, "hmax 25%, grow");
-    actionPanel.add(summonButton, "hmax 25%, grow");
-    actionPanel.add(creationButton, "hmax 25%, grow");
-
-    return actionPanel;
-  }
-
-  
   // ============================================================
   // Public methods
   // ============================================================
 
   public void createHero()
   {
-    NewHeroCiv nhCiv = new NewHeroCiv(_mfCiv, (HeroRegistry) _rf.getRegistry(RegKey.HERO));
+    NewHeroCiv nhCiv = new NewHeroCiv(_mfCiv, _dorm);
     NewHeroIPPanel ipPanel = new NewHeroIPPanel(nhCiv, _mfCiv);
     _mfCiv.replaceLeftPanel(ipPanel);
+    ipPanel.setDefaultFocus();      // default focus only works after panel is displayed
   }
 
   public List<Adventure> getAdventureList()
@@ -182,6 +156,33 @@ public class MainActionCiv extends BaseCiv
   // ============================================================
   // Private methods
   // ============================================================
+
+  /**
+   * Create the Adventure, Heroes, and Create-Hero buttons, and button panel for them
+   */
+  private ChronosPanel createActionPanel()
+  {
+    JButton adventureButton = createAdventureButton();
+    JButton summonButton = createSummonHeroesButton();
+    JButton creationButton = createNewHeroButton();
+  
+    ChronosPanel actionPanel = new ChronosPanel(INITIAL_OPENING_TITLE);
+  
+    // Align all buttons in a single column
+    actionPanel.setLayout(new MigLayout("wrap 1"));
+    Dimension frame = Mainframe.getWindowSize();
+    actionPanel.setPreferredSize(
+        new Dimension((int) (frame.width - FRAME_PADDING) / 2, frame.height - FRAME_PADDING));
+    actionPanel.setBackground(Constants.MY_BROWN);
+  
+    /** Buttons are at 25% to allow space for Command Line later */
+    actionPanel.add(adventureButton, "hmax 25%, grow");
+    actionPanel.add(summonButton, "hmax 25%, grow");
+    actionPanel.add(creationButton, "hmax 25%, grow");
+  
+    return actionPanel;
+  }
+
 
   /**
    * Create the behavior for selecting an adventure, which drives the frame update. <br>
