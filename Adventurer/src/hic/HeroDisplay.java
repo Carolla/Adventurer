@@ -30,7 +30,6 @@ import net.miginfocom.swing.MigLayout;
 import chronos.civ.PersonKeys;
 import chronos.pdc.MiscKeys.ItemCategory;
 import civ.HeroDisplayCiv;
-import dmc.HeroReadWriter;
 
 
 /**
@@ -462,9 +461,6 @@ public class HeroDisplay extends ChronosPanel
           // Respond to save attempt failure to Rename or Overwrite the Hero
           doAlternateSaveAction();
         }
-        // For testing
-        HeroReadWriter dorm = new HeroReadWriter();
-        dorm.dumpDB();
         setVisible(false);
       }
     });

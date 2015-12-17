@@ -2,92 +2,80 @@
 package test.civ;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import chronos.pdc.Adventure;
+import chronos.pdc.registry.BuildingRegistry;
 import civ.BuildingDisplayCiv;
+import civ.MainframeCiv;
 
 public class TestBuildingDisplayCiv
-{
-/*  
+{  
     private static final String building1name = "Ugly Ogre Name";
     private static final String building2name = "Arcaneum";
 
-    private MockMainframe _mf;
-    private MockBuilding _mb;
     private BuildingDisplayCiv _bdCiv;
-    private MockBuildingRegistry _breg;
+    private BuildingRegistry _breg;
+    private MainframeCiv _mf;
+    private Adventure _adv;
 
     @Before
     public void setup()
     {
-        AdvObjectMother mother = new AdvObjectMother();
-        _mf = mother.getMockMainframe();
-        _breg = mother.getMockBuildingRegistry();
-        _mb = (MockBuilding) _breg.getBuilding("");
-        _bdCiv = new BuildingDisplayCiv(_mf, _breg);
+        _bdCiv = new BuildingDisplayCiv(_mf, _adv, _breg);
+        assertNotNull(_bdCiv);
+        assertFalse(building1name.equals(building2name));
     }
 
     @Test
-    public void itShouldApproachCurrentBuilding()
+    public void canApproachBuildingWhenOnTown()
     {
-        _bdCiv.approachBuilding(building1name);
-
-        assertTrue(currentBuildingApproached());
+      fail("not yet implemented");
     }
 
     @Test
-    public void itShouldNotEnterCurrentBuildingWhenItHasntBeenApproached()
+    public void cannotApproachBuildingWhenNotOnTown()
     {
-        _bdCiv.enterBuilding();
-
-        assertTrue(currentBuildingNotEntered());
+      fail("not yet implemented");
     }
 
     @Test
-    public void itShouldEnterCurrentBuildingWhenItHasBeenApproached()
+    public void canEnterBuildingWhenOnTown()
     {
-        _bdCiv.approachBuilding(building2name);
-        _bdCiv.enterBuilding();
-
-        assertTrue(currentBuildingApproached());
-        assertTrue(currentBuildingEntered());
+      fail("not yet implemented");
     }
 
     @Test
-    public void buildingShouldNotBeEnteredAfterExit()
+    public void canEnterBuildingWhenApproached()
     {
-        _bdCiv.approachBuilding(building2name);
-        _bdCiv.enterBuilding();
-        _bdCiv.exitBuilding();
-
-        assertTrue(currentBuildingNotEntered());
+      fail("not yet implemented");
     }
-
-    private boolean currentBuildingEntered()
+    
+    @Test
+    public void cannotEnterDifferentBuildingWhenApproached()
     {
-        assertTrue("Interior image not retrieved", _mb._intImageDisplayed);
-        assertTrue("Interior description not retrieved", _mb._intDescriptionDisplayed);
-        assertTrue("Image and descriptions not displayed", _mf._displayed);
-        return true;
+      fail("not yet implemented");      
     }
-
-    private boolean currentBuildingNotEntered()
+    
+    @Test
+    public void enterCausesBuildingToChange()
     {
-        assertFalse("Interior image was retrieved", _mb._intImageDisplayed);
-        assertFalse("Interior description was retrieved", _mb._intDescriptionDisplayed);
-        assertFalse("Image and descriptions was displayed", _mf._displayed);
-        return true;
+      fail("not yet implemented");      
     }
-
-    private boolean currentBuildingApproached()
+    
+    @Test
+    public void approachCausesBuildingToChange()
     {
-        assertTrue("Exterior image not retrieved", _mb._extImageDisplayed);
-        assertTrue("Exterior description not retrieved", _mb._extDescriptionDisplayed);
-        assertTrue("Image and descriptions not displayed", _mf._displayed);
-        return true;
+      fail("not yet implemented");      
     }
-*/    
+    
+    @Test
+    public void returnToTownResetsBuilding()
+    {
+      fail("not yet implemented");      
+    }
 }

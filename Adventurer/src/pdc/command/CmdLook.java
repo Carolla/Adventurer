@@ -18,7 +18,7 @@ public class CmdLook extends Command
   /** This command starts immediately, requiring no delay. */
   static private final int DELAY = 0;
   /** This command takes 10 seconds on the game clock. */
-  static private final int DURATION = 10;
+  static private final int DURATION = 7;
 
   private final BuildingDisplayCiv _bdciv;
   private String _target = "";

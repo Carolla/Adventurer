@@ -30,7 +30,6 @@ public class BuildingDisplayCiv extends BaseCiv
   private BuildingRegistry _breg;
   private Adventure _adv;
 
-  protected boolean _onTown = true;
   protected boolean _insideBldg = false;
 
   /** The building that is currently displayed, either inside or outside */
@@ -128,7 +127,6 @@ public class BuildingDisplayCiv extends BaseCiv
     if (targetBuilding != null) {
       _currentBldg = targetBuilding;
       _insideBldg = false;
-      _onTown = false;
 
       displayBuildingExterior();
       return true;
@@ -181,7 +179,6 @@ public class BuildingDisplayCiv extends BaseCiv
     if (targetBuilding != null) {
       _currentBldg = targetBuilding;
       _insideBldg = true;
-      _onTown = false;
       displayBuildingInterior();
     } else {
       _mfCiv.displayErrorText(ERRMSG_NOBLDG);
@@ -196,7 +193,7 @@ public class BuildingDisplayCiv extends BaseCiv
 
   public boolean isOnTown()
   {
-    return _onTown;
+    return !_insideBldg && _currentBldg == null;
   }
 
   /** Is Hero is inside a Building? */
@@ -208,7 +205,7 @@ public class BuildingDisplayCiv extends BaseCiv
   /** Go to the outside of the building */
   public void leaveBuilding()
   {
-    _insideBldg = false;
+    approachBuilding(_currentBldg.getName());
   }
 
   /** Creates the standard layout to display the town image and description */
@@ -225,7 +222,6 @@ public class BuildingDisplayCiv extends BaseCiv
   public void returnToTown()
   {
     _currentBldg = null;
-    _onTown = true;
     _insideBldg = false;
   }
 

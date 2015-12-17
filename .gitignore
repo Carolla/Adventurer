@@ -9,6 +9,7 @@ doc/
 # Directories #
 build/
 bin/
+**/junit/
 target/
 .recommenders/
 
@@ -19,6 +20,7 @@ target/
 *.war
 *.ear
 *.db
+build.xml
 
 ######################
 # Windows
