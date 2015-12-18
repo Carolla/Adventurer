@@ -23,6 +23,7 @@ import civ.MainframeCiv;
 public class TestBuildingDisplayCiv
 {
   private static Random _rand;
+  private static final int numBuildings = BuildingDisplayCiv.DEFAULT_BUILDINGS.length;
   private BuildingDisplayCiv _bdCiv;
   private BuildingRegistry _breg = new FakeBuildingRegistry();
   private MainframeCiv _mf = new FakeMainframeCiv();
@@ -54,7 +55,8 @@ public class TestBuildingDisplayCiv
   @Test
   public void cannotApproachBuildingWhenNotOnTown()
   {
-    _bdCiv.approachBuilding("Ugly Ogre Inn");
+    String sampleBuilding = BuildingDisplayCiv.DEFAULT_BUILDINGS[_rand.nextInt(numBuildings)][0];
+    _bdCiv.enterBuilding(sampleBuilding);
     for (int i = 0; i < BuildingDisplayCiv.DEFAULT_BUILDINGS.length; i++) {
       String testName = BuildingDisplayCiv.DEFAULT_BUILDINGS[i][0];
       assertFalse("Approaching " + testName, _bdCiv.canApproach(testName));
