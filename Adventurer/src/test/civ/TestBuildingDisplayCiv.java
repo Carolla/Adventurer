@@ -89,13 +89,27 @@ public class TestBuildingDisplayCiv
   @Test
   public void canEnterBuildingWhenApproached()
   {
-    fail("not yet implemented");
+    for (int i = 0; i < BuildingDisplayCiv.DEFAULT_BUILDINGS.length; i++) {
+      String buildingApproached = BuildingDisplayCiv.DEFAULT_BUILDINGS[i][0];
+      _bdCiv.approachBuilding(buildingApproached);
+      assertTrue(_bdCiv.canEnter(buildingApproached));
+    }
   }
 
   @Test
-  public void cannotEnterDifferentBuildingWhenApproached()
+  public void cannotEnterDifferentBuildingWhenBuildingEntered()
   {
-    fail("not yet implemented");
+    for (int i = 0; i < BuildingDisplayCiv.DEFAULT_BUILDINGS.length; i++) {
+      String buildingEntered = BuildingDisplayCiv.DEFAULT_BUILDINGS[i][0];
+      _bdCiv.enterBuilding(buildingEntered);
+      for (int j = 0; j < BuildingDisplayCiv.DEFAULT_BUILDINGS.length; j++) {
+        String buildingNowEntering = BuildingDisplayCiv.DEFAULT_BUILDINGS[j][0];
+        if (!buildingEntered.equals(buildingNowEntering)) {
+          assertFalse("Trying to enter " + buildingNowEntering + " from " + buildingEntered, _bdCiv.canEnter(buildingNowEntering));
+        }
+      }
+      _bdCiv.returnToTown();
+    }
   }
 
   @Test
