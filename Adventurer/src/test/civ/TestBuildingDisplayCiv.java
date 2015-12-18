@@ -18,9 +18,6 @@ import civ.MainframeCiv;
 
 public class TestBuildingDisplayCiv
 {
-  private static final String building1name = "Ugly Ogre Name";
-  private static final String building2name = "Arcaneum";
-
   private BuildingDisplayCiv _bdCiv;
   private BuildingRegistry _breg = new FakeBuildingRegistry();
   private MainframeCiv _mf = new FakeMainframeCiv();
@@ -31,7 +28,6 @@ public class TestBuildingDisplayCiv
   {
     _bdCiv = new BuildingDisplayCiv(_mf, _adv, _breg);
     assertNotNull(_bdCiv);
-    assertFalse(building1name.equals(building2name));
   }
 
   @Test
