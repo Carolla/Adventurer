@@ -265,7 +265,7 @@ public class NewHeroIPPanel extends ChronosPanel
           // Create the new Hero and display it
            Hero hero = _nhCiv.createHero(input);
            HeroDisplayCiv hDispCiv = new HeroDisplayCiv(_mfCiv);
-           hDispCiv.displayHero(hero, true);    // first time Hero needs true arg
+           hDispCiv.displayHero(hero, true);    // initial Hero needs true arg to check overwriting
         }
       }
     });

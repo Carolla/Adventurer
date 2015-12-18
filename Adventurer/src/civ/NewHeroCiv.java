@@ -66,6 +66,12 @@ public class NewHeroCiv extends BaseCiv
   // PUBLIC METHODS
   // ===========================================================================
 
+  // Return the current state to the previous state
+  public void back()
+  {
+    _mfCiv.back();
+  }
+
   /**
    * Create the new Hero from the user's input data
    * 
@@ -88,12 +94,6 @@ public class NewHeroCiv extends BaseCiv
       System.err.println("NewHeroCiv.createHero(): " + ex.getMessage());
     }
     return myHero;
-  }
-
-  // Return the current state to the previous state
-  public void back()
-  {
-    _mfCiv.back();
   }
 
   // Getters for the input data options
