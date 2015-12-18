@@ -18,10 +18,9 @@ import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 
+import net.miginfocom.swing.MigLayout;
 import chronos.pdc.character.Hero;
 import chronos.pdc.registry.HeroRegistry;
-import chronos.pdc.registry.RegistryFactory.RegKey;
-import net.miginfocom.swing.MigLayout;
 
 /**
  * ShuttleList is a pop-up dialog for selecting party members when the Summon

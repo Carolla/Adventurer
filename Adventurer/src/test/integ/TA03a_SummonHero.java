@@ -15,6 +15,8 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
+import mylib.MsgCtrl;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -23,9 +25,6 @@ import org.junit.Test;
 
 import chronos.pdc.character.Hero;
 import chronos.pdc.registry.HeroRegistry;
-import civ.MainActionCiv;
-import civ.MainframeCiv;
-import mylib.MsgCtrl;
 
 
 /**

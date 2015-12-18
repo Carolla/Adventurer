@@ -26,6 +26,7 @@ import chronos.pdc.registry.BuildingRegistry;
  */
 public class BuildingDisplayCiv extends BaseCiv
 {
+  
   private MainframeCiv _mfCiv;
   private BuildingRegistry _breg;
   private Adventure _adv;
@@ -34,10 +35,8 @@ public class BuildingDisplayCiv extends BaseCiv
 
   /** The building that is currently displayed, either inside or outside */
   protected Building _currentBldg;
-  protected String _townTitle;
 
-
-  /** Image of the Town containing the Buildings */
+  private static final String TOWN_NAME_LEADER = " The Town of ";
   private static final String TOWN_IMAGE = "ext_BiljurBaz.JPG";
 
   /** Error message if no arguments or multiple arguments specified */
@@ -75,7 +74,6 @@ public class BuildingDisplayCiv extends BaseCiv
     _mfCiv = mfCiv;
     _breg = breg;
     _adv = adv;
-    _townTitle = " The Town of " + _adv.getTownName();
   }
 
   // ======================================================================
@@ -205,14 +203,17 @@ public class BuildingDisplayCiv extends BaseCiv
   /** Go to the outside of the building */
   public void leaveBuilding()
   {
-    approachBuilding(_currentBldg.getName());
+    if (isInside()) {
+      // approach puts us back outside
+      approachBuilding(_currentBldg.getName());
+    }
   }
 
   /** Creates the standard layout to display the town image and description */
   public void openTown()
   {
     returnToTown();
-    _mfCiv.displayImage(_townTitle, TOWN_IMAGE);
+    _mfCiv.displayImage(TOWN_NAME_LEADER + _adv.getTownName(), TOWN_IMAGE);
     _mfCiv.displayText(_adv.getOverview());
   }
 

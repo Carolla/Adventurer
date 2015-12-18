@@ -5,20 +5,25 @@ import chronos.pdc.buildings.Building;
 
 public class FakeBuilding extends Building
 {
-    protected FakeBuilding(String name, String masterName, String hoverText, String exterior,
-            String interior, String extImagePath, String intImagePath)
-    {
-        super(name, masterName, hoverText, exterior, interior, extImagePath, intImagePath);
-    }
-    
     public FakeBuilding(String name)
     {
         super(name, "", "", "", "", "", "");
     }
 
+    public FakeBuilding(String name, String interiorDesc)
+    {
+      super(name, "", "", "", interiorDesc, "", "");
+    }
+
     @Override
     public boolean equals(IRegistryElement target)
     {
-        return false;
+      return _name.equals(target.getKey());
+    }
+
+    @Override
+    public String getName()
+    {
+      return _name;
     }
 }

@@ -11,8 +11,6 @@ package civ;
 
 import java.awt.EventQueue;
 
-import hic.Mainframe;
-
 /**
  * This Launcher class detects command line arguments, takes appropriate loading action, initializes
  * all singleton Registries, and turns control over the Mainframe GUI singleton.

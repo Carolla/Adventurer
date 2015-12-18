@@ -9,12 +9,12 @@
 
 package civ;
 
-import chronos.civ.UserMsg;
 import hic.ChronosPanel;
 import hic.IOPanel;
 import hic.ImagePanel;
 import hic.Mainframe;
 import hic.MainframeInterface;
+import chronos.civ.UserMsg;
 
 /**
  * The main civ behind the Mainframe screen.
@@ -30,7 +30,6 @@ import hic.MainframeInterface;
 public class MainframeCiv extends BaseCiv implements UserMsg
 {
   private MainframeInterface _mf;
-  private MainActionCiv _mac;
   private IOPanel _ioPanel;
   private ImagePanel _imagePanel;
   
@@ -48,10 +47,14 @@ public class MainframeCiv extends BaseCiv implements UserMsg
    */
   public MainframeCiv()
   {
+    init();
+  }
+
+  protected void init()
+  {
     _mf = new Mainframe(this);
     displayInitialImagePanel();
-    // Create the main button panel and its handler
-    _mac = new MainActionCiv(this);
+    new MainActionCiv(this);
   }
 
   private void displayInitialImagePanel()
