@@ -251,7 +251,7 @@ public class BuildingDisplayCiv extends BaseCiv
   public String inspectTarget(String target)
   {
     String result = "";
-    if (_currentBldg != null) {
+    if (isInside()) {
       result = _currentBldg.inspect(target);
       _mfCiv.displayText(result);
       return result;

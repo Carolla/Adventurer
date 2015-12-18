@@ -3,9 +3,13 @@ package test.civ;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Random;
+
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import test.pdc.FakeBuilding;
@@ -18,10 +22,17 @@ import civ.MainframeCiv;
 
 public class TestBuildingDisplayCiv
 {
+  private static Random _rand;
   private BuildingDisplayCiv _bdCiv;
   private BuildingRegistry _breg = new FakeBuildingRegistry();
   private MainframeCiv _mf = new FakeMainframeCiv();
   private Adventure _adv;
+
+  @BeforeClass
+  public static void doOnce()
+  {
+    _rand = new Random(System.currentTimeMillis());
+  }
 
   @Before
   public void setup()
@@ -33,19 +44,44 @@ public class TestBuildingDisplayCiv
   @Test
   public void canApproachBuildingWhenOnTown()
   {
-    fail("not yet implemented");
+    assertTrue(_bdCiv.isOnTown());
+    for (int i = 0; i < BuildingDisplayCiv.DEFAULT_BUILDINGS.length; i++) {
+      String testName = BuildingDisplayCiv.DEFAULT_BUILDINGS[i][0];
+      assertTrue(_bdCiv.canApproach(testName));
+    }
   }
 
   @Test
   public void cannotApproachBuildingWhenNotOnTown()
   {
-    fail("not yet implemented");
+    _bdCiv.approachBuilding("Ugly Ogre Inn");
+    for (int i = 0; i < BuildingDisplayCiv.DEFAULT_BUILDINGS.length; i++) {
+      String testName = BuildingDisplayCiv.DEFAULT_BUILDINGS[i][0];
+      assertFalse("Approaching " + testName, _bdCiv.canApproach(testName));
+    }
+  }
+
+  @Test
+  public void canApproachOtherBuildingWhenOutsideABuilding()
+  {
+    for (int i = 0; i < BuildingDisplayCiv.DEFAULT_BUILDINGS.length; i++) {
+      String buildingApproached = BuildingDisplayCiv.DEFAULT_BUILDINGS[i][0];
+      _bdCiv.approachBuilding(buildingApproached);
+      for (int j = i; j < BuildingDisplayCiv.DEFAULT_BUILDINGS.length; j++) {
+        String buildingNowApproaching = BuildingDisplayCiv.DEFAULT_BUILDINGS[j][0];
+        assertTrue("Approaching " + buildingNowApproaching + " from " + buildingApproached, _bdCiv.canApproach(buildingNowApproaching));
+      }
+    }
   }
 
   @Test
   public void canEnterBuildingWhenOnTown()
   {
-    fail("not yet implemented");
+    assertTrue(_bdCiv.isOnTown());
+    for (int i = 0; i < BuildingDisplayCiv.DEFAULT_BUILDINGS.length; i++) {
+      String testName = BuildingDisplayCiv.DEFAULT_BUILDINGS[i][0];
+      assertTrue(_bdCiv.canEnter(testName));
+    }
   }
 
   @Test
@@ -84,13 +120,13 @@ public class TestBuildingDisplayCiv
     {
       super(null, null);
     }
-    
+
     @Override
     public void initialize()
     {
       //Don't do it
     }
-    
+
     @Override
     public Building getBuilding(String name)
     {
