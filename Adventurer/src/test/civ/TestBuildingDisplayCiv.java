@@ -1,6 +1,7 @@
 
 package test.civ;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -71,7 +72,8 @@ public class TestBuildingDisplayCiv
       _bdCiv.approachBuilding(buildingApproached);
       for (int j = i; j < BuildingDisplayCiv.DEFAULT_BUILDINGS.length; j++) {
         String buildingNowApproaching = BuildingDisplayCiv.DEFAULT_BUILDINGS[j][0];
-        assertTrue("Approaching " + buildingNowApproaching + " from " + buildingApproached, _bdCiv.canApproach(buildingNowApproaching));
+        assertTrue("Approaching " + buildingNowApproaching + " from " + buildingApproached,
+            _bdCiv.canApproach(buildingNowApproaching));
       }
     }
   }
@@ -105,7 +107,8 @@ public class TestBuildingDisplayCiv
       for (int j = 0; j < BuildingDisplayCiv.DEFAULT_BUILDINGS.length; j++) {
         String buildingNowEntering = BuildingDisplayCiv.DEFAULT_BUILDINGS[j][0];
         if (!buildingEntered.equals(buildingNowEntering)) {
-          assertFalse("Trying to enter " + buildingNowEntering + " from " + buildingEntered, _bdCiv.canEnter(buildingNowEntering));
+          assertFalse("Trying to enter " + buildingNowEntering + " from " + buildingEntered,
+              _bdCiv.canEnter(buildingNowEntering));
         }
       }
       _bdCiv.returnToTown();
@@ -115,19 +118,45 @@ public class TestBuildingDisplayCiv
   @Test
   public void enterCausesBuildingToChange()
   {
-    fail("not yet implemented");
+    for (int i = 0; i < BuildingDisplayCiv.DEFAULT_BUILDINGS.length; i++) {
+      assertEquals(_bdCiv.getCurrentBuilding(), "");
+      
+      String buildingEntered = BuildingDisplayCiv.DEFAULT_BUILDINGS[i][0];
+      _bdCiv.enterBuilding(buildingEntered);
+
+      assertEquals(_bdCiv.getCurrentBuilding(), buildingEntered);
+      
+      _bdCiv.returnToTown();
+    }
   }
 
   @Test
   public void approachCausesBuildingToChange()
   {
-    fail("not yet implemented");
+    for (int i = 0; i < BuildingDisplayCiv.DEFAULT_BUILDINGS.length; i++) {
+      assertEquals(_bdCiv.getCurrentBuilding(), "");
+      
+      String buildingApproached = BuildingDisplayCiv.DEFAULT_BUILDINGS[i][0];
+      _bdCiv.approachBuilding(buildingApproached);
+
+      assertEquals(_bdCiv.getCurrentBuilding(), buildingApproached);
+      
+      _bdCiv.returnToTown();
+    }
   }
 
   @Test
   public void returnToTownResetsBuilding()
   {
-    fail("not yet implemented");
+    for (int i = 0; i < BuildingDisplayCiv.DEFAULT_BUILDINGS.length; i++) {
+      String buildingApproached = BuildingDisplayCiv.DEFAULT_BUILDINGS[i][0];
+      _bdCiv.approachBuilding(buildingApproached);
+      assertEquals(_bdCiv.getCurrentBuilding(), buildingApproached);
+      
+      _bdCiv.returnToTown();
+      assertEquals(_bdCiv.getCurrentBuilding(), "");
+      
+    }
   }
 
   public class FakeBuildingRegistry extends BuildingRegistry

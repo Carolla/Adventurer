@@ -186,7 +186,7 @@ public class BuildingDisplayCiv extends BaseCiv
 
   public String getCurrentBuilding()
   {
-    return _currentBldg.getName();
+    return (_currentBldg == null) ? "" : _currentBldg.getName();
   }
 
   public boolean isOnTown()

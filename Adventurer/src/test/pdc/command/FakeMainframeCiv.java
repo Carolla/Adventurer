@@ -10,8 +10,6 @@ public class FakeMainframeCiv extends MainframeCiv
 {
   List<String> _errors = new ArrayList<String>();
   List<String> _text = new ArrayList<String>();
-  private String _title;
-  private String _image;
 
   public FakeMainframeCiv()
   {
@@ -44,8 +42,7 @@ public class FakeMainframeCiv extends MainframeCiv
   @Override
   public void displayImage(String title, String imageName)
   {
-    _image = imageName;
-    _title = title;
+    //Do nothing
   }
   
   @Override
