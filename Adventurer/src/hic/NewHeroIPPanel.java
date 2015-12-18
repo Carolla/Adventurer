@@ -67,7 +67,7 @@ import net.miginfocom.swing.MigLayout;
  *          Jun 6 2010 // revised to support NewHeroDisplayCiv <br>
  *          Apr 2 2011 // major overhaul with non-Swing MigLayout manager <br>
  *          Sep 20 2015 // major update for new inputs and revised character generation <br>
- *          Nov 9 2015 // separated Mainframe and ChronsPanel converns, and their civs <br>
+ *          Nov 9 2015 // separated Mainframe and ChronsPanel concerns, and their civs <br>
  */
 @SuppressWarnings("serial")
 public class NewHeroIPPanel extends ChronosPanel

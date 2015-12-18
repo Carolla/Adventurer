@@ -61,6 +61,12 @@ public class MainActionCiv extends BaseCiv
   /** Title of the initial three-button panel on left side */
   private final String INITIAL_OPENING_TITLE = " Select Your Action ";
 
+  /** Title of the three buttons */
+  private final String LOAD_ADVENTURE_TITLE = " Select Your Adventure ";
+  private final String SUMMON_HERO_TITLE = " Summon Heroes ";
+  private final String CREATE_HERO_TITLE = " Create a New Hero ";
+
+  
   private final String REGISTRAR_IMAGE = "raw_Register.jpg";
   private final String HALL_IMAGE = "icn_HallOfHeroes.jpg";
   private final String ADV_IMAGE = "icn_Town.jpg";
@@ -194,7 +200,7 @@ public class MainActionCiv extends BaseCiv
    */
   private JButton createAdventureButton()
   {
-    JButton button = createButtonWithTextAndIcon(ADV_IMAGE, "Select your Adventure ");
+    JButton button = createButtonWithTextAndIcon(ADV_IMAGE, LOAD_ADVENTURE_TITLE);
     button.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e)
       {
@@ -238,7 +244,7 @@ public class MainActionCiv extends BaseCiv
    */
   private JButton createNewHeroButton()
   {
-    JButton button = createButtonWithTextAndIcon(REGISTRAR_IMAGE, "Create New Heroes");
+    JButton button = createButtonWithTextAndIcon(REGISTRAR_IMAGE, CREATE_HERO_TITLE );
     button.addActionListener(action -> createHero());
     return button;
   }
@@ -250,7 +256,7 @@ public class MainActionCiv extends BaseCiv
   /* This button code is followed by a series of inner methods */
   private JButton createSummonHeroesButton()
   {
-    JButton button = createButtonWithTextAndIcon(HALL_IMAGE, "Summon Heroes");
+    JButton button = createButtonWithTextAndIcon(HALL_IMAGE, SUMMON_HERO_TITLE);
     button.addActionListener(new ActionListener() {
       private List<Hero> summonableHeroes;
 
