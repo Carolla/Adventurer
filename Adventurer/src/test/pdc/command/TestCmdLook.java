@@ -16,6 +16,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import pdc.command.CmdLook;
+import test.pdc.FakeBuilding;
 import test.pdc.FakeNPC;
 
 public class TestCmdLook

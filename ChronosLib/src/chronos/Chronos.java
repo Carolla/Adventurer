@@ -81,14 +81,11 @@ public class Chronos
   public static final String REGISTRY_PATH = CHRONOS_LIB_RESOURCES_PATH + FS + "registries" + FS;
   /** These images are in the Adventurer resources directory */
   public static final String ADV_IMAGE_PATH = ADV_RESOURCES_PATH + FS + "images" + FS;
-  /** Shared images are in the ChronosLib resources directory */
-  public static final String IMAGE_PATH = CHRONOS_LIB_RESOURCES_PATH + FS + "images" + FS;
 
 //   LOG FOR TESTING
    static {
 //   System.out.println("Chronos Log: ");
 //   System.out.println("CHRONOS_LIB_RESOURCES_PATH = " + CHRONOS_LIB_RESOURCES_PATH);
-//   System.out.println("IMAGE_PATH = " + IMAGE_PATH);
 //   System.out.println("ADV_RESOURCES_PATH = " + ADV_RESOURCES_PATH);
 //   System.out.println("ADV_IMAGE_PATH = " + ADV_IMAGE_PATH);
    }
@@ -130,15 +127,6 @@ public class Chronos
 
   /** Fake Registry location for testing purposes. */
   public static String FakeRegPath = REGISTRY_PATH + "FakeStuff.reg";
-
-  /** Location of Arenas (dungeons), one each in their own db file */
-  public static final String ArenaPath = CHRONOS_LIB_RESOURCES_PATH + "data" + FS;
-  /** Extension to all Arena filenames */
-  public static final String ARENA_EXT = ".dgn";
-
-  /** Extension path to user-generating resources, such as the user characters */
-  public static final String USER_RESOURCES = CHRONOS_LIB_RESOURCES_PATH + "user" + FS;
-
 
   /**
    * Default package name for class files. Package names differ from the directories in that they

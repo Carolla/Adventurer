@@ -1,7 +1,7 @@
 # Chronos specific
 doc/
 *.reg
-
+*.html
 
 # Git #
 .git/config
