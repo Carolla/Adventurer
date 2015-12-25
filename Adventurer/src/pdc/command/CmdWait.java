@@ -13,7 +13,7 @@ package pdc.command;
 
 import java.util.List;
 
-import chronos.pdc.Command.Command;
+import chronos.pdc.command.Command;
 
 /**
  * Allow the Hero to wait for a certain amount of time. The Wait command defaults to 5 minutes if no

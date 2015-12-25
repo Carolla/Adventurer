@@ -9,7 +9,7 @@
  * email: acline@carolla.com.
  */
 
-package chronos.pdc.Command; // This package value is needed by the subcommands; see _cmdPackage field
+package chronos.pdc.command; // This package value is needed by the subcommands; see _cmdPackage field
 
 import java.util.ArrayList;
 import java.util.List;

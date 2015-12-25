@@ -15,7 +15,7 @@ import java.util.HashMap;
 import chronos.pdc.Item;
 import chronos.pdc.Occupation;
 import chronos.pdc.Skill;
-import chronos.pdc.Command.Scheduler;
+import chronos.pdc.command.Scheduler;
 import mylib.pdc.Registry;
 
 /**

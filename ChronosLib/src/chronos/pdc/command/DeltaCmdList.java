@@ -10,7 +10,7 @@
  * by email: acline@carolla.com.  
  */
 
-package chronos.pdc.Command;
+package chronos.pdc.command;
 
 import java.util.Comparator;
 import java.util.concurrent.BlockingQueue;

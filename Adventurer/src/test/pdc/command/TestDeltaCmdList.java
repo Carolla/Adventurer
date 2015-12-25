@@ -10,8 +10,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import chronos.pdc.Command.Command;
-import chronos.pdc.Command.DeltaCmdList;
+import chronos.pdc.command.Command;
+import chronos.pdc.command.DeltaCmdList;
 
 public class TestDeltaCmdList {
 	private DeltaCmdList dcl;

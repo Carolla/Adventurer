@@ -12,19 +12,19 @@ package test.integ;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Test;
 
-import chronos.pdc.Command.Scheduler;
+import chronos.pdc.command.Scheduler;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.NPCRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.BuildingDisplayCiv;
 import civ.CommandParser;
+import mylib.MsgCtrl;
 
 /**
  * Leave the interior of a Building. The EXIT command is a synonym.

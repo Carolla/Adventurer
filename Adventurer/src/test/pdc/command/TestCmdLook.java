@@ -8,16 +8,15 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import mylib.MsgCtrl;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import mylib.MsgCtrl;
 import pdc.command.CmdLook;
-import test.pdc.FakeBuilding;
 import test.pdc.FakeNPC;
+import test.pdc.buildings.FakeBuilding;
 
 public class TestCmdLook
 {

@@ -1,7 +1,7 @@
-package test.pdc;
+package test.pdc.buildings;
 
-import mylib.dmc.IRegistryElement;
 import chronos.pdc.buildings.Building;
+import mylib.dmc.IRegistryElement;
 
 public class FakeBuilding extends Building
 {

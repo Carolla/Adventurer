@@ -1,8 +1,8 @@
 package test.pdc.command;
 
 import chronos.civ.DefaultUserMsg;
-import chronos.pdc.Command.Command;
-import chronos.pdc.Command.Scheduler;
+import chronos.pdc.command.Command;
+import chronos.pdc.command.Scheduler;
 
 
 public class FakeScheduler extends Scheduler

@@ -13,7 +13,7 @@ package pdc.command;
 
 import java.util.List;
 
-import chronos.pdc.Command.Command;
+import chronos.pdc.command.Command;
 import civ.BuildingDisplayCiv;
 
 

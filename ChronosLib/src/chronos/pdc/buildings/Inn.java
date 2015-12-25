@@ -12,15 +12,15 @@ package chronos.pdc.buildings;
 import java.util.ArrayList;
 import java.util.List;
 
+import chronos.pdc.NPC;
+import chronos.pdc.command.Scheduler;
+import chronos.pdc.command.intCmdPatronEnter;
+import chronos.pdc.command.intCmdPatronLeave;
+import chronos.pdc.registry.NPCRegistry;
 import mylib.ApplicationException;
 import mylib.Constants;
 import mylib.dmc.IRegistryElement;
 import mylib.pdc.MetaDie;
-import chronos.pdc.NPC;
-import chronos.pdc.Command.Scheduler;
-import chronos.pdc.Command.intCmdPatronEnter;
-import chronos.pdc.Command.intCmdPatronLeave;
-import chronos.pdc.registry.NPCRegistry;
 
 /**
  * Main building in town for rest, food, conversation, and sometimes even a bar brawl. Heroes can be

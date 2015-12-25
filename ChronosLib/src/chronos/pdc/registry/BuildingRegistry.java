@@ -14,7 +14,6 @@ import java.util.List;
 
 import chronos.Chronos;
 import chronos.pdc.NPC;
-import chronos.pdc.Command.Scheduler;
 import chronos.pdc.buildings.Bank;
 import chronos.pdc.buildings.Building;
 import chronos.pdc.buildings.ClericsGuild;
@@ -24,6 +23,7 @@ import chronos.pdc.buildings.Jail;
 import chronos.pdc.buildings.RoguesGuild;
 import chronos.pdc.buildings.Store;
 import chronos.pdc.buildings.WizardsGuild;
+import chronos.pdc.command.Scheduler;
 import mylib.dmc.IRegistryElement;
 import mylib.pdc.Registry;
 

@@ -16,8 +16,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
-import mylib.MsgCtrl;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -25,9 +23,10 @@ import org.junit.Test;
 
 import chronos.Chronos;
 import chronos.civ.DefaultUserMsg;
-import chronos.pdc.Command.Scheduler;
+import chronos.pdc.command.Scheduler;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
+import mylib.MsgCtrl;
 
 /**
  * Test the Adventurer (Launcher) class: ensure that all Registries are created.

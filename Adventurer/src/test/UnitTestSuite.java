@@ -35,34 +35,49 @@ import test.pdc.command.TestScheduler;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 
-/** CIV test files */
-// TestMainFrameCiv.class,
-// TestBuildingDisplayCiv.class,
-// TestHeroDisplayCiv.class,
-// TestNewHeroCiv.class,
-// TestNewHeroFields.class,
+    /** CIV test files */
+    // TestAdventurer.class,
+    // TestBaseCiv.class,
+    // TestBuildingDisplayCiv.class,
+    // TestCommandParser.class,
+    // TestDocumentSizeFiler.class,
+    // TestHeroDisplayCiv.class,
+    // TestMainActionCiv.class,
+    // TestMainframeCiv.class,
+    // TestNewHeroCiv.class,
+    // TestOccupationDisplay.class,
+    // TestOccupationKeys.class,
+    // TestSkillDisplayCiv.class,
+    // TestSkillKeys.class,
 
-/** PDC test files */
-  //TestAdventureRegistry.class,
-  TestCmdApproach.class,
-  TestCmdEnter.class,
-  TestCmdQuit.class,
-  TestDeltaCmdList.class,
-  TestScheduler.class,
-  TestCommandParser.class,
-  TestCommandFactory.class,
-  TestEvent.class
-// TestDwarf.class
-// TestHuman.class
-// TestHunger.class
-// TestInventory.class
-// TestKlass.class
-// TestPeasant.class
-// TestPerson.class
-// TestRace.class
+    /* PDC subfolder test suites */
+    // CharacterSuite.class
+    // CommandSuite.class
 
-/** DMC test files */
-// TestPersonReadWriter.class
+    /** PDC test files */
+    // Util.class
+
+
+    // TestAdventureRegistry.class,
+    TestCmdApproach.class,
+    TestCmdEnter.class,
+    TestCmdQuit.class,
+    TestDeltaCmdList.class,
+    TestScheduler.class,
+    TestCommandParser.class,
+    TestCommandFactory.class,
+    TestEvent.class
+    // TestDwarf.class
+    // TestHuman.class
+    // TestHunger.class
+    // TestInventory.class
+    // TestKlass.class
+    // TestPeasant.class
+    // TestPerson.class
+    // TestRace.class
+
+    /** DMC test files */
+    // TestPersonReadWriter.class
 
 
 })

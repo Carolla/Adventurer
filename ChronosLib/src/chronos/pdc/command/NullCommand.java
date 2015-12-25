@@ -1,4 +1,4 @@
-package chronos.pdc.Command;
+package chronos.pdc.command;
 
 import java.util.List;
 

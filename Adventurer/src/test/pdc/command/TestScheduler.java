@@ -8,8 +8,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import chronos.civ.DefaultUserMsg;
-import chronos.pdc.Command.Command.CommandStatus;
-import chronos.pdc.Command.Scheduler;
+import chronos.pdc.command.Command.CommandStatus;
+import chronos.pdc.command.Scheduler;
 
 public class TestScheduler
 {

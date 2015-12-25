@@ -16,8 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import chronos.pdc.Command.Command;
-import chronos.pdc.Command.NullCommand;
+import chronos.pdc.command.Command;
+import chronos.pdc.command.NullCommand;
 import civ.BuildingDisplayCiv;
 import civ.MainframeCiv;
 

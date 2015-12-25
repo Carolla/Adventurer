@@ -17,8 +17,8 @@ import test.pdc.registry.RegistrySuite;
 
 
 /**
- * Regression test suite for all the {@code JUnit} test cases for the source code packages of
- * the {@code Chronos} library.
+ * Regression test suite for all the {@code JUnit} test cases for the source code packages of the
+ * {@code Chronos} library.
  * 
  * @author Alan Cline
  * @version Jun 4 2009 // original <br>
@@ -28,35 +28,39 @@ import test.pdc.registry.RegistrySuite;
  *          Jan 26 2013 // ensure all integration testing works for complete suite <br>
  *          Apr 14, 2013 // converted all tests to JUnit 4 <br>
  *          July 23, 2014 // refactored file with new unit and integration tests <br>
- *          July 26, 2014 // {@code UC00a. Initialization} classes added: {@code RegistryFactory} <br>
+ *          July 26, 2014 // {@code UC00a. Initialization} added: {@code RegistryFactory} <br>
  *          Sep 20, 2014 // Organized test file list <br>
+ *          Dec 25, 2015 // verify testfile names against prod files names <br>
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses(
-{
+@Suite.SuiteClasses({
 
-    /** CIV test files */
+    /* CIV test files */
     // TestDefaultLists.class,
-    // TestHeroDefaults
+    // TestDefaultUserMsg.class,
+    // TestHeroDefaults,
     // TestMiscKeys.class,
     // TestOccupationsKeys.class,
     // TestSkillKeys.class,
+    // TestSkillKeys.class,
+    // TestUserMsg.class,
 
     /* DMC test files */
     // None
-    
-    /** chronos.pdc.buildings test files */
-    BuildingsSuite.class,   // all test files in the registry subfolder
 
-    /** chronos.pdc.registry test files */
-    RegistrySuite.class,    // all test files in the registry subfolder
-
-    /* Chronos PDC test files */
+    /* PDC subfolder test suites */
+    // BuildingsSuite.class,
+    // CharacterSuite.class,
+    // CommandSuite.class,
+    // RegistrySuite.class,
+  
+    /* PDC test files */
     // TestAdventure.class,
-    // TestAge.class,
     // TestArena.class,
     // TestAttributeList.class,
+    // TestGameClock.class,
     // TestItem.class,
+    // TestMiscKeys.class,
     // TestNPC.class,
     // TestNullNPC.class,
     // TestOccupation.class,
@@ -66,7 +70,7 @@ import test.pdc.registry.RegistrySuite;
 
 })
 /** Compilation of all unit tests for regression and integration testing. */
-public class ChronosSuite
+public class ChronosTestSuite
 {
 }
 

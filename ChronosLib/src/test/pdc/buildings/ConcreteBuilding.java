@@ -10,11 +10,11 @@
  */
 
 
-package test.pdc;
+package test.pdc.buildings;
 
+import chronos.pdc.buildings.Building;
 import mylib.ApplicationException;
 import mylib.dmc.IRegistryElement;
-import chronos.pdc.buildings.Building;
 
 /**
  *    Enables testing of the abstract base class building

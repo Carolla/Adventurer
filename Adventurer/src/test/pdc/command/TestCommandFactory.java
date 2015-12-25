@@ -10,10 +10,10 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
+import chronos.pdc.command.Command;
+import chronos.pdc.command.NullCommand;
 import pdc.command.CommandFactory;
 import pdc.command.CommandInput;
-import chronos.pdc.Command.Command;
-import chronos.pdc.Command.NullCommand;
 
 public class TestCommandFactory
 {

@@ -12,13 +12,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import test.pdc.FakeBuilding;
-import test.pdc.command.FakeMainframeCiv;
 import chronos.pdc.Adventure;
 import chronos.pdc.buildings.Building;
 import chronos.pdc.registry.BuildingRegistry;
 import civ.BuildingDisplayCiv;
 import civ.MainframeCiv;
+import test.pdc.buildings.FakeBuilding;
+import test.pdc.command.FakeMainframeCiv;
 
 public class TestBuildingDisplayCiv
 {

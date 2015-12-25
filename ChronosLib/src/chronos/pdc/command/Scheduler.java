@@ -9,7 +9,7 @@
  * by email: acline@carolla.com
  */
 
-package chronos.pdc.Command;
+package chronos.pdc.command;
 
 import chronos.civ.UserMsg;
 import chronos.pdc.GameClock;

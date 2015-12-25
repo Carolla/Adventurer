@@ -16,9 +16,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
-import mylib.MsgCtrl;
-import mylib.pdc.Registry;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -27,10 +24,12 @@ import org.junit.Test;
 
 import chronos.Chronos;
 import chronos.civ.DefaultUserMsg;
-import chronos.pdc.Command.Scheduler;
+import chronos.pdc.command.Scheduler;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import chronos.pdc.registry.SkillRegistry;
+import mylib.MsgCtrl;
+import mylib.pdc.Registry;
 
 
 /**

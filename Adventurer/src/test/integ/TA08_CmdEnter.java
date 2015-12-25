@@ -15,18 +15,17 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import mylib.MsgCtrl;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Test;
 
 import chronos.civ.DefaultUserMsg;
-import chronos.pdc.Command.Scheduler;
+import chronos.pdc.command.Scheduler;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.BuildingDisplayCiv;
 import civ.CommandParser;
+import mylib.MsgCtrl;
 
 /**
  * Enter a specified building from the building's exterior or from the town. If the Hero is outside

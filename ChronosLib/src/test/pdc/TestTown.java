@@ -24,8 +24,6 @@ import static org.junit.Assert.assertNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import mylib.MsgCtrl;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -34,6 +32,8 @@ import org.junit.Test;
 
 import chronos.pdc.Town;
 import chronos.pdc.buildings.Building;
+import mylib.MsgCtrl;
+import test.pdc.buildings.FakeBuilding;
 
 /**
  * Verify that the Town Class works as expected
