@@ -183,7 +183,6 @@ public abstract class Registry<E extends IRegistryElement>
    * 
    * @return one or more registry elements that match the Predicate, else returns null.
    */
-  @SuppressWarnings("serial")
   public List<IRegistryElement> getAll()
   {
     return _regRW.getAll();
