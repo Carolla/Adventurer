@@ -1,5 +1,5 @@
 /**
- * SomeObject.java Copyright (c) 2012, Carolla Development, Inc. All Rights Reserved
+ * oldSomeObject.java Copyright (c) 2012, Carolla Development, Inc. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
@@ -22,7 +22,7 @@ import com.db4o.query.Predicate;
  * @version Dec 3, 2012 // original <br>
  *          Mar 13, 2013 // adapted to implement IRegistryElement <br>
  */
-public class SomeObject implements IRegistryElement
+public class oldSomeObject implements IRegistryElement
 {
   /** Field to use as search key */
   private String _key;
@@ -38,7 +38,7 @@ public class SomeObject implements IRegistryElement
    * @param value any float number
    * @param text any text string
    */
-  public SomeObject(int value, String text) throws IllegalArgumentException
+  public oldSomeObject(int value, String text) throws IllegalArgumentException
   {
     _num = value;
     _word = text;
@@ -54,7 +54,7 @@ public class SomeObject implements IRegistryElement
    */
   public boolean equals(Object object)
   {
-    SomeObject target = (SomeObject) object;
+    oldSomeObject target = (oldSomeObject) object;
     return ((_num == target.getNum()) && (_word.equals(target.getWord())));
   }
 

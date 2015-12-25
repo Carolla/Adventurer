@@ -12,9 +12,6 @@ package mylib.pdc;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.db4o.query.Predicate;
-
-import mylib.ApplicationException;
 import mylib.dmc.DbReadWriter;
 import mylib.dmc.IRegistryElement;
 
@@ -35,25 +32,26 @@ import mylib.dmc.IRegistryElement;
  * @version Aug 6, 2012 // original <br>
  *          Sept 13, 2014 // removed need for closeflag <br>
  *          Sept 27, 2014 // removed ctor used only for testing <br>
+ *          Dec 19 2015 // removed the <IRegistryElement> generic <br>
+ *          Dec 25 2015 // refactored for the new DbReadWriter class <br>
  */
 public abstract class Registry<E extends IRegistryElement>
 {
-
   /**
    * The DMC registry class for handling persistence. Each derived-class {@code Registry} has its
    * own ReadWriter
    */
-  protected DbReadWriter<E> _regRW = null;
-  protected List<E> _inMemoryList = new ArrayList<E>();
+  protected DbReadWriter _regRW = null;
+  // protected List<IRegistryElement> _inMemoryList = new ArrayList<IRegistryElement>();
 
-  /** Number of elements in the Registry collection */
-  private int _nbrElements = 0;
+  // /** Number of elements in the Registry collection */
+  // private int _nbrElements = 0;
 
-  protected boolean shouldInitialize;
+  protected boolean _shouldInitialize;
 
-  /** Warning message for a non-unique object found in the database */
-  static public final String DBREG_NOT_UNIQUE =
-      "Non-unique object found while trying to retrieve";
+//  /** Warning message for a non-unique object found in the database */
+//  static public final String DBREG_NOT_UNIQUE =
+//      "Non-unique object found while trying to retrieve";
 
   /**
    * Initialize registry with beginning data from static tables, called when the registry file does
@@ -78,19 +76,16 @@ public abstract class Registry<E extends IRegistryElement>
   public Registry(String filename)
   {
     // Creates registry file and reloads it (new registry will be empty)
-    _regRW = new DbReadWriter<E>(filename);
-    // Set the persistence number of elements in the Registry
-    _nbrElements = getAll().size();
+    _regRW = new DbReadWriter(filename);
+    // // Set the persistence number of elements in the Registry
+    // _nbrElements = getAll().size();
 
-    if (_nbrElements == 0) {
-      shouldInitialize = true;
+    if (getAll().size() == 0) {
+      _shouldInitialize = true;
     }
   }
 
-  public void setDbReadWriter(DbReadWriter<E> regRW)
-  {
-    _regRW = regRW;
-  }
+
 
   // ============================================================
   // PUBLIC METHODS
@@ -108,7 +103,7 @@ public abstract class Registry<E extends IRegistryElement>
   {
     boolean retval = false;
 
-    _inMemoryList.add(obj);
+    // _inMemoryList.add(obj);
     // Ensure that a null or an empty key is not being added
     if ((obj == null) || (obj.getKey().trim().length() == 0)) {
       return retval;
@@ -116,7 +111,7 @@ public abstract class Registry<E extends IRegistryElement>
     // Ensure that only unique objects are added
     if (contains(obj) == false) {
       _regRW.addElement(obj);
-      _nbrElements++;
+      // _nbrElements++;
       retval = true;
     }
     return retval;
@@ -129,14 +124,14 @@ public abstract class Registry<E extends IRegistryElement>
 
 
   /**
-   * Verifies if the given objects exists in the registry. The object's equal() method is called.
+   * Verifies if the given object exists in the registry. The object's equal() method is called.
    * 
    * @param target object to match against for comparison
    * @return true if the registry contains the element, else false
    */
   public boolean contains(E target)
   {
-    return _regRW.containsElement(target);
+    return (_regRW.containsElement(target) != null);
   }
 
   /**
@@ -147,54 +142,41 @@ public abstract class Registry<E extends IRegistryElement>
    */
   public void delete(E obj) throws NullPointerException
   {
-    // Reduce the number of elements only if the delete worked
-    if (_regRW.deleteElement(obj) == true) {
-      _nbrElements--;
-    }
+    _regRW.deleteElement(obj);
+    // _nbrElements--;
   }
 
-  public void deleteAll()
-  {
-    _regRW.dbClear();
-  }
+  // public void deleteAll()
+  // {
+  // _regRW.dbClear();
+  // }
 
   /**
-   * Retrieve one or more objects by name. The object's {@code getKey} method is called.
+   * Retrieve one or more objects by name. The object's {@code getKey()} method is called.
    * 
    * @param name of the target object to match against for comparison
    * @return the list of all elements that match the name
    */
   @SuppressWarnings("serial")
-  public List<E> get(final String name)
+  public Object get(String name)
   {
-    Predicate<E> pred = new Predicate<E>() {
-      public boolean match(E candidate)
-      {
-        String key = candidate.getKey();
-        // System.err.print("\tName to match =  " + name);
-        // System.err.print("\tCandidate = " + candidate );
-        boolean retval = key.equalsIgnoreCase(name);
-        // System.err.println("\tFound = " + retval);
-        return retval;
-        // return candidate.getKey().equalsIgnoreCase(name);
-      }
-    };
-    List<E> elementList = get(pred);
+    Object elementList = _regRW.get(name);
     return elementList;
   }
 
-  /**
-   * Gets the requested object from the database using the predicate from the same element type as
-   * that being searched for.
-   * 
-   * @param pred object containing the element's match() method for comparison
-   * @return one or more registry elements that match the Predicate, else returns null.
-   */
-  public List<E> get(Predicate<E> pred)
-  {
-    List<E> elementList = _regRW.query(pred);
-    return elementList;
-  }
+  // /**
+  // * Gets the requested object from the database using the predicate from the same element type as
+  // * that being searched for.
+  // *
+  // * @param pred object containing the element's match() method for comparison
+  // * @return one or more registry elements that match the Predicate, else returns null.
+  // */
+  // public List<IRegistryElement> get(Predicate<IRegistryElement> pred)
+  // {
+  // List<IRegistryElement> elementList = _regRW.query(pred);
+  // return elementList;
+  // }
+
 
   /**
    * Gets all the elements of the Registry
@@ -202,25 +184,9 @@ public abstract class Registry<E extends IRegistryElement>
    * @return one or more registry elements that match the Predicate, else returns null.
    */
   @SuppressWarnings("serial")
-  public List<E> getAll()
+  public List<IRegistryElement> getAll()
   {
-    List<E> elementList = get(new Predicate<E>() {
-      public boolean match(E candidate)
-      {
-        return true;
-      }
-    });
-    return elementList;
-  }
-
-  /**
-   * Get the number of elements currently in the registry
-   * 
-   * @return then number of objects in the register
-   */
-  public int getNbrElements()
-  {
-    return _nbrElements;
+    return _regRW.getAll();
   }
 
 
@@ -231,94 +197,104 @@ public abstract class Registry<E extends IRegistryElement>
    */
   public List<String> getElementNames()
   {
-    List<E> elem = getAll();
+    List<IRegistryElement> elem = getAll();
     List<String> names = new ArrayList<String>(elem.size());
-    // Convert the name of the town to a string
-    for (E e : elem) {
-      String key = e.getKey();
-      names.add(key);
+    // Convert the name of the element to a string
+    for (int k = 0; k < elem.size(); k++) {
+      String key = elem.get(k).getKey();
+      names.add(k, key);
     }
     return names;
   }
 
 
   /**
-   * Retrieves a unique Registry element using that entry's equal() method
+   * Get the number of elements currently in the registry
    * 
-   * @param name of a unique object in the registry to be retrieved; cannot be null
-   * @return the particular matching object; or null if not found or name was null
-   * @throws ApplicationException if more than one (non-unique) match was found
+   * @return then number of objects in the register
    */
-  public E getUnique(String name) throws ApplicationException
+  public int getNbrElements()
   {
-    // Guard
-    if ((name == null) || (name.trim().length() == 0)) {
-      return null;
-    }
-    E regElem = getFromMemory(name);
-    if (regElem != null) {
-      return regElem;
-    }
-    
-    List<E> elementList = get(name);
-    int nbrFound = elementList.size();
-    // If single element found, return it
-    if (nbrFound == 1) {
-      regElem = elementList.get(0);
-    }
-    // Registry should contain only unique elements. Throw exception is
-    // multiples are found
-    else if (nbrFound > 1) {
-      throw new ApplicationException(DBREG_NOT_UNIQUE);
-    }
-    // If no element found, return null
-    return regElem;
-  }
-
-  private E getFromMemory(String name)
-  {
-    for (E element : _inMemoryList) {
-      if (element.getKey().equalsIgnoreCase(name)) {
-        return element;
-      }
-    }
-    return null;
+    return _regRW.size();
   }
 
 
-  /**
-   * Verifies if the string (key) is unique to the Registry Calls getUnique() to return a boolean
-   * instead of an object. The database doc promises not to store non-unique objects into db4o, so
-   * this method should never be needed.
-   * 
-   * @param name to check for uniqueness
-   * @return true if name is unique in the registry, else false
-   */
-  public boolean isUnique(String name)
-  {
-    boolean retval = false;
-    // Return true if single element found
-    try {
-      retval = (getUnique(name) == null) ? true : false;
-    } catch (ApplicationException ex) {
-      // Return false for multiple elements found
-      return false;
-    }
-    return retval;
-  }
+
+  // /**
+  // * Retrieves a unique Registry element using that entry's equal() method
+  // *
+  // * @param name of a unique object in the registry to be retrieved; cannot be null
+  // * @return the particular matching object; or null if not found or name was null
+  // * @throws ApplicationException if more than one (non-unique) match was found
+  // */
+  // public E getUnique(String name) throws ApplicationException
+  // {
+  // // Guard
+  // if ((name == null) || (name.trim().length() == 0)) {
+  // return null;
+  // }
+  // E regElem = getFromMemory(name);
+  // if (regElem != null) {
+  // return regElem;
+  // }
+  //
+  // List<IRegistryElement> elementList = get(name);
+  // int nbrFound = elementList.size();
+  // // If single element found, return it
+  // if (nbrFound == 1) {
+  // regElem = elementList.get(0);
+  // }
+  // // Registry should contain only unique elements. Throw exception is
+  // // multiples are found
+  // else if (nbrFound > 1) {
+  // throw new ApplicationException(DBREG_NOT_UNIQUE);
+  // }
+  // // If no element found, return null
+  // return regElem;
+  // }
+
+  // private E getFromMemory(String name)
+  // {
+  // for (E element : _inMemoryList) {
+  // if (element.getKey().equalsIgnoreCase(name)) {
+  // return element;
+  // }
+  // }
+  // return null;
+  // }
+
+
+//  // TODO: This method should never be needed
+//  /**
+//   * Verifies if the string (key) is unique to the Registry Calls getUnique() to return a boolean
+//   * instead of an object. The db4o doc promises not to store non-unique objects into db4o, and
+//   * DbReadWriter ensures that is stored only unique objects, so this method should never be needed.
+//   * 
+//   * @param name to check for uniqueness
+//   * @return true if name is unique in the registry, else false
+//   */
+//  public boolean isUnique(String name)
+//  {
+//    return (_regRW.get(name) == null) ? true : false;
+//  }
+
+  // TODO: Why is this needed?
+//  public void setDbReadWriter(DbReadWriter regRW)
+//  {
+//    _regRW = regRW;
+//  }
 
 
   /**
    * Update an existing object in the registry. The existing object must already be in the database,
    * and will be replaced with the first one it finds that matches it. The element's getKey() method
    * will be called, so the key field cannot be changed (updated). <br>
-   * Note: db4o provides a field-replacedment based update, but this is a delete-add method.
+   * Note: db4o provides a field-replacement based update, but this is a delete-add method.
    * 
    * @param target replacement for modified object
    * @return false if the update failed becuase original was not found; else true
    */
-  public boolean update(final E target) // throws
-  // ApplicationException
+  public boolean update(final E target)
   {
     boolean retval = false;
     // Guard against null replacements or missing elements
@@ -326,7 +302,8 @@ public abstract class Registry<E extends IRegistryElement>
       return false;
     }
     // Guard: if target is not in the registry, return immediately.
-    if (contains(target) == true) {
+    IRegistryElement obj = (IRegistryElement) _regRW.containsElement(target);
+    if (obj != null) {
       // Retrieve the target element and overwrite it
       _regRW.deleteElement(target);
       _regRW.addElement(target);
@@ -336,6 +313,6 @@ public abstract class Registry<E extends IRegistryElement>
   }
 
 
-} // end of Registry class
+} // end of Registry base class
 
 

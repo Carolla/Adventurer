@@ -12,11 +12,12 @@ package chronos.pdc.registry;
 import java.util.ArrayList;
 import java.util.List;
 
-import mylib.ApplicationException;
-import mylib.pdc.Registry;
 import chronos.Chronos;
 import chronos.pdc.Occupation;
 import chronos.pdc.Skill;
+import mylib.ApplicationException;
+import mylib.dmc.IRegistryElement;
+import mylib.pdc.Registry;
 
 /**
  * Contains a set of occupations and associated Skills that a player may assign to his Hero. It also
@@ -126,7 +127,7 @@ public class OccupationRegistry extends Registry<Occupation>
     {
         super(Chronos.OcpRegPath);
         _skillRegistry = skillRegistry;
-        if (shouldInitialize) {
+        if (_shouldInitialize) {
             initialize();
         }        
     }
@@ -190,11 +191,7 @@ public class OccupationRegistry extends Registry<Occupation>
      */
     public Occupation getOccupation(String ocpName)
     {
-        try {
-            return getUnique(ocpName);
-        } catch (ApplicationException ex) {
-            return null;
-        }
+      return (Occupation) get(ocpName);
     }
 
 
@@ -205,9 +202,16 @@ public class OccupationRegistry extends Registry<Occupation>
      */
     public List<Occupation> getOccupationList()
     {
-        return super.getAll();
+        List<IRegistryElement> results = getAll();
+        // Convert to Occupations
+        List<Occupation> ocpList = new ArrayList<Occupation>(results.size());
+        for (IRegistryElement elem : results) {
+          ocpList.add((Occupation) elem);
+        }
+        return ocpList;
     }
 
+    
     public static List<String> getOccupationNameList()
     {
         List<String> nameList = new ArrayList<String>();

@@ -13,12 +13,13 @@ package chronos.pdc.registry;
 import java.util.ArrayList;
 import java.util.List;
 
-import mylib.ApplicationException;
-import mylib.pdc.Registry;
 import chronos.Chronos;
 import chronos.pdc.Item;
 import chronos.pdc.MiscKeys;
 import chronos.pdc.MiscKeys.ItemCategory;
+import mylib.ApplicationException;
+import mylib.dmc.IRegistryElement;
+import mylib.pdc.Registry;
 
 /**
  * Contains all Items in the game: inventory, furniture, weapons, and even dead monsters or NPCs
@@ -113,7 +114,7 @@ public class ItemRegistry extends Registry<Item>
   protected ItemRegistry()
   {
     super(Chronos.ItemRegPath);
-    if (shouldInitialize) {
+    if (_shouldInitialize) {
         initialize();
     }        
   }
@@ -183,28 +184,24 @@ public class ItemRegistry extends Registry<Item>
    */
   public Item getItem(String name)
   {
-    try {
-      return (Item) getUnique(name);
-    } catch (ApplicationException ex) {
-      return null;
-    }
+      return (Item) get(name);
   }
 
 
-//  /**
-//   * Retrieve all Items in the registry
-//   * 
-//   * @return the Item List
-//   */
-//  public ArrayList<Item> getItemList()
-//  {
-//    List<IRegistryElement> itemSet = super.getAll();
-//    ArrayList<Item> itemList = new ArrayList<Item>(itemSet.size());
-//    for (IRegistryElement e : itemSet) {
-//      itemList.add((Item) e);
-//    }
-//    return itemList;
-//  }
+  /**
+   * Retrieve all Items in the registry
+   * 
+   * @return the Item List
+   */
+  public List<Item> getItemList()
+  {
+    List<IRegistryElement> itemSet = super.getAll();
+    List<Item> itemList = new ArrayList<Item>(itemSet.size());
+    for (IRegistryElement e : itemSet) {
+      itemList.add((Item) e);
+    }
+    return itemList;
+  }
 
   /*
    *  PRIVATE METHODS

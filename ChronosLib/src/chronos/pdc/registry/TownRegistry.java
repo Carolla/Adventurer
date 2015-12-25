@@ -12,10 +12,11 @@ package chronos.pdc.registry;
 import java.util.ArrayList;
 import java.util.List;
 
-import mylib.pdc.Registry;
 import chronos.Chronos;
 import chronos.pdc.Town;
 import chronos.pdc.buildings.Building;
+import mylib.dmc.IRegistryElement;
+import mylib.pdc.Registry;
 
 /**
  * Contains a collection of all Town objects
@@ -62,7 +63,7 @@ public class TownRegistry extends Registry<Town>
     {
         super(Chronos.TownRegPath);
         _buildingRegistry = buildingRegistry;
-        if (shouldInitialize) {
+        if (_shouldInitialize) {
             initialize();
         }        
     }
@@ -115,9 +116,15 @@ public class TownRegistry extends Registry<Town>
      */
     public List<Town> getTownList()
     {
-        return super.getAll();
+      List<IRegistryElement> results = getAll();
+      List<Town> townList = new ArrayList<Town>(results.size());
+      for (IRegistryElement elem : results) {
+        townList.add((Town) elem);
+      }
+      return townList;
     }
-
+    
+    
     // ==============================================================================
     // PRIVATE METHODS
     // ==============================================================================

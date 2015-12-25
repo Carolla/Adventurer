@@ -12,10 +12,9 @@ package test.integ;
 
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
-
-import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -25,6 +24,9 @@ import org.junit.Test;
 
 import chronos.pdc.character.Hero;
 import chronos.pdc.registry.HeroRegistry;
+import chronos.pdc.registry.RegistryFactory;
+import chronos.pdc.registry.RegistryFactory.RegKey;
+import mylib.MsgCtrl;
 
 
 /**
@@ -67,7 +69,8 @@ public class TA03a_SummonHero
     MsgCtrl.auditMsgsOn(true);
     MsgCtrl.errorMsgsOn(true);
 
-    setPreconditions();
+    // Set preconditions
+    assertTrue(dormNotEmpty());
 
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
@@ -135,28 +138,32 @@ public class TA03a_SummonHero
   // ==============================================================================
 
   /** At least one Hero exists in the Dormitory. */
-  static private boolean setPreconditions()
+  static private boolean dormNotEmpty()
   {
     MsgCtrl.msg("Setting pre-conditions: ");
-    MsgCtrl.msgln("\tAt least one Hero exists in the Dormitory.");
+    MsgCtrl.msgln("\tAt least one Hero must be in the Dormitory.");
 
-    HeroRegistry dorm = new HeroRegistry();
+    RegistryFactory rf = new RegistryFactory();
+    rf.initRegistries();
+    HeroRegistry dorm = (HeroRegistry) rf.getRegistry(RegKey.HERO);
     assertNotNull(dorm);
     int nbr = dorm.getNbrElements();
     MsgCtrl.msgln("Dormitory contains " + nbr + " Heroes");
     if (nbr > 0) {
-      return false;
+      return true;
     }
-    // Force three Heroes into the dorm
-    try {
-      Hero hero1 = new Hero("Falsoon", "male", "black", "Human", "Cleric");
-      Hero hero2 = new Hero("Galadriel", "female", "blonde", "Elf", "Thief");
-      Hero hero3 = new Hero("Blonk", "male", "black", "Dwarf", "Fighter");
-      dorm.save(hero1);
-      dorm.save(hero2);
-      dorm.save(hero3);
-    } catch (Exception ex) {
-      MsgCtrl.errMsgln(ex.getMessage());
+    else {
+      // Force three Heroes into the dorm
+      try {
+        Hero hero1 = new Hero("Falsoon", "male", "black", "Human", "Cleric");
+        Hero hero2 = new Hero("Galadriel", "female", "blonde", "Elf", "Thief");
+        Hero hero3 = new Hero("Blonk", "male", "black", "Dwarf", "Fighter");
+        dorm.save(hero1);
+        dorm.save(hero2);
+        dorm.save(hero3);
+      } catch (Exception ex) {
+        MsgCtrl.errMsgln(ex.getMessage());
+      }
     }
 
     List<Hero> heroList = dorm.getAll();

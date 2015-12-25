@@ -12,8 +12,6 @@ package chronos.pdc.registry;
 import java.util.ArrayList;
 import java.util.List;
 
-import mylib.dmc.IRegistryElement;
-import mylib.pdc.Registry;
 import chronos.Chronos;
 import chronos.pdc.NPC;
 import chronos.pdc.Command.Scheduler;
@@ -26,6 +24,8 @@ import chronos.pdc.buildings.Jail;
 import chronos.pdc.buildings.RoguesGuild;
 import chronos.pdc.buildings.Store;
 import chronos.pdc.buildings.WizardsGuild;
+import mylib.dmc.IRegistryElement;
+import mylib.pdc.Registry;
 
 /**
  * All Town Buildings are collected here. The initial (default) Registry contains 8 buildings.
@@ -91,7 +91,7 @@ public class BuildingRegistry extends Registry<Building>
    */
   public Building getBuilding(String name)
   {
-    return getUnique(name);
+    return (Building) get(name);
   }
 
   /**
@@ -103,10 +103,11 @@ public class BuildingRegistry extends Registry<Building>
   public List<Building> getBuildingList()
   {
     // Run the query to retrieve all buildings from the registry
-    List<Building> result = super.getAll();
+    List<IRegistryElement> result = getAll();
+    // Convert to Building list
     List<Building> bldgList = new ArrayList<Building>(result.size());
     for (int k = 0; k < result.size(); k++) {
-      // Check against all building subtypes
+      // Filter out the NPC classes that are also in the BuildingRegistry
       IRegistryElement elem = result.get(k);
       if (elem.getClass().equals(NPC.class) == false) {
         bldgList.add((Building) elem);
@@ -115,4 +116,5 @@ public class BuildingRegistry extends Registry<Building>
     return bldgList;
   }
 
+  
 } // end of BuildingRegistry class

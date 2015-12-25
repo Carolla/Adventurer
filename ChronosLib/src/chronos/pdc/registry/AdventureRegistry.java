@@ -10,15 +10,10 @@
 package chronos.pdc.registry;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import mylib.ApplicationException;
-import mylib.dmc.IRegistryElement;
-import mylib.pdc.Registry;
 import chronos.Chronos;
 import chronos.pdc.Adventure;
-
-import com.db4o.query.Predicate;
+import mylib.pdc.Registry;
 
 /**
  * Contains a set of Adventure objects, where each Adventure contains the name of a Town and an
@@ -76,13 +71,14 @@ public class AdventureRegistry extends Registry<Adventure>
   // ===========================================================================
 
   /**
-   * This method is a wrapper to the base class which passes the data file path and not the source code
+   * This method is a wrapper to the base class which passes the data file path and not the source
+   * code
    */
   public AdventureRegistry()
   {
     super(Chronos.AdventureRegPath);
-    if (shouldInitialize) {
-        initialize();
+    if (_shouldInitialize) {
+      initialize();
     }
   }
 
@@ -113,37 +109,22 @@ public class AdventureRegistry extends Registry<Adventure>
    */
   public Adventure getAdventure(String name)
   {
-    try {
-      return (Adventure) getUnique(name);
-    } catch (ApplicationException ex) {
-      return null;
-    }
+    return (Adventure) get(name);
   }
 
 
   /**
-   * Retrieve all Adventures in the Registry
+   * Retrieve all Adventure names in the Registry
    * 
    * @return the adventure List
    */
-  public ArrayList<Adventure> getAdventureList()
+  public ArrayList<String> getAdventureList()
   {
-    @SuppressWarnings("serial")
-    List<Adventure> advSet = get(new Predicate<Adventure>() {
-      public boolean match(Adventure candidate)
-      {
-        return true;
-      }
-    });
-//    ArrayList<Adventure> advList = new ArrayList<Adventure>(advSet.size());
-    // Create default ArrayList in case the advSet is empty
-    ArrayList<Adventure> advList = new ArrayList<Adventure>();
-    for (IRegistryElement e : advSet) {
-      advList.add((Adventure) e);
-    }
+    ArrayList<String> advList = (ArrayList<String>) getElementNames();
     return advList;
   }
 
+  
   // ===========================================================================
   // PRIVATE METHODS
   // ===========================================================================

@@ -9,15 +9,15 @@
 
 package chronos.pdc.registry;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import mylib.ApplicationException;
-import mylib.MsgCtrl;
-import mylib.pdc.Registry;
 import chronos.Chronos;
 import chronos.pdc.Skill;
-
-import com.db4o.query.Predicate;
+import mylib.ApplicationException;
+import mylib.MsgCtrl;
+import mylib.dmc.IRegistryElement;
+import mylib.pdc.Registry;
 
 /**
  * Contains a set of skills that a player may assign to his Hero. {@code SkillRegistry} is a
@@ -83,9 +83,9 @@ public class SkillRegistry extends Registry<Skill>
   protected SkillRegistry()
   {
     super(Chronos.SkillRegPath);
-    if (shouldInitialize) {
-        initialize();
-    }        
+    if (_shouldInitialize) {
+      initialize();
+    }
   }
 
 
@@ -126,12 +126,9 @@ public class SkillRegistry extends Registry<Skill>
    */
   public Skill getSkill(String name)
   {
-    try {
-      return (Skill) getUnique(name);
-    } catch (ApplicationException ex) {
-      return null;
-    }
+    return (Skill) get(name);
   }
+
 
   /**
    * Retrieve all Skills in the SkillRegistry
@@ -141,19 +138,18 @@ public class SkillRegistry extends Registry<Skill>
   @SuppressWarnings("serial")
   public List<Skill> getSkillList()
   {
-    List<Skill> sklSet = get(new Predicate<Skill>() {
-      public boolean match(Skill candidate)
-      {
-        return true;
-      }
-    });
-    return sklSet;
+    List<IRegistryElement> skillSet = getAll();
+    // Convert to Skill list
+    List<Skill> skillList = new ArrayList<Skill>(skillSet.size());
+    for (IRegistryElement elem : skillSet) {
+      skillList.add((Skill) elem);
+    }
+    return skillList;
   }
 
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ INNER CLASS: MockSkillRegistry for
-   * Testing ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * INNER CLASS: MockSkillRegistry for Testing
    */
 
   /** Inner class for testing Person */
@@ -168,7 +164,7 @@ public class SkillRegistry extends Registry<Skill>
     public void dump()
     {
       // Get all skills by using null argument
-      List<Skill> sklist = getAll();
+      List<Skill> sklist = getSkillList();
       for (Skill s : sklist) {
         System.out.println("\t" + s.getName() + "\t\t" + s.getDescription());
       }

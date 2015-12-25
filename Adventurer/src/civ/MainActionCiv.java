@@ -112,15 +112,15 @@ public class MainActionCiv extends BaseCiv
     ipPanel.setDefaultFocus();      // default focus only works after panel is displayed
   }
 
-  public List<Adventure> getAdventureList()
+  public List<String> getAdventureList()
   {
-    List<Adventure> adventures = _advReg.getAdventureList();
+    List<String> adventures = _advReg.getAdventureList();
     return adventures;
   }
 
   public List<Hero> getAllHeroes()
   {
-    return _dorm.getAll();
+    return _dorm.getHeroList();
   }
 
 
@@ -204,13 +204,13 @@ public class MainActionCiv extends BaseCiv
     button.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e)
       {
-        List<Adventure> adventures = _advReg.getAdventureList();
+        List<String> adventures = _advReg.getAdventureList();
         Object[] adventuresArr = adventures.toArray();
         Object selectedValue =
             JOptionPane.showInputDialog(null, "Select an Adventure", "Adventures",
                 JOptionPane.INFORMATION_MESSAGE, null, adventuresArr, adventuresArr[0]);
         if (selectedValue != null) {
-          loadSelectedAdventure(selectedValue.toString());
+          loadSelectedAdventure((String) selectedValue);
         }
       }
     });
@@ -263,7 +263,7 @@ public class MainActionCiv extends BaseCiv
       // This happens when SummonHeros is clicked
       public void actionPerformed(ActionEvent e)
       {
-        summonableHeroes = _dorm.getAll();
+        summonableHeroes = _dorm.getHeroList();
 
         if (_partyHeros.size() == 0) {
           showPartyPickerWhenPartyEmpty();

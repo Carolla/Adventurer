@@ -12,12 +12,11 @@ package chronos.pdc.registry;
 import java.util.ArrayList;
 import java.util.List;
 
-import mylib.ApplicationException;
-import mylib.pdc.Registry;
 import chronos.Chronos;
 import chronos.pdc.NPC;
-
-import com.db4o.query.Predicate;
+import mylib.ApplicationException;
+import mylib.dmc.IRegistryElement;
+import mylib.pdc.Registry;
 
 /**
  * Contains the Patrons for the Inn. They interact with the Hero
@@ -68,7 +67,7 @@ public class NPCRegistry extends Registry<NPC>
               "\"I peddle shoes not prattle! Beat it!\"",
               "\"No shoes, no service!\"",
               "\"Not all the heels of this world are on shoes.\""
-      },
+          },
           // Scruffy the hermit
           {
               "Scruffy",
@@ -89,7 +88,7 @@ public class NPCRegistry extends Registry<NPC>
               "\"Go bother someone else.\"",
               "\"I don't know nuttin', and I don't want to talk about it.\"",
               "\"Innkeeper! Can't a guy enjoy a little peace and quiet!\""
-      },
+          },
           // Boren the blacksmith
           {
               "Boren",
@@ -110,7 +109,7 @@ public class NPCRegistry extends Registry<NPC>
               "He stares at you silently.",
               "He furls his brow. \"Hey buddy! I just came for a cool one, not a conversation.\"",
               "He flexes his huge arms and hands in front of you as a warning, and stomps out."
-      },
+          },
           // Meladriel the courtesan
           {
               "Meladriel",
@@ -132,7 +131,7 @@ public class NPCRegistry extends Registry<NPC>
               "\"You don't look like my type.\"",
               "She puts on her cloak and covers her face.",
               "She slaps your face, pushes you roughly, and storms from the Inn."
-      },
+          },
           // Aragon, captain of the guard
           {
               "Aragon",
@@ -155,7 +154,7 @@ public class NPCRegistry extends Registry<NPC>
               "He looks sideways at you and says, \"Begone!\"",
               "He puts his hand silently on the hilt of his sword.",
               "\"There are too many would-be adventurers who spill their blood in my liege's castle.\"",
-      },
+          },
           // Matilda the matron
           {
               "Matilda",
@@ -178,7 +177,7 @@ public class NPCRegistry extends Registry<NPC>
                   " she can't talk.",
               "\"Why are you pestering me? Can't you see I'm hungry and need to eat, then I must get "
                   + "back on the road again.\" She mutters to herself, \"It's always sumpin'.\" ",
-      },
+          },
           // Perrin the archer
           {
               "Perrin",
@@ -200,7 +199,7 @@ public class NPCRegistry extends Registry<NPC>
               "He turns his back and continues eating.",
               "\"We don't cotton to strangers in this town. It's a peaceful town, and we like it that way.\" ",
               "\"Don't ask me about the castle. It will only stir up trouble.\" "
-      },
+          },
           // Gorbal the thief
           {
               "Gorbal",
@@ -223,7 +222,7 @@ public class NPCRegistry extends Registry<NPC>
               "He slides a wicked-looking dagger from his vest and shows it to you under the table.",
               "He throws his dagger at a nearby post, where it sticks with a thud and a quiver. " +
                   "He glares at you and stalks out.",
-      },
+          },
           // Balthazar the Cleric, Monastery Building Master
           {
               "Balthazar",
@@ -245,7 +244,7 @@ public class NPCRegistry extends Registry<NPC>
               "\"I have important business here, stranger, so perhaps we can talk later at my monastery.\"",
               "Impatiently, the tall man says to his associate, \"Perhaps we should finish our " +
                   "conversation elsewhere.\" The two of them stand and leave.",
-      },
+          },
           // Pendergast the Wizard, Arcaneum Building Master
           {
               "Pendergast",
@@ -267,7 +266,7 @@ public class NPCRegistry extends Registry<NPC>
               "\"I have important business here, stranger, so perhaps you can go away. \"Shoo!\"",
               "Impatiently, the thin man says to his associate, \"Perhaps we should finish our " +
                   "conversation elsewhere.\" The two of them stand and leave.",
-      },
+          },
           // Ripper, master thief, Rogues' Den Building Master
           {
               "Ripper",
@@ -292,7 +291,7 @@ public class NPCRegistry extends Registry<NPC>
                   + "knife in his belt.",
               "He stands up and says, \"You play a dnagerous game, stranger.\". He looks around " +
                   "furtively, then stomps out of the Inn."
-      },
+          },
           // Loren, fighter, Stadium Building Master
           {
               "Loren",
@@ -317,7 +316,7 @@ public class NPCRegistry extends Registry<NPC>
               "He sighs and walks to another table.",
               "\"Talk to me later at the Stadium,\" he speaks quietly. \"You can find it.\" " +
                   "He drops a coin on the table and leaves."
-      },
+          },
           // Bork, Innkeeper for Ugly Ogre Inn
           {
               "Bork",
@@ -341,7 +340,7 @@ public class NPCRegistry extends Registry<NPC>
               "He stares at you silently, then goes to the other side of the kitchen.",
               "\"Rogahn and Zelligar probably wouldn't like you poking into their home.\"",
               "\"A group of adventurers went into that place two days ago. They have not returned.\""
-      },
+          },
           // J.P. Pennypacker, the Bank manager
           {
               "J.P. Pennypacker",
@@ -368,7 +367,7 @@ public class NPCRegistry extends Registry<NPC>
                   + "in private?\"",
               "He angrily tells the Innkeeper, \"I'll see you in my office...first thing in the morning.\""
                   + "He strides from the room, looking all business-like self-important.",
-      },
+          },
           // Dewey N. Howe, general store owner
           {
               "Dewey N. Howe",
@@ -388,7 +387,7 @@ public class NPCRegistry extends Registry<NPC>
               "He shifts uncomfortably in his seat. He tries not to notice you standing over him.",
               "\"Sorry, but I am closed right now. My store, I mean.\"",
               "\"Come by my store tomorrow and I should have whatever you need.\"",
-      },
+          },
           // The Sheriff, keeper of the Jail
           {
               "The Sheriff",
@@ -414,7 +413,7 @@ public class NPCRegistry extends Registry<NPC>
                   + "death in this town.",
               "\"One wrong move and you'll end up on the wrong side of my jail cell.",
               "\"I'll be watching you.\""
-      }
+          }
       };
 
 
@@ -430,28 +429,24 @@ public class NPCRegistry extends Registry<NPC>
   protected NPCRegistry()
   {
     super(Chronos.NPCRegPath);
-    if (shouldInitialize) {
-        initialize();
-    }        
-  }
-
-  
-  /**
-   * Get a particlar NPC by name
-   * 
-   * @param name of the NPC
-   * @return the NPC
-   */
-  public NPC getNPC(String name)
-  {
-    try {
-      return getUnique(name);
-    } catch (ApplicationException ex) {
-      return null;
+    if (_shouldInitialize) {
+      initialize();
     }
   }
 
-  
+
+  /**
+   * Get a particular NPC by name
+   * 
+   * @param name of the NPC
+   * @return the NPC or null if not found
+   */
+  public NPC getNPC(String name)
+  {
+    return (NPC) get(name);
+  }
+
+
   /**
    * Retrieve all NPCs in the NPCRegistry
    * 
@@ -459,14 +454,13 @@ public class NPCRegistry extends Registry<NPC>
    */
   public List<NPC> getNPCList()
   {
-    List<NPC> npcSet = get(new Predicate<NPC>() {
-      private static final long serialVersionUID = 6815466908808374953L;
-      public boolean match(NPC candidate)
-      {
-        return true;
-      }
-    });
-    return npcSet;
+    List<IRegistryElement> npcSet = getAll();
+    // Convert to NPC elements
+    List<NPC> npcList = new ArrayList<NPC>(npcSet.size());
+    for (IRegistryElement elem : npcSet) {
+      npcList.add((NPC) elem);
+    }
+    return npcList;
   }
 
 

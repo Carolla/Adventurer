@@ -10,9 +10,13 @@
 
 package chronos.pdc.registry;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import chronos.Chronos;
 import chronos.pdc.character.Hero;
 import mylib.ApplicationException;
+import mylib.dmc.IRegistryElement;
 import mylib.pdc.Registry;
 
 /**
@@ -21,6 +25,7 @@ import mylib.pdc.Registry;
  * @author Tim Armstrong
  * @version Mar 13, 2013 // original <br>
  *          Dec 9 2015 // added a few interfacing methods to Registry <br>
+ *          Dec 25 2015 // ABC: added GetAllHeroes() <br>
  */
 public class HeroRegistry extends Registry<Hero>
 {
@@ -59,12 +64,30 @@ public class HeroRegistry extends Registry<Hero>
    * @return the Hero object; or null if not unique
    * @throws ApplicationException if trying to retrieve non-unique object
    */
-  public Hero getHero(final String name)
+  public Hero getHero(String name)
   {
-    return getUnique(name);
+    return (Hero) get(name);
   }
 
 
+  // TODO Move all all the list casting methods like this one into base class Registry
+  /**
+   * Retrieves all Heroes in the HeroRegistry
+   * 
+   * @return a list of Heroes
+   */
+  public List<Hero> getHeroList()
+  {
+    List<IRegistryElement> results = getAll();
+    // Convert to Hero type
+    List<Hero> heroList = new ArrayList<Hero>(results.size());
+    for (IRegistryElement elem : results) {
+      heroList.add((Hero) elem);
+    }
+    return heroList;
+  }
+
+  
   /** Save a Hero into the HeroRegistry */
   public boolean save(Hero h)
   {

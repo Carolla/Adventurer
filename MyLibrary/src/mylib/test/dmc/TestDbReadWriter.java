@@ -10,22 +10,24 @@
 package mylib.test.dmc;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.util.List;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import mylib.Constants;
 import mylib.MsgCtrl;
 import mylib.dmc.DbReadWriter;
 import mylib.dmc.IRegistryElement;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.db4o.query.Predicate;
 
 /**
  * Test the database read/writer interface methods
@@ -35,28 +37,44 @@ import com.db4o.query.Predicate;
  *          Dec 3, 2012 // updates to better distinguish openDB and closeDB <br>
  *          Feb 25, 2013 // replaced queryByExample with native queries <br>
  *          Mar 18, 2013 // revised after adding IRegistryElement <br>
- *          Nov 1, 2014 // removed dbSize to mock, and fixed tests messing new mock with new regRW <br>
+ *          Nov 1, 2014 // removed dbSize to mock, and fixed tests messing new mock with new regRW
+ *          <br>
  *          Nov 9, 2014 // moved dbDelete into mock and refactored tests <br>
  *          Dec 7, 2014 // revised dbOpen(String) signature and associated tests <br>
+ *          Dec 23, 2015 // test new frefactoring for better encapsulation <br>
  */
 public class TestDbReadWriter
 {
   /** Object under test */
-  private DbReadWriter<SomeObject> _regRW;
+  private DbReadWriter _regRW;
 
   /** Place temporary test files in resource directory */
-  private final String REG_PATH = Constants.MYLIB_RESOURCES + "Test.reg";
+  static private final String REG_PATH = Constants.MYLIB_RESOURCES + "Test.reg";
+
+
+  @BeforeClass
+  static public void setUpBeforeClass()
+  {}
+
+  @AfterClass
+  static public void tearDownAfterClass()
+  {
+    File testFile = new File(REG_PATH);
+    assertTrue(testFile.exists());
+    testFile.delete(); // remove the test file
+  }
 
   @Before
   public void setUp()
   {
-    _regRW = new DbReadWriter<SomeObject>(REG_PATH);
+    _regRW = new DbReadWriter(REG_PATH);
+    assertNotNull(_regRW);
   }
 
   /**
    * Closes db, delete it and its mock to null state, db file used for test is deleted
    * 
-   * @throws java.lang.Exception to catch unexcepted things
+   * @throws java.lang.Exception to catch unexpected events
    */
   @After
   public void tearDown()
@@ -64,272 +82,325 @@ public class TestDbReadWriter
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
 
+    // Clear the database and remove the file
     _regRW.dbClear();
-  }
 
+  }
 
   // ====================================================================
-  // BEGIN TESTS
+  // BEGIN NORMAL TESTS
   // ====================================================================
-
-
-  /**
-   * mylib.dmc.DbReadWriter(String) throws NullPointerException
-   * 
-   * @Error.Test Null filename for constructor; force null pointer exception
-   */
-  @Test
-  public void testConstructorError()
-  {
-    MsgCtrl.where(this);
-    try {
-      new DbReadWriter<IRegistryElement>(null);
-      fail("No exception thrown");
-    } catch (NullPointerException ex) {
-
-    }
-  }
-
-
-  /**
-   * @Normal.Test Confirm that an existing file will reload for new database
-   */
-  @Test
-  public void testConstructorReload()
-  {
-    MsgCtrl.where(this);
-
-    // NORMAL: Setup has created db, container, and file
-    DbReadWriter<SomeObject> oldRW = _regRW;
-
-    // Create new registry, open database and read-write file (default config)
-    _regRW = new DbReadWriter<SomeObject>(REG_PATH);
-    assertFalse(oldRW == _regRW);
-  }
-
-
-  /**
-   * @Normal.Test Verify that objects are added to the db correctly
-   * @Normal.Test Verify that objects are updated to the db correctly
-   */
-  @Test
-  public void addObjectIncreasesSize()
-  {
-    MsgCtrl.where(this);
-
-    int beforeNbr = _regRW.size();
-    SomeObject defaultSO = new SomeObject(11, "default");
-    SomeObject setSO = new SomeObject(42, "second object");
-
-    _regRW.addElement(defaultSO);
-    _regRW.addElement(setSO);
-    assertEquals(beforeNbr + 2, _regRW.size());
-  }
-
-
-  /**
-   * @Error.Test force a NullPointerException object cannot be null
-   */
-  @Test
-  public void addingNullObjectThrowsError()
-  {
-    MsgCtrl.where(this);
-    try {
-      _regRW.addElement(null);
-      fail("No exception thrown when adding null element");
-    } catch (NullPointerException ex) {
-      // Succeed
-    }
-  }
 
   /**
    * @Normal.Test Add a normal object to a db
    */
   @Test
-  public void addingObjectSucceeds()
+  public void testAddElement()
   {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    SomeObject so = new SomeObject(-1, "negative");
+    int nbr = _regRW.size();
+    SomeObject so = new SomeObject("SO object");
     _regRW.addElement(so);
-  }
+    assertEquals(nbr + 1, _regRW.size());
 
-  /**
-   * @Normal.Test objects in the db are identified
-   */
-  @Test
-  public void insertedObjectsAreFoundInTheDatabase()
-  {
-    MsgCtrl.where(this);
-
-    // Normal Add a few objects and check that they are known
-    SomeObject so1 = new SomeObject(1, "one");
-    SomeObject so2 = new SomeObject(2, "two");
-    SomeObject so3 = new SomeObject(3, "three");
-    assertFalse(_regRW.containsElement(so2));
-    assertFalse(_regRW.containsElement(so1));
-    assertFalse(_regRW.containsElement(so3));
-
-    _regRW.addElement(so1);
+    SomeObject so2 = new SomeObject("Second S");
     _regRW.addElement(so2);
-    _regRW.addElement(so3);
-
-    assertTrue(_regRW.containsElement(so2));
-    assertTrue(_regRW.containsElement(so1));
-    assertTrue(_regRW.containsElement(so3));
+    assertEquals(nbr + 2, _regRW.size());
   }
 
-  @Test
-  public void objectsAddedMoreThanOnceOnlyAppearOnce()
-  {
-    MsgCtrl.where(this);
-    int nbrBefore = _regRW.size();
-
-    // Error Try for variations on this object
-    SomeObject so4 = new SomeObject(4, "four");
-    assertFalse(_regRW.containsElement(so4));
-
-    // Add another one
-    _regRW.addElement(so4);
-    assertEquals(nbrBefore + 1, _regRW.size());
-
-    _regRW.addElement(so4);
-    assertEquals(nbrBefore + 1, _regRW.size());
-
-    assertTrue(_regRW.containsElement(so4));
-  }
-
-  /**
-   * @Normal.Test extract element lists using different kinds of Predicates
-   */
-  @Test
-  @SuppressWarnings("serial")
-  public void testDbQuery()
-  {
-    MsgCtrl.where(this);
-
-    // Populate the database with some objects
-    final SomeObject t1 = new SomeObject(212, "degrees");
-    final SomeObject t2 = new SomeObject(32, "degrees");
-    final SomeObject t3 = new SomeObject(0, "radians");
-    _regRW.addElement(t1);
-    _regRW.addElement(t2);
-    _regRW.addElement(t3);
-
-    // NORMAL Retrieve using a matching object predicate
-    Predicate<SomeObject> objPred = new Predicate<SomeObject>() {
-      public boolean match(SomeObject candidate)
-      {
-        return candidate.equals(t2);
-      }
-    };
-    List<SomeObject> soList = _regRW.query(objPred); // input the predicate
-    assertEquals(1, soList.size());
-
-    // NORMAL Retrieve using a key matching predicate
-    Predicate<SomeObject> keyPred = new Predicate<SomeObject>() {
-      public boolean match(SomeObject candidate)
-      {
-        return candidate.getKey().equals(t2.getKey());
-      }
-    };
-    soList = _regRW.query(keyPred); // new predicate
-    assertEquals(2, soList.size());
-
-    // NORMAL Retrieve using a predicate that matches everything
-    Predicate<SomeObject> allPred = new Predicate<SomeObject>() {
-      public boolean match(SomeObject candidate)
-      {
-        return true;
-      }
-    };
-    soList = _regRW.query(allPred); // new predicate
-    assertEquals(3, soList.size());
-    for (int k = 0; k < soList.size(); k++) {
-      MsgCtrl.msgln("\t\t" + soList.get(k).toString());
-    }
-
-    // NORMAL Retrieve using a predicate that matches nothing
-    Predicate<SomeObject> nonePred = new Predicate<SomeObject>() {
-      public boolean match(SomeObject candidate)
-      {
-        return candidate.getKey().equals("nothing");
-      }
-    };
-    soList = _regRW.query(nonePred); // new predicate
-    assertEquals(0, soList.size());
-  }
-
-  /**
-   * boolean mylib.dmc.DbReadWriter.dbDelete(IRegistryElement)
-   * 
-   * @Normal.Test delete a unique object from the database
-   * @Normal.Test attempt to delete the same object twice
-   * @Error.Test force DatabaseClosedException attempt to delete from a closed database
-   * @Error.Test force DatabaseReadOnlyException attempt to delete from a RO database
-   */
-  @Test
-  public void testDbDelete()
-  {
-    MsgCtrl.where(this);
-
-    SomeObject so1 = new SomeObject(12, "soon to be dead");
-
-    // Normal: Delete an existing object from the db
-    _regRW.addElement(so1);
-    assertEquals(1, _regRW.size());
-
-    _regRW.deleteElement(so1);
-    assertEquals(0, _regRW.size());
-  }
-
-  @Test
-  public void testDbDeleteTwice()
-  {
-    MsgCtrl.where(this);
-
-    SomeObject so1 = new SomeObject(12, "soon to be dead");
-
-    // Normal: Delete an existing object from the db
-    _regRW.addElement(so1);
-    assertEquals(1, _regRW.size());
-
-    // Normal Try to delete the same object twice: silent fail
-    _regRW.deleteElement(so1);
-    assertEquals(0, _regRW.size());
-  }
 
   /**
    * @Normal.Test Ensure that the correct number of objects stored in the db is returned
    */
   @Test
-  public void sizeIsNumberOfElements()
+  public void testContainsElement()
   {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    SomeObject so1 = new SomeObject("first object saved");
+    SomeObject so2 = new SomeObject("second object saved");
+    SomeObject so3 = new SomeObject("third object saved");
+
+    // Add these three and then retrieve two of them
+    _regRW.addElement(so1);
+    _regRW.addElement(so2);
+    _regRW.addElement(so3);
+
+    // Check that they are there
+    assertNotNull(_regRW.containsElement(so2));
+    assertNotNull(_regRW.containsElement(so1));
+
+    // Check that they are not removed
+    assertNotNull(_regRW.containsElement(so2));
+  }
+
+
+  /**
+   * mylib.dmc.DbReadWriter(String) throws NullPointerException
+   *
+   * @Normal.Test Remove all elements from the db: a test-only method
+   */
+  @Test
+  public void testDbClear()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    SomeObject so1 = new SomeObject("first object saved");
+    SomeObject so2 = new SomeObject("second object saved");
+    SomeObject so3 = new SomeObject("third object saved");
+
+    // Add these three and check the db size
+    int nbrElems = _regRW.size();
+    _regRW.addElement(so1);
+    _regRW.addElement(so2);
+    _regRW.addElement(so3);
+
+    // Check that they are there
+    assertEquals(nbrElems + 3, _regRW.size());
+
+    // Clear them all
+    _regRW.dbClear();
+    assertEquals(0, _regRW.size());
+    assertNull(_regRW.containsElement(so2));
+  }
+
+
+  /**
+   * @Normal.Test Delete a selected object
+   */
+  @Test
+  public void testDeleteElement()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    int nbrElems = _regRW.size();
+    SomeObject so = new SomeObject("SO Key");
+
+    _regRW.addElement(so);
+    assertEquals(nbrElems + 1, _regRW.size());
+
+    // Verify its gone
+    _regRW.deleteElement(so);
+    assertEquals(nbrElems, _regRW.size());
+    assertNull(_regRW.containsElement(so));
+  }
+
+
+  /**
+   * @Normal.Test Get an element by its key, typically its name
+   */
+  @Test
+  public void testGet()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // Clear the database
+    _regRW.dbClear();
+
+    // Add some elements
+    _regRW.addElement(new SomeObject("first object saved"));
+    _regRW.addElement(new SomeObject("second object saved"));
+    _regRW.addElement(new SomeObject("third object saved"));
+    _regRW.addElement(new SomeObject("next object"));
+    _regRW.addElement(new SomeObject("and the next"));
+    _regRW.addElement(new SomeObject("last object"));
+    assertEquals(6, _regRW.size());
+
+    SomeObject so = (SomeObject) _regRW.get("last object");
+    assertNotNull(so);
+    MsgCtrl.msgln("so received named " + so.getKey());
+    
+    SomeObject so2 = (SomeObject) _regRW.get("second object saved");
+    assertNotNull(so2);
+    MsgCtrl.msgln("so2 received named " + so2.getKey());
+  }
+
+
+
+  /**
+   * @Normal.Test Get all elements in the database
+   */
+  @Test
+  public void testGetAllList()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // Clear the database
+    _regRW.dbClear();
+
+    // Add some elements
+    _regRW.addElement(new SomeObject("first object saved"));
+    _regRW.addElement(new SomeObject("second object saved"));
+    _regRW.addElement(new SomeObject("third object saved"));
+    _regRW.addElement(new SomeObject("next object"));
+    _regRW.addElement(new SomeObject("and the next"));
+    _regRW.addElement(new SomeObject("last object"));
+    assertEquals(6, _regRW.size());
+
+    List<IRegistryElement> slist = _regRW.getAll();
+    assertNotNull(slist);
+    assertEquals(6, slist.size());
+
+    // Clear the database and try again
+    _regRW.dbClear();
+    slist = _regRW.getAll();
+    assertNotNull(slist);
+    assertEquals(0, slist.size());
+  }
+
+
+  /**
+   * @Normal.Test Ensure that the correct number of objects stored in the db is returned
+   */
+  @Test
+  public void testSize()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     int nbrObjs = _regRW.size();
-    SomeObject so1 = new SomeObject(1, "first object saved");
-    SomeObject so2 = new SomeObject(2, "second object saved");
-    SomeObject so3 = new SomeObject(3, "third object saved");
+    SomeObject so1 = new SomeObject("first object saved");
+    SomeObject so2 = new SomeObject("second object saved");
+    SomeObject so3 = new SomeObject("third object saved");
 
+    // Add one element
     _regRW.addElement(so1);
     assertEquals(nbrObjs + 1, _regRW.size());
 
+    // Add second element
     _regRW.addElement(so2);
     assertEquals(nbrObjs + 2, _regRW.size());
 
+    // Add third element
     _regRW.addElement(so3);
     assertEquals(nbrObjs + 3, _regRW.size());
 
-    // Now delete two and try again
+    // Remove two elements
+    _regRW.deleteElement(so1);
     _regRW.deleteElement(so3);
-    assertEquals(nbrObjs + 2, _regRW.size());
-
-    _regRW.deleteElement(so2);
     assertEquals(nbrObjs + 1, _regRW.size());
 
-    _regRW.deleteElement(so1);
+    // Remove remaining last element
+    _regRW.deleteElement(so2);
     assertEquals(nbrObjs, _regRW.size());
+  }
+
+
+  /**
+   * @Normal.Test Add the same object multiple times to ensure that uniqueness if enforced
+   */
+  @Test
+  public void testUniqueness()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    int nbrBefore = _regRW.size();
+
+    // Test object not within the db
+    SomeObject so = new SomeObject("four");
+    assertNull(_regRW.containsElement(so));
+
+    // Add a test object
+    _regRW.addElement(so);
+    assertEquals(nbrBefore + 1, _regRW.size());
+    assertNotNull(_regRW.containsElement(so));
+
+    // Fail when trying to add it again
+    _regRW.addElement(so);
+    assertEquals(nbrBefore + 1, _regRW.size());
+  }
+
+
+  // ====================================================================
+  // BEGIN ERROR TESTS
+  // ====================================================================
+
+  /**
+   * mylib.dmc.DbReadWriter(String) throws NullPointerException
+   *
+   * @Error.Test Null filename for constructor; force null pointer exception
+   */
+  @Test
+  public void testErrorConstructorNullArg()
+  {
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.where(this);
+    try {
+      new DbReadWriter(null);
+    } catch (NullPointerException ex) {
+      MsgCtrl.errMsgln("\tExpected NullPointerException: " + ex.getMessage());
+    }
+  }
+
+  /**
+   * mylib.dmc.DbReadWriter(String) throws NullPointerException
+   *
+   * @Error.Test Empty filename for constructor; force null pointer exception
+   */
+  @Test
+  public void testErrorConstructorEmptyArg()
+  {
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.where(this);
+    try {
+      new DbReadWriter("  ");
+    } catch (NullPointerException ex) {
+      MsgCtrl.errMsgln("\tExpected NullPointerException: " + ex.getMessage());
+    }
+  }
+
+  
+  /**
+   * @Error.Test force a NullPointerException object cannot be null
+   */
+  @Test
+  public void testErrorAddNullObject()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    try {
+      _regRW.addElement(null);
+      fail("No exception thrown when adding null element");
+    } catch (NullPointerException ex) {
+      MsgCtrl
+          .errMsgln("\tExpected NullPointerException for adding null object: " + ex.getMessage());
+    }
+  }
+
+  /**
+   * @Normal.Test Delete a nonexisting object
+   */
+  @Test
+  public void testErrorDeleteNonexistingElement()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    SomeObject so9 = new SomeObject("object not in db");
+    // Check for unadded element
+    assertNull(_regRW.containsElement(so9));
+    _regRW.deleteElement(so9);
   }
 
 
@@ -337,18 +408,42 @@ public class TestDbReadWriter
   // PRIVATE HELPER METHODS
   // ====================================================================
 
-
   /**
-   * 4 There are four methods that do not need to be tested due to their simplistic nature.
+   * DbReadWrite methods that are not tested because of their simplistic nature.
    * 
-   * @Not.Needed getDB() -- getter
-   * @Not.Needed dbIsClosed() -- wrapper
-   * @Not.Needed DbOpenError() -- don't know how to trigger the db errors
-   * @Not.Needed dbSave(Object)
+   * @Not.Needed getPath() -- simple getter
+   * @Not.Needed getAll() -- simple wrapper
+   * @Not.Needed close() -- tested as part of tearDown
+   * @Not.Needed open() -- tested as part of setUp
    */
-  void NotNeeded()
+  void notNeeded()
   {}
 
+  // ====================================================================
+  // Inner SomeObject Test Class
+  // ====================================================================
+
+  // Internal test class
+  class SomeObject implements IRegistryElement
+  {
+    private String _key;
+
+    public SomeObject(String key)
+    {
+      _key = key;
+    }
+
+    public boolean equals(IRegistryElement target)
+    {
+      return (_key.equals(target.getKey()));
+    }
+
+    public String getKey()
+    {
+      return _key;
+    }
+
+  } // end of SomeObject test class
 
 
 } // end of TestDBRegistryRW class

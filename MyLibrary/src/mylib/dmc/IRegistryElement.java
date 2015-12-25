@@ -11,7 +11,6 @@
 package mylib.dmc;
 
 
-
 /**
  * All elements that are stored in a {@code Registry} must implement this interface so that the
  * query engine will have the proper callbacks to process transactions. Each
@@ -35,7 +34,7 @@ package mylib.dmc;
  *      {                                                                                                                                
  *        return candidate.equals(target);                                                                           
  *      }                                                                                                                                 
- *   });
+ *     });
  * </Pre>
  * 
  * @author Alan Cline
