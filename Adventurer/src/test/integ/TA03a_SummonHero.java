@@ -14,6 +14,7 @@ package test.integ;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.After;
@@ -27,6 +28,7 @@ import chronos.pdc.registry.HeroRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import mylib.MsgCtrl;
+import mylib.dmc.IRegistryElement;
 
 
 /**
@@ -166,7 +168,12 @@ public class TA03a_SummonHero
       }
     }
 
-    List<Hero> heroList = dorm.getAll();
+    List<IRegistryElement> results = dorm.getAll();
+    // Convert to list of heroes
+    List<Hero> heroList = new ArrayList<Hero>(results.size());
+    for (IRegistryElement elem : results) {
+      heroList.add((Hero) elem);
+    }
     MsgCtrl.msgln("Dormitory contains " + heroList.size() + " Heroes");
     for (int k = 0; k < nbr; k++) {
       MsgCtrl.msgln("\t" + heroList.get(k).getName());
