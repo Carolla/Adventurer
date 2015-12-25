@@ -12,12 +12,10 @@ package test.pdc.registry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.Before;
@@ -25,6 +23,7 @@ import org.junit.Test;
 
 import chronos.pdc.Adventure;
 import chronos.pdc.registry.AdventureRegistry;
+import mylib.MsgCtrl;
 
 /**
  * Test the repository for Adventure storage
@@ -36,139 +35,122 @@ import chronos.pdc.registry.AdventureRegistry;
 public class TestAdventureRegistry
 {
 
-    private String DEF_ADVENTURE = "The Quest for Rogahn and Zelligar";
-    private AdventureRegistry areg;
+  private String DEF_ADVENTURE = "The Quest for Rogahn and Zelligar";
+  private AdventureRegistry areg;
 
-    // ===========================================================================
-    // FIXTURES
-    // ===========================================================================
+  // ===========================================================================
+  // FIXTURES
+  // ===========================================================================
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception
-    {
-        MsgCtrl.auditMsgsOn(false);
-        MsgCtrl.errorMsgsOn(false);
-        areg = new AdventureRegistry();
-    }
+  /**
+   * @throws java.lang.Exception
+   */
+  @Before
+  public void setUp() throws Exception
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    areg = new AdventureRegistry();
+  }
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception
-    {}
-
-
-    // ===========================================================================
-    // BEGIN TESTS
-    // ===========================================================================
-
-    /**
-     * @Normal Add a new Adventure into the AdvReg, then retrieve it without recreating it
-     */
-    @Test
-    public void testNewInstance()
-    {
-        MsgCtrl.where(this);
-
-        // VERIFY AdvReg contains single element
-        assertEquals(1, areg.getNbrElements());
-        
-        // and the element is the recent adventure
-        Adventure adv = areg.getAdventure(DEF_ADVENTURE);
-        assertTrue(adv.getName().equals(DEF_ADVENTURE));
-    }
+  /**
+   * @throws java.lang.Exception
+   */
+  @After
+  public void tearDown() throws Exception
+  {}
 
 
-    /**
-     * @Normal Return an adventure by name
-     */
-    @Test
-    public void testGetAdventure()
-    {
-        MsgCtrl.where(this);
-        
-        // DO
-        List<Adventure> advList = areg.get(DEF_ADVENTURE);
-        assertNotNull(advList);
-        assertEquals(1, advList.size());
+  // ===========================================================================
+  // BEGIN TESTS
+  // ===========================================================================
 
-        // VERIFY
-        Adventure adv = (Adventure) advList.get(0);
-        assertEquals(DEF_ADVENTURE, adv.getName());
-    }
+  /**
+   * @Normal Add a new Adventure into the AdvReg, then retrieve it without recreating it
+   */
+  @Test
+  public void testNewInstance()
+  {
+    MsgCtrl.where(this);
 
+    // VERIFY AdvReg contains single element
+    assertEquals(1, areg.getNbrElements());
 
-    /**
-     * @Error Return an non-existing adventure
-     * @Error Return an adventure with an empty null key
-     * @Null Return an adventure with a null key
-     * @Error Retrieve an adventure from a non-existing AdventureRegistry
-     */
-    @Test
-    public void testGetAdventure_Nonexisting()
-    {
-        MsgCtrl.where(this);
-
-        // SETUP None
-
-        // DO
-        List<Adventure> advList = areg.get("Salazar's Lair");
-
-        // VERIFY
-        assertEquals(0, advList.size());
-    }
+    // and the element is the recent adventure
+    Adventure adv = areg.getAdventure(DEF_ADVENTURE);
+    assertTrue(adv.getName().equals(DEF_ADVENTURE));
+  }
 
 
-    /**
-     * @Error Attempt to return an adventure with an empty key
-     * @Null Return an adventure with a null key -- compile error
-     */
-    @Test
-    public void testGetAdventure_EmptyKey()
-    {
-        MsgCtrl.where(this);
+  /**
+   * @Normal Return an adventure by name
+   */
+  @Test
+  public void testGetAdventure()
+  {
+    MsgCtrl.where(this);
 
-        // DO
-        List<Adventure> advList = areg.get("   ");
-
-        // VERIFY
-        assertEquals("Received an non-empty list", 0, advList.size());
-    }
+    Adventure adv = (Adventure) areg.get(DEF_ADVENTURE);
+    assertNotNull(adv);
+    assertEquals(DEF_ADVENTURE, adv.getName());
+  }
 
 
-    /**
-     * @Normal Get a list of all adventures in the AdventureRegistry
-     */
-    @Test
-    public void testGetAdventureList()
-    {
-        MsgCtrl.where(this);
-        
-        // DO
-        ArrayList<Adventure> advList = areg.getAdventureList();
+  /**
+   * @Error Return an non-existing adventure
+   * @Error Return an adventure with an empty null key
+   * @Null Return an adventure with a null key
+   * @Error Retrieve an adventure from a non-existing AdventureRegistry
+   */
+  @Test
+  public void testGetAdventure_Nonexisting()
+  {
+    MsgCtrl.where(this);
 
-        // VERIFY
-        assertEquals(1, advList.size());
-    }
+    Adventure adv = (Adventure) areg.get("Salazar's Lair");
+    assertNotNull(adv);
+  }
 
 
-    // ===========================================================================
-    // PRIVATE HELPER METHODS
-    // ===========================================================================
+  /**
+   * @Error Attempt to return an adventure with an empty key
+   * @Null Return an adventure with a null key -- compile error
+   */
+  @Test
+  public void testGetAdventure_EmptyKey()
+  {
+    MsgCtrl.where(this);
 
-    /**
-     * @Null Return an adventure with a null key
-     */
+    Adventure adv = (Adventure) areg.get("   ");
+    assertNull(adv);
+  }
 
-    /**
-     * All methods tested
-     */
-    void _testsNotNeeded()
-    {}
+
+  /**
+   * @Normal Get a list of all adventures in the AdventureRegistry
+   */
+  @Test
+  public void testGetAdventureList()
+  {
+    MsgCtrl.where(this);
+    ArrayList<String> advList = areg.getAdventureList();
+    assertEquals(1, advList.size());
+  }
+
+
+  // ===========================================================================
+  // PRIVATE HELPER METHODS
+  // ===========================================================================
+
+  /**
+   * @Null Return an adventure with a null key
+   */
+
+  /**
+   * All methods tested
+   */
+  void _testsNotNeeded()
+  {}
 
 
 } // end of TestAdvHelp class
