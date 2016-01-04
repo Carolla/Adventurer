@@ -13,16 +13,6 @@ package test.pdc.character;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import test.pdc.buildings.TestBank;
-import test.pdc.buildings.TestBuilding;
-import test.pdc.buildings.TestClericsGuild;
-import test.pdc.buildings.TestFightersGuild;
-import test.pdc.buildings.TestInn;
-import test.pdc.buildings.TestJail;
-import test.pdc.buildings.TestRoguesGuild;
-import test.pdc.buildings.TestStore;
-import test.pdc.buildings.TestWizardsGuild;
-
 
 /**
  * Chronos PDC.buildings test files

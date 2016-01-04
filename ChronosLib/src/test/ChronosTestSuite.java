@@ -12,9 +12,6 @@ package test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import test.pdc.buildings.BuildingsSuite;
-import test.pdc.registry.RegistrySuite;
-
 
 /**
  * Regression test suite for all the {@code JUnit} test cases for the source code packages of the

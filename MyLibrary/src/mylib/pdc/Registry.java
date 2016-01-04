@@ -157,7 +157,6 @@ public abstract class Registry<E extends IRegistryElement>
    * @param name of the target object to match against for comparison
    * @return the list of all elements that match the name
    */
-  @SuppressWarnings("serial")
   public Object get(String name)
   {
     Object elementList = _regRW.get(name);
