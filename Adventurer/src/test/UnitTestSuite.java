@@ -12,14 +12,7 @@ package test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import test.pdc.command.TestCmdApproach;
-import test.pdc.command.TestCmdEnter;
-import test.pdc.command.TestCmdQuit;
-import test.pdc.command.TestCommandFactory;
-import test.pdc.command.TestCommandParser;
-import test.pdc.command.TestDeltaCmdList;
-import test.pdc.command.TestEvent;
-import test.pdc.command.TestScheduler;
+import test.pdc.command.CommandSuite;
 
 /**
  * Run all unit tests for {@code Adventurer} components. Unit tests are grouped by their components
@@ -52,21 +45,13 @@ import test.pdc.command.TestScheduler;
 
     /* PDC subfolder test suites */
     // CharacterSuite.class
-    // CommandSuite.class
+    CommandSuite.class
 
     /** PDC test files */
     // Util.class
 
 
     // TestAdventureRegistry.class,
-    TestCmdApproach.class,
-    TestCmdEnter.class,
-    TestCmdQuit.class,
-    TestDeltaCmdList.class,
-    TestScheduler.class,
-    TestCommandParser.class,
-    TestCommandFactory.class,
-    TestEvent.class
     // TestDwarf.class
     // TestHuman.class
     // TestHunger.class
