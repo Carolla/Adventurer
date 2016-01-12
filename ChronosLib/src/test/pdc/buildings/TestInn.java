@@ -16,17 +16,16 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import mylib.ApplicationException;
+import mylib.MsgCtrl;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import chronos.pdc.NPC;
 import chronos.pdc.buildings.Inn;
-import chronos.pdc.command.Scheduler;
 import chronos.pdc.registry.NPCRegistry;
-import mylib.ApplicationException;
-import mylib.MsgCtrl;
-import test.pdc.command.FakeScheduler;
 
 /**
  * Verify that the Inn exists as a meeting place for Heroes, allows conversation with the Innkeeper
@@ -46,7 +45,6 @@ public class TestInn
   /** Business closing hour for test Inn */
   private final int TEST_CLOSING = 1200;
 
-  private Scheduler _fakeScheduler = new FakeScheduler();
   private NPCRegistry fakeNpcRegistry = new FakeNpcRegistry();
 
   public class FakeNpcRegistry extends NPCRegistry
