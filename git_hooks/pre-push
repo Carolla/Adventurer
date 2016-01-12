@@ -1,5 +1,15 @@
 #!/bin/bash
 
+# In order to get this file to run when you push to GitHub
+# you must create a symlink between the git_hooks folder and
+# your .git/hooks directory. Suggested commands below.
+#
+# cd .git/hooks
+# ln -s ../../git_hooks/pre-push pre-push
+#
+# You can verify that it works by making a minor change and
+# then pushing it to the repo.
+
 cd $(git rev-parse --show-toplevel)/Adventurer
 
 echo running pre-push script
