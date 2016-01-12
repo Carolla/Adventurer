@@ -1,0 +1,12 @@
+#!/bin/bash
+
+cd $(git rev-parse --show-toplevel)/Adventurer
+
+echo running pre-push script
+
+#Run script command here
+#ant AdventurerTestSuite && ant IntegrationSuite
+
+RESULT=$?
+[ $RESULT -ne 0 ] && exit 1
+exit 0
