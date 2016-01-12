@@ -70,7 +70,6 @@ public class TestInn
   public void setUp() throws Exception
   {
     _inn = new Inn(fakeNpcRegistry);
-    _inn.setScheduler(_fakeScheduler);
     assertNotNull(_inn);
     _inn.setBusinessHours(TEST_OPEN, TEST_CLOSING);
   }

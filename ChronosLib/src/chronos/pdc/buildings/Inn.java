@@ -79,9 +79,6 @@ public class Inn extends Building
   /** Randomizer */
   private static final MetaDie _md = new MetaDie();
 
-  /** Used to schedule commands */
-  private Scheduler _skedder;
-  
   private final NPCRegistry _npcRegistry;
 
   // ============================================================
@@ -109,7 +106,7 @@ public class Inn extends Building
    * @param md <code>MetaDie</code> random generator for the game
    * @param skedder <code>Scheduler</code> singleton for scheduling <code>Patron</code>s
    */
-  public void initPatrons()
+  public void initPatrons(Scheduler skedder)
   {
     List<NPC> patrons = _npcRegistry.getNPCList();
     // The starterList has no zero-delay intCmdEnter commands, each containing the
@@ -119,8 +116,8 @@ public class Inn extends Building
     for (intCmdPatronEnter ce : starterList) {
       // Use the generated enter commands to create the leave commands
       intCmdPatronLeave cl = new intCmdPatronLeave(ce, this);
-      _skedder.sched(ce);
-      _skedder.sched(cl);
+      skedder.sched(ce);
+      skedder.sched(cl);
     }
   }
 
@@ -213,11 +210,6 @@ public class Inn extends Building
     }
     
     return removed;
-  }
-
-  public void setScheduler(Scheduler skedder)
-  {
-    _skedder = skedder;
   }
 
 } // end of Inn class

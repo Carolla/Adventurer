@@ -62,8 +62,7 @@ public class BuildingRegistry extends Registry<Building>
     // Create each of the default buildings and save to registry
     // The constructors load the default data
     Inn inn = new Inn(_npcRegistry);
-    inn.setScheduler(_skedder);
-    inn.initPatrons();
+    inn.initPatrons(_skedder);
     super.add(inn); // Ugly Ogre Inn
     super.add(new Store()); // Rat's Pack
     super.add(new Jail()); // Jail
