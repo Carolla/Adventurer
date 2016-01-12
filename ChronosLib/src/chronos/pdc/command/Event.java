@@ -48,7 +48,7 @@ public class Event implements Comparable<Event>
         _cmd = cmd;
     }
 
-    
+ 
 /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++  
  * 								PUBLIC METHODS
  * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ */  
