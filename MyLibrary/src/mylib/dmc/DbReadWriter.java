@@ -151,7 +151,7 @@ public class DbReadWriter
     // Search for target
     Object obj = null;
     for (IRegistryElement elem : alist) {
-      if (elem.equals(target)) {
+      if (elem.getKey().equals(target.getKey())) {
         obj = elem;
         break;
       }
