@@ -49,6 +49,7 @@ import test.pdc.command.CommandSuite;
 
     /** PDC test files */
     // Util.class
+    // Comment
 
     // TestAdventureRegistry.class,
     // TestDwarf.class
