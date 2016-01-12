@@ -7,16 +7,16 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-  TestCmdApproach.class,
-  TestCmdEnter.class,
-  TestCmdLook.class,
-  TestCmdQuit.class,
-  TestCmdReturn.class,
-  TestCommandFactory.class,
-  TestCommandParser.class,
-  TestDeltaCmdList.class,
+//  TestCmdApproach.class,
+//  TestCmdEnter.class,
+//  TestCmdLook.class,
+//  TestCmdQuit.class,
+//  TestCmdReturn.class,
+//  TestCommandFactory.class,
+//  TestCommandParser.class,
+//  TestDeltaCmdList.class,
   TestEvent.class,
-  TestScheduler.class
+//  TestScheduler.class
 })
 
 public class CommandSuite
