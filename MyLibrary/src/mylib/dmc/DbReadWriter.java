@@ -285,12 +285,12 @@ public class DbReadWriter<E extends IRegistryElement>
   {
     List<E> alist = new ArrayList<E>();
     _db = open();
-    alist = _db.query(new Predicate<E>() {
+    alist.addAll(_db.query(new Predicate<E>() {
       public boolean match(E candidate)
       {
         return true;
       }
-    });
+    }));
     close();
     return alist;
   }
