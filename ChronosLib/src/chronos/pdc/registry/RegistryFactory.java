@@ -32,34 +32,25 @@ public class RegistryFactory
 
   /** Public list of all possible registries subclasses, in rough dependency order. */
   public enum RegKey {
-    HERO("Hero", 0), // default: No Heroes stored by default
-    SKILL("Skill", 35), // default: 8 racial, and 27 general Skills
-    OCP("Occupation", 27), // default: 26 Occupations plus "None"
-    ITEM("Item", 39), // default 14 Hero, 6 Bank, 11 Inn menu, 5 Rogue, 3 Store
-    BLDG("Building", 8), // default: 4 Guilds, Inn, Store, Jail, Bank
-    NPC("NPC", 16), // Default: 8 building masters and 8 Inn patrons
-    TOWN("Town", 1), // default: Biljur'Baz
-    ADV("Adventure", 1); // default: "The Quest for Rogahn and Zelligar" (Arena = Quasqueton)
+    HERO("Hero"), // default: No Heroes stored by default
+    SKILL("Skill"), // default: 8 racial, and 27 general Skills
+    OCP("Occupation"), // default: 26 Occupations plus "None"
+    ITEM("Item"), // default 14 Hero, 6 Bank, 11 Inn menu, 5 Rogue, 3 Store
+    BLDG("Building"), // default: 4 Guilds, Inn, Store, Jail, Bank
+    NPC("NPC"), // Default: 8 building masters and 8 Inn patrons
+    TOWN("Town"), // default: Biljur'Baz
+    ADV("Adventure"); // default: "The Quest for Rogahn and Zelligar" (Arena = Quasqueton)
 
     private String _name;
-    private int _defSize;
-
-    private RegKey(String nm, int size)
+    private RegKey(String nm)
     {
       _name = nm;
-      _defSize = size;
     }
 
     @Override
     public String toString()
     {
       return _name;
-    }
-
-    /** Return the number of default entries in the corresponding Registry */
-    public int getDefaultSize()
-    {
-      return _defSize;
     }
   }
 
