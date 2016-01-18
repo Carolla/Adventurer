@@ -36,7 +36,7 @@ import org.junit.runners.Suite;
 
 })
 /** Compilation of all unit tests for regression and integration testing. */
-public class CharacterSuite
+public class BuildingSuite
 {
 }
 

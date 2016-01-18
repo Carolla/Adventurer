@@ -12,6 +12,7 @@ package test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import test.pdc.character.BuildingSuite;
 import test.pdc.command.CommandSuite;
 
 /**
@@ -44,14 +45,12 @@ import test.pdc.command.CommandSuite;
     // TestSkillKeys.class,
 
     /* PDC subfolder test suites */
-    // CharacterSuite.class
+    BuildingSuite.class,
     CommandSuite.class
 
     /** PDC test files */
     // Util.class
-    // Comment
 
-    // TestAdventureRegistry.class,
     // TestDwarf.class
     // TestHuman.class
     // TestHunger.class
@@ -62,9 +61,6 @@ import test.pdc.command.CommandSuite;
     // TestRace.class
 
     /** DMC test files */
-    // TestPersonReadWriter.class
-
-
 })
 public class UnitTestSuite
 {
