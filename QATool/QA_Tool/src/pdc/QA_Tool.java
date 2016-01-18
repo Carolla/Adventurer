@@ -12,22 +12,22 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  * Verifies that all {@code .java} source files within a given "root" directory (
- * {@code "Project"/src}) has corresponding test classes in its (mandatory) {@code src/test} subdir.
+ * {@code "Project"/src}) has corresponding test classes in its mandatory {@code src/test} subdir.
  * The program builds a prototype test class for each missing test file using reflection to
- * auto-generate test method stubs. Finally, the program builds a unit test suite with a unit test
- * entry for each test file. Implementation details follow:
+ * auto-generate (failing) test method stubs. Finally, the program builds a unit test suite with a
+ * unit test entry for each test file. Implementation details follow:
  * <P>
  * <ol>
- * <li>Builds a tree of sub-directories, and source files contained within each subdir. Each root
- * directory must contain {@code src/pdc} and {@code src/test} subdirs; if {@code src/hic},
- * {@code src/civ} or {@code src/dmc} subdirs are missing, the program issues a warning.</li>
- * <li>Traverses the {@code src/test} subdir of root for all test classes that match (or don't
- * match) a corresponding source file. Each {@code subdir/Classname.java} file is expected to have a
- * {@code test/subdir/TestClassname.java} test file. If a test class exists that does not have a
- * source file, the program issues a warning.</li>
+ * <li>Builds a list of paths of sub-directories and source files contained within each subdir. Each
+ * root directory must contain {@code src/pdc} and {@code src/test} subdirs. If the optional
+ * {@code src/hic}, {@code src/civ} or {@code src/dmc} subdirs are missing, the program issues a
+ * warning.</li>
+ * <li>Traverses the {@code src} pathname list and looks for a matching test file path that matches
+ * (or doesn't match) in the {@code src/test} pathname list. Each {@code subdir/Classname.java} file
+ * is expected to have a {@code test/subdir/TestClassname.java} test file. Conversely, if a test
+ * class exists that does not have a source file, the program issues a warning.</li>
  * <li>Creates a "prototype" test class for all missing test classes. Each method in the prototype
- * test class will contain an auto-generated test method stub, with a default {@code fail} message
- * and an auto-generate message within.</li>
+ * test class will contain an auto-generated (failing) test method stub.</li>
  * <li>Reviews all existing test classes to ensure that all class methods have at least one test
  * method, with the exception of the constructor and method names that are prefixed with
  * {@code get, set} or suffixed with {@code wrapper}. It is also possible to annotate the source
@@ -37,8 +37,18 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * subdir, and commented as such.</li>
  * </ol>
  * <P>
- * The regression test suite {@code test/RegressionTestSuite.java} can contain two line entries:
- * {@code test/IntegTestSuite.class} and {@code test/UnitTestSuite.class}.
+ * The regression test suite {@code Adventurer/src/test/RegressionTestSuite.java} contains four line
+ * entries:
+ * <ol>
+ * <li>{@code MyLibrary/src/mylib/test/MyLibraryTestSuite.class}</li>
+ * <li>{@code ChronosLib/src/test/ChronsLib/UnitTestSuite.class}</li>
+ * <li>{@code Adventurer/src/test/UnitTestSuite.class} and</li>
+ * <li>{@code Adventurer/src/test/IntegTestSuite.class}</li>
+ * </ol>
+ * <P>
+ * As part of a Github prehook, each time someone does a {@code git push}, the QA_Tool is run to
+ * generate all unit test suites in the regression suite, except for the Integration test suite,
+ * which must be built by hand. The Github prehook also then runs the regression test suite.
  * 
  * @author alancline
  * @version Dec 30 2015 // original <br>
@@ -108,7 +118,7 @@ public class QA_Tool
     // Get all files at certain level
     File[] fileList = _root.listFiles();
     for (int k = 0; k < fileList.length; k++) {
-      File f = fileList[k];   // convenience shorthand
+      File f = fileList[k]; // convenience shorthand
       // Add directories to the dir tree...
       if (f.isDirectory()) {
         subDirNode = new DefaultMutableTreeNode(f);
