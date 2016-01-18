@@ -27,7 +27,7 @@ import chronos.pdc.registry.BuildingRegistry;
 public class BuildingDisplayCiv extends BaseCiv
 {
   
-  private MainframeCiv _mfCiv;
+  protected MainframeCiv _mfCiv;
   private BuildingRegistry _breg;
   private Adventure _adv;
 
