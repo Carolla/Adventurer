@@ -11,7 +11,6 @@
 package chronos.pdc.buildings;
 
 import mylib.ApplicationException;
-import mylib.dmc.IRegistryElement;
 
 /**
  * Main building in town for buying and selling supplies. The default constructor creates the
@@ -66,38 +65,4 @@ public class Store extends Building
     super(DEFAULT_STORE_NAME, DEFAULT_OWNER, HOVERTEXT, DEFAUL_TEXTERIOR, DEFAUL_TINTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
     setBusinessHours(OPENTIME, CLOSETIME);
   }
-
-  /*
-   * PUBLIC METHODS
-   */
-
-  /*
-   * Two Inns are considerd equal if their name and building masters are equal
-   * 
-   * @see mylib.dmc.IRegistryElement#equals(mylib.dmc.IRegistryElement)
-   */
-  @Override
-  public boolean equals(IRegistryElement target)
-  {
-    if (target == null) {
-      return false;
-    }
-    Store store = (Store) target;
-    boolean bName = this.getKey().equals(store.getKey());
-    boolean bMaster = this.getMaster().equals(store.getMaster());
-    return (bName && bMaster);
-  }
-
-
-  /*
-   * Get the key, which is the name of the Building
-   * 
-   * @see mylib.dmc.IRegistryElement#getKey()
-   */
-  @Override
-  public String getKey()
-  {
-    return _name;
-  }
-
-} // end of Inn class
+} // end of Store class

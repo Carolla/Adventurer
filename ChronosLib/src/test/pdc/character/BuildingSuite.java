@@ -13,6 +13,17 @@ package test.pdc.character;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import test.pdc.buildings.TestArena;
+import test.pdc.buildings.TestBank;
+import test.pdc.buildings.TestBuilding;
+import test.pdc.buildings.TestClericsGuild;
+import test.pdc.buildings.TestFightersGuild;
+import test.pdc.buildings.TestInn;
+import test.pdc.buildings.TestJail;
+import test.pdc.buildings.TestRoguesGuild;
+import test.pdc.buildings.TestStore;
+import test.pdc.buildings.TestWizardsGuild;
+
 
 /**
  * Chronos PDC.buildings test files
@@ -22,18 +33,17 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    // PDC.buildings test files:
-    // TestArena.class
-    // TestBank.class, // Need NPC
-    // TestBuilding.class, // all Buildings need NPCs
-    // TestClericsGuild.class, // Needs NPC
-    // TestFightersGuild.class, // Needs NPC
-    // TestJail.class, // Need NPC and Items
-    // TestInn.class, // need NPCs
-    // TestRoguesGuild.class, // Needs NPC
-    // TestStore.class, // Need NPC and Items
-    // TestWizardsGuild.class, // Needs NPC
-
+     // PDC.buildings test files:
+     TestArena.class,
+     TestBank.class, // Need NPC
+     TestBuilding.class, // all Buildings need NPCs
+     TestClericsGuild.class, // Needs NPC
+     TestFightersGuild.class, // Needs NPC
+     TestJail.class, // Need NPC and Items
+     TestInn.class, // need NPCs
+     TestRoguesGuild.class, // Needs NPC
+     TestStore.class, // Need NPC and Items
+     TestWizardsGuild.class, // Needs NPC
 })
 /** Compilation of all unit tests for regression and integration testing. */
 public class BuildingSuite

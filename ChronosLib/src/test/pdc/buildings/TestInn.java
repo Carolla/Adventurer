@@ -18,6 +18,7 @@ import java.util.List;
 
 import mylib.ApplicationException;
 import mylib.MsgCtrl;
+import mylib.dmc.IRegistryElement;
 
 import org.junit.After;
 import org.junit.Before;
@@ -55,6 +56,16 @@ public class TestInn
       ArrayList<NPC> list = new ArrayList<NPC>();
       list.add(new NPC());
       list.add(new NPC());
+      return list;
+    }
+    
+    @Override
+    public List<IRegistryElement> getAll()
+    {
+      List<IRegistryElement> list = new ArrayList<IRegistryElement>();
+      for (NPC npc : getNPCList()) {
+        list.add(npc);
+      }
       return list;
     }
   }

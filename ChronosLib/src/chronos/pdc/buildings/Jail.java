@@ -11,7 +11,6 @@
 package chronos.pdc.buildings;
 
 import mylib.ApplicationException;
-import mylib.dmc.IRegistryElement;
 
 /**
  * The Jail is where a Hero is contained until fines are paid, or he/she becomes conscious.
@@ -60,35 +59,5 @@ public class Jail extends Building
     super(DEFAULT_JAIL_NAME, DEFAULT_OWNER, HOVERTEXT, DEFAULT_EXTERIOR, DEFAULT_INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
     setBusinessHours(OPENTIME, CLOSETIME);
   }
-
-  /*
-   * Two Jails are considerd equal if their name and building masters are equal
-   * 
-   * @see mylib.dmc.IRegistryElement#equals(mylib.dmc.IRegistryElement)
-   */
-  @Override
-  public boolean equals(IRegistryElement target)
-  {
-    if (target == null) {
-      return false;
-    }
-    Jail bank = (Jail) target;
-    boolean bName = this.getKey().equals(bank.getKey());
-    boolean bMaster = this.getMaster().equals(bank.getMaster());
-    return (bName && bMaster);
-  }
-
-
-  /*
-   * Get the key, which is the name of the Building
-   * 
-   * @see mylib.dmc.IRegistryElement#getKey()
-   */
-  @Override
-  public String getKey()
-  {
-    return _name;
-  }
-
 } // end of Jail class
 

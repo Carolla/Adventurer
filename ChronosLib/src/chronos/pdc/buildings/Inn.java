@@ -12,15 +12,14 @@ package chronos.pdc.buildings;
 import java.util.ArrayList;
 import java.util.List;
 
+import mylib.ApplicationException;
+import mylib.Constants;
+import mylib.pdc.MetaDie;
 import chronos.pdc.NPC;
 import chronos.pdc.command.Scheduler;
 import chronos.pdc.command.intCmdPatronEnter;
 import chronos.pdc.command.intCmdPatronLeave;
 import chronos.pdc.registry.NPCRegistry;
-import mylib.ApplicationException;
-import mylib.Constants;
-import mylib.dmc.IRegistryElement;
-import mylib.pdc.MetaDie;
 
 /**
  * Main building in town for rest, food, conversation, and sometimes even a bar brawl. Heroes can be
@@ -97,6 +96,13 @@ public class Inn extends Building
     setBusinessHours(OPENTIME, CLOSETIME);
   }
 
+
+  /*
+   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+   *                      PUBLIC METHODS
+   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   */
+
   /**
    * Assigns the <code>Patron</code>s' delay and duration, then randomly assigns a few
    * <code>Patrons</code> (MAX_STARTERS) a zero-delay so they are present when the <code>Hero</code>
@@ -147,42 +153,6 @@ public class Inn extends Building
     }
 
     return cmdStarterList;
-  }
-
-
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
-   *                      PUBLIC METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
-
-  /*
-   * Two Inns are considerd equal if their name and building masters are equal
-   * 
-   * @see mylib.dmc.IRegistryElement#equals(mylib.dmc.IRegistryElement)
-   */
-  @Override
-  public boolean equals(IRegistryElement target)
-  {
-    if (target == null) {
-      return false;
-    }
-    Inn inn = (Inn) target;
-    boolean bName = this.getKey().equals(inn.getKey());
-    boolean bMaster = this.getMaster().equals(inn.getMaster());
-    return (bName && bMaster);
-  }
-
-
-  /*
-   * Get the key, which is the name of the Building
-   * 
-   * @see mylib.dmc.IRegistryElement#getKey()
-   */
-  @Override
-  public String getKey()
-  {
-    return _name;
   }
 
   @Override

@@ -99,16 +99,6 @@ public abstract class Building implements IRegistryElement
 
   }
 
-  // protected NPC findBuildingMaster(String masterName)
-  // {
-  // NPCRegistry npcReg = (NPCRegistry) RegistryFactory.getInstance().getRegistry(RegKey.NPC);
-  // NPC master = npcReg.getNPC(masterName);
-  // if (master == null) {
-  // throw new ApplicationException(masterName + " does not exist in the NPC Registry.");
-  // }
-  // return master;
-  // }
-
   /*
    * PUBLIC METHODS
    */
@@ -218,18 +208,10 @@ public abstract class Building implements IRegistryElement
     return _internalImagePath;
   }
 
-  /**
-   * Gets the NPC object that runs this Building
-   * 
-   * @returns Gets the NPC object that runs this Building
-   * 
-   * @see mylib.dmc.IRegistryElement#getKey()
-   */
   public String getMaster()
   {
     return _buildingMaster;
   }
-
 
   public boolean remove(NPC npc)
   {
@@ -377,6 +359,12 @@ public abstract class Building implements IRegistryElement
     } else if (!_name.equals(other._name))
       return false;
     return true;
+  }
+  
+  @Override
+  public boolean equals(IRegistryElement target)
+  {
+    return equals((Object) target);
   }
 
   public String inspect(String target)
