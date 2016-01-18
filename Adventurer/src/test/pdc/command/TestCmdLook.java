@@ -3,20 +3,21 @@ package test.pdc.command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import mylib.MsgCtrl;
 import pdc.command.CmdLook;
 import test.pdc.FakeNPC;
 import test.pdc.buildings.FakeBuilding;
+import chronos.pdc.buildings.Building;
 
 public class TestCmdLook
 {
@@ -68,12 +69,12 @@ public class TestCmdLook
   @Test
   public void whenTargetNotFoundGetTargetNotFoundMessage()
   {
-    fail("Not working");
     _cmdLook.init(fredList);
     _bdciv.setBuilding(BUILDING);
+    _bdciv.enterBuilding(FAKE_BUILDING);
 
     _cmdLook.exec();
-    assertEquals(BUILDING_DESC, _bdciv._displayedText);
+    assertEquals(Building.MISSING_PERSON, _bdciv._displayedText);
   }
 
   @Test

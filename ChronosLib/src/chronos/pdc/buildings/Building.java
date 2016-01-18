@@ -27,7 +27,7 @@ import chronos.pdc.NPC;
  */
 public abstract class Building implements IRegistryElement
 {
-  private static final String MISSING_PERSON = "I don't see that person here";
+  public static final String MISSING_PERSON = "I don't see that person here";
   /** Default Opening Time for all buildings */
   private final int DEFAULT_OPENHOURS = 900;
   /** Default Closing Time for all buildings */
