@@ -11,8 +11,9 @@
 package mylib.test.pdc;
 
 import mylib.ApplicationException;
+import mylib.dmc.DbReadWriter;
 import mylib.pdc.Registry;
-import mylib.test.dmc.oldSomeObject;
+import mylib.test.dmc.SomeObject;
 
 
 /**
@@ -31,7 +32,7 @@ import mylib.test.dmc.oldSomeObject;
  *          Jun 13 2011 // TAA: updated/deprecated methods <br>
  *          Sep 27 2014 // ABC removed unneeded methods and encapsulated DBRW better <br>
  */
-public class ConcreteRegistry extends Registry<oldSomeObject>
+public class ConcreteRegistry extends Registry<SomeObject>
 {
 
   // ============================================================
@@ -49,6 +50,15 @@ public class ConcreteRegistry extends Registry<oldSomeObject>
     super(filename);
   }
 
+  @Override
+  protected void init(String filename)
+  {}
+
+  public void setDbReadWriter(DbReadWriter<SomeObject> regRW)
+  {
+    _regRW = regRW;
+  }
+
 
   // ============================================================
   // Required implementations of abstract METHODS
@@ -61,9 +71,9 @@ public class ConcreteRegistry extends Registry<oldSomeObject>
   protected void initialize()
   {
     // Create three objects to initialize database
-    oldSomeObject obj1 = new oldSomeObject(1, "one");
-    oldSomeObject obj2 = new oldSomeObject(2, "two");
-    oldSomeObject obj3 = new oldSomeObject(3, "three");
+    SomeObject obj1 = new SomeObject(1, "one");
+    SomeObject obj2 = new SomeObject(2, "two");
+    SomeObject obj3 = new SomeObject(3, "three");
     add(obj1);
     add(obj2);
     add(obj3);

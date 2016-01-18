@@ -9,15 +9,11 @@
 
 package chronos.pdc.registry;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import mylib.pdc.Registry;
 import chronos.Chronos;
 import chronos.pdc.Skill;
-import mylib.ApplicationException;
-import mylib.MsgCtrl;
-import mylib.dmc.IRegistryElement;
-import mylib.pdc.Registry;
 
 /**
  * Contains a set of skills that a player may assign to his Hero. {@code SkillRegistry} is a
@@ -101,19 +97,14 @@ public class SkillRegistry extends Registry<Skill>
   @Override
   protected void initialize()
   {
-    // Create new Skills and save to registry
-    try {
-      for (int k = 0; k < _racialSkillTable.length; k++) {
-        Skill skill = new Skill(_racialSkillTable[k][0], _racialSkillTable[k][1]);
-        super.add(skill); // super is used to highlight inheritance
-      }
-      System.out.println("\n");
-      for (int k = 0; k < _occupSkillTable.length; k++) {
-        Skill skill = new Skill(_occupSkillTable[k][0], _occupSkillTable[k][1]);
-        super.add(skill); // super is used to highlight inheritance
-      }
-    } catch (ApplicationException ex) {
-      MsgCtrl.errMsgln(this, ex.getMessage());
+    for (int k = 0; k < _racialSkillTable.length; k++) {
+      Skill skill = new Skill(_racialSkillTable[k][0], _racialSkillTable[k][1]);
+      super.add(skill); // super is used to highlight inheritance
+    }
+    System.out.println("\n");
+    for (int k = 0; k < _occupSkillTable.length; k++) {
+      Skill skill = new Skill(_occupSkillTable[k][0], _occupSkillTable[k][1]);
+      super.add(skill); // super is used to highlight inheritance
     }
   }
 
@@ -126,7 +117,7 @@ public class SkillRegistry extends Registry<Skill>
    */
   public Skill getSkill(String name)
   {
-    return (Skill) get(name);
+    return get(name);
   }
 
 
@@ -137,65 +128,7 @@ public class SkillRegistry extends Registry<Skill>
    */
   public List<Skill> getSkillList()
   {
-    List<IRegistryElement> skillSet = getAll();
-    // Convert to Skill list
-    List<Skill> skillList = new ArrayList<Skill>(skillSet.size());
-    for (IRegistryElement elem : skillSet) {
-      skillList.add((Skill) elem);
-    }
-    return skillList;
+    return getAll();
   }
-
-
-  /*
-   * INNER CLASS: MockSkillRegistry for Testing
-   */
-
-  /** Inner class for testing Person */
-  public class MockSkillRegistry
-  {
-    /** Default constructor */
-    public MockSkillRegistry()
-    {}
-
-
-    /** Diagnostic to dump all skills in the Registry */
-    public void dump()
-    {
-      // Get all skills by using null argument
-      List<Skill> sklist = getSkillList();
-      for (Skill s : sklist) {
-        System.out.println("\t" + s.getName() + "\t\t" + s.getDescription());
-      }
-    }
-
-
-    /** Total number of objects expected to be stored in the db */
-    public int getExpectedNbrElements()
-    {
-      return _occupSkillTable.length + _racialSkillTable.length;
-    }
-
-    /** Return the path for the registry file */
-    public String getPath()
-    {
-      return Chronos.SkillRegPath;
-    }
-
-    /** Return the path for the registry file */
-    public void setPath(String testPath)
-    {
-      Chronos.SkillRegPath = testPath;
-    }
-
-    // /** Get the Registry object */
-    // public SkillRegistry getRegistry()
-    // {
-    // return (SkillRegistry) _thisReg;
-    // }
-
-  } // end of MockSkillRegistry class
-
-
 } // end of SkillRegistry class
 

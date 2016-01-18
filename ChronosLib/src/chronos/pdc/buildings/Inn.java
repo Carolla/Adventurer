@@ -114,7 +114,7 @@ public class Inn extends Building
    */
   public void initPatrons(Scheduler skedder)
   {
-    List<NPC> patrons = _npcRegistry.getNPCList();
+    List<NPC> patrons = _npcRegistry.getAll();
     // The starterList has no zero-delay intCmdEnter commands, each containing the
     // Patron who shall enter at the designated delay time.
     List<intCmdPatronEnter> starterList = createStarterList(patrons);

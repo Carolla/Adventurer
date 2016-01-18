@@ -9,7 +9,7 @@
  * by email: acline@carolla.com
  */
 
-package test.pdc;
+package test.pdc.character;
 
 import junit.framework.TestCase;
 import mylib.MsgCtrl;

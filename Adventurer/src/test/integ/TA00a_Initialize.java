@@ -110,11 +110,6 @@ public class TA00a_Initialize
 
     // VERIFY all registries exist: get number objects in RegistryFactory map
     assertTrue(keynum == _rf.getNumberOfRegistries());
-
-    // TEARDOWN: close all registries
-    for (RegKey key : RegKey.values()) {
-      _rf.closeRegistry(key);
-    }
   }
 
 
@@ -138,11 +133,6 @@ public class TA00a_Initialize
 
     // VERIFY all registries exist: get number objects in RegistryFactory map
     assertTrue(keynum == _rf.getNumberOfRegistries());
-
-    // TEARDOWN: close all registries
-    for (RegKey key : RegKey.values()) {
-      _rf.closeRegistry(key);
-    }
   }
 
 

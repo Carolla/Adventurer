@@ -12,8 +12,6 @@ package mylib.test.dmc;
 
 import mylib.dmc.IRegistryElement;
 
-import com.db4o.query.Predicate;
-
 /**
  * This object is used to test various db4o input/output methods. By default, the word field is used
  * as the key field, but can be changed by the <code>setKey()</code> method.
@@ -22,7 +20,7 @@ import com.db4o.query.Predicate;
  * @version Dec 3, 2012 // original <br>
  *          Mar 13, 2013 // adapted to implement IRegistryElement <br>
  */
-public class oldSomeObject implements IRegistryElement
+public class SomeObject implements IRegistryElement
 {
   /** Field to use as search key */
   private String _key;
@@ -38,7 +36,7 @@ public class oldSomeObject implements IRegistryElement
    * @param value any float number
    * @param text any text string
    */
-  public oldSomeObject(int value, String text) throws IllegalArgumentException
+  public SomeObject(int value, String text) throws IllegalArgumentException
   {
     _num = value;
     _word = text;
@@ -46,16 +44,42 @@ public class oldSomeObject implements IRegistryElement
   }
 
 
-  /**
-   * Match two objects of this type comparing their two fields
-   * 
-   * @param target object to match against
-   * @return true if both fields match, else false
-   */
-  public boolean equals(Object object)
+  @Override
+  public boolean equals(IRegistryElement target)
   {
-    oldSomeObject target = (oldSomeObject) object;
-    return ((_num == target.getNum()) && (_word.equals(target.getWord())));
+    return this.equals((Object) target);
+  }
+
+
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + _num;
+    result = prime * result + ((_word == null) ? 0 : _word.hashCode());
+    return result;
+  }
+
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    SomeObject other = (SomeObject) obj;
+    if (_num != other._num)
+      return false;
+    if (_word == null) {
+      if (other._word != null)
+        return false;
+    } else if (!_word.equals(other._word))
+      return false;
+    return true;
   }
 
 
@@ -74,27 +98,9 @@ public class oldSomeObject implements IRegistryElement
   /**
    * @return the numerical field of this object
    */
-  public double getNum()
+  public int getNum()
   {
     return _num;
-  }
-
-
-  /**
-   * Set the predicate to match objects; uses the equals method
-   * 
-   * @return the Predicate object
-   */
-  @SuppressWarnings("serial")
-  public Predicate<IRegistryElement> getPredicate()
-  {
-    Predicate<IRegistryElement> pred = new Predicate<IRegistryElement>() {
-      public boolean match(IRegistryElement candidate)
-      {
-        return this.equals(candidate);
-      }
-    };
-    return pred;
   }
 
 
@@ -141,13 +147,6 @@ public class oldSomeObject implements IRegistryElement
     s += "\t word = " + _word;
     return s;
   }
-
-
-@Override
-public boolean equals(IRegistryElement target)
-{
-    return this.equals((Object) target);
-}
 
 
 } // end of SomeObject class

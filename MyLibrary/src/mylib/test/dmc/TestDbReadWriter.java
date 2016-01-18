@@ -18,16 +18,15 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import mylib.Constants;
 import mylib.MsgCtrl;
 import mylib.dmc.DbReadWriter;
 import mylib.dmc.IRegistryElement;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Test the database read/writer interface methods
@@ -46,15 +45,10 @@ import mylib.dmc.IRegistryElement;
 public class TestDbReadWriter
 {
   /** Object under test */
-  private DbReadWriter _regRW;
+  private DbReadWriter<SomeObject> _regRW;
 
   /** Place temporary test files in resource directory */
   static private final String REG_PATH = Constants.MYLIB_RESOURCES + "Test.reg";
-
-
-  @BeforeClass
-  static public void setUpBeforeClass()
-  {}
 
   @AfterClass
   static public void tearDownAfterClass()
@@ -67,7 +61,7 @@ public class TestDbReadWriter
   @Before
   public void setUp()
   {
-    _regRW = new DbReadWriter(REG_PATH);
+    _regRW = new DbReadWriter<SomeObject>(REG_PATH);
     assertNotNull(_regRW);
   }
 
@@ -250,7 +244,7 @@ public class TestDbReadWriter
     _regRW.addElement(new SomeObject("last object"));
     assertEquals(6, _regRW.size());
 
-    List<IRegistryElement> slist = _regRW.getAll();
+    List<SomeObject> slist = _regRW.getAll();
     assertNotNull(slist);
     assertEquals(6, slist.size());
 
@@ -339,11 +333,8 @@ public class TestDbReadWriter
   @Test
   public void testErrorConstructorNullArg()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
-    MsgCtrl.where(this);
     try {
-      new DbReadWriter(null);
+      new DbReadWriter<SomeObject>(null);
     } catch (NullPointerException ex) {
       MsgCtrl.errMsgln("\tExpected NullPointerException: " + ex.getMessage());
     }
@@ -357,11 +348,8 @@ public class TestDbReadWriter
   @Test
   public void testErrorConstructorEmptyArg()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
-    MsgCtrl.where(this);
     try {
-      new DbReadWriter("  ");
+      new DbReadWriter<SomeObject>("  ");
     } catch (NullPointerException ex) {
       MsgCtrl.errMsgln("\tExpected NullPointerException: " + ex.getMessage());
     }

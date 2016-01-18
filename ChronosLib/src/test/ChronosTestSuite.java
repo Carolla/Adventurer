@@ -12,6 +12,8 @@ package test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import test.pdc.buildings.BuildingsSuite;
+
 
 /**
  * Regression test suite for all the {@code JUnit} test cases for the source code packages of the
@@ -39,16 +41,13 @@ import org.junit.runners.Suite;
     // TestMiscKeys.class,
     // TestOccupationsKeys.class,
     // TestSkillKeys.class,
-    // TestSkillKeys.class,
     // TestUserMsg.class,
 
     /* DMC test files */
     // None
 
     /* PDC subfolder test suites */
-    // BuildingsSuite.class,
-    // CharacterSuite.class,
-    // CommandSuite.class,
+     BuildingsSuite.class,
     // RegistrySuite.class,
   
     /* PDC test files */

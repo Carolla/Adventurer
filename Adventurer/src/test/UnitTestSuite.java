@@ -12,7 +12,6 @@ package test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import test.pdc.character.BuildingSuite;
 import test.pdc.command.CommandSuite;
 
 /**
@@ -45,7 +44,6 @@ import test.pdc.command.CommandSuite;
     // TestSkillKeys.class,
 
     /* PDC subfolder test suites */
-    BuildingSuite.class,
     CommandSuite.class
 
     /** PDC test files */

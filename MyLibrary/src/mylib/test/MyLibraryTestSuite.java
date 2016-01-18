@@ -9,13 +9,12 @@
 
 package mylib.test;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
-import mylib.test.dmc.TestDbReadWriter;
 import mylib.test.pdc.TestMetaDie;
 import mylib.test.pdc.TestRegistry;
 import mylib.test.pdc.TestUtilities;
+
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
  * @author Alan Cline
@@ -28,22 +27,12 @@ import mylib.test.pdc.TestUtilities;
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
 {
-    /** CIV Test files */
-    // BaseCiv.class
-    // DataShuttle.class
-
-    /** DMC Test files */
-    TestDbReadWriter.class,
-    // IRegistryElement.class is an interface, no tests for this
-
     /** PDC Test files */
     TestMetaDie.class,
     TestRegistry.class,
     TestUtilities.class,
-
-
 })
-/** Compilation of all unit tests for regression and integration testing. */
+
 public class MyLibraryTestSuite
 {
 }

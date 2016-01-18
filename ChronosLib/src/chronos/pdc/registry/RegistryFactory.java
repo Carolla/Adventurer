@@ -104,35 +104,6 @@ public class RegistryFactory
   // ============================================================
 
   /**
-   * Close all registries currently open, and remove them from the {@code RegistryFactory}
-   * collection
-   */
-  public void closeAllRegistries()
-  {
-    for (RegKey key : RegKey.values()) {
-      Registry<?> reg = _regMap.get(key);
-      if (reg != null) {
-        reg.closeRegistry();
-      }
-    }
-  }
-
-
-  /**
-   * Close a registry and remove it from the factory collection
-   * 
-   * @param key one of the specified registry keys
-   */
-  public void closeRegistry(RegKey key)
-  {
-    Registry<?> reg = _regMap.get(key); // get returns null if not found
-    if (reg != null) {
-      reg.closeRegistry(); // this is the registry's method, not this method it's in
-    }
-  }
-
-
-  /**
    * Get the number of registries created by this {@code RegistryFactory}
    * 
    * @return the number of current Registries

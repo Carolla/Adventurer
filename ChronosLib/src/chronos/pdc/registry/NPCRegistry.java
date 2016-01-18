@@ -10,13 +10,11 @@
 package chronos.pdc.registry;
 
 import java.util.ArrayList;
-import java.util.List;
 
+import mylib.ApplicationException;
+import mylib.pdc.Registry;
 import chronos.Chronos;
 import chronos.pdc.NPC;
-import mylib.ApplicationException;
-import mylib.dmc.IRegistryElement;
-import mylib.pdc.Registry;
 
 /**
  * Contains the Patrons for the Inn. They interact with the Hero
@@ -443,26 +441,8 @@ public class NPCRegistry extends Registry<NPC>
    */
   public NPC getNPC(String name)
   {
-    return (NPC) get(name);
+    return get(name);
   }
-
-
-  /**
-   * Retrieve all NPCs in the NPCRegistry
-   * 
-   * @return the list of NPCs
-   */
-  public List<NPC> getNPCList()
-  {
-    List<IRegistryElement> npcSet = getAll();
-    // Convert to NPC elements
-    List<NPC> npcList = new ArrayList<NPC>(npcSet.size());
-    for (IRegistryElement elem : npcSet) {
-      npcList.add((NPC) elem);
-    }
-    return npcList;
-  }
-
 
   /*
    * PRIVATE METHODS
