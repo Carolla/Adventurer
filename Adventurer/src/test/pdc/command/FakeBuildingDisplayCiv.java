@@ -7,7 +7,6 @@ import civ.BuildingDisplayCiv;
 
 public class FakeBuildingDisplayCiv extends BuildingDisplayCiv
 {
-
   private String _currentBuildingName = "";
   public boolean _canApproach = true;
   public boolean _canEnter = true;
@@ -54,12 +53,6 @@ public class FakeBuildingDisplayCiv extends BuildingDisplayCiv
   {
     super.returnToTown();
     _currentBuildingName = null;
-  }
-
-  @Override
-  public String getCurrentBuilding()
-  {
-    return _currentBuildingName;
   }
 
   @Override
