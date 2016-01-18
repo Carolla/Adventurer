@@ -202,7 +202,7 @@ public class DbReadWriter<E extends IRegistryElement>
     }
     List<E> elementList = getAllList();
     for (E obj : elementList) {
-      if (obj.getKey().equals(name)) {
+      if (obj.getKey().equalsIgnoreCase(name)) {
         return obj;
       }
     }
@@ -291,6 +291,7 @@ public class DbReadWriter<E extends IRegistryElement>
         return true;
       }
     });
+    close();
     return alist;
   }
 

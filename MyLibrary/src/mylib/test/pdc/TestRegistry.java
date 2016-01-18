@@ -63,6 +63,7 @@ public class TestRegistry
   {
     // Create a Registry object, which will be initialized if one doesn't exist
     _testReg = new ConcreteRegistry(TEST_FILEPATH);
+    _testReg.setDbReadWriter(_dbReadWriter);
 
     // Ensure that registry exists with no elements
     assertEquals(0, _testReg.getNbrElements());
