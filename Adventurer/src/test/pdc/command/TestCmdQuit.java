@@ -51,7 +51,7 @@ public class TestCmdQuit
         
         // Setup for Test 1
         ArrayList<String> emptyArgs = new ArrayList<String>();
-        _bdciv.setInside(false);
+        _bdciv.returnToTown();
         
         // Test 1 - Normal
         assertTrue(_cmdQuit.init(emptyArgs));
@@ -65,7 +65,7 @@ public class TestCmdQuit
         addedSpace.add(" ");
         ArrayList<String> addedWord = new ArrayList<String>();
         addedWord.add(" now");
-        _bdciv.setInside(false);
+        _bdciv.returnToTown();
         
         // Test 2 - Error - args present
         assertFalse(_cmdQuit.init(addedSpace));
@@ -79,7 +79,7 @@ public class TestCmdQuit
         ArrayList<String> emptyArgs = new ArrayList<String>();
         
         // Set failing condition
-        _bdciv.setInside(true);
+        _bdciv.enterBuilding("Fake Building");
         
         // Test 3 - Error - inside building
         assertFalse(_cmdQuit.init(emptyArgs));

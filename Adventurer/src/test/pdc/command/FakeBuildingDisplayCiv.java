@@ -14,7 +14,6 @@ public class FakeBuildingDisplayCiv extends BuildingDisplayCiv
     private String _currentBuildingName = "";
     public boolean _canApproach = true;
     public boolean _canEnter = true;
-    private boolean _isInside;
     public String _displayedBldg;
     public String _displayedImg;
     public String _displayedText;
@@ -23,6 +22,7 @@ public class FakeBuildingDisplayCiv extends BuildingDisplayCiv
     public void enterBuilding(String name)
     {
         _currentBuildingName = name;
+        _insideBldg = true;
     }
     
     public void setBuilding(Building bldg)
@@ -50,6 +50,7 @@ public class FakeBuildingDisplayCiv extends BuildingDisplayCiv
     @Override
     public void returnToTown()
     {
+        super.returnToTown();
         _currentBuildingName = null;
     }
     
@@ -57,17 +58,6 @@ public class FakeBuildingDisplayCiv extends BuildingDisplayCiv
     public String getCurrentBuilding()
     {
         return _currentBuildingName;
-    }
-    
-    void setInside(boolean inside)
-    {
-        _isInside = inside;
-    }
-    
-    @Override
-    public boolean isInside()
-    {
-        return _isInside;
     }
     
     @Override
