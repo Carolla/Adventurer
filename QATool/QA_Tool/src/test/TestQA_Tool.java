@@ -165,47 +165,48 @@ public class TestQA_Tool
             "pdc/character/CharacterSuite.java", "pdc/command/EventTest.java",
             "pdc/command/FakeScheduler.java", "pdc/registry/FakeRegistry.java",
             "pdc/registry/RegistrySuite.java", "pdc/registry/TestAdventureRegistry.java",
+            "pdc/registry/TestRegistryFactory.java",
             "pdc/FakeSkill.java", "pdc/FormatSample.java", "pdc/MockRace.java",
             "pdc/TestAdventure.java", "pdc/TestItem.java", "pdc/TestNPC.java",
             "pdc/TestOccupation.java", "pdc/TestRace.java", "pdc/TestSkill.java",
-            "pdc/TestTown.java",
-            "ChronosTestSuite.java", "Template.java",
+            "pdc/TestTown.java", "ChronosTestSuite.java", "Template.java"
         };
     final String[] matchingSrcStr =
-        {"Adventure.java", "pdc/buildings/Bank.java", "pdc/buildings/Building.java",
+        {"pdc/Adventure.java", "pdc/buildings/Bank.java", "pdc/buildings/Building.java",
             "pdc/buildings/ClericsGuild.java", "pdc/buildings/FightersGuild.java",
             "pdc/buildings/Inn.java", "pdc/buildings/Jail.java", "pdc/buildings/RoguesGuild.java",
             "pdc/buildings/Store.java", "pdc/buildings/WizardsGuild.java",
-            "pdc/command/EventTest.java", "pdc/Item.java", "pdc/MiscKeys.java",
-            "pdc/NPC.java", "pdc/Skill.java", "pdc/Town.java"
+            "pdc/registry/TestAdventureRegistry.java", "pdc/registry/TestRegistryFactory.java",
+            "pdc/Item.java", "pdc/NPC.java", "pdc/OccupationC.java", "pdc/Race.java",
+            "pdc/Skill.java", "pdc/Town.java"
         };
     final String[] srcWoTestsStr =
         {"civ/DefaultLists.java", "civ/DefaultUserMsg.java", "civ/HeroDefaults.java",
-            "civ/OccupationKeys.java", "civ/PersonnKeys.java", "civ/SkillKeys.java",
-            "civ/UserMsg.java", "pdc/Arena.java", "pdc/AttributeList.java",
+            "civ/OccupationKeys.java", "civ/PersonKeys.java", "civ/SkillKeys.java",
+            "civ/UserMsg.java",
             "pdc/character/Cleric.java", "pdc/character/Fighter.java", "pdc/character/Hero.java",
             "pdc/character/Inventory.java", "pdc/character/Klass.java", "pdc/character/Thief.java",
             "pdc/character/Wizard.java",
             "pdc/command/Command.java", "pdc/command/DeltaCmdList.java", "pdc/command/Event.java",
-            "pdc/command/intCmdPatronEnter.java", "pdc/command/intCmdPatronLeave.java",
-            "pdc/command/NullCommand.java",
+            "pdc/command/Event.java", "pdc/command/intCmdPatronEnter.java",
+            "pdc/command/intCmdPatronLeave.java", "pdc/command/NullCommand.java",
             "pdc/command/Scheduler.java", "pdc/command/TestEvent.java",
-            "pdc/registry/AdventureRegistry.java", "pdc/registry/BuildingeRegistry.java",
-            "pdc/registry/HelpTextObject.java", "pdc/registry/ItemeRegistry.java",
+            "pdc/registry/BuildingeRegistry.java", "pdc/registry/HelpTextObject.java",
+            "pdc/registry/HeroRegistry.java", "pdc/registry/ItemRegistry.java",
             "pdc/registry/NPCRegistry.java", "pdc/registry/OccupationRegistry.java",
-            "pdc/registry/RegistryFactory.java", "pdc/registry/SkillRegistry.java",
-            "pdc/registry/TownRegistry.java", "pdc/Skill.java", "pdc/Town.java", "Chronos.java"
+            "pdc/registry/SkillRegistry.java", "pdc/registry/TownRegistry.java",
+            "pdc/Arena.java", "pdc/AttibuteList.java", "pdc/GameClock.java",
+            "pdc/MiscKeys", "pdc/NullNPC.java", "Chronos.java"
         };
     final String[] testsWoSrcStr =
-        {"ChronosTestSuite.java", "pdc/buildings/BuildingsSuite.java",
-            "pdc/buildings/ConcreteBuilding.java", "pdc/buildings/FakeBuilding.java",
-            "pdc/character/CharacterSuite.java", "pdc/command/EventTest.java",
-            "pdc/command/FakeScheduler.java", "pdc/FakeSkill.java", "pdc/FormatSample.java",
-            "pdc/MockRace.java", "pdc/registry/FakeRegistry.java",
-            "pdc/registry/RegistrySuite.java",
-            "pdc/TestAdventure.java", "pdc/TestItem.java", "pdc/TestNPC.java",
-            "pdc/TestOccupation.java", "pdc/TestRace.java", "pdc/TestSkill.java",
-            "pdc/TestTown.java", "Template.java"
+        {"ChronosTestSuite.java",
+            "pdc/buildings/BuildingsSuite.java", "pdc/buildings/ConcreteBuilding.java",
+            "pdc/buildings/FakeBuilding.java", "pdc/buildings/TestArena.java",
+            "pdc/character/CharacterSuite.java",
+            "pdc/command/EventTest.java", "pdc/command/FakeScheduler.java",
+            "pdc/registry/FakeRegistry.java", "pdc/registry/RegistrySuite.java",
+            "pdc/FakeSkill.java", "pdc/FormatSample", "pdc/MockRace.java",
+            "Template.java"
         };
 
     // Setup for arraylist
@@ -240,6 +241,7 @@ public class TestQA_Tool
     dumpList(testsWoSrc, "TEST FILES WITHOUT SOURCE = " + testsWoSrc.size());
     assertEquals(expTestsWoSrc.size(), testsWoSrc.size());
   }
+
 
   /**
    * @NORMAL.TEST Using MyLib, scan for matching and missing test and source files
