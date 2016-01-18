@@ -10,16 +10,16 @@
 package test.pdc.registry;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
+import mylib.MsgCtrl;
+import mylib.pdc.Registry;
+
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.Chronos;
@@ -28,8 +28,6 @@ import chronos.pdc.command.Scheduler;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import chronos.pdc.registry.SkillRegistry;
-import mylib.MsgCtrl;
-import mylib.pdc.Registry;
 
 
 /**
@@ -50,21 +48,12 @@ public class TestRegistryFactory
   // Fixtures
   // ============================================================
 
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception
-  {}
-
-  @AfterClass
-  public static void tearDownAfterClass() throws Exception
-  {}
-
   @Before
   public void setUp() throws Exception
   {
     skedder = new Scheduler(new DefaultUserMsg());
-    _rf = new RegistryFactory(skedder);
-    _rf.initRegistries();
-    assertNotNull(_rf);
+    _rf = new RegistryFactory();
+    _rf.initRegistries(skedder);
   }
 
   @After

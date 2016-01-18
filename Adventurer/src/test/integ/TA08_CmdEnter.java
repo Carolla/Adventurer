@@ -53,7 +53,7 @@ public class TA08_CmdEnter
     /** List of valid Buildings that can be entered */
     private List<String> _bldgs = null;
     private static Scheduler _skedder = new Scheduler(new DefaultUserMsg());
-    private static RegistryFactory _regFactory = new RegistryFactory(_skedder);
+    private static RegistryFactory _regFactory = new RegistryFactory();
 
 //    /**
 //     * @throws java.lang.Exception

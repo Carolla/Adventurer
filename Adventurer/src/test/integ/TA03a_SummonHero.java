@@ -24,7 +24,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import chronos.civ.DefaultUserMsg;
 import chronos.pdc.character.Hero;
+import chronos.pdc.command.Scheduler;
 import chronos.pdc.registry.HeroRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
@@ -145,7 +147,7 @@ public class TA03a_SummonHero
     MsgCtrl.msgln("\tAt least one Hero must be in the Dormitory.");
 
     RegistryFactory rf = new RegistryFactory();
-    rf.initRegistries();
+    rf.initRegistries(new Scheduler(new DefaultUserMsg()));
     HeroRegistry dorm = (HeroRegistry) rf.getRegistry(RegKey.HERO);
     assertNotNull(dorm);
     int nbr = dorm.getNbrElements();

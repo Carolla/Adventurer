@@ -44,6 +44,12 @@ public class SomeObject implements IRegistryElement
   }
 
 
+  public SomeObject(String string)
+  {
+    this(0, string);
+  }
+
+
   @Override
   public boolean equals(IRegistryElement target)
   {

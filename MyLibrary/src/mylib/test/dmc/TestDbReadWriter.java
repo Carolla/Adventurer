@@ -21,7 +21,6 @@ import java.util.List;
 import mylib.Constants;
 import mylib.MsgCtrl;
 import mylib.dmc.DbReadWriter;
-import mylib.dmc.IRegistryElement;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -406,32 +405,5 @@ public class TestDbReadWriter
    */
   void notNeeded()
   {}
-
-  // ====================================================================
-  // Inner SomeObject Test Class
-  // ====================================================================
-
-  // Internal test class
-  class SomeObject implements IRegistryElement
-  {
-    private String _key;
-
-    public SomeObject(String key)
-    {
-      _key = key;
-    }
-
-    public boolean equals(IRegistryElement target)
-    {
-      return (_key.equals(target.getKey()));
-    }
-
-    public String getKey()
-    {
-      return _key;
-    }
-
-  } // end of SomeObject test class
-
 
 } // end of TestDBRegistryRW class

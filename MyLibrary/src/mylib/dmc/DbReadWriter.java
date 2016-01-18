@@ -184,7 +184,9 @@ public class DbReadWriter<E extends IRegistryElement>
 
   public List<E> getAll()
   {
-    return getAllList();
+    List<E> list = getAllList();
+    close();
+    return list;
   }
 
 
@@ -206,6 +208,7 @@ public class DbReadWriter<E extends IRegistryElement>
         return obj;
       }
     }
+    close();
     return null;
   }
 
@@ -234,6 +237,7 @@ public class DbReadWriter<E extends IRegistryElement>
   public int size()
   {
     List<E> alist = getAllList();
+    close();
     return alist.size();
   }
 
@@ -291,7 +295,6 @@ public class DbReadWriter<E extends IRegistryElement>
         return true;
       }
     }));
-    close();
     return alist;
   }
 

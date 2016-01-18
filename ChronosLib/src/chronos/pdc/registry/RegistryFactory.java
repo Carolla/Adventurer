@@ -12,11 +12,11 @@ package chronos.pdc.registry;
 
 import java.util.HashMap;
 
+import mylib.pdc.Registry;
 import chronos.pdc.Item;
 import chronos.pdc.Occupation;
 import chronos.pdc.Skill;
 import chronos.pdc.command.Scheduler;
-import mylib.pdc.Registry;
 
 /**
  * Creates singleton registries of various kinds and keeps count of existing registries
@@ -63,26 +63,16 @@ public class RegistryFactory
     }
   }
 
-  /** For creating certain registries */
-  private Scheduler _skedder;
-
   // ============================================================
   // Constructor(s) and Related Methods
   // ============================================================
-
+ 
   public RegistryFactory()
   {
     _regMap = new HashMap<RegKey, Registry<?>>();
   }
-  
-  // TODO Remove arg; Scheduler has nothing to do with the Registries
-  public RegistryFactory(Scheduler skedder)
-  {
-    _skedder = skedder;
-    _regMap = new HashMap<RegKey, Registry<?>>();
-  }
 
-  public void initRegistries()
+  public void initRegistries(Scheduler _skedder)
   {
     _regMap.put(RegKey.HERO, new HeroRegistry());
     _regMap.put(RegKey.ITEM, new ItemRegistry());
