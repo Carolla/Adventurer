@@ -108,7 +108,7 @@ public abstract class Registry<E extends IRegistryElement>
     } else {
       System.out.println("Tried to add " + obj.getKey() + " to registry, but failed\n");
     }
-    
+
     return retval;
   }
 
@@ -189,15 +189,14 @@ public abstract class Registry<E extends IRegistryElement>
     if (target == null) {
       return false;
     }
+
     // Guard: if target is not in the registry, return immediately.
-    if (_regRW.isOpen()) {
-      E obj = _regRW.containsElement(target);
-      if (obj != null) {
-        // Retrieve the target element and overwrite it
-        _regRW.deleteElement(target);
-        _regRW.addElement(target);
-        retval = true;
-      }
+    E obj = _regRW.containsElement(target);
+    if (obj != null) {
+      // Retrieve the target element and overwrite it
+      _regRW.deleteElement(target);
+      _regRW.addElement(target);
+      retval = true;
     }
     return retval;
   }
