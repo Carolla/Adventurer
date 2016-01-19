@@ -14,12 +14,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
-import mylib.MsgCtrl;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.Chronos;
@@ -39,44 +33,6 @@ public class TA00b_Quit
       Chronos.TownRegPath};
 
   // ============================================================
-  // Fixtures
-  // ============================================================
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception
-  {}
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @AfterClass
-  public static void tearDownAfterClass() throws Exception
-  {}
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @Before
-  public void setUp() throws Exception
-  {
-    MsgCtrl.errorMsgsOn(true);
-  }
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @After
-  public void tearDown() throws Exception
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-  }
-
-
-  // ============================================================
   // Integration Test
   // ============================================================
 
@@ -87,13 +43,8 @@ public class TA00b_Quit
   @Test
   public void test_Quit()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\t testTA00b_Quit()");
-
     // VERIFY that the registries still exist
     assertTrue(registryFilesExist());
-
   }
 
   // ============================================================
@@ -106,21 +57,11 @@ public class TA00b_Quit
     boolean retval = true;
     for (String s : paths) {
       File f = new File(s);
-      retval = (doesExist(s) && (f.length() > 0));
+      retval = (f.exists() && (f.length() > 0));
       if (retval == false) {
         break;
       }
     }
     return retval;
   }
-
-  
-  /** Check existence of single Registry file */
-  private boolean doesExist(String path)
-  {
-    File rf = new File(path);
-    return rf.exists();
-  }
-
-
 } // end of TA00b_Quit class

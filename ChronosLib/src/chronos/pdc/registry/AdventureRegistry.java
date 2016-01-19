@@ -12,7 +12,6 @@ package chronos.pdc.registry;
 import java.util.ArrayList;
 import java.util.List;
 
-import mylib.dmc.IRegistryElement;
 import mylib.pdc.Registry;
 import chronos.Chronos;
 import chronos.pdc.Adventure;
@@ -111,7 +110,7 @@ public class AdventureRegistry extends Registry<Adventure>
    */
   public Adventure getAdventure(String name)
   {
-    return (Adventure) get(name);
+    return get(name);
   }
 
 
@@ -123,15 +122,10 @@ public class AdventureRegistry extends Registry<Adventure>
   public List<String> getAdventureList()
   {
     List<String> advList = new ArrayList<String>();
-    for (IRegistryElement elem : getAll()) {
+    for (Adventure elem : getAll()) {
       advList.add(elem.getKey());
     }
     return advList;
   }
-
-
-  // ===========================================================================
-  // PRIVATE METHODS
-  // ===========================================================================
 } // end of AdventureRegistry class
 

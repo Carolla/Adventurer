@@ -108,6 +108,7 @@ public abstract class Registry<E extends IRegistryElement>
     } else {
       System.out.println("Tried to add " + obj.getKey() + " to registry, but failed\n");
     }
+    
     return retval;
   }
 

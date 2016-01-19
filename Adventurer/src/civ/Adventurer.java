@@ -57,7 +57,7 @@ public class Adventurer
       {
         try {
           // Create the MainframeCiv and turn contol over to it
-          new MainframeCiv();
+          new MainframeCiv().init();
         } catch (Exception e) {
           e.printStackTrace();
           System.exit(-1);

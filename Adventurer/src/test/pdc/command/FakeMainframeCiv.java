@@ -17,9 +17,9 @@ public class FakeMainframeCiv extends MainframeCiv
   }
 
   @Override
-  protected void init()
+  public MainframeCiv init()
   {
-    //Don't create GUI
+    return this;
   }
   
   protected void constructMembers()

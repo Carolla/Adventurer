@@ -112,7 +112,12 @@ public class CommandFactory
 
   public boolean canCreateCommand(CommandInput ci)
   {
-    return _commandMap.get(ci.commandToken) != null;
+    if (_commandMap.get(ci.commandToken) != null) {
+      return true;
+    } else {
+      System.out.println("Couldn't create command " + ci.commandToken);
+      return false;
+    }
   }
 
 } // end of CommandFactory class

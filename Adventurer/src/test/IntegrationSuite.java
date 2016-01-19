@@ -47,5 +47,5 @@ import test.integ.TA09_CmdLeave;
 public class IntegrationSuite
 {
 
-} // end of AdventurerSuite class
+} // end of IntegrationSuite class
 

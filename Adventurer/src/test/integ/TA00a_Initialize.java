@@ -123,10 +123,7 @@ public class TA00a_Initialize
     boolean retval = true;
     for (String s : paths) {
       File f = new File(s);
-      if (!f.exists()) {
-        System.err.println("Missing file " + f.getName());
-        retval = false;
-      }
+      retval &= f.exists() && (f.length() > 0);
     }
     return retval;
   }

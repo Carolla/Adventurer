@@ -142,7 +142,6 @@ public abstract class Building implements IRegistryElement
    */
   public String getInteriorDescription()
   {
-    System.out.println("getInteriorDescription got " + System.identityHashCode(this));
     String description = _intDesc;
     if (_patrons.size() > 0) {
       description += "\n\nYou see patrons inside:\n";
@@ -208,7 +207,6 @@ public abstract class Building implements IRegistryElement
 
   public boolean add(NPC npc)
   {
-    System.out.println("addNPC got " + System.identityHashCode(this));
     return _patrons.add(npc);
   }
 

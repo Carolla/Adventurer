@@ -32,7 +32,7 @@ public class MainframeCiv extends BaseCiv implements UserMsg
   private MainframeInterface _mf;
   private IOPanel _ioPanel;
   private ImagePanel _imagePanel;
-  
+
   private final String INITIAL_IMAGE = "ChronosLogo.jpg";
   private final String INITIAL_IMAGE_TITLE = "Chronos Logo";
 
@@ -41,18 +41,22 @@ public class MainframeCiv extends BaseCiv implements UserMsg
   // Constructors and constructor helpers
   // ============================================================
 
-  /**
-   * Create the mainframe, right-side image panel, and left side action panel civ
-   * The image panel is handled by this mainframeCiv
-   */
-  public MainframeCiv()
-  {
-    init();
-  }
-
-  protected void init()
+  public MainframeCiv init()
   {
     _mf = new Mainframe(this);
+    createMembers();
+    return this;
+  }
+
+  public MainframeCiv init(MainframeInterface mf)
+  {
+    _mf = mf;
+    createMembers();
+    return this;
+  }
+
+  private void createMembers()
+  {
     displayInitialImagePanel();
     new MainActionCiv(this);
   }
@@ -63,7 +67,7 @@ public class MainframeCiv extends BaseCiv implements UserMsg
     displayImage(INITIAL_IMAGE_TITLE, INITIAL_IMAGE);
     _mf.replaceRightPanel(_imagePanel);
   }
-  
+
   // ============================================================
   // Public methods
   // ============================================================
@@ -73,34 +77,34 @@ public class MainframeCiv extends BaseCiv implements UserMsg
     _mf.back();
   }
 
-  
+
   public void backToMain()
   {
     _mf.backToMain();
   }
 
-  
+
   @Override
   public void displayErrorText(String msg)
   {
     _ioPanel.displayErrorText(msg);
   }
 
-  
+
   public void displayImage(String title, String imageName)
   {
     _imagePanel.setTitle(title);
     _imagePanel.setImageByName(imageName);
   }
 
-  
+
   @Override
   public void displayText(String result)
   {
     _ioPanel.displayText(result);
   }
 
-  
+
   /** Close down the application if user so specified */
   public void quit()
   {
@@ -109,18 +113,18 @@ public class MainframeCiv extends BaseCiv implements UserMsg
     }
   }
 
-  
+
   public void replaceLeftPanel(ChronosPanel panel)
   {
     _mf.replaceLeftPanel(panel);
   }
-  
-  
+
+
   public void replaceLeftPanel(IOPanel panel)
   {
     _ioPanel = panel;
     _mf.replaceLeftPanel(panel);
   }
-  
-  
+
+
 } // end of MainframeCiv class

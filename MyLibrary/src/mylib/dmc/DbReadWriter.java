@@ -53,7 +53,7 @@ public class DbReadWriter<E extends IRegistryElement>
   private boolean _open = false;
 
   /** actual database */
-  EmbeddedObjectContainer _db;
+  private EmbeddedObjectContainer _db = null;
 
   /** Exception message for null argument */
   static private final String NULL_ARG_MSG = "Argument cannot be null or empty";
@@ -104,8 +104,9 @@ public class DbReadWriter<E extends IRegistryElement>
     } catch (DatabaseClosedException | DatabaseReadOnlyException ex) {
       System.err.println(ex.getMessage());
       ex.printStackTrace();
+    } finally {
+      close();
     }
-    close();
   }
 
   
@@ -180,6 +181,8 @@ public class DbReadWriter<E extends IRegistryElement>
     } catch (Db4oIOException | DatabaseClosedException | DatabaseReadOnlyException ex) {
       System.err.println(ex.getMessage());
       ex.printStackTrace();
+    } finally {
+      close();
     }
   }
 
@@ -204,14 +207,18 @@ public class DbReadWriter<E extends IRegistryElement>
     if (!exists(name)) {
       return null;
     }
-    List<E> elementList = getAllList();
-    for (E obj : elementList) {
-      if (obj.getKey().equalsIgnoreCase(name)) {
-        return obj;
+
+    try {
+      List<E> elementList = getAllList();
+      for (E obj : elementList) {
+        if (obj.getKey().equalsIgnoreCase(name)) {
+          return obj;
+        }
       }
+      return null;
+    } finally {
+      close();
     }
-    close();
-    return null;
   }
 
   // TODO: Might be needed later, but not now
@@ -261,12 +268,14 @@ public class DbReadWriter<E extends IRegistryElement>
   {
     try {
       if (_open) {
-        _db.close();
+        while (!_db.close()) {
+        }
         _open = false;
       }
     } catch (Db4oIOException ex) {
       System.err.println(ex.getMessage());
       ex.printStackTrace();
+      _open = true;
     }
   }
 
@@ -329,6 +338,7 @@ public class DbReadWriter<E extends IRegistryElement>
         | OldFormatException | DatabaseReadOnlyException ex) {
       System.out.println(ex.getMessage());
       ex.printStackTrace();
+      System.exit(-1);
     }
     return _db;
   }
