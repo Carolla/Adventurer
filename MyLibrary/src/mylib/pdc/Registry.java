@@ -73,7 +73,7 @@ public abstract class Registry<E extends IRegistryElement>
   {
     // Creates registry file and reloads it (new registry will be empty)
     _regRW = new DbReadWriter<E>(filename);
-    
+
     if (getAll().size() == 0) {
       _shouldInitialize = true;
     }
@@ -110,7 +110,7 @@ public abstract class Registry<E extends IRegistryElement>
     }
     return retval;
   }
-  
+
   public boolean forceAdd(E obj)
   {
     delete(obj);
@@ -189,12 +189,14 @@ public abstract class Registry<E extends IRegistryElement>
       return false;
     }
     // Guard: if target is not in the registry, return immediately.
-    E obj = _regRW.containsElement(target);
-    if (obj != null) {
-      // Retrieve the target element and overwrite it
-      _regRW.deleteElement(target);
-      _regRW.addElement(target);
-      retval = true;
+    if (_regRW.isOpen()) {
+      E obj = _regRW.containsElement(target);
+      if (obj != null) {
+        // Retrieve the target element and overwrite it
+        _regRW.deleteElement(target);
+        _regRW.addElement(target);
+        retval = true;
+      }
     }
     return retval;
   }

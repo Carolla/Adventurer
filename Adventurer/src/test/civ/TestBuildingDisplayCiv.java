@@ -15,9 +15,9 @@ import org.junit.Test;
 import chronos.pdc.Adventure;
 import chronos.pdc.buildings.Building;
 import chronos.pdc.registry.BuildingRegistry;
+import chronos.test.pdc.buildings.FakeBuilding;
 import civ.BuildingDisplayCiv;
 import civ.MainframeCiv;
-import test.pdc.buildings.FakeBuilding;
 import test.pdc.command.FakeMainframeCiv;
 
 public class TestBuildingDisplayCiv

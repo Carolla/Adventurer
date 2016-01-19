@@ -16,8 +16,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import mylib.MsgCtrl;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -30,6 +28,7 @@ import chronos.pdc.command.Scheduler;
 import chronos.pdc.registry.HeroRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
+import mylib.MsgCtrl;
 
 
 /**
@@ -161,9 +160,9 @@ public class TA03a_SummonHero
         Hero hero1 = new Hero("Falsoon", "male", "black", "Human", "Cleric");
         Hero hero2 = new Hero("Galadriel", "female", "blonde", "Elf", "Thief");
         Hero hero3 = new Hero("Blonk", "male", "black", "Dwarf", "Fighter");
-        dorm.save(hero1);
-        dorm.save(hero2);
-        dorm.save(hero3);
+        dorm.add(hero1);
+        dorm.add(hero2);
+        dorm.add(hero3);
       } catch (Exception ex) {
         MsgCtrl.errMsgln(ex.getMessage());
       }

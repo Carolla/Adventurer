@@ -107,7 +107,7 @@ public class DbReadWriter<E extends IRegistryElement>
     close();
   }
 
-
+  
   /**
    * Deletes all elements in the registry. Each item is removed from the database so db4o's OID can
    * be used to delete it.
@@ -189,6 +189,7 @@ public class DbReadWriter<E extends IRegistryElement>
     return list;
   }
 
+  
 
   /**
    * Retrieve the first element that matches the name. The object's {@code getKey} method is called.
@@ -231,6 +232,12 @@ public class DbReadWriter<E extends IRegistryElement>
   //
   // objectContainer.close();
   // }
+
+
+  public boolean isOpen()
+  {
+    return _open;
+  }
 
 
   /** Finds all elements in the given Registry ReadWriter */

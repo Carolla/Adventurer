@@ -13,7 +13,7 @@ package test.pdc.character;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import test.pdc.TestRace;
+import chronos.test.pdc.TestRace;
 
 
 /**

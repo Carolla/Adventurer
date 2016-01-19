@@ -7,16 +7,15 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import mylib.MsgCtrl;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import chronos.pdc.buildings.Building;
+import chronos.test.pdc.buildings.FakeBuilding;
+import mylib.MsgCtrl;
 import pdc.command.CmdLook;
 import test.pdc.FakeNPC;
-import test.pdc.buildings.FakeBuilding;
-import chronos.pdc.buildings.Building;
 
 public class TestCmdLook
 {

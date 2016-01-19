@@ -36,7 +36,7 @@ import mylib.test.MyLibraryTestSuite;
     MyLibraryTestSuite.class,
     
     /* ChronosLib test suite */
-    ChronosTestSuite.class,
+//    ChronosTestSuite.class,
 
     /* UnitTestSuite includes all unit tests for Adventurer */
     UnitTestSuite.class,

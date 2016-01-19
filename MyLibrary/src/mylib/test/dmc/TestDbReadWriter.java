@@ -18,14 +18,14 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.util.List;
 
-import mylib.Constants;
-import mylib.MsgCtrl;
-import mylib.dmc.DbReadWriter;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
+
+import mylib.Constants;
+import mylib.MsgCtrl;
+import mylib.dmc.DbReadWriter;
 
 /**
  * Test the database read/writer interface methods
@@ -389,21 +389,36 @@ public class TestDbReadWriter
     assertNull(_regRW.containsElement(so9));
     _regRW.deleteElement(so9);
   }
-
-
+  
+  
   // ====================================================================
   // PRIVATE HELPER METHODS
   // ====================================================================
 
+/*
+  mylib.dmc.DbReadWriter.DbReadWriter(String)
+  mylib.dmc.DbReadWriter.addElement(E)
+  mylib.dmc.DbReadWriter.isOpen()
+  mylib.dmc.DbReadWriter.dbClear()
+  mylib.dmc.DbReadWriter.dbClear().new Predicate() {...}
+  mylib.dmc.DbReadWriter.containsElement(E)
+  mylib.dmc.DbReadWriter.deleteElement(E)
+  mylib.dmc.DbReadWriter.getAll()
+  mylib.dmc.DbReadWriter.get(String)
+  mylib.dmc.DbReadWriter.size()
+*/
+  
   /**
    * DbReadWrite methods that are not tested because of their simplistic nature.
    * 
-   * @Not.Needed getPath() -- simple getter
-   * @Not.Needed getAll() -- simple wrapper
    * @Not.Needed close() -- tested as part of tearDown
+   * @Not.Needed getAll() -- simple wrapper
+   * @Not.Needed getPath() -- simple getter
+   * @Not.Needed isOpen() -- getter
    * @Not.Needed open() -- tested as part of setUp
    */
   void notNeeded()
   {}
 
-} // end of TestDBRegistryRW class
+  
+} // end of TestDbReadWriter class

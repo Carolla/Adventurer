@@ -12,8 +12,6 @@ package chronos.test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import test.pdc.buildings.BuildingsSuite;
-
 
 /**
  * Regression test suite for all the {@code JUnit} test cases for the source code packages of the
@@ -47,7 +45,7 @@ import test.pdc.buildings.BuildingsSuite;
     // None
 
     /* PDC subfolder test suites */
-     BuildingsSuite.class,
+//     BuildingsSuite.class,
     // RegistrySuite.class,
   
     /* PDC test files */
