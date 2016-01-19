@@ -105,8 +105,16 @@ public abstract class Registry<E extends IRegistryElement>
     if (contains(obj) == false) {
       _regRW.addElement(obj);
       retval = true;
+    } else {
+      System.out.println("Tried to add " + obj.getKey() + " to registry, but failed\n");
     }
     return retval;
+  }
+  
+  public boolean forceAdd(E obj)
+  {
+    delete(obj);
+    return add(obj);
   }
 
   /**

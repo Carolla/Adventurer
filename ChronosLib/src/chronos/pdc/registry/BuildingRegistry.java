@@ -36,38 +36,40 @@ public class BuildingRegistry extends Registry<Building>
   // ========================================================================
   // CONSTRUCTOR(S) AND RELATED METHODS
   // ========================================================================
-
-  private final Scheduler _skedder;
   private final NPCRegistry _npcRegistry;
 
   /** Called by RegistryFactory class */
-  protected BuildingRegistry(Scheduler skedder, NPCRegistry npcRegistry)
+  protected BuildingRegistry(NPCRegistry npcRegistry)
   {
     super(Chronos.BuildingRegPath);
-    _skedder = skedder;
     _npcRegistry = npcRegistry;
-    initialize();
   }
 
 
   /**
    * Creates the Building Registry with the default buildings and saves it
    */
-  @Override
-  public void initialize()
+  public void initialize(Scheduler skedder)
   {
     // Create each of the default buildings and save to registry
     // The constructors load the default data
     Inn inn = new Inn(_npcRegistry);
-    inn.initPatrons(_skedder);
-    super.add(inn); // Ugly Ogre Inn
-    super.add(new Store()); // Rat's Pack
-    super.add(new Jail()); // Jail
-    super.add(new Bank()); // The Bank
-    super.add(new FightersGuild()); // Stadium
-    super.add(new RoguesGuild()); // Rouge's Tavern
-    super.add(new ClericsGuild()); // Monastery
-    super.add(new WizardsGuild()); // Arcaneum
+    System.out.println("initialize putting Inn as " + System.identityHashCode(inn));
+    inn.initPatrons(skedder);
+    super.forceAdd(inn); // Ugly Ogre Inn
+    super.forceAdd(new Store()); // Rat's Pack
+    super.forceAdd(new Jail()); // Jail
+    super.forceAdd(new Bank()); // The Bank
+    super.forceAdd(new FightersGuild()); // Stadium
+    super.forceAdd(new RoguesGuild()); // Rouge's Tavern
+    super.forceAdd(new ClericsGuild()); // Monastery
+    super.forceAdd(new WizardsGuild()); // Arcaneum
+  }
+
+  @Override
+  protected void initialize()
+  {
+
   }
 
   /**
@@ -78,7 +80,9 @@ public class BuildingRegistry extends Registry<Building>
    */
   public Building getBuilding(String name)
   {
-    return get(name);
+    Building b = get(name);
+    System.out.println("getBuilding " + name + " got " + System.identityHashCode(b));
+    return b;
   }
 
   /**

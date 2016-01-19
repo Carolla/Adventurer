@@ -171,6 +171,7 @@ public class BuildingDisplayCiv extends BaseCiv
   public void enterBuilding(String name)
   {
     Building targetBuilding = _breg.getBuilding(name);
+    System.out.println("Enter building " + name + " got " + System.identityHashCode(targetBuilding));
     if (targetBuilding == null) {
       targetBuilding = _currentBldg;
     }
