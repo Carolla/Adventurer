@@ -249,8 +249,8 @@ public class TestQA_Tool
   @Test
   public void testMyLibraryFileScan()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
     // Define root directory for file comparisons
