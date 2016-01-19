@@ -11,7 +11,6 @@
 package chronos.pdc.buildings;
 
 import mylib.ApplicationException;
-import mylib.dmc.IRegistryElement;
 
 /**
  * Wizards'Guild for spells, magical items, quests, and lodging. The default constructor creates the
@@ -62,69 +61,4 @@ public class WizardsGuild extends Building
     super(GUILD_NAME, OWNER, HOVERTEXT, EXTERIOR, INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
     setBusinessHours(OPENTIME, CLOSETIME);
   }
-
-  /*
-   * PUBLIC METHODS
-   */
-
-  /*
-   * Two Guilds are considered equal if their name and building masters are equal
-   * 
-   * @see mylib.dmc.IRegistryElement#equals(mylib.dmc.IRegistryElement)
-   */
-  @Override
-  public boolean equals(IRegistryElement target)
-  {
-    // Guards against null target
-    if (target == null) {
-      return false;
-    }
-    WizardsGuild wizG = (WizardsGuild) target;
-    boolean bName = this.getKey().equals(wizG.getKey());
-    boolean bMaster = this.getMaster().equals(wizG.getMaster());
-    return (bName && bMaster);
-  }
-
-
-  /*
-   * Get the key, which is the name of the Building
-   * 
-   * @see mylib.dmc.IRegistryElement#getKey()
-   */
-  @Override
-  public String getKey()
-  {
-    return _name;
-  }
-
-
-  /*
-   * PRIVATE METHODS
-   */
-
-
-  /*
-   * INNER CLASS: MockStore
-   */
-
-  public class MockWizardsGuild
-  {
-    /** default ctor */
-    public MockWizardsGuild()
-    {}
-
-    public String getDescrption()
-    {
-      return _intDesc;
-    }
-
-    public String getIntro()
-    {
-      return _extDesc;
-    }
-
-
-  } // end of MockWizardsGuild inner class
-
-
 } // end of Wizards Guild class

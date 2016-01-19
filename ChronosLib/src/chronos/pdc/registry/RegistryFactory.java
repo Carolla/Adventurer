@@ -12,11 +12,11 @@ package chronos.pdc.registry;
 
 import java.util.HashMap;
 
+import mylib.pdc.Registry;
 import chronos.pdc.Item;
 import chronos.pdc.Occupation;
 import chronos.pdc.Skill;
 import chronos.pdc.command.Scheduler;
-import mylib.pdc.Registry;
 
 /**
  * Creates singleton registries of various kinds and keeps count of existing registries
@@ -32,22 +32,19 @@ public class RegistryFactory
 
   /** Public list of all possible registries subclasses, in rough dependency order. */
   public enum RegKey {
-    HERO("Hero", 0), // default: No Heroes stored by default
-    SKILL("Skill", 35), // default: 8 racial, and 27 general Skills
-    OCP("Occupation", 27), // default: 26 Occupations plus "None"
-    ITEM("Item", 39), // default 14 Hero, 6 Bank, 11 Inn menu, 5 Rogue, 3 Store
-    BLDG("Building", 8), // default: 4 Guilds, Inn, Store, Jail, Bank
-    NPC("NPC", 16), // Default: 8 building masters and 8 Inn patrons
-    TOWN("Town", 1), // default: Biljur'Baz
-    ADV("Adventure", 1); // default: "The Quest for Rogahn and Zelligar" (Arena = Quasqueton)
+    HERO("Hero"), // default: No Heroes stored by default
+    SKILL("Skill"), // default: 8 racial, and 27 general Skills
+    OCP("Occupation"), // default: 26 Occupations plus "None"
+    ITEM("Item"), // default 14 Hero, 6 Bank, 11 Inn menu, 5 Rogue, 3 Store
+    BLDG("Building"), // default: 4 Guilds, Inn, Store, Jail, Bank
+    NPC("NPC"), // Default: 8 building masters and 8 Inn patrons
+    TOWN("Town"), // default: Biljur'Baz
+    ADV("Adventure"); // default: "The Quest for Rogahn and Zelligar" (Arena = Quasqueton)
 
     private String _name;
-    private int _defSize;
-
-    private RegKey(String nm, int size)
+    private RegKey(String nm)
     {
       _name = nm;
-      _defSize = size;
     }
 
     @Override
@@ -55,45 +52,29 @@ public class RegistryFactory
     {
       return _name;
     }
-
-    /** Return the number of default entries in the corresponding Registry */
-    public int getDefaultSize()
-    {
-      return _defSize;
-    }
   }
-
-  /** For creating certain registries */
-  private Scheduler _skedder;
 
   // ============================================================
   // Constructor(s) and Related Methods
   // ============================================================
-
+ 
   public RegistryFactory()
   {
     _regMap = new HashMap<RegKey, Registry<?>>();
   }
-  
-  // TODO Remove arg; Scheduler has nothing to do with the Registries
-  public RegistryFactory(Scheduler skedder)
-  {
-    _skedder = skedder;
-    _regMap = new HashMap<RegKey, Registry<?>>();
-  }
 
-  public void initRegistries()
+  public void initRegistries(Scheduler _skedder)
   {
     _regMap.put(RegKey.HERO, new HeroRegistry());
     _regMap.put(RegKey.ITEM, new ItemRegistry());
     _regMap.put(RegKey.SKILL, new SkillRegistry());
     _regMap.put(RegKey.OCP, new OccupationRegistry((SkillRegistry) _regMap.get(RegKey.SKILL)));
     _regMap.put(RegKey.NPC, new NPCRegistry());
-    _regMap.put(RegKey.BLDG,
-        new BuildingRegistry(_skedder, (NPCRegistry) _regMap.get(RegKey.NPC)));
+    _regMap.put(RegKey.BLDG,new BuildingRegistry((NPCRegistry) _regMap.get(RegKey.NPC)));
     _regMap.put(RegKey.TOWN, new TownRegistry((BuildingRegistry) _regMap.get(RegKey.BLDG)));
     _regMap.put(RegKey.ADV, new AdventureRegistry());
 
+    ((BuildingRegistry) _regMap.get(RegKey.BLDG)).initialize(_skedder);
     Skill.setSkillRegistry((SkillRegistry) _regMap.get(RegKey.SKILL));
     Occupation.setOccupationRegistry((OccupationRegistry) _regMap.get(RegKey.OCP));
     Item.setItemRegistry((ItemRegistry) _regMap.get(RegKey.ITEM));
@@ -102,35 +83,6 @@ public class RegistryFactory
   // ============================================================
   // Public Methods
   // ============================================================
-
-  /**
-   * Close all registries currently open, and remove them from the {@code RegistryFactory}
-   * collection
-   */
-  public void closeAllRegistries()
-  {
-    for (RegKey key : RegKey.values()) {
-      Registry<?> reg = _regMap.get(key);
-      if (reg != null) {
-        reg.closeRegistry();
-      }
-    }
-  }
-
-
-  /**
-   * Close a registry and remove it from the factory collection
-   * 
-   * @param key one of the specified registry keys
-   */
-  public void closeRegistry(RegKey key)
-  {
-    Registry<?> reg = _regMap.get(key); // get returns null if not found
-    if (reg != null) {
-      reg.closeRegistry(); // this is the registry's method, not this method it's in
-    }
-  }
-
 
   /**
    * Get the number of registries created by this {@code RegistryFactory}

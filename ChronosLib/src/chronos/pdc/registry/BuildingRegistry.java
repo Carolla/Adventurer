@@ -9,11 +9,10 @@
 
 package chronos.pdc.registry;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import mylib.pdc.Registry;
 import chronos.Chronos;
-import chronos.pdc.NPC;
 import chronos.pdc.buildings.Bank;
 import chronos.pdc.buildings.Building;
 import chronos.pdc.buildings.ClericsGuild;
@@ -24,8 +23,6 @@ import chronos.pdc.buildings.RoguesGuild;
 import chronos.pdc.buildings.Store;
 import chronos.pdc.buildings.WizardsGuild;
 import chronos.pdc.command.Scheduler;
-import mylib.dmc.IRegistryElement;
-import mylib.pdc.Registry;
 
 /**
  * All Town Buildings are collected here. The initial (default) Registry contains 8 buildings.
@@ -39,47 +36,40 @@ public class BuildingRegistry extends Registry<Building>
   // ========================================================================
   // CONSTRUCTOR(S) AND RELATED METHODS
   // ========================================================================
-
-  private final Scheduler _skedder;
   private final NPCRegistry _npcRegistry;
 
   /** Called by RegistryFactory class */
-  protected BuildingRegistry(Scheduler skedder, NPCRegistry npcRegistry)
+  protected BuildingRegistry(NPCRegistry npcRegistry)
   {
     super(Chronos.BuildingRegPath);
-    _skedder = skedder;
     _npcRegistry = npcRegistry;
-    initialize();
   }
 
 
   /**
    * Creates the Building Registry with the default buildings and saves it
    */
-  @Override
-  public void initialize()
+  public void initialize(Scheduler skedder)
   {
     // Create each of the default buildings and save to registry
     // The constructors load the default data
     Inn inn = new Inn(_npcRegistry);
-    inn.initPatrons(_skedder);
-    super.add(inn); // Ugly Ogre Inn
-    super.add(new Store()); // Rat's Pack
-    super.add(new Jail()); // Jail
-    super.add(new Bank()); // The Bank
-    super.add(new FightersGuild()); // Stadium
-    super.add(new RoguesGuild()); // Rouge's Tavern
-    super.add(new ClericsGuild()); // Monastery
-    super.add(new WizardsGuild()); // Arcaneum
+    System.out.println("initialize putting Inn as " + System.identityHashCode(inn));
+    inn.initPatrons(skedder);
+    super.forceAdd(inn); // Ugly Ogre Inn
+    super.forceAdd(new Store()); // Rat's Pack
+    super.forceAdd(new Jail()); // Jail
+    super.forceAdd(new Bank()); // The Bank
+    super.forceAdd(new FightersGuild()); // Stadium
+    super.forceAdd(new RoguesGuild()); // Rouge's Tavern
+    super.forceAdd(new ClericsGuild()); // Monastery
+    super.forceAdd(new WizardsGuild()); // Arcaneum
   }
 
-  /**
-   * Get all the Buildings of the registry, which will also include NPCs unfortunately as an element
-   */
   @Override
-  public int getNbrElements()
+  protected void initialize()
   {
-    return getBuildingList().size();
+
   }
 
   /**
@@ -90,7 +80,9 @@ public class BuildingRegistry extends Registry<Building>
    */
   public Building getBuilding(String name)
   {
-    return (Building) get(name);
+    Building b = get(name);
+    System.out.println("getBuilding " + name + " got " + System.identityHashCode(b));
+    return b;
   }
 
   /**
@@ -101,19 +93,8 @@ public class BuildingRegistry extends Registry<Building>
    */
   public List<Building> getBuildingList()
   {
-    // Run the query to retrieve all buildings from the registry
-    List<IRegistryElement> result = getAll();
-    // Convert to Building list
-    List<Building> bldgList = new ArrayList<Building>(result.size());
-    for (int k = 0; k < result.size(); k++) {
-      // Filter out the NPC classes that are also in the BuildingRegistry
-      IRegistryElement elem = result.get(k);
-      if (elem.getClass().equals(NPC.class) == false) {
-        bldgList.add((Building) elem);
-      }
-    }
-    return bldgList;
+    return getAll();
   }
 
-  
+
 } // end of BuildingRegistry class

@@ -162,7 +162,7 @@ public class TestBuildingDisplayCiv
   {
     public FakeBuildingRegistry()
     {
-      super(null, null);
+      super(null);
     }
 
     @Override

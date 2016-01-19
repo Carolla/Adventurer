@@ -14,8 +14,9 @@ package test.integ;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -23,12 +24,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import chronos.civ.DefaultUserMsg;
 import chronos.pdc.character.Hero;
+import chronos.pdc.command.Scheduler;
 import chronos.pdc.registry.HeroRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
-import mylib.MsgCtrl;
-import mylib.dmc.IRegistryElement;
 
 
 /**
@@ -146,7 +147,7 @@ public class TA03a_SummonHero
     MsgCtrl.msgln("\tAt least one Hero must be in the Dormitory.");
 
     RegistryFactory rf = new RegistryFactory();
-    rf.initRegistries();
+    rf.initRegistries(new Scheduler(new DefaultUserMsg()));
     HeroRegistry dorm = (HeroRegistry) rf.getRegistry(RegKey.HERO);
     assertNotNull(dorm);
     int nbr = dorm.getNbrElements();
@@ -168,12 +169,8 @@ public class TA03a_SummonHero
       }
     }
 
-    List<IRegistryElement> results = dorm.getAll();
-    // Convert to list of heroes
-    List<Hero> heroList = new ArrayList<Hero>(results.size());
-    for (IRegistryElement elem : results) {
-      heroList.add((Hero) elem);
-    }
+    List<Hero> heroList = dorm.getAll();
+
     MsgCtrl.msgln("Dormitory contains " + heroList.size() + " Heroes");
     for (int k = 0; k < nbr; k++) {
       MsgCtrl.msgln("\t" + heroList.get(k).getName());

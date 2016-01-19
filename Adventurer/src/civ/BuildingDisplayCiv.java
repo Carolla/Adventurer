@@ -27,7 +27,7 @@ import chronos.pdc.registry.BuildingRegistry;
 public class BuildingDisplayCiv extends BaseCiv
 {
   
-  private MainframeCiv _mfCiv;
+  protected MainframeCiv _mfCiv;
   private BuildingRegistry _breg;
   private Adventure _adv;
 
@@ -171,6 +171,7 @@ public class BuildingDisplayCiv extends BaseCiv
   public void enterBuilding(String name)
   {
     Building targetBuilding = _breg.getBuilding(name);
+    System.out.println("Enter building " + name + " got " + System.identityHashCode(targetBuilding));
     if (targetBuilding == null) {
       targetBuilding = _currentBldg;
     }

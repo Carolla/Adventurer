@@ -13,7 +13,7 @@
 cd $(git rev-parse --show-toplevel)/Adventurer
 
 echo running pre-push script
-ant AdventurerTestSuite
+#ant AdventurerTestSuite
 
 #Run script command here
 # To get ant to return JUnit failures, add this property to the junit xml field
