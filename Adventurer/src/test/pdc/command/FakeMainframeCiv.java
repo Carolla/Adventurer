@@ -15,12 +15,6 @@ public class FakeMainframeCiv extends MainframeCiv
   {
     super();
   }
-
-  @Override
-  public MainframeCiv init()
-  {
-    return this;
-  }
   
   protected void constructMembers()
   {

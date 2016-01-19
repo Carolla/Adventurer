@@ -14,7 +14,6 @@ import java.util.List;
 
 import com.db4o.Db4oEmbedded;
 import com.db4o.EmbeddedObjectContainer;
-import com.db4o.config.EmbeddedConfiguration;
 import com.db4o.ext.DatabaseClosedException;
 import com.db4o.ext.DatabaseFileLockedException;
 import com.db4o.ext.DatabaseReadOnlyException;
@@ -312,7 +311,6 @@ public class DbReadWriter<E extends IRegistryElement>
         return true;
       }
     }));
-    close();
     return alist;
   }
 

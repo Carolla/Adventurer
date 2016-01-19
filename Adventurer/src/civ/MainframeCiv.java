@@ -41,24 +41,16 @@ public class MainframeCiv extends BaseCiv implements UserMsg
   // Constructors and constructor helpers
   // ============================================================
 
-  public MainframeCiv init()
-  {
-    _mf = new Mainframe(this);
-    createMembers();
-    return this;
-  }
-
-  public MainframeCiv init(MainframeInterface mf)
+  public MainframeCiv(MainframeInterface mf)
   {
     _mf = mf;
-    createMembers();
-    return this;
-  }
-
-  private void createMembers()
-  {
     displayInitialImagePanel();
     new MainActionCiv(this);
+  }
+  
+  public MainframeCiv()
+  {
+    this(new Mainframe());
   }
 
   private void displayInitialImagePanel()
@@ -108,9 +100,7 @@ public class MainframeCiv extends BaseCiv implements UserMsg
   /** Close down the application if user so specified */
   public void quit()
   {
-    if (_mf.displayPrompt("Quit Adventurer?") == true) {
-      Adventurer.approvedQuit();
-    }
+
   }
 
 

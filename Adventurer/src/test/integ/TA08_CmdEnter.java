@@ -81,7 +81,7 @@ public class TA08_CmdEnter
     AdventureRegistry advReg = (AdventureRegistry) regFactory.getRegistry(RegKey.ADV);
     Adventure adv = advReg.getAll().get(0);
     
-    _mfCiv = new MainframeCiv().init(new MainframeProxy());
+    _mfCiv = new MainframeCiv(new MainframeProxy());
     MainActionCiv maCiv = new MainActionCiv(_mfCiv);
     maCiv.loadSelectedAdventure(adv.getName());
     _bldgCiv = new BuildingDisplayCiv(_mfCiv, adv, bReg);

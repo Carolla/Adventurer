@@ -28,12 +28,12 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
-import chronos.Chronos;
-import civ.MainframeCiv;
 import mylib.Constants;
 import mylib.hic.HelpDialog;
 import mylib.hic.IHelpText;
 import net.miginfocom.swing.MigLayout;
+import chronos.Chronos;
+import civ.Adventurer;
 
 /**
  * Initial frame displays three buttons and Chronos logo.<br>
@@ -76,8 +76,6 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
   private Deque<ChronosPanel> _leftPanelStack = new ArrayDeque<ChronosPanel>(5);
   private Deque<ChronosPanel> _rightPanelStack = new ArrayDeque<ChronosPanel>(5);
 
-  private MainframeCiv _mfCiv;
-
   /** Singleton Help Dialog for all help text */
   private HelpDialog _helpdlg;
 
@@ -111,10 +109,8 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
    * context-sensitive help text when requested. Creates the {@code MainframeCiv} which takes
    * manages program control at the highest level.
    */
-  public Mainframe(MainframeCiv mfciv)
-  {
-    _mfCiv = mfciv;
-    
+  public Mainframe()
+  {    
     // Define the graphic elements
     setupSizeAndBoundaries();
     createFrameAndMenubar();
@@ -264,7 +260,7 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     addWindowListener(new Terminator());
   
     // Add menu
-    setJMenuBar(new Menubar(this, _mfCiv));
+    setJMenuBar(new Menubar(this));
   
     // Define a left and right ChronosPanel to manage subordinate right- and left-side panels
     _leftHolder = new ChronosPanel(" ");
@@ -407,7 +403,9 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
      */
     public void windowClosing(WindowEvent evt)
     {
-      _mfCiv.quit();
+      if (Mainframe.this.displayPrompt("Quit Adventurer?") == true) {
+        Adventurer.approvedQuit();
+      }
     }
 
   } // end of Terminator inner class
