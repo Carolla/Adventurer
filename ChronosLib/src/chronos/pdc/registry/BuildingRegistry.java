@@ -78,7 +78,6 @@ public class BuildingRegistry extends Registry<Building>
   public Building getBuilding(String name)
   {
     Building b = get(name);
-    System.out.println("getBuilding " + name + " got " + System.identityHashCode(b));
     return b;
   }
 

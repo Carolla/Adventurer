@@ -45,7 +45,7 @@ public class TA00a_Initialize
 
   private final String[] paths = {Chronos.AdventureRegPath, Chronos.BuildingRegPath,
       Chronos.ItemRegPath, Chronos.NPCRegPath, Chronos.OcpRegPath, Chronos.SkillRegPath,
-      Chronos.TownRegPath};
+      Chronos.TownRegPath, Chronos.HeroRegPath};
 
 
   // ============================================================
@@ -94,8 +94,6 @@ public class TA00a_Initialize
     // SETUP: Ensure that there are as many regfiles as they are reg keys
     int keynum = RegKey.values().length;
     int pathnum = paths.length;
-    MsgCtrl.msg("\tNumber of keys = " + keynum);
-    MsgCtrl.msgln("\tNumber of file paths = " + pathnum);
     assertEquals(keynum, pathnum);
     
     // Ensure that no registry files exist
