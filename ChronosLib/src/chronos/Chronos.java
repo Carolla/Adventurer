@@ -90,25 +90,15 @@ public class Chronos
 //   System.out.println("ADV_IMAGE_PATH = " + ADV_IMAGE_PATH);
    }
 
-   /** Location of HeroRegistry is uniquely set for now */
-   public static String HeroRegPath = "resources" + FS + "Dormitory.reg";
-  /** Location of AdventureRegistry */
+  public static String HeroRegPath    = REGISTRY_PATH + "Dormitory.reg";
   public static String AdventureRegPath = REGISTRY_PATH + "Adventures.reg";
-  /** Building Registry location. This location can change for test purposes. */
   public static String BuildingRegPath = REGISTRY_PATH + "Buildings.reg";
-  /** Item location. This location can change for test purposes. */
-  public static String ItemRegPath = REGISTRY_PATH + "Items.reg";
-  /** Patron Registry location. This location can change for test purposes. */
-  public static String NPCRegPath = REGISTRY_PATH + "NPCs.reg";
-  /** Occupation Registry location. This location can change for test purposes. */
-  public static String OcpRegPath = REGISTRY_PATH + "Occupations.reg";
-  /** Person Registry location. This location can change for test purposes. */
-  public static String PersonRegPath = REGISTRY_PATH + "Dormitory.reg";
-  /** Skill Registry location. This location can change for test purposes. */
-  public static String SkillRegPath = REGISTRY_PATH + "Skills.reg";
-  /** Town Registry location. This location can change for test purposes. */
-  public static String TownRegPath = REGISTRY_PATH + "Towns.reg";
-  /** Adventure Help Registry location. This location can change for test purposes. */
+  public static String ItemRegPath    = REGISTRY_PATH + "Items.reg";
+  public static String NPCRegPath     = REGISTRY_PATH + "NPCs.reg";
+  public static String OcpRegPath     = REGISTRY_PATH + "Occupations.reg";
+  public static String PersonRegPath  = REGISTRY_PATH + "Dormitory.reg";
+  public static String SkillRegPath   = REGISTRY_PATH + "Skills.reg";
+  public static String TownRegPath    = REGISTRY_PATH + "Towns.reg";
   public static String AdvHelpRegPath = REGISTRY_PATH + "AdvHelpRegistry.reg";
 
   // LOG FOR TESTING
