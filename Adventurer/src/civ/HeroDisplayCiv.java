@@ -236,11 +236,9 @@ public class HeroDisplayCiv extends BaseCiv
     boolean retflag = false;
 //    HeroReadWriter dorm = new HeroReadWriter();
     HeroRegistry dorm = new HeroRegistry();
+    // Save when NOT in overwrite mode
     if (overwrite == false) {
-//      retflag = dorm.save(_hero, _hero.getName());
-//      dorm.save(_hero);
-      dorm.add(_hero);
-      retflag = true;
+      retflag = dorm.save(_hero);
     } else {
 //      retflag = dorm.overwrite(_hero, _hero.getName());
     }

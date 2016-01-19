@@ -264,6 +264,16 @@ public class MainActionCiv extends BaseCiv
       public void actionPerformed(ActionEvent e)
       {
         summonableHeroes = _dorm.getHeroList();
+        
+        System.out.println("Printing Hero Names:");
+        for (Hero hero : _dorm.getHeroList()) {
+        	System.out.println(hero.getName());
+    	}
+
+        
+        if (_partyHeros == null) {
+        	_partyHeros = new ArrayList<Hero>();
+		}
 
         if (_partyHeros.size() == 0) {
           showPartyPickerWhenPartyEmpty();
@@ -274,6 +284,7 @@ public class MainActionCiv extends BaseCiv
 
       private void showPartyPickerWhenPartyEmpty()
       {
+    	  System.out.println("Party Picker displayed with currently empty party.");
         // padHeroes(_summonableHeroes);
         final ShuttleList slist = new ShuttleList(summonableHeroes);
         setPropsForShuttleList(slist);
@@ -281,6 +292,7 @@ public class MainActionCiv extends BaseCiv
 
       private void showPartyPickerWhenMembersAlreadySelected()
       {
+    	  System.out.println("Party Picker displayed with members already selected.");
         final ShuttleList slist = new ShuttleList(summonableHeroes, _partyHeros);
         setPropsForShuttleList(slist);
       }
