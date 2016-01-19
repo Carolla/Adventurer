@@ -44,20 +44,20 @@ public class MainframeCiv extends BaseCiv implements UserMsg
   public MainframeCiv(MainframeInterface mf)
   {
     _mf = mf;
-    displayInitialImagePanel();
-    new MainActionCiv(this);
-  }
-  
-  public MainframeCiv()
-  {
-    this(new Mainframe());
+    doConstructorWork();
   }
 
-  private void displayInitialImagePanel()
+  protected void doConstructorWork()
   {
     _imagePanel = new ImagePanel();
     displayImage(INITIAL_IMAGE_TITLE, INITIAL_IMAGE);
     _mf.replaceRightPanel(_imagePanel);
+    new MainActionCiv(this);
+  }
+
+  public MainframeCiv()
+  {
+    this(new Mainframe());
   }
 
   // ============================================================
