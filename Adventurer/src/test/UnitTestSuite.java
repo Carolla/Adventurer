@@ -44,13 +44,11 @@ import test.pdc.command.CommandSuite;
     // TestSkillKeys.class,
 
     /* PDC subfolder test suites */
-    // CharacterSuite.class
     CommandSuite.class
 
     /** PDC test files */
     // Util.class
 
-    // TestAdventureRegistry.class,
     // TestDwarf.class
     // TestHuman.class
     // TestHunger.class
@@ -61,9 +59,6 @@ import test.pdc.command.CommandSuite;
     // TestRace.class
 
     /** DMC test files */
-    // TestPersonReadWriter.class
-
-
 })
 public class UnitTestSuite
 {

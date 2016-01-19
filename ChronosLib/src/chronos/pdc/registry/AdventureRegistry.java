@@ -10,10 +10,12 @@
 package chronos.pdc.registry;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import mylib.dmc.IRegistryElement;
+import mylib.pdc.Registry;
 import chronos.Chronos;
 import chronos.pdc.Adventure;
-import mylib.pdc.Registry;
 
 /**
  * Contains a set of Adventure objects, where each Adventure contains the name of a Town and an
@@ -118,13 +120,16 @@ public class AdventureRegistry extends Registry<Adventure>
    * 
    * @return the adventure List
    */
-  public ArrayList<String> getAdventureList()
+  public List<String> getAdventureList()
   {
-    ArrayList<String> advList = (ArrayList<String>) getElementNames();
+    List<String> advList = new ArrayList<String>();
+    for (IRegistryElement elem : getAll()) {
+      advList.add(elem.getKey());
+    }
     return advList;
   }
 
-  
+
   // ===========================================================================
   // PRIVATE METHODS
   // ===========================================================================

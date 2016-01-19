@@ -3,20 +3,20 @@ package test.pdc.command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import mylib.MsgCtrl;
+
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import mylib.MsgCtrl;
 import pdc.command.CmdLook;
 import test.pdc.FakeNPC;
 import test.pdc.buildings.FakeBuilding;
+import chronos.pdc.buildings.Building;
 
 public class TestCmdLook
 {
@@ -29,20 +29,16 @@ public class TestCmdLook
   private static final FakeBuilding BOBLESS_BUILDING = new FakeBuilding(FAKE_BUILDING, BUILDING_DESC);
   
   private CmdLook _cmdLook;
-  private static FakeBuildingDisplayCiv _bdciv;
+  private FakeBuildingDisplayCiv _bdciv = new FakeBuildingDisplayCiv();
   private final List<String> bobList = new ArrayList<String>();
   private final List<String> fredList = new ArrayList<String>();
-
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception
-  {
-    _bdciv = new FakeBuildingDisplayCiv();
-    BUILDING.add(BOB);
-  }
 
   @Before
   public void setUp() throws Exception
   {
+    BUILDING.add(BOB);
+    _bdciv.setBuilding(BUILDING);
+    _bdciv.enterBuilding(FAKE_BUILDING);
     _cmdLook = new CmdLook(_bdciv);
     bobList.add(EXAMPLE_NAME);
     fredList.add("Fred");
@@ -68,31 +64,27 @@ public class TestCmdLook
   @Test
   public void whenTargetNotFoundGetTargetNotFoundMessage()
   {
-    fail("Not working");
     _cmdLook.init(fredList);
-    _bdciv.setBuilding(BUILDING);
 
     _cmdLook.exec();
-    assertEquals(BUILDING_DESC, _bdciv._displayedText);
+    assertEquals(Building.MISSING_PERSON, _bdciv._displayedText);
   }
 
   @Test
   public void whenPeopleAreInsideBuildingThenTheirNamesAreGiven()
   {
     _cmdLook.init(new ArrayList<String>());
-    _bdciv.setBuilding(BUILDING);
-
+    
     _cmdLook.exec();
-    assertTrue(_bdciv._displayedText.contains(EXAMPLE_NAME));
+    assertTrue("Expected \"" + _bdciv._displayedText + "\" to contain " + EXAMPLE_NAME, _bdciv._displayedText.contains(EXAMPLE_NAME));
   }
   
   @Test
   public void whenPersonIsTargetAndInsideBuildingThenDescriptionGiven()
   {
     _cmdLook.init(bobList); 
-    _bdciv.setBuilding(BUILDING);
 
     _cmdLook.exec();
-    assertTrue(_bdciv._displayedText.contains(EXAMPLE_DESC));
+    assertEquals(EXAMPLE_DESC, _bdciv._displayedText);
   }
 }

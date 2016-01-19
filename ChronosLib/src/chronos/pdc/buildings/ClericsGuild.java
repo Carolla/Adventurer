@@ -11,7 +11,6 @@
 package chronos.pdc.buildings;
 
 import mylib.ApplicationException;
-import mylib.dmc.IRegistryElement;
 
 /**
  * Clerics' Guild for spells, magical items, quests, and lodging The default constructor creates the
@@ -61,68 +60,4 @@ public class ClericsGuild extends Building
     super(DEFAULT_GUILD_NAME, DEFAULT_OWNER, HOVERTEXT, DEFAULT_EXTERIOR, DEFAULT_INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
     setBusinessHours(OPENTIME, CLOSETIME);
   }
-
-  /*
-   * PUBLIC METHODS
-   */
-
-  /*
-   * Two Guilds are considerd equal if their name and building masters are equal
-   * 
-   * @see mylib.dmc.IRegistryElement#equals(mylib.dmc.IRegistryElement)
-   */
-  @Override
-  public boolean equals(IRegistryElement target)
-  {
-    // Guards against null target
-    if (target == null) {
-      return false;
-    }
-    ClericsGuild wizG = (ClericsGuild) target;
-    boolean bName = this.getKey().equals(wizG.getKey());
-    boolean bMaster = this.getMaster().equals(wizG.getMaster());
-    return (bName && bMaster);
-  }
-
-
-  /*
-   * Get the key, which is the name of the Building
-   * 
-   * @see mylib.dmc.IRegistryElement#getKey()
-   */
-  @Override
-  public String getKey()
-  {
-    return _name;
-  }
-
-
-  /*
-   * PRIVATE METHODS
-   */
-
-  /*
-   * INNER CLASS
-   */
-
-  public class MockClericsGuild
-  {
-    /** default ctor */
-    public MockClericsGuild()
-    {}
-
-    public String getDescrption()
-    {
-      return _intDesc;
-    }
-
-    public String getIntro()
-    {
-      return _extDesc;
-    }
-
-
-  } // end of MockClericsGuild inner class
-
-
-} // end of Wizards Guild class
+} // end of ClericsGuild class

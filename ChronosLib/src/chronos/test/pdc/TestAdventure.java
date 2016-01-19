@@ -15,7 +15,6 @@ import mylib.ApplicationException;
 import mylib.MsgCtrl;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -68,15 +67,6 @@ public class TestAdventure
   /**
    * @throws java.lang.Exception
    */
-  @AfterClass
-  public static void _tearDownAfterClass() throws Exception
-  {
-    closeRegistries();
-  }
-
-  /**
-   * @throws java.lang.Exception
-   */
   @Before
   public void _setUp() throws Exception
   {}
@@ -89,7 +79,6 @@ public class TestAdventure
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    _rf.closeAllRegistries();
   }
 
 
@@ -163,18 +152,5 @@ public class TestAdventure
   @Test
   public void _notNeeded()
   {}
-
-
-  // ============================================================
-  // Private Helper Methods
-  // ============================================================
-
-  /**
-   * Close all database Registries (singletons)
-   */
-  private static void closeRegistries()
-  {
-    _rf.closeAllRegistries();
-  }
 
 }

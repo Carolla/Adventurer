@@ -10,14 +10,12 @@
 
 package chronos.pdc.registry;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import mylib.ApplicationException;
+import mylib.pdc.Registry;
 import chronos.Chronos;
 import chronos.pdc.character.Hero;
-import mylib.ApplicationException;
-import mylib.dmc.IRegistryElement;
-import mylib.pdc.Registry;
 
 /**
  * Contains all Heros in the game.
@@ -69,8 +67,6 @@ public class HeroRegistry extends Registry<Hero>
     return (Hero) get(name);
   }
 
-
-  // TODO Move all all the list casting methods like this one into base class Registry
   /**
    * Retrieves all Heroes in the HeroRegistry
    * 
@@ -78,13 +74,7 @@ public class HeroRegistry extends Registry<Hero>
    */
   public List<Hero> getHeroList()
   {
-    List<IRegistryElement> results = getAll();
-    // Convert to Hero type
-    List<Hero> heroList = new ArrayList<Hero>(results.size());
-    for (IRegistryElement elem : results) {
-      heroList.add((Hero) elem);
-    }
-    return heroList;
+    return getAll();
   }
 
   
@@ -93,51 +83,5 @@ public class HeroRegistry extends Registry<Hero>
   {
     return add(h);
   }
-
-
-  /*
-   * PRIVATE METHODS
-   */
-
-
-  // @SuppressWarnings("serial")
-  // private final class HeroPredicate extends Predicate<Hero>
-  // {
-  // private final String name;
-  //
-  // private HeroPredicate(String name)
-  // {
-  // this.name = name;
-  // }
-  //
-  // public boolean match(Hero candidate)
-  // {
-  // return candidate.getName().equals(name);
-  // }
-  // }
-
-  // /** Load a table of Heros into the HeroRegistry
-  // *
-  // * @param table the initial Heros to load
-  // * @return false if a problem occurs, else true
-  // *@throw ApplicationException if the Hero could not be added to the db
-  // */
-  // private void loadTable(String[][] table) throws ApplicationException
-  // {
-  // // Save the Heros required for the new Hero's inventory
-  // for (int k = 0; k < table.length; k++) {
-  // HeroCategory cat = HeroCategory.valueOf(table[k][0]);
-  // String name = table[k][1];
-  // int weight = Integer.valueOf(table[k][2]);
-  // int qty = Integer.valueOf(table[k][3]);
-  // Hero Hero = new Hero(cat, name, weight, qty);
-  // if (super.add(Hero) == false) {
-  // throw new ApplicationException("loadTable() error while adding to db " +
-  // Hero.getName());
-  // }
-  // }
-  // }
-
-
 } // end of HeroRegistry class
 

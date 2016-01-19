@@ -10,16 +10,16 @@
 package chronos.test.pdc.registry;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
+import mylib.MsgCtrl;
+import mylib.pdc.Registry;
+
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.Chronos;
@@ -28,8 +28,6 @@ import chronos.pdc.command.Scheduler;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import chronos.pdc.registry.SkillRegistry;
-import mylib.MsgCtrl;
-import mylib.pdc.Registry;
 
 
 /**
@@ -43,120 +41,92 @@ import mylib.pdc.Registry;
  */
 public class TestRegistryFactory
 {
-    private RegistryFactory _rf = null;
-    private Scheduler skedder = null;
+  private RegistryFactory _rf = null;
+  private Scheduler skedder = null;
 
-    // ============================================================
-    // Fixtures
-    // ============================================================
+  // ============================================================
+  // Fixtures
+  // ============================================================
 
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception
-    {}
+  @Before
+  public void setUp() throws Exception
+  {
+    skedder = new Scheduler(new DefaultUserMsg());
+    _rf = new RegistryFactory();
+    _rf.initRegistries(skedder);
+  }
 
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception
-    {}
-
-    @Before
-    public void setUp() throws Exception
-    {
-        skedder = new Scheduler(new DefaultUserMsg());
-        _rf = new RegistryFactory(skedder);
-        _rf.initRegistries();
-        assertNotNull(_rf);
-    }
-
-    @After
-    public void tearDown() throws Exception
-    {
-        _rf.closeAllRegistries();
-
-        // Turn off messaging at end of each test
-        MsgCtrl.auditMsgsOn(false);
-        MsgCtrl.errorMsgsOn(false);
-    }
+  @After
+  public void tearDown() throws Exception
+  {
+    // Turn off messaging at end of each test
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+  }
 
 
-    // ============================================================
-    // Begin Tests
-    // ============================================================
+  // ============================================================
+  // Begin Tests
+  // ============================================================
 
-    /**
-     * @Not.Needed {@code RegistryFactory()} -- wrapper method <br>
-     */
-    public void _testsNotNeeded()
-    {}
+  /**
+   * @Not.Needed {@code RegistryFactory()} -- wrapper method <br>
+   */
+  public void _testsNotNeeded()
+  {}
 
+  /**
+   * Get a Registry, and if it doesn't exist, create it and add the entry to the factory's map
+   * 
+   * @Normal.Test Get a registry that already exists
+   */
+  @Test
+  public void testGetRegistry_Exists()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
 
-    /**
-     * Close a registry and remove it from the factory collection. Do not delete the file.
-     * 
-     * @Normal.Test close an existing registry
-     */
-    @Test
-    public void closeRegistryShouldNotDeleteRegistry()
-    {
-        File regfile = new File(Chronos.ItemRegPath);
-        assertTrue(regfile.exists());
+    // SETUP: ensure that registry to be created already exists
+    SkillRegistry testreg = (SkillRegistry) _rf.getRegistry(RegKey.SKILL);
+    File regfile = new File(Chronos.SkillRegPath);
 
-        _rf.closeRegistry(RegKey.ITEM);
-        assertTrue(regfile.exists()); // file did not get deleted
-    }
+    // DO:
+    SkillRegistry testreg2 = (SkillRegistry) _rf.getRegistry(RegKey.SKILL);
 
+    // VERIFY: factory has same registry file exists
+    assertTrue(regfile.exists());
+    assertEquals(testreg, testreg2);
 
-    /**
-     * Get a Registry, and if it doesn't exist, create it and add the entry to the factory's map
-     * 
-     * @Normal.Test Get a registry that already exists
-     */
-    @Test
-    public void testGetRegistry_Exists()
-    {
-        MsgCtrl.auditMsgsOn(false);
-        MsgCtrl.errorMsgsOn(false);
-        MsgCtrl.where(this);
-
-        // SETUP: ensure that registry to be created already exists
-        SkillRegistry testreg = (SkillRegistry) _rf.getRegistry(RegKey.SKILL);
-        File regfile = new File(Chronos.SkillRegPath);
-
-        // DO:
-        SkillRegistry testreg2 = (SkillRegistry) _rf.getRegistry(RegKey.SKILL);
-
-        // VERIFY: factory has same registry file exists
-        assertTrue(regfile.exists());
-        assertEquals(testreg, testreg2);
-
-        // TEARDOWN
-        // Nothing to do
-    }
+    // TEARDOWN
+    // Nothing to do
+  }
 
 
-    /**
-     * Get a Registry, and if it doesn't exist, create it and add the entry to the factory's map
-     * 
-     * @Null.Test use null to request a null registry returns null
-     */
-    @Test
-    public void testGetRegistry_Errors()
-    {
-        MsgCtrl.auditMsgsOn(false);
-        MsgCtrl.errorMsgsOn(false);
-        MsgCtrl.where(this);
+  /**
+   * Get a Registry, and if it doesn't exist, create it and add the entry to the factory's map
+   * 
+   * @Null.Test use null to request a null registry returns null
+   */
+  @Test
+  public void testGetRegistry_Errors()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
 
-        // SETUP
+    // SETUP
 
-        // DO: Null request
-        Registry<?> testreg = _rf.getRegistry(null);
+    // DO: Null request
+    Registry<?> testreg = _rf.getRegistry(null);
 
-        // VERIFY
-        assertNull(testreg);
-    }
+    // VERIFY
+    assertNull(testreg);
+  }
 
-    // ============================================================
-    // Helper Methods
-    // ============================================================
+  // ============================================================
+  // Helper Methods
+  // ============================================================
 
 
 

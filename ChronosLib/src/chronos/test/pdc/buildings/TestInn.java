@@ -49,13 +49,24 @@ public class TestInn
 
   public class FakeNpcRegistry extends NPCRegistry
   {
-    @Override
-    public List<NPC> getNPCList()
+    List<NPC> _list = new ArrayList<NPC>();
+
+    public FakeNpcRegistry()
     {
-      ArrayList<NPC> list = new ArrayList<NPC>();
-      list.add(new NPC());
-      list.add(new NPC());
-      return list;
+      _list.add(new NPC());
+      _list.add(new NPC());
+    }
+
+    @Override
+    public List<NPC> getAll()
+    {
+      return _list;
+    }
+
+    @Override
+    protected void init(String filename)
+    {
+
     }
   }
 
@@ -113,20 +124,6 @@ public class TestInn
     MsgCtrl.msgln(this, "\t testDefaultInn()");
 
   }
-
-
-  /**
-   * Chronos.pdc.Inn
-   * 
-   * @Normal check that the proper descriptions are displayed, depending on the current number of
-   *         patrons (busy o rnot busy description).
-   */
-  @Test
-  public void testEnter()
-  {
-
-  }
-
 
 
   /**

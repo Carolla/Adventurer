@@ -43,10 +43,10 @@ import com.db4o.query.Predicate;
  *          Dec 7, 2013 // changed dbOpen signature <br>
  *          Dec 23, 2015 // refactored for better encapsulation <br>
  */
-public class DbReadWriter
+public class DbReadWriter<E extends IRegistryElement>
 {
   /** The path of the database file */
-  private final String _regPath;
+  protected final String _regPath;
 
   /** Db is open or closed */
   private boolean _open = false;
@@ -86,7 +86,7 @@ public class DbReadWriter
    * 
    * @param obj object to add
    */
-  public void addElement(IRegistryElement obj)
+  public void addElement(E obj)
   {
     // Guard: null object not permitted
     if (obj == null) {
@@ -118,24 +118,25 @@ public class DbReadWriter
   @SuppressWarnings("serial")
   public void dbClear()
   {
-    List<IRegistryElement> alist = new ArrayList<IRegistryElement>();
+    List<E> alist = new ArrayList<E>();
     _db = open();
     try {
-      alist = _db.query(new Predicate<IRegistryElement>() {
-        public boolean match(IRegistryElement candidate)
+      alist = _db.query(new Predicate<E>() {
+        public boolean match(E candidate)
         {
           return true;
         }
       });
       // There is no clear() for the object set in the db, so each must be removed individually
-      for (IRegistryElement elem : alist) {
+      for (E elem : alist) {
         _db.delete(elem);
       }
     } catch (Db4oIOException | DatabaseClosedException | DatabaseReadOnlyException ex) {
       System.err.println(ex.getMessage());
       ex.printStackTrace();
+    } finally {
+      close();
     }
-    close();
   }
 
 
@@ -145,18 +146,14 @@ public class DbReadWriter
    * @param target name of the object with specific fields to find
    * @return the object found, else null
    */
-  public Object containsElement(final IRegistryElement target)
+  public E containsElement(final E target)
   {
-    List<IRegistryElement> alist = getAllList();
-    // Search for target
-    Object obj = null;
-    for (IRegistryElement elem : alist) {
+    for (E elem : getAllList()) {
       if (elem.getKey().equals(target.getKey())) {
-        obj = elem;
-        break;
+        return elem;
       }
     }
-    return obj;
+    return null;
   }
 
 
@@ -167,7 +164,7 @@ public class DbReadWriter
    * @param target object to delete
    * @return true if delete was successful, else false
    */
-  public void deleteElement(IRegistryElement target)
+  public void deleteElement(E target)
   {
     // Guards: Illegal to delete via null: entire database content would be deleted
     if (target == null) {
@@ -175,7 +172,7 @@ public class DbReadWriter
     }
     // Object must be retrieved before it can be deleted
     try {
-      Object obj = containsElement(target);
+      E obj = containsElement(target);
       if (obj != null) {
         _db.delete(obj);
       }
@@ -185,15 +182,11 @@ public class DbReadWriter
     }
   }
 
-
-  /**
-   * Finds all elements in the given Registry
-   * 
-   * @return the list found
-   */
-  public List<IRegistryElement> getAll()
+  public List<E> getAll()
   {
-    return getAllList();
+    List<E> list = getAllList();
+    close();
+    return list;
   }
 
 
@@ -203,33 +196,20 @@ public class DbReadWriter
    * @param name key of the target object to match against for comparison
    * @return the object with matching name; else null if not found
    */
-  public Object get(String name)
+  public E get(String name)
   {
     // Guard: name must not be null or empty
     if (!exists(name)) {
       return null;
     }
-    List<IRegistryElement> elementList = getAllList();
-    IRegistryElement obj = null;
-    for (int k = 0; k < elementList.size(); k++) {
-      obj = elementList.get(k);
-      if (obj.getKey().equals(name)) {
-        break;
+    List<E> elementList = getAllList();
+    for (E obj : elementList) {
+      if (obj.getKey().equalsIgnoreCase(name)) {
+        return obj;
       }
     }
-    // Return first element in list
-    return obj;
-  }
-
-
-  /**
-   * Get the physical file location of the registry
-   * 
-   * @return absolute path name
-   */
-  public String getPath()
-  {
-    return _regPath;
+    close();
+    return null;
   }
 
   // TODO: Might be needed later, but not now
@@ -256,7 +236,8 @@ public class DbReadWriter
   /** Finds all elements in the given Registry ReadWriter */
   public int size()
   {
-    List<IRegistryElement> alist = getAllList();
+    List<E> alist = getAllList();
+    close();
     return alist.size();
   }
 
@@ -304,16 +285,16 @@ public class DbReadWriter
    * @return the list for further action, leaving the db open
    */
   @SuppressWarnings("serial")
-  private List<IRegistryElement> getAllList()
+  private List<E> getAllList()
   {
-    List<IRegistryElement> alist = new ArrayList<IRegistryElement>();
+    List<E> alist = new ArrayList<E>();
     _db = open();
-    alist = _db.query(new Predicate<IRegistryElement>() {
-      public boolean match(IRegistryElement candidate)
+    alist.addAll(_db.query(new Predicate<E>() {
+      public boolean match(E candidate)
       {
         return true;
       }
-    });
+    }));
     return alist;
   }
 

@@ -12,7 +12,6 @@ package chronos.pdc.buildings;
 
 
 import mylib.ApplicationException;
-import mylib.dmc.IRegistryElement;
 
 
 /**
@@ -27,87 +26,45 @@ import mylib.dmc.IRegistryElement;
  */
 public class Bank extends Building
 {
-    // Data to initialize the default Bank; must be static because it is used in constructor
-    /** Name of this fine establishment */
-    public static final String DEFAULT_BANK_NAME = "The Bank";
-    /** Owner of this fine establishment */
-    public static final String DEFAULT_OWNER = "J.P. Pennypacker";
-    /** What appears as one enters the building */
-    public static final String DEFAULT_EXTERIOR =
-            "The Bank is more stylish than the other buildings in this town.";
-    /** What one senses when looking around the inside of the Inn when few patrons are here. */
-    public static final String DEFAULT_INTERIOR =
-            "You face a baldish middle-aged man on the other "
-                    +
-                    "side of an old counter about four feet high. A dark metal grill partitions his side of the "
-                    +
-                    "counter from your side. A large man with a large axe stands silently in the corner, "
-                    +
-                    "eyeing you suspiciously.";
+  // Data to initialize the default Bank; must be static because it is used in constructor
+  /** Name of this fine establishment */
+  public static final String DEFAULT_BANK_NAME = "The Bank";
+  /** Owner of this fine establishment */
+  public static final String DEFAULT_OWNER = "J.P. Pennypacker";
+  /** What appears as one enters the building */
+  public static final String DEFAULT_EXTERIOR =
+      "The Bank is more stylish than the other buildings in this town.";
+  /** What one senses when looking around the inside of the Inn when few patrons are here. */
+  public static final String DEFAULT_INTERIOR =
+      "You face a baldish middle-aged man on the other side of an old counter about four feet high."
+          + " A dark metal grill partitions his side of the counter from your side. A large man with a"
+          + " large axe stands silently in the corner, eyeing you suspiciously.";
 
-    /** Paths to the images for this building **/
-    private static final String DEFAULT_HOVERTEXT = "The Bank, for deposits, wills, and loans";
-    private static final String EXTERIOR_IMAGE = "ext_Bank.JPG";
-    private static final String INTERIOR_IMAGE = "raw_int_Bank.jpg";
+  /** Paths to the images for this building **/
+  private static final String DEFAULT_HOVERTEXT = "The Bank, for deposits, wills, and loans";
+  private static final String EXTERIOR_IMAGE = "ext_Bank.JPG";
+  private static final String INTERIOR_IMAGE = "raw_int_Bank.jpg";
 
 
-    /** The bank opens at 9am and closes at 3pm */
-    private int OPENTIME = 900;
-    private int CLOSETIME = 1500;
+  /** The bank opens at 9am and closes at 3pm */
+  private int OPENTIME = 900;
+  private int CLOSETIME = 1500;
 
 
-    /*
-     * CONSTRUCTOR(S) AND RELATED METHODS
-     */
+  /*
+   * CONSTRUCTOR(S) AND RELATED METHODS
+   */
 
-    /**
-     * Default Constructor creates the default Bank
-     * 
-     * @throws ApplicationException if the ctor fails
-     */
-    public Bank() throws ApplicationException
-    {
-        super(DEFAULT_BANK_NAME, DEFAULT_OWNER, DEFAULT_HOVERTEXT, DEFAULT_EXTERIOR, DEFAULT_INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
-        setBusinessHours(OPENTIME, CLOSETIME);
-    }
-
-
-    /*
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
-     *                   PUBLIC METHODS
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-     */
-    
-    /*
-     * Two Banks are considerd equal if their name and building masters are equal
-     * 
-     * @see mylib.dmc.IRegistryElement#equals(mylib.dmc.IRegistryElement)
-     */
-    @Override
-    public boolean equals(IRegistryElement target)
-    {
-        if (target == null) {
-            return false;
-        }
-        Bank bank = (Bank) target;
-        boolean bName = this.getKey().equals(bank.getKey());
-        boolean bMaster = this.getMaster().equals(bank.getMaster());
-        return (bName && bMaster);
-    }
-
-
-    /*
-     * Get the key, which is the name of the Building
-     * 
-     * @see mylib.dmc.IRegistryElement#getKey()
-     */
-    @Override
-    public String getKey()
-    {
-        return _name;
-    }
-
-
-
+  /**
+   * Default Constructor creates the default Bank
+   * 
+   * @throws ApplicationException if the ctor fails
+   */
+  public Bank() throws ApplicationException
+  {
+    super(DEFAULT_BANK_NAME, DEFAULT_OWNER, DEFAULT_HOVERTEXT, DEFAULT_EXTERIOR, DEFAULT_INTERIOR,
+        EXTERIOR_IMAGE, INTERIOR_IMAGE);
+    setBusinessHours(OPENTIME, CLOSETIME);
+  }
 } // end of Bank class
 

@@ -55,8 +55,8 @@ public class TA00a_Initialize
   @BeforeClass
   public static void setUpBeforeClass()
   {
-      _rf = new RegistryFactory(new Scheduler(new DefaultUserMsg()));
-      _rf.initRegistries();
+      _rf = new RegistryFactory();
+      _rf.initRegistries(new Scheduler(new DefaultUserMsg()));
   }
 
   /**
@@ -102,19 +102,14 @@ public class TA00a_Initialize
     deleteRegistryFiles();
 
     // DO create the registries
-    _rf = new RegistryFactory(new Scheduler(new DefaultUserMsg()));
-    _rf.initRegistries();
+    _rf = new RegistryFactory();
+    _rf.initRegistries(new Scheduler(new DefaultUserMsg()));
 
     // VERIFY all registry files created
     assertTrue(RegistryFilesExist());
 
     // VERIFY all registries exist: get number objects in RegistryFactory map
     assertTrue(keynum == _rf.getNumberOfRegistries());
-
-    // TEARDOWN: close all registries
-    for (RegKey key : RegKey.values()) {
-      _rf.closeRegistry(key);
-    }
   }
 
 
@@ -138,11 +133,6 @@ public class TA00a_Initialize
 
     // VERIFY all registries exist: get number objects in RegistryFactory map
     assertTrue(keynum == _rf.getNumberOfRegistries());
-
-    // TEARDOWN: close all registries
-    for (RegKey key : RegKey.values()) {
-      _rf.closeRegistry(key);
-    }
   }
 
 

@@ -15,17 +15,16 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import mylib.MsgCtrl;
+
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Test;
 
 import chronos.civ.DefaultUserMsg;
 import chronos.pdc.command.Scheduler;
 import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.BuildingDisplayCiv;
 import civ.CommandParser;
-import mylib.MsgCtrl;
 
 /**
  * Enter a specified building from the building's exterior or from the town. If the Hero is outside
@@ -54,7 +53,7 @@ public class TA08_CmdEnter
     /** List of valid Buildings that can be entered */
     private List<String> _bldgs = null;
     private static Scheduler _skedder = new Scheduler(new DefaultUserMsg());
-    private static RegistryFactory _regFactory = new RegistryFactory(_skedder);
+    private static RegistryFactory _regFactory = new RegistryFactory();
 
 //    /**
 //     * @throws java.lang.Exception
@@ -79,19 +78,6 @@ public class TA08_CmdEnter
 //        // Get list of names for all buildings that can be entered
 //        _bldgs = _bReg.getElementNames();
 //    }
-
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception
-    {
-        // Close BuildingRegistry, left open from BuildingDisplayCiv
-        _regFactory.getRegistry(RegKey.BLDG).closeRegistry();
-        // Close NPCRegistry, left open from BuildingDisplayCiv
-        _regFactory.getRegistry(RegKey.NPC).closeRegistry();
-    }
 
     /**
      * @throws java.lang.Exception

@@ -15,7 +15,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
+import java.util.List;
+
+import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.Before;
@@ -23,7 +25,6 @@ import org.junit.Test;
 
 import chronos.pdc.Adventure;
 import chronos.pdc.registry.AdventureRegistry;
-import mylib.MsgCtrl;
 
 /**
  * Test the repository for Adventure storage
@@ -133,7 +134,7 @@ public class TestAdventureRegistry
   public void testGetAdventureList()
   {
     MsgCtrl.where(this);
-    ArrayList<String> advList = areg.getAdventureList();
+    List<String> advList = areg.getAdventureList();
     assertEquals(1, advList.size());
   }
 

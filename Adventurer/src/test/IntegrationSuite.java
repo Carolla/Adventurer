@@ -9,6 +9,8 @@
 
 package test;
 
+import mylib.test.dmc.TestDbReadWriter;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -35,6 +37,7 @@ import test.integ.TA09_CmdLeave;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     // Individual integration tests for each use case
+    TestDbReadWriter.class, //Too slow to be a unit test
     TA00a_Initialize.class,
     TA00b_Quit.class,
     TA08_CmdEnter.class,

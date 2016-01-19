@@ -15,9 +15,7 @@ import junit.framework.TestCase;
 import mylib.MsgCtrl;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 
 import chronos.Chronos;
 import chronos.pdc.Race;
@@ -61,18 +59,6 @@ public class TestRace extends TestCase {
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++  
      *                  STATE HANDLING METHODS 
      * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-
-    /** The target and file is created before any test */
-    @BeforeClass
-    public static void runOnce()
-    {
-    }
-    
-    /** The target file is deleted after all tests */
-    @AfterClass
-    public static void cleanUp()
-    {
-    }
     
 	/**
 	 * Redirect the class loader to look in the test directory for Mock class,
@@ -81,7 +67,7 @@ public class TestRace extends TestCase {
 	 * @throws java.lang.Exception
 	 */
 	@Before
-	public void setUp() throws Exception 
+	public void setUp() 
 	{
 		// Save default package name for later restore
 		_originalPkgName = Chronos.getPackageName();
@@ -97,7 +83,7 @@ public class TestRace extends TestCase {
 	 * @throws java.lang.Exception
 	 */
 	@After
-	public void tearDown() throws Exception {
+	public void tearDown()  {
 		// Delete the MockRace object
 		_mr = null;
 		// Restore original package name (non-testing version)

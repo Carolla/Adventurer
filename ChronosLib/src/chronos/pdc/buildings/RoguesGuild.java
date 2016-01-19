@@ -11,7 +11,6 @@
 package chronos.pdc.buildings;
 
 import mylib.ApplicationException;
-import mylib.dmc.IRegistryElement;
 
 /**
  * Rogues' Guild for lock picking, skill practicing, and other tricks-of-the-sleeve The default
@@ -34,10 +33,11 @@ public class RoguesGuild extends Building
       "A rowdy bar filled with unseemly characters of the night " +
           "obscures these headquarters for thieves and murderers.";
   /** For this case, a non-Guild member cannot enter */
-  public static final String DEFAULT_INTERIOR = "The grizzled barman opens a secret door behind a large " +
-      "cask of wine. He motions you to proceed into the darkness. As you step inside, you " +
-      "hear laughter and can make out more seedy characters rolling dice, throwing short " +
-      "daggers at a dart board, and practicing picking locks. ";
+  public static final String DEFAULT_INTERIOR =
+      "The grizzled barman opens a secret door behind a large " +
+          "cask of wine. He motions you to proceed into the darkness. As you step inside, you " +
+          "hear laughter and can make out more seedy characters rolling dice, throwing short " +
+          "daggers at a dart board, and practicing picking locks. ";
 
   /** Paths to the images for this building **/
   static private final String EXTERIOR_IMAGE = "ext_RoguesDen.jpg";
@@ -62,41 +62,8 @@ public class RoguesGuild extends Building
    */
   public RoguesGuild() throws ApplicationException
   {
-    super(DEFAULT_GUILD_NAME, DEFAULT_OWNER, HOVERTEXT, DEFAUL_TEXTERIOR, DEFAULT_INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
+    super(DEFAULT_GUILD_NAME, DEFAULT_OWNER, HOVERTEXT, DEFAUL_TEXTERIOR, DEFAULT_INTERIOR,
+        EXTERIOR_IMAGE, INTERIOR_IMAGE);
     setBusinessHours(OPENTIME, CLOSETIME);
   }
-
-  /*
-   * PUBLIC METHODS
-   */
-
-  /*
-   * Two Guilds are considerd equal if their keys and building masters are equal
-   * 
-   * @see mylib.dmc.IRegistryElement#equals(mylib.dmc.IRegistryElement)
-   */
-  public boolean equals(IRegistryElement target)
-  {
-    // Guards against null target
-    if (target == null) {
-      return false;
-    }
-    RoguesGuild thfG = (RoguesGuild) target;
-    boolean bName = this.getKey().equals(thfG.getKey());
-    boolean bMaster = this.getMaster().equals(thfG.getMaster());
-    return (bName && bMaster);
-  }
-
-
-  /*
-   * Get the key, which is the name of the Building
-   * 
-   * @see mylib.dmc.IRegistryElement#getKey()
-   */
-  @Override
-  public String getKey()
-  {
-    return _name;
-  }
-
 } // end of Rogues Guild class

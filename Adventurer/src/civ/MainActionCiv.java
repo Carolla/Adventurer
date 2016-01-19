@@ -92,8 +92,8 @@ public class MainActionCiv extends BaseCiv
   {
     _skedder = new Scheduler(_mfCiv); // Skedder first for injection
 
-    _rf = new RegistryFactory(_skedder);
-    _rf.initRegistries();
+    _rf = new RegistryFactory();
+    _rf.initRegistries(_skedder);
 
     _advReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
     _dorm = (HeroRegistry) _rf.getRegistry(RegKey.HERO);

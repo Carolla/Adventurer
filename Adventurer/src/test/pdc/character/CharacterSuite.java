@@ -8,10 +8,12 @@
  */
 
 
-package chronos.test.pdc.character;
+package test.pdc.character;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+
+import test.pdc.TestRace;
 
 
 /**
@@ -23,17 +25,16 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     // PDC.buildings test files:
-    // TestArena.class
-    // TestBank.class, // Need NPC
-    // TestBuilding.class, // all Buildings need NPCs
-    // TestClericsGuild.class, // Needs NPC
-    // TestFightersGuild.class, // Needs NPC
-    // TestJail.class, // Need NPC and Items
-    // TestInn.class, // need NPCs
-    // TestRoguesGuild.class, // Needs NPC
-    // TestStore.class, // Need NPC and Items
-    // TestWizardsGuild.class, // Needs NPC
-
+    TestRace.class,
+    //    TestDwarf.class,
+    //    TestElf.class,
+    //    TestGnome.class,
+    //    TestHalfElf.class,
+    //    TestHalfOrc.class,
+    //    TestHobbit.class,
+    //    TestHuman.class,
+    TestHunger.class,
+//    TestPatron.class
 })
 /** Compilation of all unit tests for regression and integration testing. */
 public class CharacterSuite

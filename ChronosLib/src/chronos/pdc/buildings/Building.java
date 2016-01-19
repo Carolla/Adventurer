@@ -27,7 +27,7 @@ import chronos.pdc.NPC;
  */
 public abstract class Building implements IRegistryElement
 {
-  private static final String MISSING_PERSON = "I don't see that person here";
+  public static final String MISSING_PERSON = "I don't see that person here";
   /** Default Opening Time for all buildings */
   private final int DEFAULT_OPENHOURS = 900;
   /** Default Closing Time for all buildings */
@@ -99,16 +99,6 @@ public abstract class Building implements IRegistryElement
 
   }
 
-  // protected NPC findBuildingMaster(String masterName)
-  // {
-  // NPCRegistry npcReg = (NPCRegistry) RegistryFactory.getInstance().getRegistry(RegKey.NPC);
-  // NPC master = npcReg.getNPC(masterName);
-  // if (master == null) {
-  // throw new ApplicationException(masterName + " does not exist in the NPC Registry.");
-  // }
-  // return master;
-  // }
-
   /*
    * PUBLIC METHODS
    */
@@ -165,6 +155,7 @@ public abstract class Building implements IRegistryElement
    */
   public String getInteriorDescription()
   {
+    System.out.println("getInteriorDescription got " + System.identityHashCode(this));
     String description = _intDesc;
     if (_patrons.size() > 0) {
       description += "\n\nYou see patrons inside:\n";
@@ -218,18 +209,10 @@ public abstract class Building implements IRegistryElement
     return _internalImagePath;
   }
 
-  /**
-   * Gets the NPC object that runs this Building
-   * 
-   * @returns Gets the NPC object that runs this Building
-   * 
-   * @see mylib.dmc.IRegistryElement#getKey()
-   */
   public String getMaster()
   {
     return _buildingMaster;
   }
-
 
   public boolean remove(NPC npc)
   {
@@ -238,6 +221,7 @@ public abstract class Building implements IRegistryElement
 
   public boolean add(NPC npc)
   {
+    System.out.println("addNPC got " + System.identityHashCode(this));
     return _patrons.add(npc);
   }
 
@@ -377,6 +361,12 @@ public abstract class Building implements IRegistryElement
     } else if (!_name.equals(other._name))
       return false;
     return true;
+  }
+  
+  @Override
+  public boolean equals(IRegistryElement target)
+  {
+    return equals((Object) target);
   }
 
   public String inspect(String target)
