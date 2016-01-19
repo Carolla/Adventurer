@@ -16,6 +16,7 @@ import java.util.List;
 import mylib.ApplicationException;
 import mylib.dmc.IRegistryElement;
 import chronos.pdc.NPC;
+import chronos.pdc.registry.NPCRegistry;
 
 
 /**
@@ -59,7 +60,8 @@ public abstract class Building implements IRegistryElement
   protected final String _externalImagePath;
   /** Path to Internal Display Image **/
   protected final String _internalImagePath;
-  protected final List<NPC> _patrons;
+  protected final List<NPC> _patrons = new ArrayList<NPC>();
+  protected static NPCRegistry _npcRegistry;
 
 
   /*
@@ -90,7 +92,6 @@ public abstract class Building implements IRegistryElement
     _intDesc = interior;
     _externalImagePath = extImagePath;
     _internalImagePath = intImagePath;
-    _patrons = new ArrayList<NPC>();
 
     // Set hours of operation, else return false for bad hours
     if (setBusinessHours(DEFAULT_OPENHOURS, DEFAULT_CLOSINGHOURS) == false) {
@@ -380,5 +381,9 @@ public abstract class Building implements IRegistryElement
     return MISSING_PERSON;
   }
 
+  public static void setNpcRegistry(NPCRegistry reg)
+  {
+    _npcRegistry = reg;
+  }
 
 } // end of abstract Building class

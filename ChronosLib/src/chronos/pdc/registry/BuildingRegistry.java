@@ -36,13 +36,11 @@ public class BuildingRegistry extends Registry<Building>
   // ========================================================================
   // CONSTRUCTOR(S) AND RELATED METHODS
   // ========================================================================
-  private final NPCRegistry _npcRegistry;
 
   /** Called by RegistryFactory class */
-  protected BuildingRegistry(NPCRegistry npcRegistry)
+  protected BuildingRegistry()
   {
     super(Chronos.BuildingRegPath);
-    _npcRegistry = npcRegistry;
   }
 
 
@@ -53,8 +51,7 @@ public class BuildingRegistry extends Registry<Building>
   {
     // Create each of the default buildings and save to registry
     // The constructors load the default data
-    Inn inn = new Inn(_npcRegistry);
-//    System.out.println("initialize putting Inn as " + System.identityHashCode(inn));
+    Inn inn = new Inn();
     inn.initPatrons(skedder);
     super.forceAdd(inn); // Ugly Ogre Inn
     super.forceAdd(new Store()); // Rat's Pack
