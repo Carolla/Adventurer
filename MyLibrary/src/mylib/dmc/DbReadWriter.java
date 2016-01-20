@@ -14,7 +14,6 @@ import java.util.List;
 
 import com.db4o.Db4oEmbedded;
 import com.db4o.EmbeddedObjectContainer;
-import com.db4o.config.EmbeddedConfiguration;
 import com.db4o.ext.DatabaseClosedException;
 import com.db4o.ext.DatabaseFileLockedException;
 import com.db4o.ext.DatabaseReadOnlyException;
@@ -53,7 +52,7 @@ public class DbReadWriter<E extends IRegistryElement>
   private boolean _open = false;
 
   /** actual database */
-  EmbeddedObjectContainer _db;
+  private EmbeddedObjectContainer _db = null;
 
   /** Exception message for null argument */
   static private final String NULL_ARG_MSG = "Argument cannot be null or empty";
@@ -104,11 +103,12 @@ public class DbReadWriter<E extends IRegistryElement>
     } catch (DatabaseClosedException | DatabaseReadOnlyException ex) {
       System.err.println(ex.getMessage());
       ex.printStackTrace();
+    } finally {
+      close();
     }
-    close();
   }
 
-
+  
   /**
    * Deletes all elements in the registry. Each item is removed from the database so db4o's OID can
    * be used to delete it.
@@ -180,6 +180,8 @@ public class DbReadWriter<E extends IRegistryElement>
     } catch (Db4oIOException | DatabaseClosedException | DatabaseReadOnlyException ex) {
       System.err.println(ex.getMessage());
       ex.printStackTrace();
+    } finally {
+      close();
     }
   }
 
@@ -190,6 +192,7 @@ public class DbReadWriter<E extends IRegistryElement>
     return list;
   }
 
+  
 
   /**
    * Retrieve the first element that matches the name. The object's {@code getKey} method is called.
@@ -203,14 +206,18 @@ public class DbReadWriter<E extends IRegistryElement>
     if (!exists(name)) {
       return null;
     }
-    List<E> elementList = getAllList();
-    for (E obj : elementList) {
-      if (obj.getKey().equalsIgnoreCase(name)) {
-        return obj;
+
+    try {
+      List<E> elementList = getAllList();
+      for (E obj : elementList) {
+        if (obj.getKey().equalsIgnoreCase(name)) {
+          return obj;
+        }
       }
+      return null;
+    } finally {
+      close();
     }
-    close();
-    return null;
   }
 
   // TODO: Might be needed later, but not now
@@ -234,6 +241,12 @@ public class DbReadWriter<E extends IRegistryElement>
   // }
 
 
+  public boolean isOpen()
+  {
+    return _open;
+  }
+
+
   /** Finds all elements in the given Registry ReadWriter */
   public int size()
   {
@@ -254,12 +267,14 @@ public class DbReadWriter<E extends IRegistryElement>
   {
     try {
       if (_open) {
-        _db.close();
+        while (!_db.close()) {
+        }
         _open = false;
       }
     } catch (Db4oIOException ex) {
       System.err.println(ex.getMessage());
       ex.printStackTrace();
+      _open = true;
     }
   }
 
@@ -296,7 +311,6 @@ public class DbReadWriter<E extends IRegistryElement>
         return true;
       }
     }));
-    close();
     return alist;
   }
 
@@ -322,6 +336,7 @@ public class DbReadWriter<E extends IRegistryElement>
         | OldFormatException | DatabaseReadOnlyException ex) {
       System.out.println(ex.getMessage());
       ex.printStackTrace();
+      System.exit(-1);
     }
     return _db;
   }

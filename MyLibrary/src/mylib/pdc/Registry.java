@@ -73,7 +73,7 @@ public abstract class Registry<E extends IRegistryElement>
   {
     // Creates registry file and reloads it (new registry will be empty)
     _regRW = new DbReadWriter<E>(filename);
-    
+
     if (getAll().size() == 0) {
       _shouldInitialize = true;
     }
@@ -108,9 +108,10 @@ public abstract class Registry<E extends IRegistryElement>
     } else {
       System.out.println("Tried to add " + obj.getKey() + " to registry, but failed\n");
     }
+
     return retval;
   }
-  
+
   public boolean forceAdd(E obj)
   {
     delete(obj);
@@ -188,6 +189,7 @@ public abstract class Registry<E extends IRegistryElement>
     if (target == null) {
       return false;
     }
+
     // Guard: if target is not in the registry, return immediately.
     E obj = _regRW.containsElement(target);
     if (obj != null) {

@@ -109,7 +109,7 @@ public class TestAdventureRegistry
     MsgCtrl.where(this);
 
     Adventure adv = (Adventure) areg.get("Salazar's Lair");
-    assertNotNull(adv);
+    assertTrue(adv == null);
   }
 
 

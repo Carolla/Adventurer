@@ -9,10 +9,12 @@
 
 package test;
 
+import mylib.test.MyLibraryTestSuite;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import mylib.test.MyLibraryTestSuite;
+import chronos.test.ChronosTestSuite;
 
 
 /**

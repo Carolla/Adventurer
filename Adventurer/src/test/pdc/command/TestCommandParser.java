@@ -8,12 +8,13 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
-import chronos.pdc.command.Command;
-import chronos.pdc.command.NullCommand;
-import civ.CommandParser;
 import pdc.command.CmdReturn;
 import pdc.command.CommandFactory;
 import pdc.command.CommandInput;
+import chronos.pdc.command.Command;
+import chronos.pdc.command.NullCommand;
+import chronos.test.pdc.command.FakeScheduler;
+import civ.CommandParser;
 
 public class TestCommandParser
 {

@@ -77,11 +77,6 @@ public class HeroRegistry extends Registry<Hero>
     return getAll();
   }
 
-  
-  /** Save a Hero into the HeroRegistry */
-  public boolean save(Hero h)
-  {
-    return add(h);
-  }
+    
 } // end of HeroRegistry class
 

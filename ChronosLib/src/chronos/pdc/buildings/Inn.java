@@ -19,7 +19,6 @@ import chronos.pdc.NPC;
 import chronos.pdc.command.Scheduler;
 import chronos.pdc.command.intCmdPatronEnter;
 import chronos.pdc.command.intCmdPatronLeave;
-import chronos.pdc.registry.NPCRegistry;
 
 /**
  * Main building in town for rest, food, conversation, and sometimes even a bar brawl. Heroes can be
@@ -78,8 +77,6 @@ public class Inn extends Building
   /** Randomizer */
   private static final MetaDie _md = new MetaDie();
 
-  private final NPCRegistry _npcRegistry;
-
   // ============================================================
   // Constructors and constructor helpers
   // ============================================================
@@ -89,10 +86,9 @@ public class Inn extends Building
    * 
    * @throws ApplicationException if the ctor fails
    */
-  public Inn(NPCRegistry npcRegistry) throws ApplicationException
+  public Inn() throws ApplicationException
   {
     super(INN_NAME, INNKEEPER, HOVERTEXT, EXTERIOR, INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
-    _npcRegistry = npcRegistry;
     setBusinessHours(OPENTIME, CLOSETIME);
   }
 

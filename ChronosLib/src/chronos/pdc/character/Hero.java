@@ -309,7 +309,7 @@ public class Hero implements IRegistryElement
     for (int k = 0; k < NBR_TRAITS; k++) {
       _traits[k] = md.rollTrait();
     }
-    // displayTraits("Raw traits: ", _traits);
+    displayTraits("Raw traits: ", _traits);
 
     // 3. REARRANGE THE PRIME TRAIT FOR THE KLASS
     // Create the Klass object
@@ -1130,12 +1130,12 @@ public class Hero implements IRegistryElement
    */
   private void displayTraits(String msg, int[] traits)
   {
-    // TODO Make this list depend on PrimeTraits order, and not these constants
-    final String[] ndx = {"STR", "INT", "WIS", "DEX", "CON", "CHR"};
-    System.out.println(msg);
-    for (int k = 0; k < 6; k++) {
-      System.out.print("\t" + ndx[k] + " = " + traits[k] + "\t");
-    }
+//    // TODO Make this list depend on PrimeTraits order, and not these constants
+//    final String[] ndx = {"STR", "INT", "WIS", "DEX", "CON", "CHR"};
+//    System.out.println(msg);
+//    for (int k = 0; k < 6; k++) {
+//      System.out.print("\t" + ndx[k] + " = " + traits[k] + "\t");
+//    }
   }
 
   // Private: Extract the skills for a given skillname of the given occupation

@@ -45,8 +45,6 @@ public class TestInn
   /** Business closing hour for test Inn */
   private final int TEST_CLOSING = 1200;
 
-  private NPCRegistry fakeNpcRegistry = new FakeNpcRegistry();
-
   public class FakeNpcRegistry extends NPCRegistry
   {
     List<NPC> _list = new ArrayList<NPC>();
@@ -78,7 +76,7 @@ public class TestInn
   @Before
   public void setUp() throws Exception
   {
-    _inn = new Inn(fakeNpcRegistry);
+    _inn = new Inn();
     assertNotNull(_inn);
     _inn.setBusinessHours(TEST_OPEN, TEST_CLOSING);
   }

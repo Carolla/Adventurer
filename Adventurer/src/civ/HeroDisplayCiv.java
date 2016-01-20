@@ -225,6 +225,7 @@ public class HeroDisplayCiv extends BaseCiv
     _hero.setName(name);
   }
 
+  
   /**
    * Save the Hero into the Dormitory, adding a new Hero or overwriting an old one
    * 
@@ -234,13 +235,12 @@ public class HeroDisplayCiv extends BaseCiv
   public boolean savePerson(boolean overwrite)
   {
     boolean retflag = false;
-//    HeroReadWriter dorm = new HeroReadWriter();
     HeroRegistry dorm = new HeroRegistry();
     // Save when NOT in overwrite mode
     if (overwrite == false) {
-      retflag = dorm.save(_hero);
+      retflag = dorm.add(_hero);
     } else {
-//      retflag = dorm.overwrite(_hero, _hero.getName());
+      retflag = dorm.update(_hero);
     }
     return retflag;
   }

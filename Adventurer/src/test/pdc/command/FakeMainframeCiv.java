@@ -13,13 +13,7 @@ public class FakeMainframeCiv extends MainframeCiv
 
   public FakeMainframeCiv()
   {
-    super();
-  }
-
-  @Override
-  protected void init()
-  {
-    //Don't create GUI
+    super(null);
   }
   
   protected void constructMembers()
@@ -41,6 +35,11 @@ public class FakeMainframeCiv extends MainframeCiv
   
   @Override
   public void displayImage(String title, String imageName)
+  {
+    //Do nothing
+  }
+  @Override
+  protected void doConstructorWork()
   {
     //Do nothing
   }

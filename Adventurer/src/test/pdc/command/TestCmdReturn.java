@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 
+import chronos.test.pdc.buildings.FakeBuilding;
 import pdc.command.CmdReturn;
-import test.pdc.buildings.FakeBuilding;
 
 public class TestCmdReturn
 {

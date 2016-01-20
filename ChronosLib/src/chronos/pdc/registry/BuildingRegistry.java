@@ -11,7 +11,6 @@ package chronos.pdc.registry;
 
 import java.util.List;
 
-import mylib.pdc.Registry;
 import chronos.Chronos;
 import chronos.pdc.buildings.Bank;
 import chronos.pdc.buildings.Building;
@@ -23,6 +22,7 @@ import chronos.pdc.buildings.RoguesGuild;
 import chronos.pdc.buildings.Store;
 import chronos.pdc.buildings.WizardsGuild;
 import chronos.pdc.command.Scheduler;
+import mylib.pdc.Registry;
 
 /**
  * All Town Buildings are collected here. The initial (default) Registry contains 8 buildings.
@@ -36,13 +36,11 @@ public class BuildingRegistry extends Registry<Building>
   // ========================================================================
   // CONSTRUCTOR(S) AND RELATED METHODS
   // ========================================================================
-  private final NPCRegistry _npcRegistry;
 
   /** Called by RegistryFactory class */
-  protected BuildingRegistry(NPCRegistry npcRegistry)
+  protected BuildingRegistry()
   {
     super(Chronos.BuildingRegPath);
-    _npcRegistry = npcRegistry;
   }
 
 
@@ -53,8 +51,7 @@ public class BuildingRegistry extends Registry<Building>
   {
     // Create each of the default buildings and save to registry
     // The constructors load the default data
-    Inn inn = new Inn(_npcRegistry);
-    System.out.println("initialize putting Inn as " + System.identityHashCode(inn));
+    Inn inn = new Inn();
     inn.initPatrons(skedder);
     super.forceAdd(inn); // Ugly Ogre Inn
     super.forceAdd(new Store()); // Rat's Pack
@@ -81,7 +78,6 @@ public class BuildingRegistry extends Registry<Building>
   public Building getBuilding(String name)
   {
     Building b = get(name);
-    System.out.println("getBuilding " + name + " got " + System.identityHashCode(b));
     return b;
   }
 

@@ -32,7 +32,7 @@ public class MainframeCiv extends BaseCiv implements UserMsg
   private MainframeInterface _mf;
   private IOPanel _ioPanel;
   private ImagePanel _imagePanel;
-  
+
   private final String INITIAL_IMAGE = "ChronosLogo.jpg";
   private final String INITIAL_IMAGE_TITLE = "Chronos Logo";
 
@@ -41,29 +41,25 @@ public class MainframeCiv extends BaseCiv implements UserMsg
   // Constructors and constructor helpers
   // ============================================================
 
-  /**
-   * Create the mainframe, right-side image panel, and left side action panel civ
-   * The image panel is handled by this mainframeCiv
-   */
-  public MainframeCiv()
+  public MainframeCiv(MainframeInterface mf)
   {
-    init();
+    _mf = mf;
+    doConstructorWork();
   }
 
-  protected void init()
-  {
-    _mf = new Mainframe(this);
-    displayInitialImagePanel();
-    new MainActionCiv(this);
-  }
-
-  private void displayInitialImagePanel()
+  protected void doConstructorWork()
   {
     _imagePanel = new ImagePanel();
     displayImage(INITIAL_IMAGE_TITLE, INITIAL_IMAGE);
     _mf.replaceRightPanel(_imagePanel);
+    new MainActionCiv(this);
   }
-  
+
+  public MainframeCiv()
+  {
+    this(new Mainframe());
+  }
+
   // ============================================================
   // Public methods
   // ============================================================
@@ -73,54 +69,52 @@ public class MainframeCiv extends BaseCiv implements UserMsg
     _mf.back();
   }
 
-  
+
   public void backToMain()
   {
     _mf.backToMain();
   }
 
-  
+
   @Override
   public void displayErrorText(String msg)
   {
     _ioPanel.displayErrorText(msg);
   }
 
-  
+
   public void displayImage(String title, String imageName)
   {
     _imagePanel.setTitle(title);
     _imagePanel.setImageByName(imageName);
   }
 
-  
+
   @Override
   public void displayText(String result)
   {
     _ioPanel.displayText(result);
   }
 
-  
+
   /** Close down the application if user so specified */
   public void quit()
   {
-    if (_mf.displayPrompt("Quit Adventurer?") == true) {
-      Adventurer.approvedQuit();
-    }
+
   }
 
-  
+
   public void replaceLeftPanel(ChronosPanel panel)
   {
     _mf.replaceLeftPanel(panel);
   }
-  
-  
+
+
   public void replaceLeftPanel(IOPanel panel)
   {
     _ioPanel = panel;
     _mf.replaceLeftPanel(panel);
   }
-  
-  
+
+
 } // end of MainframeCiv class

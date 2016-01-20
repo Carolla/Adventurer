@@ -9,15 +9,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import mylib.MsgCtrl;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import pdc.command.CmdApproach;
-import test.pdc.buildings.FakeBuilding;
 import chronos.pdc.registry.TownRegistry;
+import chronos.test.pdc.buildings.FakeBuilding;
+import mylib.MsgCtrl;
+import pdc.command.CmdApproach;
 
 public class TestCmdApproach
 {

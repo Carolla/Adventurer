@@ -16,6 +16,7 @@ import java.util.List;
 import mylib.ApplicationException;
 import mylib.dmc.IRegistryElement;
 import chronos.pdc.NPC;
+import chronos.pdc.registry.NPCRegistry;
 
 
 /**
@@ -36,12 +37,10 @@ public abstract class Building implements IRegistryElement
   protected final String BUILDING_CLOSED = "Sorry, the %s is not open now. "
       + "Return during normal business hours between %s and %s.";
 
-  // TODO Convert these fields into final, and uninitialize them here
   /** Name of this building */
   protected final String _name;
-
   /** The non-player character (NPC) who owns or manages this Building */
-  protected String _buildingMaster;
+  protected final String _buildingMaster;
 
   /** Buildings have a time in which they are open for business (military time). */
   protected int _openTime;
@@ -59,7 +58,8 @@ public abstract class Building implements IRegistryElement
   protected final String _externalImagePath;
   /** Path to Internal Display Image **/
   protected final String _internalImagePath;
-  protected final List<NPC> _patrons;
+  protected final List<NPC> _patrons = new ArrayList<NPC>();
+  protected static NPCRegistry _npcRegistry;
 
 
   /*
@@ -90,7 +90,6 @@ public abstract class Building implements IRegistryElement
     _intDesc = interior;
     _externalImagePath = extImagePath;
     _internalImagePath = intImagePath;
-    _patrons = new ArrayList<NPC>();
 
     // Set hours of operation, else return false for bad hours
     if (setBusinessHours(DEFAULT_OPENHOURS, DEFAULT_CLOSINGHOURS) == false) {
@@ -136,18 +135,6 @@ public abstract class Building implements IRegistryElement
     return hrs;
   }
 
-
-  /**
-   * When does the Inn close for business?
-   * 
-   * @return closing hours in meridian time
-   */
-  public String getClosingTime()
-  {
-    return getMeridianTime(_closingTime);
-  }
-
-
   /**
    * Called when the Hero first enters, or asks to look around inside the building
    * 
@@ -155,7 +142,6 @@ public abstract class Building implements IRegistryElement
    */
   public String getInteriorDescription()
   {
-    System.out.println("getInteriorDescription got " + System.identityHashCode(this));
     String description = _intDesc;
     if (_patrons.size() > 0) {
       description += "\n\nYou see patrons inside:\n";
@@ -221,7 +207,6 @@ public abstract class Building implements IRegistryElement
 
   public boolean add(NPC npc)
   {
-    System.out.println("addNPC got " + System.identityHashCode(this));
     return _patrons.add(npc);
   }
 
@@ -288,18 +273,6 @@ public abstract class Building implements IRegistryElement
   {
     return _name;
   }
-
-
-  /**
-   * When does the Inn open for business?
-   * 
-   * @return opening hours in meridian time
-   */
-  public String getOpeningTime()
-  {
-    return getMeridianTime(_openTime);
-  }
-
 
   /**
    * Set the business hours for this Building. Must be between 0000 and 2400, and closing must be
@@ -380,5 +353,9 @@ public abstract class Building implements IRegistryElement
     return MISSING_PERSON;
   }
 
+  public static void setNpcRegistry(NPCRegistry reg)
+  {
+    _npcRegistry = reg;
+  }
 
 } // end of abstract Building class

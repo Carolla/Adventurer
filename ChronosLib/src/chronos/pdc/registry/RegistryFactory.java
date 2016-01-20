@@ -16,6 +16,7 @@ import mylib.pdc.Registry;
 import chronos.pdc.Item;
 import chronos.pdc.Occupation;
 import chronos.pdc.Skill;
+import chronos.pdc.buildings.Building;
 import chronos.pdc.command.Scheduler;
 
 /**
@@ -70,10 +71,11 @@ public class RegistryFactory
     _regMap.put(RegKey.SKILL, new SkillRegistry());
     _regMap.put(RegKey.OCP, new OccupationRegistry((SkillRegistry) _regMap.get(RegKey.SKILL)));
     _regMap.put(RegKey.NPC, new NPCRegistry());
-    _regMap.put(RegKey.BLDG,new BuildingRegistry((NPCRegistry) _regMap.get(RegKey.NPC)));
+    _regMap.put(RegKey.BLDG,new BuildingRegistry());
     _regMap.put(RegKey.TOWN, new TownRegistry((BuildingRegistry) _regMap.get(RegKey.BLDG)));
     _regMap.put(RegKey.ADV, new AdventureRegistry());
 
+    Building.setNpcRegistry((NPCRegistry) _regMap.get(RegKey.NPC));
     ((BuildingRegistry) _regMap.get(RegKey.BLDG)).initialize(_skedder);
     Skill.setSkillRegistry((SkillRegistry) _regMap.get(RegKey.SKILL));
     Occupation.setOccupationRegistry((OccupationRegistry) _regMap.get(RegKey.OCP));

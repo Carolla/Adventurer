@@ -12,7 +12,8 @@ package chronos.test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import test.pdc.buildings.BuildingsSuite;
+import chronos.test.pdc.buildings.BuildingsSuite;
+import chronos.test.pdc.registry.RegistrySuite;
 
 
 /**
@@ -48,7 +49,7 @@ import test.pdc.buildings.BuildingsSuite;
 
     /* PDC subfolder test suites */
      BuildingsSuite.class,
-    // RegistrySuite.class,
+     RegistrySuite.class,
   
     /* PDC test files */
     // TestAdventure.class,

@@ -11,24 +11,18 @@
 package test.integ;
 
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
 import mylib.MsgCtrl;
 
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import chronos.civ.DefaultUserMsg;
 import chronos.pdc.character.Hero;
-import chronos.pdc.command.Scheduler;
 import chronos.pdc.registry.HeroRegistry;
-import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 
 
@@ -59,62 +53,27 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
  * @author Al Cline
  * @version Dec 8, 2015 // original <br>
  */
-public class TA03a_SummonHero
+public class TA03a_SummonHero extends IntegrationTest
 {
   /**
    * Puts three Heroes into the Dormitory to provide a selection base
    * 
-   * @throws java.lang.Exception
    */
   @BeforeClass
-  public static void setUpBeforeClass() throws Exception
+  public static void childSetupBeforeClass()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
-
-    // Set preconditions
     assertTrue(dormNotEmpty());
-
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
   }
 
   /**
    * Removes all test Heroes from the Dormitory to provide a selection base
    * 
-   * @throws java.lang.Exception
    */
   @AfterClass
-  public static void tearDownAfterClass() throws Exception
+  public static void tearDownAfterClass() 
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
-
     verifyPostconditions();
     unsetPreconditions();
-
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-  }
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @Before
-  public void setUp() throws Exception
-  {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
-  }
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @After
-  public void tearDown() throws Exception
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
   }
 
   // ==============================================================================
@@ -125,15 +84,7 @@ public class TA03a_SummonHero
   @Test
   public void getAllHeroes()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
-    MsgCtrl.where(this);
 
-    
-//    MainActionCiv mac = new MainActionCiv(new MainframeCiv());
-//    assertNotNull(mac);
-//    List<Hero> heroList = mac.getAllHeroes();
-//    assertNotNull(heroList);
   }
 
   // ==============================================================================
@@ -146,10 +97,7 @@ public class TA03a_SummonHero
     MsgCtrl.msg("Setting pre-conditions: ");
     MsgCtrl.msgln("\tAt least one Hero must be in the Dormitory.");
 
-    RegistryFactory rf = new RegistryFactory();
-    rf.initRegistries(new Scheduler(new DefaultUserMsg()));
-    HeroRegistry dorm = (HeroRegistry) rf.getRegistry(RegKey.HERO);
-    assertNotNull(dorm);
+    HeroRegistry dorm = (HeroRegistry) _regFactory.getRegistry(RegKey.HERO);
     int nbr = dorm.getNbrElements();
     MsgCtrl.msgln("Dormitory contains " + nbr + " Heroes");
     if (nbr > 0) {
@@ -161,9 +109,9 @@ public class TA03a_SummonHero
         Hero hero1 = new Hero("Falsoon", "male", "black", "Human", "Cleric");
         Hero hero2 = new Hero("Galadriel", "female", "blonde", "Elf", "Thief");
         Hero hero3 = new Hero("Blonk", "male", "black", "Dwarf", "Fighter");
-        dorm.save(hero1);
-        dorm.save(hero2);
-        dorm.save(hero3);
+        dorm.add(hero1);
+        dorm.add(hero2);
+        dorm.add(hero3);
       } catch (Exception ex) {
         MsgCtrl.errMsgln(ex.getMessage());
       }

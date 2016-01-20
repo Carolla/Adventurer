@@ -45,7 +45,7 @@ public class TA00a_Initialize
 
   private final String[] paths = {Chronos.AdventureRegPath, Chronos.BuildingRegPath,
       Chronos.ItemRegPath, Chronos.NPCRegPath, Chronos.OcpRegPath, Chronos.SkillRegPath,
-      Chronos.TownRegPath};
+      Chronos.TownRegPath, Chronos.HeroRegPath};
 
 
   // ============================================================
@@ -55,8 +55,8 @@ public class TA00a_Initialize
   @BeforeClass
   public static void setUpBeforeClass()
   {
-      _rf = new RegistryFactory();
-      _rf.initRegistries(new Scheduler(new DefaultUserMsg()));
+    _rf = new RegistryFactory();
+    _rf.initRegistries(new Scheduler(new DefaultUserMsg()));
   }
 
   /**
@@ -65,6 +65,8 @@ public class TA00a_Initialize
   @Before
   public void setUp() throws Exception
   {
+    assertEquals(paths.length, RegKey.values().length);
+    assertTrue(paths.length == _rf.getNumberOfRegistries());
   }
 
 
@@ -87,17 +89,6 @@ public class TA00a_Initialize
   @Test
   public void testMainNoRegs()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\t testMainNoRegs");
-
-    // SETUP: Ensure that there are as many regfiles as they are reg keys
-    int keynum = RegKey.values().length;
-    int pathnum = paths.length;
-    MsgCtrl.msg("\tNumber of keys = " + keynum);
-    MsgCtrl.msgln("\tNumber of file paths = " + pathnum);
-    assertEquals(keynum, pathnum);
-    
     // Ensure that no registry files exist
     deleteRegistryFiles();
 
@@ -109,7 +100,7 @@ public class TA00a_Initialize
     assertTrue(RegistryFilesExist());
 
     // VERIFY all registries exist: get number objects in RegistryFactory map
-    assertTrue(keynum == _rf.getNumberOfRegistries());
+    assertTrue(RegKey.values().length == _rf.getNumberOfRegistries());
   }
 
 
@@ -117,22 +108,8 @@ public class TA00a_Initialize
   @Test
   public void testMainWithRegs()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\t testMainWithRegs");
-
-    // SETUP: Ensure that there are as many regfiles as they are reg keys
-    int keynum = RegKey.values().length;
-    int pathnum = paths.length;
-    MsgCtrl.msg("\tNumber of keys = " + keynum);
-    MsgCtrl.msgln("\tNumber of file paths = " + pathnum);
-    assertEquals(keynum, pathnum);
-
     // VERIFY all registry files created
     assertTrue(RegistryFilesExist());
-
-    // VERIFY all registries exist: get number objects in RegistryFactory map
-    assertTrue(keynum == _rf.getNumberOfRegistries());
   }
 
 
@@ -146,7 +123,7 @@ public class TA00a_Initialize
     boolean retval = true;
     for (String s : paths) {
       File f = new File(s);
-      retval &= (f.exists() && (f.length() > 0));
+      retval &= f.exists() && (f.length() > 0);
     }
     return retval;
   }
@@ -155,9 +132,9 @@ public class TA00a_Initialize
   private void deleteRegistryFiles()
   {
     for (String s : paths) {
-        File rf = new File(s);
-        rf.delete();
-        assertFalse(rf.exists());
+      File rf = new File(s);
+      rf.delete();
+      assertFalse(rf.exists());
     }
   }
 

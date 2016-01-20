@@ -20,7 +20,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.pdc.Adventure;
-import chronos.pdc.registry.RegistryFactory;
 
 /**
  * Unit tests for {@code chronos.pdc.Adventure}
@@ -37,7 +36,7 @@ import chronos.pdc.registry.RegistryFactory;
 
 public class TestAdventure
 {
-  static private RegistryFactory _rf;
+  //  static private RegistryFactory _rf;
   // static private TownRegistry _treg;
 
 
