@@ -1,3 +1,6 @@
+# Ant build output
+${junit.output.dir}
+
 # Chronos specific
 doc/
 *.reg
