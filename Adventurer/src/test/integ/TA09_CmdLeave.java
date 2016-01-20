@@ -17,57 +17,16 @@ import mylib.MsgCtrl;
 import org.junit.After;
 import org.junit.Test;
 
-import chronos.pdc.command.Scheduler;
-import chronos.pdc.registry.BuildingRegistry;
-import chronos.pdc.registry.RegistryFactory;
-import civ.BuildingDisplayCiv;
-import civ.CommandParser;
-
 /**
- * Leave the interior of a Building. The EXIT command is a synonym.
+ * Leave the interior of a Building.
  * <P>
  * Format: {@code LEAVE} moves the Bulding's exterior.
  * 
  * @author Alan Cline
  * @version August 10, 2015 // original <br>
  */
-public class TA09_CmdLeave
+public class TA09_CmdLeave extends IntegrationTest
 {
-  static private CommandParser _cp = null;
-  static private BuildingDisplayCiv _bldgCiv = null;
-  static private RegistryFactory _regFactory = null;
-  static private BuildingRegistry _bReg = null;
-
-  /** List of valid Buildings that can be entered */
-  private static Scheduler _skedder;
-
-//
-//  /**
-//   * @throws java.lang.Exception
-//   */
-//  @BeforeClass
-//  public static void setUpBeforeClass() throws Exception
-//  {
-//    MsgCtrl.auditMsgsOn(false);
-//    MsgCtrl.errorMsgsOn(false);
-//
-//    // Start up the support classes
-//    _skedder = new Scheduler();
-//    _regFactory = new RegistryFactory(_skedder);
-//    _regFactory.initRegistries();
-//    _bReg = (BuildingRegistry) _regFactory.getRegistry(RegKey.BLDG);
-//
-//    // Replace the GUI objects with their test facades
-//    _mfProxy = new MainframeProxy();
-//    // This will open the BuildingRegistry, which must be closed before exiting
-//    _bldgCiv = new BuildingDisplayCiv(_mfProxy, _bReg);
-//
-//    _mfCiv = new MainframeCiv(_mfProxy, _bldgCiv, (AdventureRegistry) _regFactory.getRegistry(RegKey.ADV));
-//    _cp = new CommandParser(_skedder, new CommandFactory(_mfCiv, _bldgCiv));
-//
-//    // // Get list of names for all buildings that can be entered
-//    // _bldgs = _bReg.getElementNames();
-//  }
   /**
    * @throws java.lang.Exception
    */
@@ -85,28 +44,14 @@ public class TA09_CmdLeave
   // Begin the tests!
   // ==========================================================
 
-
-  /**
-   * Error: Leave the Building when there is not current
-   * Building
-   */
-
-
   /**
    * Normal case: Leave the current Building
-   * 
-   * @throws InterruptedException
    */ 
-  @Test (timeout=5000)
-  public void test_LeaveBuilding() throws InterruptedException
+  @Test
+  public void test_LeaveBuilding()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
-    MsgCtrl.where(this);
-
     // Setup: must be inside Building (onTown = false, currentBuilding !null; isInside = true)
     _cp.receiveCommand("Enter the Bank");
-    _skedder.doOneUserCommand();
 
     assertFalse(_bldgCiv.isOnTown());
     assertTrue(_bldgCiv.isInside());
@@ -114,29 +59,21 @@ public class TA09_CmdLeave
 
     // TEST
     assertTrue(_cp.receiveCommand("Leave "));
-    _skedder.doOneUserCommand();
 
     // Confirm Hero is no longer on town or in building
     assertFalse(_bldgCiv.isOnTown());
-    assertTrue(_bldgCiv.isInside());
+    assertFalse(_bldgCiv.isInside());
   }
 
 
   /**
-   * Error: Attempt to LEAVE the currentBuilding when outside 
-   * 
-   * @throws InterruptedException
+   * Error: Attempt to LEAVE the currentBuilding when outside
    */
   @Test
-  public void test_LeaveBuildingWhenOutside() throws InterruptedException
+  public void test_LeaveBuildingWhenOutside()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
-    MsgCtrl.where(this);
-
     // Setup: outside Building (onTown = false, currentBuilding !null; isInside = false)
     _cp.receiveCommand("Approach the Bank");
-    _skedder.doOneUserCommand();
 
     assertFalse(_bldgCiv.isOnTown());
     assertNotNull(_bldgCiv.getCurrentBuilding());
@@ -145,23 +82,9 @@ public class TA09_CmdLeave
     // TEST
     assertFalse(_cp.receiveCommand("Leave "));
     
-    
     // Expected error message
     assertFalse(_bldgCiv.isOnTown());
     assertFalse(_bldgCiv.isInside());
 
   }
-    
-    
-  // ============================================================================
-  // PRIVATE HELPER METHODS
-  // ============================================================================
-
-  /** Hero is onTwon, with not current Building, and not inside one */
-  private void resetBuildingState()
-  {
-    _bldgCiv.openTown();
-  }
-
-
-} // end of TA08_EnterBuilding integration test case
+} // end of TA09_CmdLeave integration test case

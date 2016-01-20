@@ -16,6 +16,7 @@ import org.junit.runners.Suite;
 
 import test.integ.TA00a_Initialize;
 import test.integ.TA00b_Quit;
+import test.integ.TA03a_SummonHero;
 import test.integ.TA08_CmdEnter;
 import test.integ.TA09_CmdLeave;
 
@@ -40,6 +41,7 @@ import test.integ.TA09_CmdLeave;
     TestDbReadWriter.class, //Too slow to be a unit test
     TA00a_Initialize.class,
     TA00b_Quit.class,
+    TA03a_SummonHero.class,
     TA08_CmdEnter.class,
     TA09_CmdLeave.class
 

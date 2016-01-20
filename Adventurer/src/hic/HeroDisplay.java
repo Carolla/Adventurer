@@ -120,13 +120,13 @@ public class HeroDisplay extends ChronosPanel
   private final String HELP_LABEL = "Press F1 key for help.";
 
   // Specific file error messages not handled by FileChooser
-  private String _saveMsg = "";
+//  private String _saveMsg = "";
   
   private final String PROMPT_HERO_EXISTS_MSG =
       "Do you want to overwrite, rename, or create a new Hero?";
   private final String PROMPT_HERO_EXISTS_TITLE = "Hero already exists.";
   
-  private final String SAVE_ERROR_TITLE = "FILE SAVE ERROR";
+//  private final String SAVE_ERROR_TITLE = "FILE SAVE ERROR";
   
   private final String CONFIRM_SAVE_MSG = " is resting in the dormitory until later.";
   private final String CONFIRM_SAVE_TITLE = " Hero is now Registered";

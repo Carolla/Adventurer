@@ -12,29 +12,10 @@ package test.integ;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import mylib.MsgCtrl;
 
 import org.junit.After;
-import org.junit.BeforeClass;
 import org.junit.Test;
-
-import pdc.command.CommandFactory;
-import chronos.civ.DefaultUserMsg;
-import chronos.pdc.Adventure;
-import chronos.pdc.buildings.Building;
-import chronos.pdc.command.Scheduler;
-import chronos.pdc.registry.AdventureRegistry;
-import chronos.pdc.registry.BuildingRegistry;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
-import civ.BuildingDisplayCiv;
-import civ.CommandParser;
-import civ.MainActionCiv;
-import civ.MainframeCiv;
 
 /**
  * Enter a specified building from the building's exterior or from the town. If the Hero is outside
@@ -55,46 +36,8 @@ import civ.MainframeCiv;
  *          Jun 30, 2015 // adding in remainder of {@code CmdEnter} integration tests <br>
  *          Jul 5, 2015 // adding in error cases <br>
  */
-public class TA08_CmdEnter
+public class TA08_CmdEnter extends IntegrationTest
 {
-  private static CommandParser _cp = null;
-  private static BuildingDisplayCiv _bldgCiv = null;
-
-  /** List of valid Buildings that can be entered */
-  private static final List<String> _bldgs = new ArrayList<String>();
-  private static final Scheduler _skedder = new Scheduler(new DefaultUserMsg());
-  private static MainframeCiv _mfCiv;
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-
-    RegistryFactory regFactory = new RegistryFactory();
-    regFactory.initRegistries(_skedder);
-    
-    BuildingRegistry bReg = (BuildingRegistry) regFactory.getRegistry(RegKey.BLDG);
-    AdventureRegistry advReg = (AdventureRegistry) regFactory.getRegistry(RegKey.ADV);
-    Adventure adv = advReg.getAll().get(0);
-    
-    _mfCiv = new MainframeCiv(new MainframeProxy());
-    MainActionCiv maCiv = new MainActionCiv(_mfCiv);
-    maCiv.loadSelectedAdventure(adv.getName());
-    _bldgCiv = new BuildingDisplayCiv(_mfCiv, adv, bReg);
-    
-    CommandFactory cmdFac = new CommandFactory(_mfCiv, _bldgCiv);
-    cmdFac.initMap();
-    _cp = new CommandParser(_skedder, cmdFac);
-
-    // Get list of names for all buildings that can be entered
-    for (Building b : bReg.getAll()) {
-      _bldgs.add(b.getName());
-    }
-  }
 
   /**
    * @throws java.lang.Exception
@@ -218,17 +161,4 @@ public class TA08_CmdEnter
     assertTrue(_bldgCiv.isInside());
     assertEquals(bName1, _bldgCiv.getCurrentBuilding());
   }
-
-
-  // ============================================================================
-  // PRIVATE HELPER METHODS
-  // ============================================================================
-
-  /** Hero is onTwon, with not current Building, and not inside one */
-  private void resetBuildingState()
-  {
-    _bldgCiv.openTown();
-  }
-
-
 } // end of TA08_EnterBuilding integration test case
