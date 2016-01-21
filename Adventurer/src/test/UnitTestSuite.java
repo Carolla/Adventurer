@@ -12,6 +12,8 @@ package test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import test.civ.TestBuildingDisplayCiv;
+import test.civ.TestHeroDisplayCiv;
 import test.pdc.command.CommandSuite;
 
 /**
@@ -29,19 +31,11 @@ import test.pdc.command.CommandSuite;
 @Suite.SuiteClasses({
 
     /** CIV test files */
-    // TestAdventurer.class,
-    // TestBaseCiv.class,
-    // TestBuildingDisplayCiv.class,
-    // TestCommandParser.class,
-    // TestDocumentSizeFiler.class,
-    // TestHeroDisplayCiv.class,
+    TestBuildingDisplayCiv.class,
+    TestHeroDisplayCiv.class,
     // TestMainActionCiv.class,
     // TestMainframeCiv.class,
     // TestNewHeroCiv.class,
-    // TestOccupationDisplay.class,
-    // TestOccupationKeys.class,
-    // TestSkillDisplayCiv.class,
-    // TestSkillKeys.class,
 
     /* PDC subfolder test suites */
     CommandSuite.class

@@ -11,7 +11,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
@@ -23,7 +22,6 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
-import javax.swing.border.Border;
 
 import mylib.Constants;
 import net.miginfocom.swing.MigLayout;
@@ -120,14 +118,14 @@ public class HeroDisplay extends ChronosPanel
   private final String HELP_LABEL = "Press F1 key for help.";
 
   // Specific file error messages not handled by FileChooser
-//  private String _saveMsg = "";
-  
+  //  private String _saveMsg = "";
+
   private final String PROMPT_HERO_EXISTS_MSG =
       "Do you want to overwrite, rename, or create a new Hero?";
   private final String PROMPT_HERO_EXISTS_TITLE = "Hero already exists.";
-  
-//  private final String SAVE_ERROR_TITLE = "FILE SAVE ERROR";
-  
+
+  //  private final String SAVE_ERROR_TITLE = "FILE SAVE ERROR";
+
   private final String CONFIRM_SAVE_MSG = " is resting in the dormitory until later.";
   private final String CONFIRM_SAVE_TITLE = " Hero is now Registered";
   private final String CONFIRM_OVERWRITE_MSG = " has been overwritten in the dormitory.";
@@ -145,34 +143,9 @@ public class HeroDisplay extends ChronosPanel
   private final boolean OVERWRITE = true;
   private final boolean NO_OVERWRITE = false;
 
-  /** Height of font for vertical spacing */
-  private final int FONT_HT = 14;
-
-  /** Set the max width of the hero panel at half screen */
   private final int PANEL_WIDTH = Mainframe.getWindowSize().width / 2;
-  /** Set the max height of the hero panel */
   private final int PANEL_HEIGHT = Mainframe.getWindowSize().height;
-
-  /** Set the width of the two data panels within the display borders */
-  // private final int DATA_WIDTH = PANEL_WIDTH / 2 - 2 * (THICK_BORDER + THIN_BORDER);
   private final int DATA_WIDTH = PANEL_WIDTH / 2 - Mainframe.PAD;
-
-  /** Size of inventory area */
-  final int INVEN_HEIGHT = 30;
-  /** Number of cash fields */
-  final int CASH_FIELDS = 2;
-
-  // /** HelpDialog reference for all widgets that have context help */
-  // private HelpDialog _help = null;
-  // /** Set the default HelpKey for the general panel */
-  // private HelpKeyListener _helpKey = new HelpKeyListener("HeroDsp");
-
-  /** Disable SaveAs at some time . */
-  private JButton _saveButton;
-  /** Change Cancel Button to OK Button at some time . */
-  private JButton _cancelButton;
-  /** Gets rid of unused/unwanted characters */
-  private JButton _delButton;
 
   /** Background color inherited from parent */
   private Color _backColor = Constants.MY_BROWN;
@@ -182,20 +155,11 @@ public class HeroDisplay extends ChronosPanel
 
   /** Keys to Hero data to be displayed */
   EnumMap<PersonKeys, String> _ds;
-
-  /** Six panels in each attribute row */
-  private final int PANELS_IN_ROW = 6;
-
-  // /** Crude attempt to allocate space for wrapping text */
-  // private final int SPACES_PER_LINE = 27;
+  private String _heroName;
 
   /** Button panel for Save/Delete/Cancel buttons */
   private JPanel _buttonPanel;
 
-  // /** Codes to handle dispensation of the Hero */
-  // private enum WriteOption {
-  // CANCEL, SAVE, OVERWRITE, RENAMRE, ERROR
-  // };
 
   // ===============================================================
   // CONSTRUCTOR(S) AND RELATED METHODS
@@ -205,91 +169,18 @@ public class HeroDisplay extends ChronosPanel
    * Create the GUI and populate it with various data maps
    * 
    * @param hdCiv the intermediary between this GUI and the Person
-   * @param _mf
-   * @param firstTime Hero activates buttons differently
+   * @param ds 
    */
-  public HeroDisplay(HeroDisplayCiv hdCiv, boolean firstTime)
+  public HeroDisplay(HeroDisplayCiv hdCiv, EnumMap<PersonKeys, String> ds)
   {
-    super("Hero nameplate goes here");
+    super(heroNameplate(ds));
 
     _hdCiv = hdCiv;
-    _ds = _hdCiv.getAttributes();
+    _ds = ds;
+    _heroName = ds.get(PersonKeys.NAME);
 
-    // _hdCiv.resetLoadState();
-    // Define the overall tabbed pane and button layout
-    setupDisplay(firstTime);
+    setupDisplay();
   }
-
-
-
-  // TODO: THis may not be needed, but keep the old code here anyway. It needs to be debugged
-  // private Font shrinkFontSize()
-  // {
-  // while (_charName.getPreferredSize().width > DATA_WIDTH) {
-  // // Edit name font down a notch or two
-  // Font labelFont = _charName.getFont();
-  // String labelText = _charName.getText();
-  //
-  // int stringWidth = _charName.getFontMetrics(labelFont).stringWidth(
-  // labelText);
-  // int componentWidth = DATA_WIDTH;
-  //
-  // // Find out how much the font can grow in width.
-  // double widthRatio = (double) componentWidth / (double) stringWidth;
-  //
-  // int newFontSize = (int) (labelFont.getSize() * widthRatio);
-  //
-  // // Recreate the new font
-  // try {
-  // Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(
-  // Chronos.RUNIC_ENGLISH_FONT_FILE));
-  //
-  // // Set the label's font size to the newly determined size.
-  // Font smallNameFont = newFont.deriveFont(newFontSize);
-  // _charName.setFont(smallNameFont);
-  // } catch (FontFormatException e) {
-  // MsgCtrl.errMsgln("Could not format font: " + e.getMessage());
-  // } catch (IOException e) {
-  // MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
-  // }
-  // }
-  // return newFont;
-  // }
-
-
-  // /**
-  // * Put the HeroDisplay panel into a scrollpane and add to the MainFrame
-  // *
-  // * @return the scrollpane for the Person's attributes
-  // */
-  // public JScrollPane display()
-  // {
-  // // Make the display scrollable to add to the MainFrame
-  // JScrollPane heroScroll = makeScrollable();
-  //
-  // // Add the non-static scrolling panel to the main JFrame
-  // _mainframe.addPanel(heroScroll);
-  // _mainframe.repaint();
-  // // Get the focus so the arrow keys will work
-  // requestFocusInWindow();
-  // return heroScroll;
-  // }
-
-
-  /**
-   * The name text field should have the default focus, butt that cannot be done until after the
-   * panel is realized and visible. Therefore, the HeroDisplay's caller (MenuBar.NEW Action) must
-   * invoke the default component. It calls this method to get which one should be default. This
-   * method is created for this because the caller does not know what fields are available in this
-   * panel, and it can change with maintenance.
-   * 
-   * @return the JTextField, in this case
-   */
-  public JButton getDefaultFocus()
-  {
-    return _cancelButton;
-  }
-
 
   // =================================================================
   // PRIVATE METHODS
@@ -339,8 +230,6 @@ public class HeroDisplay extends ChronosPanel
     attribPanel.add(gridCell("XP: ", _ds.get(PersonKeys.XP)), "growx");
     attribPanel.add(gridCell("Speed: ", _ds.get(PersonKeys.SPEED)), "growx");
     attribPanel.add(gridCell("Gold Banked: ", _ds.get(PersonKeys.GOLD_BANKED)), "growx");
-    // attribPanel.add(gridCell("Gold Banked: ", "999999.09"), "");
-    // Convert from two quantities into single string gp/sp
     String gp = _ds.get(PersonKeys.GOLD);
     String sp = _ds.get(PersonKeys.SILVER);
     String inHand = gp + " gp / " + sp + " sp";
@@ -414,7 +303,7 @@ public class HeroDisplay extends ChronosPanel
     attribPanel.add(gridCell("Pummeling: ", _ds.get(PersonKeys.PUMMELING)), "growx");
     attribPanel.add(gridCell("Shield Bash: ", _ds.get(PersonKeys.SHIELD_BASH)),
         "span 2, growx, wrap");
-        // attribPanel.add(gridCell(" ", ""), "span 1, growx, wrap"); // remainder of line is empty
+    // attribPanel.add(gridCell(" ", ""), "span 1, growx, wrap"); // remainder of line is empty
 
     // Row 11: Languages label, max langs, list of languages
     String langStr = String.format("Languages (can learn %s more):",
@@ -443,91 +332,46 @@ public class HeroDisplay extends ChronosPanel
    * @param firstTime Hero disables DELETE button; old Hero disables CANCEL button
    * @return button panel
    */
-  private JPanel buildButtonPanel(boolean firstTime)
+  private JPanel buildButtonPanel()
   {
-    // SAVE a new Hero to the Dormitory */
-    _saveButton = new JButton("Save");
-    _saveButton.addActionListener(new ActionListener() {
+    JButton saveButton = new JButton("Save");
+    saveButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        // Try to save the new Hero
-        if (savePerson()) {
-          // Display confirmation message
-          JOptionPane.showMessageDialog(null, _ds.get(PersonKeys.NAME) + CONFIRM_SAVE_MSG,
+        if (_hdCiv.savePerson(NO_OVERWRITE)) {
+          JOptionPane.showMessageDialog(null, _heroName + CONFIRM_SAVE_MSG,
               CONFIRM_SAVE_TITLE, JOptionPane.INFORMATION_MESSAGE);
-          // Return two levels back to main action
           _hdCiv.backToMain();
         } else {
           // Respond to save attempt failure to Rename or Overwrite the Hero
           doAlternateSaveAction();
         }
-        setVisible(false);
       }
     });
 
-
-    // switch (choice)
-    // {
-    // case PROMPT_CANCEL:
-    // System.out.println("Cancel chosen");
-    // _hdCiv.back();
-    // break;
-    // case PROMPT_OVERWRITE:
-    // System.out.println("Overwrite chosen");
-    // break;
-    // case PROMPT_RENAME:
-    // System.out.println("Rename chosen");
-    // break;
-    // default:
-    // System.out.println("Default case reached");
-    // _hdCiv.backToMain();
-    // break;
-    // }
-    // }
-
-
-    // else {
-    // // Display an error message with a Sorry button instead of OK
-    // String[] sorry = new String[1];
-    // sorry[0] = "SORRY!";
-    // JOptionPane.showOptionDialog(null, _saveMsg + _ds.get(PersonKeys.NAME),
-    // SAVE_ERROR_TITLE, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE,
-    // null, sorry, null);
-    // }
-
-    // DELETE an existing Hero from the Dormitory */
-    _delButton = new JButton("Delete");
-    _delButton.addActionListener(new ActionListener() {
+    JButton delButton = new JButton("Delete");
+    delButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
         if (deletePerson() == true) {
-          // Display confirmation message
-          JOptionPane.showMessageDialog(null,
-              _ds.get(PersonKeys.NAME) + CONFIRM_DEL_MSG,
+          JOptionPane.showMessageDialog(null, _heroName + CONFIRM_DEL_MSG,
               CONFIRM_DEL_TITLE, JOptionPane.INFORMATION_MESSAGE);
         } else {
-          // Display an error message with a Sorry button instead of OK
           String[] sorry = new String[1];
           sorry[0] = "You dropped your scythe!!";
           JOptionPane.showOptionDialog(null,
-              DEL_ERROR_MSG + _ds.get(PersonKeys.NAME),
+              DEL_ERROR_MSG + _heroName,
               DEL_ERROR_TITLE, JOptionPane.DEFAULT_OPTION,
               JOptionPane.ERROR_MESSAGE, null, sorry, null);
         }
-        setVisible(false);
       }
     });
 
     /* ADD A CANCEL BUTTON TO THE BOTTOM OF THE PANEL */
-    _cancelButton = new JButton("Cancel");
-
-    // Clear data and return back to mainframe if Cancel is pressed
-    _cancelButton.addActionListener(new ActionListener() {
+    JButton cancelButton = new JButton("Cancel");
+    cancelButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        // Collect all the attributes and save to a new Hero file
-        setVisible(false);
-        // Return two levels back to main action
         _hdCiv.backToMain();
       }
     });
@@ -536,106 +380,15 @@ public class HeroDisplay extends ChronosPanel
     JPanel buttonPanel = new JPanel();
     buttonPanel.setBackground(_backColor);
 
-    // Disable DELETE or CANCEL buttons depending on old or new Hero
-    if (firstTime) {
-      _delButton.setEnabled(false);
-    } else {
-      _cancelButton.setEnabled(false);
-    }
+    delButton.setEnabled(false);
+    cancelButton.setEnabled(false);
 
-    buttonPanel.add(_saveButton);
-    buttonPanel.add(_delButton);
-    buttonPanel.add(_cancelButton);
+    buttonPanel.add(saveButton);
+    buttonPanel.add(delButton);
+    buttonPanel.add(cancelButton);
 
-    // // Enabled/disable buttons as needed
-    // if (_hdCiv.LOADING_CHAR) {
-    // _saveButton.setEnabled(false);
-    // } else if (_hdCiv.NEW_CHAR) {
-    // _delButton.setEnabled(false);
-    // }
     return buttonPanel;
   }
-
-
-  // /**
-  // * Create the Help Panel and help message for HeroDisplay
-  // *
-  // * @return the HelpPanel
-  // */
-  // private JPanel buildHelpPanel() {
-  // JPanel helpPanel = new JPanel();
-  // helpPanel.setBackground(_backColor);
-  // // // Set panel size to three text lines high
-  // // helpPanel.setPreferredSize(new Dimension(DATA_WIDTH-DATA_PAD, 3 *
-  // // FONT_HT));
-  //
-  // // Add the help text directly onto the base panel (defaults to Center)
-  // JLabel helpLabel = new JLabel(HELP_LABEL);
-  // helpLabel.setForeground(Color.RED);
-  // helpLabel.setVerticalAlignment(SwingConstants.CENTER);
-  // helpPanel.add(helpLabel); // help key message
-  // add(helpPanel);
-  //
-  // // Add the help text subpanel to the basePanel
-  // return helpPanel;
-  // }
-
-  // /**
-  // * Builds the inventory "table", showing Category, Items, quantity, and weight (in lbs) and
-  // weight
-  // * (in oz) of each; calls the display civ to pack a data shuttle
-  // *
-  // * @return the output-only JTextArea contining inventory data
-  // */
-  // private JTextArea buildInventoryArea()
-  // {
-  // // Get the Inventory items to display
-  // int invenLen = _itemList.size() - CASH_FIELDS; // _hdCiv.getInventorySize();
-  //
-  // // Add a non-editable textArea containing all the Inventory
-  // JTextArea invenArea = new JTextArea(invenLen, 0); // rows by columns
-  // // Make area restricted to displayable size (without scrollbar)
-  // invenArea.setPreferredSize(new Dimension(DATA_WIDTH, invenLen * CELL_HEIGHT));
-  // invenArea.setEditable(false);
-  // invenArea.setBackground(_backColor);
-  // invenArea.setTabSize(TAB_SIZE);
-  // invenArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, FONT_HT));
-  // invenArea.setMargin(new Insets(DEF_INSET, DEF_INSET, DEF_INSET,
-  // DEF_INSET));
-  // int j = 0;
-  // int size = ItemCategory.values().length;
-  // // Read in item groups by category, input like GENERAL|Backpack|1|10|0"\
-  // for (int i = 0; i < size; i++) {
-  // if (j < _itemList.size()) {
-  // String str = _itemList.get(j);
-  // int firstBar = str.indexOf('|');
-  // String cat = str.substring(0, firstBar);
-  // String subcat = cat;
-  // if (cat.compareTo("CASH") != 0) {
-  // invenArea.append(cat + "\n");
-  // }
-  // while (subcat.compareTo(cat) == 0) {
-  // // Display and format item
-  // String item = str.substring(firstBar + 1, str.length());
-  // item = formatItemString(item);
-  // if (subcat.compareTo("CASH") != 0) {
-  // invenArea.append(item);
-  // }
-  // j++;
-  //
-  // // Now get next item
-  // if (j < _itemList.size()) {
-  // str = _itemList.get(j);
-  // firstBar = str.indexOf('|');
-  // subcat = str.substring(0, firstBar);
-  // } else {
-  // subcat = "NEWCAT";
-  // }
-  // }
-  // }
-  // }
-  // return invenArea;
-  // }
 
 
   /**
@@ -649,10 +402,6 @@ public class HeroDisplay extends ChronosPanel
     JPanel invenPanel = new JPanel(new MigLayout("fillx, ins 0"));
     invenPanel.setBackground(_backColor);
 
-    // Get various items from the civ
-    // Inventory inventory = _hdCiv.getInventory();
-    List<String> nameList = new ArrayList<String>();
-
     // Active arms and armor: initially, none
     invenPanel.add(gridCell("Wielded Weapon:", "None"), "gaptop 10, span 6, growx, wrap 0");
     invenPanel.add(gridCell("Armor Worn: ", " None"), "span 6, growx, wrap 0");
@@ -661,30 +410,11 @@ public class HeroDisplay extends ChronosPanel
     blankLine.setBackground(Color.DARK_GRAY);
     invenPanel.add(blankLine, "span 6, growx, wrap 0");
 
-    // List of Arms: name, damage, fire rate, qty, wt, total wt
-    nameList = _hdCiv.getInventoryNames(ItemCategory.ARMS);
-    invenPanel.add(buildMultiCell(ItemCategory.ARMS.toString(), nameList), "growx, wrap");
 
-    // List of Armor
-    nameList = _hdCiv.getInventoryNames(ItemCategory.ARMOR);
-    invenPanel.add(buildMultiCell(ItemCategory.ARMOR.toString(), nameList), "growx, wrap");
-
-    // List of Equipment
-    nameList = _hdCiv.getInventoryNames(ItemCategory.EQUIPMENT);
-    invenPanel.add(buildMultiCell(ItemCategory.EQUIPMENT.toString(), nameList), "growx, wrap");
-
-    // List of Provisions
-    nameList = _hdCiv.getInventoryNames(ItemCategory.PROVISION);
-    invenPanel.add(buildMultiCell(ItemCategory.PROVISION.toString(), nameList), "growx, wrap");
-
-    // List of Clothing
-    nameList = _hdCiv.getInventoryNames(ItemCategory.CLOTHING);
-    invenPanel.add(buildMultiCell(ItemCategory.CLOTHING.toString(), nameList), "growx, wrap");
-
-    // List of Valueables
-    nameList = _hdCiv.getInventoryNames(ItemCategory.VALUABLES);
-    invenPanel.add(buildMultiCell(ItemCategory.VALUABLES.toString(), nameList), "growx, wrap");
-
+    for (ItemCategory category : ItemCategory.values()) {
+      List<String> nameList = _hdCiv.getInventoryNames(category);
+      invenPanel.add(buildMultiCell(category.toString(), nameList), "growx, wrap");
+    }
     return invenPanel;
   }
 
@@ -734,7 +464,6 @@ public class HeroDisplay extends ChronosPanel
     msgArea.setPreferredSize(new Dimension(DATA_WIDTH, nameList.size() + 1));
     msgArea.setBackground(_backColor);
     msgArea.setEditable(false);
-    msgArea.setTabSize(1);
     msgArea.setLineWrap(true); // auto line wrapping doesn't seem to work
     msgArea.setWrapStyleWord(true);
 
@@ -743,18 +472,17 @@ public class HeroDisplay extends ChronosPanel
 
     // Display the detailed skill list
     if (nameList.size() == 0) {
-      nameList.add(" None");
-    }
-    for (int k = 0; k < nameList.size(); k++) {
-      msgArea.append(" + " + nameList.get(k) + Constants.NEWLINE);
+      msgArea.append(" None");
+    } else {
+      for (String name : nameList) {
+        msgArea.append(" + " + name + Constants.NEWLINE);
+      }
     }
 
     // Add the text area into a JPanel cell
     JPanel cell = new JPanel(new MigLayout("ins 0"));
     cell.add(msgArea, "growx, wrap");
-
-    gridSetCellBorder(cell);
-    cell.validate();
+    cell.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
     return cell;
   }
 
@@ -843,51 +571,6 @@ public class HeroDisplay extends ChronosPanel
     }
   }
 
-
-  // /**
-  // * Format a fixed-field space-filled display string for the Inventory list If values are zero,
-  // the
-  // * String is empty FIELDS: Quantity, Name (left-justified), wt (lb), wt (oz)
-  // *
-  // * @param name the name of the item
-  // * @param qty the number of such items
-  // * @param lbWt the weight of the thing in pounds
-  // * @param ozWt the fractional pound-weight in ounces
-  // * @return the Item's fields in a fixed-length formatted string
-  // */
-  // private String formatItemString(String str)
-  // // private String formatItemString(String qty, String name, String lbWt,
-  // // String ozWt)
-  // {
-  // // Given format: Backpack|1|10|0
-  // // Pull out the 4 values, Qty, Name, Weight(lb), and Weight(oz)
-  // int bar = str.indexOf('|');
-  // String itemName = str.substring(0, bar);
-  // int nextBar = str.indexOf('|', bar + 1);
-  // String itemQty = str.substring(bar + 1, nextBar);
-  // bar = nextBar;
-  // nextBar = str.indexOf('|', bar + 1);
-  // String itemLbWt = str.substring(bar + 1, nextBar);
-  // bar = nextBar;
-  // String itemOzWt = str.substring(bar + 1, str.length());
-  //
-  // // Now build the string
-  // String initialSpaces = " ";
-  // StringBuilder lineItem = new StringBuilder(initialSpaces + itemQty
-  // + "\t " + itemName);
-  //
-  // // Append an appropriate number of tabs
-  // for (int i = (SPACES_PER_LINE - itemName.length()); i > 0; i--) {
-  // lineItem.append(" ");
-  // }
-  // if (itemLbWt.length() < 2) {
-  // lineItem.append(" ");
-  // }
-  // lineItem.append(itemLbWt + " lb " + itemOzWt + " oz\n");
-  // return lineItem.toString();
-  // }
-
-
   // ======================================================================
   // PRIVATE METHODS
   // ======================================================================
@@ -910,26 +593,24 @@ public class HeroDisplay extends ChronosPanel
     switch (choice)
     {
       case PROMPT_CANCEL:
-        System.out.println("Cancel selected, choice = " + choice);
-        // Return one level to create new Hero
         _hdCiv.back();
         break;
+        
       case PROMPT_RENAME:
-        System.out.println("Rename selected, choice = " + choice);
         renameHero();
-        JOptionPane.showMessageDialog(null, _ds.get(PersonKeys.NAME) + CONFIRM_RENAME_MSG,
+        JOptionPane.showMessageDialog(this, _heroName + CONFIRM_RENAME_MSG,
             CONFIRM_RENAME_TITLE, JOptionPane.INFORMATION_MESSAGE);
-        // Return to main action buttons
         _hdCiv.backToMain();
         break;
+        
       case PROMPT_OVERWRITE:
-        System.out.println("Overwrite selected, choice = " + choice);
         _hdCiv.savePerson(OVERWRITE);
-        JOptionPane.showMessageDialog(null, _ds.get(PersonKeys.NAME) + CONFIRM_OVERWRITE_MSG,
+        JOptionPane.showMessageDialog(this, _heroName + CONFIRM_OVERWRITE_MSG,
             CONFIRM_OVERWRITE_TITLE, JOptionPane.INFORMATION_MESSAGE);
         // Return to main action buttons
         _hdCiv.backToMain();
         break;
+        
       default:
         _hdCiv.backToMain();
         break;
@@ -950,87 +631,22 @@ public class HeroDisplay extends ChronosPanel
    */
   private JPanel gridCell(String label, String value)
   {
-    // Guard against null values
-    if ((label == null) || (value == null)) {
-      return null;
-    }
-    // Create the grid cell as a panel to hold two JLabels within a border
-    JPanel p = new JPanel(new MigLayout("inset 3")); // space between text and cell border
-    p.setBackground(_backColor);
-    gridSetCellBorder(p);
+    JPanel p = new JPanel(new MigLayout("inset 3"));
+    p.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
 
-    int cellWidth = DATA_WIDTH / PANELS_IN_ROW;
-    p.setPreferredSize(new Dimension(cellWidth, FONT_HT));
+    //    int cellWidth = DATA_WIDTH / PANELS_IN_ROW;
+    //    p.setPreferredSize(new Dimension(cellWidth, FONT_HT));
 
-    int datalen = label.length() + value.length() + 1;
-    if (datalen > cellWidth) {
-      String multiline = "<html>" + label + "<br>" + value + "<br></html>";
-      p.add(new JLabel(multiline, SwingConstants.LEFT));
-    } else {
-      p.add(new JLabel(label, SwingConstants.LEFT));
-      p.add(new JLabel(value, SwingConstants.RIGHT));
-    }
+    //    int datalen = label.length() + value.length() + 1;
+    //    if (datalen > cellWidth) {
+    //      String multiline = "<html>" + label + "<br>" + value + "<br></html>";
+    //      p.add(new JLabel(multiline, SwingConstants.LEFT));
+
+    p.add(new JLabel(label, SwingConstants.LEFT));
+    p.add(new JLabel(value, SwingConstants.RIGHT));
 
     return p;
   }
-
-
-  /** Whether single cell or double-height cell, set a border around it */
-  private void gridSetCellBorder(JPanel p)
-  {
-    int cpad = 1;
-    Border cellBorder = BorderFactory.createLineBorder(Color.BLACK, cpad);
-    p.setBorder(cellBorder);
-  }
-
-
-  // /**
-  // * Set the hero display content panels inside a viewable scroll pane
-  // *
-  // * @return HeroDisplay in a (vertical) scrollable pane
-  // */
-  // private JScrollPane makeScrollable()
-  // {
-  // // Reset the panel size based on the size of the constituent components
-  // int finalHt = getPreferredSize().height;
-  // // setPreferredSize(new Dimension(DATA_WIDTH, finalHt));
-  // setPreferredSize(new Dimension(PANEL_WIDTH - 2 * (SCROLLBAR_SIZE),
-  // finalHt));
-  //
-  // /*
-  // * Put the panel in the viewport, and put the viewport in the scrollpane If everything sizes
-  // * correctly, the horizontal scrollbar will not be needed but it set to show the mis-sizing that
-  // * might occur
-  // */
-  // JScrollPane sp = new JScrollPane(this,
-  // ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-  // ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-  // sp.setViewportView(this);
-  // // Resize the view to include the data width, borders, and vertical
-  // // scrollbar
-  // // sp.setPreferredSize(new Dimension(PANEL_WIDTH, finalHt));
-  //
-  // // Reset the client to the top of the view (instead of the bottom)
-  // // sp.getVerticalScrollBar().setValue(sp.getVerticalScrollBar().getMinimum());
-  //
-  // return sp;
-  // }
-
-
-  // // WRITING TO PERSON FILE (either original or new file name)
-  // if (_hdCiv.savePerson() == true) {
-  // JOptionPane.showMessageDialog(null,
-  // CONFIRM_SAVE_MSG, CONFIRM_SAVE_TITLE,
-  // JOptionPane.INFORMATION_MESSAGE);
-  // setVisible(false);
-  // return true;
-  // }
-  // else {
-  // JOptionPane.showMessageDialog(null, OPEN_ERROR_MSG,
-  // OPEN_ERROR_TITLE, JOptionPane.ERROR_MESSAGE);
-  // return false;
-  // }
-  // }
 
   /**
    * Prompts for a new name for the Hero
@@ -1039,96 +655,27 @@ public class HeroDisplay extends ChronosPanel
   {
     final String RENAME_MSG = "Enter new name: ";
     final String RENAME_TITLE = "RENAME HERO";
-    
+
     // Pop up window for rename
-    String newName = JOptionPane.showInputDialog(this, RENAME_MSG, RENAME_TITLE, 
+    String newName = JOptionPane.showInputDialog(this, RENAME_MSG, RENAME_TITLE,
         JOptionPane.QUESTION_MESSAGE);
 
     _hdCiv.renamePerson(newName);
-    // Replace the Hero in storage Update the display
     _hdCiv.savePerson(OVERWRITE);
-//    _hdCiv.redisplayHero();
   }
 
-
-  /**
-   * Saves the Person currently being displayed into the Dormitory
-   * 
-   * @return true if the Person was created and saved successfully, else false
-   */
-  private boolean savePerson()
-  {
-    boolean retflag = false;
-    // Save Hero is he/she doesn't exist in the Dormitory
-    if (_hdCiv.savePerson(NO_OVERWRITE)) {
-      retflag = true;
-    }
-    return retflag;
-  }
-
-
-  // // User chose to OVERWRITE
-  // if (choice == JOptionPane.YES_OPTION) {
-  // boolean retflag = _hdCiv.savePerson(overwrite);
-  // // Display confirmation message
-  // JOptionPane.showMessageDialog(null, _ds.get(PersonKeys.NAME) + CONFIRM_OVERWRITE_MSG,
-  // CONFIRM_OVERWRITE_TITLE, JOptionPane.INFORMATION_MESSAGE);
-  // return retflag;
-  // }
-  // // User chose to CANCEL
-  // else if (choice == JOptionPane.NO_OPTION) {
-  // _hdCiv.back();
-  // return false;
-  // }
-  // // User chose to RENAME
-  // else {
-  // return renamePerson();
-  // // // change save message to avoid throwing error message
-  // // _saveMsg = this.SAVE_CANCEL_MSG;
-  // }
-  // }}
-
-
-  // // WRITING TO PERSON FILE (either original or new file name)
-  // if (_hdCiv.savePerson() == true) {
-  // JOptionPane.showMessageDialog(null,
-  // CONFIRM_SAVE_MSG, CONFIRM_SAVE_TITLE,
-  // JOptionPane.INFORMATION_MESSAGE);
-  // setVisible(false);
-  // return true;
-  // }
-  // else {
-  // JOptionPane.showMessageDialog(null, OPEN_ERROR_MSG,
-  // OPEN_ERROR_TITLE, JOptionPane.ERROR_MESSAGE);
-  // return false;
-  // }
-  // }
-
-  // // WRITING TO PERSON FILE (either original or new file name)
-  // if (_hdCiv.savePerson() == true) {
-  // JOptionPane.showMessageDialog(null,
-  // CONFIRM_SAVE_MSG, CONFIRM_SAVE_TITLE,
-  // JOptionPane.INFORMATION_MESSAGE);
-  // setVisible(false);
-  // return true;
-  // }
-  // else {
-  // JOptionPane.showMessageDialog(null, OPEN_ERROR_MSG,
-  // OPEN_ERROR_TITLE, JOptionPane.ERROR_MESSAGE);
-  // return false;
-  // }
-  // }
-
-  /** Swap the main panel title with the HeroDisplay title */
-  private void setHeroAsTitle()
+  /** Swap the main panel title with the HeroDisplay title 
+   * @param ds 
+   * @return */
+  private static String heroNameplate(EnumMap<PersonKeys, String> ds)
   {
     // Two-row namePlate before Attribute grid: Name, Gender, Race, Klass
-    String namePlate = _ds.get(PersonKeys.NAME) + ": "
-        + _ds.get(PersonKeys.GENDER) + " "
-        + _ds.get(PersonKeys.RACENAME) + " "
-        + _ds.get(PersonKeys.KLASSNAME);
+    String namePlate = ds.get(PersonKeys.NAME) + ": "
+        + ds.get(PersonKeys.GENDER) + " "
+        + ds.get(PersonKeys.RACENAME) + " "
+        + ds.get(PersonKeys.KLASSNAME);
 
-    super._title = namePlate;
+    return namePlate;
   }
 
 
@@ -1139,16 +686,11 @@ public class HeroDisplay extends ChronosPanel
    * 
    * @param firstTime Hero activates buttons differently than dormitory hero
    */
-  private boolean setupDisplay(boolean firstTime)
+  private void setupDisplay()
   {
     // GENERAL SETUP
     setLayout(new MigLayout());
-    // Set the preferred and max size
-    // setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
     setBackground(_backColor);
-
-    // Display Hero in title in Runic Font
-    setHeroAsTitle();
 
     // Add the tabbed pane for attributes, inventory and magic tab displays
     JTabbedPane tabPane = new JTabbedPane();
@@ -1156,8 +698,6 @@ public class HeroDisplay extends ChronosPanel
     // Create HeroDisplay panel tabs
     tabPane.addTab("Attributes", null, buildAttributePanel(),
         "View Hero's personal characteristics");
-    // tabPane.addTab("Skills & Abilities", null, buildSkillsPanel(),
-    // "View Hero's special skills and abilities");
     tabPane.addTab("Skills & Abilities", null, buildSkillsPanel(),
         "View Hero's special skills and abilities");
     tabPane.addTab("Inventory", null, buildInventoryPanel(),
@@ -1185,38 +725,13 @@ public class HeroDisplay extends ChronosPanel
     add(tabPane, "center, wrap");
 
     // ADD SAVE, DELETE, & CANCEL BUTTONS TO THE BOTTOM OF THE PANEL
-    _buttonPanel = buildButtonPanel(firstTime);
+    _buttonPanel = buildButtonPanel();
     _buttonPanel.setPreferredSize(new Dimension(PANEL_WIDTH, _buttonPanel.getHeight()));
     add(_buttonPanel, "span, center, gapbottom 20");
 
     // ADD HELP MESSAGE TO INSTRUCT HOW TO SHIFT FOCUS
     add(new JLabel(HELP_LABEL), "span, center, gapbottom 5");
-
-    return true;
   }
-
-
-  // //TODO: Redo showInventoryByCategory
-  // /** Retrieve a list of items for a particular category and display. All
-  // Items in
-  // * this list have the same category name.
-  // *
-  // * @param itemMap the Item fields for a particular category
-  // * @param zone the text area in which to display the inventory sublist
-  // */
-  // private void showInventoryByCategory(
-  // EnumMap<ItemFields, String> itemMap, JTextArea zone)
-  // {
-  // // Guard: Default entry for no items in the category
-  // if (itemMap.isEmpty() == true) {
-  // zone.append(" None\n");
-  // return;
-  // }
-  // // Get the category name of the Item group to be displayed
-  // String catName = itemMap.get(ItemFields.CATEGORY);
-  // MsgCtrl.msgln("\tCategory to display = " + catName);
-  // zone.append(" " + catName + "\n");
-  // }
 
 } // end HeroDisplay class
 

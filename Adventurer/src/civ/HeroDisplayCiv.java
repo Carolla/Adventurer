@@ -10,18 +10,17 @@
 package civ;
 
 
+import hic.HeroDisplay;
+
 import java.util.EnumMap;
 import java.util.List;
 
 import chronos.civ.PersonKeys;
 import chronos.pdc.AttributeList;
-import chronos.pdc.Item;
 import chronos.pdc.MiscKeys.ItemCategory;
-import chronos.pdc.Skill;
 import chronos.pdc.character.Hero;
 import chronos.pdc.character.Inventory;
 import chronos.pdc.registry.HeroRegistry;
-import hic.HeroDisplay;
 
 
 /**
@@ -43,16 +42,6 @@ public class HeroDisplayCiv extends BaseCiv
   /** Associated GUI */
   private HeroDisplay _widget = null;
 
-  /** The categories for hunger, to convert Satiety points into a hunger state */
-  enum hungerStage {
-    FULL, NOT_HUNGRY, HUNGRY, WEAK, FAINT, STARVED
-  };
-
-  /** Whether character is being loaded. */
-  public static boolean LOADING_CHAR = false;
-  /** Whether character is being created. */
-  public static boolean NEW_CHAR = false;
-
   /** Hero data are converted and sent to the GUI in this EnumMap */
   private EnumMap<PersonKeys, String> _outputMap = new EnumMap<PersonKeys, String>(PersonKeys.class);;
 
@@ -71,11 +60,7 @@ public class HeroDisplayCiv extends BaseCiv
    * @param regFact to access the Dormitory, where Heroes are stoed
    */
   public HeroDisplayCiv(MainframeCiv mfCiv)
-  {
-    if (!HeroDisplayCiv.LOADING_CHAR) {
-      HeroDisplayCiv.NEW_CHAR = true;
-    }
-    
+  { 
     _mfCiv = mfCiv;
   }
 
@@ -106,15 +91,9 @@ public class HeroDisplayCiv extends BaseCiv
   {
     _hero = hero;
     _outputMap = hero.loadAttributes(_outputMap);
-    _widget = new HeroDisplay(this, firstTime);
+    _widget = new HeroDisplay(this, _outputMap);
 
     _mfCiv.replaceLeftPanel(_widget);
-  }
-
-
-  public EnumMap<PersonKeys, String> getAttributes()
-  {
-    return _outputMap;
   }
 
   /** Restore the mainframe panels to their previous state */
@@ -182,39 +161,6 @@ public class HeroDisplayCiv extends BaseCiv
   }
 
   /**
-   * Format the inventory data and tell the widget to display it
-   * 
-   * @param itemList list of Items to display
-   * @return false is an error occurs
-   */
-  public boolean populateInventory(List<Item> itemList)
-  {
-    // Create a shuttle to contain the data and convert to widget String
-    // format
-    // List<String> items = convertItems(itemList);
-    // _widget.displayInventory(items);
-    return true;
-  }
-
-  /**
-   * Format the Skill data and tell the widget to display it
-   * 
-   * @param _skills list of Hero's skills to display
-   * @return false is an error occurs
-   */
-  public boolean populateSkills(List<Skill> _skills)
-  {
-    // Create a shuttle to contain the data and convert to widget String
-    // format
-    // List<String> skillList = convertSkills(_skills);
-    // if (!Constants.IN_TEST) {
-    // _widget.displaySkills(skillList);
-    // }
-    return true;
-  }
-
-
-  /**
    * Rename the Hero to the name selected
    * 
    * @param name the new name for the character
@@ -236,6 +182,7 @@ public class HeroDisplayCiv extends BaseCiv
   {
     boolean retflag = false;
     HeroRegistry dorm = new HeroRegistry();
+    
     // Save when NOT in overwrite mode
     if (overwrite == false) {
       retflag = dorm.add(_hero);
