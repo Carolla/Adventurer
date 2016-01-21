@@ -114,18 +114,9 @@ import civ.HeroDisplayCiv;
 @SuppressWarnings("serial")
 public class HeroDisplay extends ChronosPanel
 {
-  /** Help message to show in panels */
-  private final String HELP_LABEL = "Press F1 key for help.";
-
-  // Specific file error messages not handled by FileChooser
-  //  private String _saveMsg = "";
-
   private final String PROMPT_HERO_EXISTS_MSG =
       "Do you want to overwrite, rename, or create a new Hero?";
   private final String PROMPT_HERO_EXISTS_TITLE = "Hero already exists.";
-
-  //  private final String SAVE_ERROR_TITLE = "FILE SAVE ERROR";
-
   private final String CONFIRM_SAVE_MSG = " is resting in the dormitory until later.";
   private final String CONFIRM_SAVE_TITLE = " Hero is now Registered";
   private final String CONFIRM_OVERWRITE_MSG = " has been overwritten in the dormitory.";
@@ -156,10 +147,6 @@ public class HeroDisplay extends ChronosPanel
   /** Keys to Hero data to be displayed */
   EnumMap<PersonKeys, String> _ds;
   private String _heroName;
-
-  /** Button panel for Save/Delete/Cancel buttons */
-  private JPanel _buttonPanel;
-
 
   // ===============================================================
   // CONSTRUCTOR(S) AND RELATED METHODS
@@ -256,7 +243,6 @@ public class HeroDisplay extends ChronosPanel
       attribPanel.add(gridCell("Bonus MSP/Level: ", _ds.get(PersonKeys.MSP_PER_LEVEL)), "growx");
       attribPanel.add(gridCell("Spells in Book: ", _ds.get(PersonKeys.SPELLS_KNOWN)),
           "span 2, growx, wrap");
-      // attribPanel.add(gridCell(" ", ""), "span 1, growx, wrap"); // remainder of line is empty
     } else {
       attribPanel.add(gridCell(" ", ""), "span 5, growx, wrap");
     }
@@ -270,7 +256,6 @@ public class HeroDisplay extends ChronosPanel
       attribPanel.add(gridCell("Bonus CSP/Level: ", _ds.get(PersonKeys.CSP_PER_LEVEL)), "growx");
       attribPanel.add(gridCell("Turn Undead: ", _ds.get(PersonKeys.TURN_UNDEAD)),
           "span 2, growx, wrap");
-      // attribPanel.add(gridCell(" ", ""), "span 1, growx, wrap"); // remainder of line is empty
     } else {
       attribPanel.add(gridCell(" ", ""), "span 4, growx, wrap");
     }
@@ -303,7 +288,6 @@ public class HeroDisplay extends ChronosPanel
     attribPanel.add(gridCell("Pummeling: ", _ds.get(PersonKeys.PUMMELING)), "growx");
     attribPanel.add(gridCell("Shield Bash: ", _ds.get(PersonKeys.SHIELD_BASH)),
         "span 2, growx, wrap");
-    // attribPanel.add(gridCell(" ", ""), "span 1, growx, wrap"); // remainder of line is empty
 
     // Row 11: Languages label, max langs, list of languages
     String langStr = String.format("Languages (can learn %s more):",
@@ -318,13 +302,7 @@ public class HeroDisplay extends ChronosPanel
 
     return attribPanel;
 
-  } // End of buildAttribute panel
-
-
-
-  // =================================================================
-  // PRIVATE METHODS
-  // =================================================================
+  }
 
   /**
    * Create Save, Delete, and Cancel buttons, then add then to a JPanel
@@ -335,53 +313,19 @@ public class HeroDisplay extends ChronosPanel
   private JPanel buildButtonPanel()
   {
     JButton saveButton = new JButton("Save");
-    saveButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event)
-      {
-        if (_hdCiv.savePerson(NO_OVERWRITE)) {
-          JOptionPane.showMessageDialog(null, _heroName + CONFIRM_SAVE_MSG,
-              CONFIRM_SAVE_TITLE, JOptionPane.INFORMATION_MESSAGE);
-          _hdCiv.backToMain();
-        } else {
-          // Respond to save attempt failure to Rename or Overwrite the Hero
-          doAlternateSaveAction();
-        }
-      }
-    });
+    saveButton.addActionListener(new SaveActionListener());
 
     JButton delButton = new JButton("Delete");
-    delButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event)
-      {
-        if (deletePerson() == true) {
-          JOptionPane.showMessageDialog(null, _heroName + CONFIRM_DEL_MSG,
-              CONFIRM_DEL_TITLE, JOptionPane.INFORMATION_MESSAGE);
-        } else {
-          String[] sorry = new String[1];
-          sorry[0] = "You dropped your scythe!!";
-          JOptionPane.showOptionDialog(null,
-              DEL_ERROR_MSG + _heroName,
-              DEL_ERROR_TITLE, JOptionPane.DEFAULT_OPTION,
-              JOptionPane.ERROR_MESSAGE, null, sorry, null);
-        }
-      }
-    });
+    delButton.addActionListener(new DeleteActionListener());
 
-    /* ADD A CANCEL BUTTON TO THE BOTTOM OF THE PANEL */
     JButton cancelButton = new JButton("Cancel");
-    cancelButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event)
-      {
-        _hdCiv.backToMain();
-      }
-    });
+    cancelButton.addActionListener(new CancelActionListener());
 
-    // Add buttons to buttonPanel
     JPanel buttonPanel = new JPanel();
     buttonPanel.setBackground(_backColor);
 
-    delButton.setEnabled(false);
-    cancelButton.setEnabled(false);
+    delButton.setEnabled(false);     //TODO: SHould this be disabled?
+    cancelButton.setEnabled(false);  //TODO: SHould this be disabled?
 
     buttonPanel.add(saveButton);
     buttonPanel.add(delButton);
@@ -402,14 +346,12 @@ public class HeroDisplay extends ChronosPanel
     JPanel invenPanel = new JPanel(new MigLayout("fillx, ins 0"));
     invenPanel.setBackground(_backColor);
 
-    // Active arms and armor: initially, none
     invenPanel.add(gridCell("Wielded Weapon:", "None"), "gaptop 10, span 6, growx, wrap 0");
     invenPanel.add(gridCell("Armor Worn: ", " None"), "span 6, growx, wrap 0");
-    // Blank line before data
+
     JPanel blankLine = gridCell("", "");
     blankLine.setBackground(Color.DARK_GRAY);
     invenPanel.add(blankLine, "span 6, growx, wrap 0");
-
 
     for (ItemCategory category : ItemCategory.values()) {
       List<String> nameList = _hdCiv.getInventoryNames(category);
@@ -558,12 +500,15 @@ public class HeroDisplay extends ChronosPanel
    */
   private boolean deletePerson()
   {
-    // Custom button text
     Object[] options = {"Yes", "No"};
-    int n = JOptionPane.showOptionDialog(this,
-        "Are you sure you want to delete?", "Delete confirmation",
-        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-        options, options[1]);
+    int n = JOptionPane.showOptionDialog(this, //parent
+        "Are you sure you want to delete?",    //message
+        "Delete confirmation",                 //title
+        JOptionPane.YES_NO_OPTION,             //option type
+        JOptionPane.QUESTION_MESSAGE,          //message type
+        null,                                  //icon
+        options,                               //options
+        options[1]);                           //initial
     if (n == JOptionPane.YES_OPTION) {
       return _hdCiv.deletePerson();
     } else {
@@ -595,14 +540,14 @@ public class HeroDisplay extends ChronosPanel
       case PROMPT_CANCEL:
         _hdCiv.back();
         break;
-        
+
       case PROMPT_RENAME:
         renameHero();
         JOptionPane.showMessageDialog(this, _heroName + CONFIRM_RENAME_MSG,
             CONFIRM_RENAME_TITLE, JOptionPane.INFORMATION_MESSAGE);
         _hdCiv.backToMain();
         break;
-        
+
       case PROMPT_OVERWRITE:
         _hdCiv.savePerson(OVERWRITE);
         JOptionPane.showMessageDialog(this, _heroName + CONFIRM_OVERWRITE_MSG,
@@ -610,7 +555,7 @@ public class HeroDisplay extends ChronosPanel
         // Return to main action buttons
         _hdCiv.backToMain();
         break;
-        
+
       default:
         _hdCiv.backToMain();
         break;
@@ -692,10 +637,19 @@ public class HeroDisplay extends ChronosPanel
     setLayout(new MigLayout());
     setBackground(_backColor);
 
-    // Add the tabbed pane for attributes, inventory and magic tab displays
+    JTabbedPane tabPane = buildTabPane();
+    add(tabPane, "center, wrap");
+
+    JPanel buttonPanel = buildButtonPanel();
+    buttonPanel.setPreferredSize(new Dimension(PANEL_WIDTH, buttonPanel.getHeight()));
+    add(buttonPanel, "span, center, gapbottom 20");
+  }
+
+  // Add the tabbed pane for attributes, inventory and magic tab displays
+  private JTabbedPane buildTabPane()
+  {
     JTabbedPane tabPane = new JTabbedPane();
 
-    // Create HeroDisplay panel tabs
     tabPane.addTab("Attributes", null, buildAttributePanel(),
         "View Hero's personal characteristics");
     tabPane.addTab("Skills & Abilities", null, buildSkillsPanel(),
@@ -704,7 +658,7 @@ public class HeroDisplay extends ChronosPanel
         "View Hero's items owned, worn, or wielded");
     tabPane.addTab("Magic Items", null, buildMagicPanel(),
         "View Hero's enchanted items");
-    tabPane.setSelectedIndex(0); // set default tab
+    tabPane.setSelectedIndex(0);
 
     // Create the conditional tab for magic items for all klasses
     String klassname = _ds.get(PersonKeys.KLASSNAME);
@@ -713,25 +667,67 @@ public class HeroDisplay extends ChronosPanel
       tabPane.addTab("Sacred Satchel", null, buildMaterialsPanel(),
           "View Hero's materials needed for spells.");
       tabPane.addTab("Spell Book", null, buildSpellsPanel(), "View Hero's known spells.");
-    }
-    // Only for Wizards
-    if (klassname.equalsIgnoreCase("Wizard")) {
+    } else if (klassname.equalsIgnoreCase("Wizard")) {
       tabPane.addTab("Magic Bag", null, buildMaterialsPanel(),
           "View Hero's materials needed for spells.");
       tabPane.addTab("Spell Book", null, buildSpellsPanel(), "View Hero's known spells.");
     }
-
-    // Add the tabs to the HeroDisplay panel
-    add(tabPane, "center, wrap");
-
-    // ADD SAVE, DELETE, & CANCEL BUTTONS TO THE BOTTOM OF THE PANEL
-    _buttonPanel = buildButtonPanel();
-    _buttonPanel.setPreferredSize(new Dimension(PANEL_WIDTH, _buttonPanel.getHeight()));
-    add(_buttonPanel, "span, center, gapbottom 20");
-
-    // ADD HELP MESSAGE TO INSTRUCT HOW TO SHIFT FOCUS
-    add(new JLabel(HELP_LABEL), "span, center, gapbottom 5");
+    return tabPane;
   }
 
+
+  private final class CancelActionListener implements ActionListener
+  {
+    public void actionPerformed(ActionEvent event)
+    {
+      _hdCiv.backToMain();
+    }
+  }
+
+
+  private final class DeleteActionListener implements ActionListener
+  {
+    public void actionPerformed(ActionEvent event)
+    {
+      if (deletePerson()) {
+        JOptionPane.showMessageDialog(
+            HeroDisplay.this,
+            _heroName + CONFIRM_DEL_MSG,
+            CONFIRM_DEL_TITLE,
+            JOptionPane.INFORMATION_MESSAGE);
+      } else {
+        String[] sorry = new String[1];
+        sorry[0] = "You dropped your scythe!!";
+        JOptionPane.showOptionDialog(
+            HeroDisplay.this,
+            DEL_ERROR_MSG + _heroName,
+            DEL_ERROR_TITLE,
+            JOptionPane.DEFAULT_OPTION,
+            JOptionPane.ERROR_MESSAGE,
+            null,
+            sorry,
+            null);
+      }
+    }
+  }
+
+
+  private final class SaveActionListener implements ActionListener
+  {
+    public void actionPerformed(ActionEvent event)
+    {
+      if (_hdCiv.savePerson(NO_OVERWRITE)) {
+        JOptionPane.showMessageDialog(
+            HeroDisplay.this,
+            _heroName + CONFIRM_SAVE_MSG,
+            CONFIRM_SAVE_TITLE,
+            JOptionPane.INFORMATION_MESSAGE);
+        _hdCiv.backToMain();
+      } else {
+        // Respond to save attempt failure to Rename or Overwrite the Hero
+        doAlternateSaveAction();
+      }
+    }
+  }
 } // end HeroDisplay class
 
