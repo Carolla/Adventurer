@@ -16,7 +16,6 @@ import java.util.EnumMap;
 import java.util.List;
 
 import chronos.civ.PersonKeys;
-import chronos.pdc.AttributeList;
 import chronos.pdc.MiscKeys.ItemCategory;
 import chronos.pdc.character.Hero;
 import chronos.pdc.character.Inventory;
@@ -77,7 +76,8 @@ public class HeroDisplayCiv extends BaseCiv
    */
   public boolean deletePerson()
   {
-    // return _hero.delete();
+    System.err.println("Can't delete hero right now");
+    System.exit(-1);
     return false;
   }
 
@@ -102,6 +102,8 @@ public class HeroDisplayCiv extends BaseCiv
     _mfCiv.back();
   }
 
+  
+  //TODO(Convert these to PUSH methods for HeroDisplay)
   public List<String> getKlassSkills()
   {
     return _hero.getKlassSkills();
@@ -153,11 +155,6 @@ public class HeroDisplayCiv extends BaseCiv
   public List<String> getSpellBook()
   {
     return _hero.getSpellBook();
-  }
-
-  public boolean populateAbilityScores(AttributeList attribs)
-  {
-    return true;
   }
 
   /**
