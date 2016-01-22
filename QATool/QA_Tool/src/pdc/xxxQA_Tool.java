@@ -54,11 +54,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * @version Dec 30 2015 // original <br>
  *
  */
-public class QA_Tool
+public class xxxQA_Tool
 {
-  /** Map of source file that need test files */
-  private ArrayList<File> _map = new ArrayList<File>();
-
   /** Root folder containing source files */
   static private File _root;
 
@@ -72,10 +69,11 @@ public class QA_Tool
    * 
    * @param path top level folder containing source directories and files
    */
-  public QA_Tool(String path)
+  public xxxQA_Tool(String path)
   {
     _root = new File(path);
     if (!_root.isDirectory()) {
+      System.err.println("QA_Tool: Path argument must be a directory");
       _root = null;
     }
   }
@@ -98,12 +96,6 @@ public class QA_Tool
       map.add(s);
     }
     return map.contains("pdc") && (map.contains("test"));
-  }
-
-
-  public File getRoot()
-  {
-    return _root;
   }
 
 
@@ -163,28 +155,22 @@ public class QA_Tool
   } // end of SourceFilter inner class
 
 
-  // /** Define a file filter to select only source files from a candidate */
-  // class DirFilter implements FilenameFilter
-  // {
-  // public DirFilter()
-  // {}
-  //
-  // /**
-  // * File is acceptable only if the extension is .java
-  // *
-  // * @param f directory in which the file is found
-  // * @param nm filename to search for acceptance match
-  // * @return true if nm represents a directory name
-  // */
-  // public boolean accept(File f, String nm)
-  // {
-  // // look at extension from last period to end of string
-  // File candidate = new File(nm);
-  // boolean retval = candidate.isDirectory();
-  // return retval;
-  // }
-  //
-  // } // end of DirFilter inner class
+  // ========================================================================
+  // INNER CLASS: MockTool
+  // ========================================================================
+
+  /** Provide access to the QA_Tool fields for testing */
+  public class MockTool
+  {
+    public MockTool()
+    {}
+
+    public File getRoot()
+    {
+      return _root;
+    }
+
+  } // end of MockTool inner class
 
 
 } // end of FileScan class
