@@ -33,15 +33,15 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
+import mylib.Constants;
+import mylib.hic.HelpKeyListener;
+import net.miginfocom.swing.MigLayout;
 import chronos.pdc.character.Hero;
 import civ.HeroDisplayCiv;
 import civ.MainframeCiv;
 import civ.NewHeroCiv;
 import civ.NewHeroCiv.ErrorCode;
 import civ.NewHeroCiv.HeroInput;
-import mylib.Constants;
-import mylib.hic.HelpKeyListener;
-import net.miginfocom.swing.MigLayout;
 
 /**
  * Allows the author to input a few key attributes of their Hero. A CIV object is called to validate
@@ -347,7 +347,7 @@ public class NewHeroIPPanel extends ChronosPanel
   private JComboBox makeHairCombo()
   {
     // Populate the drop down selection from CIV data
-    final JComboBox hairCombo = new JComboBox(_nhCiv.getHairColors());
+    final JComboBox hairCombo = new JComboBox(NewHeroCiv.HAIR_COLOR_LIST);
     // Build the box with label
     hairCombo.setEditable(false);
     hairCombo.setBackground(Color.WHITE);
@@ -377,7 +377,7 @@ public class NewHeroIPPanel extends ChronosPanel
   private JComboBox makeKlassCombo()
   {
     // Build the box with label, using Civ data
-    final JComboBox klassCombo = new JComboBox(_nhCiv.getKlasses());
+    final JComboBox klassCombo = new JComboBox(NewHeroCiv.KLASS_LIST);
     klassCombo.setEditable(false);
     klassCombo.setBackground(Color.WHITE);
     klassCombo.addKeyListener(new HelpKeyListener("HeroKlass"));
@@ -449,7 +449,7 @@ public class NewHeroIPPanel extends ChronosPanel
   private JComboBox makeRaceCombo()
   {
     // Build the box with label
-    final JComboBox raceCombo = new JComboBox(_nhCiv.getRaces());
+    final JComboBox raceCombo = new JComboBox(NewHeroCiv.RACE_LIST);
     raceCombo.setEditable(false);
     raceCombo.setBackground(Color.WHITE);
     raceCombo.addKeyListener(new HelpKeyListener("HeroRace"));
@@ -516,7 +516,7 @@ public class NewHeroIPPanel extends ChronosPanel
     input.put(HeroInput.KLASS, _klassName);
 
     // Call the Civ to validate. If good, Civ creates the Hero; else display error widget
-    ErrorCode err = _nhCiv.validate(input);
+    ErrorCode err = validate(_name);
     if (err != ErrorCode.NO_ERROR) {
       input.clear(); //empty input is a failure
       showErrorMessage(err);
@@ -569,6 +569,17 @@ public class NewHeroIPPanel extends ChronosPanel
   // }
   //
   // } // end ChangeKeyListener
+
+
+  private ErrorCode validate(String name)
+  {
+    if (name == null) {
+      return ErrorCode.NAME_MISSING;
+    } else if (name.length() > NewHeroCiv.MAX_NAMELEN) {
+      return ErrorCode.NAME_TOO_LONG;
+    }
+    return ErrorCode.NO_ERROR;
+  }
 
 
   // =======================================================
