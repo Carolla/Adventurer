@@ -13,7 +13,6 @@ package civ;
 import hic.HeroDisplay;
 
 import java.util.EnumMap;
-import java.util.List;
 
 import chronos.civ.PersonKeys;
 import chronos.pdc.MiscKeys.ItemCategory;
@@ -69,6 +68,12 @@ public class HeroDisplayCiv extends BaseCiv
     _mfCiv.backToMain();
   }
 
+  /** Restore the mainframe panels to their previous state */
+  public void back()
+  {
+    _mfCiv.back();
+  }
+
   /**
    * Delete the Person
    * 
@@ -82,82 +87,6 @@ public class HeroDisplayCiv extends BaseCiv
   }
 
   /**
-   * Display the Hero the HeroDisplay widget.
-   * 
-   * @param firstTime Heroes disable Delete button
-   * @param hero to display
-   */
-  public void displayHero(Hero hero, boolean firstTime)
-  {
-    _hero = hero;
-    _outputMap = hero.loadAttributes(_outputMap);
-    _widget = new HeroDisplay(this, _outputMap);
-
-    _mfCiv.replaceLeftPanel(_widget);
-  }
-
-  /** Restore the mainframe panels to their previous state */
-  public void back()
-  {
-    _mfCiv.back();
-  }
-
-  
-  //TODO(Convert these to PUSH methods for HeroDisplay)
-  public List<String> getKlassSkills()
-  {
-    return _hero.getKlassSkills();
-  }
-
-  public List<String> getOcpSkills()
-  {
-    return _hero.getOcpSkills();
-  }
-
-  public List<String> getRaceSkills()
-  {
-    return _hero.getRaceSkills();
-  }
-
-  /**
-   * @return the collection of Items
-   */
-  public Inventory getInventory()
-  {
-    return _hero.getInventory();
-  }
-
-
-  /**
-   * Retrieve a list of all items in the given invenotry by name
-   * 
-   * @param cat category of item to build a subset from
-   * @return the list of names for the subset inventory
-   */
-  public List<String> getInventoryNames(ItemCategory cat)
-  {
-    return getInventory().getNameList(cat);
-  }
-
-
-  /*
-   * @return the length of the inventory (number of Items)
-   */
-  public int getInventorySize()
-  {
-    return getInventory().getNbrItems();
-  }
-
-
-  /**
-   * @return the list of spells known
-   */
-  public List<String> getSpellBook()
-  {
-    return _hero.getSpellBook();
-  }
-
-  /**
    * Rename the Hero to the name selected
    * 
    * @param name the new name for the character
@@ -168,7 +97,6 @@ public class HeroDisplayCiv extends BaseCiv
     _hero.setName(name);
   }
 
-  
   /**
    * Save the Hero into the Dormitory, adding a new Hero or overwriting an old one
    * 
@@ -189,5 +117,29 @@ public class HeroDisplayCiv extends BaseCiv
     return retflag;
   }
 
+  /**
+   * Display the Hero the HeroDisplay widget.
+   * 
+   * @param firstTime Heroes disable Delete button
+   * @param hero to display
+   */
+  public void displayHero(Hero hero, boolean firstTime)
+  {
+    _hero = hero;
+    Inventory inventory = _hero.getInventory();
+    
+    _outputMap = hero.loadAttributes(_outputMap);
+    _widget = new HeroDisplay(this, _outputMap);
+    
+    _widget.addSkills(_hero.getOcpSkills(), _hero.getRaceSkills(), _hero.getKlassSkills());
+    _widget.addInventory(inventory);
+    _widget.addMagicItem(inventory.getNameList(ItemCategory.MAGIC));
+    if (_hero.canUseMagic()) {
+      _widget.addMaterials(inventory.getNameList(ItemCategory.SPELL_MATERIAL));
+      _widget.addSpell(_hero.getSpellBook());
+    }
+
+    _mfCiv.replaceLeftPanel(_widget);
+  }
 } // end of HeroDisplayCiv class
 

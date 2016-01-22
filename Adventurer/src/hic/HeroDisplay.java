@@ -27,6 +27,7 @@ import mylib.Constants;
 import net.miginfocom.swing.MigLayout;
 import chronos.civ.PersonKeys;
 import chronos.pdc.MiscKeys.ItemCategory;
+import chronos.pdc.character.Inventory;
 import civ.HeroDisplayCiv;
 
 
@@ -147,6 +148,10 @@ public class HeroDisplay extends ChronosPanel
   /** Keys to Hero data to be displayed */
   EnumMap<PersonKeys, String> _ds;
   private String _heroName;
+  private JPanel _skillPanel;
+  private JPanel _invenPanel;
+  private JPanel _magicPanel;
+  private JTabbedPane _tabPane;
 
   // ===============================================================
   // CONSTRUCTOR(S) AND RELATED METHODS
@@ -166,12 +171,54 @@ public class HeroDisplay extends ChronosPanel
     _ds = ds;
     _heroName = ds.get(PersonKeys.NAME);
 
+    _tabPane = new JTabbedPane();
+    _skillPanel = createTabPanel();
+    _invenPanel = createTabPanel();
+    _magicPanel = createTabPanel();
+
     setupDisplay();
   }
+
+  
 
   // =================================================================
   // PRIVATE METHODS
   // =================================================================
+
+  /**
+   * Creates the panel and container fields for the given Hero, using a data map from the model to
+   * populate the widget. The HeroDisplay panel contains three tabs: one for attributes, one for
+   * inventory, and one for magic spells
+   * 
+   * @param firstTime Hero activates buttons differently than dormitory hero
+   */
+  private void setupDisplay()
+  {
+    // GENERAL SETUP
+    setLayout(new MigLayout());
+    setBackground(_backColor);
+
+    JTabbedPane tabPane = buildTabPane();
+    add(tabPane, "center, wrap");
+
+    JPanel buttonPanel = buildButtonPanel();
+    buttonPanel.setPreferredSize(new Dimension(PANEL_WIDTH, buttonPanel.getHeight()));
+    add(buttonPanel, "span, center, gapbottom 20");
+  }
+
+  // Add the tabbed pane for attributes, inventory and magic tab displays
+  private JTabbedPane buildTabPane()
+  {
+    _tabPane.addTab("Attributes", null, buildAttributePanel(),
+        "View Hero's personal characteristics");
+
+    _tabPane.addTab("Skills & Abilities", null, _skillPanel, "View Hero's special skills and abilities");
+    _tabPane.addTab("Inventory", null, _invenPanel, "View Hero's items owned, worn, or wielded");
+    _tabPane.addTab("Magic Items", null, _magicPanel, "View Hero's enchanted items");
+    _tabPane.setSelectedIndex(0);
+
+    return _tabPane;
+  }
 
   /**
    * Create the person's attributes in a grid panel for display. Attributes are unpacked from the
@@ -324,8 +371,8 @@ public class HeroDisplay extends ChronosPanel
     JPanel buttonPanel = new JPanel();
     buttonPanel.setBackground(_backColor);
 
-    delButton.setEnabled(false);     //TODO: SHould this be disabled?
-    cancelButton.setEnabled(false);  //TODO: SHould this be disabled?
+    delButton.setEnabled(false);
+    cancelButton.setEnabled(true);
 
     buttonPanel.add(saveButton);
     buttonPanel.add(delButton);
@@ -335,114 +382,12 @@ public class HeroDisplay extends ChronosPanel
   }
 
 
-  /**
-   * Builds the inventory "table", showing Category, Items, quantity, weight (in lbs & oz of each,
-   * and total. Wielded Weapon and Armor Worn is at top. Inventory is organized by category: ARMS,
-   * ARMOR, CLOTHING, EQUIPMENT, PROVISIONS, LIVESTOCK, TRANSPORT : item, quantity, weight, total
-   * weight. See also Sacred Satchel and Magic Bag
-   */
-  private JPanel buildInventoryPanel()
-  {
-    JPanel invenPanel = new JPanel(new MigLayout("fillx, ins 0"));
-    invenPanel.setBackground(_backColor);
-
-    invenPanel.add(gridCell("Wielded Weapon:", "None"), "gaptop 10, span 6, growx, wrap 0");
-    invenPanel.add(gridCell("Armor Worn: ", " None"), "span 6, growx, wrap 0");
-
-    JPanel blankLine = gridCell("", "");
-    blankLine.setBackground(Color.DARK_GRAY);
-    invenPanel.add(blankLine, "span 6, growx, wrap 0");
-
-    for (ItemCategory category : ItemCategory.values()) {
-      List<String> nameList = _hdCiv.getInventoryNames(category);
-      invenPanel.add(buildMultiCell(category.toString(), nameList), "growx, wrap");
-    }
-    return invenPanel;
-  }
-
-  /**
-   * Builds the inventory of magic items (not spell materials)
-   */
-  private JPanel buildMagicPanel()
-  {
-    JPanel magicPanel = new JPanel(new MigLayout("fillx, ins 0"));
-    magicPanel.setBackground(_backColor);
-
-    // Get maigc items from the civ
-    List<String> nameList = _hdCiv.getInventoryNames(ItemCategory.MAGIC);
-
-    magicPanel.add(buildMultiCell("MAGIC ITEMS", nameList), "growx, wrap 0");
-
-    return magicPanel;
-  }
-
-
-  /**
-   * Builds the inventory of (non-magical) spell material used for spells
-   */
-  private JPanel buildMaterialsPanel()
-  {
-    JPanel magicPanel = new JPanel(new MigLayout("fillx, ins 0"));
-    magicPanel.setBackground(_backColor);
-
-    // Get maigc items from the civ
-    List<String> itemList = _hdCiv.getInventoryNames(ItemCategory.SPELL_MATERIAL);
-
-    magicPanel.add(buildMultiCell("SPELL MATERIALS", itemList), "growx, wrap 0");
-
-    return magicPanel;
-  }
-
-
-  /**
-   * Add a JTextArea into a multiline grid
-   * 
-   * @param title of the section for a group, e.g., racial, occupational, or klass
-   * @param nameList of Strings to display in this multi-line cell
-   */
-  private JPanel buildMultiCell(String title, List<String> nameList)
-  {
-    JTextArea msgArea = new JTextArea(nameList.size() + 1, DATA_WIDTH);
-    msgArea.setPreferredSize(new Dimension(DATA_WIDTH, nameList.size() + 1));
-    msgArea.setBackground(_backColor);
-    msgArea.setEditable(false);
-    msgArea.setLineWrap(true); // auto line wrapping doesn't seem to work
-    msgArea.setWrapStyleWord(true);
-
-    // Display the title
-    msgArea.append(" " + title + Constants.NEWLINE);
-
-    // Display the detailed skill list
-    if (nameList.size() == 0) {
-      msgArea.append(" None");
-    } else {
-      for (String name : nameList) {
-        msgArea.append(" + " + name + Constants.NEWLINE);
-      }
-    }
-
-    // Add the text area into a JPanel cell
-    JPanel cell = new JPanel(new MigLayout("ins 0"));
-    cell.add(msgArea, "growx, wrap");
-    cell.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-    return cell;
-  }
-
-
-
   // Build panel of skills: literacy, racial skills, occupational skills, and klass skills
-  private JPanel buildSkillsPanel()
+  public void addSkills(List<String> ocpSkills, List<String> racialSkills,
+      List<String> klassSkills)
   {
-    JPanel skillPanel = new JPanel(new MigLayout("fillx, ins 0"));
-    skillPanel.setBackground(_backColor);
-
-    // Get various skills from the civ
-    List<String> racialSkills = _hdCiv.getRaceSkills();
-    List<String> ocpSkills = _hdCiv.getOcpSkills();
-    List<String> klassSkills = _hdCiv.getKlassSkills();
-
     // Section 1: Literacy
-    skillPanel.add(gridCell("", _ds.get(PersonKeys.LITERACY)), "gaptop 10, span 6, growx, wrap");
+    _skillPanel.add(gridCell("", _ds.get(PersonKeys.LITERACY)), "gaptop 10, span 6, growx, wrap");
 
     // Section 2: Occupational Skills title
     String occupation = _ds.get(PersonKeys.OCCUPATION);
@@ -450,30 +395,66 @@ public class HeroDisplay extends ChronosPanel
     String ocpName = occupation.substring(0, nameIndex);
     String ocpDesc = occupation.substring(nameIndex + 1);
     String ocpTitle = ocpName.toUpperCase() + " SKILLS: " + ocpDesc;
-    skillPanel.add(buildMultiCell(ocpTitle, ocpSkills), "growx, wrap");
+    _skillPanel.add(buildMultiCell(ocpTitle, ocpSkills), "growx, wrap");
 
     // Section 3: Racial skills
-    skillPanel
+    _skillPanel
         .add(buildMultiCell("SPECIAL " + _ds.get(PersonKeys.RACENAME).toUpperCase() + " SKILLS: ",
             racialSkills), "growx, wrap");
 
     // Section 4: Klass skills
-    skillPanel.add(buildMultiCell(_ds.get(PersonKeys.KLASSNAME).toUpperCase() + " SKILLS: ",
+    _skillPanel.add(buildMultiCell(_ds.get(PersonKeys.KLASSNAME).toUpperCase() + " SKILLS: ",
         klassSkills), "growx, wrap");
+  }
 
-    return skillPanel;
+  /**
+   * Builds the inventory "table", showing Category, Items, quantity, weight (in lbs & oz of each,
+   * and total. Wielded Weapon and Armor Worn is at top. Inventory is organized by category: ARMS,
+   * ARMOR, CLOTHING, EQUIPMENT, PROVISIONS, LIVESTOCK, TRANSPORT : item, quantity, weight, total
+   * weight. See also Sacred Satchel and Magic Bag
+   * @param inventory 
+   */
+  public void addInventory(Inventory inventory)
+  {  
+    _invenPanel.add(gridCell("Wielded Weapon:", "None"), "gaptop 10, span 6, growx, wrap 0");
+    _invenPanel.add(gridCell("Armor Worn: ", " None"), "span 6, growx, wrap 0");
+  
+    JPanel blankLine = gridCell("", "");
+    blankLine.setBackground(Color.DARK_GRAY);
+    _invenPanel.add(blankLine, "span 6, growx, wrap 0");
+  
+    for (ItemCategory category : ItemCategory.values()) {
+      List<String> nameList = inventory.getNameList(category);
+      _invenPanel.add(buildMultiCell(category.toString(), nameList), "growx, wrap");
+    }
+  }
+
+  /**
+   * Builds the inventory of magic items (not spell materials)
+   * @param nameList 
+   */
+  public void addMagicItem(List<String> nameList)
+  {
+    _magicPanel.add(buildMultiCell("MAGIC ITEMS", nameList), "growx, wrap 0");
+  }
+
+  /**
+   * Builds the inventory of (non-magical) spell material used for spells
+   */
+  public void addMaterials(List<String> itemList)
+  {
+    JPanel materialPanel = createTabPanel();
+    materialPanel.add(buildMultiCell("SPELL MATERIALS", itemList), "growx, wrap 0");
+    _tabPane.addTab("Magic Bag", null, materialPanel, "View Hero's materials needed for spells.");
   }
 
   /**
    * Builds the list of spells that spellcaster knows
    */
-  private JPanel buildSpellsPanel()
+  public void addSpell(List<String> spellList)
   {
-    JPanel spellPanel = new JPanel(new MigLayout("fillx, ins 0"));
-    spellPanel.setBackground(_backColor);
+    JPanel spellPanel = createTabPanel();
 
-    // Get maigc items from the civ
-    List<String> spellList = _hdCiv.getSpellBook();
     int known = spellList.size();
     spellPanel.add(buildMultiCell(known + " SPELLS KNOWN", spellList), "growx, wrap 0");
 
@@ -489,32 +470,11 @@ public class HeroDisplay extends ChronosPanel
       }
     }
 
-    return spellPanel;
+    _tabPane.addTab("Spell Book", null, spellPanel, "View Hero's known spells.");
   }
 
 
-  /**
-   * Delete the Person currently being displayed into a new file.
-   * 
-   * @return true if the Person was removed successfully, else false
-   */
-  private boolean deletePerson()
-  {
-    Object[] options = {"Yes", "No"};
-    int n = JOptionPane.showOptionDialog(this, //parent
-        "Are you sure you want to delete?",    //message
-        "Delete confirmation",                 //title
-        JOptionPane.YES_NO_OPTION,             //option type
-        JOptionPane.QUESTION_MESSAGE,          //message type
-        null,                                  //icon
-        options,                               //options
-        options[1]);                           //initial
-    if (n == JOptionPane.YES_OPTION) {
-      return _hdCiv.deletePerson();
-    } else {
-      return false;
-    }
-  }
+  
 
   // ======================================================================
   // PRIVATE METHODS
@@ -564,6 +524,47 @@ public class HeroDisplay extends ChronosPanel
 
 
 
+  private JPanel createTabPanel()
+  {
+    JPanel panel = new JPanel(new MigLayout("fillx, ins 0"));
+    panel.setBackground(_backColor);
+    return panel;
+  }
+
+  /**
+   * Add a JTextArea into a multiline grid
+   * 
+   * @param title of the section for a group, e.g., racial, occupational, or klass
+   * @param nameList of Strings to display in this multi-line cell
+   */
+  private JPanel buildMultiCell(String title, List<String> nameList)
+  {
+    JTextArea msgArea = new JTextArea(nameList.size() + 1, DATA_WIDTH);
+    msgArea.setPreferredSize(new Dimension(DATA_WIDTH, nameList.size() + 1));
+    msgArea.setBackground(_backColor);
+    msgArea.setEditable(false);
+    msgArea.setLineWrap(true); // auto line wrapping doesn't seem to work
+    msgArea.setWrapStyleWord(true);
+  
+    // Display the title
+    msgArea.append(" " + title + Constants.NEWLINE);
+  
+    // Display the detailed skill list
+    if (nameList.size() == 0) {
+      msgArea.append(" + None");
+    } else {
+      for (String name : nameList) {
+        msgArea.append(" + " + name + Constants.NEWLINE);
+      }
+    }
+  
+    // Add the text area into a JPanel cell
+    JPanel cell = new JPanel(new MigLayout("ins 0"));
+    cell.add(msgArea, "growx, wrap");
+    cell.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+    return cell;
+  }
+
   /**
    * Creates a lined bordered cell containing a label and its value. The label and its value can be
    * aligned within the component. A JPanel type is returned so that the cell can also get the focus
@@ -594,6 +595,29 @@ public class HeroDisplay extends ChronosPanel
   }
 
   /**
+   * Delete the Person currently being displayed into a new file.
+   * 
+   * @return true if the Person was removed successfully, else false
+   */
+  private boolean deletePerson()
+  {
+    Object[] options = {"Yes", "No"};
+    int n = JOptionPane.showOptionDialog(this, //parent
+        "Are you sure you want to delete?",    //message
+        "Delete confirmation",                 //title
+        JOptionPane.YES_NO_OPTION,             //option type
+        JOptionPane.QUESTION_MESSAGE,          //message type
+        null,                                  //icon
+        options,                               //options
+        options[1]);                           //initial
+    if (n == JOptionPane.YES_OPTION) {
+      return _hdCiv.deletePerson();
+    } else {
+      return false;
+    }
+  }
+
+  /**
    * Prompts for a new name for the Hero
    */
   private void renameHero()
@@ -621,58 +645,6 @@ public class HeroDisplay extends ChronosPanel
         + ds.get(PersonKeys.KLASSNAME);
 
     return namePlate;
-  }
-
-
-  /**
-   * Creates the panel and container fields for the given Hero, using a data map from the model to
-   * populate the widget. The HeroDisplay panel contains three tabs: one for attributes, one for
-   * inventory, and one for magic spells
-   * 
-   * @param firstTime Hero activates buttons differently than dormitory hero
-   */
-  private void setupDisplay()
-  {
-    // GENERAL SETUP
-    setLayout(new MigLayout());
-    setBackground(_backColor);
-
-    JTabbedPane tabPane = buildTabPane();
-    add(tabPane, "center, wrap");
-
-    JPanel buttonPanel = buildButtonPanel();
-    buttonPanel.setPreferredSize(new Dimension(PANEL_WIDTH, buttonPanel.getHeight()));
-    add(buttonPanel, "span, center, gapbottom 20");
-  }
-
-  // Add the tabbed pane for attributes, inventory and magic tab displays
-  private JTabbedPane buildTabPane()
-  {
-    JTabbedPane tabPane = new JTabbedPane();
-
-    tabPane.addTab("Attributes", null, buildAttributePanel(),
-        "View Hero's personal characteristics");
-    tabPane.addTab("Skills & Abilities", null, buildSkillsPanel(),
-        "View Hero's special skills and abilities");
-    tabPane.addTab("Inventory", null, buildInventoryPanel(),
-        "View Hero's items owned, worn, or wielded");
-    tabPane.addTab("Magic Items", null, buildMagicPanel(),
-        "View Hero's enchanted items");
-    tabPane.setSelectedIndex(0);
-
-    // Create the conditional tab for magic items for all klasses
-    String klassname = _ds.get(PersonKeys.KLASSNAME);
-    // Only for Clerics
-    if (klassname.equalsIgnoreCase("Cleric")) {
-      tabPane.addTab("Sacred Satchel", null, buildMaterialsPanel(),
-          "View Hero's materials needed for spells.");
-      tabPane.addTab("Spell Book", null, buildSpellsPanel(), "View Hero's known spells.");
-    } else if (klassname.equalsIgnoreCase("Wizard")) {
-      tabPane.addTab("Magic Bag", null, buildMaterialsPanel(),
-          "View Hero's materials needed for spells.");
-      tabPane.addTab("Spell Book", null, buildSpellsPanel(), "View Hero's known spells.");
-    }
-    return tabPane;
   }
 
 

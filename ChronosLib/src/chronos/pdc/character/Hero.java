@@ -490,6 +490,12 @@ public class Hero implements IRegistryElement
   }
 
 
+  public boolean canUseMagic()
+  {
+    return _klassname.equals(Klass.CLERIC_CLASS_NAME) ||
+           _klassname.equals(Klass.WIZARD_CLASS_NAME);
+  }
+
   public String getGender()
   {
     return _gender;

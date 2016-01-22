@@ -11,15 +11,8 @@
 
 package test.civ;
 
-import junit.framework.TestCase;
-import mylib.MsgCtrl;
-import mylib.civ.DataShuttle;
+import org.junit.Test;
 
-import org.junit.Before;
-
-import chronos.civ.PersonKeys;
-import chronos.pdc.character.Hero;
-import civ.HeroDisplayCiv;
 
 /**
  * 
@@ -29,55 +22,34 @@ import civ.HeroDisplayCiv;
  *          <DD>
  *          </DL>
  */
-public class TestHeroDisplayCiv extends TestCase
+public class TestHeroDisplayCiv
 {
 
-    // Person to use for Testing
-    private final String NAME = "Clyde";
-    private final String GENDER = "Male";
-    private final String OCCUP = "Gambler";
-    private final String HAIRCOLOR = "brown";
-    private final String RACENAME = "Human";
-    
-    private Hero _p = null;
-    private HeroDisplayCiv _civ = null;
-    DataShuttle<PersonKeys> _ds = null;
+  @Test
+  public void cantThinkOfAnyTests()
+  {}
 
+  /**
+   * List of methods that do not need JUnit test because they are too trivial,
+   * or some other test method tests them equally well. <br>
+   * <code>heroDisplayCiv()</code>: -- Unused default contructor<br>
+   * <code>convertToModel(DataShuttle&ltNewHeroFields&gt)</code>: -- unused
+   * override <br>
+   * <code>getDefaults()</code>: -- unused override <br>
+   * <code>getFieldData()</code>: -- <br>
+   * <code>getInventorySize()</code>: -- wrapper <br>
+   * <code>isValid(DataShuttle&ltNewHeroFields&gt)</code>: -- unused override <br>
+   * <code>populateAttributes(DataShuttle&ltPersonKeys&gt ds)</code>-- calls
+   * GUI <code>populateInventory(ArrayList&ltItem&gt)</code> -- calls GUI
+   * <code>populateSkills(ArrayList&ltSkill&gt)</code> -- calls GUI
+   */
+  public void notNeeded()
+  {}
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception
-    {
-        MsgCtrl.auditMsgsOn(true);
-        MsgCtrl.errorMsgsOn(true);
-        _p = new Hero(NAME, GENDER, OCCUP, HAIRCOLOR, RACENAME);
-        _civ = new HeroDisplayCiv(null);
-    }
-
-
-    /**
-     * List of methods that do not need JUnit test because they are too trivial,
-     * or some other test method tests them equally well. <br>
-     * <code>heroDisplayCiv()</code>: -- Unused default contructor<br>
-     * <code>convertToModel(DataShuttle&ltNewHeroFields&gt)</code>: -- unused
-     * override <br>
-     * <code>getDefaults()</code>: -- unused override <br>
-     * <code>getFieldData()</code>: -- <br>
-     * <code>getInventorySize()</code>: -- wrapper <br>
-     * <code>isValid(DataShuttle&ltNewHeroFields&gt)</code>: -- unused override <br>
-     * <code>populateAttributes(DataShuttle&ltPersonKeys&gt ds)</code>-- calls
-     * GUI <code>populateInventory(ArrayList&ltItem&gt)</code> -- calls GUI
-     * <code>populateSkills(ArrayList&ltSkill&gt)</code> -- calls GUI
-     */
-    public void notNeeded()
-    {}
-
-    /*
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
-     * PRIVATE HELPER METHODS!
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-     */
+  /*
+   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+   * PRIVATE HELPER METHODS!
+   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   */
 
 } // end of TestHeroDisplayCiv class
