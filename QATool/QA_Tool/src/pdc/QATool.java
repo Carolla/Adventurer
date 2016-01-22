@@ -135,16 +135,12 @@ public class QATool
       }
     }
   }
-  
-  
+
+
   // ======================================================================
-    // PUBLIC METHODS
-    // ======================================================================
-  
-    // ======================================================================
   // PUBLIC METHODS
   // ======================================================================
-  
+
   /**
    * Traverse the root dir structure to the test subdir, building paths for all test files Results
    * are placed into the {@code _testPaths} field.
@@ -172,19 +168,22 @@ public class QATool
   }
 
 
-    public void fileScan(File root)
-    {
-      _srcPaths.clear();
-      _testPaths.clear();
-      int srcPrefix = root.getPath().length();
-      buildSourceList(root, srcPrefix);
-      _testDir = findTestDir(root);
-  //    System.out.println("_root = " + _root);
-  //    System.out.println("_testDir = " + _testDir);
-      int testPrefix = _testDir.getPath().length();
-      buildTestList(_testDir, testPrefix);
-      matchSrcToTest(_srcPaths, _testPaths);
-    }
+  /**
+   * Main driver for the QA Tool, calling subordinate methods
+   * 
+   * @param root starting directory for source (and test) directories
+   */
+  public void fileScan(File root)
+  {
+    _srcPaths.clear();
+    _testPaths.clear();
+    int srcPrefix = root.getPath().length();
+    buildSourceList(root, srcPrefix);
+    _testDir = findTestDir(root);
+    int testPrefix = _testDir.getPath().length();
+    buildTestList(_testDir, testPrefix);
+    matchSrcToTest(_srcPaths, _testPaths);
+  }
 
 
   /** Traverse the root dir and return the test subdir */
@@ -194,7 +193,7 @@ public class QATool
     File[] allFiles = root.listFiles();
     // Retrieve TEST subdir
     for (File f : allFiles) {
-//      System.out.println("getTestDir(): " + f.getPath());
+      // System.out.println("getTestDir(): " + f.getPath());
       if (f.isDirectory()) {
         if (f.getPath().contains(TEST)) {
           _testDir = f;
@@ -222,9 +221,6 @@ public class QATool
    */
   public void matchSrcToTest(ArrayList<String> srcList, ArrayList<String> testList)
   {
-//    _matched.clear();
-//    _srcWithoutTests.clear();
-//    _testsWithoutSrc.clear();
     // Make a copy because this list is mutable (will decrease)
     _testsWithoutSrc.addAll(testList);
     for (String s : srcList) {
@@ -246,9 +242,8 @@ public class QATool
   }
 
 
-
   // ======================================================================
-  // INNER Class SourceFileFilter
+  // Private helper methods
   // ======================================================================
 
   /** Remove the pathn prefix and add "Test" prefix to filename */
@@ -262,6 +257,10 @@ public class QATool
     return sb.toString();
   }
 
+
+  // ======================================================================
+  // INNER Class SourceFileFilter
+  // ======================================================================
 
   /** Filter for selecting restricted files names from a list */
   class SourceFileFilter implements FilenameFilter
@@ -285,6 +284,10 @@ public class QATool
   } // End of SourceFileFilter inner class
 
 
+  // ======================================================================
+  // INNER Class DirectoryFilter
+  // ======================================================================
+
   /** Filter for selecting restricted files names from a list */
   class DirectoryFilter implements FileFilter
   {
@@ -304,11 +307,6 @@ public class QATool
       boolean retval = false;
       SourceFileFilter srcFilter = new SourceFileFilter();
       if (candidate.isDirectory()) {
-        // // Check for exluded directories
-        // if ((candidate.getName().equalsIgnoreCase("HIC")) ||
-        // (candidate.getName().equalsIgnoreCase("TEST"))) {
-        // return false;
-        // }
         // Check for source files within non-excluded directories
         File[] fileList = candidate.listFiles(srcFilter);
         if (fileList.length != 0) {
@@ -322,7 +320,7 @@ public class QATool
 
 
   // ========================================================================
-  // INNER CLASS: MockTool
+  // INNER CLASS: MockTool for testing
   // ========================================================================
 
   /** Provide access to the QA_Tool fields for testing */
@@ -335,7 +333,7 @@ public class QATool
     {
       return QATool.this._root;
     }
-    
+
     public ArrayList<String> getMatched()
     {
       return QATool.this._matched;
@@ -365,4 +363,4 @@ public class QATool
   } // end of MockTool inner class
 
 
-} // end of FileMap class
+} // end of QATool class
