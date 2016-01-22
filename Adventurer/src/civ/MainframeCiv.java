@@ -100,7 +100,7 @@ public class MainframeCiv extends BaseCiv implements UserMsg
   /** Close down the application if user so specified */
   public void quit()
   {
-
+    System.exit(0);
   }
 
 
