@@ -67,7 +67,7 @@ import chronos.test.pdc.registry.RegistrySuite;
 
 })
 /** Compilation of all unit tests for regression and integration testing. */
-public class ChronosTestSuite
+public class ChronosUnitTestSuite
 {
 }
 

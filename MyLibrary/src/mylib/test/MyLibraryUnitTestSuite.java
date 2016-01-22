@@ -33,7 +33,7 @@ import org.junit.runners.Suite;
     TestUtilities.class,
 })
 
-public class MyLibraryTestSuite
+public class MyLibraryUnitTestSuite
 {
 }
 

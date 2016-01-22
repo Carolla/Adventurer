@@ -55,7 +55,7 @@ import test.pdc.command.CommandSuite;
 
     /** DMC test files */
 })
-public class UnitTestSuite
+public class AdventurerUnitTestSuite
 {
 
 } // end of UnitTestSuite class
