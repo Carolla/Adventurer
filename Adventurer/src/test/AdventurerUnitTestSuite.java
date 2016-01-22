@@ -15,6 +15,7 @@ import org.junit.runners.Suite;
 import test.civ.TestBuildingDisplayCiv;
 import test.civ.TestHeroDisplayCiv;
 import test.civ.TestMainframeCiv;
+import test.civ.TestNewHeroCiv;
 import test.pdc.command.CommandSuite;
 
 /**
@@ -36,7 +37,7 @@ import test.pdc.command.CommandSuite;
     TestHeroDisplayCiv.class,
     // TestMainActionCiv.class,
     TestMainframeCiv.class,
-    // TestNewHeroCiv.class,
+    TestNewHeroCiv.class,
 
     /* PDC subfolder test suites */
     CommandSuite.class
