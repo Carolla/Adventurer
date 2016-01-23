@@ -114,13 +114,10 @@ public abstract class Klass implements Serializable
         return new Wizard();
       case THIEF_CLASS_NAME:
         return new Thief();
-
-      default:
-        System.err.println("Klass.createKlass(): Cannot find class requested: klassName");
-        return null;
     }
+    
+    throw new NullPointerException("Klass.createKlass(): Cannot find class requested " + klassName);
   }
-
 
   // // Add an element to an array
   // protected ArrayList<String> addItem(inven, item) {

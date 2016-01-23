@@ -12,6 +12,7 @@ package civ;
 import java.util.EnumMap;
 
 import chronos.pdc.character.Hero;
+import chronos.pdc.character.Hero.HeroInput;
 import chronos.pdc.registry.HeroRegistry;
 
 /**
@@ -34,11 +35,6 @@ public class NewHeroCiv extends BaseCiv
 
   public static final String[] RACE_LIST =
       {"Human", "Dwarf", "Elf", "Gnome", "Half-Elf", "Half-Orc", "Hobbit"};
-
-  /** Input data fields to create a new hero */
-  public enum HeroInput {
-    NAME, GENDER, HAIR, RACE, KLASS
-  };
 
   /** ErrorCode for type of error encountered on input */
   public enum ErrorCode {
@@ -80,19 +76,7 @@ public class NewHeroCiv extends BaseCiv
    */
   public Hero createHero(EnumMap<HeroInput, String> inputMap)
   {
-    String name = inputMap.get(HeroInput.NAME);
-    String gender = inputMap.get(HeroInput.GENDER);
-    String hairColor = inputMap.get(HeroInput.HAIR);
-    String raceName = inputMap.get(HeroInput.RACE);
-    String klassName = inputMap.get(HeroInput.KLASS);
-
-    Hero myHero = null;
-
-    try {
-      myHero = new Hero(name, gender, hairColor, raceName, klassName);
-    } catch (InstantiationException ex) {
-      System.err.println("NewHeroCiv.createHero(): " + ex.getMessage());
-    }
+    Hero myHero = new Hero(inputMap);
     return myHero;
   }
 } // end of NewHeroCiv class

@@ -50,13 +50,14 @@ public abstract class Race implements Serializable
       tmp += raceName.substring(ndx + 1);
       raceName = tmp;
     }
+    
     Race newRace = null;
     try {
       // Class Commands must have empty constructors (no formal input arguments)
       String racePath = Chronos.getPackageName() + raceName;
       newRace = (Race) Class.forName(racePath).newInstance();
     } catch (Exception e) {
-      System.err.println("Race.createRace(): Cannot find class requested: " + e.getMessage());
+      throw new NullPointerException("Race.createRace(): Cannot find class requested: " + raceName);
     }
     return newRace;
   }

@@ -33,11 +33,11 @@ import javax.swing.text.DocumentFilter;
 import mylib.Constants;
 import net.miginfocom.swing.MigLayout;
 import chronos.pdc.character.Hero;
+import chronos.pdc.character.Hero.HeroInput;
 import civ.HeroDisplayCiv;
 import civ.MainframeCiv;
 import civ.NewHeroCiv;
 import civ.NewHeroCiv.ErrorCode;
-import civ.NewHeroCiv.HeroInput;
 
 /**
  * Allows the author to input a few key attributes of their Hero. A CIV object is called to validate

@@ -28,6 +28,12 @@ import chronos.pdc.Race;
  */
 public class Hero implements IRegistryElement
 {
+
+  /** Input data fields to create a new hero */
+  public enum HeroInput {
+    NAME, GENDER, HAIR, RACE, KLASS
+  };
+  
   // Statics and transients are not saved with the serialized Person object
   /** Recommended serialization constant */
   static final long serialVersionUID = 1007L;
@@ -266,11 +272,6 @@ public class Hero implements IRegistryElement
   // ====================================================
   // CONSTRUCTOR(S) AND RELATED METHODS
   // ====================================================
-
-  /** Default Hero object used for testing */
-  public Hero()
-  {}
-
   /**
    * Create the Person from the basic non-klass attributes.
    * 
@@ -279,18 +280,16 @@ public class Hero implements IRegistryElement
    * @param hairColor selected hair color for this Person
    * @param raceName the concrete subclass object of Race, e.g., Human or Hobbit
    * @param klassName the concrete subclass object of Klass, e.g. Fighter or Thief
-   * 
-   * @throws InstantiationException if any of the input parms are null
+
    */
   public Hero(String name, String gender, String hairColor, String raceName, String klassName)
-      throws InstantiationException
   {
     // Guards
     if ((name == null) || (gender == null) || (hairColor == null)) {
-      throw new InstantiationException("Missing input data passed to Hero constructor");
+      throw new NullPointerException("Missing input data passed to Hero constructor");
     }
     if ((raceName == null) || (klassName == null)) {
-      throw new InstantiationException("Missing Race or Klass passed to Hero constructor");
+      throw new NullPointerException("Missing Race or Klass passed to Hero constructor");
     }
 
     // Setup internal data
@@ -314,20 +313,14 @@ public class Hero implements IRegistryElement
     // 3. REARRANGE THE PRIME TRAIT FOR THE KLASS
     // Create the Klass object
     _klass = Klass.createKlass(_klassname);
-    // Verify that a good Klass was created
-    if (_klass == null) {
-      throw new InstantiationException(String.format("Could not create klass %s", klassName));
-    }
+
     _traits = _klass.adjustTraitsForKlass(_traits);
     // displayTraits(_klassname + "-adjusted Traits: ", _traits);
 
     // 4a. REARRANGE THE PRIME TRAIT FOR THE RACE
     // Create the Race object
     _race = Race.createRace(_racename);
-    // Verify that a good Race was created
-    if (_race == null) {
-      throw new InstantiationException(String.format("Could not create race %s", raceName));
-    }
+
     _traits = _race.adjustTraitsForRace(_traits);
     // displayTraits(_racename + "-adjusted Traits: ", _traits);
 
@@ -477,6 +470,15 @@ public class Hero implements IRegistryElement
 
   } // end of Hero constructor
 
+
+  public Hero(EnumMap<HeroInput, String> inputMap)
+  {
+    this(inputMap.get(HeroInput.NAME),
+         inputMap.get(HeroInput.GENDER),
+         inputMap.get(HeroInput.HAIR),
+         inputMap.get(HeroInput.RACE),
+         inputMap.get(HeroInput.KLASS));
+  }
 
   /** Converts from Skill name, description, and percent change into a string */
   private ArrayList<String> toArrayList(String[][] thiefSkills)
