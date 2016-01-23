@@ -9,6 +9,7 @@
 
 package chronos.pdc.race;
 
+import chronos.pdc.character.Gender;
 import mylib.pdc.MetaDie;
 
 /**
@@ -54,21 +55,26 @@ public class HalfElf extends Race
   
   /**
    * Default constructor, called reflectively by Race
+   * @param gender 
    */
-  public HalfElf() 
+  public HalfElf(Gender gender) 
   {
     _raceName = "Half-Elf";
     _raceLang = getRaceLang();
     _minLimit = minLimit;
     _maxLimit = maxLimit;
-    // Define weight ranges for Hero
-    _weightMaleMedValue = _maleMedValue;
-    _weightFemaleMedValue = _femaleMedValue;
     _weightLowDice = _wtLowDice;
     _weightHighDice = _wtHighDice;
     // Define height ranges for Hero
-    _heightMaleMedValue = _htMaleMedValue;
-    _heightFemaleMedValue = _htFemaleMedValue;
+    if (gender.isMale()) {
+      // Define weight ranges for Hero
+      _heightMedValue = _htMaleMedValue;
+      _weightMedValue = _maleMedValue;
+    } else {
+      // Define height ranges for Hero
+      _weightMedValue = _femaleMedValue;
+      _heightMedValue = _htFemaleMedValue;
+    }
     _heightLowDice = _htLowDice;
     _heightHighDice = _htHighDice;
    

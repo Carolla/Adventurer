@@ -11,13 +11,11 @@
 
 package chronos.test.pdc;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import mylib.MsgCtrl;
 
 import org.junit.Before;
 
+import chronos.pdc.character.Gender;
 import chronos.pdc.race.Race;
 
 /**
@@ -36,7 +34,7 @@ public class TestRace  {
 
 	private final String[] _races = { "Human", "Dwarf", "Elf", "Gnome",
 			"Half-Elf", "Half-Orc", "Hobbit" };
-  private Race _race;
+  
 
     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++  
      *                  STATE HANDLING METHODS 
@@ -51,7 +49,7 @@ public class TestRace  {
 	@Before
 	public void setUp() 
 	{
-		_race = Race.createRace("Elf");
+		Race.createRace("Elf", new Gender("Female"));
 	}
 
 	// -------------------------------------------------------------------------
@@ -70,17 +68,9 @@ public class TestRace  {
 		// NORMAL
 		// Human and Dwarf are only classes implemented now
 		Race aRace = null;
-		for (int k = 0; k < 2; k++) {
-			aRace = Race.createRace(_races[k]);
-			assertNotNull(aRace);
+		for (int k = 0; k < _races.length; k++) {
+			aRace = Race.createRace(_races[k], new Gender("Male"));
 			assertTrue(aRace.getRaceName().equals(_races[k]));
-		}
-		// ERROR
-		// These classes are not implemented yet
-		for (int k = 2; k < _races.length; k++) {
-			MsgCtrl.errMsg("\tExpected error: ");
-			aRace = Race.createRace(_races[k]);
-			assertNull(aRace);
 		}
 	}
 

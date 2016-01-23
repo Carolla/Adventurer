@@ -29,19 +29,6 @@ import chronos.pdc.race.Race;
 public class Hero implements IRegistryElement
 {
 
-  public enum Gender {
-    MALE(), FEMALE();
-    
-    public static Gender byName(String name)
-    {
-      if (name.equals("Male")) {
-        return MALE;
-      } else {
-        return FEMALE;
-      }
-    }
-  }
-
   /** Input data fields to create a new hero */
   public enum HeroInput {
     NAME, GENDER, HAIR, RACE, KLASS
@@ -310,7 +297,7 @@ public class Hero implements IRegistryElement
 
     // 1. INPUT DATA
     _name = name;
-    _gender = Gender.byName(gender);
+    _gender = new Gender(gender);
     _hairColor = hairColor;
     _racename = raceName;
     _klassname = klassName;
@@ -330,17 +317,18 @@ public class Hero implements IRegistryElement
     _traits = _klass.adjustTraitsForKlass(_traits);
     // displayTraits(_klassname + "-adjusted Traits: ", _traits);
 
+    // 4b. REARRANGE THE PRIME TRAIT FOR THE GENDER
+    if (_gender.isFemale()) {
+      _traits = adjustTraitsForGender(_traits);
+    }
+    
     // 4a. REARRANGE THE PRIME TRAIT FOR THE RACE
     // Create the Race object
-    _race = Race.createRace(_racename);
+    _race = Race.createRace(_racename, _gender);
 
     _traits = _race.adjustTraitsForRace(_traits);
     // displayTraits(_racename + "-adjusted Traits: ", _traits);
 
-    // 4b. REARRANGE THE PRIME TRAIT FOR THE GENDER
-    if (_gender == Gender.FEMALE) {
-      _traits = adjustTraitsForGender(_traits);
-    }
 
     // 5. ENSURE ALL ADJUSTMENTS REMAIN WITH RACIAL LIMITS
     _traits = _race.verifyRaceLimits(_traits);
@@ -404,8 +392,8 @@ public class Hero implements IRegistryElement
     // System.out.println("\n\t to Hit (missile) = " + _toHitDex + ", \t AC Mod = " + _ACMod);
 
     // 11a. ASSIGN HERO'S HEIGHT AND WEIGHT
-    _weight = _race.calcWeight(_gender);
-    _height = _race.calcHeight(_gender);
+    _weight = _race.calcWeight();
+    _height = _race.calcHeight();
     // System.out.print("\n" + _name + " weighs " + _weight + " lbs,");
     // System.out.println(" and is " + _height + " inches tall.");
     // 11b. GET THE HERO'S PHYSICAL DESCRIPTION FROM THIS BODY-TYPE
@@ -1229,8 +1217,6 @@ public class Hero implements IRegistryElement
     String bodyType = _race.initBodyType(chr, _height, _weight);
     // Start the description with a vowel-sensitive article
     String article = (checkFirstVowel(bodyType) == true) ? "An " : "A ";
-    // Determine proper gender for descriptive statement
-    String pronoun = _gender == Gender.FEMALE ? "She" : "He";
   
     // Process baldness.
     String hairType = (_hairColor.equalsIgnoreCase("bald")) ? "a bald head" : _hairColor + " hair";
@@ -1241,7 +1227,7 @@ public class Hero implements IRegistryElement
   
     // Get Charisma description
     String chrDesc = _race.initCharismaDescriptor(chr);
-    String desc3 = pronoun + " is " + chrDesc + ".";
+    String desc3 = _gender.pronoun() + " is " + chrDesc + ".";
   
     String desc = desc1 + " and " + desc2 + ". " + desc3;
     return desc;

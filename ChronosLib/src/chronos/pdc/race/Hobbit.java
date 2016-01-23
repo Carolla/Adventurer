@@ -9,6 +9,7 @@
 
 package chronos.pdc.race;
 
+import chronos.pdc.character.Gender;
 import chronos.pdc.character.Hero.PrimeTraits;
 
 
@@ -55,21 +56,26 @@ public class Hobbit extends Race
 
   /**
    * Default constructor, called reflectively by Klass
+   * @param gender 
    */
-  public Hobbit() 
+  public Hobbit(Gender gender) 
   {
     _raceName = "Hobbit";
     _raceLang = "Tolkeen";
     _minLimit = minLimit;
     _maxLimit = maxLimit;
-    // Define weight ranges for Hero
-    _weightMaleMedValue = _maleMedValue;
-    _weightFemaleMedValue = _femaleMedValue;
     _weightLowDice = _wtLowDice;
     _weightHighDice = _wtHighDice;
     // Define height ranges for Hero
-    _heightMaleMedValue = _htMaleMedValue;
-    _heightFemaleMedValue = _htFemaleMedValue;
+    if (gender.isMale()) {
+      // Define weight ranges for Hero
+      _heightMedValue = _htMaleMedValue;
+      _weightMedValue = _maleMedValue;
+    } else {
+      // Define height ranges for Hero
+      _weightMedValue = _femaleMedValue;
+      _heightMedValue = _htFemaleMedValue;
+    }
     _heightLowDice = _htLowDice;
     _heightHighDice = _htHighDice;
 

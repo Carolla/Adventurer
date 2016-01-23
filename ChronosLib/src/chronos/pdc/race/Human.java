@@ -9,6 +9,8 @@
 
 package chronos.pdc.race;
 
+import chronos.pdc.character.Gender;
+
 
 
 /**
@@ -50,20 +52,26 @@ public class Human extends Race
 
   /**
    * Default constructor, called reflectively by Klass
+   * @param gender 
    */
-  public Human() 
+  public Human(Gender gender) 
   {
     _raceName = "Human";
     _minLimit = minLimit;
     _maxLimit = maxLimit;
     _raceLang = null;     // There is no special language for Humans
-    // Define weight ranges for Hero
-    _weightMaleMedValue = _maleMedValue;
-    _weightFemaleMedValue = _femaleMedValue;
     _weightLowDice = _wtLowDice;
     _weightHighDice = _wtHighDice;
-    _heightMaleMedValue = _htMaleMedValue;
-    _heightFemaleMedValue = _htFemaleMedValue;
+    // Define height ranges for Hero
+    if (gender.isMale()) {
+      // Define weight ranges for Hero
+      _heightMedValue = _htMaleMedValue;
+      _weightMedValue = _maleMedValue;
+    } else {
+      // Define height ranges for Hero
+      _weightMedValue = _femaleMedValue;
+      _heightMedValue = _htFemaleMedValue;
+    }
     _heightLowDice = _htLowDice;
     _heightHighDice = _htHighDice;
     _descriptor = _raceDescriptor;

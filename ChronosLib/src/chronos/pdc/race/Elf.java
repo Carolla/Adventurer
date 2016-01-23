@@ -9,6 +9,7 @@
 
 package chronos.pdc.race;
 
+import chronos.pdc.character.Gender;
 import chronos.pdc.character.Hero.PrimeTraits;
 
 /**
@@ -20,10 +21,6 @@ public class Elf extends Race
   // Statics and transients that are not serialized with the Race class hierarchy
   /** Recommended serialization constant. */
   static final long serialVersionUID = 1100L;
-
-  /** Racial limits for a Elf for the traits */
-  private final int[] minLimit = { 7,  8,  7,  7,  7,  8};
-  private final int[] maxLimit = {18, 18, 18, 19, 18, 18};
 
   /** Weight ranges */
   protected final int _maleMedValue = 100;;
@@ -55,21 +52,25 @@ public class Elf extends Race
 
   /**
    * Default constructor, called reflectively by Klass
+   * @param gender 
    */
-  public Elf() 
+  public Elf(Gender gender) 
   {
     _raceName = "Elf";
     _raceLang = "Elvish";
-    _minLimit = minLimit;
-    _maxLimit = maxLimit;
-    // Define weight ranges for Hero
-    _weightMaleMedValue = _maleMedValue;
-    _weightFemaleMedValue = _femaleMedValue;
+    
     _weightLowDice = _wtLowDice;
     _weightHighDice = _wtHighDice;
     // Define height ranges for Hero
-    _heightMaleMedValue = _htMaleMedValue;
-    _heightFemaleMedValue = _htFemaleMedValue;
+    if (gender.isMale()) {
+      // Define weight ranges for Hero
+      _heightMedValue = _htMaleMedValue;
+      _weightMedValue = _maleMedValue;
+    } else {
+      // Define height ranges for Hero
+      _weightMedValue = _femaleMedValue;
+      _heightMedValue = _htFemaleMedValue;
+    }
     _heightLowDice = _htLowDice;
     _heightHighDice = _htHighDice;
     _descriptor = _raceDescriptor;

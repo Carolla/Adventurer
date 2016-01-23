@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import mylib.pdc.MetaDie;
 import pdc.character.race.Dwarf;
 import chronos.Chronos;
-import chronos.pdc.character.Hero.Gender;
+import chronos.pdc.character.Gender;
 
 /**
  * Defines the common methods and attributes for all Races.
@@ -40,23 +40,23 @@ public abstract class Race
    *
    * @param RaceName the name of the subclass to be created
    */
-  static public Race createRace(String raceName)
+  static public Race createRace(String raceName, Gender gender)
   {
     Race race = null;
     if (raceName.equals("Dwarf")) {
-      race =  new Dwarf();
+      race =  new Dwarf(gender);
     } else if (raceName.equals("Elf")) {
-      race =  new Elf();
+      race =  new Elf(gender);
     } else if (raceName.equals("Gnome")) {
-      race =  new Gnome();
+      race =  new Gnome(gender);
     } else if (raceName.equals("Half-Elf")) {
-      race =  new HalfElf();
+      race =  new HalfElf(gender);
     } else if (raceName.equals("Half-Orc")) {
-      race =  new HalfOrc();
+      race =  new HalfOrc(gender);
     } else if (raceName.equals("Hobbit")) {
-      race =  new Hobbit();
+      race =  new Hobbit(gender);
     } else {
-      race =  new Human();      
+      race =  new Human(gender);      
     }
     return race;
   }
@@ -92,14 +92,12 @@ public abstract class Race
 
 
   /** Hero male and female weight ranges */
-  protected int _weightMaleMedValue = 0;;
-  protected int _weightFemaleMedValue = 0;
+  protected int _weightMedValue;
   protected String _weightLowDice = null;
   protected String _weightHighDice = null;
 
   /** Hero male and female height ranges */
-  protected int _heightMaleMedValue = 0;;
-  protected int _heightFemaleMedValue = 0;
+  protected int _heightMedValue;
   protected String _heightLowDice = null;
   protected String _heightHighDice = null;
 
@@ -123,18 +121,16 @@ public abstract class Race
   protected String[] _raceSkills;
 
   /** Calculate the weight of the Hero based on deviation from average */
-  public int calcWeight(Gender _gender)
+  public int calcWeight()
   {
-    int medValue = (_gender == Gender.FEMALE) ? _weightFemaleMedValue : _weightMaleMedValue;
-    int weight = getDeviationFromMedValue(medValue, _weightLowDice, _weightHighDice);
+    int weight = getDeviationFromMedValue(_weightMedValue, _weightLowDice, _weightHighDice);
     return weight;
   }
 
   /** Calculate the height of the Hero based on deviation from average */
-  public int calcHeight(Gender gender)
+  public int calcHeight()
   {
-    int medValue = (gender == Gender.FEMALE) ? _heightFemaleMedValue : _heightMaleMedValue;
-    int height = getDeviationFromMedValue(medValue, _heightLowDice, _heightHighDice);
+    int height = getDeviationFromMedValue(_heightMedValue, _heightLowDice, _heightHighDice);
     return height;
   }
 
