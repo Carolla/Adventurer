@@ -26,13 +26,13 @@ public class Human extends Race
   private final int[] maxLimit = {18, 18, 18, 18, 18, 18};
 
   /** Weight ranges */
-  protected final int _maleMedValue = 175;;
+  protected final int _maleMedValue = 175;
   protected final int _femaleMedValue = 130;
   protected final String _wtLowDice = "3d12";
   protected final String _wtHighDice = "5d12";
   
   /** Height ranges */
-  protected final int _htMaleMedValue = 68;;
+  protected final int _htMaleMedValue = 68;
   protected final int _htFemaleMedValue = 64;
   protected final String _htLowDice = "d12";
   protected final String _htHighDice = "d12";
@@ -70,13 +70,4 @@ public class Human extends Race
     _racialThiefMods = _humanThiefMods;
     _raceSkills = _humanSkills;
   } 
-
-
-  /** Humans have no racial adjustments */
-  @Override
-  public int[] adjustTraitsForRace(int[] traits)
-  {
-    return traits;
-  }
-  
 }

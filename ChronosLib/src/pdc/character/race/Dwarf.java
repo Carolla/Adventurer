@@ -7,7 +7,7 @@
  * by email: acline@carolla.com
  */
 
-package pdc.character;
+package pdc.character.race;
 
 import chronos.pdc.character.Hero.PrimeTraits;
 import chronos.pdc.race.Race;

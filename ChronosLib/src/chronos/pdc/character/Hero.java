@@ -29,6 +29,19 @@ import chronos.pdc.race.Race;
 public class Hero implements IRegistryElement
 {
 
+  public enum Gender {
+    MALE(), FEMALE();
+    
+    public static Gender byName(String name)
+    {
+      if (name.equals("Male")) {
+        return MALE;
+      } else {
+        return FEMALE;
+      }
+    }
+  }
+
   /** Input data fields to create a new hero */
   public enum HeroInput {
     NAME, GENDER, HAIR, RACE, KLASS
@@ -47,7 +60,7 @@ public class Hero implements IRegistryElement
   /** Input Data for Hero */
   private String _name = null;
   /** Male or female Person */
-  private String _gender = null;;
+  private Gender _gender = null;;
   /** Person's hair color, used in building their physical appearance */
   protected String _hairColor = null;
   /** Name of the race to convert to a Race component */
@@ -297,7 +310,7 @@ public class Hero implements IRegistryElement
 
     // 1. INPUT DATA
     _name = name;
-    _gender = gender;
+    _gender = Gender.byName(gender);
     _hairColor = hairColor;
     _racename = raceName;
     _klassname = klassName;
@@ -325,9 +338,8 @@ public class Hero implements IRegistryElement
     // displayTraits(_racename + "-adjusted Traits: ", _traits);
 
     // 4b. REARRANGE THE PRIME TRAIT FOR THE GENDER
-    if (_gender.equalsIgnoreCase("female")) {
+    if (_gender == Gender.FEMALE) {
       _traits = adjustTraitsForGender(_traits);
-      // displayTraits(_gender + "-adjusted Traits: ", _traits);
     }
 
     // 5. ENSURE ALL ADJUSTMENTS REMAIN WITH RACIAL LIMITS
@@ -498,7 +510,7 @@ public class Hero implements IRegistryElement
            _klassname.equals(Klass.WIZARD_CLASS_NAME);
   }
 
-  public String getGender()
+  public Gender getGender()
   {
     return _gender;
   }
@@ -573,7 +585,7 @@ public class Hero implements IRegistryElement
     map.put(PersonKeys.NAME, _name);
 
     // Row 2: Gender, Race and Klass
-    map.put(PersonKeys.GENDER, _gender);
+    map.put(PersonKeys.GENDER, _gender.toString());
     map.put(PersonKeys.RACENAME, _racename);
     // Rogue is the user pseudonym for the Thief class
     _klassname = (_klassname.equalsIgnoreCase("Thief")) ? _klassname = "Rogue" : _klassname;
@@ -1218,11 +1230,11 @@ public class Hero implements IRegistryElement
     // Start the description with a vowel-sensitive article
     String article = (checkFirstVowel(bodyType) == true) ? "An " : "A ";
     // Determine proper gender for descriptive statement
-    String pronoun = _gender.equalsIgnoreCase("female") ? "She" : "He";
+    String pronoun = _gender == Gender.FEMALE ? "She" : "He";
   
     // Process baldness.
     String hairType = (_hairColor.equalsIgnoreCase("bald")) ? "a bald head" : _hairColor + " hair";
-    String desc1 = article + bodyType + " " + getGender().toLowerCase() + " with " + hairType;
+    String desc1 = article + bodyType + " " + getGender().toString().toLowerCase() + " with " + hairType;
   
     // Get race descriptor for suffix.
     String desc2 = _race.getRaceDescriptor();

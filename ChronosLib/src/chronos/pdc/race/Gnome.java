@@ -17,12 +17,6 @@ package chronos.pdc.race;
  */
 public class Gnome extends Race
 {
-  // Statics and transients that are not serialized with the Race class hierarchy
-  /** Recommended serialization constant. */
-  static final long serialVersionUID = 1100L;
-
-  private String _racename = null;
-
   /** Racial limits for a Gnome for the traits */
   private final int[] minLimit = { 7,  7,  7,  7,  8,  7};
   private final int[] maxLimit = {18, 18, 18, 18, 18, 18};
@@ -61,7 +55,7 @@ public class Gnome extends Race
    */
   public Gnome() 
   {
-    _racename = "Gnome";
+    _raceName = "Gnome";
     _minLimit = minLimit;
     _maxLimit = maxLimit;
     // Define weight ranges for Hero
@@ -78,21 +72,4 @@ public class Gnome extends Race
     _racialThiefMods = _gnomeThiefMods;
     _raceSkills = _gnomeSkills;
   } 
-
-  
-  /** Every race knows its name */
-  @Override
-  public String getRaceName()
-  {
-    return _racename;
-  };
-
-  /** Gnomes have no modifications */
-  @Override
-  public int[] adjustTraitsForRace(int[] traits)
-  {
-    return traits;
-  };
-
-
 }

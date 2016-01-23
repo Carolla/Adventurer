@@ -13,8 +13,9 @@ package chronos.pdc.race;
 import java.util.ArrayList;
 
 import mylib.pdc.MetaDie;
-import pdc.character.Dwarf;
+import pdc.character.race.Dwarf;
 import chronos.Chronos;
+import chronos.pdc.character.Hero.Gender;
 
 /**
  * Defines the common methods and attributes for all Races.
@@ -24,6 +25,9 @@ import chronos.Chronos;
  */
 public abstract class Race
 {
+  public static int LOW_TRAIT = 8;
+  public static int HIGH_TRAIT = 18;
+  
   public static final String[] RACE_LIST =
       {"Human", "Dwarf", "Elf", "Gnome", "Half-Elf", "Half-Orc", "Hobbit"};
 
@@ -38,26 +42,30 @@ public abstract class Race
    */
   static public Race createRace(String raceName)
   {
+    Race race = null;
     if (raceName.equals("Dwarf")) {
-      return new Dwarf();
+      race =  new Dwarf();
     } else if (raceName.equals("Elf")) {
-      return new Elf();
+      race =  new Elf();
     } else if (raceName.equals("Gnome")) {
-      return new Gnome();
+      race =  new Gnome();
     } else if (raceName.equals("Half-Elf")) {
-      return new HalfElf();
+      race =  new HalfElf();
     } else if (raceName.equals("Half-Orc")) {
-      return new HalfOrc();
+      race =  new HalfOrc();
     } else if (raceName.equals("Hobbit")) {
-      return new Hobbit();
+      race =  new Hobbit();
     } else {
-      return new Human();      
+      race =  new Human();      
     }
+    return race;
   }
-
-
+  
   /** Races have different advantages and disadvantages */
-  public abstract int[] adjustTraitsForRace(int[] traits);
+  public int[] adjustTraitsForRace(int[] traits)
+  {
+    return traits;
+  }
 
 
   // Assign the chances for thief skills for level 1 by race
@@ -103,10 +111,10 @@ public abstract class Race
    * Some things apply across all Races, e.g. Body Type descriptors. The following height and weight
    * ranges are dubbed "standard" (human) because what is "short" and "tall" is a human perspective.
    */
-  transient protected final double STD_MIN_HEIGHT = 54;
-  transient protected final double STD_MAX_HEIGHT = 70;
-  transient protected final double STD_MIN_WEIGHT = 110;
-  transient protected final double STD_MAX_WEIGHT = 175;
+  static protected final double STD_MIN_HEIGHT = 54;
+  static protected final double STD_MAX_HEIGHT = 70;
+  static protected final double STD_MIN_WEIGHT = 110;
+  static protected final double STD_MAX_WEIGHT = 175;
 
   /** Most races have a racial language */
   protected String _racialLang;
@@ -115,17 +123,17 @@ public abstract class Race
   protected String[] _raceSkills;
 
   /** Calculate the weight of the Hero based on deviation from average */
-  public int calcWeight(String gender)
+  public int calcWeight(Gender _gender)
   {
-    int medValue = (gender.equalsIgnoreCase("female")) ? _weightFemaleMedValue : _weightMaleMedValue;
+    int medValue = (_gender == Gender.FEMALE) ? _weightFemaleMedValue : _weightMaleMedValue;
     int weight = getDeviationFromMedValue(medValue, _weightLowDice, _weightHighDice);
     return weight;
   }
 
   /** Calculate the height of the Hero based on deviation from average */
-  public int calcHeight(String gender)
+  public int calcHeight(Gender gender)
   {
-    int medValue = (gender.equalsIgnoreCase("female")) ? _heightFemaleMedValue : _heightMaleMedValue;
+    int medValue = (gender == Gender.FEMALE) ? _heightFemaleMedValue : _heightMaleMedValue;
     int height = getDeviationFromMedValue(medValue, _heightLowDice, _heightHighDice);
     return height;
   }
@@ -182,12 +190,12 @@ public abstract class Race
     String deschr = null;
     // Find if Person is ugly, average, or beautiful (brute force lookup)
     // Check for exception cases first, before calling generic routine
-    if (charisma < Chronos.LOW_TRAIT) {
+    if (charisma < LOW_TRAIT) {
       deschr = _chrDescs[0];
-    } else if (charisma > Chronos.HIGH_TRAIT) {
+    } else if (charisma > HIGH_TRAIT) {
       deschr = _chrDescs[_chrDescs.length - 1];
     } else {
-      deschr = _chrDescs[charisma - Chronos.LOW_TRAIT + 1];
+      deschr = _chrDescs[charisma - LOW_TRAIT + 1];
     }
     return deschr;
   }
@@ -212,19 +220,15 @@ public abstract class Race
     };
     // Possible descriptors for negative charismas in a Height x Weight matrix,
     // must be in increasing order when calling findRangeDescriptor()
-    final String[][] negBody = {{"tiny", "pudgy", "squat"}, // Short height
+    final String[][] negBody = {
+        {"tiny", "pudgy", "squat"}, // Short height
         {"slinky", "average-size", "heavy"}, // Average height
         {"skinny", "tall", "giant"} // Tall height
     };
 
     // Find which list to use
     String[][] descrChoice = ((double) charisma >= Chronos.AVERAGE_TRAIT) ? posBody : negBody;
-
-    // Find if Person is heavy, average, or light
-    // String rowNbr = findRangeDescriptor(_weight, STD_MIN_WEIGHT,
-    // STD_MAX_WEIGHT, indexes);
-    // Find which category the height is in
-    int rowNbr = -1;
+    int rowNbr = 1;
     if (height <= STD_MIN_HEIGHT) {
       rowNbr = 0;
     } else if (height >= STD_MAX_HEIGHT) {
@@ -234,7 +238,7 @@ public abstract class Race
     }
 
     // Find which category the weight is in
-    int colNbr = -1;
+    int colNbr = 1;
     if (weight <= STD_MIN_WEIGHT) {
       colNbr = 0;
     } else if (weight >= STD_MAX_WEIGHT) {

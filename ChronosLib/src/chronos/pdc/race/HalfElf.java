@@ -84,13 +84,4 @@ public class HalfElf extends Race
     String s = (md.rollPercent() < 50) ? null: "Elvish";
     return s;
   }
-
-  /** Half-Elves have no modifications */
-  @Override
-  public int[] adjustTraitsForRace(int[] traits)
-  {
-    return traits;
-  };
-
-  
 }

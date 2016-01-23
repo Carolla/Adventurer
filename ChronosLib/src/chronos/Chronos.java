@@ -167,14 +167,6 @@ public class Chronos
   /** Weight and height maximums rise about 116% of average (+half-sigma). */
   static public final double MAX_MULTIPLIER = 7.0 / 6.0;
 
-  /** No normal character can be below this low range */
-  static public int LOW_TRAIT = 8;
-  /** No normal character can be above this high range */
-  static public int HIGH_TRAIT = 18;
-  /** If Person reaches this value for any trait, he is unconscious */
-  static public int COMA_TRAIT_VALUE = 3;
-  /** Breakpoint trait for positive mods */
-  static public int MID_TRAIT = 14;
   /** Average Trait for a Person (using 4d6-d6 rule), used for calculations */
   static public final double AVERAGE_TRAIT = 11.5;
 
