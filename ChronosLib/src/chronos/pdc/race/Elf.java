@@ -59,8 +59,6 @@ public class Elf extends Race
     _raceName = "Elf";
     _raceLang = "Elvish";
     
-    _weightLowDice = _wtLowDice;
-    _weightHighDice = _wtHighDice;
     // Define height ranges for Hero
     if (gender.isMale()) {
       // Define weight ranges for Hero
@@ -71,8 +69,7 @@ public class Elf extends Race
       _weightMedValue = _femaleMedValue;
       _heightMedValue = _htFemaleMedValue;
     }
-    _heightLowDice = _htLowDice;
-    _heightHighDice = _htHighDice;
+
     _descriptor = _raceDescriptor;
     _racialThiefMods = _elfThiefMods;
     _raceSkills = _elfSkills;
@@ -88,6 +85,15 @@ public class Elf extends Race
     return traits;    
   };
 
-  
+  @Override
+  public int calcWeight()
+  {
+    return super.calcWeight(_wtLowDice, _wtHighDice);
+  }
 
+  @Override
+  public int calcHeight()
+  {
+    return super.calcWeight(_htLowDice, _htHighDice);
+  };
 }

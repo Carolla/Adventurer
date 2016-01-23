@@ -63,8 +63,7 @@ public class HalfElf extends Race
     _raceLang = getRaceLang();
     _minLimit = minLimit;
     _maxLimit = maxLimit;
-    _weightLowDice = _wtLowDice;
-    _weightHighDice = _wtHighDice;
+
     // Define height ranges for Hero
     if (gender.isMale()) {
       // Define weight ranges for Hero
@@ -75,8 +74,6 @@ public class HalfElf extends Race
       _weightMedValue = _femaleMedValue;
       _heightMedValue = _htFemaleMedValue;
     }
-    _heightLowDice = _htLowDice;
-    _heightHighDice = _htHighDice;
    
     _descriptor = _raceDescriptor;
     _racialThiefMods = _halfelfThiefMods;
@@ -90,4 +87,16 @@ public class HalfElf extends Race
     String s = (md.rollPercent() < 50) ? null: "Elvish";
     return s;
   }
+
+  @Override
+  public int calcWeight()
+  {
+    return super.calcWeight(_wtLowDice, _wtHighDice);
+  }
+
+  @Override
+  public int calcHeight()
+  {
+    return super.calcWeight(_htLowDice, _htHighDice);
+  };
 }

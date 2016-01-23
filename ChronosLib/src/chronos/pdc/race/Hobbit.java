@@ -64,8 +64,7 @@ public class Hobbit extends Race
     _raceLang = "Tolkeen";
     _minLimit = minLimit;
     _maxLimit = maxLimit;
-    _weightLowDice = _wtLowDice;
-    _weightHighDice = _wtHighDice;
+
     // Define height ranges for Hero
     if (gender.isMale()) {
       // Define weight ranges for Hero
@@ -76,8 +75,6 @@ public class Hobbit extends Race
       _weightMedValue = _femaleMedValue;
       _heightMedValue = _htFemaleMedValue;
     }
-    _heightLowDice = _htLowDice;
-    _heightHighDice = _htHighDice;
 
     _descriptor = _raceDescriptor;
     _racialThiefMods = _hobbitThiefMods;
@@ -92,5 +89,17 @@ public class Hobbit extends Race
     traits[PrimeTraits.STR.ordinal()] -= 1;
     traits[PrimeTraits.DEX.ordinal()] += 1;
     return traits;    
+  };
+
+  @Override
+  public int calcWeight()
+  {
+    return super.calcWeight(_wtLowDice, _wtHighDice);
+  }
+
+  @Override
+  public int calcHeight()
+  {
+    return super.calcWeight(_htLowDice, _htHighDice);
   };
 }

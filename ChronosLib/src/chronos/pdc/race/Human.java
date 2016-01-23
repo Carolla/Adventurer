@@ -59,9 +59,8 @@ public class Human extends Race
     _raceName = "Human";
     _minLimit = minLimit;
     _maxLimit = maxLimit;
-    _raceLang = null;     // There is no special language for Humans
-    _weightLowDice = _wtLowDice;
-    _weightHighDice = _wtHighDice;
+    _raceLang = "";
+    
     // Define height ranges for Hero
     if (gender.isMale()) {
       // Define weight ranges for Hero
@@ -72,10 +71,20 @@ public class Human extends Race
       _weightMedValue = _femaleMedValue;
       _heightMedValue = _htFemaleMedValue;
     }
-    _heightLowDice = _htLowDice;
-    _heightHighDice = _htHighDice;
     _descriptor = _raceDescriptor;
     _racialThiefMods = _humanThiefMods;
     _raceSkills = _humanSkills;
   } 
+
+  @Override
+  public int calcWeight()
+  {
+    return super.calcWeight(_wtLowDice, _wtHighDice);
+  }
+
+  @Override
+  public int calcHeight()
+  {
+    return super.calcWeight(_htLowDice, _htHighDice);
+  };
 }

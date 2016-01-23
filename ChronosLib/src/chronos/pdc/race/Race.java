@@ -33,6 +33,9 @@ public abstract class Race
 
   protected String _raceName = null;
   protected String _raceLang = null;
+  
+  public abstract int calcWeight();
+  public abstract int calcHeight();
 
   /**
    * Create a specific subclass of Race based on the Race name. <br>
@@ -93,13 +96,9 @@ public abstract class Race
 
   /** Hero male and female weight ranges */
   protected int _weightMedValue;
-  protected String _weightLowDice = null;
-  protected String _weightHighDice = null;
 
   /** Hero male and female height ranges */
   protected int _heightMedValue;
-  protected String _heightLowDice = null;
-  protected String _heightHighDice = null;
 
   /** Racial limits for a each subclass for the traits */
   protected int[] _minLimit = null;
@@ -121,16 +120,16 @@ public abstract class Race
   protected String[] _raceSkills;
 
   /** Calculate the weight of the Hero based on deviation from average */
-  public int calcWeight()
+  public int calcWeight(String lowDice, String highDice)
   {
-    int weight = getDeviationFromMedValue(_weightMedValue, _weightLowDice, _weightHighDice);
+    int weight = getDeviationFromMedValue(_weightMedValue, lowDice, highDice);
     return weight;
   }
 
   /** Calculate the height of the Hero based on deviation from average */
-  public int calcHeight()
+  public int calcHeight(String lowDice, String highDice)
   {
-    int height = getDeviationFromMedValue(_heightMedValue, _heightLowDice, _heightHighDice);
+    int height = getDeviationFromMedValue(_heightMedValue, lowDice, highDice);
     return height;
   }
 

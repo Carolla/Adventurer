@@ -60,8 +60,6 @@ public class HalfOrc extends Race
     _raceLang = getRaceLang();
     _minLimit = minLimit;
     _maxLimit = maxLimit;
-    _weightLowDice = _wtLowDice;
-    _weightHighDice = _wtHighDice;
     // Define height ranges for Hero
     if (gender.isMale()) {
       // Define weight ranges for Hero
@@ -72,8 +70,6 @@ public class HalfOrc extends Race
       _weightMedValue = _femaleMedValue;
       _heightMedValue = _htFemaleMedValue;
     }
-    _heightLowDice = _htLowDice;
-    _heightHighDice = _htHighDice;
     
     _descriptor = _raceDescriptor;
     _racialThiefMods = _halforcThiefMods;
@@ -100,5 +96,16 @@ public class HalfOrc extends Race
   };
 
 
+  @Override
+  public int calcWeight()
+  {
+    return super.calcWeight(_wtLowDice, _wtHighDice);
+  }
+
+  @Override
+  public int calcHeight()
+  {
+    return super.calcWeight(_htLowDice, _htHighDice);
+  };
 
 }

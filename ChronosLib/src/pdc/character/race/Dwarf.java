@@ -61,11 +61,6 @@ public class Dwarf extends Race
   {
     _raceName = "Dwarf";
     _raceLang = "Groken";
-    
-    _weightLowDice = _wtLowDice;
-    _weightHighDice = _wtHighDice;
-    _heightLowDice = _htLowDice;
-    _heightHighDice = _htHighDice;
 
     if (gender.isMale()) {
       // Define weight ranges for Hero
@@ -94,5 +89,17 @@ public class Dwarf extends Race
     traits[PrimeTraits.CON.ordinal()] += 1;
     traits[PrimeTraits.CHR.ordinal()] -= 1;
     return traits;
+  }
+
+  @Override
+  public int calcWeight()
+  {
+    return super.calcWeight(_wtLowDice, _wtHighDice);
+  }
+
+  @Override
+  public int calcHeight()
+  {
+    return super.calcWeight(_htLowDice, _htHighDice);
   };
 }
