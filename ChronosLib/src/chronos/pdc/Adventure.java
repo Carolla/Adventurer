@@ -35,12 +35,6 @@ public class Adventure implements IRegistryElement
   // CONSTRUCTOR(S) AND RELATED METHODS
   // ============================================================
 
-  /** Create the default Adventure */
-  public Adventure()
-  {}
-
-
-
   /**
    * Creates the default {@code Adventure}. Only the names of the elements are included after
    * verifying that they are in their respective registries. The {@code Arena} will be verified to

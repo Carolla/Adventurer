@@ -9,12 +9,8 @@
 
 package test;
 
-import mylib.test.MyLibraryUnitTestSuite;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-
-import chronos.test.ChronosUnitTestSuite;
 
 
 /**
@@ -33,15 +29,7 @@ import chronos.test.ChronosUnitTestSuite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-
-    /* MyLibrary test suit */
-    MyLibraryUnitTestSuite.class,
-    
-    /* ChronosLib test suite */
-    ChronosUnitTestSuite.class,
-
-    /* UnitTestSuite includes all unit tests for Adventurer */
-    AdventurerUnitTestSuite.class,
+    UnitTestSuite.class,
 
     /* Adventurer integration test suite */
     IntegrationSuite.class,
