@@ -10,7 +10,7 @@
 package chronos.pdc.character;
 
 import chronos.pdc.Item;
-import chronos.pdc.MiscKeys.ItemCategory;
+import chronos.pdc.Item.ItemCategory;
 import chronos.pdc.character.Hero.PrimeTraits;
 
 /**

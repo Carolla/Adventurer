@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
-import chronos.pdc.Item;
-import chronos.pdc.MiscKeys.ItemCategory;
 import mylib.Constants;
+import chronos.pdc.Item;
+import chronos.pdc.Item.ItemCategory;
 
 /**
  * Contains the Person's collection of Items. All weights are in ounces; the client object must

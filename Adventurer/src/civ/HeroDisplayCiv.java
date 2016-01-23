@@ -15,7 +15,7 @@ import hic.HeroDisplay;
 import java.util.EnumMap;
 
 import chronos.civ.PersonKeys;
-import chronos.pdc.MiscKeys.ItemCategory;
+import chronos.pdc.Item.ItemCategory;
 import chronos.pdc.character.Hero;
 import chronos.pdc.character.Inventory;
 import chronos.pdc.registry.HeroRegistry;

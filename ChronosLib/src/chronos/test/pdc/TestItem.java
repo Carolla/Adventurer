@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import chronos.pdc.Item;
-import chronos.pdc.MiscKeys.ItemCategory;
+import chronos.pdc.Item.ItemCategory;
 
 /**
  *    Tests the Item class

@@ -32,8 +32,8 @@ import org.junit.runners.Suite;
     TestBuilding.class,                     // all Buildings need NPCs
     TestClericsGuild.class,              // Needs NPC 
     TestFightersGuild.class,                  // Needs NPC
-    TestJail.class,                      // Need NPC and Items
     TestInn.class,                          // need NPCs
+    TestJail.class,                      // Need NPC and Items
     TestRoguesGuild.class,            // Needs NPC
     TestStore.class,                      // Need NPC and Items
     TestWizardsGuild.class,               // Needs NPC    

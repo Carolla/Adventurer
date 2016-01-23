@@ -15,7 +15,7 @@ import java.util.List;
 import mylib.ApplicationException;
 import mylib.MsgCtrl;
 import chronos.pdc.Item;
-import chronos.pdc.MiscKeys.ItemCategory;
+import chronos.pdc.Item.ItemCategory;
 import chronos.pdc.Occupation;
 import chronos.pdc.Skill;
 import chronos.pdc.registry.SkillRegistry;

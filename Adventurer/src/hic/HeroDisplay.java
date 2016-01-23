@@ -26,7 +26,7 @@ import javax.swing.SwingConstants;
 import mylib.Constants;
 import net.miginfocom.swing.MigLayout;
 import chronos.civ.PersonKeys;
-import chronos.pdc.MiscKeys.ItemCategory;
+import chronos.pdc.Item.ItemCategory;
 import chronos.pdc.character.Inventory;
 import civ.HeroDisplayCiv;
 
