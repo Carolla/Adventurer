@@ -10,7 +10,6 @@
 package hic;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.EnumMap;
@@ -32,7 +31,6 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
 import mylib.Constants;
-import mylib.hic.HelpKeyListener;
 import net.miginfocom.swing.MigLayout;
 import chronos.pdc.character.Hero;
 import civ.HeroDisplayCiv;
@@ -70,13 +68,6 @@ import civ.NewHeroCiv.HeroInput;
 @SuppressWarnings("serial")
 public class NewHeroIPPanel extends ChronosPanel
 {
-  /** Help message to show in panels */
-  private final String HELP_LABEL1 =
-      "<Ctrl-Tab> or mouse-click moves focus to new text area.";
-  /** Help message to show in panels */
-  private final String HELP_LABEL2 =
-      "Press F1 key for specific help.";
-
   /** Replace left-side panel with this title */
   static private final String NEW_HERO_TITLE = " Create Your Kind of Hero ";
   /** Prompt for hero's name */
@@ -108,10 +99,6 @@ public class NewHeroIPPanel extends ChronosPanel
 
   /** Input data from user */
   private String _name;
-  private String _gender;
-  private String _hairColor;
-  private String _raceName;
-  private String _klassName;
 
   /** Contains user input field data */
   EnumMap<HeroInput, String> input;
@@ -126,6 +113,12 @@ public class NewHeroIPPanel extends ChronosPanel
   /** Associated validating CIV object */
   private NewHeroCiv _nhCiv;
   private MainframeCiv _mfCiv;
+  private JRadioButton maleButt;
+  private JRadioButton femaleButt;
+  private ButtonGroup groupSex;
+  private JComboBox<String> hairCombo;
+  private JComboBox<String> klassCombo;
+  private JComboBox<String> raceCombo;
 
   // ============================================================
   // Constructors and constructor helpers
@@ -146,10 +139,7 @@ public class NewHeroIPPanel extends ChronosPanel
     _mfCiv = mfCiv;
 
     // GENERAL SETUP
-    // Set the preferred and max size, adjusting for panel border thickness
-    int width = Mainframe.getWindowSize().width;// +MainFrame.PANEL_SHIFT;
-    int height = Mainframe.getWindowSize().height;
-    setPreferredSize(new Dimension(width, height));
+    setPreferredSize(Mainframe.getWindowSize());
 
     int pad = Mainframe.PAD;
     Border matte = BorderFactory.createMatteBorder(pad, pad, pad, pad, Color.WHITE);
@@ -219,12 +209,7 @@ public class NewHeroIPPanel extends ChronosPanel
     // Create the CANCEL button
     JButton cancelButton = new JButton("CANCEL");
     // Clear editFlag and data, then return back to main action panel if Cancel is pressed
-    cancelButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event)
-      {
-        _nhCiv.back();
-      }
-    });
+    cancelButton.addActionListener((a) -> _nhCiv.back());
 
     // Create the SUBMIT button
     JButton submitButton = new JButton("SUBMIT");
@@ -268,32 +253,17 @@ public class NewHeroIPPanel extends ChronosPanel
     radioPanel.setBackground(_backColor);
 
     // Create the radio button group
-    ButtonGroup groupSex = new ButtonGroup();
+    groupSex = new ButtonGroup();
 
     // Define the male radio button (default to Male button selected)
-    JRadioButton maleButt = new JRadioButton("Male", true);
-    // Default is set in case user does not touch the radio buttons
-    _gender = "Male";
+    maleButt = new JRadioButton("Male", true);
     maleButt.setEnabled(true);
     maleButt.setBackground(_backColor);
 
-    // Allow user to explicitly set to Male
-    maleButt.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event)
-      {
-        _gender = "Male";
-      }
-    });
 
     // Define the female radio button
-    JRadioButton femaleButt = new JRadioButton("Female", false);
+    femaleButt = new JRadioButton("Female", false);
     femaleButt.setBackground(_backColor);
-    femaleButt.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event)
-      {
-        _gender = "Female";
-      }
-    });
 
     // Buttons must be added to BOTH the group and to the panel
     groupSex.add(maleButt);
@@ -311,19 +281,9 @@ public class NewHeroIPPanel extends ChronosPanel
    */
   private JComboBox<String> makeHairCombo()
   {
-    final JComboBox<String> hairCombo = new JComboBox<String>(NewHeroCiv.HAIR_COLOR_LIST);
+    hairCombo = new JComboBox<String>(NewHeroCiv.HAIR_COLOR_LIST);
     hairCombo.setEditable(false);
     hairCombo.setBackground(Color.WHITE);
-
-    // Set default hair color in case user does not select anything
-    _hairColor = (String) hairCombo.getItemAt(0);
-
-    hairCombo.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event)
-      {
-        _hairColor = ((String) hairCombo.getSelectedItem()).trim();
-      }
-    });
     return hairCombo;
   }
 
@@ -335,20 +295,9 @@ public class NewHeroIPPanel extends ChronosPanel
    */
   private JComboBox<String> makeKlassCombo()
   {
-    final JComboBox<String> klassCombo = new JComboBox<String>(NewHeroCiv.KLASS_LIST);
+    klassCombo = new JComboBox<String>(NewHeroCiv.KLASS_LIST);
     klassCombo.setEditable(false);
     klassCombo.setBackground(Color.WHITE);
-
-    // Set default Klass in case user does not select anything
-    _klassName = (String) klassCombo.getItemAt(0);
-
-    // Change the visible selection and capture the data
-    klassCombo.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event)
-      {
-        _klassName = ((String) klassCombo.getSelectedItem()).trim();
-      }
-    });
     return klassCombo;
   }
 
@@ -365,8 +314,6 @@ public class NewHeroIPPanel extends ChronosPanel
     // Create DocumentFilter for restricting input length
     AbstractDocument d = (AbstractDocument) _nameField.getDocument();
     d.setDocumentFilter(new NewHeroIPPanel.NameFieldLimiter());
-
-    // Set name of the field
     _nameField.setName("heroName");
 
     // Extract Hero's name and update Hero's name into MainFrame Title
@@ -374,9 +321,7 @@ public class NewHeroIPPanel extends ChronosPanel
     _nameField.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        // Name data is captured on submit in case mouse clicks were used
         _name = _nameField.getText().trim();
-
         setHeroBorder();
       }
     });
@@ -401,20 +346,9 @@ public class NewHeroIPPanel extends ChronosPanel
   private JComboBox<String> makeRaceCombo()
   {
     // Build the box with label
-    final JComboBox<String> raceCombo = new JComboBox<String>(NewHeroCiv.RACE_LIST);
+    raceCombo = new JComboBox<String>(NewHeroCiv.RACE_LIST);
     raceCombo.setEditable(false);
     raceCombo.setBackground(Color.WHITE);
-
-    // Set default Race in case user does not select anything
-    _raceName = raceCombo.getItemAt(0);
-
-    // Change the visible selection; data is captured elsewhere
-    raceCombo.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event)
-      {
-        _raceName = ((String) raceCombo.getSelectedItem()).trim();
-      }
-    });
     return raceCombo;
   }
 
@@ -447,10 +381,10 @@ public class NewHeroIPPanel extends ChronosPanel
   {
     EnumMap<HeroInput, String> input = new EnumMap<HeroInput, String>(HeroInput.class);
     input.put(HeroInput.NAME, _name);
-    input.put(HeroInput.GENDER, _gender);
-    input.put(HeroInput.HAIR, _hairColor);
-    input.put(HeroInput.RACE, _raceName);
-    input.put(HeroInput.KLASS, _klassName);
+    input.put(HeroInput.GENDER, getGender());
+    input.put(HeroInput.HAIR,  ((String) hairCombo.getSelectedItem()).trim());
+    input.put(HeroInput.RACE, ((String) raceCombo.getSelectedItem()).trim());
+    input.put(HeroInput.KLASS, ((String) klassCombo.getSelectedItem()).trim());
 
     // Call the Civ to validate. If good, Civ creates the Hero; else display error widget
     ErrorCode err = validate(_name);
@@ -459,6 +393,15 @@ public class NewHeroIPPanel extends ChronosPanel
       showErrorMessage(err);
     }
     return input;
+  }
+
+  private String getGender()
+  {
+    if (groupSex.getSelection().equals(maleButt)) {
+      return "Male";
+    } else {
+      return "Female";
+    }
   }
 
   private ErrorCode validate(String name)
