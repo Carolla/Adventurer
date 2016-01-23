@@ -30,7 +30,7 @@ public class NewHeroCiv extends BaseCiv
       {"bald", "black", "blonde", "brown", "gray", "red", "silver", "streaked", "white"};
 
   public static final String[] KLASS_LIST =
-      {"Fighter", "Cleric", "Rogue", "Wizard"};
+      {"Fighter", "Cleric", "Thief", "Wizard"};
 
   public static final String[] RACE_LIST =
       {"Human", "Dwarf", "Elf", "Gnome", "Half-Elf", "Half-Orc", "Hobbit"};
