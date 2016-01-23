@@ -11,6 +11,8 @@
 
 package test.civ;
 
+import org.junit.Test;
+
 
 /**
  * Units tests for NewHeroCiv.
@@ -27,5 +29,6 @@ package test.civ;
  */
 public class TestNewHeroCiv 
 {
-  
+  @Test
+  public void noTestsYet() { }
 } // end of TestNewHeroCiv class
