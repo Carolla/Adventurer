@@ -34,6 +34,7 @@ import mylib.Constants;
 import net.miginfocom.swing.MigLayout;
 import chronos.pdc.character.Hero;
 import chronos.pdc.character.Hero.HeroInput;
+import chronos.pdc.race.Race;
 import civ.HeroDisplayCiv;
 import civ.MainframeCiv;
 import civ.NewHeroCiv;
@@ -346,7 +347,7 @@ public class NewHeroIPPanel extends ChronosPanel
   private JComboBox<String> makeRaceCombo()
   {
     // Build the box with label
-    raceCombo = new JComboBox<String>(NewHeroCiv.RACE_LIST);
+    raceCombo = new JComboBox<String>(Race.RACE_LIST);
     raceCombo.setEditable(false);
     raceCombo.setBackground(Color.WHITE);
     return raceCombo;

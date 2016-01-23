@@ -7,9 +7,8 @@
  * by email: acline@carolla.com
  */
 
-package pdc.character;
+package chronos.pdc.race;
 
-import chronos.pdc.Race;
 
 
 /**

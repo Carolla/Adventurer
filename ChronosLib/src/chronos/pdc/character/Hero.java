@@ -18,7 +18,7 @@ import java.util.List;
 import mylib.dmc.IRegistryElement;
 import mylib.pdc.MetaDie;
 import chronos.civ.PersonKeys;
-import chronos.pdc.Race;
+import chronos.pdc.race.Race;
 
 
 

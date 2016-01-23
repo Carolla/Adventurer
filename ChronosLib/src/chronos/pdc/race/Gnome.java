@@ -1,5 +1,5 @@
 /**
- * HalfElf.java Copyright (c) 2015, Carolla Development, Inc. All Rights Reserved
+ * Gnome.java Copyright (c) 2015, Carolla Development, Inc. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
@@ -7,59 +7,61 @@
  * by email: acline@carolla.com
  */
 
-package pdc.character;
+package chronos.pdc.race;
 
-import mylib.pdc.MetaDie;
-import chronos.pdc.Race;
+
 
 /**
  * @author Al Cline
  * @version Sep 6, 2015 // original <br>
  */
-public class HalfElf extends Race
+public class Gnome extends Race
 {
   // Statics and transients that are not serialized with the Race class hierarchy
   /** Recommended serialization constant. */
   static final long serialVersionUID = 1100L;
 
-  /** Racial limits for a Half-Elf for the traits */
+  private String _racename = null;
+
+  /** Racial limits for a Gnome for the traits */
   private final int[] minLimit = { 7,  7,  7,  7,  8,  7};
   private final int[] maxLimit = {18, 18, 18, 18, 18, 18};
 
   /** Weight ranges */
-  protected final int _maleMedValue = 130;;
-  protected final int _femaleMedValue = 100;
-  protected final String _wtLowDice = "d20";
-  protected final String _wtHighDice = "d20";
+  protected final int _maleMedValue = 80;;
+  protected final int _femaleMedValue = 75;
+  protected final String _wtLowDice = "2d4";
+  protected final String _wtHighDice = "2d6";
 
   /** Height ranges */
-  protected final int _htMaleMedValue = 66;;
-  protected final int _htFemaleMedValue = 62;
-  protected final String _htLowDice = "d6";
-  protected final String _htHighDice = "d6";
-
-  /** Half-Elves have partially pointed ears */
-  private final String _raceDescriptor = "somewhat pointed ears";
+  protected final int _htMaleMedValue = 42;;
+  protected final int _htFemaleMedValue = 39;
+  protected final String _htLowDice = "d3";
+  protected final String _htHighDice = "d3";
+  
+  /** Gnomes have piercing blue eyes */
+  private final String _raceDescriptor = "piercing blue eyes";
 
   // Find Secret Door | Pick Pockets | Open Locks | Find/Remove Traps | Move Silently |
   //    Hide in Shadows | Listening | Climb Walls | Back Attack
-  protected final int[] _halfelfThiefMods = {0, 10, 0, 0, 0, 5, 0, 0, 0};
+  protected final int[] _gnomeThiefMods = {10, 0, 5, 10, 5, 5, 10,-15, 5};
 
-  // Special Half-Elf skills
-  private final String[] _halfelfSkills = {
+  // Special Gnome skills
+  private final String[] _gnomeSkills = {
       "Infravision (60')", 
-      "Resistance to Sleep and Charm spells (30%) (second Save allowed on first fail)", 
-      "Tingling: Detect hidden or secret doors if within 10' (33% active; 16% passive)",
+      "Detect slopes in underground passages (80%)", 
+      "Detect unsafe walls, ceilings, floors (70%)", 
+      "Detect direction of underground travel (50%)",
+      "Determine approximate underground depth (60%)" 
   };
- 
+
   
   /**
-   * Default constructor, called reflectively by Race
+   * Default constructor, called reflectively by Klass
    */
-  public HalfElf() 
+  public Gnome() 
   {
-    _raceName = "Half-Elf";
-    _raceLang = getRaceLang();
+    _racename = "Gnome";
     _minLimit = minLimit;
     _maxLimit = maxLimit;
     // Define weight ranges for Hero
@@ -72,26 +74,25 @@ public class HalfElf extends Race
     _heightFemaleMedValue = _htFemaleMedValue;
     _heightLowDice = _htLowDice;
     _heightHighDice = _htHighDice;
-   
     _descriptor = _raceDescriptor;
-    _racialThiefMods = _halfelfThiefMods;
-    _raceSkills = _halfelfSkills;
+    _racialThiefMods = _gnomeThiefMods;
+    _raceSkills = _gnomeSkills;
   } 
 
-  /** Half-elf has 50% chance of knowing elvish */
-  private String getRaceLang()
+  
+  /** Every race knows its name */
+  @Override
+  public String getRaceName()
   {
-    MetaDie md = new MetaDie();
-    String s = (md.rollPercent() < 50) ? null: "Elvish";
-    return s;
-  }
+    return _racename;
+  };
 
-  /** Half-Elves have no modifications */
+  /** Gnomes have no modifications */
   @Override
   public int[] adjustTraitsForRace(int[] traits)
   {
     return traits;
   };
 
-  
+
 }

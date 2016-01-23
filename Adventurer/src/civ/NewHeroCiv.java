@@ -33,8 +33,6 @@ public class NewHeroCiv extends BaseCiv
   public static final String[] KLASS_LIST =
       {"Fighter", "Cleric", "Thief", "Wizard"};
 
-  public static final String[] RACE_LIST =
-      {"Human", "Dwarf", "Elf", "Gnome", "Half-Elf", "Half-Orc", "Hobbit"};
 
   /** ErrorCode for type of error encountered on input */
   public enum ErrorCode {

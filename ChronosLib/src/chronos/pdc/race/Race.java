@@ -1,4 +1,4 @@
-package chronos.pdc;
+package chronos.pdc.race;
 
 /**
  * Race.java Copyright (c) 2009, Carolla Development, Inc. All Rights Reserved
@@ -10,11 +10,11 @@ package chronos.pdc;
  */
 
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
-import chronos.Chronos;
 import mylib.pdc.MetaDie;
+import pdc.character.Dwarf;
+import chronos.Chronos;
 
 /**
  * Defines the common methods and attributes for all Races.
@@ -22,16 +22,12 @@ import mylib.pdc.MetaDie;
  * @author Alan Cline
  * @version Sept 4 2015 // rewrite to support Hero rewrite <br>
  */
-public abstract class Race implements Serializable
+public abstract class Race
 {
-  // Statics and transients that are not serialized with the Race class hierarchy
-  /** Recommended serialization constant. */
-  static final long serialVersionUID = 1100L;
+  public static final String[] RACE_LIST =
+      {"Human", "Dwarf", "Elf", "Gnome", "Half-Elf", "Half-Orc", "Hobbit"};
 
-  // RACE-SPECIFIC ATTRIBUTES and METHODS
-  /** Name of the subclass of Race, e.g, Human or Hobbit */
   protected String _raceName = null;
-  /** Name of the subclass race language */
   protected String _raceLang = null;
 
   /**
@@ -39,27 +35,24 @@ public abstract class Race implements Serializable
    * NOTE: The subclass must be in the same package as the Race class.
    *
    * @param RaceName the name of the subclass to be created
-   * @return Race, the subclass created, but referenced polymorphically; else null
    */
   static public Race createRace(String raceName)
   {
-    // If the race has a hyphen in it (e.g. Half-Elf), it is removed
-    int ndx = raceName.indexOf('-');
-    if (ndx != NOT_FOUND) {
-      String tmp = raceName.substring(0, ndx);
-      tmp += raceName.substring(ndx + 1);
-      raceName = tmp;
+    if (raceName.equals("Dwarf")) {
+      return new Dwarf();
+    } else if (raceName.equals("Elf")) {
+      return new Elf();
+    } else if (raceName.equals("Gnome")) {
+      return new Gnome();
+    } else if (raceName.equals("Half-Elf")) {
+      return new HalfElf();
+    } else if (raceName.equals("Half-Orc")) {
+      return new HalfOrc();
+    } else if (raceName.equals("Hobbit")) {
+      return new Hobbit();
+    } else {
+      return new Human();      
     }
-    
-    Race newRace = null;
-    try {
-      // Class Commands must have empty constructors (no formal input arguments)
-      String racePath = Chronos.getPackageName() + raceName;
-      newRace = (Race) Class.forName(racePath).newInstance();
-    } catch (Exception e) {
-      throw new NullPointerException("Race.createRace(): Cannot find class requested: " + raceName);
-    }
-    return newRace;
   }
 
 
@@ -117,17 +110,9 @@ public abstract class Race implements Serializable
 
   /** Most races have a racial language */
   protected String _racialLang;
-  /** All races but human have some defining characteristic */
-  /** Hobbits have hairy bare feet */
   protected String _descriptor;
-
-  /** Thief skills are adjusted by race */
   protected int[] _racialThiefMods;
-
-  /** Racial skills are race- specific */
   protected String[] _raceSkills;
-
-  private static final int NOT_FOUND = -1;
 
   /** Calculate the weight of the Hero based on deviation from average */
   public int calcWeight(String gender)

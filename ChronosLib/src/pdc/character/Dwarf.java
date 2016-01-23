@@ -9,8 +9,8 @@
 
 package pdc.character;
 
-import chronos.pdc.Race;
 import chronos.pdc.character.Hero.PrimeTraits;
+import chronos.pdc.race.Race;
 
 /**
  * @author Al Cline
