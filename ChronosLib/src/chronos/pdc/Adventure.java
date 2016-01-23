@@ -10,7 +10,6 @@
 
 package chronos.pdc;
 
-import mylib.ApplicationException;
 import mylib.dmc.IRegistryElement;
 
 /**
@@ -44,15 +43,15 @@ public class Adventure implements IRegistryElement
    * @param townName the primary town in the adventure
    * @param arenaName arena in the adventure
    * @param overview description and background story of town, arena, and situation
-   * @throws throws ApplicationException if any of the parms are null, or the Town cannot be found
+   * @throws throws NullPointerException if any of the parms are null, or the Town cannot be found
    *         in the {@code TownRegistry}
    */
   public Adventure(String advName, String townName, String arenaName, String overview)
-      throws ApplicationException
+      throws NullPointerException
   {
     // Guard against an empty key
     if ((advName == null) || (townName == null) || (arenaName == null) || (overview == null)) {
-      throw new ApplicationException("Adventure cannot have null parms");
+      throw new NullPointerException("Adventure cannot have null parms");
     }
 
     // Set the parms
@@ -71,45 +70,52 @@ public class Adventure implements IRegistryElement
   /**
    * Two Adventures are equal if all the adventure name, Town name, and Arena name are equal
    * 
-   * @param otherThing the Skill to be considered
+   * @param otherThing the Adventures to be considered
    * @return true if all elements are equal
    */
   @Override
   public boolean equals(IRegistryElement otherThing)
   {
-    // Guard against null input
-    if (otherThing == null) {
+    return equals((Object) otherThing);
+  }
+
+
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((_arenaName == null) ? 0 : _arenaName.hashCode());
+    result = prime * result + ((_name == null) ? 0 : _name.hashCode());
+    result = prime * result + ((_townName == null) ? 0 : _townName.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj)
+      return true;
+    if (obj == null)
       return false;
-    }
-    Adventure adv = (Adventure) otherThing;
-    boolean bName = _name.equals(adv.getName());
-    boolean bTown = _townName.equals(adv.getTownName());
-    boolean bArena = _arenaName.equals(adv.getArenaName());
-    return (bName && bTown && bArena);
+    if (getClass() != obj.getClass())
+      return false;
+    Adventure other = (Adventure) obj;
+    if (!_arenaName.equals(other._arenaName))
+      return false;
+    if (!_name.equals(other._name))
+      return false;
+    if (!_townName.equals(other._townName))
+      return false;
+    return true;
   }
 
-
-  /**
-   * If the Adventure has an Arena, get it from the arena folder
-   * 
-   * @return the Arena object or null
-   */
-  public Arena getArena()
+  /** @return the display name of the Adventure */
+  @Override
+  public String toString()
   {
-    return (_arenaName == null) ? null : Arena.getInstance(_arenaName);
+    return _name;
   }
-
-
-
-  /**
-   * @return the name of the adventure's arena
-   */
-  public String getArenaName()
-  {
-    return _arenaName;
-  }
-
-
 
   /**
    * @see mylib.dmc.IRegistryElement#getKey()
@@ -145,39 +151,4 @@ public class Adventure implements IRegistryElement
   {
     return _townName;
   }
-
- 
-
-  /** @return the display name of the Adventure */
-  public String toString()
-  {
-    return _name;
-  }
-
-  
-  // ============================================================
-  // PRIVATE METHODS
-  // =============================================================
-
-
-  /** Inner class for testing Person */
-  public class MockAdventure
-  {
-    /** Default constructor */
-    public MockAdventure()
-    {}
-
-    /** Get all Adventure parms */
-    public String[] getParms()
-    {
-      String[] parms = new String[4];
-      parms[0] = _name;
-      parms[1] = _townName;
-      parms[2] = _arenaName;
-      parms[3] = _overview;
-      return parms;
-    }
-  }
-
-
 } // end of Adventure class
