@@ -10,9 +10,7 @@
 package chronos.pdc;
 
 import mylib.ApplicationException;
-import mylib.civ.DataShuttle;
 import mylib.dmc.IRegistryElement;
-import chronos.civ.SkillKeys;
 import chronos.pdc.registry.SkillRegistry;
 
 /**
@@ -37,14 +35,10 @@ public class Skill implements IRegistryElement
 
     private static SkillRegistry _skreg;
 
-    /** The name of the skill the player uses to select */
-    protected String _name = null;
-    /** A description of the skill and how the Hero may use it. */
-    private String _description = null;
-    /**
-     * The action that corresponds to the skill, currently implemented as a String
-     */
-    private String _action = null;
+    public static final int MAX_NAME_LEN = 35;
+    public static final int MAX_DESC_LEN = 70;
+    protected final String _name;
+    protected final String _description;
 
     /** Errors message for overly long field data */
     private final String FLDERR_OVERLONG = "Field is overly long by %d characters";
@@ -65,10 +59,6 @@ public class Skill implements IRegistryElement
         return _skreg.getSkill(string);
     }
 
-    /** Default constructor */
-    public Skill()
-    {}
-
     /**
      * Construct a skill from its components
      * 
@@ -88,30 +78,22 @@ public class Skill implements IRegistryElement
         }
 
         // Do not create a Skill if the description is too long
-        if (desc.length() > SkillKeys.DESC.maxLength()) {
+        if (desc.length() > MAX_DESC_LEN) {
             throw new ApplicationException(name + String.format(FLDERR_OVERLONG,
-                    (name.length() - SkillKeys.DESC.maxLength())));
+                    (name.length() - MAX_DESC_LEN)));
         }
 
         // Do not create a Skill if the name is too long
-        if (name.length() > SkillKeys.NAME.maxLength()) {
+        if (name.length() > MAX_NAME_LEN) {
             throw new ApplicationException(name + String.format(FLDERR_OVERLONG,
-                    (name.length() - SkillKeys.NAME.maxLength())));
+                    (name.length() - MAX_NAME_LEN)));
         }
 
         // Build the skill as specifics
         _name = name;
         _description = desc;
-        _action = null;
     }
 
-    /*
-     * ACCESSORS FOR DISPLAYING THE PARTS
-     */
-
-    /*
-     * ACCESSORS FOR DISPLAYING THE PARTS
-     */
 
     /**
      * Two Skills are considered equal if their names and description are equal.
@@ -122,14 +104,34 @@ public class Skill implements IRegistryElement
     @Override
     public boolean equals(IRegistryElement otherThing)
     {
-        // Guard against null input
-        if (otherThing == null) {
-            return false;
-        }
-        Skill target = (Skill) otherThing;
-        boolean bName = _name.equals(target._name);
-        boolean bDesc = _description.equals(target._name);
-        return (bName || bDesc);
+      return equals((Object) otherThing);
+    }
+
+    @Override
+    public int hashCode()
+    {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((_description == null) ? 0 : _description.hashCode());
+      result = prime * result + ((_name == null) ? 0 : _name.hashCode());
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      Skill other = (Skill) obj;
+      if (!_description.equals(other._description))
+        return false;
+      if (!_name.equals(other._name))
+        return false;
+      return true;
     }
 
     /**
@@ -163,26 +165,6 @@ public class Skill implements IRegistryElement
         return _name;
     }
 
-    // TODO Replace DataShuttle construct with something else
-    /**
-     * Convert a skill object into a data shuttle to be passed back to the HIC
-     * 
-     * @param skill The skill to be converted to a shuttle
-     * @return shuttle packed with data
-     */
-    public DataShuttle<SkillKeys> loadShuttle(DataShuttle<SkillKeys> ds)
-    {
-        if (ds != null) {
-            // Load up the shuttle
-            ds.putField(SkillKeys.NAME, _name);
-            ds.putField(SkillKeys.ACTION, _action);
-            ds.putField(SkillKeys.DESC, _description);
-            // ds.putField(SkillKeys.RACE, _race);
-            // ds.putField(SkillKeys.KLASS, _klass);
-        }
-        return ds;
-    }
-
     /**
      * Convert Skill to string
      * 
@@ -194,28 +176,4 @@ public class Skill implements IRegistryElement
     {
         return (_name);
     }
-
-    /*
-     * Inner Class: MockSkill
-     */
-
-    public class MockSkill
-    {
-        /** Default ctor */
-        public MockSkill()
-        {}
-
-        /** Set a new name into the Skill */
-        public void setName(String newName)
-        {
-            _name = newName;
-        }
-
-        /** Set a new desc into the Skill */
-        public void setDesc(String newDesc)
-        {
-            _description = newDesc;
-        }
-
-    } // end of MockSkill inner class
 } // end of Skill outer class

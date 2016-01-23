@@ -14,7 +14,7 @@ package chronos.test.pdc.registry;
 import mylib.dmc.IRegistryElement;
 import mylib.pdc.Registry;
 import chronos.Chronos;
-import chronos.pdc.Skill;
+import chronos.test.pdc.FakeSkill;
 
 /**
  * Target for testing the RegistryFactory
@@ -95,7 +95,7 @@ public class FakeRegistry extends Registry<IRegistryElement>
         System.out.println("\tFakeRegistry.initialize() called!.");
         // Place Skills into FakeRegistry merely as testable placeholders
         for (int k=0; k < 10; k++) {
-            add(new Skill());
+            add(new FakeSkill("" + k));
         }
     }
     

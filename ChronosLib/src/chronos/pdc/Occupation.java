@@ -9,11 +9,8 @@
 
 package chronos.pdc;
 
-import java.util.List;
-
 import mylib.ApplicationException;
 import mylib.dmc.IRegistryElement;
-import chronos.civ.OccupationKeys;
 import chronos.pdc.registry.OccupationRegistry;
 
 /**
@@ -95,50 +92,6 @@ public class Occupation implements IRegistryElement
         _skill = skill;
     }
 
-
-    /*
-     * ACCESSORS FOR DISPLAYING THE PARTS
-     */
-
-    // /** Two Occupations are considered equal if their names and associated
-    // Skills are the same.
-    // * This is a required implementation for the <code>ArrayList
-    // contains()</code> method,
-    // * and overrides the <code>Object.equals()</code> method, so must have
-    // * exactly this signature, and cast to the target Class within.
-    // *
-    // * @param otherThing the Occupation to be considered
-    // * @return true if the Occupation has the same name (or phrase) and Skill,
-    // or memory address
-    // */
-    // @Override
-    // public boolean equals(Object otherThing)
-    // {
-    // // Check that the parameter exists
-    // if (otherThing == null) {
-    // return false;
-    // }
-    //
-    // // A quick test to see if objects are identical
-    // if (this == otherThing) {
-    // return true;
-    // }
-    //
-    // // Check that a match occurs at least at the Class level
-    // if (getClass() != otherThing.getClass()) {
-    // return false;
-    // }
-
-    // /* (non-Javadoc)
-    // * @see mylib.dmc.IRegistryElement#getPredicate()
-    // */
-    // @Override
-    // public Predicate<IRegistryElement> getPredicate()
-    // {
-    // // TODO Auto-generated method stub
-    // return null;
-    // }
-
     /*
      * Two Occupations are considered equal if their name and associated Skill are equal
      * 
@@ -161,40 +114,6 @@ public class Occupation implements IRegistryElement
         return (bName || bSkill);
     }
 
-    // /** Two Occupations are considered equal if their names and associated
-    // Skills are the same.
-    // * This is a required implementation for the <code>ArrayList
-    // contains()</code> method,
-    // * and overrides the <code>Object.equals()</code> method, so must have
-    // * exactly this signature, and cast to the target Class within.
-    // *
-    // * @param otherThing the Occupation to be considered
-    // * @return true if the Occupation has the same name (or phrase) and Skill,
-    // or memory address
-    // */
-    // @Override
-    // public boolean equals(Object otherThing)
-    // {
-    // // Call the Object class's <code>equal()</code> method first
-    // if (super.equals(otherThing) == false) {
-    // return false;
-    // }
-    // // Now we know otherThing is equal to far
-    // Occupation whatsIt = (Occupation) otherThing;
-    // // Check for name and skill
-    // return (this._name.equalsIgnoreCase(whatsIt._name)
-    // && this._skillName.equalsIgnoreCase(whatsIt._skillName));
-    // }
-
-    // /* (non-Javadoc)
-    // * @see mylib.dmc.IRegistryElement#getPredicate()
-    // */
-    // @Override
-    // public Predicate<IRegistryElement> getPredicate()
-    // {
-    // // TODO Auto-generated method stub
-    // return null;
-    // }
 
     /*
      * Returns the field used for registry retrieval
@@ -232,90 +151,10 @@ public class Occupation implements IRegistryElement
         return _skill.getName();
     }
 
-    // /** Find the Occupation by its name, and return the Skill associated with
-    // it
-    // * @param ocpName name of the occupation
-    // * @return the Skill object, else null
-    // * @throws ApplicationException if Skill cannot be found or created
-    // */
-    // public Skill getOccupationSkill(String ocpName) throws
-    // ApplicationException
-    // {
-    // Skill sk = null;
-    // try {
-    // Occupation ocp = OccupTable.createOccupation(ocpName);
-    // sk = ocp.getSkill();
-    // } catch (ApplicationException ex) {
-    // sk = null;
-    // }
-    // return sk;
-    // }
-
-    // TODO: Convert the data shuttle to something else
-    /**
-     * Convert a occupation object into a data shuttle to be passed back to the HIC
-     * 
-     * @param occ The occupation to be converted to a shuttle
-     * @return shuttle packed with data
-     */
-    public List<OccupationKeys> loadShuttle(List<OccupationKeys> ds)
-    {
-        if (ds != null)
-        {
-            // Load up the shuttle
-            // ds.add(OccupationKeys.NAME, _name);
-            // ds.putField(OccupationKeys.DESC, "Not implemented yet");
-            // ds.putField(OccupationKeys.SKILL, _skillName);
-        }
-        return ds;
-    }
-
-    /*
-     * ACCESSORS FOR DISPLAYING THE PARTS
-     */
-
     /** Return a string of the Occupatio's name and skill */
     public String toString()
     {
         return _name;
     }
-
-    // /** Convert a shuttle object into a Occupation to be passed back
-    // * @param shuttle The data shuttle loaded with data
-    // * @return Occupation created using the data passed
-    // */
-    // public Occupation unloadShuttle(DataShuttle<OccupationKeys> shuttle)
-    // {
-    // String name = (String) shuttle.getField(OccupationKeys.NAME);
-    // String skill = (String) shuttle.getField(OccupationKeys.SKILL);
-    //
-    // Occupation occ = null;
-    // try
-    // {
-    // occ = new Occupation(name, skill);
-    // } catch (ApplicationException e)
-    // {
-    // MsgCtrl.errMsgln(this, "Error creating skill.  " + e.getMessage());
-    // }
-    // return occ;
-    // }
-
-    /*
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ INNER CLASS MockOccupation
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-     */
-    public class MockOccupation
-    {
-        /** Default ctor */
-        public MockOccupation()
-        {}
-
-        /** Set a new name into the Occupation */
-        public void setName(String newName)
-        {
-            _name = newName;
-        }
-
-    } // mock of MockOccupation inner class
 
 } // end of Occupation class

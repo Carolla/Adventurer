@@ -12,6 +12,7 @@ package chronos.test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import chronos.test.pdc.TestSkill;
 import chronos.test.pdc.buildings.BuildingsSuite;
 import chronos.test.pdc.registry.RegistrySuite;
 
@@ -36,8 +37,6 @@ import chronos.test.pdc.registry.RegistrySuite;
 @Suite.SuiteClasses({
 
     /* CIV test files */
-    // TestDefaultLists.class,
-    // TestDefaultUserMsg.class,
     // TestHeroDefaults,
     // TestMiscKeys.class,
     // TestOccupationsKeys.class,
@@ -62,7 +61,7 @@ import chronos.test.pdc.registry.RegistrySuite;
     // TestNullNPC.class,
     // TestOccupation.class,
     // TestRace.class,
-    // TestSkill.class,
+     TestSkill.class,
     // TestTown.class,
 
 })

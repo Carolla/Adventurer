@@ -7,7 +7,7 @@ public class FakeSkill extends Skill
 
     public FakeSkill(String string)
     {
-        _name = string;
+        super(string, "");
     }
 
 }
