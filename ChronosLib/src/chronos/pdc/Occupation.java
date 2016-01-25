@@ -42,9 +42,8 @@ public class Occupation implements IRegistryElement
 
   /** The name of the occupation the player selected */
   private String _name = null;
-
-  // TODO Should Occupation be saved with the Skill object, or just its name?
-  /** A name of the Skill assocated with the occupationl and how the Hero may use it. */
+  private String _description;
+  private String _trait;
   private List<Skill> _skills = new ArrayList<Skill>();
 
   /** The length of the name field in a record */
@@ -73,7 +72,6 @@ public class Occupation implements IRegistryElement
   {
     MetaDie md = new MetaDie();
     int maxLimit = _ocpTable.length;
-    // ndx is index into table, so ranges between 0 and length of table - 1
     int ndx = md.getRandom(1, maxLimit) - 1; // range must be between 1 and maxLimit
     return getOccupation(_ocpTable[ndx]);
   }
@@ -86,12 +84,12 @@ public class Occupation implements IRegistryElement
    * @throws ApplicationException if the description is too long
    * @throws NullPointerException if the parms are null
    */
-  public Occupation(String name, List<String> skills)
+  public Occupation(String name, String description, String trait, List<String> skills)
   {
     // GUARDS
     // Name cannot be null
-    if (name == null || skills == null) {
-      throw new NullPointerException(name + ": Occupation must have a name; received null");
+    if (name == null || description == null || trait == null || skills == null) {
+      throw new NullPointerException(name + ": Occupation must have a name, description, trait and skills; received null");
     }
 
     // Do not create an Occupation if its name is too long
@@ -103,6 +101,8 @@ public class Occupation implements IRegistryElement
     // End Guards
 
     _name = name;
+    _description = description;
+    _trait = trait;
     for (String skill : skills) {
       _skills.add(Skill.getSkill(skill));
     }

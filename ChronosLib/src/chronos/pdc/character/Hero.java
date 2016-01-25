@@ -336,12 +336,6 @@ public class Hero implements IRegistryElement
 
     // 20. ADD RANDOM OCCUPATION AND OCCUPATIONAL SKILLS
     _occupation = assignOccupation();
-    _ocpSkills = assignOcpSkills();
-    // testing only
-    // _ocpSkills.add("Spot Details: +2 WIS to notice details such as bandits in ambush, "
-    // + "\n\t obscure items in a dim room, or centipedes in a pile of trash");
-    // displayList("Skills for occupation " + _occupation + ":", _ocpSkills);
-    // displayList("Inventory in backpack: ", _inventory);
 
     // 21. ASSIGN SPELLS TO CLERICS (WIZARDS ALREADY WERE ASSIgned 'READ MAGIC')
     _spellBook = _klass.addKlassSpells(_spellBook);
