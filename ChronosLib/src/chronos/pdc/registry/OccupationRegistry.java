@@ -39,77 +39,351 @@ public class OccupationRegistry extends Registry<Occupation>
   /** Quick reference to the SkillRegistry to avoid repeated calls */
   private SkillRegistry _skillRegistry;
 
-  /**
-   * Use this table to init the OccupTable with the occupation and skill names. Put occupations
-   * into alphabetical order, which is how the names will be displayed. Each skill must be in the
-   * SkillRegistry. See the SkillRegistry for a definition of what each of the Skills does. 28
-   * Occupations in table
-   */
-  static private final String[][] _occupTable = {
-      {"None", "No Occupational Skills"},
-      // Reduce damage d3 if falling off walls; also can pass enemy spaces
-      // +2 AC
-      {"Acrobat", "Tumbling"},
-      // Increased chance of recognition (+1 INT) to identify substance or
-      // thing
-      {"Alchemist", "Arcane Knowledge"},
-      // Increased chance of recognition (+1 WIS) to identify substance or
-      // potion
-      {"Apothecary", "Natural Knowledge"},
-      // Repair armor to -1 original AC; make small wooden or metal
-      // shields
-      {"Armorer", "Repair Armor"},
-      // Gets 10% discounts on financial transactions, and no-fee banking
-      {"Banker", "Brokering"},
-      // Make short bow (-1 to hit) and arrows (-1 damage adj)
-      {"Bowyer", "Bowmaking"},
-      // +10% chance to find secret doors in wall paneling, cabinets, etc.
-      {"Carpenter", "Find Secret Doors in Wood"},
-      // +2 CHR factor when negotiating
-      {"Courtesan", "Charm Person"},
-      // Predict next day weather at +2 WIS
-      {"Farmer", "Predict Weather"},
-      // With 50' rope, can make 50' x 50' net, can catch fish or NPCs
-      {"Fisher", "Netmaking"},
-      // +1 WIS to know compass directions when outside
-      {"Forester", "Intuit Direction"},
-      // +1 CHR when negotiating money deals
-      {"Freighter", "Negotations"},
-      // +1 on all Saving throws involving risk-taking; +2 on all game
-      // rolls
-      {"Gambler", "Luck"},
-      // 20% increased chance of finding and catching wild game
-      {"Hunter", "Hunting"},
-      // +1 WIS to determine if Person is lying or bluffing
-      {"Innkeeper", "Sense Motive"},
-      // Can know base selling value of jewelry and gems
-      {"Jeweler", "Appraise"},
-      // Can make leather armor, gloves or boots
-      {"Leatherworker", "Leatherworking"},
-      // +10 chance to find secret doors in stone work, walls, fireplaces,
-      // floors
-      {"Mason", "Find Secret Openings in Stonework"},
-      // +1 WIS to know direction underground
-      {"Miner", "Intuit Underground Direction"},
-      // +1 movement (normal = half Movement) when swimming over or
-      // underwater
-      {"Sailor", "Fast Swim"},
-      // With hand axe and wood, can make sailing raft
-      {"Shipwright", "Make Raft"},
-      // Can make clothing, belt, boots, cloak, hat, etc.
-      {"Tailor", "Sewing"},
-      // Gets 10% discounts on financial transactions, and no-fee banking
-      {"Trader", "Brokering"},
-      // Set, find, or remove simple mechanical traps as if L1 Rogue
-      {"Trapper", "Trapping"},
-      // Make or repair small specific weapons (-1 normal)
-      {"Weaponsmith", "Make Weapons"},
-      // Can know base selling value of tapestries
-      {"Weaver", "Appraise Tapestries"},
-      // Repair or modify wooden items, e.g. repair xbows, add secret
-      // compartment to chest
-      {"Woodworker", "Woodworking"}};
+//  /**
+//   * Use this table to init the OccupTable with the occupation and skill names. Put occupations
+//   * into alphabetical order, which is how the names will be displayed. Each skill must be in the
+//   * SkillRegistry. See the SkillRegistry for a definition of what each of the Skills does. 28
+//   * Occupations in table
+//   */
+//  static private final String[][] _occupTzable = {
+//      {"None", "No Occupational Skills"},
+//      // Reduce damage d3 if falling off walls; also can pass enemy spaces
+//      // +2 AC
+//      {"Acrobat", "Tumbling"},
+//      // Increased chance of recognition (+1 INT) to identify substance or
+//      // thing
+//      {"Alchemist", "Arcane Knowledge"},
+//      // Increased chance of recognition (+1 WIS) to identify substance or
+//      // potion
+//      {"Apothecary", "Natural Knowledge"},
+//      // Repair armor to -1 original AC; make small wooden or metal
+//      // shields
+//      {"Armorer", "Repair Armor"},
+//      // Gets 10% discounts on financial transactions, and no-fee banking
+//      {"Banker", "Brokering"},
+//      // Make short bow (-1 to hit) and arrows (-1 damage adj)
+//      {"Bowyer", "Bowmaking"},
+//      // +10% chance to find secret doors in wall paneling, cabinets, etc.
+//      {"Carpenter", "Find Secret Doors in Wood"},
+//      // +2 CHR factor when negotiating
+//      {"Courtesan", "Charm Person"},
+//      // Predict next day weather at +2 WIS
+//      {"Farmer", "Predict Weather"},
+//      // With 50' rope, can make 50' x 50' net, can catch fish or NPCs
+//      {"Fisher", "Netmaking"},
+//      // +1 WIS to know compass directions when outside
+//      {"Forester", "Intuit Direction"},
+//      // +1 CHR when negotiating money deals
+//      {"Freighter", "Negotations"},
+//      // +1 on all Saving throws involving risk-taking; +2 on all game
+//      // rolls
+//      {"Gambler", "Luck"},
+//      // 20% increased chance of finding and catching wild game
+//      {"Hunter", "Hunting"},
+//      // +1 WIS to determine if Person is lying or bluffing
+//      {"Innkeeper", "Sense Motive"},
+//      // Can know base selling value of jewelry and gems
+//      {"Jeweler", "Appraise"},
+//      // Can make leather armor, gloves or boots
+//      {"Leatherworker", "Leatherworking"},
+//      // +10 chance to find secret doors in stone work, walls, fireplaces,
+//      // floors
+//      {"Mason", "Find Secret Openings in Stonework"},
+//      // +1 WIS to know direction underground
+//      {"Miner", "Intuit Underground Direction"},
+//      // +1 movement (normal = half Movement) when swimming over or
+//      // underwater
+//      {"Sailor", "Fast Swim"},
+//      // With hand axe and wood, can make sailing raft
+//      {"Shipwright", "Make Raft"},
+//      // Can make clothing, belt, boots, cloak, hat, etc.
+//      {"Tailor", "Sewing"},
+//      // Gets 10% discounts on financial transactions, and no-fee banking
+//      {"Trader", "Brokering"},
+//      // Set, find, or remove simple mechanical traps as if L1 Rogue
+//      {"Trapper", "Trapping"},
+//      // Make or repair small specific weapons (-1 normal)
+//      {"Weaponsmith", "Make Weapons"},
+//      // Can know base selling value of tapestries
+//      {"Weaver", "Appraise Tapestries"},
+//      // Repair or modify wooden items, e.g. repair xbows, add secret
+//      // compartment to chest
+//      {"Woodworker", "Woodworking"}};
 
+  // Get all conditional skills for each occupation
+  switch (_occupation)
+  {
+    case ("Academic"): {
+      ocpDesc = "Knows diverse information, court politics and bureaucrats.";
+      if (INT > 14) {
+        skills.add(extractSkillSet("General Knowledge"));
+        skills.add(extractSkillSet("Concentration"));
+        if (CHR > 14) {
+          skills.add(extractSkillSet("Diplomacy"));
+        }
+      }
+      break;
+    }
+    case ("Acrobat"): {
+      ocpDesc = "Acrobatic and aerial body control.";
+      if (DEX > 14) {
+        skills.add(extractSkillSet("Climb Walls"));
+        skills.add(extractSkillSet("Balance"));
+        skills.add(extractSkillSet("Escape Artist"));
+        skills.add(extractSkillSet("Jump"));
+        skills.add(extractSkillSet("Tumble"));
+      }
+      break;
+    }
+    case ("Alchemist"): {
+      ocpDesc = "Knows chemicals and elixirs. Owns Alchemists' Kit.";
+      // _inventory.add(kits[KitNdx.ALCHEMIST.ordinal()]);
+      if (INT > 14) {
+        skills.add(extractSkillSet("Arcane Knowledge"));
+      }
+      break;
+    }
+    case ("Apothecary"): {
+      ocpDesc = "Knows herbs, ointments, and medicines. Owns Alchemists' Kit.";
+      // _inventory.add(kits[KitNdx.ALCHEMIST.ordinal()]);
+      if (WIS > 14) {
+        skills.add(extractSkillSet("Natural Knowledge"));
+      }
+      break;
+    }
+    case ("Armorer"): {
+      ocpDesc = "Makes and repairs metal armor, helmets and shields. Owns Metalsmith Kit.";
+      // _inventory.add(kits[KitNdx.METAL.ordinal()]);
+      skills.add(extractSkillSet("Repair Armor"));
+      break;
+    }
+    case ("Banker"): {
+      ocpDesc = "You were a financial businessman.";
+      skills.add(extractSkillSet("Financial Brokering"));
+      if (INT > 15) {
+        skills.add(extractSkillSet("Appraise Jewelry"));
+      }
+      break;
+    }
+    case ("Bowyer"): {
+      ocpDesc = "Can make bows and arrows. Owns Woodworking Kit.";
+      // _inventory.add(kits[KitNdx.WOOD.ordinal()]);
+      skills.add(extractSkillSet("Bowmaking"));
+      break;
+    }
+    case ("Carpenter"): {
+      ocpDesc = "Knows wood and woodworking tools. Owns Woodworking Kit.";
+      // _inventory.add(kits[KitNdx.WOOD.ordinal()]);
+      skills.add(extractSkillSet("Find Secrets in Woodwork"));
+      break;
+    }
+    case ("Farmer"): {
+      ocpDesc = "Knows plants, common herbs, greenery.";
+      skills.add(extractSkillSet("Identify Plants"));
+      skills.add(extractSkillSet("Predict Weather"));
+      break;
+    }
+    case ("Fisher"): {
+      ocpDesc = "Knows about bodies of fresh water and lakes. Owns Sewing Kit.";
+      // _inventory.add(kits[KitNdx.SEWING.ordinal()]);
+      skills.add(extractSkillSet("Netmaking"));
+      if (STR > 14) {
+        skills.add(extractSkillSet("Fast Swim"));
+      }
+      break;
+    }
+    case ("Forester"): {
+      ocpDesc = "Has natural knowledge in wooded areas.";
+      skills.add(extractSkillSet("Hide in Shadows"));
+      skills.add(extractSkillSet("Move Silently"));
+      skills.add(extractSkillSet("Wilderness Lore"));
+      skills.add(extractSkillSet("Intuit Outdoor Direction"));
+      skills.add(extractSkillSet("Spot Details"));
+      if (STR > 14) {
+        skills.add(extractSkillSet("Fast Swim"));
+      }
+      break;
+    }
+    case ("Freighter"): {
+      ocpDesc = "Businessman. Ships cargo in wagons. Owns Woodworking Kit.";
+      // _inventory.add(kits[KitNdx.WOOD.ordinal()]);
+      skills.add(extractSkillSet("Negotiations"));
+      skills.add(extractSkillSet("Cargo Transport"));
+      if (WIS > 14) {
+        skills.add(extractSkillSet("Train Animals"));
+      }
+      break;
+    }
+    case ("Gambler"): {
+      ocpDesc = "Skilled in games of chance.";
+      skills.add(extractSkillSet("Luck"));
+      skills.add(extractSkillSet("Pick Pockets"));
+      skills.add(extractSkillSet("Open Locks"));
+      skills.add(extractSkillSet("Bluff"));
+      skills.add(extractSkillSet("Sense Motive"));
+      break;
+    }
+    case ("Hunter"): {
+      ocpDesc = "Tracks and kills wild animals for food";
+      skills.add(extractSkillSet("Hunting"));
+      skills.add(extractSkillSet("Find/Set Traps"));
+      skills.add(extractSkillSet("Move Silently"));
+      skills.add(extractSkillSet("Hide in Shadows"));
+      skills.add(extractSkillSet("Spot Details"));
+      if (CHR > 14) {
+        skills.add(extractSkillSet("Intimidate"));
+      }
+      if (CON > 14) {
+        skills.add(extractSkillSet("Listening"));
+      }
+      break;
+    }
+    case ("Husbandman"):
+      ocpDesc = "Knows livestock of all kinds (horses, sheep, cattle, pigs)";
+      skills.add(extractSkillSet("Husbandry"));
+      if (WIS > 14) {
+        skills.add(extractSkillSet("Animal Empathy"));
+        skills.add(extractSkillSet("Train Animals"));
+      }
+      break;
+    case ("Innkeeper"): {
+      ocpDesc = "Businessman. Runs crowded places, people-oriented, business-savvy";
+      skills.add(extractSkillSet("Negotiations"));
+      skills.add(extractSkillSet("Sense Motive"));
+      if (CHR > 14) {
+        skills.add(extractSkillSet("Gather Information"));
+      }
+      if (INT > 14) {
+        skills.add(extractSkillSet("Read Lips"));
+      }
+      break;
+    }
+    case ("Jeweler"): {
+      ocpDesc = "Recognizes true value of gems, jewelry, etc. " +
+          "Works intricate devices like a watchmaker.";
+      skills.add(extractSkillSet("Appraise Jewelry"));
+      if (DEX > 14) {
+        skills.add(extractSkillSet("Open Locks"));
+      }
+      break;
+    }
+    case ("Leatherworker"): {
+      ocpDesc = "Tans hides and makes leather items. Owns Leatherworking Kit";
+      // _inventory.add(kits[KitNdx.LEATHER.ordinal()]);
+      skills.add(extractSkillSet("Leatherworking"));
+      break;
+    }
+    case ("Painter"): {
+      ocpDesc = "Paints buildings and mixes paint.";
+      skills.add(extractSkillSet("Painting"));
+      if (CHR > 14) {
+        skills.add(extractSkillSet("Gather Information"));
+      }
+      break;
+    }
+    case ("Mason"): {
+      ocpDesc = "Constructs buildings, works mortar, lays brick; knows stonework.";
+      if (INT > 14) {
+        skills.add(extractSkillSet("Find Secrets in Stonework"));
+      }
+      break;
+    }
+    case ("Miner"): {
+      ocpDesc = "Digs ores from caverns and mines. Knows kinds of rock and ores";
+      skills.add(extractSkillSet("Intuit Underground Direction"));
+      skills.add(extractSkillSet("Cavern Lore"));
+      if (INT > 14) {
+        skills.add(extractSkillSet("Find Secrets in Stonework"));
+      }
+      break;
+    }
+    case ("Navigator"): {
+      ocpDesc = "Knows direction at sea, plots water course without getting lost";
+      skills.add(extractSkillSet("Predict Weather"));
+      skills.add(extractSkillSet("Water Lore"));
+      skills.add(extractSkillSet("Intuit Outdoor Direction"));
+      skills.add(extractSkillSet("Spot Details"));
+      if (STR > 14) {
+        skills.add(extractSkillSet("Fast Swim"));
+      }
+      break;
+    }
+    case ("Sailor"): {
+      ocpDesc = "Knows ships, has knowledge of bodies of water.";
+      skills.add(extractSkillSet("Make Raft"));
+      if (STR > 14) {
+        skills.add(extractSkillSet("Fast Swim"));
+      }
+      break;
+    }
+    case ("Shipwright"): {
+      ocpDesc = "Builds ships, knows wood and wood-working tools.";
+      skills.add(extractSkillSet("Make Raft"));
+      if (STR > 14) {
+        skills.add(extractSkillSet("Fast Swim"));
+      }
+      break;
+    }
+    case ("Tailor"): {
+      ocpDesc = "Makes clothing, knows dyes. Owns Sewing Kit";
+      // _inventory.add(kits[KitNdx.SEWING.ordinal()]);
+      skills.add(extractSkillSet("Sewing"));
+      if (CHR > 14) {
+        skills.add(extractSkillSet("Gather Information"));
+      }
+      break;
+    }
+    case ("Trader"): {
+      ocpDesc = "Businessman. Familar with transport equipment.";
+      skills.add(extractSkillSet("Financial Brokering"));
+      skills.add(extractSkillSet("Sense Motive"));
+      if (CHR > 14) {
+        skills.add(extractSkillSet("Diplomacy"));
+      }
+      break;
+    }
+    case ("Trapper"): {
+      ocpDesc = "Catches animals for tanning or money.";
+      skills.add(extractSkillSet("Trapping"));
+      skills.add(extractSkillSet("Find/Set Traps"));
+      skills.add(extractSkillSet("Move Silently"));
+      skills.add(extractSkillSet("Open Locks"));
+      skills.add(extractSkillSet("Hide in Shadows"));
+      skills.add(extractSkillSet("Spot Details"));
+      skills.add(extractSkillSet("Wilderness Lore"));
+      if ((DEX > 14) && (INT > 14)) {
+        skills.add(extractSkillSet("Disable Device Skill"));
+      }
+      break;
+    }
+    case ("Weaponsmith"): {
+      ocpDesc = "Knows metal weapons of all types and metalworking. Owns Metalsmith Kit.";
+      // _inventory.add(kits[KitNdx.METAL.ordinal()]);
+      skills.add(extractSkillSet("Make Weapons"));
+      break;
+    }
+    case ("Weaver"): {
+      ocpDesc = "Makes tapestries, rugs, bed clothing. Knows dyes. Owns Sewing Kit";
+      // _inventory.add(kits[KitNdx.SEWING.ordinal()]);
+      skills.add(extractSkillSet("Appraise Tapestries"));
+      break;
+    }
+    case ("Woodworker"): {
+      ocpDesc = "Builds wood furniture, cabinets. Knows wood and wood-working tools. " +
+          "Owns Woodworking Kit.";
+      // _inventory.add(kits[KitNdx.WOOD.ordinal()]);
+      skills.add(extractSkillSet("Woodworking"));
+      skills.add(extractSkillSet("Find Secrets in Woodwork"));
+      if ((DEX > 14) && (INT > 14)) {
+        skills.add(extractSkillSet("Disable Device Skill"));
+      }
+      break;
+    }
+    case ("Drifter"): {
+      ocpDesc = "Everyone is running from something. What's your story?";
+      skills.add("No special skills");
+      break;
+    }
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
@@ -142,7 +416,6 @@ public class OccupationRegistry extends Registry<Occupation>
     // Create new Occupations and save to registry
     try {
       for (int k = 0; k < _occupTable.length; k++) {
-        // Throw exception if Skill is not in Skill Registry
         Occupation occup =
             new Occupation(_occupTable[k][0],
                 _skillRegistry.getSkill(_occupTable[k][1]));
@@ -157,29 +430,6 @@ public class OccupationRegistry extends Registry<Occupation>
   /*
    * PUBLIC METHODS
    */
-
-  /**
-   * Add a new Occupation to the Registry
-   * 
-   * @param occup new Occupation to add. It must a a registered Skill and not null
-   * @return 
-   * @throws ApplicationException if the Skill does not exist in the Skill Registry, or Occupation
-   *         is null
-   */
-  public boolean add(Occupation occup) throws ApplicationException
-  {
-    if (occup == null) {
-      throw new ApplicationException("add(): Received illegal null Occupation");
-    }
-
-    // Create new Occupations and save to registry
-    if (verifySkill(_skillRegistry, occup.getSkillName()) == true) {
-      return super.add(occup); // super is used to highlight inheritance
-    } else {
-      throw (new ApplicationException("Skill not found in Skill Registry"));
-    }
-  }
-
 
   /**
    * Converts the name into a searachable Occupation, and queries the db
@@ -201,36 +451,6 @@ public class OccupationRegistry extends Registry<Occupation>
   public List<Occupation> getOccupationList()
   {
     return getAll();
-  }
-
-
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
-   *                  PRIVATE METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
-
-  /**
-   * Verify that an Occuational skill exists in the Skill registry, or this Occupation is invalid.
-   * To verify against the database, a Skill object is created with the matching skillname. This
-   * is required because the registry matches by example.
-   * 
-   * @param skillReg db access where skills reside
-   * @param skillName to verify
-   * @param true is the skill exists in the registry, else false
-   */
-  private boolean verifySkill(SkillRegistry skillReg, String skillName)
-  {
-    boolean retval = false;
-    if (skillReg != null) {
-      Skill foundSkill = skillReg.getSkill(skillName);
-      if (foundSkill == null) {
-        retval = false;
-      } else {
-        retval = foundSkill.getName().equals(skillName);
-      }
-    }
-    return retval;
   }
 
 } // end of OccupationRegistry class

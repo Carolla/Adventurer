@@ -14,10 +14,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import mylib.dmc.IRegistryElement;
 import mylib.pdc.MetaDie;
 import chronos.civ.PersonKeys;
+import chronos.pdc.Occupation;
 import chronos.pdc.race.Race;
 
 
@@ -97,7 +100,7 @@ public class Hero implements IRegistryElement
 
   // INT mods
   // Everyone knows Common, and perhaps a race language
-  List<String> _knownLangs = new ArrayList<String>();
+  Set<String> _knownLangs = new TreeSet<String>();
   int _maxLangs; // some can learn new languages, up to this number
   // Wizard only
   private int _MSPs = 0;
@@ -157,116 +160,7 @@ public class Hero implements IRegistryElement
   private String _occupation = "";
   private ArrayList<String> _ocpSkills = new ArrayList<String>();
 
-  // Various occupations (31) for random selection
-  private String[] _ocpTable = {
-      "Academic", "Acrobat", "Alchemist", "Apothecary", "Armorer", "Banker", "Bowyer",
-      "Carpenter", "Farmer", "Fisher", "Forester", "Freighter", "Gambler", "Hunter",
-      "Husbandman", "Innkeeper", "Jeweler", "Leatherworker", "Painter", "Mason",
-      "Miner", "Navigator", "Sailor", "Shipwright", "Tailor", "Trader", "Trapper",
-      "Weaponsmith", "Weaver", "Woodworker", "Drifter"};
-
-  // Occupational skills and descriptions for defined occupations
-  private String[] _ocpSkillTable = {
-      "Animal Empathy: Communicate emotionally with animals",
-      "Appraise Jewelry: Estimate selling value of gems and jewelry",
-      "Appraise Tapestries: Estimate selling value of tapestries",
-      "Arcane Knowledge: +1 INT to recognize things, substances, and potions  "
-          + "\n\t --Identify substances (2gp, 1hr)  "
-          + "\n\t --Identify potions (2gp 1hr)  "
-          + "\n\t --Make acid: half-pint, d4 dmg or dissolve metal (15gp, 1 hr in town only) "
-          + "\n\t --Make weak explosive (2d6 dmg (5gp, 1hr) "
-          + "\n\t --Make medium explosive (3d8 dmg (20gp, 4hr in town only) ",
-      "Balance: +1 DEX for balancing tasks and saves",
-      "Bluff: +2 CHR if the lie is only a matter of luck that the listener believes you",
-      "Bowmaking: in the field if proper materials available:"
-          + "\n\t --Make/repair short bow (-1 to hit) (20 gp, 3 days) "
-          + "\n\t --Make arrows (-1 damage), need 1 bird for feathers "
-          + "(1 gp per 3d4+2 per day) ",
-      "Cargo Transport: knows tack, harness, and transport equipment"
-          + "\n\t --Repair wagons",
-      "Cavern Lore: +1 WIS to guide party through caverns without getting lost"
-          + "\n\t --Avoid natural cavern hazards"
-          + "\n\t --Identify most kinds of rock ores, +1 INT on rarer ores"
-          + "\n\t --Use picks and shovels as +1, +1 weapons",
-      "Climb Walls: as a Level 1 Thief (%)",
-      "Concentration: +1 Save vs INT to avoid distraction (and spell interruption if spell caster)",
-      "Diplomacy: +1 CHR for all political negotiating",
-      "Disable Device Skill: same as Remove Traps as Level 1 Thief (%)"
-          + "\n\t --Undo or jam wooden devices or traps at +1",
-      "Escape Artist: +1 DEX to slip from manacles, ropes, or through tight spaces",
-      "Fast Swim: Gains +1 BM when moving in water or underwater (normal water penalty = BM/2) "
-          + "\n\t --Gets +4 Save when falling into water due to diving ",
-      "Financial Brokering: +1 CHR when negotiating money deals "
-          + "\n\t --No fee banking "
-          + "\n\t --Gets 10% discount on all transactions in town ",
-      "Find Secrets in Woodwork: +10% chance to find secret doors in wall panels, cabinets, etc.",
-      "Find Secrets in Stonework: +10% chance to find openings in stone construction, "
-          + "e.g. cavern walls, stone floors, fireplaces ",
-      "Find/Set Traps: for simple traps like snares and deadweights, as a Level 1 Thief (%)",
-      "Gather Information: +2 CHR to hear rumor when in an inn or similarly crowded place"
-          + "\n\t -- Gets +2 CHR to find contact information for a key person",
-      "General Knowledge: +1 INT on any general question on specific topic ",
-      "Hide in Shadows: as a Level 1 Thief (%)",
-      "Hunting: 20% chance of finding wild game",
-      "Husbandry: 10% chance of catching live animals"
-          + "\n\t --From vet skills, ca heal d3 HP human dmg or Slow Poison. Needs herbs",
-      "Identify Plants: +1 INT on rarer items",
-      "Intimidate: +1 CHR to get info from a prison or backdown a bully",
-      "Intuit Outdoor Direction: +1 WIS to know direction of travel when outside",
-      "Intuit Underground Direction: +1 WIS to know direction when underground",
-      "Jump: +2 AP for leaping chasms or reaching lower tree branches",
-      "Leatherworking: Make/repair leather armor (10gp, 3 days)"
-          + "\n\t --Make/repair boots or gloves (5gp, 1 day)",
-      "Listening: as a Level 1 Thief (%)",
-      "Luck: Gets +1 on all Saves involving luck and risk taking"
-          + "\n\t --Gets +2 on all throws involving gaming luck",
-      "Make Raft: Make a sailing raft. Needs hand axe (3 days)",
-      "Make Weapons: Make small metal shield (12gp, 4hr)"
-          + "\n\t --Make/repair small melee weapons (all at -1 to Hit, -1 dmg):"
-          + "\n\t . . dagger (5gp, 2hr); battle axe (5gp, 2hr, need hand axe); spear (5gp, 2hr); "
-          + "short sword (no scabbard) (10gp, 1 day)"
-          + "\n\t --Make/repair small missile weapons (all at -1 to Hit, -1 dmg): "
-          + "throwing axe (5gp, 2hr, need hand axe); "
-          + "\n\t . . light xbow bolts (10sp, 15 min); heavy bolts (1gp, 30 min); "
-          + "sling bullet or dart (1 gp per 3d6 bullets/4hrs)",
-      "Move Silently: as a Level 1 Thief (%)",
-      "Natural Knowledge: +1 WIS for biological or chemical question "
-          + "\n\t --Identify substance (3gp, 1hr) "
-          + "\n\t --Identify potion (3gp, 1hr) "
-          + "\n\t --Detect poison in bottle or by symptoms of person (10gp, 1 hr) "
-          + "\n\t --Detect potency and kind of poison after detection (20gp, 1 hr) "
-          + "\n\t --Make weak medicinal potions (d4 healing) (10gp, 1 hr) "
-          + "\n\t --Make medium medicinal potions (2d6 healing) (20gp, 4 hr in town only) "
-          + "\n\t --Make weak poison (L1 poison)( (5gp, 1hr) "
-          + "\n\t --Make medium poison (L2 poison)(40gp, 4hr in town only) ",
-      "Negotiations: +1 CHR when negotiating money deals",
-      "Netmaking: Make/repair 10'x10' net that can provide 10d4 fish per day for food. "
-          + " Needs 50' rope (2 days) ",
-      "Open Locks: as a Level 1 Thief (%)",
-      "Painting: Paint buildings, mix paint. (yep, that's it).",
-      "Pick Pockets: as a Level 1 Thief (%)",
-      "Predict Weather: Predict next day weather at +2 WIS",
-      "Read Lips: Understand about 1 minute of speaker's speech if within 30' "
-          + "and knows the speaker's language",
-      "Repair Armor: in the field if proper materials available:"
-          + "\n\t --Make shield, small metal (10gp, 1 day) or small wooden (2 gp, 4 hr) "
-          + "\n\t --Convert lantern from open (hooded) to bulls-eye lantern (10gp, 4hr) "
-          + "\n\t --Make caltrop from 4 spikes (1gp, 1hr) ",
-      "Sense Motive: +1 WIS to determine if person is lying or bluffing",
-      "Sewing: Make/repair belt (1gp, 1hr), boots (5gp, 1 day), cloak (1gp, 1hr), hat (1gp, 1hr)",
-      "Spot Details: +2 WIS to notice details such as obscure items in a dim room, "
-          + "\n\t or centipedes in a pile of trash",
-      "Train Animals: Train animals or work teams",
-      "Trapping: Catch animals alive (20%)",
-      "Tumble: land softer when falling (reduce dmg by d3) "
-          + "\n\t--Dive tumble over opponents at +2 AC ",
-      "Water Lore: +1 WIS to guide party through water areas and avoid natural hazards",
-      "Wilderness Lore: Guide party through badlands and avoid natural hazards "
-          + "\n\t --Navigate outdoor course without getting lost "
-          + "\n\t --Survive off the land",
-      "Woodworking: Make/repair wooden items, e.g. repair xbows (not bows),"
-          + "\n\t --Add secret compartments to chests"
-  };
+  private Occupation _occ;
 
 
   // ====================================================
@@ -308,7 +202,7 @@ public class Hero implements IRegistryElement
     for (int k = 0; k < NBR_TRAITS; k++) {
       _traits[k] = md.rollTrait();
     }
-    displayTraits("Raw traits: ", _traits);
+    //displayTraits("Raw traits: ", _traits);
 
     // 3. REARRANGE THE PRIME TRAIT FOR THE KLASS
     // Create the Klass object
@@ -318,9 +212,7 @@ public class Hero implements IRegistryElement
     // displayTraits(_klassname + "-adjusted Traits: ", _traits);
 
     // 4b. REARRANGE THE PRIME TRAIT FOR THE GENDER
-    if (_gender.isFemale()) {
-      _traits = adjustTraitsForGender(_traits);
-    }
+    _gender.adjustTraitsForGender(_traits);
     
     // 4a. REARRANGE THE PRIME TRAIT FOR THE RACE
     // Create the Race object
@@ -343,7 +235,8 @@ public class Hero implements IRegistryElement
 
     // 7a. ASSIGN THE INTELLIGENCE MODIFIERS: Known Languages, Max Languages, Literacy Skill
     int intel = _traits[PrimeTraits.INT.ordinal()]; // for typing convenience
-    _knownLangs = addLanguages(_knownLangs);
+    _knownLangs.add("Common");
+    _knownLangs.add(_race.getRacialLanguage());
     // displayList("Known Languages: \t", _knownLangs);
     _maxLangs = intel / 2 - 3;
     // System.out.println("Hero can learn an additional " + _maxLangs + " languages.");
@@ -552,7 +445,7 @@ public class Hero implements IRegistryElement
 
   public List<String> getOcpSkills()
   {
-    return _ocpSkills;
+    return _occ.getSkillName();
   }
 
   public List<String> getSpellBook()
@@ -651,8 +544,8 @@ public class Hero implements IRegistryElement
 
     // Row 14: All known languages as single string
     StringBuilder sb = new StringBuilder();
-    for (int k = 0; k < _knownLangs.size(); k++) {
-      sb.append(_knownLangs.get(k));
+    for (String lang : _knownLangs) {
+      sb.append(lang);
       sb.append(", ");
     }
     String langList = new String(sb);
@@ -661,48 +554,12 @@ public class Hero implements IRegistryElement
     return map;
   }
 
-  /** Update the list with initial languages, including race langauges */
-  private List<String> addLanguages(List<String> _knownLangs2)
-  {
-    _knownLangs2.add("Common");
-    String s = _race.getRacialLanguage();
-    if (s != null) {
-      // langs.add(s);
-      addUnique(_knownLangs2, s);
-    }
-    return _knownLangs2;
-  }
-
-  /**
-   * Adds the object to the ArrayList, but does not add duplicated
-   * 
-   * @param _knownLangs2 list to add object to
-   * @param obj to add to list if it isn't in the list already
-   */
-  private void addUnique(List<String> _knownLangs2, String obj)
-  {
-    if (!_knownLangs2.contains(obj)) {
-      _knownLangs2.add(obj);
-    }
-  }
-
-  /** Females are given more CON and CHR but less STR */
-  private int[] adjustTraitsForGender(int[] traits)
-  {
-    traits[PrimeTraits.STR.ordinal()] -= 1;
-    traits[PrimeTraits.CON.ordinal()] += 1;
-    traits[PrimeTraits.CHR.ordinal()] += 1;
-    return traits;
-  }
-
   // Assign a random occupation to the Hero
   private String assignOccupation()
   {
-    MetaDie md = new MetaDie();
-    int maxLimit = _ocpTable.length;
-    // ndx is index into table, so ranges between 0 and length of table - 1
-    int ndx = md.getRandom(1, maxLimit) - 1; // range must be between 1 and maxLimit
-    return _ocpTable[ndx];
+    Occupation occ = Occupation.getRandomOccupation();
+    _occ = occ;
+    return occ.getName();
   }
 
 
@@ -720,295 +577,6 @@ public class Hero implements IRegistryElement
     int CON = _traits[PrimeTraits.CON.ordinal()];
     int CHR = _traits[PrimeTraits.CHR.ordinal()];
 
-    // for testing
-    // _occupation = "Armorer";
-    // STR = 17;
-    // INT = 17;
-    // WIS = 17;
-    // DEX = 17;
-    // CON = 17;
-    // CHR = 17;
-
-    // Get all conditional skills for each occupation
-    switch (_occupation)
-    {
-      case ("Academic"): {
-        ocpDesc = "Knows diverse information, court politics and bureaucrats.";
-        if (INT > 14) {
-          skills.add(extractSkillSet("General Knowledge"));
-          skills.add(extractSkillSet("Concentration"));
-          if (CHR > 14) {
-            skills.add(extractSkillSet("Diplomacy"));
-          }
-        }
-        break;
-      }
-      case ("Acrobat"): {
-        ocpDesc = "Acrobatic and aerial body control.";
-        if (DEX > 14) {
-          skills.add(extractSkillSet("Climb Walls"));
-          skills.add(extractSkillSet("Balance"));
-          skills.add(extractSkillSet("Escape Artist"));
-          skills.add(extractSkillSet("Jump"));
-          skills.add(extractSkillSet("Tumble"));
-        }
-        break;
-      }
-      case ("Alchemist"): {
-        ocpDesc = "Knows chemicals and elixirs. Owns Alchemists' Kit.";
-        // _inventory.add(kits[KitNdx.ALCHEMIST.ordinal()]);
-        if (INT > 14) {
-          skills.add(extractSkillSet("Arcane Knowledge"));
-        }
-        break;
-      }
-      case ("Apothecary"): {
-        ocpDesc = "Knows herbs, ointments, and medicines. Owns Alchemists' Kit.";
-        // _inventory.add(kits[KitNdx.ALCHEMIST.ordinal()]);
-        if (WIS > 14) {
-          skills.add(extractSkillSet("Natural Knowledge"));
-        }
-        break;
-      }
-      case ("Armorer"): {
-        ocpDesc = "Makes and repairs metal armor, helmets and shields. Owns Metalsmith Kit.";
-        // _inventory.add(kits[KitNdx.METAL.ordinal()]);
-        skills.add(extractSkillSet("Repair Armor"));
-        break;
-      }
-      case ("Banker"): {
-        ocpDesc = "You were a financial businessman.";
-        skills.add(extractSkillSet("Financial Brokering"));
-        if (INT > 15) {
-          skills.add(extractSkillSet("Appraise Jewelry"));
-        }
-        break;
-      }
-      case ("Bowyer"): {
-        ocpDesc = "Can make bows and arrows. Owns Woodworking Kit.";
-        // _inventory.add(kits[KitNdx.WOOD.ordinal()]);
-        skills.add(extractSkillSet("Bowmaking"));
-        break;
-      }
-      case ("Carpenter"): {
-        ocpDesc = "Knows wood and woodworking tools. Owns Woodworking Kit.";
-        // _inventory.add(kits[KitNdx.WOOD.ordinal()]);
-        skills.add(extractSkillSet("Find Secrets in Woodwork"));
-        break;
-      }
-      case ("Farmer"): {
-        ocpDesc = "Knows plants, common herbs, greenery.";
-        skills.add(extractSkillSet("Identify Plants"));
-        skills.add(extractSkillSet("Predict Weather"));
-        break;
-      }
-      case ("Fisher"): {
-        ocpDesc = "Knows about bodies of fresh water and lakes. Owns Sewing Kit.";
-        // _inventory.add(kits[KitNdx.SEWING.ordinal()]);
-        skills.add(extractSkillSet("Netmaking"));
-        if (STR > 14) {
-          skills.add(extractSkillSet("Fast Swim"));
-        }
-        break;
-      }
-      case ("Forester"): {
-        ocpDesc = "Has natural knowledge in wooded areas.";
-        skills.add(extractSkillSet("Hide in Shadows"));
-        skills.add(extractSkillSet("Move Silently"));
-        skills.add(extractSkillSet("Wilderness Lore"));
-        skills.add(extractSkillSet("Intuit Outdoor Direction"));
-        skills.add(extractSkillSet("Spot Details"));
-        if (STR > 14) {
-          skills.add(extractSkillSet("Fast Swim"));
-        }
-        break;
-      }
-      case ("Freighter"): {
-        ocpDesc = "Businessman. Ships cargo in wagons. Owns Woodworking Kit.";
-        // _inventory.add(kits[KitNdx.WOOD.ordinal()]);
-        skills.add(extractSkillSet("Negotiations"));
-        skills.add(extractSkillSet("Cargo Transport"));
-        if (WIS > 14) {
-          skills.add(extractSkillSet("Train Animals"));
-        }
-        break;
-      }
-      case ("Gambler"): {
-        ocpDesc = "Skilled in games of chance.";
-        skills.add(extractSkillSet("Luck"));
-        skills.add(extractSkillSet("Pick Pockets"));
-        skills.add(extractSkillSet("Open Locks"));
-        skills.add(extractSkillSet("Bluff"));
-        skills.add(extractSkillSet("Sense Motive"));
-        break;
-      }
-      case ("Hunter"): {
-        ocpDesc = "Tracks and kills wild animals for food";
-        skills.add(extractSkillSet("Hunting"));
-        skills.add(extractSkillSet("Find/Set Traps"));
-        skills.add(extractSkillSet("Move Silently"));
-        skills.add(extractSkillSet("Hide in Shadows"));
-        skills.add(extractSkillSet("Spot Details"));
-        if (CHR > 14) {
-          skills.add(extractSkillSet("Intimidate"));
-        }
-        if (CON > 14) {
-          skills.add(extractSkillSet("Listening"));
-        }
-        break;
-      }
-      case ("Husbandman"):
-        ocpDesc = "Knows livestock of all kinds (horses, sheep, cattle, pigs)";
-        skills.add(extractSkillSet("Husbandry"));
-        if (WIS > 14) {
-          skills.add(extractSkillSet("Animal Empathy"));
-          skills.add(extractSkillSet("Train Animals"));
-        }
-        break;
-      case ("Innkeeper"): {
-        ocpDesc = "Businessman. Runs crowded places, people-oriented, business-savvy";
-        skills.add(extractSkillSet("Negotiations"));
-        skills.add(extractSkillSet("Sense Motive"));
-        if (CHR > 14) {
-          skills.add(extractSkillSet("Gather Information"));
-        }
-        if (INT > 14) {
-          skills.add(extractSkillSet("Read Lips"));
-        }
-        break;
-      }
-      case ("Jeweler"): {
-        ocpDesc = "Recognizes true value of gems, jewelry, etc. " +
-            "Works intricate devices like a watchmaker.";
-        skills.add(extractSkillSet("Appraise Jewelry"));
-        if (DEX > 14) {
-          skills.add(extractSkillSet("Open Locks"));
-        }
-        break;
-      }
-      case ("Leatherworker"): {
-        ocpDesc = "Tans hides and makes leather items. Owns Leatherworking Kit";
-        // _inventory.add(kits[KitNdx.LEATHER.ordinal()]);
-        skills.add(extractSkillSet("Leatherworking"));
-        break;
-      }
-      case ("Painter"): {
-        ocpDesc = "Paints buildings and mixes paint.";
-        skills.add(extractSkillSet("Painting"));
-        if (CHR > 14) {
-          skills.add(extractSkillSet("Gather Information"));
-        }
-        break;
-      }
-      case ("Mason"): {
-        ocpDesc = "Constructs buildings, works mortar, lays brick; knows stonework.";
-        if (INT > 14) {
-          skills.add(extractSkillSet("Find Secrets in Stonework"));
-        }
-        break;
-      }
-      case ("Miner"): {
-        ocpDesc = "Digs ores from caverns and mines. Knows kinds of rock and ores";
-        skills.add(extractSkillSet("Intuit Underground Direction"));
-        skills.add(extractSkillSet("Cavern Lore"));
-        if (INT > 14) {
-          skills.add(extractSkillSet("Find Secrets in Stonework"));
-        }
-        break;
-      }
-      case ("Navigator"): {
-        ocpDesc = "Knows direction at sea, plots water course without getting lost";
-        skills.add(extractSkillSet("Predict Weather"));
-        skills.add(extractSkillSet("Water Lore"));
-        skills.add(extractSkillSet("Intuit Outdoor Direction"));
-        skills.add(extractSkillSet("Spot Details"));
-        if (STR > 14) {
-          skills.add(extractSkillSet("Fast Swim"));
-        }
-        break;
-      }
-      case ("Sailor"): {
-        ocpDesc = "Knows ships, has knowledge of bodies of water.";
-        skills.add(extractSkillSet("Make Raft"));
-        if (STR > 14) {
-          skills.add(extractSkillSet("Fast Swim"));
-        }
-        break;
-      }
-      case ("Shipwright"): {
-        ocpDesc = "Builds ships, knows wood and wood-working tools.";
-        skills.add(extractSkillSet("Make Raft"));
-        if (STR > 14) {
-          skills.add(extractSkillSet("Fast Swim"));
-        }
-        break;
-      }
-      case ("Tailor"): {
-        ocpDesc = "Makes clothing, knows dyes. Owns Sewing Kit";
-        // _inventory.add(kits[KitNdx.SEWING.ordinal()]);
-        skills.add(extractSkillSet("Sewing"));
-        if (CHR > 14) {
-          skills.add(extractSkillSet("Gather Information"));
-        }
-        break;
-      }
-      case ("Trader"): {
-        ocpDesc = "Businessman. Familar with transport equipment.";
-        skills.add(extractSkillSet("Financial Brokering"));
-        skills.add(extractSkillSet("Sense Motive"));
-        if (CHR > 14) {
-          skills.add(extractSkillSet("Diplomacy"));
-        }
-        break;
-      }
-      case ("Trapper"): {
-        ocpDesc = "Catches animals for tanning or money.";
-        skills.add(extractSkillSet("Trapping"));
-        skills.add(extractSkillSet("Find/Set Traps"));
-        skills.add(extractSkillSet("Move Silently"));
-        skills.add(extractSkillSet("Open Locks"));
-        skills.add(extractSkillSet("Hide in Shadows"));
-        skills.add(extractSkillSet("Spot Details"));
-        skills.add(extractSkillSet("Wilderness Lore"));
-        if ((DEX > 14) && (INT > 14)) {
-          skills.add(extractSkillSet("Disable Device Skill"));
-        }
-        break;
-      }
-      case ("Weaponsmith"): {
-        ocpDesc = "Knows metal weapons of all types and metalworking. Owns Metalsmith Kit.";
-        // _inventory.add(kits[KitNdx.METAL.ordinal()]);
-        skills.add(extractSkillSet("Make Weapons"));
-        break;
-      }
-      case ("Weaver"): {
-        ocpDesc = "Makes tapestries, rugs, bed clothing. Knows dyes. Owns Sewing Kit";
-        // _inventory.add(kits[KitNdx.SEWING.ordinal()]);
-        skills.add(extractSkillSet("Appraise Tapestries"));
-        break;
-      }
-      case ("Woodworker"): {
-        ocpDesc = "Builds wood furniture, cabinets. Knows wood and wood-working tools. " +
-            "Owns Woodworking Kit.";
-        // _inventory.add(kits[KitNdx.WOOD.ordinal()]);
-        skills.add(extractSkillSet("Woodworking"));
-        skills.add(extractSkillSet("Find Secrets in Woodwork"));
-        if ((DEX > 14) && (INT > 14)) {
-          skills.add(extractSkillSet("Disable Device Skill"));
-        }
-        break;
-      }
-      case ("Drifter"): {
-        ocpDesc = "Everyone is running from something. What's your story?";
-        skills.add("No special skills");
-        break;
-      }
-      default: {
-        System.err.println(
-            "\n assignOcpSkills(): Can't find the occupation given as " + _occupation);
-        break;
-      }
-    }
     // Update occupational description
     _occupation += ": " + ocpDesc;
     return skills;
@@ -1129,40 +697,6 @@ public class Hero implements IRegistryElement
   // ====================================================
   // Private helper methods
   // ====================================================
-
-  /**
-   * Display the Hero's prime traits
-   * 
-   * @param msg header message before traits display
-   * @param traits traits for display
-   */
-  private void displayTraits(String msg, int[] traits)
-  {
-//    // TODO Make this list depend on PrimeTraits order, and not these constants
-//    final String[] ndx = {"STR", "INT", "WIS", "DEX", "CON", "CHR"};
-//    System.out.println(msg);
-//    for (int k = 0; k < 6; k++) {
-//      System.out.print("\t" + ndx[k] + " = " + traits[k] + "\t");
-//    }
-  }
-
-  // Private: Extract the skills for a given skillname of the given occupation
-  private String extractSkillSet(String name)
-  {
-    String skill = new String();
-    // Traverse ocp skills table looking for specified skillname
-    for (int k = 0; k < _ocpSkillTable.length; k++) {
-      String fullStr = _ocpSkillTable[k].toString();
-      // Separate skill name from skill description
-      int ndx = fullStr.indexOf(":");
-      String skillStr = fullStr.substring(0, ndx); // get skillname from table to match
-      if (skillStr.equalsIgnoreCase(name)) {
-        skill = fullStr; // get matching line including skill name
-        break; // break from forloop when skillname found
-      }
-    }
-    return skill;
-  }
 
   // Find a number in one of three ranges: low, medium, high
   private int findInRange(int value)

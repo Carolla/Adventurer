@@ -1,6 +1,8 @@
 
 package chronos.pdc.character;
 
+import chronos.pdc.character.Hero.PrimeTraits;
+
 
 public class Gender
 {
@@ -36,5 +38,15 @@ public class Gender
   public String pronoun()
   {
     return (_gender == Gender_e.FEMALE) ? "She" : "He";
+  }
+
+
+  /** Females are given more CON and CHR but less STR */
+  public int[] adjustTraitsForGender(int[] traits)
+  {
+    traits[PrimeTraits.STR.ordinal()] -= 1;
+    traits[PrimeTraits.CON.ordinal()] += 1;
+    traits[PrimeTraits.CHR.ordinal()] += 1;
+    return traits;
   }
 }
