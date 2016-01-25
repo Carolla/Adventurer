@@ -31,9 +31,31 @@ public abstract class Race
   public static final String[] RACE_LIST =
       {"Human", "Dwarf", "Elf", "Gnome", "Half-Elf", "Half-Orc", "Hobbit"};
 
+  /**
+   * Some things apply across all Races, e.g. Body Type descriptors. The following height and weight
+   * ranges are dubbed "standard" (human) because what is "short" and "tall" is a human perspective.
+   */
+  static protected final double STD_MIN_HEIGHT = 54;
+  static protected final double STD_MAX_HEIGHT = 70;
+  static protected final double STD_MIN_WEIGHT = 110;
+  static protected final double STD_MAX_WEIGHT = 175;
   protected String _raceName = null;
   protected String _raceLang = null;
   
+  /** Hero male and female weight ranges */
+  protected int _weightMedValue;
+  /** Hero male and female height ranges */
+  protected int _heightMedValue;
+  
+  /** Racial limits for a each subclass for the traits */
+  protected int[] _minLimit = null;
+  protected int[] _maxLimit = null;
+  
+  protected String _racialLang;
+  protected String _descriptor;
+  protected int[] _racialThiefMods;
+  protected String[] _raceSkills;
+
   public abstract int calcWeight();
   public abstract int calcHeight();
 
@@ -93,31 +115,6 @@ public abstract class Race
     return existingSkills;
   }
 
-
-  /** Hero male and female weight ranges */
-  protected int _weightMedValue;
-
-  /** Hero male and female height ranges */
-  protected int _heightMedValue;
-
-  /** Racial limits for a each subclass for the traits */
-  protected int[] _minLimit = null;
-  protected int[] _maxLimit = null;
-
-  /**
-   * Some things apply across all Races, e.g. Body Type descriptors. The following height and weight
-   * ranges are dubbed "standard" (human) because what is "short" and "tall" is a human perspective.
-   */
-  static protected final double STD_MIN_HEIGHT = 54;
-  static protected final double STD_MAX_HEIGHT = 70;
-  static protected final double STD_MIN_WEIGHT = 110;
-  static protected final double STD_MAX_WEIGHT = 175;
-
-  /** Most races have a racial language */
-  protected String _racialLang;
-  protected String _descriptor;
-  protected int[] _racialThiefMods;
-  protected String[] _raceSkills;
 
   /** Calculate the weight of the Hero based on deviation from average */
   public int calcWeight(String lowDice, String highDice)
