@@ -21,6 +21,7 @@ import mylib.dmc.IRegistryElement;
 import mylib.pdc.MetaDie;
 import chronos.civ.PersonKeys;
 import chronos.pdc.Occupation;
+import chronos.pdc.character.Trait.Traits;
 import chronos.pdc.race.Race;
 
 
@@ -564,7 +565,7 @@ public class Hero implements IRegistryElement
     String ocpDesc = "";
 
     // typing shorthand
-    int STR = _traits[PrimeTraits.STR.ordinal()];
+    int STR = Trait.getTrait(Traits.STR); //_traits[PrimeTraits.STR.ordinal()];
     int INT = _traits[PrimeTraits.INT.ordinal()];
     int WIS = _traits[PrimeTraits.WIS.ordinal()];
     int DEX = _traits[PrimeTraits.DEX.ordinal()];
