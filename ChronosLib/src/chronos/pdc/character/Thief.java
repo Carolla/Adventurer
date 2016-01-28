@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 import chronos.pdc.Item;
 import chronos.pdc.Item.ItemCategory;
-import chronos.pdc.character.Trait.PrimeTraits;
+import chronos.pdc.character.TraitList.PrimeTraits;
 
 /**
  * @author Al Cline

@@ -10,10 +10,11 @@
 
 package chronos.pdc.character;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mylib.pdc.MetaDie;
-import chronos.pdc.character.Trait.PrimeTraits;
+import chronos.pdc.character.TraitList.PrimeTraits;
 
 /**
  * Defines the common methods and attributes for all Klasses. Peasant is the default Klass.
@@ -82,20 +83,23 @@ public abstract class Klass
    * @param _traits raw traits to rearrange
    * @return traits after klass adjusted
    */
-  public int[] adjustTraitsForKlass(int[] _traits)
+  public TraitList adjustTraitsForKlass(TraitList traits)
   {
     // Walk the list and find the largest trait
     int largest = -1;
-    int ndx = -1;
-    for (int k = 0; k < _traits.length; k++) {
-      if (largest < _traits[k]) {
-        largest = _traits[k];
-        ndx = k;
+    PrimeTraits largestTrait = PrimeTraits.STR;
+    
+    for (PrimeTraits trait : PrimeTraits.values()) {
+      int traitVal = traits.getTrait(trait);
+      if (largest < traitVal) {
+        largest = traitVal;
+        largestTrait = trait;
       }
     }
+    
     // Swap the prime trait
-    _traits = swapPrime(_traits, ndx, _primeTrait.ordinal());
-    return _traits;
+    traits.swapPrime(_primeTrait, largestTrait);
+    return traits;
   }
 
   /**
@@ -122,19 +126,17 @@ public abstract class Klass
     return HP;
   }
 
-  /**
-   * Swap the largest raw trait for the prime trait with the specific klass
-   * 
-   * @param traits the list of traits for the Hero
-   * @param largest the index of the largest trait to swap
-   * @param primeNdx the index of the klass-specific trait to receive the largest trait
-   */
-  private int[] swapPrime(int[] traits, int largest, int primeNdx)
+
+  public boolean canUseMagic()
   {
-    int tmp = traits[primeNdx];
-    traits[primeNdx] = traits[largest];
-    traits[largest] = tmp;
-    return traits;
+    return false;
   }
+
+
+  public List<String> getSkills()
+  {
+    return new ArrayList<String>();
+  }
+
 
 } // end of abstract Klass class

@@ -13,7 +13,7 @@ import java.util.List;
 
 import chronos.pdc.Item;
 import chronos.pdc.Item.ItemCategory;
-import chronos.pdc.character.Trait.PrimeTraits;
+import chronos.pdc.character.TraitList.PrimeTraits;
 
 /**
  * @author Al Cline
@@ -56,5 +56,11 @@ public class Wizard extends Klass
   {
     spellbook.add("Read Magic");
     return spellbook;
+  }
+
+  @Override
+  public boolean canUseMagic()
+  {
+    return true;
   }
 } // end of Wizard class

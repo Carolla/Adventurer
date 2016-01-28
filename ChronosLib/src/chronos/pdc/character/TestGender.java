@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import chronos.pdc.character.Trait.PrimeTraits;
+import chronos.pdc.character.TraitList.PrimeTraits;
 
 public class TestGender
 {
@@ -40,17 +40,19 @@ public class TestGender
   @Test
   public void adjustingTraitsReducesStrengthInWomen()
   {
-    int[] traits = {10, 10, 10, 10, 10, 10};
+    int[] intTraits = {10, 10, 10, 10, 10, 10};
+    TraitList traits = new TraitList(intTraits);
     female.adjustTraitsForGender(traits);
-    assertEquals(9, traits[PrimeTraits.STR.ordinal()]);
+    assertEquals(9, traits.getTrait(PrimeTraits.STR));
   }
 
   @Test
   public void adjustingTraitsIncreasesConstitutionAndCharismaInWomen()
   {
-    int[] traits = {10, 10, 10, 10, 10, 10};
+    int[] intTraits = {10, 10, 10, 10, 10, 10};
+    TraitList traits = new TraitList(intTraits);
     female.adjustTraitsForGender(traits);
-    assertEquals(11, traits[PrimeTraits.CHR.ordinal()]);
-    assertEquals(11, traits[PrimeTraits.CON.ordinal()]);
+    assertEquals(11, traits.getTrait(PrimeTraits.CON));
+    assertEquals(11, traits.getTrait(PrimeTraits.CHR));
   }
 }

@@ -11,11 +11,14 @@ package chronos.pdc.race;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import mylib.pdc.MetaDie;
 import pdc.character.race.Dwarf;
 import chronos.Chronos;
 import chronos.pdc.character.Gender;
+import chronos.pdc.character.TraitList;
 
 /**
  * Defines the common methods and attributes for all Races.
@@ -87,7 +90,7 @@ public abstract class Race
   }
   
   /** Races have different advantages and disadvantages */
-  public int[] adjustTraitsForRace(int[] traits)
+  public TraitList adjustTraitsForRace(TraitList traits)
   {
     return traits;
   }
@@ -104,17 +107,6 @@ public abstract class Race
     }
     return skills;
   }
-
-
-  // Add race-specific skills to the Hero's skill list */
-  public ArrayList<String> addRaceSkills(ArrayList<String> existingSkills)
-  {
-    for (String s : _raceSkills) {
-      existingSkills.add(s);
-    }
-    return existingSkills;
-  }
-
 
   /** Calculate the weight of the Hero based on deviation from average */
   public int calcWeight(String lowDice, String highDice)
@@ -247,18 +239,18 @@ public abstract class Race
    * Verify that the traits do not exceed the racial limits. If they do, the trait is set to the
    * limit value.
    * 
-   * @param traits traits to examine and possibly redefine
+   * @param _traits traits to examine and possibly redefine
    * @param minLimit the minimum values for the race, set by the subclass constructor
    * @param maxLimit the maximum values for the race, set by the subclass constructor
    * @return the original or modified traits
    */
-  public int[] verifyRaceLimits(int[] traits)
+  public TraitList verifyRaceLimits(TraitList _traits)
   {
-    for (int k = 0; k < traits.length; k++) {
-      traits[k] = (traits[k] < _minLimit[k]) ? _minLimit[k] : traits[k];
-      traits[k] = (traits[k] > _maxLimit[k]) ? _maxLimit[k] : traits[k];
-    }
-    return traits;
+//    for (int k = 0; k < _traits.length; k++) {
+//      _traits[k] = (_traits[k] < _minLimit[k]) ? _minLimit[k] : _traits[k];
+//      _traits[k] = (_traits[k] > _maxLimit[k]) ? _maxLimit[k] : _traits[k];
+//    }
+    return _traits;
   }
 
 
@@ -283,6 +275,11 @@ public abstract class Race
       result = medValue;
     }
     return result;
+  }
+  
+  public List<String> getSkills()
+  {
+    return new ArrayList<String>(Arrays.asList(_raceSkills));
   }
 
 

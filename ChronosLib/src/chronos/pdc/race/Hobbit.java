@@ -10,7 +10,8 @@
 package chronos.pdc.race;
 
 import chronos.pdc.character.Gender;
-import chronos.pdc.character.Trait.PrimeTraits;
+import chronos.pdc.character.TraitList;
+import chronos.pdc.character.TraitList.PrimeTraits;
 
 
 /**
@@ -24,7 +25,7 @@ public class Hobbit extends Race
   static final long serialVersionUID = 1100L;
 
   /** Racial limits for a Hobbit for the traits */
-  private final int[] minLimit = { 7,  7,  7,  8, 10,  7};
+  private final int[] minLimit = {7, 7, 7, 8, 10, 7};
   private final int[] maxLimit = {17, 18, 17, 18, 19, 18};
 
   /** Weight ranges */
@@ -41,15 +42,15 @@ public class Hobbit extends Race
 
   /** Hobbits have hairy bare feet */
   private final String _raceDescriptor = "hairy bare feet";
-  
+
   // Find Secret Door | Pick Pockets | Open Locks | Find/Remove Traps | Move Silently |
   //    Hide in Shadows | Listening | Climb Walls | Back Attack
   protected final int[] _hobbitThiefMods = {5, 5, 5, 5, 10, 15, 5, -15, 10};
 
   // Special Hobbit skills
   private final String[] _hobbitSkills = {
-      "Infravision (30')", 
-      "Resistance to Poison: Special Save includes HPMod and Magic Attack Mod", 
+      "Infravision (30')",
+      "Resistance to Poison: Special Save includes HPMod and Magic Attack Mod",
       "Detect slopes in underground passages (75%)",
       "Determine direction of underground travel (50%)"
   };
@@ -58,7 +59,7 @@ public class Hobbit extends Race
    * Default constructor, called reflectively by Klass
    * @param gender 
    */
-  public Hobbit(Gender gender) 
+  public Hobbit(Gender gender)
   {
     _raceName = "Hobbit";
     _raceLang = "Tolkeen";
@@ -79,16 +80,16 @@ public class Hobbit extends Race
     _descriptor = _raceDescriptor;
     _racialThiefMods = _hobbitThiefMods;
     _raceSkills = _hobbitSkills;
-  } 
+  }
 
-  
+
   /** Hobbits are more agile but weaker: STR-1, DEX+1 */
   @Override
-  public int[] adjustTraitsForRace(int[] traits)
+  public TraitList adjustTraitsForRace(TraitList traits)
   {
-    traits[PrimeTraits.STR.ordinal()] -= 1;
-    traits[PrimeTraits.DEX.ordinal()] += 1;
-    return traits;    
+    traits.adjust(PrimeTraits.STR, -1);
+    traits.adjust(PrimeTraits.DEX, 1);
+    return traits;
   };
 
   @Override

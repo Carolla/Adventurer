@@ -11,7 +11,8 @@ package chronos.pdc.race;
 
 import mylib.pdc.MetaDie;
 import chronos.pdc.character.Gender;
-import chronos.pdc.character.Trait.PrimeTraits;
+import chronos.pdc.character.TraitList;
+import chronos.pdc.character.TraitList.PrimeTraits;
 
 /**
  * @author Al Cline
@@ -24,7 +25,7 @@ public class HalfOrc extends Race
   static final long serialVersionUID = 1100L;
 
   /** Racial limits for a Half-Orc for the traits */
-  private final int[] minLimit = { 9,  7,  7,  7, 13,  7};
+  private final int[] minLimit = {9, 7, 7, 7, 13, 7};
   private final int[] maxLimit = {19, 17, 14, 17, 19, 12};
 
   /** Weight ranges */
@@ -45,16 +46,16 @@ public class HalfOrc extends Race
   // Find Secret Door | Pick Pockets | Open Locks | Find/Remove Traps | Move Silently |
   //    Hide in Shadows | Listening | Climb Walls | Back Attack
   protected final int[] _halforcThiefMods = {5, -5, 5, 5, 0, 0, 5, -5, 0};
-      
+
   // Special Half-Orc skills
-  private final String[] _halforcSkills = { "Infravision (60')" }; 
+  private final String[] _halforcSkills = {"Infravision (60')"};
 
 
   /**
    * Default constructor, called reflectively by Race
    * @param gender 
    */
-  public HalfOrc(Gender gender) 
+  public HalfOrc(Gender gender)
   {
     _raceName = "Half-Orc";
     _raceLang = getRaceLang();
@@ -70,29 +71,29 @@ public class HalfOrc extends Race
       _weightMedValue = _femaleMedValue;
       _heightMedValue = _htFemaleMedValue;
     }
-    
+
     _descriptor = _raceDescriptor;
     _racialThiefMods = _halforcThiefMods;
     _raceSkills = _halforcSkills;
 
-  } 
+  }
 
   /** Half-orc has 50% chance of knowing elvish */
   private String getRaceLang()
   {
     MetaDie md = new MetaDie();
-    String s = (md.rollPercent() < 50) ? null: "Orcish";
+    String s = (md.rollPercent() < 50) ? null : "Orcish";
     return s;
   }
-  
+
   /** Half-Orcs are sturdier, stronger, and uglier: STR+1, CON+1, CHR-2 */
   @Override
-  public int[] adjustTraitsForRace(int[] traits)
+  public TraitList adjustTraitsForRace(TraitList traits)
   {
-    traits[PrimeTraits.STR.ordinal()] += 1;
-    traits[PrimeTraits.CON.ordinal()] += 1;
-    traits[PrimeTraits.CHR.ordinal()] -= 2;
-    return traits;    
+    traits.adjust(PrimeTraits.STR, 1);
+    traits.adjust(PrimeTraits.CON, 1);
+    traits.adjust(PrimeTraits.CHR, -2);
+    return traits;
   };
 
 

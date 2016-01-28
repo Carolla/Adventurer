@@ -10,7 +10,8 @@
 package pdc.character.race;
 
 import chronos.pdc.character.Gender;
-import chronos.pdc.character.Trait.PrimeTraits;
+import chronos.pdc.character.TraitList;
+import chronos.pdc.character.TraitList.PrimeTraits;
 import chronos.pdc.race.Race;
 
 /**
@@ -84,10 +85,10 @@ public class Dwarf extends Race
    *  @param traits `original umadjusted traits
    */
   @Override
-  public int[] adjustTraitsForRace(int[] traits)
+  public TraitList adjustTraitsForRace(TraitList traits)
   {
-    traits[PrimeTraits.CON.ordinal()] += 1;
-    traits[PrimeTraits.CHR.ordinal()] -= 1;
+    traits.adjust(PrimeTraits.CON, 1);
+    traits.adjust(PrimeTraits.CHR, -1);
     return traits;
   }
 

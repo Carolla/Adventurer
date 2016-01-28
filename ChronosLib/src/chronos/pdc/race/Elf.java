@@ -10,7 +10,8 @@
 package chronos.pdc.race;
 
 import chronos.pdc.character.Gender;
-import chronos.pdc.character.Trait.PrimeTraits;
+import chronos.pdc.character.TraitList;
+import chronos.pdc.character.TraitList.PrimeTraits;
 
 /**
  * @author Al Cline
@@ -36,16 +37,16 @@ public class Elf extends Race
 
   /** Elves have pointed ears */
   private final String _raceDescriptor = "pointed ears";
-  
+
   // Find Secret Door | Pick Pockets | Open Locks | Find/Remove Traps | Move Silently |
   //    Hide in Shadows | Listening | Climb Walls | Back Attack
-  protected final int[] _elfThiefMods = {0, 5,-5, 0, 5, 10, 5, 0, 5 };
+  protected final int[] _elfThiefMods = {0, 5, -5, 0, 5, 10, 5, 0, 5};
 
   // Special Elf skills
   private final String[] _elfSkills = {
-      "Infravision (60')", 
-      "Resistance to Sleep and Charm spells (90%) (second std Save allowed if first fails)", 
-      "Archery: +1 To Hit with bow (not crossbow)", 
+      "Infravision (60')",
+      "Resistance to Sleep and Charm spells (90%) (second std Save allowed if first fails)",
+      "Archery: +1 To Hit with bow (not crossbow)",
       "Tingling: Detect hidden or secret doors if within 10' (67% active; 33% passive)",
       "Move Silently (26%)"
   };
@@ -54,11 +55,11 @@ public class Elf extends Race
    * Default constructor, called reflectively by Klass
    * @param gender 
    */
-  public Elf(Gender gender) 
+  public Elf(Gender gender)
   {
     _raceName = "Elf";
     _raceLang = "Elvish";
-    
+
     // Define height ranges for Hero
     if (gender.isMale()) {
       // Define weight ranges for Hero
@@ -73,16 +74,16 @@ public class Elf extends Race
     _descriptor = _raceDescriptor;
     _racialThiefMods = _elfThiefMods;
     _raceSkills = _elfSkills;
-  } 
+  }
 
 
   /** Elves are more agile, but not as hardy: CON-1, DEX+1 */
   @Override
-  public int[] adjustTraitsForRace(int[] traits)
+  public TraitList adjustTraitsForRace(TraitList traits)
   {
-    traits[PrimeTraits.CON.ordinal()] -= 1;
-    traits[PrimeTraits.DEX.ordinal()] += 1;
-    return traits;    
+    traits.adjust(PrimeTraits.CON, -1);
+    traits.adjust(PrimeTraits.DEX, 1);
+    return traits;
   };
 
   @Override

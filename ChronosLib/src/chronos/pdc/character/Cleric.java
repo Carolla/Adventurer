@@ -13,7 +13,7 @@ import java.util.List;
 
 import chronos.pdc.Item;
 import chronos.pdc.Item.ItemCategory;
-import chronos.pdc.character.Trait.PrimeTraits;
+import chronos.pdc.character.TraitList.PrimeTraits;
 
 /**
  * @author Al Cline
@@ -72,6 +72,11 @@ public class Cleric extends Klass
     return inven;
   }
 
+  @Override
+  public boolean canUseMagic()
+  {
+    return true;
+  }
 } // end of Cleric class
 
 

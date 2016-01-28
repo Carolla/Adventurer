@@ -11,17 +11,15 @@
 package chronos.pdc.character;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 import mylib.dmc.IRegistryElement;
-import mylib.pdc.MetaDie;
 import chronos.civ.PersonKeys;
 import chronos.pdc.Occupation;
-import chronos.pdc.character.Trait.PrimeTraits;
+import chronos.pdc.character.TraitList.PrimeTraits;
 import chronos.pdc.race.Race;
 
 
@@ -37,10 +35,6 @@ public class Hero implements IRegistryElement
   public enum HeroInput {
     NAME, GENDER, HAIR, RACE, KLASS
   };
-
-  // Statics and transients are not saved with the serialized Person object
-  /** Recommended serialization constant */
-  static final long serialVersionUID = 1007L;
 
   /* INTERNAL OBJECT COMPONENTS */
   /** One of the four canonical Hero klasses: Fighter, Cleric, Wizard, or Thief */
@@ -84,7 +78,7 @@ public class Hero implements IRegistryElement
   /** Contains the indexes into the prime traits */
   public static final int NBR_TRAITS = 6;
   /** Each Person has six prime traits, adjusted by gender, race, and klass */
-  private int[] _traits = null;
+  private TraitList _traits = null;
 
   // STR mods
   private int _toHitStr = 0; // to hit with melee weapon
@@ -129,28 +123,9 @@ public class Hero implements IRegistryElement
   int _silver;
   // Gold banked. The decimal represents silver pieces
   double _goldBanked;
-
-  // Race skills
-  private ArrayList<String> _raceSkills = new ArrayList<String>();
-  // Klass-based skills, mostly for Thief
-  private ArrayList<String> _klassSkills = new ArrayList<String>();
+  
   // Inventory object containing map with ItemCategory key
   private Inventory _inven;
-
-  // Keys to all occupational kits
-  public enum KitNdx {
-    ALCHEMIST, LEATHER, METAL, SEWING, WOOD, THIEVES
-  };
-
-  // Name (value) | wt (gpw) ...(8 gp = 1 lb)
-  final String[] kits = {
-      "Alchemists Kit (100 gp) | 40", // 5 lb
-      "Leatherworking Kit (50 gp) | 64", // 8 lb
-      "Metalsmith Kit (50 gp) | 80", // 10 lb
-      "Sewing Kit (30 gp) | 16", // 2 lb
-      "Woodworking Kit (50 gp) | 64", // 8 lb
-      "Thieves Kit (50 gp) | 8" // 1 lb
-  };
 
   private Occupation _occ;
 
@@ -179,7 +154,7 @@ public class Hero implements IRegistryElement
     }
 
     // Setup internal data
-    _traits = new int[NBR_TRAITS];
+    _traits = new TraitList();
 
     // 1. INPUT DATA
     _name = name;
@@ -187,46 +162,29 @@ public class Hero implements IRegistryElement
     _hairColor = hairColor;
     _racename = raceName;
     _klassname = klassName;
-    auditOutHero();
-
-    // 2. SET PRIME TRAITS for Peasant (base is same for all Klasses and Races)
-    MetaDie md = new MetaDie();
-    for (int k = 0; k < NBR_TRAITS; k++) {
-      _traits[k] = md.rollTrait();
-    }
-    //displayTraits("Raw traits: ", _traits);
 
     // 3. REARRANGE THE PRIME TRAIT FOR THE KLASS
-    // Create the Klass object
     _klass = Klass.createKlass(_klassname);
-
     _traits = _klass.adjustTraitsForKlass(_traits);
-    // displayTraits(_klassname + "-adjusted Traits: ", _traits);
 
-    // 4b. REARRANGE THE PRIME TRAIT FOR THE GENDER
+    // 4b. REARRANGE THE PRIME TRAITS FOR THE GENDER
     _gender.adjustTraitsForGender(_traits);
 
-    // 4a. REARRANGE THE PRIME TRAIT FOR THE RACE
-    // Create the Race object
+    // 4a. REARRANGE THE PRIME TRAITS FOR THE RACE
     _race = Race.createRace(_racename, _gender);
-
     _traits = _race.adjustTraitsForRace(_traits);
-    // displayTraits(_racename + "-adjusted Traits: ", _traits);
-
 
     // 5. ENSURE ALL ADJUSTMENTS REMAIN WITH RACIAL LIMITS
     _traits = _race.verifyRaceLimits(_traits);
-    //    displayTraits("Race-verified final Traits: ", _traits);
 
     // 6. ASSIGN THE STRENGTH MODIFIERS: To Hit Mod, Damage Mod, and Wt Allowance
     int[] strMods = calcStrengthMods(_traits);
     _toHitStr = strMods[0];
     _damage = strMods[1];
     _wtAllow = strMods[2];
-    // displayStrMods(strMods);
 
     // 7a. ASSIGN THE INTELLIGENCE MODIFIERS: Known Languages, Max Languages, Literacy Skill
-    int intel = _traits[PrimeTraits.INT.ordinal()]; // for typing convenience
+    int intel = _traits.getTrait(PrimeTraits.INT); // for typing convenience
     _knownLangs.add("Common");
     _knownLangs.add(_race.getRacialLanguage());
     // displayList("Known Languages: \t", _knownLangs);
@@ -241,13 +199,13 @@ public class Hero implements IRegistryElement
       _MSPsPerLevel = wizMods[0];
       _percentToKnow = wizMods[1];
       _MSPs = _MSPsPerLevel; // for first level
-      // displayWizardMods();
       displayList(String.format("Spell book contains: %s spells: ", _spellsKnown), _spellBook);
     }
 
     // 8a. ASSIGN THE WISDOM MODIFIERS: Magic Attack Mod
-    int wisdom = _traits[PrimeTraits.WIS.ordinal()]; // for typing convenience
+    int wisdom = _traits.getTrait(PrimeTraits.WIS); // for typing convenience
     _magicAttackMod = findInRange(wisdom);
+    
     // 8b. FOR CLERICS ONLY: CSPs/Level, CSPS, Turn Undead
     if (_klassname.equalsIgnoreCase("Cleric")) {
       _CSPsPerLevel = wisdom / 2;
@@ -257,33 +215,29 @@ public class Hero implements IRegistryElement
     }
 
     // 9. ASSIGN THE CONSTITUTION MODIFIERS: HP Mod, Racial Magic Resist
-    int constitution = _traits[PrimeTraits.CON.ordinal()]; // for typing convenience
+    int constitution = _traits.getTrait(PrimeTraits.CON); // for typing convenience
     _HPMod = findInRange(constitution);
+    
     // Update Magic Attack Mod by racial resist
     if ((_racename.equalsIgnoreCase("Dwarf")) ||
         (_racename.equalsIgnoreCase("Gnome")) ||
         (_racename.equalsIgnoreCase("Hobbit"))) {
       _racialPoisonResist = (int) Math.round((float) constitution / 3.5);
       _magicAttackMod += _racialPoisonResist;
-      // displayRacialMods();
     }
-    // display for all characters
-    // System.out.println("\n\t Magic Attack Mod = " + _magicAttackMod);
 
     // 10. ASSIGN THE DEXTERITY MODIFIERS: To Hit Mod (missile), AC Mod
-    int dex = _traits[PrimeTraits.DEX.ordinal()]; // for typing convenience
+    int dex = _traits.getTrait(PrimeTraits.DEX); // for typing convenience
     _toHitDex = findInRange(dex);
     _ACMod = findInRange(dex);
-    // System.out.println("\n\t to Hit (missile) = " + _toHitDex + ", \t AC Mod = " + _ACMod);
 
     // 11a. ASSIGN HERO'S HEIGHT AND WEIGHT
     _weight = _race.calcWeight();
     _height = _race.calcHeight();
-    // System.out.print("\n" + _name + " weighs " + _weight + " lbs,");
-    // System.out.println(" and is " + _height + " inches tall.");
+
     // 11b. GET THE HERO'S PHYSICAL DESCRIPTION FROM THIS BODY-TYPE
     _description = initDescription();
-    // System.out.println(_description);
+    
     // 11c. SET THE HERO'S INITIAL HUNGER STATE
     _hunger = "Full";
 
@@ -293,34 +247,22 @@ public class Hero implements IRegistryElement
 
     // 13. ROLL FOR KLASS-SPECIFIC HIT POINTS
     _HP = _klass.rollHP(_HPMod);
-    // System.out.println("\nInitial HP = " + _HP + ", including the " + _HPMod + " HP mod.");
 
     // 14. SET THE NON-LETHAL COMBAT STATS: OVERBEARING, GRAPPLING, PUMMELING, AND SHIELD BASH
-    _AP = _traits[PrimeTraits.STR.ordinal()] + _traits[PrimeTraits.DEX.ordinal()];
+    _AP = _traits.getTrait(PrimeTraits.STR) + dex;
     _apMods = new int[4];
     _apMods = calcAPMods(_apMods);
-    // displayCombatStats();
 
     // 15. CALCULATE SPEED (BLOCK MOVEMENT)
     _speed = calcSpeed(_AP);
-    // System.out.println("\nAP = " + _AP + " yields speed = " + _speed +
-    // ", adjusted for height of " + _height);
 
     // 16. SET INITIAL ARMOR CLASS
     _AC = 10 + _ACMod;
     _AC_Magic = 0; // no magica adjustments initially
-    // System.out.println("\nArmor Class (without armor) = " + _AC);
 
     // 17. ROLL FOR KLASS-SPECIFIC STARTING GOLD
     _gold = _klass.rollGold();
-    _silver = 9; // for testing
     _goldBanked = 0.0;
-
-
-    // 19. ADD RACIAL ABILITIES
-    // TESTING: Set Spot Detail
-    _raceSkills = _race.addRaceSkills(_raceSkills);
-    // displayList("Racial Skills: ", _skills);
 
     // 20. ADD RANDOM OCCUPATION AND OCCUPATIONAL SKILLS
     _occ = Occupation.getRandomOccupation();
@@ -328,21 +270,11 @@ public class Hero implements IRegistryElement
     // 21. ASSIGN SPELLS TO CLERICS (WIZARDS ALREADY WERE ASSIgned 'READ MAGIC')
     _spellBook = _klass.addKlassSpells(_spellBook);
     _spellsKnown = _spellBook.size();
-    //    if (_klassname.equalsIgnoreCase("Cleric")) {
-    //      _spellBook = ((Cleric) _klass).addClericalSpells(_spellBook);
-    //      _spellsKnown = _spellBook.size();
-    //      // displayList(String.format("Clerical spells knowns: %s spells: ", _spellsKnown),
-    //      // _spellBook);
-    //    }
 
     // 22. Assign initial inventory
     _inven = new Inventory();
     _inven = _inven.assignBasicInventory(_inven);
     _inven = _klass.addKlassItems(_inven);
-
-    // displayList("Inventory in backpack: ", _inventory);
-
-
   } // end of Hero constructor
 
 
@@ -359,8 +291,7 @@ public class Hero implements IRegistryElement
 
   public boolean canUseMagic()
   {
-    return _klassname.equals(Klass.CLERIC_CLASS_NAME) ||
-        _klassname.equals(Klass.WIZARD_CLASS_NAME);
+    return _klass.canUseMagic();
   }
 
   public Gender getGender()
@@ -378,9 +309,9 @@ public class Hero implements IRegistryElement
     return _klassname;
   }
 
-  public ArrayList<String> getKlassSkills()
+  public List<String> getKlassSkills()
   {
-    return _klassSkills;
+    return _klass.getSkills();
   }
 
   public Inventory getInventory()
@@ -404,14 +335,9 @@ public class Hero implements IRegistryElement
     return _occ.getName();
   }
 
-  public String getRaceName()
-  {
-    return _racename;
-  }
-
   public List<String> getRaceSkills()
   {
-    return _raceSkills;
+    return _race.getSkills();
   }
 
   public List<String> getOcpSkills()
@@ -444,74 +370,74 @@ public class Hero implements IRegistryElement
     map.put(PersonKeys.KLASSNAME, _klassname);
 
     // Row 3: Level, Current HP, Max HP, AC, (AC with Magic adj)
-    map.put(PersonKeys.LEVEL, String.format("%s", _level));
-    map.put(PersonKeys.HP, String.format("%s", _HP));
-    map.put(PersonKeys.HP_MAX, String.format("%s", _HP));
-    map.put(PersonKeys.AC, String.format("%s", _AC));
-    map.put(PersonKeys.AC_MAGIC, String.format("%s", _AC_Magic));
+    map.put(PersonKeys.LEVEL, "" + _level);
+    map.put(PersonKeys.HP, "" + _HP);
+    map.put(PersonKeys.HP_MAX, "" + _HP);
+    map.put(PersonKeys.AC, "" + _AC);
+    map.put(PersonKeys.AC_MAGIC, "" + _AC_Magic);
 
     // Row 4: XP, Speed, Gold/Silver (gp/sp), Gold Banked
-    map.put(PersonKeys.XP, String.format("%s", _XP));
-    map.put(PersonKeys.SPEED, String.format("%s", _speed));
-    map.put(PersonKeys.GOLD, String.format("%s", _gold));
-    map.put(PersonKeys.SILVER, String.format("%s", _silver));
-    map.put(PersonKeys.GOLD_BANKED, String.format("%s", _goldBanked));
+    map.put(PersonKeys.XP, "" + _XP);
+    map.put(PersonKeys.SPEED, "" + _speed);
+    map.put(PersonKeys.GOLD, "" + _gold);
+    map.put(PersonKeys.SILVER, "" + _silver);
+    map.put(PersonKeys.GOLD_BANKED, "" + _goldBanked);
 
     // Row 5: Occupation, Description
     map.put(PersonKeys.OCCUPATION, getOccupationName());
     map.put(PersonKeys.DESCRIPTION, _description);
 
     // Row 6: STR and STR mods: ToHit, StrDamage, Wt Allowance, Load Carried
-    map.put(PersonKeys.STR, String.format("%s", _traits[PrimeTraits.STR.ordinal()]));
-    map.put(PersonKeys.TO_HIT_MELEE, String.format("%s", _toHitStr));
-    map.put(PersonKeys.DAMAGE, String.format("%s", _damage));
-    map.put(PersonKeys.WT_ALLOW, String.format("%s", _wtAllow));
-    map.put(PersonKeys.LOAD, String.format("%s", "134")); // for testing
+    map.put(PersonKeys.STR, "" + _traits.getTrait(PrimeTraits.STR));
+    map.put(PersonKeys.TO_HIT_MELEE, "" + _toHitStr);
+    map.put(PersonKeys.DAMAGE, "" + _damage);
+    map.put(PersonKeys.WT_ALLOW, "" + _wtAllow);
+    map.put(PersonKeys.LOAD, "" + "134"); // for testing
 
     // Row 7: INT and INT mods: percent to know spell, current MSP, max MSP, MSPs/Level,
     // spells known (in book), and max languages
-    map.put(PersonKeys.INT, String.format("%s", _traits[PrimeTraits.INT.ordinal()]));
-    map.put(PersonKeys.TO_KNOW, String.format("%s", _percentToKnow));
-    map.put(PersonKeys.CURRENT_MSP, String.format("%s", _MSPs));
-    map.put(PersonKeys.MAX_MSP, String.format("%s", _MSPs));
-    map.put(PersonKeys.MSP_PER_LEVEL, String.format("%s", _MSPsPerLevel));
-    map.put(PersonKeys.SPELLS_KNOWN, String.format("%s", _spellsKnown));
-    map.put(PersonKeys.MAX_LANGS, String.format("%s", _maxLangs));
+    map.put(PersonKeys.INT, "" + _traits.getTrait(PrimeTraits.INT));
+    map.put(PersonKeys.TO_KNOW, "" + _percentToKnow);
+    map.put(PersonKeys.CURRENT_MSP, "" + _MSPs);
+    map.put(PersonKeys.MAX_MSP, "" + _MSPs);
+    map.put(PersonKeys.MSP_PER_LEVEL, "" + _MSPsPerLevel);
+    map.put(PersonKeys.SPELLS_KNOWN, "" + _spellsKnown);
+    map.put(PersonKeys.MAX_LANGS, "" + _maxLangs);
     map.put(PersonKeys.LITERACY, _literacy);
 
     // Row 8: WIS and WIS mods: Magic Attack Mod, Current CSP, Max CSPs, CSPs/Level, Turn Undead
-    map.put(PersonKeys.WIS, String.format("%s", _traits[PrimeTraits.WIS.ordinal()]));
-    map.put(PersonKeys.MAM, String.format("%s", _magicAttackMod));
-    map.put(PersonKeys.CURRENT_CSP, String.format("%s", _CSPs));
-    map.put(PersonKeys.MAX_CSP, String.format("%s", _CSPs));
-    map.put(PersonKeys.CSP_PER_LEVEL, String.format("%s", _CSPsPerLevel));
-    map.put(PersonKeys.TURN_UNDEAD, String.format("%s", _turnUndead));
+    map.put(PersonKeys.WIS, "" + _traits.getTrait(PrimeTraits.WIS));
+    map.put(PersonKeys.MAM, "" + _magicAttackMod);
+    map.put(PersonKeys.CURRENT_CSP, "" + _CSPs);
+    map.put(PersonKeys.MAX_CSP, "" + _CSPs);
+    map.put(PersonKeys.CSP_PER_LEVEL, "" + _CSPsPerLevel);
+    map.put(PersonKeys.TURN_UNDEAD, "" + _turnUndead);
 
     // Row 9: CON and HP Mod
-    map.put(PersonKeys.CON, String.format("%s", _traits[PrimeTraits.CON.ordinal()]));
-    map.put(PersonKeys.HP_MOD, String.format("%s", _HPMod));
-    map.put(PersonKeys.RMR, String.format("%s", _racialPoisonResist));
+    map.put(PersonKeys.CON, "" + _traits.getTrait(PrimeTraits.CON));
+    map.put(PersonKeys.HP_MOD, "" + _HPMod);
+    map.put(PersonKeys.RMR, "" + _racialPoisonResist);
 
     // Row 10: DEX and DEX mods: ToHit Missile, AC Mod
-    map.put(PersonKeys.DEX, String.format("%s", _traits[PrimeTraits.DEX.ordinal()]));
-    map.put(PersonKeys.TO_HIT_MISSLE, String.format("%s", _toHitDex));
-    map.put(PersonKeys.AC_MOD, String.format("%s", _ACMod));
+    map.put(PersonKeys.DEX, "" + _traits.getTrait(PrimeTraits.DEX));
+    map.put(PersonKeys.TO_HIT_MISSLE, "" + _toHitDex);
+    map.put(PersonKeys.AC_MOD, "" + _ACMod);
 
     // Row 11: CHR, then Weight and Height of Hero
-    map.put(PersonKeys.CHR, String.format("%s", _traits[PrimeTraits.CHR.ordinal()]));
-    map.put(PersonKeys.WEIGHT, String.format("%s", _weight));
-    map.put(PersonKeys.HEIGHT, String.format("%s", _height));
+    map.put(PersonKeys.CHR, "" + _traits.getTrait(PrimeTraits.CHR));
+    map.put(PersonKeys.WEIGHT, "" + _weight);
+    map.put(PersonKeys.HEIGHT, "" + _height);
     map.put(PersonKeys.HUNGER, _hunger);
 
     // Row 12: AP and non-lethal combat values
-    map.put(PersonKeys.AP, String.format("%s", _AP));
-    map.put(PersonKeys.OVERBEARING, String.format("%s", _apMods[OVERBEAR]));
-    map.put(PersonKeys.PUMMELING, String.format("%s", _apMods[PUMMEL]));
-    map.put(PersonKeys.GRAPPLING, String.format("%s", _apMods[GRAPPLE]));
-    map.put(PersonKeys.SHIELD_BASH, String.format("%s", _apMods[BASH]));
+    map.put(PersonKeys.AP, "" + _AP);
+    map.put(PersonKeys.OVERBEARING, "" + _apMods[OVERBEAR]);
+    map.put(PersonKeys.PUMMELING, "" + _apMods[PUMMEL]);
+    map.put(PersonKeys.GRAPPLING, "" + _apMods[GRAPPLE]);
+    map.put(PersonKeys.SHIELD_BASH, "" + _apMods[BASH]);
 
     // Row 13: Maximum languages
-    map.put(PersonKeys.MAX_LANGS, String.format("%s", _maxLangs));
+    map.put(PersonKeys.MAX_LANGS, "" + _maxLangs);
 
     // Row 14: All known languages as single string
     StringBuilder sb = new StringBuilder();
@@ -523,17 +449,6 @@ public class Hero implements IRegistryElement
     map.put(PersonKeys.LANGUAGES, langList);
 
     return map;
-  }
-
-  /** Display the Hero's key characteristics */
-  private void auditOutHero()
-  {
-    StringBuilder out = new StringBuilder();
-    out.append(_name + " ");
-    out.append(_gender + " ");
-    out.append(_racename + " ");
-    out.append(_klassname + " ");
-    System.out.println("Hero " + out);
   }
 
   /** Calculate the non-lethal combat stats: overbearing, grappling, pummeling, and shield bash */
@@ -570,7 +485,7 @@ public class Hero implements IRegistryElement
   }
 
   // Set the strength modifiers: ToHit, Damage, and Wt Allowace
-  private int[] calcStrengthMods(int[] traits)
+  private int[] calcStrengthMods(TraitList traits)
   {
     // STR values 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21
     final int[] toHitTbl = {-3, -2, -2, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 2, 3};
@@ -587,7 +502,7 @@ public class Hero implements IRegistryElement
       System.exit(-1);
     }
     int[] mods = new int[3];
-    int ndx = traits[PrimeTraits.STR.ordinal()] - 3; // read from the table 3 places to the left
+    int ndx = traits.getTrait(PrimeTraits.STR) - 3; // read from the table 3 places to the left
     mods[0] = toHitTbl[ndx];
     mods[1] = dmgTbl[ndx];
     mods[2] = wtTbl[ndx];
@@ -690,7 +605,7 @@ public class Hero implements IRegistryElement
   private String initDescription()
   {
     // Infer body-type from racial attributes of height, weight, and charisma
-    int chr = _traits[PrimeTraits.CHR.ordinal()];
+    int chr = _traits.getTrait(PrimeTraits.CHR);
     String bodyType = _race.initBodyType(chr, _height, _weight);
     // Start the description with a vowel-sensitive article
     String article = (checkFirstVowel(bodyType) == true) ? "An " : "A ";
@@ -710,47 +625,6 @@ public class Hero implements IRegistryElement
     String desc = desc1 + " and " + desc2 + ". " + desc3;
     return desc;
   }
-
-
-  // ====================================================
-  // INNER CLASS MockHero
-  // ====================================================
-
-  /** Accesses and tests the private methods of the Person object. */
-  public class MockHero
-  {
-    /** Default constructor */
-    public MockHero()
-    {}
-
-    /** for test */
-    public int[] getTraits()
-    {
-      return Hero.this._traits;
-    }
-
-    public Klass getKlass()
-    {
-      return Hero.this._klass;
-    }
-
-    public String getKlassName()
-    {
-      return Hero.this._klassname;
-    }
-
-    public Race getRace()
-    {
-      return Hero.this._race;
-    }
-
-    public String getRaceName()
-    {
-      return Hero.this._racename;
-    }
-
-  } // end of MockHero inner class
-
 
   @Override
   public boolean equals(IRegistryElement target)
@@ -772,13 +646,10 @@ public class Hero implements IRegistryElement
     result = prime * result + ((_description == null) ? 0 : _description.hashCode());
     result = prime * result + ((_gender == null) ? 0 : _gender.hashCode());
     result = prime * result + ((_hairColor == null) ? 0 : _hairColor.hashCode());
-    result = prime * result + _height;
     result = prime * result + ((_klassname == null) ? 0 : _klassname.hashCode());
     result = prime * result + ((_name == null) ? 0 : _name.hashCode());
     result = prime * result + ((_occ == null) ? 0 : _occ.hashCode());
     result = prime * result + ((_racename == null) ? 0 : _racename.hashCode());
-    result = prime * result + Arrays.hashCode(_traits);
-    result = prime * result + _weight;
     return result;
   }
 
@@ -807,8 +678,6 @@ public class Hero implements IRegistryElement
         return false;
     } else if (!_hairColor.equals(other._hairColor))
       return false;
-    if (_height != other._height)
-      return false;
     if (_klassname == null) {
       if (other._klassname != null)
         return false;
@@ -828,10 +697,6 @@ public class Hero implements IRegistryElement
       if (other._racename != null)
         return false;
     } else if (!_racename.equals(other._racename))
-      return false;
-    if (!Arrays.equals(_traits, other._traits))
-      return false;
-    if (_weight != other._weight)
       return false;
     return true;
   }

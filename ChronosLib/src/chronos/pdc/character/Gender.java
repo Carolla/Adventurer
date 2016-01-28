@@ -1,19 +1,20 @@
 
 package chronos.pdc.character;
 
-import chronos.pdc.character.Trait.PrimeTraits;
+import chronos.pdc.character.TraitList.PrimeTraits;
 
 
 public class Gender
 {
   public static final String MALE_STRING = "Male";
   public static final String FEMALE_STRING = "Female";
-  
+
   private static enum Gender_e {
     MALE, FEMALE
   }
 
   private Gender_e _gender;;
+
   public Gender(String genderString)
   {
     _gender = byName(genderString);
@@ -23,7 +24,7 @@ public class Gender
   {
     return _gender == Gender_e.MALE;
   }
-  
+
   public boolean isFemale()
   {
     return !isMale();
@@ -45,11 +46,11 @@ public class Gender
 
 
   /** Females are given more CON and CHR but less STR */
-  public int[] adjustTraitsForGender(int[] traits)
+  public TraitList adjustTraitsForGender(TraitList traits)
   {
-    traits[PrimeTraits.STR.ordinal()] -= 1;
-    traits[PrimeTraits.CON.ordinal()] += 1;
-    traits[PrimeTraits.CHR.ordinal()] += 1;
+    traits.adjust(PrimeTraits.STR, -1);
+    traits.adjust(PrimeTraits.CON, 1);
+    traits.adjust(PrimeTraits.CHR, 1);
     return traits;
   }
 }
