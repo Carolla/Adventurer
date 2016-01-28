@@ -142,16 +142,21 @@ public class Occupation implements IRegistryElement
     return _name;
   }
 
-  /**
-   * Get the name of the skill
-   * 
-   * @return the name of the skill
-   */
   public String getName()
   {
     return _name;
   }
 
+  public String getDescription()
+  {
+    return _description;
+  }
+  
+  public String getTrait()
+  {
+    return _trait;
+  }
+  
   public List<Skill> getSkill()
   {
     return _skills;

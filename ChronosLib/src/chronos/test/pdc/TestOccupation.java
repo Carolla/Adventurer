@@ -16,6 +16,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import mylib.ApplicationException;
 import mylib.MsgCtrl;
 
@@ -24,7 +28,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import chronos.pdc.Occupation;
-import chronos.pdc.Skill;
 
 
 /**
@@ -38,13 +41,15 @@ import chronos.pdc.Skill;
  */
 public class TestOccupation 
 {
-    /** Target object */
+    private static final String OCPNAME = "Gambler";
+    private static final String DESCNAME = "Gambles a lot";
+    private static final String TRAITSTRING = "";
+    private static final String SKILLNAME = "Luck";
+    @SuppressWarnings("serial")
+    private static final List<String> SKILLLIST = new ArrayList<String>() {{ add(SKILLNAME); }};
+    
+    
     private Occupation  _ocp = null;
-    /** Test name for target */
-    private final String OCPNAME = "Gambler";
-    /** Test skill for target */
-    private final String SKILLNAME = "Luck";
-    /** Overly long Test name for target */
     private final String LONGNAME = "All names are required to be within " 
                 + Occupation.OCC_NAME_LIMIT + "  characters";
 
@@ -59,7 +64,7 @@ public class TestOccupation
     @Before
     public void setUp() throws Exception
     {
-        _ocp = new Occupation(OCPNAME, new FakeSkill(SKILLNAME));
+        _ocp = new Occupation(OCPNAME, DESCNAME, TRAITSTRING, SKILLLIST);
         assertNotNull(_ocp);
     }
 
@@ -99,7 +104,7 @@ public class TestOccupation
         
         // Error  skill parm is null
         try {
-            _ocp = new Occupation(OCPNAME, null);
+            _ocp = new Occupation(OCPNAME, null, null, null);
         } catch (NullPointerException ex1) {
             MsgCtrl.msgln("\t Expected exception: " + ex1.getMessage());
         } catch (ApplicationException ex2) {
@@ -107,7 +112,7 @@ public class TestOccupation
         }
         // Error  name parm is null
         try {
-            _ocp = new Occupation(null, new FakeSkill(SKILLNAME));
+            _ocp = new Occupation(null, SKILLNAME, "", new ArrayList<String>());
         } catch (NullPointerException ex1) {
             MsgCtrl.msgln("\t Expected exception: " + ex1.getMessage());
         } catch (ApplicationException ex2) {
@@ -115,7 +120,7 @@ public class TestOccupation
         }
         // Error  name parm is overly long
         try {
-            _ocp = new Occupation(LONGNAME, new FakeSkill(SKILLNAME));
+            _ocp = new Occupation(LONGNAME, SKILLNAME, "", new ArrayList<String>());
         } catch (ApplicationException ex2) {
             MsgCtrl.msgln("\t Expected exception: " + ex2.getMessage());
         }
@@ -136,21 +141,23 @@ public class TestOccupation
         MsgCtrl.auditMsgsOn(false);
         MsgCtrl.errorMsgsOn(false);   
         String ocp2Name = "DM'ing";
-        Skill ocp2Skill = new FakeSkill("No Occupational Skills");
+        String ocp2Skill = "No Occupational Skills";
+        List<String> ocpSkillList = new ArrayList<String>();
+        ocpSkillList.add(ocp2Skill);
         
         // Normal   Verify same class, name and description returns true
-        Occupation ocpSame = new Occupation(OCPNAME, new FakeSkill(SKILLNAME));
+        Occupation ocpSame = new Occupation(OCPNAME, DESCNAME, TRAITSTRING, SKILLLIST);
         assertTrue(_ocp.equals(ocpSame));
         
         // Error   Verify different names returns false
-        Occupation ocpDiffName= new Occupation(ocp2Name, new FakeSkill(SKILLNAME));
+        Occupation ocpDiffName= new Occupation(ocp2Name, DESCNAME, TRAITSTRING, SKILLLIST);
         assertFalse(_ocp.equals(ocpDiffName));
         
         // Error   Verify different skillNames return false
-        Occupation ocpDiffSkill = new Occupation(OCPNAME, ocp2Skill);
+        Occupation ocpDiffSkill = new Occupation(OCPNAME, DESCNAME, TRAITSTRING, ocpSkillList);
         assertFalse(_ocp.equals(ocpDiffSkill));
 
-        Occupation ocpAll= new Occupation(ocp2Name, ocp2Skill);
+        Occupation ocpAll= new Occupation(ocp2Name, DESCNAME, TRAITSTRING, ocpSkillList);
         assertFalse(_ocp.equals(ocpAll));
         
         // Error  Pass null object; expect false
