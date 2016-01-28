@@ -13,7 +13,7 @@ package chronos.test.pdc;
 
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
+import org.junit.Test;
 
 import chronos.pdc.character.Gender;
 import chronos.pdc.race.Race;
@@ -36,21 +36,7 @@ public class TestRace  {
 			"Half-Elf", "Half-Orc", "Hobbit" };
   
 
-    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++  
-     *                  STATE HANDLING METHODS 
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-    
-	/**
-	 * Redirect the class loader to look in the test directory for Mock class,
-	 * then create the MockRace in the test directory
-	 * 
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() 
-	{
-		Race.createRace("Elf", new Gender("Female"));
-	}
+
 
 	// -------------------------------------------------------------------------
 	// BEGIN TESTING
@@ -63,6 +49,7 @@ public class TestRace  {
 	 * @Null Race.createRace(String ) N/A
 	 * @Error Race.createRace(String ) unimplemented classes checked
 	 */
+	@Test
 	public void testCreateRace() 
 	{
 		// NORMAL
