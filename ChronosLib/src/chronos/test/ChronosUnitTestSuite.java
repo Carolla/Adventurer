@@ -12,6 +12,9 @@ package chronos.test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import chronos.pdc.character.TestGender;
+import chronos.test.pdc.TestOccupation;
+import chronos.test.pdc.TestRace;
 import chronos.test.pdc.TestSkill;
 import chronos.test.pdc.buildings.BuildingsSuite;
 import chronos.test.pdc.registry.RegistrySuite;
@@ -59,8 +62,9 @@ import chronos.test.pdc.registry.RegistrySuite;
     // TestMiscKeys.class,
     // TestNPC.class,
     // TestNullNPC.class,
-    // TestOccupation.class,
-    // TestRace.class,
+     TestGender.class,
+     TestOccupation.class,
+     TestRace.class,
      TestSkill.class,
     // TestTown.class,
 

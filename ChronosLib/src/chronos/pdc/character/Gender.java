@@ -6,6 +6,9 @@ import chronos.pdc.character.Hero.PrimeTraits;
 
 public class Gender
 {
+  public static final String MALE_STRING = "Male";
+  public static final String FEMALE_STRING = "Female";
+  
   private static enum Gender_e {
     MALE, FEMALE
   }
@@ -28,7 +31,7 @@ public class Gender
 
   private Gender_e byName(String name)
   {
-    if (name.equals("Male")) {
+    if (name.equalsIgnoreCase("Male")) {
       return Gender_e.MALE;
     } else {
       return Gender_e.FEMALE;
