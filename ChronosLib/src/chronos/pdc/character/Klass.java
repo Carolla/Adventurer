@@ -10,12 +10,12 @@
 
 package chronos.pdc.character;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import mylib.pdc.MetaDie;
 import chronos.pdc.Item;
+import chronos.pdc.character.Trait.PrimeTraits;
 
 /**
  * Defines the common methods and attributes for all Klasses. Peasant is the default Klass.
@@ -23,12 +23,8 @@ import chronos.pdc.Item;
  * @author Alan Cline
  * @version Sept 4 2015 // rewrite to support Hero rewrite <br>
  */
-public abstract class Klass implements Serializable
+public abstract class Klass
 {
-  // Statics and transients that are not serialized with the Race class hierarchy
-  /** Recommended serialization constant. */
-  static final long serialVersionUID = 1100L;
-
   /** Assign klass specific inventory items */
   public abstract Inventory addKlassItems(Inventory inventory);
 
@@ -41,7 +37,7 @@ public abstract class Klass implements Serializable
   /** Name of the subclass of Klass, e.g, Peasant or Fighter */
   protected String _klassName = null;
   /** The specific prime trait for the sub-klass */
-  protected int _primeNdx = -1;
+  protected PrimeTraits _primeTrait;
 
   /** Each klass has a specific amount of HP they start with */
   protected String _hpDie = null;
@@ -85,7 +81,7 @@ public abstract class Klass implements Serializable
       }
     }
     // Swap the prime trait
-    _traits = swapPrime(_traits, ndx, _primeNdx);
+    _traits = swapPrime(_traits, ndx, _primeTrait.ordinal());
     return _traits;
   }
 
@@ -115,7 +111,7 @@ public abstract class Klass implements Serializable
       case THIEF_CLASS_NAME:
         return new Thief();
     }
-    
+
     throw new NullPointerException("Klass.createKlass(): Cannot find class requested " + klassName);
   }
 

@@ -10,7 +10,7 @@
 package chronos.pdc.race;
 
 import chronos.pdc.character.Gender;
-import chronos.pdc.character.Hero.PrimeTraits;
+import chronos.pdc.character.Trait.PrimeTraits;
 
 /**
  * @author Al Cline

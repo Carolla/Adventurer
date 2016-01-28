@@ -11,7 +11,7 @@ package chronos.pdc.character;
 
 import chronos.pdc.Item;
 import chronos.pdc.Item.ItemCategory;
-import chronos.pdc.character.Hero.PrimeTraits;
+import chronos.pdc.character.Trait.PrimeTraits;
 
 /**
  * @author Al Cline
@@ -20,8 +20,6 @@ import chronos.pdc.character.Hero.PrimeTraits;
  */
 public class Thief extends Klass
 {
-  private static final long serialVersionUID = 1L;
-  
   /** Starting die and initial free HP for klass */
   private String _hitDie = "d6";
   private int _freeHP = 6;
@@ -49,7 +47,7 @@ public class Thief extends Klass
   public Thief()
   {
     _klassName = "Thief";
-    _primeNdx = PrimeTraits.DEX.ordinal();
+    _primeTrait = PrimeTraits.DEX;
     _hpDie = _hitDie;
     _initialHP = _freeHP;
     _goldDice = _startingGold;

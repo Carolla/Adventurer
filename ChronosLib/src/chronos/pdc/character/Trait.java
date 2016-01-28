@@ -3,14 +3,28 @@ package chronos.pdc.character;
 public class Trait
 {
 
-  public enum Traits {
-    STR, CON, DEX, WIS, INT, CHR
-  }
+  /** Indices into the Hero's prime traits */
+  public enum PrimeTraits {
+    STR, INT, WIS, DEX, CON, CHR
+  };
 
-  public static int getTrait(Traits str)
+
+  private final PrimeTraits _type;
+  private final int _value;
+  
+  public Trait(PrimeTraits type, int value)
   {
-    // TODO Auto-generated method stub
-    return 0;
+    _type = type;
+    _value = value;
   }
 
+  public final int getValue()
+  {
+    return _value;
+  }
+  
+  public final PrimeTraits getType()
+  {
+    return _type;
+  }
 }

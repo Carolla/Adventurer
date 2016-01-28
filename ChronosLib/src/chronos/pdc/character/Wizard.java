@@ -13,7 +13,7 @@ import java.util.List;
 
 import chronos.pdc.Item;
 import chronos.pdc.Item.ItemCategory;
-import chronos.pdc.character.Hero.PrimeTraits;
+import chronos.pdc.character.Trait.PrimeTraits;
 
 /**
  * @author Al Cline
@@ -22,10 +22,6 @@ import chronos.pdc.character.Hero.PrimeTraits;
  */
 public class Wizard extends Klass
 {
-  /**
-   * Generated
-   */
-  private static final long serialVersionUID = 1236661286968070891L;
   /** Starting die and initial free HP for klass */
   private String _hitDie = "d4";
   private int _freeHP = 4;
@@ -38,7 +34,7 @@ public class Wizard extends Klass
   public Wizard()
   {
     _klassName = "Wizard";
-    _primeNdx = PrimeTraits.INT.ordinal();
+    _primeTrait = PrimeTraits.INT;
     _hpDie = _hitDie;
     _initialHP = _freeHP;
     _goldDice = _startingGold;

@@ -11,7 +11,7 @@ package chronos.pdc.character;
 
 import chronos.pdc.Item;
 import chronos.pdc.Item.ItemCategory;
-import chronos.pdc.character.Hero.PrimeTraits;
+import chronos.pdc.character.Trait.PrimeTraits;
 
 /**
  * @author Al Cline
@@ -20,11 +20,6 @@ import chronos.pdc.character.Hero.PrimeTraits;
  */
 public class Fighter extends Klass
 {
-  /**
-   * Generated
-   */
-  private static final long serialVersionUID = 4689555610790491304L;
-  
   
   /** Starting die and initial free HP for klass */
   private String _hitDie = "d10";
@@ -38,7 +33,7 @@ public class Fighter extends Klass
   public Fighter()
   {
     _klassName = "Fighter";
-    _primeNdx = PrimeTraits.STR.ordinal();
+    _primeTrait = PrimeTraits.STR;
     _hpDie = _hitDie;
     _initialHP = _freeHP;
     _goldDice = _startingGold;

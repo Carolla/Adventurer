@@ -11,7 +11,7 @@ package chronos.pdc.race;
 
 import mylib.pdc.MetaDie;
 import chronos.pdc.character.Gender;
-import chronos.pdc.character.Hero.PrimeTraits;
+import chronos.pdc.character.Trait.PrimeTraits;
 
 /**
  * @author Al Cline

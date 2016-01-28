@@ -21,7 +21,7 @@ import mylib.dmc.IRegistryElement;
 import mylib.pdc.MetaDie;
 import chronos.civ.PersonKeys;
 import chronos.pdc.Occupation;
-import chronos.pdc.character.Trait.Traits;
+import chronos.pdc.character.Trait.PrimeTraits;
 import chronos.pdc.race.Race;
 
 
@@ -37,7 +37,7 @@ public class Hero implements IRegistryElement
   public enum HeroInput {
     NAME, GENDER, HAIR, RACE, KLASS
   };
-  
+
   // Statics and transients are not saved with the serialized Person object
   /** Recommended serialization constant */
   static final long serialVersionUID = 1007L;
@@ -80,11 +80,6 @@ public class Hero implements IRegistryElement
 
   // Speed is measured in block movement per turn */
   int _speed;
-
-  /** Indices into the Hero's prime traits */
-  public enum PrimeTraits {
-    STR, INT, WIS, DEX, CON, CHR
-  };
 
   /** Contains the indexes into the prime traits */
   public static final int NBR_TRAITS = 6;
@@ -140,7 +135,7 @@ public class Hero implements IRegistryElement
   // Klass-based skills, mostly for Thief
   private ArrayList<String> _klassSkills = new ArrayList<String>();
   // Inventory object containing map with ItemCategory key
-  private Inventory _inven; 
+  private Inventory _inven;
 
   // Keys to all occupational kits
   public enum KitNdx {
@@ -156,10 +151,6 @@ public class Hero implements IRegistryElement
       "Woodworking Kit (50 gp) | 64", // 8 lb
       "Thieves Kit (50 gp) | 8" // 1 lb
   };
-
-  // Table to hold occupational skills
-  private String _occupation = "";
-  private ArrayList<String> _ocpSkills = new ArrayList<String>();
 
   private Occupation _occ;
 
@@ -214,7 +205,7 @@ public class Hero implements IRegistryElement
 
     // 4b. REARRANGE THE PRIME TRAIT FOR THE GENDER
     _gender.adjustTraitsForGender(_traits);
-    
+
     // 4a. REARRANGE THE PRIME TRAIT FOR THE RACE
     // Create the Race object
     _race = Race.createRace(_racename, _gender);
@@ -225,7 +216,7 @@ public class Hero implements IRegistryElement
 
     // 5. ENSURE ALL ADJUSTMENTS REMAIN WITH RACIAL LIMITS
     _traits = _race.verifyRaceLimits(_traits);
-//    displayTraits("Race-verified final Traits: ", _traits);
+    //    displayTraits("Race-verified final Traits: ", _traits);
 
     // 6. ASSIGN THE STRENGTH MODIFIERS: To Hit Mod, Damage Mod, and Wt Allowance
     int[] strMods = calcStrengthMods(_traits);
@@ -243,7 +234,7 @@ public class Hero implements IRegistryElement
     // System.out.println("Hero can learn an additional " + _maxLangs + " languages.");
     _literacy = getLiteracy(intel);
     // displayList("Skills: \t", _skills);
-    
+
     // 7b. FOR WIZARDS ONLY: PercentToKnow, MSPs/Level, MSPS, Spells Known
     if (_klassname.equalsIgnoreCase("Wizard")) {
       int[] wizMods = calcWizardMods(intel);
@@ -336,18 +327,18 @@ public class Hero implements IRegistryElement
     // displayList("Racial Skills: ", _skills);
 
     // 20. ADD RANDOM OCCUPATION AND OCCUPATIONAL SKILLS
-    _occupation = assignOccupation();
+    _occ = Occupation.getRandomOccupation();
 
     // 21. ASSIGN SPELLS TO CLERICS (WIZARDS ALREADY WERE ASSIgned 'READ MAGIC')
     _spellBook = _klass.addKlassSpells(_spellBook);
     _spellsKnown = _spellBook.size();
-//    if (_klassname.equalsIgnoreCase("Cleric")) {
-//      _spellBook = ((Cleric) _klass).addClericalSpells(_spellBook);
-//      _spellsKnown = _spellBook.size();
-//      // displayList(String.format("Clerical spells knowns: %s spells: ", _spellsKnown),
-//      // _spellBook);
-//    }
-    
+    //    if (_klassname.equalsIgnoreCase("Cleric")) {
+    //      _spellBook = ((Cleric) _klass).addClericalSpells(_spellBook);
+    //      _spellsKnown = _spellBook.size();
+    //      // displayList(String.format("Clerical spells knowns: %s spells: ", _spellsKnown),
+    //      // _spellBook);
+    //    }
+
     // 22. Assign initial inventory
     _inven = new Inventory();
     _inven = _inven.assignBasicInventory(_inven);
@@ -362,10 +353,10 @@ public class Hero implements IRegistryElement
   public Hero(EnumMap<HeroInput, String> inputMap)
   {
     this(inputMap.get(HeroInput.NAME),
-         inputMap.get(HeroInput.GENDER),
-         inputMap.get(HeroInput.HAIR),
-         inputMap.get(HeroInput.RACE),
-         inputMap.get(HeroInput.KLASS));
+        inputMap.get(HeroInput.GENDER),
+        inputMap.get(HeroInput.HAIR),
+        inputMap.get(HeroInput.RACE),
+        inputMap.get(HeroInput.KLASS));
   }
 
   /** Converts from Skill name, description, and percent change into a string */
@@ -383,7 +374,7 @@ public class Hero implements IRegistryElement
   public boolean canUseMagic()
   {
     return _klassname.equals(Klass.CLERIC_CLASS_NAME) ||
-           _klassname.equals(Klass.WIZARD_CLASS_NAME);
+        _klassname.equals(Klass.WIZARD_CLASS_NAME);
   }
 
   public Gender getGender()
@@ -424,8 +415,7 @@ public class Hero implements IRegistryElement
   /** Remove the description after the delimeter to return only the name */
   public String getOccupationName()
   {
-    String ocpName = _occupation.substring(0,_occupation.indexOf(':'));
-    return ocpName;
+    return _occ.getName();
   }
 
   public String getRaceName()
@@ -482,7 +472,7 @@ public class Hero implements IRegistryElement
     map.put(PersonKeys.GOLD_BANKED, String.format("%s", _goldBanked));
 
     // Row 5: Occupation, Description
-    map.put(PersonKeys.OCCUPATION, _occupation);
+    map.put(PersonKeys.OCCUPATION, getOccupationName());
     map.put(PersonKeys.DESCRIPTION, _description);
 
     // Row 6: STR and STR mods: ToHit, StrDamage, Wt Allowance, Load Carried
@@ -547,34 +537,6 @@ public class Hero implements IRegistryElement
     map.put(PersonKeys.LANGUAGES, langList);
 
     return map;
-  }
-
-  // Assign a random occupation to the Hero
-  private String assignOccupation()
-  {
-    Occupation occ = Occupation.getRandomOccupation();
-    _occ = occ;
-    return occ.getName();
-  }
-
-
-  // Return the name and description of each skill associated with the given occupation
-  private ArrayList<String> assignOcpSkills()
-  {
-    ArrayList<String> skills = new ArrayList<String>();
-    String ocpDesc = "";
-
-    // typing shorthand
-    int STR = Trait.getTrait(Traits.STR); //_traits[PrimeTraits.STR.ordinal()];
-    int INT = _traits[PrimeTraits.INT.ordinal()];
-    int WIS = _traits[PrimeTraits.WIS.ordinal()];
-    int DEX = _traits[PrimeTraits.DEX.ordinal()];
-    int CON = _traits[PrimeTraits.CON.ordinal()];
-    int CHR = _traits[PrimeTraits.CHR.ordinal()];
-
-    // Update occupational description
-    _occupation += ": " + ocpDesc;
-    return skills;
   }
 
   /** Display the Hero's key characteristics */
@@ -688,7 +650,7 @@ public class Hero implements IRegistryElement
     }
     System.out.println();
   }
-  
+
   // ====================================================
   // Private helper methods
   // ====================================================
@@ -727,7 +689,7 @@ public class Hero implements IRegistryElement
   // ====================================================
   // Private helper methods
   // ====================================================
-  
+
   /**
    * Build the physical appearance of the Person, without regard to what they are wearing or
    * anything that can drastically change. The description depends on height, weight, race, klass,
@@ -746,18 +708,19 @@ public class Hero implements IRegistryElement
     String bodyType = _race.initBodyType(chr, _height, _weight);
     // Start the description with a vowel-sensitive article
     String article = (checkFirstVowel(bodyType) == true) ? "An " : "A ";
-  
+
     // Process baldness.
     String hairType = (_hairColor.equalsIgnoreCase("bald")) ? "a bald head" : _hairColor + " hair";
-    String desc1 = article + bodyType + " " + getGender().toString().toLowerCase() + " with " + hairType;
-  
+    String desc1 =
+        article + bodyType + " " + getGender().toString().toLowerCase() + " with " + hairType;
+
     // Get race descriptor for suffix.
     String desc2 = _race.getRaceDescriptor();
-  
+
     // Get Charisma description
     String chrDesc = _race.initCharismaDescriptor(chr);
     String desc3 = _gender.pronoun() + " is " + chrDesc + ".";
-  
+
     String desc = desc1 + " and " + desc2 + ". " + desc3;
     return desc;
   }
@@ -826,7 +789,7 @@ public class Hero implements IRegistryElement
     result = prime * result + _height;
     result = prime * result + ((_klassname == null) ? 0 : _klassname.hashCode());
     result = prime * result + ((_name == null) ? 0 : _name.hashCode());
-    result = prime * result + ((_occupation == null) ? 0 : _occupation.hashCode());
+    result = prime * result + ((_occ == null) ? 0 : _occ.hashCode());
     result = prime * result + ((_racename == null) ? 0 : _racename.hashCode());
     result = prime * result + Arrays.hashCode(_traits);
     result = prime * result + _weight;
@@ -870,10 +833,10 @@ public class Hero implements IRegistryElement
         return false;
     } else if (!_name.equals(other._name))
       return false;
-    if (_occupation == null) {
-      if (other._occupation != null)
+    if (_occ == null) {
+      if (other._occ != null)
         return false;
-    } else if (!_occupation.equals(other._occupation))
+    } else if (!_occ.equals(other._occ))
       return false;
     if (_racename == null) {
       if (other._racename != null)

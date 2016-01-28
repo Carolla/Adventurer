@@ -1,7 +1,7 @@
 
 package chronos.pdc.character;
 
-import chronos.pdc.character.Hero.PrimeTraits;
+import chronos.pdc.character.Trait.PrimeTraits;
 
 
 public class Gender

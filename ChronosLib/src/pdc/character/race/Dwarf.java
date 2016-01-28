@@ -10,7 +10,7 @@
 package pdc.character.race;
 
 import chronos.pdc.character.Gender;
-import chronos.pdc.character.Hero.PrimeTraits;
+import chronos.pdc.character.Trait.PrimeTraits;
 import chronos.pdc.race.Race;
 
 /**
