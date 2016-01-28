@@ -23,7 +23,6 @@ public class Fighter extends Klass
   
   /** Starting die and initial free HP for klass */
   private String _hitDie = "d10";
-  private int _freeHP = 10;
   private String _startingGold = "5d4";
 
 
@@ -35,7 +34,6 @@ public class Fighter extends Klass
     _klassName = "Fighter";
     _primeTrait = PrimeTraits.STR;
     _hpDie = _hitDie;
-    _initialHP = _freeHP;
     _goldDice = _startingGold;
   }
 

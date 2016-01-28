@@ -24,7 +24,6 @@ public class Wizard extends Klass
 {
   /** Starting die and initial free HP for klass */
   private String _hitDie = "d4";
-  private int _freeHP = 4;
   private String _startingGold = "2d4";
 
 
@@ -36,7 +35,6 @@ public class Wizard extends Klass
     _klassName = "Wizard";
     _primeTrait = PrimeTraits.INT;
     _hpDie = _hitDie;
-    _initialHP = _freeHP;
     _goldDice = _startingGold;
   }
 

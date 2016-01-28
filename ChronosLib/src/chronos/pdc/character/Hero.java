@@ -315,11 +315,7 @@ public class Hero implements IRegistryElement
     _gold = _klass.rollGold();
     _silver = 9; // for testing
     _goldBanked = 0.0;
-    // System.out.println("\nInitial gold for " + _klassname + " = " + _gold + " gp");
 
-    // 18. ASSIGN SPECIAL THIEF ABILITIES
-    String[][] klassSkills = _klass.assignKlassSkills();
-    _klassSkills = toArrayList(klassSkills);
 
     // 19. ADD RACIAL ABILITIES
     // TESTING: Set Spot Detail
@@ -359,16 +355,6 @@ public class Hero implements IRegistryElement
         inputMap.get(HeroInput.KLASS));
   }
 
-  /** Converts from Skill name, description, and percent change into a string */
-  private ArrayList<String> toArrayList(String[][] thiefSkills)
-  {
-    ArrayList<String> sk = new ArrayList<String>();
-
-    for (int k = 0; k < thiefSkills.length; k++) {
-      sk.add(thiefSkills[k][0] + ": " + thiefSkills[k][1]);
-    }
-    return sk;
-  }
 
 
   public boolean canUseMagic()

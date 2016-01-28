@@ -25,7 +25,6 @@ public class Cleric extends Klass
   
   /** Starting die and initial free HP for klass */
   private String _hitDie = "d8";
-  private int _freeHP = 8;
   private String _startingGold = "3d6";
 
   private final String[] _clericSpells = {
@@ -42,7 +41,6 @@ public class Cleric extends Klass
     _klassName = "Cleric";
     _primeTrait = PrimeTraits.WIS;
     _hpDie = _hitDie;
-    _initialHP = _freeHP;
     _goldDice = _startingGold;
   }
   
