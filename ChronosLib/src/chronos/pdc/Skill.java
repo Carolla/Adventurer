@@ -77,18 +77,6 @@ public class Skill implements IRegistryElement
             throw new ApplicationException(name + String.format(FLDERR_MISSING, "Description"));
         }
 
-        // Do not create a Skill if the description is too long
-        if (desc.length() > MAX_DESC_LEN) {
-            throw new ApplicationException(name + String.format(FLDERR_OVERLONG,
-                    (name.length() - MAX_DESC_LEN)));
-        }
-
-        // Do not create a Skill if the name is too long
-        if (name.length() > MAX_NAME_LEN) {
-            throw new ApplicationException(name + String.format(FLDERR_OVERLONG,
-                    (name.length() - MAX_NAME_LEN)));
-        }
-
         // Build the skill as specifics
         _name = name;
         _description = desc;
