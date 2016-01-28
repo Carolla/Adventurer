@@ -25,7 +25,7 @@ import chronos.pdc.Skill;
 public class SkillRegistry extends Registry<Skill>
 {
   /** 8 Skills that are defined for particular races: Name, Description. */
-  static private final String[][] _racialSkillTable = {
+  public static final String[][] _racialSkillTable = {
       {"Archery", "Extra skillful with a short or long bow."},
       {"Geasing", "Able to detect undeground direction and stone-based traps."},
       {"Infravision", "Can see warm bodies in the dark."},
@@ -67,7 +67,7 @@ public class SkillRegistry extends Registry<Skill>
 
 
   // Occupational skills and descriptions for defined occupations
-  private String[][] _occupSkillTable =
+  public static String[][] _occupSkillTable =
   {
       {"Animal Empathy", "Communicate emotionally with animals"},
       {"Appraise Jewelry", "Estimate selling value of gems and jewelry"},

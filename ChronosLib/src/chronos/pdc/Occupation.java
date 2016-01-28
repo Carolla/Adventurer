@@ -89,7 +89,8 @@ public class Occupation implements IRegistryElement
     // GUARDS
     // Name cannot be null
     if (name == null || description == null || trait == null || skills == null) {
-      throw new NullPointerException(name + ": Occupation must have a name, description, trait and skills; received null");
+      throw new NullPointerException(name
+          + ": Occupation must have a name, description, trait and skills; received null");
     }
 
     // Do not create an Occupation if its name is too long
@@ -108,6 +109,33 @@ public class Occupation implements IRegistryElement
     }
   }
 
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((_name == null) ? 0 : _name.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Occupation other = (Occupation) obj;
+    if (_name == null) {
+      if (other._name != null)
+        return false;
+    } else if (!_name.equals(other._name))
+      return false;
+    return true;
+  }
+
   /*
    * Two Occupations are considered equal if their name and associated Skill are equal
    * 
@@ -120,14 +148,7 @@ public class Occupation implements IRegistryElement
   @Override
   public boolean equals(IRegistryElement otherThing)
   {
-    // Guard against null input
-    if (otherThing == null) {
-      return false;
-    }
-    Occupation ocp = (Occupation) otherThing;
-    boolean bName = _name.equals(ocp._name);
-    boolean bSkill = _skills.equals(ocp._skills);
-    return (bName || bSkill);
+    return equals((Object) otherThing);
   }
 
 
@@ -151,12 +172,12 @@ public class Occupation implements IRegistryElement
   {
     return _description;
   }
-  
+
   public String getTrait()
   {
     return _trait;
   }
-  
+
   public List<Skill> getSkill()
   {
     return _skills;
@@ -167,10 +188,13 @@ public class Occupation implements IRegistryElement
    * 
    * @return the name of the skill
    */
-  public List<String> getSkillName()
+  public List<String> getSkillNames()
   {
-    //return _skill.getName();
-    return null;
+    List<String> names = new ArrayList<String>();
+    for (Skill s : _skills) {
+      names.add(s.getName());
+    }
+    return names;
   }
 
   /** Return a string of the Occupatio's name and skill */

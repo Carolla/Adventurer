@@ -440,7 +440,7 @@ public class Hero implements IRegistryElement
 
   public List<String> getOcpSkills()
   {
-    return _occ.getSkillName();
+    return _occ.getSkillNames();
   }
 
   public List<String> getSpellBook()
