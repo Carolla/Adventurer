@@ -57,7 +57,7 @@ public class TestRace  {
 		Race aRace = null;
 		for (int k = 0; k < _races.length; k++) {
 			aRace = Race.createRace(_races[k], new Gender("Male"));
-			assertTrue(aRace.getRaceName().equals(_races[k]));
+			assertTrue(aRace.getName().equals(_races[k]));
 		}
 	}
 

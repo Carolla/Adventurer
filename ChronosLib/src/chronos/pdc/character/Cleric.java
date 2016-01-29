@@ -9,8 +9,10 @@
 
 package chronos.pdc.character;
 
+import java.util.EnumMap;
 import java.util.List;
 
+import chronos.civ.PersonKeys;
 import chronos.pdc.Item;
 import chronos.pdc.Item.ItemCategory;
 import chronos.pdc.character.TraitList.PrimeTraits;
@@ -22,10 +24,14 @@ import chronos.pdc.character.TraitList.PrimeTraits;
  */
 public class Cleric extends Klass
 {
-  
+
   /** Starting die and initial free HP for klass */
   private String _hitDie = "d8";
   private String _startingGold = "3d6";
+  // Clerical mods
+  private int _CSPsPerLevel = 0;
+  private int _CSPs = 0;
+  private int _turnUndead = 0;
 
   private final String[] _clericSpells = {
       "Bless", "Command", "Create Water", "Cure Light Wounds", "Detect Evil", "Detect Magic",
@@ -35,28 +41,34 @@ public class Cleric extends Klass
 
   /**
    * Default constructor, called reflectively by Klass
+   * @param traits 
    */
-  public Cleric()
+  public Cleric(TraitList traits)
   {
     _klassName = "Cleric";
     _primeTrait = PrimeTraits.WIS;
     _hpDie = _hitDie;
     _goldDice = _startingGold;
-  }
-  
-  @Override
-  public List<String> addKlassSpells(List<String> spellbook)
-  {
-    return addClericalSpells(spellbook);
+    calcClericMods(traits.getTrait(_primeTrait));
   }
 
-  public List<String> addClericalSpells(List<String> spellbook)
+  // 8b. FOR CLERICS ONLY: CSPs/Level, CSPS, Turn Undead
+  private void calcClericMods(int wisdom)
+  {
+    _CSPsPerLevel = wisdom / 2;
+    _CSPs = _CSPsPerLevel; // for level 1
+    _turnUndead = wisdom;
+  }
+
+  @Override
+  public List<String> addKlassSpells(List<String> spellbook)
   {
     for (String s : _clericSpells) {
       spellbook.add(s);
     }
     return spellbook;
   }
+
 
   @Override
   /** Assign initial inventory to Cleric (8 gpw = 1 lb) */
@@ -72,10 +84,21 @@ public class Cleric extends Klass
     return inven;
   }
 
+
   @Override
   public boolean canUseMagic()
   {
     return true;
+  }
+
+  @Override
+  public void loadKlassTraits(EnumMap<PersonKeys, String> map)
+  {
+    super.loadKlassTraits(map);
+    map.put(PersonKeys.CURRENT_CSP, "" + _CSPs);
+    map.put(PersonKeys.MAX_CSP, "" + _CSPs);
+    map.put(PersonKeys.CSP_PER_LEVEL, "" + _CSPsPerLevel);
+    map.put(PersonKeys.TURN_UNDEAD, "" + _turnUndead);
   }
 } // end of Cleric class
 

@@ -11,9 +11,11 @@
 package chronos.pdc.character;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 
 import mylib.pdc.MetaDie;
+import chronos.civ.PersonKeys;
 import chronos.pdc.character.TraitList.PrimeTraits;
 
 /**
@@ -33,38 +35,37 @@ public abstract class Klass
   public static final String THIEF_CLASS_NAME = "Thief";
 
   // KLASS-SPECIFIC ATTRIBUTES and METHODS
-  /** Name of the subclass of Klass, e.g, Peasant or Fighter */
-  protected String _klassName = null;
-  /** The specific prime trait for the sub-klass */
+  protected String _klassName;
   protected PrimeTraits _primeTrait;
-
-  /** Each klass has a specific amount of HP they start with */
-  protected String _hpDie = null;
-  /** Starting gold is rolled from klass-specific dice notation */
-  protected String _goldDice = null;
+  protected String _hpDie;
+  protected String _goldDice;
+  protected TraitList _traits;
+  private int _HP;
 
   private static final MetaDie _md = new MetaDie();
-
 
   /**
    * Create a specific subclass of Klass based on its klass name. <br>
    * NOTE: The subclass must be in the same package as the Klass class.
    *
    * @param klassName the name of the subclass to be created
+   * @param traits 
    * @return Klass, the subclass created, but referenced polymorphically; else null
    */
-  static public Klass createKlass(String klassName)
+  static public Klass createKlass(String klassName, TraitList traits)
   {
+    Klass klass = null;
     switch (klassName) {
       case FIGHTER_CLASS_NAME:
-        return new Fighter();
+        klass = new Fighter(traits);
       case CLERIC_CLASS_NAME:
-        return new Cleric();
+        klass =  new Cleric(traits);
       case WIZARD_CLASS_NAME:
-        return new Wizard();
+        klass =  new Wizard(traits);
       case THIEF_CLASS_NAME:
-        return new Thief();
+        klass =  new Thief(traits);
     }
+    klass.rollHP();
 
     throw new NullPointerException("Klass.createKlass(): Cannot find class requested " + klassName);
   }
@@ -89,7 +90,7 @@ public abstract class Klass
     int largest = -1;
     PrimeTraits largestTrait = PrimeTraits.STR;
     
-    for (PrimeTraits trait : PrimeTraits.values()) {
+    for (PrimeTraits trait : PrimeTraits.class.getEnumConstants()) {
       int traitVal = traits.getTrait(trait);
       if (largest < traitVal) {
         largest = traitVal;
@@ -120,10 +121,9 @@ public abstract class Klass
    * @param mod the HP mod for the Hero, a CON-based attribute
    * @return the initial Hit Points
    */
-  public int rollHP(int mod)
+  protected void rollHP()
   {
-    int HP = _md.roll(_hpDie) + mod;
-    return HP;
+    _HP = _md.roll(_hpDie) + _traits.getHpMod();
   }
 
 
@@ -138,5 +138,44 @@ public abstract class Klass
     return new ArrayList<String>();
   }
 
+  public List<String> getSpells()
+  {
+    return new ArrayList<String>();
+  }
 
+
+  public void loadKlassTraits(EnumMap<PersonKeys, String> map)
+  {
+    map.put(PersonKeys.KLASSNAME, _klassName);
+    map.put(PersonKeys.HP, "" + _HP);
+    map.put(PersonKeys.HP_MAX, "" + _HP);
+  }
+
+
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((_klassName == null) ? 0 : _klassName.hashCode());
+    return result;
+  }
+  
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Klass other = (Klass) obj;
+    if (_klassName == null) {
+      if (other._klassName != null)
+        return false;
+    } else if (!_klassName.equals(other._klassName))
+      return false;
+    return true;
+  }
 } // end of abstract Klass class

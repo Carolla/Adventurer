@@ -9,8 +9,12 @@
 
 package chronos.pdc.character;
 
+import static chronos.pdc.character.TraitList.PrimeTraits.*;
+
+import java.util.EnumMap;
 import java.util.List;
 
+import chronos.civ.PersonKeys;
 import chronos.pdc.Item;
 import chronos.pdc.Item.ItemCategory;
 import chronos.pdc.character.TraitList.PrimeTraits;
@@ -26,16 +30,29 @@ public class Wizard extends Klass
   private String _hitDie = "d4";
   private String _startingGold = "2d4";
 
+  private int _MSPs = 0;
+  private int _MSPsPerLevel = 0;
+  private int _percentToKnow = 0;
+  private int _spellsKnown = 0;
 
   /**
    * Default constructor, called reflectively by Klass
+   * @param traits 
    */
-  public Wizard()
+  public Wizard(TraitList traits)
   {
     _klassName = "Wizard";
     _primeTrait = PrimeTraits.INT;
     _hpDie = _hitDie;
     _goldDice = _startingGold;
+    calcWizardMods(traits.getTrait(INT));
+    _MSPs = _MSPsPerLevel; // for first level
+  }
+
+  private void calcWizardMods(int intell)
+  {
+    _MSPsPerLevel = intell / 2 - 3;
+    _percentToKnow = intell * 5;
   }
 
   @Override
@@ -63,4 +80,17 @@ public class Wizard extends Klass
   {
     return true;
   }
+
+
+  @Override
+  public void loadKlassTraits(EnumMap<PersonKeys, String> map)
+  {
+    super.loadKlassTraits(map);
+    map.put(PersonKeys.TO_KNOW, "" + _percentToKnow);
+    map.put(PersonKeys.CURRENT_MSP, "" + _MSPs);
+    map.put(PersonKeys.MAX_MSP, "" + _MSPs);
+    map.put(PersonKeys.MSP_PER_LEVEL, "" + _MSPsPerLevel);
+    map.put(PersonKeys.SPELLS_KNOWN, "" + _spellsKnown);
+  }
+
 } // end of Wizard class

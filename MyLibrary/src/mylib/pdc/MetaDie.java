@@ -448,6 +448,16 @@ public class MetaDie
   } // end of MockMetaDie inner class
 
 
+  public int[] rollTraits()
+  {
+    int traits[] = new int[6];
+    for (int i = 0; i < traits.length; i++) {
+      traits[i] = rollTrait();
+    }
+    return traits;
+  }
+
+
 
 } // end of MetaDie class
 

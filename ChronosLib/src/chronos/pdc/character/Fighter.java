@@ -1,6 +1,6 @@
 /**
- * Fighter.java Copyright (c) 2015, Carolla Development, Inc. All Rights Reserved
  * 
+ * Fighter.java Copyright (c) 2015, Carolla Development, Inc. All Rights Reserved
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
  * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
@@ -28,9 +28,11 @@ public class Fighter extends Klass
 
   /**
    * Default constructor, called reflectively by Klass
+   * @param traits 
    */
-  public Fighter()
+  public Fighter(TraitList traits)
   {
+    _traits = traits;
     _klassName = "Fighter";
     _primeTrait = PrimeTraits.STR;
     _hpDie = _hitDie;

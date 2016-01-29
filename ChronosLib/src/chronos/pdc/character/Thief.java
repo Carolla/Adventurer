@@ -44,8 +44,9 @@ public class Thief extends Klass
 
   /**
    * Default constructor, called reflectively by Klass
+   * @param traits 
    */
-  public Thief()
+  public Thief(TraitList traits)
   {
     _klassName = "Thief";
     _primeTrait = PrimeTraits.DEX;

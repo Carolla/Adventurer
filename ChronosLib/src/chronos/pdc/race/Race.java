@@ -9,14 +9,17 @@ package chronos.pdc.race;
  * by email: acline@carolla.com
  */
 
+import static chronos.pdc.character.TraitList.PrimeTraits.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.List;
 
 import mylib.pdc.MetaDie;
 import pdc.character.race.Dwarf;
 import chronos.Chronos;
+import chronos.civ.PersonKeys;
 import chronos.pdc.character.Gender;
 import chronos.pdc.character.TraitList;
 
@@ -58,6 +61,7 @@ public abstract class Race
   protected String _descriptor;
   protected int[] _racialThiefMods;
   protected String[] _raceSkills;
+  protected int _racialPoisonResist = 0;
 
   public abstract int calcWeight();
   public abstract int calcHeight();
@@ -92,10 +96,22 @@ public abstract class Race
   /** Races have different advantages and disadvantages */
   public TraitList adjustTraitsForRace(TraitList traits)
   {
+    addRacialPoisonResist(traits.getTrait(CON), traits.getMagicAttackMod());
     return traits;
   }
 
 
+
+  private void addRacialPoisonResist(int constitution, int magicAttackMod)
+  {
+    if ((_raceName.equalsIgnoreCase("Dwarf")) ||
+        (_raceName.equalsIgnoreCase("Gnome")) ||
+        (_raceName.equalsIgnoreCase("Hobbit"))) {
+      _racialPoisonResist = (int) Math.round((float) constitution / 3.5);
+      magicAttackMod += _racialPoisonResist;
+    }
+  }
+  
   // Assign the chances for thief skills for level 1 by race
   public String[][] adjustRacialThiefSkills(String[][] skills) 
   {
@@ -134,7 +150,7 @@ public abstract class Race
     return _raceLang;
   }
 
-  public String getRaceName()
+  public String getName()
   {
     return _raceName;
   }
@@ -280,6 +296,39 @@ public abstract class Race
   public List<String> getSkills()
   {
     return new ArrayList<String>(Arrays.asList(_raceSkills));
+  }
+  
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((_raceName == null) ? 0 : _raceName.hashCode());
+    return result;
+  }
+  
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Race other = (Race) obj;
+    if (_raceName == null) {
+      if (other._raceName != null)
+        return false;
+    } else if (!_raceName.equals(other._raceName))
+      return false;
+    return true;
+  }
+  
+  public void loadRaceKeys(EnumMap<PersonKeys, String> map)
+  {
+    map.put(PersonKeys.RACENAME, _raceName);
+    map.put(PersonKeys.RMR, "" + _racialPoisonResist); 
   }
 
 

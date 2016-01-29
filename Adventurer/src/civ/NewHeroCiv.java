@@ -28,10 +28,10 @@ public class NewHeroCiv extends BaseCiv
 
   /** String arrays are used instead of Lists because it is final data and easier to work with */
   public static final String[] HAIR_COLOR_LIST =
-      {"bald", "black", "blonde", "brown", "gray", "red", "silver", "streaked", "white"};
+  {"bald", "black", "blonde", "brown", "gray", "red", "silver", "streaked", "white"};
 
   public static final String[] KLASS_LIST =
-      {"Fighter", "Cleric", "Thief", "Wizard"};
+  {"Fighter", "Cleric", "Thief", "Wizard"};
 
 
   /** ErrorCode for type of error encountered on input */
