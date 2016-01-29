@@ -50,14 +50,12 @@ import java.util.ArrayList;
  * <li>{@code Adventurer/src/test/IntegTestSuite.class}</li>
  * </ol>
  * <P>
- * As part of a Github prehook, each time someone does a {@code git push}, the QA_Tool is run to
+ * As part of a Github prehook, each time someone does a {@code git push}, the QA Tool is run to
  * generate all unit test suites in the regression suite, except for the Integration test suite,
  * which must be built by hand. The Github prehook also then runs the regression test suite.
  * 
  * @author alancline
  * @version Dec 30 2015 // original <br>
- * @version Jan 1 2016 // original; modified from {@code FileMap.java} found online at
- *          {@code http:/bethecoder/com} <br>
  */
 public class QATool
 {
@@ -96,7 +94,7 @@ public class QATool
   {
     _root = new File(path);
     if (!_root.isDirectory()) {
-      System.err.println("QA_Tool: Path argument must be a directory");
+      System.err.println("QATool: Path argument must be a directory");
       _root = null;
     }
   }
@@ -114,7 +112,7 @@ public class QATool
    * @param offset the length of the root pathname; required so recusrion doesn't change the root
    *          length
    */
-  public void buildSourceList(File root, int offset)
+  public ArrayList<String> buildSourceList(File root, int offset)
   {
     // Retrieve all files and subdirs under dir
     File[] allFiles = root.listFiles();
@@ -134,6 +132,7 @@ public class QATool
         }
       }
     }
+    return _srcPaths;
   }
 
 
@@ -323,7 +322,7 @@ public class QATool
   // INNER CLASS: MockTool for testing
   // ========================================================================
 
-  /** Provide access to the QA_Tool fields for testing */
+  /** Provide access to the QATool fields for testing */
   public class MockTool
   {
     public MockTool()

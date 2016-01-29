@@ -36,7 +36,8 @@ import chronos.pdc.registry.SkillRegistry;
  * 
  * @author Al Cline
  * @version Jul 19, 2014 // original <br>
- *          Jul 24, 2014 // refactored to allow for registries not residing in the common location <br>
+ *          Jul 24, 2014 // refactored to allow for registries not residing in the common location
+ *          <br>
  *          Sep 20, 2014 // test removeAllRegistries <br>
  */
 public class TestRegistryFactory
@@ -72,7 +73,7 @@ public class TestRegistryFactory
   /**
    * @Not.Needed {@code RegistryFactory()} -- wrapper method <br>
    */
-  public void _testsNotNeeded()
+  public void notNeeded()
   {}
 
   /**
@@ -127,7 +128,6 @@ public class TestRegistryFactory
   // ============================================================
   // Helper Methods
   // ============================================================
-
 
 
 } // end of TestRegistryFactory

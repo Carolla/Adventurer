@@ -25,9 +25,21 @@ import mylib.Constants;
  *          Oct 5, 2014 // cleaned up cropLine and added tests into {@code TestUtilities} <br>
  *          Oct 16, 2014 // renamed {@code sort} to {@code uniqueSort} to emphasize dups are removed
  *          during sort <br>
+ *          Jan 22 2016 // added {@code convertToArrayList(String[])} <br>
  */
 public class Utilities
 {
+  /** Convert a String[] to a ArrayList<String> for easier handling */
+  static public ArrayList<String> convertToArrayList(String[] strs)
+  {
+    // Setup for arraylist
+    ArrayList<String> alist = new ArrayList<String>();
+    for (int k = 0; k < strs.length; k++) {
+      alist.add(strs[k]);
+    }
+    return alist;
+  }
+
 
   /**
    * Replaces the last white space character with a newline character within the designated limit.

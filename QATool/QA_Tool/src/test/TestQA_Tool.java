@@ -22,6 +22,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mylib.MsgCtrl;
+import mylib.pdc.Utilities;
 import pdc.QATool;
 import pdc.QATool.MockTool;
 
@@ -32,7 +33,6 @@ import pdc.QATool.MockTool;
  */
 public class TestQA_Tool
 {
-
   // Setup expected comparisons paths
   final String[] allSrcStr =
       {"Chronos.java", "civ/DefaultLists.java", "civ/DefaultUserMsg.java",
@@ -176,8 +176,8 @@ public class TestQA_Tool
   @Test
   public void testBuildSourceList()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
     // SETUP
@@ -185,7 +185,8 @@ public class TestQA_Tool
     int offset = ROOT_PATH.length();
 
     // RUN: target method returns nothing
-    _qat.buildSourceList(root, offset);
+    ArrayList<String> srcPaths = _qat.buildSourceList(root, offset);
+    assertEquals(srcPaths.size(), allSrcStr.length);
 
     // VERIFY
     ArrayList<String> paths = _mock.getSrcPaths();
@@ -228,11 +229,11 @@ public class TestQA_Tool
     MsgCtrl.where(this);
 
     // Setup for arraylist
-    ArrayList<String> expAllSrc = convertToArrayList(allSrcStr);
-    ArrayList<String> expAllTests = convertToArrayList(allTestsStr);
-    ArrayList<String> expMatchingSrc = convertToArrayList(matchingSrcStr);
-    ArrayList<String> expSrcWoTests = convertToArrayList(srcWoTestsStr);
-    ArrayList<String> expTestsWoSrc = convertToArrayList(testsWoSrcStr);
+    ArrayList<String> expAllSrc = Utilities.convertToArrayList(allSrcStr);
+    ArrayList<String> expAllTests = Utilities.convertToArrayList(allTestsStr);
+    ArrayList<String> expMatchingSrc = Utilities.convertToArrayList(matchingSrcStr);
+    ArrayList<String> expSrcWoTests = Utilities.convertToArrayList(srcWoTestsStr);
+    ArrayList<String> expTestsWoSrc = Utilities.convertToArrayList(testsWoSrcStr);
 
 
     // Run test on simulated directory tree
@@ -339,16 +340,16 @@ public class TestQA_Tool
   // PRIVATE HELPERS
   // ======================================================================
 
-  /** Convert a String[] to a ArrayList<String> for easier handling */
-  private ArrayList<String> convertToArrayList(String[] strs)
-  {
-    // Setup for arraylist
-    ArrayList<String> alist = new ArrayList<String>();
-    for (int k = 0; k < strs.length; k++) {
-      alist.add(strs[k]);
-    }
-    return alist;
-  }
+//  /** Convert a String[] to a ArrayList<String> for easier handling */
+//  private ArrayList<String> convertToArrayList(String[] strs)
+//  {
+//    // Setup for arraylist
+//    ArrayList<String> alist = new ArrayList<String>();
+//    for (int k = 0; k < strs.length; k++) {
+//      alist.add(strs[k]);
+//    }
+//    return alist;
+//  }
 
   /** Display the contents of an arraylist, with intro message */
   private void dumpList(ArrayList<String> plist, String msg)
