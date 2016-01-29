@@ -135,7 +135,7 @@ public abstract class Registry<E extends IRegistryElement>
    * @param obj object to delete
    * @throws NullPointerException if the obj is null
    */
-  public void delete(E obj) throws NullPointerException
+  public void delete(E obj)
   {
     _regRW.deleteElement(obj);
   }

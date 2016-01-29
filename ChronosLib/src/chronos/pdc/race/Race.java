@@ -1,4 +1,4 @@
-package chronos.pdc;
+package chronos.pdc.race;
 
 /**
  * Race.java Copyright (c) 2009, Carolla Development, Inc. All Rights Reserved
@@ -10,11 +10,15 @@ package chronos.pdc;
  */
 
 
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import chronos.Chronos;
 import mylib.pdc.MetaDie;
+import pdc.character.race.Dwarf;
+import chronos.Chronos;
+import chronos.pdc.character.Gender;
+import chronos.pdc.character.TraitList;
 
 /**
  * Defines the common methods and attributes for all Races.
@@ -22,48 +26,74 @@ import mylib.pdc.MetaDie;
  * @author Alan Cline
  * @version Sept 4 2015 // rewrite to support Hero rewrite <br>
  */
-public abstract class Race implements Serializable
+public abstract class Race
 {
-  // Statics and transients that are not serialized with the Race class hierarchy
-  /** Recommended serialization constant. */
-  static final long serialVersionUID = 1100L;
+  public static int LOW_TRAIT = 8;
+  public static int HIGH_TRAIT = 18;
+  
+  public static final String[] RACE_LIST =
+      {"Human", "Dwarf", "Elf", "Gnome", "Half-Elf", "Half-Orc", "Hobbit"};
 
-  // RACE-SPECIFIC ATTRIBUTES and METHODS
-  /** Name of the subclass of Race, e.g, Human or Hobbit */
+  /**
+   * Some things apply across all Races, e.g. Body Type descriptors. The following height and weight
+   * ranges are dubbed "standard" (human) because what is "short" and "tall" is a human perspective.
+   */
+  static protected final double STD_MIN_HEIGHT = 54;
+  static protected final double STD_MAX_HEIGHT = 70;
+  static protected final double STD_MIN_WEIGHT = 110;
+  static protected final double STD_MAX_WEIGHT = 175;
   protected String _raceName = null;
-  /** Name of the subclass race language */
   protected String _raceLang = null;
+  
+  /** Hero male and female weight ranges */
+  protected int _weightMedValue;
+  /** Hero male and female height ranges */
+  protected int _heightMedValue;
+  
+  /** Racial limits for a each subclass for the traits */
+  protected int[] _minLimit = null;
+  protected int[] _maxLimit = null;
+  
+  protected String _racialLang;
+  protected String _descriptor;
+  protected int[] _racialThiefMods;
+  protected String[] _raceSkills;
+
+  public abstract int calcWeight();
+  public abstract int calcHeight();
 
   /**
    * Create a specific subclass of Race based on the Race name. <br>
    * NOTE: The subclass must be in the same package as the Race class.
    *
    * @param RaceName the name of the subclass to be created
-   * @return Race, the subclass created, but referenced polymorphically; else null
    */
-  static public Race createRace(String raceName)
+  static public Race createRace(String raceName, Gender gender)
   {
-    // If the race has a hyphen in it (e.g. Half-Elf), it is removed
-    int ndx = raceName.indexOf('-');
-    if (ndx != NOT_FOUND) {
-      String tmp = raceName.substring(0, ndx);
-      tmp += raceName.substring(ndx + 1);
-      raceName = tmp;
+    Race race = null;
+    if (raceName.equals("Dwarf")) {
+      race =  new Dwarf(gender);
+    } else if (raceName.equals("Elf")) {
+      race =  new Elf(gender);
+    } else if (raceName.equals("Gnome")) {
+      race =  new Gnome(gender);
+    } else if (raceName.equals("Half-Elf")) {
+      race =  new HalfElf(gender);
+    } else if (raceName.equals("Half-Orc")) {
+      race =  new HalfOrc(gender);
+    } else if (raceName.equals("Hobbit")) {
+      race =  new Hobbit(gender);
+    } else {
+      race =  new Human(gender);      
     }
-    Race newRace = null;
-    try {
-      // Class Commands must have empty constructors (no formal input arguments)
-      String racePath = Chronos.getPackageName() + raceName;
-      newRace = (Race) Class.forName(racePath).newInstance();
-    } catch (Exception e) {
-      System.err.println("Race.createRace(): Cannot find class requested: " + e.getMessage());
-    }
-    return newRace;
+    return race;
   }
-
-
+  
   /** Races have different advantages and disadvantages */
-  public abstract int[] adjustTraitsForRace(int[] traits);
+  public TraitList adjustTraitsForRace(TraitList traits)
+  {
+    return traits;
+  }
 
 
   // Assign the chances for thief skills for level 1 by race
@@ -78,69 +108,17 @@ public abstract class Race implements Serializable
     return skills;
   }
 
-
-  // Add race-specific skills to the Hero's skill list */
-  public ArrayList<String> addRaceSkills(ArrayList<String> existingSkills)
-  {
-    for (String s : _raceSkills) {
-      existingSkills.add(s);
-    }
-    return existingSkills;
-  }
-
-
-  /** Hero male and female weight ranges */
-  protected int _weightMaleMedValue = 0;;
-  protected int _weightFemaleMedValue = 0;
-  protected String _weightLowDice = null;
-  protected String _weightHighDice = null;
-
-  /** Hero male and female height ranges */
-  protected int _heightMaleMedValue = 0;;
-  protected int _heightFemaleMedValue = 0;
-  protected String _heightLowDice = null;
-  protected String _heightHighDice = null;
-
-  /** Racial limits for a each subclass for the traits */
-  protected int[] _minLimit = null;
-  protected int[] _maxLimit = null;
-
-  /**
-   * Some things apply across all Races, e.g. Body Type descriptors. The following height and weight
-   * ranges are dubbed "standard" (human) because what is "short" and "tall" is a human perspective.
-   */
-  transient protected final double STD_MIN_HEIGHT = 54;
-  transient protected final double STD_MAX_HEIGHT = 70;
-  transient protected final double STD_MIN_WEIGHT = 110;
-  transient protected final double STD_MAX_WEIGHT = 175;
-
-  /** Most races have a racial language */
-  protected String _racialLang;
-  /** All races but human have some defining characteristic */
-  /** Hobbits have hairy bare feet */
-  protected String _descriptor;
-
-  /** Thief skills are adjusted by race */
-  protected int[] _racialThiefMods;
-
-  /** Racial skills are race- specific */
-  protected String[] _raceSkills;
-
-  private static final int NOT_FOUND = -1;
-
   /** Calculate the weight of the Hero based on deviation from average */
-  public int calcWeight(String gender)
+  public int calcWeight(String lowDice, String highDice)
   {
-    int medValue = (gender.equalsIgnoreCase("female")) ? _weightFemaleMedValue : _weightMaleMedValue;
-    int weight = getDeviationFromMedValue(medValue, _weightLowDice, _weightHighDice);
+    int weight = getDeviationFromMedValue(_weightMedValue, lowDice, highDice);
     return weight;
   }
 
   /** Calculate the height of the Hero based on deviation from average */
-  public int calcHeight(String gender)
+  public int calcHeight(String lowDice, String highDice)
   {
-    int medValue = (gender.equalsIgnoreCase("female")) ? _heightFemaleMedValue : _heightMaleMedValue;
-    int height = getDeviationFromMedValue(medValue, _heightLowDice, _heightHighDice);
+    int height = getDeviationFromMedValue(_heightMedValue, lowDice, highDice);
     return height;
   }
 
@@ -196,12 +174,12 @@ public abstract class Race implements Serializable
     String deschr = null;
     // Find if Person is ugly, average, or beautiful (brute force lookup)
     // Check for exception cases first, before calling generic routine
-    if (charisma < Chronos.LOW_TRAIT) {
+    if (charisma < LOW_TRAIT) {
       deschr = _chrDescs[0];
-    } else if (charisma > Chronos.HIGH_TRAIT) {
+    } else if (charisma > HIGH_TRAIT) {
       deschr = _chrDescs[_chrDescs.length - 1];
     } else {
-      deschr = _chrDescs[charisma - Chronos.LOW_TRAIT + 1];
+      deschr = _chrDescs[charisma - LOW_TRAIT + 1];
     }
     return deschr;
   }
@@ -226,19 +204,15 @@ public abstract class Race implements Serializable
     };
     // Possible descriptors for negative charismas in a Height x Weight matrix,
     // must be in increasing order when calling findRangeDescriptor()
-    final String[][] negBody = {{"tiny", "pudgy", "squat"}, // Short height
+    final String[][] negBody = {
+        {"tiny", "pudgy", "squat"}, // Short height
         {"slinky", "average-size", "heavy"}, // Average height
         {"skinny", "tall", "giant"} // Tall height
     };
 
     // Find which list to use
     String[][] descrChoice = ((double) charisma >= Chronos.AVERAGE_TRAIT) ? posBody : negBody;
-
-    // Find if Person is heavy, average, or light
-    // String rowNbr = findRangeDescriptor(_weight, STD_MIN_WEIGHT,
-    // STD_MAX_WEIGHT, indexes);
-    // Find which category the height is in
-    int rowNbr = -1;
+    int rowNbr = 1;
     if (height <= STD_MIN_HEIGHT) {
       rowNbr = 0;
     } else if (height >= STD_MAX_HEIGHT) {
@@ -248,7 +222,7 @@ public abstract class Race implements Serializable
     }
 
     // Find which category the weight is in
-    int colNbr = -1;
+    int colNbr = 1;
     if (weight <= STD_MIN_WEIGHT) {
       colNbr = 0;
     } else if (weight >= STD_MAX_WEIGHT) {
@@ -265,18 +239,18 @@ public abstract class Race implements Serializable
    * Verify that the traits do not exceed the racial limits. If they do, the trait is set to the
    * limit value.
    * 
-   * @param traits traits to examine and possibly redefine
+   * @param _traits traits to examine and possibly redefine
    * @param minLimit the minimum values for the race, set by the subclass constructor
    * @param maxLimit the maximum values for the race, set by the subclass constructor
    * @return the original or modified traits
    */
-  public int[] verifyRaceLimits(int[] traits)
+  public TraitList verifyRaceLimits(TraitList _traits)
   {
-    for (int k = 0; k < traits.length; k++) {
-      traits[k] = (traits[k] < _minLimit[k]) ? _minLimit[k] : traits[k];
-      traits[k] = (traits[k] > _maxLimit[k]) ? _maxLimit[k] : traits[k];
-    }
-    return traits;
+//    for (int k = 0; k < _traits.length; k++) {
+//      _traits[k] = (_traits[k] < _minLimit[k]) ? _minLimit[k] : _traits[k];
+//      _traits[k] = (_traits[k] > _maxLimit[k]) ? _maxLimit[k] : _traits[k];
+//    }
+    return _traits;
   }
 
 
@@ -301,6 +275,11 @@ public abstract class Race implements Serializable
       result = medValue;
     }
     return result;
+  }
+  
+  public List<String> getSkills()
+  {
+    return new ArrayList<String>(Arrays.asList(_raceSkills));
   }
 
 

@@ -9,11 +9,12 @@
 
 package chronos.pdc;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mylib.ApplicationException;
 import mylib.dmc.IRegistryElement;
-import chronos.civ.OccupationKeys;
+import mylib.pdc.MetaDie;
 import chronos.pdc.registry.OccupationRegistry;
 
 /**
@@ -28,294 +29,178 @@ import chronos.pdc.registry.OccupationRegistry;
  */
 public class Occupation implements IRegistryElement
 {
-    // Serializable because it is part of the serialized Person object
-    static final long serialVersionUID = 20110205L; // creation date
 
-    private static OccupationRegistry _ocpreg;
+  // Various occupations (31) for random selection
+  private static final String[] _ocpTable = {
+      "Academic", "Acrobat", "Alchemist", "Apothecary", "Armorer", "Banker", "Bowyer",
+      "Carpenter", "Farmer", "Fisher", "Forester", "Freighter", "Gambler", "Hunter",
+      "Husbandman", "Innkeeper", "Jeweler", "Leatherworker", "Painter", "Mason",
+      "Miner", "Navigator", "Sailor", "Shipwright", "Tailor", "Trader", "Trapper",
+      "Weaponsmith", "Weaver", "Woodworker", "Drifter"};
 
-    /** The name of the occupation the player selected */
-    private String _name = null;
+  private static OccupationRegistry _ocpreg;
 
-    // TODO Should Occupation be saved with the Skill object, or just its name?
-    /** A name of the Skill assocated with the occupationl and how the Hero may use it. */
-    private Skill _skill = null;
+  /** The name of the occupation the player selected */
+  private String _name = null;
+  private String _description;
+  private String _trait;
+  private List<Skill> _skills = new ArrayList<Skill>();
 
-    /** The length of the name field in a record */
-    public static final int OCC_NAME_LIMIT = 35;
+  /** The length of the name field in a record */
+  public static final int OCC_NAME_LIMIT = 35;
 
-    /**
-     * Maximum length of the skill description (used for GUI limitations and records)
-     */
-    public static final int OCC_SKILL_LIMIT = 35;
+  /**
+   * Maximum length of the skill description (used for GUI limitations and records)
+   */
+  public static final int OCC_SKILL_LIMIT = 35;
 
-    /*
-     * CONSTRUCTOR(S) AND RELATED METHODS
-     */
+  /*
+   * CONSTRUCTOR(S) AND RELATED METHODS
+   */
 
-    public static void setOccupationRegistry(OccupationRegistry ocpreg)
-    {
-        _ocpreg = ocpreg;
-    }
-    
-    public static Occupation getOccupation(String occup)
-    {
-        return _ocpreg.getOccupation(occup);
-    }
+  public static void setOccupationRegistry(OccupationRegistry ocpreg)
+  {
+    _ocpreg = ocpreg;
+  }
 
-    /** Default constructor */
-    public Occupation()
-    {}
+  public static Occupation getOccupation(String occup)
+  {
+    return _ocpreg.getOccupation(occup);
+  }
 
-    /**
-     * Construct an Occupation from its components
-     * 
-     * @param name of the occupation; cannot be null
-     * @param skillname name of the associated skill
-     * @throws ApplicationException if the description is too long
-     * @throws NullPointerException if the parms are null
-     */
-    public Occupation(String name, Skill skill)
-            throws ApplicationException, NullPointerException
-    {
-        // GUARDS
-        // Name cannot be null
-        if (name == null || skill == null) {
-            throw new NullPointerException(name + ": Occupation must have a name; received null");
-        }
+  public static Occupation getRandomOccupation()
+  {
+    MetaDie md = new MetaDie();
+    int maxLimit = _ocpTable.length;
+    int ndx = md.getRandom(1, maxLimit) - 1; // range must be between 1 and maxLimit
+    return getOccupation(_ocpTable[ndx]);
+  }
 
-        // Do not create an Occupation if its name is too long
-        if (name.length() > OCC_NAME_LIMIT) {
-            throw new ApplicationException(name
-                    + ": Occupation name is too long by "
-                    + (name.length() - OCC_NAME_LIMIT));
-        }
-        // End Guards
-
-        _name = name;
-        _skill = skill;
+  /**
+   * Construct an Occupation from its components
+   * 
+   * @param name of the occupation; cannot be null
+   * @param skillname name of the associated skill
+   * @throws ApplicationException if the description is too long
+   * @throws NullPointerException if the parms are null
+   */
+  public Occupation(String name, String description, String trait, List<String> skills)
+  {
+    // GUARDS
+    // Name cannot be null
+    if (name == null || description == null || trait == null || skills == null) {
+      throw new NullPointerException(name
+          + ": Occupation must have a name, description, trait and skills; received null");
     }
 
-
-    /*
-     * ACCESSORS FOR DISPLAYING THE PARTS
-     */
-
-    // /** Two Occupations are considered equal if their names and associated
-    // Skills are the same.
-    // * This is a required implementation for the <code>ArrayList
-    // contains()</code> method,
-    // * and overrides the <code>Object.equals()</code> method, so must have
-    // * exactly this signature, and cast to the target Class within.
-    // *
-    // * @param otherThing the Occupation to be considered
-    // * @return true if the Occupation has the same name (or phrase) and Skill,
-    // or memory address
-    // */
-    // @Override
-    // public boolean equals(Object otherThing)
-    // {
-    // // Check that the parameter exists
-    // if (otherThing == null) {
-    // return false;
-    // }
-    //
-    // // A quick test to see if objects are identical
-    // if (this == otherThing) {
-    // return true;
-    // }
-    //
-    // // Check that a match occurs at least at the Class level
-    // if (getClass() != otherThing.getClass()) {
-    // return false;
-    // }
-
-    // /* (non-Javadoc)
-    // * @see mylib.dmc.IRegistryElement#getPredicate()
-    // */
-    // @Override
-    // public Predicate<IRegistryElement> getPredicate()
-    // {
-    // // TODO Auto-generated method stub
-    // return null;
-    // }
-
-    /*
-     * Two Occupations are considered equal if their name and associated Skill are equal
-     * 
-     * @param otherThing the Skill to be considered
-     * 
-     * @return true if the Skill has the same name and description as this object
-     * 
-     * @see mylib.dmc.IRegistryElement#equals(mylib.dmc.IRegistryElement)
-     */
-    @Override
-    public boolean equals(IRegistryElement otherThing)
-    {
-        // Guard against null input
-        if (otherThing == null) {
-            return false;
-        }
-        Occupation ocp = (Occupation) otherThing;
-        boolean bName = _name.equals(ocp._name);
-        boolean bSkill = _skill.equals(ocp._skill);
-        return (bName || bSkill);
+    // Do not create an Occupation if its name is too long
+    if (name.length() > OCC_NAME_LIMIT) {
+      throw new ApplicationException(name
+          + ": Occupation name is too long by "
+          + (name.length() - OCC_NAME_LIMIT));
     }
+    // End Guards
 
-    // /** Two Occupations are considered equal if their names and associated
-    // Skills are the same.
-    // * This is a required implementation for the <code>ArrayList
-    // contains()</code> method,
-    // * and overrides the <code>Object.equals()</code> method, so must have
-    // * exactly this signature, and cast to the target Class within.
-    // *
-    // * @param otherThing the Occupation to be considered
-    // * @return true if the Occupation has the same name (or phrase) and Skill,
-    // or memory address
-    // */
-    // @Override
-    // public boolean equals(Object otherThing)
-    // {
-    // // Call the Object class's <code>equal()</code> method first
-    // if (super.equals(otherThing) == false) {
-    // return false;
-    // }
-    // // Now we know otherThing is equal to far
-    // Occupation whatsIt = (Occupation) otherThing;
-    // // Check for name and skill
-    // return (this._name.equalsIgnoreCase(whatsIt._name)
-    // && this._skillName.equalsIgnoreCase(whatsIt._skillName));
-    // }
-
-    // /* (non-Javadoc)
-    // * @see mylib.dmc.IRegistryElement#getPredicate()
-    // */
-    // @Override
-    // public Predicate<IRegistryElement> getPredicate()
-    // {
-    // // TODO Auto-generated method stub
-    // return null;
-    // }
-
-    /*
-     * Returns the field used for registry retrieval
-     * 
-     * @see mylib.dmc.IRegistryElement#getKey()
-     */
-    @Override
-    public String getKey()
-    {
-        return _name;
+    _name = name;
+    _description = description;
+    _trait = trait;
+    for (String skill : skills) {
+      _skills.add(Skill.getSkill(skill));
     }
+  }
 
-    /**
-     * Get the name of the skill
-     * 
-     * @return the name of the skill
-     */
-    public String getName()
-    {
-        return _name;
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((_name == null) ? 0 : _name.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Occupation other = (Occupation) obj;
+    if (_name == null) {
+      if (other._name != null)
+        return false;
+    } else if (!_name.equals(other._name))
+      return false;
+    return true;
+  }
+
+  /*
+   * Two Occupations are considered equal if their name and associated Skill are equal
+   * 
+   * @param otherThing the Skill to be considered
+   * 
+   * @return true if the Skill has the same name and description as this object
+   * 
+   * @see mylib.dmc.IRegistryElement#equals(mylib.dmc.IRegistryElement)
+   */
+  @Override
+  public boolean equals(IRegistryElement otherThing)
+  {
+    return equals((Object) otherThing);
+  }
+
+
+  /*
+   * Returns the field used for registry retrieval
+   * 
+   * @see mylib.dmc.IRegistryElement#getKey()
+   */
+  @Override
+  public String getKey()
+  {
+    return _name;
+  }
+
+  public String getName()
+  {
+    return _name;
+  }
+
+  public String getDescription()
+  {
+    return _description;
+  }
+
+  public String getTrait()
+  {
+    return _trait;
+  }
+
+  public List<Skill> getSkill()
+  {
+    return _skills;
+  }
+
+  /**
+   * Get the description of the skill that corresponds to this occupation
+   * 
+   * @return the name of the skill
+   */
+  public List<String> getSkillNames()
+  {
+    List<String> names = new ArrayList<String>();
+    for (Skill s : _skills) {
+      names.add(s.getName());
     }
+    return names;
+  }
 
-    public Skill getSkill()
-    {
-        return _skill;
-    }
-
-    /**
-     * Get the description of the skill that corresponds to this occupation
-     * 
-     * @return the name of the skill
-     */
-    public String getSkillName()
-    {
-        return _skill.getName();
-    }
-
-    // /** Find the Occupation by its name, and return the Skill associated with
-    // it
-    // * @param ocpName name of the occupation
-    // * @return the Skill object, else null
-    // * @throws ApplicationException if Skill cannot be found or created
-    // */
-    // public Skill getOccupationSkill(String ocpName) throws
-    // ApplicationException
-    // {
-    // Skill sk = null;
-    // try {
-    // Occupation ocp = OccupTable.createOccupation(ocpName);
-    // sk = ocp.getSkill();
-    // } catch (ApplicationException ex) {
-    // sk = null;
-    // }
-    // return sk;
-    // }
-
-    // TODO: Convert the data shuttle to something else
-    /**
-     * Convert a occupation object into a data shuttle to be passed back to the HIC
-     * 
-     * @param occ The occupation to be converted to a shuttle
-     * @return shuttle packed with data
-     */
-    public List<OccupationKeys> loadShuttle(List<OccupationKeys> ds)
-    {
-        if (ds != null)
-        {
-            // Load up the shuttle
-            // ds.add(OccupationKeys.NAME, _name);
-            // ds.putField(OccupationKeys.DESC, "Not implemented yet");
-            // ds.putField(OccupationKeys.SKILL, _skillName);
-        }
-        return ds;
-    }
-
-    /*
-     * ACCESSORS FOR DISPLAYING THE PARTS
-     */
-
-    /** Return a string of the Occupatio's name and skill */
-    public String toString()
-    {
-        return _name;
-    }
-
-    // /** Convert a shuttle object into a Occupation to be passed back
-    // * @param shuttle The data shuttle loaded with data
-    // * @return Occupation created using the data passed
-    // */
-    // public Occupation unloadShuttle(DataShuttle<OccupationKeys> shuttle)
-    // {
-    // String name = (String) shuttle.getField(OccupationKeys.NAME);
-    // String skill = (String) shuttle.getField(OccupationKeys.SKILL);
-    //
-    // Occupation occ = null;
-    // try
-    // {
-    // occ = new Occupation(name, skill);
-    // } catch (ApplicationException e)
-    // {
-    // MsgCtrl.errMsgln(this, "Error creating skill.  " + e.getMessage());
-    // }
-    // return occ;
-    // }
-
-    /*
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ INNER CLASS MockOccupation
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-     */
-    public class MockOccupation
-    {
-        /** Default ctor */
-        public MockOccupation()
-        {}
-
-        /** Set a new name into the Occupation */
-        public void setName(String newName)
-        {
-            _name = newName;
-        }
-
-    } // mock of MockOccupation inner class
+  /** Return a string of the Occupatio's name and skill */
+  public String toString()
+  {
+    return _name;
+  }
 
 } // end of Occupation class

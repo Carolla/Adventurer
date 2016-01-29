@@ -10,11 +10,8 @@
 package hic;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.util.EnumMap;
 
 import javax.swing.BorderFactory;
@@ -33,15 +30,15 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
+import mylib.Constants;
+import net.miginfocom.swing.MigLayout;
 import chronos.pdc.character.Hero;
+import chronos.pdc.character.Hero.HeroInput;
+import chronos.pdc.race.Race;
 import civ.HeroDisplayCiv;
 import civ.MainframeCiv;
 import civ.NewHeroCiv;
 import civ.NewHeroCiv.ErrorCode;
-import civ.NewHeroCiv.HeroInput;
-import mylib.Constants;
-import mylib.hic.HelpKeyListener;
-import net.miginfocom.swing.MigLayout;
 
 /**
  * Allows the author to input a few key attributes of their Hero. A CIV object is called to validate
@@ -72,13 +69,6 @@ import net.miginfocom.swing.MigLayout;
 @SuppressWarnings("serial")
 public class NewHeroIPPanel extends ChronosPanel
 {
-  /** Help message to show in panels */
-  private final String HELP_LABEL1 =
-      "<Ctrl-Tab> or mouse-click moves focus to new text area.";
-  /** Help message to show in panels */
-  private final String HELP_LABEL2 =
-      "Press F1 key for specific help.";
-
   /** Replace left-side panel with this title */
   static private final String NEW_HERO_TITLE = " Create Your Kind of Hero ";
   /** Prompt for hero's name */
@@ -92,8 +82,6 @@ public class NewHeroIPPanel extends ChronosPanel
   /** Occupation prompt */
   private final String HERO_KLASS_PROMPT = "What Guild to you belong to?";
 
-  /** Number of columns in the person's name input window */
-  private final int HERO_NAME_WIDTH = 45;
   /** Space between buttons */
   private final String SPACER = "          ";
 
@@ -104,9 +92,6 @@ public class NewHeroIPPanel extends ChronosPanel
   /** Error message when namefield is too long */
   private final String ERRMSG_NAME_TOO_LONG =
       "Your Hero's name is too long (45 char limit). \nTry perhaps your Hero's nickname?";
-      // /** Error message when an unknown error has occurred */
-      // private final String ERRMSG_UNKNOWN =
-      // "Hero could not be created for some unanticipated reason";
 
   // TODO: Constant.MY_BROWN needs to be brightened here for some reason. Perhaps a background panel
   // is affecting it?
@@ -115,10 +100,6 @@ public class NewHeroIPPanel extends ChronosPanel
 
   /** Input data from user */
   private String _name;
-  private String _gender;
-  private String _hairColor;
-  private String _raceName;
-  private String _klassName;
 
   /** Contains user input field data */
   EnumMap<HeroInput, String> input;
@@ -133,6 +114,12 @@ public class NewHeroIPPanel extends ChronosPanel
   /** Associated validating CIV object */
   private NewHeroCiv _nhCiv;
   private MainframeCiv _mfCiv;
+  private JRadioButton maleButt;
+  private JRadioButton femaleButt;
+  private ButtonGroup groupSex;
+  private JComboBox<String> hairCombo;
+  private JComboBox<String> klassCombo;
+  private JComboBox<String> raceCombo;
 
   // ============================================================
   // Constructors and constructor helpers
@@ -146,34 +133,22 @@ public class NewHeroIPPanel extends ChronosPanel
    * @param nhCiv controls this ChronosPanel
    * @param mfCiv  mainframeCiv needed for displaying the panel
    */
-  public NewHeroIPPanel(NewHeroCiv nhCiv, MainframeCiv mfCiv) 
+  public NewHeroIPPanel(NewHeroCiv nhCiv, MainframeCiv mfCiv)
   {
     super(NEW_HERO_TITLE);
     _nhCiv = nhCiv;
     _mfCiv = mfCiv;
-    
+
     // GENERAL SETUP
-    // Set the preferred and max size, adjusting for panel border thickness
-    int width = Mainframe.getWindowSize().width;// +MainFrame.PANEL_SHIFT;
-    int height = Mainframe.getWindowSize().height;
-    setPreferredSize(new Dimension(width, height));
+    setPreferredSize(Mainframe.getWindowSize());
 
     int pad = Mainframe.PAD;
     Border matte = BorderFactory.createMatteBorder(pad, pad, pad, pad, Color.WHITE);
     setBorder(matte);
     setBackground(_backColor);
 
-    // Define context controls
-    // Default help text when no widget is in focus
-    new HelpKeyListener("NewHero");
-
     // Set Panel layout to special MiGLayout
     setLayout(new MigLayout("", "[center]"));
-
-    /* ADD HELP LABEL TO INSTRUCT HOW TO SHIFT FOCUS TO DIFFERENT TEXT FIELDS */
-    // Labels are centered horizontal atop one another
-    add(new JLabel(HELP_LABEL1), "span"); // focus traversal message
-    add(new JLabel(HELP_LABEL2), "span"); // help key message
 
     /* HERO NAME AND PROMPT COMPONENTS */
     // Add name components to the name subpanel
@@ -219,14 +194,6 @@ public class NewHeroIPPanel extends ChronosPanel
   {
     _nameField.requestFocus();
   }
-  
-  
-  /** Set the title for this panel */
-  @Override
-  public void setTitle(String title)
-  {
-    super._title = NEW_HERO_TITLE;
-  }
 
 
   /**
@@ -243,13 +210,7 @@ public class NewHeroIPPanel extends ChronosPanel
     // Create the CANCEL button
     JButton cancelButton = new JButton("CANCEL");
     // Clear editFlag and data, then return back to main action panel if Cancel is pressed
-    cancelButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event)
-      {
-        setVisible(false);
-        _nhCiv.back();
-      }
-    });
+    cancelButton.addActionListener((a) -> _nhCiv.back());
 
     // Create the SUBMIT button
     JButton submitButton = new JButton("SUBMIT");
@@ -261,11 +222,10 @@ public class NewHeroIPPanel extends ChronosPanel
         // Call the Civ to validate the attributes. If no errors, Hero is created and displayed
         EnumMap<HeroInput, String> input = submit();
         if (input.size() > 0) {
-          setVisible(false);
           // Create the new Hero and display it
-           Hero hero = _nhCiv.createHero(input);
-           HeroDisplayCiv hDispCiv = new HeroDisplayCiv(_mfCiv);
-           hDispCiv.displayHero(hero, true);    // initial Hero needs true arg to check overwriting
+          Hero hero = _nhCiv.createHero(input);
+          HeroDisplayCiv hDispCiv = new HeroDisplayCiv(_mfCiv);
+          hDispCiv.displayHero(hero, true);    // initial Hero needs true arg to check overwriting
         }
       }
     });
@@ -294,42 +254,19 @@ public class NewHeroIPPanel extends ChronosPanel
     radioPanel.setBackground(_backColor);
 
     // Create the radio button group
-    ButtonGroup groupSex = new ButtonGroup();
+    groupSex = new ButtonGroup();
 
     // Define the male radio button (default to Male button selected)
-    JRadioButton maleButt = new JRadioButton("Male", true);
-    // Default is set in case user does not touch the radio buttons
-    _gender = "Male";
+    maleButt = new JRadioButton("Male", true);
     maleButt.setEnabled(true);
     maleButt.setBackground(_backColor);
 
-    // Allow user to explicitly set to Male
-    maleButt.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event)
-      {
-        _gender = "Male";
-        setEditFlag(true);
-      }
-    });
 
     // Define the female radio button
-    JRadioButton femaleButt = new JRadioButton("Female", false);
+    femaleButt = new JRadioButton("Female", false);
     femaleButt.setBackground(_backColor);
-    // Allow user to explicitly set Female gender
-    femaleButt.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event)
-      {
-        _gender = "Female";
-        setEditFlag(true);
-      }
-    });
 
-    // Add the help key listener to the gender buttons
-    HelpKeyListener genderHelp = new HelpKeyListener("HeroGender");
-    maleButt.addKeyListener(genderHelp);
-    femaleButt.addKeyListener(genderHelp);
     // Buttons must be added to BOTH the group and to the panel
-    // Add buttons to button group
     groupSex.add(maleButt);
     groupSex.add(femaleButt);
     radioPanel.add(maleButt);
@@ -341,29 +278,13 @@ public class NewHeroIPPanel extends ChronosPanel
   /**
    * Create a combo box of hair colors from which the user may select
    * 
-   * @return the JComboBox of hair color options
+   * @return the JComboBox<String> of hair color options
    */
-  @SuppressWarnings({"rawtypes", "unchecked"})
-  private JComboBox makeHairCombo()
+  private JComboBox<String> makeHairCombo()
   {
-    // Populate the drop down selection from CIV data
-    final JComboBox hairCombo = new JComboBox(_nhCiv.getHairColors());
-    // Build the box with label
+    hairCombo = new JComboBox<String>(NewHeroCiv.HAIR_COLOR_LIST);
     hairCombo.setEditable(false);
     hairCombo.setBackground(Color.WHITE);
-    hairCombo.addKeyListener(new HelpKeyListener("HairColor"));
-
-    // Set default hair color in case user does not select anything
-    _hairColor = (String) hairCombo.getItemAt(0);
-
-    // Change the visible selection and capture the data
-    hairCombo.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event)
-      {
-        _hairColor = ((String) hairCombo.getSelectedItem()).trim();
-        setEditFlag(true);
-      }
-    });
     return hairCombo;
   }
 
@@ -371,29 +292,13 @@ public class NewHeroIPPanel extends ChronosPanel
   /**
    * Create a combo box of Guilds (Klasses) that the Hero may want to be
    * 
-   * @return the JComboBox of Guild options
+   * @return the JComboBox<String> of Guild options
    */
-  @SuppressWarnings({"rawtypes", "unchecked"})
-  private JComboBox makeKlassCombo()
+  private JComboBox<String> makeKlassCombo()
   {
-    // Build the box with label, using Civ data
-    final JComboBox klassCombo = new JComboBox(_nhCiv.getKlasses());
+    klassCombo = new JComboBox<String>(NewHeroCiv.KLASS_LIST);
     klassCombo.setEditable(false);
     klassCombo.setBackground(Color.WHITE);
-    klassCombo.addKeyListener(new HelpKeyListener("HeroKlass"));
-
-    // Set default Klass in case user does not select anything
-    _klassName = (String) klassCombo.getItemAt(0);
-
-    // Change the visible selection and capture the data
-    klassCombo.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event)
-      {
-        _klassName = ((String) klassCombo.getSelectedItem()).trim();
-        // Set the edit change flag
-        setEditFlag(true);
-      }
-    });
     return klassCombo;
   }
 
@@ -405,80 +310,49 @@ public class NewHeroIPPanel extends ChronosPanel
    */
   private JTextField makeNameField()
   {
-    // Create the text field to collect the Hero's name
-    _nameField = new JTextField(HERO_NAME_WIDTH);
+    _nameField = new JTextField();
 
     // Create DocumentFilter for restricting input length
     AbstractDocument d = (AbstractDocument) _nameField.getDocument();
     d.setDocumentFilter(new NewHeroIPPanel.NameFieldLimiter());
-
-    // Set name of the field
     _nameField.setName("heroName");
-    // Collect the name when the text field goes out of focus
-    _nameField.addFocusListener(new FocusOffListener());
-    
+
     // Extract Hero's name and update Hero's name into MainFrame Title
     // if Enter key is hit or text field loses focus.
     _nameField.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
-        // Name data is captured on submit in case mouse clicks were used
         _name = _nameField.getText().trim();
-        // Rename the pane with the new Hero's name
-        int pad = Mainframe.PAD;
-        Border matte = BorderFactory.createMatteBorder(pad, pad, pad, pad, Color.WHITE);
-        Border heroBorder = BorderFactory.createTitledBorder(matte,
-            NEW_HERO_TITLE + _name, TitledBorder.CENTER,
-            TitledBorder.DEFAULT_POSITION);
-        setBorder(heroBorder);
-        // Set the edit change flag
-        setEditFlag(true);
+        setHeroBorder();
       }
     });
 
     return _nameField;
   }
 
+  private void setHeroBorder()
+  {
+    Border matte = BorderFactory.createMatteBorder(Mainframe.PAD, Mainframe.PAD, Mainframe.PAD, Mainframe.PAD, Color.WHITE);
+    Border heroBorder = BorderFactory.createTitledBorder(matte,
+        NEW_HERO_TITLE + _name, TitledBorder.CENTER,
+        TitledBorder.DEFAULT_POSITION);
+    setBorder(heroBorder);
+  }
 
   /**
    * Create a combo box of Races that the Hero may be
    * 
-   * @return the JComboBox of Race options
+   * @return the JComboBox<String> of Race options
    */
-  @SuppressWarnings({"unchecked", "rawtypes"})
-  private JComboBox makeRaceCombo()
+  private JComboBox<String> makeRaceCombo()
   {
     // Build the box with label
-    final JComboBox raceCombo = new JComboBox(_nhCiv.getRaces());
+    raceCombo = new JComboBox<String>(Race.RACE_LIST);
     raceCombo.setEditable(false);
     raceCombo.setBackground(Color.WHITE);
-    raceCombo.addKeyListener(new HelpKeyListener("HeroRace"));
-
-    // Set default Race in case user does not select anything
-    _raceName = (String) raceCombo.getItemAt(0);
-
-    // Change the visible selection; data is captured elsewhere
-    raceCombo.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent event)
-      {
-        _raceName = ((String) raceCombo.getSelectedItem()).trim();
-        // Set the edit change flag
-        setEditFlag(true);
-      }
-    });
     return raceCombo;
   }
 
-  /**
-   * Toggle the edit flag in the owner depending on unsaved changes
-   * 
-   * @param editState set the flag to true if there are any unsaved changes
-   */
-  private void setEditFlag(boolean editState)
-  {
-    // Mainframe mf = Mainframe.getInstance();
-    // mf.setEditFlag(editState);
-  }
 
   /**
    * Display the error message received after submitting a new Hero.
@@ -508,98 +382,38 @@ public class NewHeroIPPanel extends ChronosPanel
   {
     EnumMap<HeroInput, String> input = new EnumMap<HeroInput, String>(HeroInput.class);
     input.put(HeroInput.NAME, _name);
-    input.put(HeroInput.GENDER, _gender);
-    input.put(HeroInput.HAIR, _hairColor);
-    input.put(HeroInput.RACE, _raceName);
-    // Rogue is the pseudonym for the Thief class
-    _klassName = (_klassName.equalsIgnoreCase("Rogue")) ? _klassName = "Thief" : _klassName;
-    input.put(HeroInput.KLASS, _klassName);
+    input.put(HeroInput.GENDER, getGender());
+    input.put(HeroInput.HAIR,  ((String) hairCombo.getSelectedItem()).trim());
+    input.put(HeroInput.RACE, ((String) raceCombo.getSelectedItem()).trim());
+    input.put(HeroInput.KLASS, ((String) klassCombo.getSelectedItem()).trim());
 
     // Call the Civ to validate. If good, Civ creates the Hero; else display error widget
-    ErrorCode err = _nhCiv.validate(input);
+    ErrorCode err = validate(_name);
     if (err != ErrorCode.NO_ERROR) {
       input.clear(); //empty input is a failure
       showErrorMessage(err);
-    } 
+    }
     return input;
   }
 
-
-  // /**
-  // * Create a Runic Font.
-  // *
-  // * @param size - the font size
-  // * @return Font - the runic font
-  // */
-  // private Font makeRunicFont(float size)
-  // {
-  // Font font = null;
-  // try {
-  // Font newFont = Font.createFont(Font.TRUETYPE_FONT, new File(
-  // Chronos.RUNIC_ENGLISH2_FONT_FILE));
-  // font = newFont.deriveFont(size);
-  // } catch (Exception e) {
-  // MsgCtrl.errMsgln("Could not create font: " + e.getMessage());
-  // }
-  // return font;
-  // }
-
-
-  // ================================================================
-  // INNER CLASS: ChangeKeyAction
-  // ================================================================
-
-  // /** Indicates if any changes have been made inside a text field or text area;
-  // * if so, the edit flag is set to indicate that a change has been made,
-  // * so that a Save prompt can be displayed when the Panel closes.
-  // */
-  // class ChangeKeyListener extends KeyAdapter
-  // {
-  // /** Default constructor */
-  // public ChangeKeyListener() { }
-  //
-  // /** If any key is pressed inside of a text field or text area, the edit flag is set to indicate
-  // * that a change has been made.
-  // * @param key the key pressed by the user.
-  // */
-  // public void keyPressed(KeyEvent key)
-  // {
-  // // Set the change flag
-  // setEditFlag(true);
-  // }
-  //
-  // } // end ChangeKeyListener
-
-
-  // =======================================================
-  // INNER CLASS: FocusAdapter
-  // =======================================================
-  /**
-   * Indicates when the source component loses focus. In this case, when the Hero name JTextField
-   * loses focus so that the data can be extracted. This is necessary only for widgets that cannot
-   * have a default.
-   */
-  class FocusOffListener extends FocusAdapter
+  private String getGender()
   {
-    /** Default constructor creates a permanent focus event by default */
-    public FocusOffListener()
-    {}
-
-
-    /**
-     * If any focus of the source Component is lost, the data is extracted
-     * 
-     * @param event looking for a FOCUS_LOST event
-     * @overrides FocusListener.focusLost()
-     */
-    public void focusLost(FocusEvent event)
-    {
-      _name = _nameField.getText().trim();
-      // Set the change flag
-      setEditFlag(true);
+    if (groupSex.getSelection().equals(maleButt)) {
+      return "Male";
+    } else {
+      return "Female";
     }
-  } // end FocusLostListener
+  }
 
+  private ErrorCode validate(String name)
+  {
+    if (name == null) {
+      return ErrorCode.NAME_MISSING;
+    } else if (name.length() > NewHeroCiv.MAX_NAMELEN) {
+      return ErrorCode.NAME_TOO_LONG;
+    }
+    return ErrorCode.NO_ERROR;
+  }
 
   // =======================================================
   // INNER CLASS: NameFieldLimiter
@@ -618,7 +432,7 @@ public class NewHeroIPPanel extends ChronosPanel
     public void insertString(DocumentFilter.FilterBypass fb, int offset, String string,
         AttributeSet attr) throws BadLocationException
     {
-      if (fb.getDocument().getLength() + string.length() > HERO_NAME_WIDTH) {
+      if (fb.getDocument().getLength() + string.length() > NewHeroCiv.MAX_NAMELEN) {
         System.out.println("Insert String: Name Field Limit Reached");
         return;
       }
@@ -638,7 +452,7 @@ public class NewHeroIPPanel extends ChronosPanel
     public void replace(DocumentFilter.FilterBypass fb, int offset, int length, String text,
         AttributeSet attrs) throws BadLocationException
     {
-      if (fb.getDocument().getLength() + text.length() > HERO_NAME_WIDTH) {
+      if (fb.getDocument().getLength() + text.length() > NewHeroCiv.MAX_NAMELEN) {
         System.out.println("Replace: Name Field Limit Reached");
         java.awt.Toolkit.getDefaultToolkit().beep();
         return;

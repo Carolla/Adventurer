@@ -11,12 +11,11 @@ package chronos.pdc.character;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
 
-import chronos.pdc.Item;
-import chronos.pdc.MiscKeys.ItemCategory;
 import mylib.Constants;
+import chronos.pdc.Item;
+import chronos.pdc.Item.ItemCategory;
 
 /**
  * Contains the Person's collection of Items. All weights are in ounces; the client object must
@@ -45,11 +44,20 @@ public class Inventory implements Serializable
   /** Peasant must start less than any of the other Klasses */
   static public final int SILVER_PER_GOLD = 10;
 
-  // TODO: Remove this. It is in Hero attributes
-  /** List of mods for Action Points */
-  private enum APMODS {
-    OVERBEARING, GRAPPLING, PUMMELING, SHIELD_BASH
-  }
+  // Keys to all occupational kits
+  public enum KitNdx {
+    ALCHEMIST, LEATHER, METAL, SEWING, WOOD, THIEVES
+  };
+
+  // Name (value) | wt (gpw) ...(8 gp = 1 lb)
+  final String[] kits = {
+      "Alchemists Kit (100 gp) | 40", // 5 lb
+      "Leatherworking Kit (50 gp) | 64", // 8 lb
+      "Metalsmith Kit (50 gp) | 80", // 10 lb
+      "Sewing Kit (30 gp) | 16", // 2 lb
+      "Woodworking Kit (50 gp) | 64", // 8 lb
+      "Thieves Kit (50 gp) | 8" // 1 lb
+  };
 
   // Holds all inventory items
   private ArrayList<Item> _itemList;
@@ -120,61 +128,6 @@ public class Inventory implements Serializable
     return true;
   }
 
-//  /**
-//   * Set the armor class, on a scale of 10 (no armor) to full plate mail and shield (18). Some low
-//   * DEX values or cursed items may bring AC less than No_Armor but it can never be less than 1.
-//   * Magic armor allows the AC to be higher than 18. For now, until Inventory and Items are
-//   * implemented fully, the Person starts with no armor.
-//   * 
-//   * @param adj armor class adjustment due to Dex and armor worn
-//   * @return resulting armor class
-//   */
-//  public int calcAC(int adj)
-//  {
-//    _ac = Math.max(NO_ARMOR + adj, 1);
-//    return _ac;
-//  }
-
-  // TODO: Arguably, weight carried also affects overbearing potential, but it also affects speed.
-  // For now, these two effects are considered to cancel out.
-  /**
-   * Calculate the real-time value for: Overbearing = AP + (1 per 25 lb weight carried); +4 if
-   * wearing metal armor Grappling = AP + DamageMod + ToHitMissileMod; -4 if wearing metal gauntlets
-   * Pummeling = AP; +4 if wearing metal gauntlets Shield Bash = AP if the Hero has a shield; else 0
-   * These four mods are not saved because they must be calculated each time they are used.
-   * 
-   * @param ap action points
-   * @param damMod damage mod based on STR
-   * @param toHitMissileMod based on DEX
-   * @param heroWt weight of the Hero in ounces
-   * @return array of 4 mods
-   */
-  public EnumMap<APMODS, Integer> calcAPMods(int ap, int damMod,
-      int toHitMissileMod,
-      double heroWt)
-  {
-    EnumMap<APMODS, Integer> mods = new EnumMap<APMODS, Integer>(
-        APMODS.class);
-    // TODO: Add in +4 if Person has on metal armor
-    // Calculate overbearing..
-    int overbearing = (int) (ap + heroWt * AP_INCREMENT);
-    // TODO: Add in -4 if Person has on metal armor
-    // Calculate grappling..
-    int grappling = ap + damMod + toHitMissileMod;
-    // TODO: Add in +4 if Person has on metal armor
-    // Calculate pummeling..
-    int pummeling = ap;
-    // TODO: Set to AP if Person has a shield
-    // Calculate shield bash
-    int bash = 0;
-    // Collect all mods and return
-    mods.put(APMODS.OVERBEARING, new Integer(overbearing));
-    mods.put(APMODS.GRAPPLING, new Integer(grappling));
-    mods.put(APMODS.PUMMELING, new Integer(pummeling));
-    mods.put(APMODS.SHIELD_BASH, new Integer(bash));
-    return mods;
-  }
-
   /**
    * Adds up the weight of each Item in inventory, including money. <br>
    * Weight = weight of the Item times the quantity of that Item.
@@ -191,12 +144,6 @@ public class Inventory implements Serializable
       weight += thing.getWeight() * thing.getQuantity();
     }
     return weight;
-  }
-
-  /** Inventory objects are self-loading, clear it for testing */
-  public void clear()
-  {
-    _itemList.clear();
   }
 
   /**
@@ -252,27 +199,6 @@ public class Inventory implements Serializable
     return true;
   }
 
-  // /** Cash is stored as two items: gold and silver, and kept separate to maintain the weight
-  // load.
-  // * @return gold in index 0; silver in index 1 of the array
-  // */
-  // public ArrayList<Integer> getCash()
-  // {
-  // ArrayList<Integer> cash = new ArrayList<Integer>(2);
-  // cash.cash[GOLD] = getItem("Gold").getQuantity();
-  // cash[SILVER] = getItem("Silver").getQuantity();
-  // return cash;
-  // }
-
-//  /**
-//   * Get the cash currently in inventory
-//   * 
-//   * @return the gold and silver pieces as a combined double gp.sp
-//   */
-//  public double getGoldBanked()
-//  {
-//    return _goldBanked;
-//  }
 
   /**
    * Get the list of Items in inventory
@@ -367,28 +293,6 @@ public class Inventory implements Serializable
     return _itemList.size();
   }
 
-  // /**
-  // * Confirm that the String of inventory items are properly loaded Later, the Inventory will be
-  // * read from the <code>DungeonWizard</code> file
-  // *
-  // * @return the list of items before they populate the Inventory
-  // */
-  // public String[][] getItemList()
-  // {
-  // return _startList;
-  // }
-
-  // /**
-  // * Examine the Item list for requested Items.
-  // *
-  // * @param target the Item being searched
-  // * @return the Item if the name of the Item was found; else null
-  // */
-  // public boolean hasItem(Item target)
-  // {
-  // return _inventory.contains(target);
-  // }
-
   /**
    * Traverse the inventory list, looking for Items by name. This method uses the equalsIgnoreCase
    * method implemented in the Item class. For now, the Item must match the full multi-word name of
@@ -409,71 +313,5 @@ public class Inventory implements Serializable
     }
     return false;
   }
-
-  // ===========================================================================
-  // INNER CLASS: MockInventory
-  // ===========================================================================
-
-  /** Inner class for testing Inventory */
-  public class MockInventory
-  {
-    /** Default constructor */
-    public MockInventory()
-    {}
-
-    /** Search for a few select items to see if they can be found */
-    public boolean searchTest()
-    {
-      boolean retval = false;
-      String[] target = {"Boots", // exists as is
-          "Belt pouch, small", // checks for multiword
-          "shield", // not there
-          "small", // lowercase check; uppercase present
-          "plate mail", // not there
-          "pouch"}; // checks for partial item name
-
-      for (int k = 0; k < target.length; k++) {
-        if (hasItem(target[k]) == true) {
-          System.out.println("Inventory search: " + target[k]
-              + " found!");
-          retval = true;
-        } else {
-          System.out.println("Inventory search: " + target[k]
-              + " missing!");
-          retval = true;
-        }
-      }
-      return retval;
-    }
-
-//    /**
-//     * @return the size of the starting list
-//     */
-//    public int startSize()
-//    {
-//      return _startList.length;
-//    }
-
-//    /**
-//     * Test that the starting inventory, when a different string list is used, still works. Replace
-//     * the default list with the given new list
-//     * 
-//     * @param alternate item list
-//     * @return the inventory newly createed
-//     */
-//    public Inventory replaceStartList(String[][] newList)
-//    {
-//      // Clear out the statically-defined startlist
-//      Inventory.this._inventory.clear();
-//      // Replace the old list that got initialized inherently
-//      Inventory.this._startList = newList;
-//
-//      // Inventory is populated by the starting inventory method
-//      Inventory.this.initStartingInventory();
-//      return Inventory.this;
-//    }
-
-  } // end of MockInventory inner class
-
 } // end of Inventory class
 

@@ -9,9 +9,11 @@
 
 package chronos.pdc.character;
 
+import java.util.ArrayList;
+
 import chronos.pdc.Item;
-import chronos.pdc.MiscKeys.ItemCategory;
-import chronos.pdc.character.Hero.PrimeTraits;
+import chronos.pdc.Item.ItemCategory;
+import chronos.pdc.character.TraitList.PrimeTraits;
 
 /**
  * @author Al Cline
@@ -20,11 +22,8 @@ import chronos.pdc.character.Hero.PrimeTraits;
  */
 public class Thief extends Klass
 {
-  private static final long serialVersionUID = 1L;
-  
   /** Starting die and initial free HP for klass */
   private String _hitDie = "d6";
-  private int _freeHP = 6;
   private String _startingGold = "2d6";
   
   /** Indices into the Hero's prime traits */
@@ -49,13 +48,23 @@ public class Thief extends Klass
   public Thief()
   {
     _klassName = "Thief";
-    _primeNdx = PrimeTraits.DEX.ordinal();
+    _primeTrait = PrimeTraits.DEX;
     _hpDie = _hitDie;
-    _initialHP = _freeHP;
     _goldDice = _startingGold;
     
   }
 
+
+  /** Converts from Skill name, description, and percent change into a string */
+  public static ArrayList<String> assignKlassSkills(String[][] thiefSkills)
+  {
+    ArrayList<String> sk = new ArrayList<String>();
+
+    for (int k = 0; k < thiefSkills.length; k++) {
+      sk.add(thiefSkills[k][0] + ": " + thiefSkills[k][1]);
+    }
+    return sk;
+  }
 
   @Override
   /** Assign initial inventory to Wizard (8 gpw = 1 lb) */

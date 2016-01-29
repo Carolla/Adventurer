@@ -13,8 +13,6 @@ import java.util.EnumMap;
 
 import mylib.ApplicationException;
 import mylib.dmc.IRegistryElement;
-import chronos.pdc.MiscKeys.ItemCategory;
-import chronos.pdc.MiscKeys.ItemFields;
 import chronos.pdc.registry.ItemRegistry;
 
 
@@ -29,6 +27,19 @@ import chronos.pdc.registry.ItemRegistry;
  */
 public class Item implements IRegistryElement
 {
+  /** Enum of various category of Inventory Items */
+  public enum ItemCategory {
+    ARMS, ARMOR, CLOTHING, EQUIPMENT, MAGIC, PROVISION, SPELL_MATERIAL, VALUABLES;
+  };
+
+
+  // TODO: These are the fields for the ArrayList passed to the GUI; enum no longer needed
+  /** List of field names for Item fields displayed on the Hero Panel. */
+  public enum ItemFields {
+    CATEGORY, NAME, QTY, LBWT, OZWT;
+  };
+
+  
    /** Recommended serialization constant */
    static final long serialVersionUID = 1002L;
 

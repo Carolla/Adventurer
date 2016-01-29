@@ -7,9 +7,10 @@
  * by email: acline@carolla.com
  */
 
-package pdc.character;
+package chronos.pdc.race;
 
-import chronos.pdc.Race;
+import chronos.pdc.character.Gender;
+
 
 
 /**
@@ -18,12 +19,6 @@ import chronos.pdc.Race;
  */
 public class Gnome extends Race
 {
-  // Statics and transients that are not serialized with the Race class hierarchy
-  /** Recommended serialization constant. */
-  static final long serialVersionUID = 1100L;
-
-  private String _racename = null;
-
   /** Racial limits for a Gnome for the traits */
   private final int[] minLimit = { 7,  7,  7,  7,  8,  7};
   private final int[] maxLimit = {18, 18, 18, 18, 18, 18};
@@ -59,41 +54,39 @@ public class Gnome extends Race
   
   /**
    * Default constructor, called reflectively by Klass
+   * @param gender 
    */
-  public Gnome() 
+  public Gnome(Gender gender) 
   {
-    _racename = "Gnome";
+    _raceName = "Gnome";
     _minLimit = minLimit;
     _maxLimit = maxLimit;
-    // Define weight ranges for Hero
-    _weightMaleMedValue = _maleMedValue;
-    _weightFemaleMedValue = _femaleMedValue;
-    _weightLowDice = _wtLowDice;
-    _weightHighDice = _wtHighDice;
+
     // Define height ranges for Hero
-    _heightMaleMedValue = _htMaleMedValue;
-    _heightFemaleMedValue = _htFemaleMedValue;
-    _heightLowDice = _htLowDice;
-    _heightHighDice = _htHighDice;
+    if (gender.isMale()) {
+      // Define weight ranges for Hero
+      _heightMedValue = _htMaleMedValue;
+      _weightMedValue = _maleMedValue;
+    } else {
+      // Define height ranges for Hero
+      _weightMedValue = _femaleMedValue;
+      _heightMedValue = _htFemaleMedValue;
+    }
+    
     _descriptor = _raceDescriptor;
     _racialThiefMods = _gnomeThiefMods;
     _raceSkills = _gnomeSkills;
-  } 
+  }
 
-  
-  /** Every race knows its name */
   @Override
-  public String getRaceName()
+  public int calcWeight()
   {
-    return _racename;
-  };
+    return super.calcWeight(_wtLowDice, _wtHighDice);
+  }
 
-  /** Gnomes have no modifications */
   @Override
-  public int[] adjustTraitsForRace(int[] traits)
+  public int calcHeight()
   {
-    return traits;
+    return super.calcWeight(_htLowDice, _htHighDice);
   };
-
-
 }

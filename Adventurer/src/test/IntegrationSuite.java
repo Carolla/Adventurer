@@ -19,6 +19,7 @@ import test.integ.TA00b_Quit;
 import test.integ.TA03a_SummonHero;
 import test.integ.TA08_CmdEnter;
 import test.integ.TA09_CmdLeave;
+import chronos.test.pdc.registry.RegistrySuite;
 
 
 /**
@@ -39,6 +40,7 @@ import test.integ.TA09_CmdLeave;
 @Suite.SuiteClasses({
     // Individual integration tests for each use case
     TestDbReadWriter.class, //Too slow to be a unit test
+    RegistrySuite.class,
     TA00a_Initialize.class,
     TA00b_Quit.class,
     TA03a_SummonHero.class,

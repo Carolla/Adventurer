@@ -9,11 +9,17 @@
 
 package chronos.test;
 
+import mylib.test.pdc.TestRegistry;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import chronos.pdc.character.TestGender;
+import chronos.pdc.character.TestTraitList;
+import chronos.test.pdc.TestOccupation;
+import chronos.test.pdc.TestRace;
+import chronos.test.pdc.TestSkill;
 import chronos.test.pdc.buildings.BuildingsSuite;
-import chronos.test.pdc.registry.RegistrySuite;
 
 
 /**
@@ -36,8 +42,6 @@ import chronos.test.pdc.registry.RegistrySuite;
 @Suite.SuiteClasses({
 
     /* CIV test files */
-    // TestDefaultLists.class,
-    // TestDefaultUserMsg.class,
     // TestHeroDefaults,
     // TestMiscKeys.class,
     // TestOccupationsKeys.class,
@@ -49,7 +53,8 @@ import chronos.test.pdc.registry.RegistrySuite;
 
     /* PDC subfolder test suites */
      BuildingsSuite.class,
-     RegistrySuite.class,
+     // RegistrySuite.class, too slow
+     TestRegistry.class,
   
     /* PDC test files */
     // TestAdventure.class,
@@ -60,14 +65,16 @@ import chronos.test.pdc.registry.RegistrySuite;
     // TestMiscKeys.class,
     // TestNPC.class,
     // TestNullNPC.class,
-    // TestOccupation.class,
-    // TestRace.class,
-    // TestSkill.class,
+     TestGender.class,
+     TestOccupation.class,
+     TestRace.class,
+     TestSkill.class,
+     TestTraitList.class,
     // TestTown.class,
 
 })
 /** Compilation of all unit tests for regression and integration testing. */
-public class ChronosTestSuite
+public class ChronosUnitTestSuite
 {
 }
 

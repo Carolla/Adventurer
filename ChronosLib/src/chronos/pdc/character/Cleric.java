@@ -12,8 +12,8 @@ package chronos.pdc.character;
 import java.util.List;
 
 import chronos.pdc.Item;
-import chronos.pdc.MiscKeys.ItemCategory;
-import chronos.pdc.character.Hero.PrimeTraits;
+import chronos.pdc.Item.ItemCategory;
+import chronos.pdc.character.TraitList.PrimeTraits;
 
 /**
  * @author Al Cline
@@ -22,14 +22,9 @@ import chronos.pdc.character.Hero.PrimeTraits;
  */
 public class Cleric extends Klass
 {
-  /**
-   * Generated 
-   */
-  private static final long serialVersionUID = 271591480650071597L;
   
   /** Starting die and initial free HP for klass */
   private String _hitDie = "d8";
-  private int _freeHP = 8;
   private String _startingGold = "3d6";
 
   private final String[] _clericSpells = {
@@ -44,9 +39,8 @@ public class Cleric extends Klass
   public Cleric()
   {
     _klassName = "Cleric";
-    _primeNdx = PrimeTraits.WIS.ordinal();
+    _primeTrait = PrimeTraits.WIS;
     _hpDie = _hitDie;
-    _initialHP = _freeHP;
     _goldDice = _startingGold;
   }
   
@@ -78,6 +72,11 @@ public class Cleric extends Klass
     return inven;
   }
 
+  @Override
+  public boolean canUseMagic()
+  {
+    return true;
+  }
 } // end of Cleric class
 
 

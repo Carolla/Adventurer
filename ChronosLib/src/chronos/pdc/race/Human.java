@@ -7,9 +7,10 @@
  * by email: acline@carolla.com
  */
 
-package pdc.character;
+package chronos.pdc.race;
 
-import chronos.pdc.Race;
+import chronos.pdc.character.Gender;
+
 
 
 /**
@@ -27,13 +28,13 @@ public class Human extends Race
   private final int[] maxLimit = {18, 18, 18, 18, 18, 18};
 
   /** Weight ranges */
-  protected final int _maleMedValue = 175;;
+  protected final int _maleMedValue = 175;
   protected final int _femaleMedValue = 130;
   protected final String _wtLowDice = "3d12";
   protected final String _wtHighDice = "5d12";
   
   /** Height ranges */
-  protected final int _htMaleMedValue = 68;;
+  protected final int _htMaleMedValue = 68;
   protected final int _htFemaleMedValue = 64;
   protected final String _htLowDice = "d12";
   protected final String _htHighDice = "d12";
@@ -51,33 +52,39 @@ public class Human extends Race
 
   /**
    * Default constructor, called reflectively by Klass
+   * @param gender 
    */
-  public Human() 
+  public Human(Gender gender) 
   {
     _raceName = "Human";
     _minLimit = minLimit;
     _maxLimit = maxLimit;
-    _raceLang = null;     // There is no special language for Humans
-    // Define weight ranges for Hero
-    _weightMaleMedValue = _maleMedValue;
-    _weightFemaleMedValue = _femaleMedValue;
-    _weightLowDice = _wtLowDice;
-    _weightHighDice = _wtHighDice;
-    _heightMaleMedValue = _htMaleMedValue;
-    _heightFemaleMedValue = _htFemaleMedValue;
-    _heightLowDice = _htLowDice;
-    _heightHighDice = _htHighDice;
+    _raceLang = "";
+    
+    // Define height ranges for Hero
+    if (gender.isMale()) {
+      // Define weight ranges for Hero
+      _heightMedValue = _htMaleMedValue;
+      _weightMedValue = _maleMedValue;
+    } else {
+      // Define height ranges for Hero
+      _weightMedValue = _femaleMedValue;
+      _heightMedValue = _htFemaleMedValue;
+    }
     _descriptor = _raceDescriptor;
     _racialThiefMods = _humanThiefMods;
     _raceSkills = _humanSkills;
   } 
 
-
-  /** Humans have no racial adjustments */
   @Override
-  public int[] adjustTraitsForRace(int[] traits)
+  public int calcWeight()
   {
-    return traits;
+    return super.calcWeight(_wtLowDice, _wtHighDice);
   }
-  
+
+  @Override
+  public int calcHeight()
+  {
+    return super.calcWeight(_htLowDice, _htHighDice);
+  };
 }

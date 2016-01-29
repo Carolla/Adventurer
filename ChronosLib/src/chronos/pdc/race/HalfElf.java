@@ -7,10 +7,10 @@
  * by email: acline@carolla.com
  */
 
-package pdc.character;
+package chronos.pdc.race;
 
+import chronos.pdc.character.Gender;
 import mylib.pdc.MetaDie;
-import chronos.pdc.Race;
 
 /**
  * @author Al Cline
@@ -55,23 +55,25 @@ public class HalfElf extends Race
   
   /**
    * Default constructor, called reflectively by Race
+   * @param gender 
    */
-  public HalfElf() 
+  public HalfElf(Gender gender) 
   {
     _raceName = "Half-Elf";
     _raceLang = getRaceLang();
     _minLimit = minLimit;
     _maxLimit = maxLimit;
-    // Define weight ranges for Hero
-    _weightMaleMedValue = _maleMedValue;
-    _weightFemaleMedValue = _femaleMedValue;
-    _weightLowDice = _wtLowDice;
-    _weightHighDice = _wtHighDice;
+
     // Define height ranges for Hero
-    _heightMaleMedValue = _htMaleMedValue;
-    _heightFemaleMedValue = _htFemaleMedValue;
-    _heightLowDice = _htLowDice;
-    _heightHighDice = _htHighDice;
+    if (gender.isMale()) {
+      // Define weight ranges for Hero
+      _heightMedValue = _htMaleMedValue;
+      _weightMedValue = _maleMedValue;
+    } else {
+      // Define height ranges for Hero
+      _weightMedValue = _femaleMedValue;
+      _heightMedValue = _htFemaleMedValue;
+    }
    
     _descriptor = _raceDescriptor;
     _racialThiefMods = _halfelfThiefMods;
@@ -86,12 +88,15 @@ public class HalfElf extends Race
     return s;
   }
 
-  /** Half-Elves have no modifications */
   @Override
-  public int[] adjustTraitsForRace(int[] traits)
+  public int calcWeight()
   {
-    return traits;
-  };
+    return super.calcWeight(_wtLowDice, _wtHighDice);
+  }
 
-  
+  @Override
+  public int calcHeight()
+  {
+    return super.calcWeight(_htLowDice, _htHighDice);
+  };
 }

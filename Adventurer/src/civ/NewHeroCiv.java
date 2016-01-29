@@ -12,6 +12,7 @@ package civ;
 import java.util.EnumMap;
 
 import chronos.pdc.character.Hero;
+import chronos.pdc.character.Hero.HeroInput;
 import chronos.pdc.registry.HeroRegistry;
 
 /**
@@ -23,22 +24,15 @@ import chronos.pdc.registry.HeroRegistry;
 public class NewHeroCiv extends BaseCiv
 {
   /** Max length of name for Hero */
-  public final int MAX_NAMELEN = 45;
+  public final static int MAX_NAMELEN = 45;
 
   /** String arrays are used instead of Lists because it is final data and easier to work with */
-  private final String[] _hairColorList =
+  public static final String[] HAIR_COLOR_LIST =
       {"bald", "black", "blonde", "brown", "gray", "red", "silver", "streaked", "white"};
 
-  private final String[] _klassList =
-      {"Fighter", "Cleric", "Rogue", "Wizard"};
+  public static final String[] KLASS_LIST =
+      {"Fighter", "Cleric", "Thief", "Wizard"};
 
-  private final String[] _raceList =
-      {"Human", "Dwarf", "Elf", "Gnome", "Half-Elf", "Half-Orc", "Hobbit"};
-
-  /** Input data fields to create a new hero */
-  public enum HeroInput {
-    NAME, GENDER, HAIR, RACE, KLASS
-  };
 
   /** ErrorCode for type of error encountered on input */
   public enum ErrorCode {
@@ -80,73 +74,7 @@ public class NewHeroCiv extends BaseCiv
    */
   public Hero createHero(EnumMap<HeroInput, String> inputMap)
   {
-    String name = inputMap.get(HeroInput.NAME);
-    String gender = inputMap.get(HeroInput.GENDER);
-    String hairColor = inputMap.get(HeroInput.HAIR);
-    String raceName = inputMap.get(HeroInput.RACE);
-    String klassName = inputMap.get(HeroInput.KLASS);
-
-    Hero myHero = null;
-
-    try {
-      myHero = new Hero(name, gender, hairColor, raceName, klassName);
-    } catch (InstantiationException ex) {
-      System.err.println("NewHeroCiv.createHero(): " + ex.getMessage());
-    }
+    Hero myHero = new Hero(inputMap);
     return myHero;
   }
-
-  // Getters for the input data options
-  public String[] getHairColors()
-  {
-    return _hairColorList;
-  }
-
-  public String[] getKlasses()
-  {
-    return _klassList;
-  }
-
-  public String[] getRaces()
-  {
-    return _raceList;
-  }
-
-
-  /**
-   * Retrieve the new Hero input data for validation or Hero creation. Biggest check is if the hero
-   * name is unique (does not exist in the Hero registry)
-   * 
-   * @param heroInput contains the five input fields: name, gender, hair color, race, and klass (in
-   *        that order)
-   * @return false if error widget needs to be displayed
-   */
-  public ErrorCode validate(EnumMap<HeroInput, String> inputMap)
-  {
-    String name = inputMap.get(HeroInput.NAME);
-    ErrorCode err = isValid(name);
-    return err;
-  }
-
-  /**
-   * Verify the name is valid, which means <br>
-   * (1) it must be within valid field length, and <br>
-   * (2) it must be unique to names in the Dormitory.
-   * 
-   * @param name of the Hero
-   * @return true if name is valid and unique
-   */
-  private ErrorCode isValid(String name)
-  {
-    // TODO Overlong name size should not be possible if Input widget defined properly
-    ErrorCode retflag = ErrorCode.NO_ERROR;
-    if (name == null) {
-      retflag = ErrorCode.NAME_MISSING;
-    } else if (name.length() > MAX_NAMELEN) {
-      retflag = ErrorCode.NAME_TOO_LONG;
-    }
-    return retflag;
-  }
-
-
 } // end of NewHeroCiv class

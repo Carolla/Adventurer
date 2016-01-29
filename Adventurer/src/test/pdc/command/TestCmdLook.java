@@ -7,15 +7,16 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import mylib.MsgCtrl;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import chronos.pdc.buildings.Building;
-import chronos.test.pdc.buildings.FakeBuilding;
-import mylib.MsgCtrl;
 import pdc.command.CmdLook;
 import test.pdc.FakeNPC;
+import chronos.pdc.buildings.Building;
+import chronos.test.pdc.buildings.FakeBuilding;
 
 public class TestCmdLook
 {
@@ -64,6 +65,7 @@ public class TestCmdLook
   public void whenTargetNotFoundGetTargetNotFoundMessage()
   {
     _cmdLook.init(fredList);
+    _bdciv.enterBuilding(FAKE_BUILDING);
 
     _cmdLook.exec();
     assertEquals(Building.MISSING_PERSON, _bdciv._displayedText);

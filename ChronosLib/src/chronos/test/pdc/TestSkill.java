@@ -26,7 +26,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import chronos.civ.SkillKeys;
 import chronos.pdc.Skill;
 
 /**
@@ -132,13 +131,13 @@ public class TestSkill // extends TestCase
             errSkill = new Skill(NAME, LONGDESC);
         } catch (ApplicationException ex) {
             MsgCtrl.errMsgln("\t Expected exception: " + ex.getMessage());
-            assertTrue(SkillKeys.DESC.maxLength() < LONGDESC.length());
+            assertTrue(Skill.MAX_DESC_LEN < LONGDESC.length());
         }
         try {
             errSkill = new Skill(LONGNAME, DESC);
         } catch (ApplicationException ex) {
             MsgCtrl.errMsgln("\t Expected exception: " + ex.getMessage());
-            assertTrue(SkillKeys.NAME.maxLength() < LONGNAME.length());
+            assertTrue(Skill.MAX_NAME_LEN < LONGNAME.length());
         }
     }
 
