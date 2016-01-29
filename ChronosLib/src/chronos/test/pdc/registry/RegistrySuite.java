@@ -12,8 +12,6 @@
 
 package chronos.test.pdc.registry;
 
-import mylib.test.pdc.TestRegistry;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -35,7 +33,7 @@ import org.junit.runners.Suite;
     // TestNPCRegistry.class,
     // TestOccupationRegistry.class,
     TestRegistryFactory.class,
-    TestRegistry.class
+    // TestRegistry.class
     // TestSkillRegistry.class,
     // TestTownRegistry.class,
 

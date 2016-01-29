@@ -8,7 +8,7 @@ import mylib.pdc.MetaDie;
 public class TraitList
 {
   /** Indices into the Hero's prime traits */
-  public enum PrimeTraits {
+  public static enum PrimeTraits {
     STR, INT, WIS, DEX, CON, CHR
   };
 
@@ -47,8 +47,8 @@ public class TraitList
   /**
    * Swap the largest raw trait for the prime trait with the specific klass
    * 
-   * @param prime the trait that should be the largest trait 
-   * @param largest the index of the largest trait to swap
+   * @param primeTrait the trait that should be the largest trait 
+   * @param largestTrait the index of the largest trait to swap
    */
   public void swapPrime(PrimeTraits primeTrait, PrimeTraits largestTrait)
   {
