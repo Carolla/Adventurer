@@ -102,7 +102,7 @@ public class TestPrototype
   /**
    * NORMAL.TEST File createFile(File, String)
    */
-  @Test
+//  @Test
   public void testCreateFile()
   {
     MsgCtrl.auditMsgsOn(false);
