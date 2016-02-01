@@ -13,11 +13,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -105,8 +105,8 @@ public class TestPrototype
   @Test
   public void testCreateFile()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // SETUP: Define source root
@@ -114,6 +114,8 @@ public class TestPrototype
 
     // RUN: Generate new test file QA_Tool/src/pdc/TestFileMap.java
     _target = _proto.createFile(_testDir, SRCNAME);
+
+    // VERIFY
     String path = _target.getAbsolutePath();
     MsgCtrl.msgln("\ttestFile to be created: \t" + PROTO_NAME);
     MsgCtrl.msgln("\ttestFile created: \t\t\t" + path);
@@ -122,34 +124,32 @@ public class TestPrototype
     assertEquals(0, _target.length());
 
     // TEARDOWN: delete test file and parent dir
-//    File parent = _target.getParentFile();
-//    _target.delete();
-//    parent.delete();
+    File parent = _target.getParentFile();
+    _target.delete();
+    parent.delete();
   }
 
 
-//  /**
-//   * NORMAL.TEST File writeFile(File)
-//   */
-//  @Test
-//  public void testWriteFile()
-//  {
-//    MsgCtrl.auditMsgsOn(true);
-//    MsgCtrl.errorMsgsOn(true);
-//    MsgCtrl.where(this);
-//
-//    // SETUP: Create the file in the right place
-//    _target = _proto.createFile(_testDir, SRCNAME);
-//
-//    // Create the file and write the copyright notice into it
-//    _target = _proto.writeFile();
-//    MsgCtrl.msgln("\tGenerated test file " + _target.getAbsolutePath());
-//    MsgCtrl.msgln("\tGenerated test file size = " + _target.length());
-//    assertTrue(_target.exists());
-//    assertEquals(427, _target.length());
-//
-//    printFile(_target);
-//  }
+  /**
+   * NORMAL.TEST File writeFile(File)
+   */
+  @Test
+  public void testWriteFile()
+  {
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.where(this);
+
+    // SETUP: Create the file in the right place
+    _target = _proto.createFile(_testDir, SRCNAME);
+
+    _target = _proto.writeFile(_target);
+    MsgCtrl.msgln("\tGenerated test file " + _target.getAbsolutePath());
+    MsgCtrl.msgln("\tGenerated test file size = " + _target.length());
+    assertTrue(_target.exists());
+
+    printFile(_target.getAbsolutePath());
+  }
 
 
   // ======================================================================
@@ -157,27 +157,27 @@ public class TestPrototype
   // ======================================================================
 
   /** Display to the console the prototype as written so far */
-  private void printFile(File txtFile)
+  private void printFile(String fName)
   {
-    BufferedReader in = null;
+    Scanner in = null;
     try {
-      FileReader fr = new FileReader(txtFile.getName());
-      in = new BufferedReader(fr);
-    } catch (FileNotFoundException fnfEx) {
-      MsgCtrl.errMsgln("printFile(): Cannot create the Buffered Reader from " + txtFile.getName());  
-      MsgCtrl.errMsgln(fnfEx.getMessage());  
+      in = new Scanner(new FileReader(fName));
+    } catch (FileNotFoundException e) {
+      MsgCtrl.errMsgln("\tprintFile: Could not find file " + fName);
+      MsgCtrl.errMsgln("\t" + e.getMessage());
     }
-    String line;
+    String line = null;
+    MsgCtrl.msgln("\nPRINTING FILE " + fName + ":");
     try {
-      while ((line = in.readLine()) != null) {
+      while ((line = in.nextLine()) != null) {
         MsgCtrl.msgln(line);
       }
-      in.close();
-    } catch (IOException ioEx) {
-      MsgCtrl.errMsgln("printFile(): Error while reading from target file " + txtFile.getName());  
-      MsgCtrl.errMsgln(ioEx.getMessage());  
+      // This exception ends the file read
+    } catch (NoSuchElementException e2) {
+      ;
     }
+    in.close();
   }
 
-  
+
 } // end of TestPrototype class
