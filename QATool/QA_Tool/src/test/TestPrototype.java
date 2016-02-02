@@ -143,7 +143,8 @@ public class TestPrototype
     // SETUP: Create the file in the right place
     _target = _proto.createFile(_testDir, SRCNAME);
 
-    _target = _proto.writeFile(_target);
+    // RUN: The source class file must be passed for methods to be extracted    
+    _target = _proto.writeFile(_target, SRCNAME);
     MsgCtrl.msgln("\tGenerated test file " + _target.getAbsolutePath());
     MsgCtrl.msgln("\tGenerated test file size = " + _target.length());
     assertTrue(_target.exists());
@@ -151,7 +152,27 @@ public class TestPrototype
     printFile(_target.getAbsolutePath());
   }
 
+  
+  /**
+   * NORMAL.TEST Class<?> convertSource(String)
+   */
+  @Test
+  public void testConvertSource()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
 
+    // Test file
+    String srcName = "pdc.Prototype.java";
+    Class<?> className = _proto.convertSource(srcName);
+    MsgCtrl.msgln("\t" + srcName + " converts to " + className.toString());
+
+    srcName = "pdc.FileMap.java";
+    className = _proto.convertSource(srcName);
+    MsgCtrl.msgln("\t" + srcName + " converts to " + className.toString());
+  }
+    
   // ======================================================================
   // PRIVATE HELPER METHODS
   // ======================================================================
@@ -167,7 +188,7 @@ public class TestPrototype
       MsgCtrl.errMsgln("\t" + e.getMessage());
     }
     String line = null;
-    MsgCtrl.msgln("\nPRINTING FILE " + fName + ":");
+    MsgCtrl.msgln("\nPRINTING FILE " + fName + ":\n");
     try {
       while ((line = in.nextLine()) != null) {
         MsgCtrl.msgln(line);

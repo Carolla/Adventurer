@@ -109,7 +109,7 @@ public class QATool
    * excluding the mandatory test subdir. Results are placed into the {@code _srcPaths} field.
    * 
    * @param root starting source directory
-   * @param offset the length of the root pathname; required so recusrion doesn't change the root
+   * @param offset the length of the root pathname; required so recursion doesn't change the root
    *          length
    */
   public ArrayList<String> buildSourceList(File root, int offset)

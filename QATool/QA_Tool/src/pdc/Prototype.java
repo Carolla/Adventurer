@@ -13,7 +13,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Date;
+
+import mylib.pdc.Utilities;
 
 /**
  * @author Alan Cline
@@ -28,7 +33,7 @@ public class Prototype
 
   /** Copyright banner at top of file */
   private final String COPYRIGHT =
-      "/** %s Copyright (c) 2016, Carolla Development, Inc. All Rights Reserved \n * \n" +
+      "/** \n * %s Copyright (c) 2016, Carolla Development, Inc. All Rights Reserved \n * \n" +
           " * Permission to make digital or hard copies of all or parts of this work for \n" +
           " * commercial use is prohibited. To republish, to post on servers, to reuse, \n" +
           " * or to redistribute to lists, requires prior specific permission and/or a fee. \n" +
@@ -42,7 +47,9 @@ public class Prototype
           "import org.junit.AfterClass; \n" +
           "import org.junit.Before; \n" +
           "import org.junit.BeforeClass; \n" +
-          "import org.junit.Test; \n";
+          "import org.junit.Test; \n\n" +
+          "import mylib.MsgCtrl;\n";
+
 
   /** Class header comments, author, and version and definition */
   private final String AUTHOR_VERSION =
@@ -59,19 +66,20 @@ public class Prototype
   private final String DBL_HRULE =
       "// ===============================================================================\n";
   private final String BANNER =
-      "\t" + DBL_HRULE + "\t// BEGIN TESTS\n\t" + DBL_HRULE + "\n";
+      "\t" + DBL_HRULE + "\t// BEGIN TESTS\n\t" + DBL_HRULE;
 
   /**
-   * Test method template: @Normal annotation, @Test annotation, declaration, MsgCtrl block private */
-  private final String NORMAL_CMT =  "\t/**\n \t * @NORMAL_TEST %s\n\t */";
+   * Test method template: @Normal annotation, @Test annotation, declaration, MsgCtrl block private
+   */
+  private final String NORMAL_CMT = "\t/**\n \t * @NORMAL_TEST %s\n\t */";
   private final String TEST_ANNOT = "\n\t@Test\n";
-  private final String M_DECLARATION = "\tpublic void %s\n\t{\n";
-  private final String MSGCTRL_BLOCK = "\t\tMsgCtrl.auditMsgsOn(true)\n" +
-      "\t\tMsgCtrl.errorMsgsOn(true)\n" +
-      "\t\tMsgCtrl.where(this)\n";
+  private final String M_DECLARATION = "\tpublic void test%s()\n\t{\n";
+  private final String MSGCTRL_BLOCK = "\t\tMsgCtrl.auditMsgsOn(true);\n" +
+      "\t\tMsgCtrl.errorMsgsOn(true);\n" +
+      "\t\tMsgCtrl.where(this);\n\n" +
+      "\t\tfail(\"\\t\\tNot yet implemented\");";
 
 
-  
   // ======================================================================
   // CONSTRUCTORS AND ITS HELPER
   // ======================================================================
@@ -84,6 +92,28 @@ public class Prototype
   // ======================================================================
   // PUBLIC METHODS
   // ======================================================================
+
+
+  // ======================================================================
+  // PRIVATE HELPER METHODS
+  // ======================================================================
+
+  /** Return the source class of the given source java file */
+  public Class<?> convertSource(String sourceText)
+  {
+    // Remove the file extension
+    String className = sourceText.split(".java")[0];
+    // Convert the file path foprmat to package format by replacing the "/" with "."
+    className = className.replace("/", ".");
+
+    Class<?> sourceClass = null;
+    try {
+      sourceClass = Class.forName(className);
+    } catch (ClassNotFoundException ex) {
+      System.err.println("convertSource(); " + ex.getMessage());
+    }
+    return sourceClass;
+  }
 
 
   /**
@@ -133,9 +163,10 @@ public class Prototype
    * Write the target file with JUnit test stubs and Chronos-specific data
    * 
    * @param target prototype test file to write into
+   * @param source the java file from which to derive test methods
    * @return the File written
    */
-  public File writeFile(File target)
+  public File writeFile(File target, String source)
   {
     PrintWriter out = null;
     try {
@@ -164,19 +195,18 @@ public class Prototype
     out.println(version);
 
     // 5a. Write the four JUnit setup and teardown methods
-    out.println(writePrepMethods());
+    out.println(buildPrepMethods());
 
     // 5b. Write the Begin Tests banner
     out.println(BANNER);
 
     // 6. Write the source file specific test methods
-    String fakeSignature = "File fakeMethod(String s)";
-    String fakeMethod = "testFakeMethod()";
-    String comment = String.format(NORMAL_CMT, fakeSignature);
-    comment += TEST_ANNOT;
-    comment += String.format(M_DECLARATION, fakeMethod);
-    comment += MSGCTRL_BLOCK + "\n\t}\n";
-    out.println(comment); 
+    // First convert the source file name to a source file class
+    Class<?> sourceClass = convertSource(source);
+    ArrayList<String> testList = buildTestMethods(sourceClass);
+    for (String methodBlock : testList) {
+      out.println(methodBlock);
+    }
 
     // 7. Write the class closing brace
     out.println(String.format("} \t// end of %s class", _protoFile.getName()));
@@ -190,7 +220,8 @@ public class Prototype
   // PRIVATE HELPER METHODS
   // ======================================================================
 
-  private String writePrepMethods()
+  /** Write out the setUp and tearDown methods at the method and class level */
+  private String buildPrepMethods()
   {
     String staticStr = "static ";
     String[] arg = {"@BeforeClass", "setUpBeforeClass()", "@AfterClass", "tearDownAfterClass()",
@@ -201,10 +232,131 @@ public class Prototype
       if (k > 2) {
         staticStr = ""; // only the class setup and teardown uses the static qualifier
       }
-      String s = String.format(PREP_DECLARE, arg[k], staticStr, arg[k + 1]);
-      block.append(s);
+      block.append(String.format(PREP_DECLARE, arg[k], staticStr, arg[k + 1]));
     }
+    // Before returning, turn off audit and errors messages in tearDown()
+    // Insert the MsgCtrl statements before the closing brace;
+    String msgFlags = "\n\t\tMsgCtrl.auditMsgsOn(false);\n\t\tMsgCtrl.errorMsgsOn(false);\n\t}\n";
+    int ndx = block.lastIndexOf("}");
+    block.replace(ndx, block.length(), msgFlags);
+
     return block.toString();
+  }
+
+
+  /**
+   * Write test methods for each of the source methods
+   * 
+   * @param srcTarget file to scan for methods from which to derive test methods
+   * @return strings for each test method to be written to the corresponding test file
+   */
+  private ArrayList<String> buildTestMethods(Class<?> srcTarget)
+  {
+    ArrayList<String> codeBlock = new ArrayList<String>();
+    
+    ArrayList<String> methods = getMethods(srcTarget);
+    String comment = null;
+    for (String m : methods) {
+      // CREATE THE NORMAL COMMENT BLOCK
+      comment = String.format(NORMAL_CMT, m);
+      // Add the @Test annotation
+      comment += TEST_ANNOT;
+      
+      // ADD THE TEST DECLARATIAON
+      int startNdx = m.indexOf(" ");
+      int endNdx = m.indexOf("(");
+      String mName = m.substring(startNdx+1,  endNdx);
+      // Uppercase the first letter of the method name for the decl
+      String ch = mName.substring(0, 1);
+      mName = mName.replace(ch, ch.toUpperCase()); 
+      // Pull off the method name only, which is between the first space and the first '('
+      String decl = String.format(M_DECLARATION, mName);
+      comment += decl;
+
+      // ADD THE MSGCTRL BLOCK
+      comment += MSGCTRL_BLOCK + "\n\t}\n";
+
+      // WRITE OUT THE TEST METHOD
+      codeBlock.add(comment);
+//      System.out.println("\n\tbuildTestMethods(): \n" + comment);
+    }
+    
+    return codeBlock;
+  }
+
+  
+  /**
+   * Return a alphabetically sorted list of public and protected methods of the given class
+   * 
+   * @param clazz target source file
+   * @return list of method names for the target (includes arguments to methods)
+   */
+  private ArrayList<String> getMethods(Class<?> clazz)
+  {
+    ArrayList<String> result = new ArrayList<String>();
+    String clazzName = clazz.getSimpleName();
+    for (Method method : clazz.getMethods()) {
+      int modifiers = method.getModifiers();
+      if (Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers)) {
+        String mName = extractSignature(method, clazzName);
+        if (mName != null) {
+          result.add(mName);
+        }
+      }
+    }
+    // Remove names that are expected or that should be excluded
+    result = extractExclusions(result);
+    // Sort result using default (alphabetical) sort Comparator
+    result.sort(null);
+    return result;
+  }
+
+
+  /** Remove any of the files in the list that are intended to be missing */
+  private ArrayList<String> extractExclusions(ArrayList<String> authList)
+  {
+    String[] exclusions = {
+        "setUp()", "tearDown", "setUpBeforeClass()", "tearDownAfterClass()", "NotNeeded"
+    };
+    ArrayList<String> excList = Utilities.convertToArrayList(exclusions);
+
+    for (String s : excList) {
+      authList.remove(s);
+    }
+    return authList;
+  }
+
+
+  /**
+   * Return the class method signature without package context or throws clauses, but with its
+   * return type
+   * 
+   * @param m the Method object to get full path and properties returned by Class.getMethod()
+   * @param anchorName simple name of the class under reflection
+   * @return the method signature, e.g. as is used in the test method comment
+   */
+  private String extractSignature(Method m, String anchorName)
+  {
+    String s = m.toString();
+    // Skip any method names that do not have the anchorName in it (synthetic classes)
+    if ((!s.contains(anchorName)) || (s.contains("main("))) {
+      return null;
+    }
+    // Remove all text (modifiers, qualifiers) preceeding anchor name
+    int cutPoint = s.lastIndexOf(anchorName);
+    if (cutPoint > 0) {
+      cutPoint += anchorName.length() + 1;
+      s = s.substring(cutPoint);
+    }
+    // Remove any throws clauses
+    if (s.contains("throws")) {
+      s = s.substring(0, s.indexOf("throws"));
+    }
+    // Add return type as prefix
+    String returnType = m.getReturnType().getName() + " ";
+    String sig = returnType.concat(s);
+//    System.out.println("\t sig = " + sig);
+    return sig;
   }
 
 
