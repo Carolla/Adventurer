@@ -18,14 +18,18 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Date;
 
-import mylib.pdc.Utilities;
-
 /**
  * @author Alan Cline
  * @version Jan 29, 2016 // original <br>
  */
 public class Prototype
 {
+  private final String DOT = ".";
+  private final String SPACE = " ";
+
+  /** Categories of methods to put into the test prototype */
+  enum Banner {PUBLIC, PROTECTED};
+  
   /** The prototype test class actually is written by a text-savvy output stream */
   PrintWriter _writer;
   /** The File to handle I/O stats */
@@ -66,7 +70,7 @@ public class Prototype
   private final String DBL_HRULE =
       "// ===============================================================================\n";
   private final String BANNER =
-      "\t" + DBL_HRULE + "\t// BEGIN TESTS\n\t" + DBL_HRULE;
+      "\n\t" + DBL_HRULE + "\t// TESTS FOR %s METHODS\n\t" + DBL_HRULE;
 
   /**
    * Test method template: @Normal annotation, @Test annotation, declaration, MsgCtrl block private
@@ -74,46 +78,28 @@ public class Prototype
   private final String NORMAL_CMT = "\t/**\n \t * @NORMAL_TEST %s\n\t */";
   private final String TEST_ANNOT = "\n\t@Test\n";
   private final String M_DECLARATION = "\tpublic void test%s()\n\t{\n";
-  private final String MSGCTRL_BLOCK = "\t\tMsgCtrl.auditMsgsOn(true);\n" +
-      "\t\tMsgCtrl.errorMsgsOn(true);\n" +
+  private final String MSGCTRL_BLOCK = "\t\tMsgCtrl.auditMsgsOn(false);\n" +
+      "\t\tMsgCtrl.errorMsgsOn(false);\n" +
       "\t\tMsgCtrl.where(this);\n\n" +
       "\t\tfail(\"\\t\\tNot yet implemented\");";
 
+  /** Sort the methods by modifer: public, protected, private */
+  ArrayList<String> _publics = new ArrayList<String>();
+  ArrayList<String> _protecteds = new ArrayList<String>();
+  
 
   // ======================================================================
-  // CONSTRUCTORS AND ITS HELPER
+  // CONSTRUCTOR
   // ======================================================================
 
   // Default constructor
   public Prototype()
   {}
 
-
+  
   // ======================================================================
   // PUBLIC METHODS
   // ======================================================================
-
-
-  // ======================================================================
-  // PRIVATE HELPER METHODS
-  // ======================================================================
-
-  /** Return the source class of the given source java file */
-  public Class<?> convertSource(String sourceText)
-  {
-    // Remove the file extension
-    String className = sourceText.split(".java")[0];
-    // Convert the file path foprmat to package format by replacing the "/" with "."
-    className = className.replace("/", ".");
-
-    Class<?> sourceClass = null;
-    try {
-      sourceClass = Class.forName(className);
-    } catch (ClassNotFoundException ex) {
-      System.err.println("convertSource(); " + ex.getMessage());
-    }
-    return sourceClass;
-  }
 
 
   /**
@@ -160,7 +146,7 @@ public class Prototype
 
 
   /**
-   * Write the target file with JUnit test stubs and Chronos-specific data
+   * Writes a prototype test template with JUnit test stubs and Chronos-specific data
    * 
    * @param target prototype test file to write into
    * @param source the java file from which to derive test methods
@@ -194,33 +180,31 @@ public class Prototype
     String version = String.format(AUTHOR_VERSION, new Date(), name);
     out.println(version);
 
-    // 5a. Write the four JUnit setup and teardown methods
+    // 5. Write the four JUnit setup and teardown methods
     out.println(buildPrepMethods());
 
-    // 5b. Write the Begin Tests banner
-    out.println(BANNER);
-
-    // 6. Write the source file specific test methods
+    // 6. Accummulate and sort test methods by modifier
     // First convert the source file name to a source file class
     Class<?> sourceClass = convertSource(source);
-    ArrayList<String> testList = buildTestMethods(sourceClass);
-    for (String methodBlock : testList) {
-      out.println(methodBlock);
-    }
+    getMethods(sourceClass); // store lists in class Field
 
-    // 7. Write the class closing brace
+    // 7a. Write the public methods beneath a public banner
+    writeCodeBlocks(out, _publics, Banner.PUBLIC);
+    writeCodeBlocks(out, _protecteds, Banner.PROTECTED);
+    
+    // 8. Write the class closing brace
     out.println(String.format("} \t// end of %s class", _protoFile.getName()));
 
     out.close();
     return target;
-
   }
+
 
   // ======================================================================
   // PRIVATE HELPER METHODS
   // ======================================================================
-
-  /** Write out the setUp and tearDown methods at the method and class level */
+  
+  /** Writes the setUp and tearDown methods at the method and class level */
   private String buildPrepMethods()
   {
     String staticStr = "static ";
@@ -247,89 +231,104 @@ public class Prototype
   /**
    * Write test methods for each of the source methods
    * 
-   * @param srcTarget file to scan for methods from which to derive test methods
-   * @return strings for each test method to be written to the corresponding test file
+   * @param methodList list of method declaration from which to derive test methods
+   * @return list of test method code blocks for each test method
    */
-  private ArrayList<String> buildTestMethods(Class<?> srcTarget)
+  // private ArrayList<String> buildTestMethods(Class<?> srcTarget)
+  private ArrayList<String> buildTestMethods(ArrayList<String> methodList)
   {
+    // Return list
     ArrayList<String> codeBlock = new ArrayList<String>();
-    
-    ArrayList<String> methods = getMethods(srcTarget);
-    String comment = null;
-    for (String m : methods) {
+
+    // ArrayList<String> methods = getMethods(srcTarget);
+    for (String m : methodList) {
+      StringBuilder comment = new StringBuilder();
       // CREATE THE NORMAL COMMENT BLOCK
-      comment = String.format(NORMAL_CMT, m);
+      comment.append(String.format(NORMAL_CMT, m));
       // Add the @Test annotation
-      comment += TEST_ANNOT;
-      
+      comment.append(TEST_ANNOT);
+
       // ADD THE TEST DECLARATIAON
+      StringBuilder mName = new StringBuilder();
       int startNdx = m.indexOf(" ");
       int endNdx = m.indexOf("(");
-      String mName = m.substring(startNdx+1,  endNdx);
+      mName.append(m.substring(startNdx + 1, endNdx));
       // Uppercase the first letter of the method name for the decl
       String ch = mName.substring(0, 1);
-      mName = mName.replace(ch, ch.toUpperCase()); 
+      mName.replace(0, 1, ch.toUpperCase());
       // Pull off the method name only, which is between the first space and the first '('
       String decl = String.format(M_DECLARATION, mName);
-      comment += decl;
+      comment.append(decl);
 
       // ADD THE MSGCTRL BLOCK
-      comment += MSGCTRL_BLOCK + "\n\t}\n";
+      comment.append(MSGCTRL_BLOCK + "\n\t}\n");
 
       // WRITE OUT THE TEST METHOD
-      codeBlock.add(comment);
-//      System.out.println("\n\tbuildTestMethods(): \n" + comment);
+      codeBlock.add(comment.toString());
+      // System.out.println("\n\tbuildTestMethods(): \n" + comment.toString());
     }
-    
+
     return codeBlock;
   }
 
-  
+
   /**
-   * Return a alphabetically sorted list of public and protected methods of the given class
+   * Return the source {@code Class} for the given source java file
    * 
-   * @param clazz target source file
-   * @return list of method names for the target (includes arguments to methods)
+   * @param sourceText the {@code .java} source file
+   * @return the equivalent {@.class} file
    */
-  private ArrayList<String> getMethods(Class<?> clazz)
+  private Class<?> convertSource(String sourceText)
   {
-    ArrayList<String> result = new ArrayList<String>();
-    String clazzName = clazz.getSimpleName();
-    for (Method method : clazz.getMethods()) {
-      int modifiers = method.getModifiers();
-      if (Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers)) {
-        String mName = extractSignature(method, clazzName);
-        if (mName != null) {
-          result.add(mName);
-        }
-      }
+    // Remove the file extension
+    String className = sourceText.split(".java")[0];
+    // Convert the file path format to package format by replacing the "/" with "."
+    className = className.replace("/", ".");
+  
+    Class<?> sourceClass = null;
+    try {
+      sourceClass = Class.forName(className);
+    } catch (ClassNotFoundException ex) {
+      System.err.println("convertSource(); " + ex.getMessage());
     }
-    // Remove names that are expected or that should be excluded
-    result = extractExclusions(result);
-    // Sort result using default (alphabetical) sort Comparator
-    result.sort(null);
-    return result;
+    return sourceClass;
   }
 
 
-  /** Remove any of the files in the list that are intended to be missing */
-  private ArrayList<String> extractExclusions(ArrayList<String> authList)
+  /**
+   * Extracts public and protected methods from the source file, sorts each list
+   * 
+   * @param clazz target source file
+   * @return list of public method names for the target (includes arguments to methods)
+   */
+  private void getMethods(Class<?> clazz)
   {
-    String[] exclusions = {
-        "setUp()", "tearDown", "setUpBeforeClass()", "tearDownAfterClass()", "NotNeeded"
-    };
-    ArrayList<String> excList = Utilities.convertToArrayList(exclusions);
-
-    for (String s : excList) {
-      authList.remove(s);
+    String clazzName = clazz.getSimpleName();
+    Method[] rawMethodList = clazz.getDeclaredMethods();
+    for (Method method : rawMethodList) {
+      int modifiers = method.getModifiers();
+      if ((Modifier.isPublic(modifiers)) || (Modifier.isProtected(modifiers))) {
+        String mName = extractSignature(method, clazzName);
+        if (mName != null) {
+          if (Modifier.isPublic(modifiers)) {
+            _publics.add(mName);
+          } else if (Modifier.isProtected(modifiers)) {
+            _protecteds.add(mName);
+          }
+        }
+      }
     }
-    return authList;
+    // Sort using default (alphabetical) sort Comparator
+    _publics.sort(null);
+    _protecteds.sort(null);
   }
 
 
   /**
    * Return the class method signature without package context or throws clauses, but with its
-   * return type
+   * return type, formatted as: <br>
+   * {@code  methodName(argType, argType) : returnType} <br>
+   * where each of the Types are their simple names.
    * 
    * @param m the Method object to get full path and properties returned by Class.getMethod()
    * @param anchorName simple name of the class under reflection
@@ -338,26 +337,137 @@ public class Prototype
   private String extractSignature(Method m, String anchorName)
   {
     String s = m.toString();
-    // Skip any method names that do not have the anchorName in it (synthetic classes)
+    System.out.println(s);
+    // Skip any method names that do not have the anchorName in it (synthetic classes) and a 'main'
     if ((!s.contains(anchorName)) || (s.contains("main("))) {
       return null;
-    }
-    // Remove all text (modifiers, qualifiers) preceeding anchor name
-    int cutPoint = s.lastIndexOf(anchorName);
-    if (cutPoint > 0) {
-      cutPoint += anchorName.length() + 1;
-      s = s.substring(cutPoint);
     }
     // Remove any throws clauses
     if (s.contains("throws")) {
       s = s.substring(0, s.indexOf("throws"));
     }
-    // Add return type as prefix
-    String returnType = m.getReturnType().getName() + " ";
-    String sig = returnType.concat(s);
-//    System.out.println("\t sig = " + sig);
-    return sig;
+
+    // Remove the modifer
+    s = s.substring(s.indexOf(SPACE) + 1);
+    String retType = simplifyReturnType(s);
+    String methodDecl = simplifyDeclaration(s);
+    return (retType + " " + methodDecl);
   }
 
 
+  /**
+   * Reduce a fully qualified class name to it simplified name by removing the dot-delimited full
+   * name to yeild the suffix, the simply name. This is used for return types and argument types
+   * that occur in the method declaration.<br>
+   * The method declaration has format, where each type is a fully qualified type: <br>
+   * {@code return-type methodName(argType, argType,...) <br>
+   * For example, {@code java.lang.String extractSignature(java.io.File, java.lang.String)} becomes
+   * {@code String extractSignature(File, String)}.<br>
+   * Note: The ellipsis in the signature example refers to a fixed but indefinite number of
+   * arguments, not to a varargs set.
+   * 
+   * @param decl the fully-qualified method declaration
+   * @return the method name and simple argname list
+   */
+  private String simplifyDeclaration(String decl)
+  {
+    // Discard the the return type
+    decl = decl.trim();
+    int rtNdx = decl.indexOf(SPACE);
+    decl = decl.substring(rtNdx + 1);
+
+    // Setup buffers to allow characer movement
+    StringBuilder sbIn = new StringBuilder(decl);
+    StringBuilder sbOut = new StringBuilder();
+
+    // To simplify arguments, walk backwards from the right paren, removing prefixes
+    boolean skip = false;
+    int in = sbIn.length() - 1;
+    for (; in >= 0; in--) {
+      char ch = sbIn.charAt(in);
+      // Add space character to follow each comma
+      if (ch == ',') {
+        sbOut.insert(0, SPACE); // new char is placed in front of existing chars
+        skip = false;
+      } else if (ch == '(') {
+        skip = false;
+      }
+      // Skip all characters between previous comma or left paren and the dot
+      else if ((ch == '.') || (skip == true)) {
+        skip = true;
+        continue;
+      }
+      sbOut.insert(0, ch);
+      // System.out.println(String.format("\tCharacter written: %c", sbOut.charAt(0)));
+    }
+    String result = sbOut.toString().trim();
+    return result;
+  }
+
+
+  /**
+   * Convert the fully qualifed return type of a signature into its simple type. Also removes the
+   * method modifier (public, private, static, protected).
+   * 
+   * @param decl fully qualifed method signature, with parm types and return type
+   * @return only the simple return type
+   */
+  private String simplifyReturnType(String decl)
+  {
+    // Remove trailing and leading white space then make a destination String
+    decl = decl.trim();
+    String dest = new String(decl);
+
+    int retNdx = decl.indexOf(SPACE); // return type
+    String retSig = decl.substring(0, retNdx);
+    int lastDot = retSig.lastIndexOf(DOT);
+    dest = decl.substring(lastDot + 1, retNdx);
+
+    return dest;
+  }
+
+  
+  /**
+   * Writes the list of methods into file
+   * 
+   * @param op PrintWriter or output to write code blocks into
+   * @param methodList of all methods of the banner category
+   * @param category of method for banner, either public or protected
+   */
+  private void writeCodeBlocks(PrintWriter op, ArrayList<String> methodList, Banner category)
+  {
+    if (methodList.size() == 0) {
+      return;
+    }
+    ArrayList<String> codeBlock = buildTestMethods(methodList);
+    op.println(String.format(BANNER, category.toString()));
+    for (String s : codeBlock) {
+      // System.out.println("\tprotected \t" + s);
+      op.println(s);
+    }
+  }
+
+  // ======================================================================
+  // INNER CLASS FOR TESTING 
+  // ======================================================================
+
+  public class MockPrototype
+  {
+    public MockPrototype() {}
+    
+    
+    public ArrayList<String> getPublicMethods()
+    {
+      return _publics;
+    }
+    
+    public ArrayList<String> getProtectedMethods()
+    {
+      return _protecteds;
+    }
+
+    
+  } // end of MockPrototype inner class
+  
+  
 } // end of Prototype class

@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
@@ -27,6 +28,7 @@ import org.junit.Test;
 
 import mylib.MsgCtrl;
 import pdc.Prototype;
+import pdc.Prototype.MockPrototype;
 import pdc.QATool;
 
 /**
@@ -37,8 +39,6 @@ public class TestPrototype
 {
   /** Root for all source files and subdirectories */
   private final String ROOT = System.getProperty("user.dir") + "/src";
-  /** Name of source file from which to derive test file */
-  private final String SRCNAME = "pdc/FileMap.java";
   /** Name of test prototype file generated */
   private final String PROTO_NAME =
       "/Projects/eChronos/QATool/QA_Tool/src/test/pdc/TestFileMap.java";
@@ -52,7 +52,10 @@ public class TestPrototype
 
   /** Target protoType file */
   private File _target;
-
+  /** Mock for testing */
+  private MockPrototype _mock;
+  
+  
   /**
    * @throws java.lang.Exception
    */
@@ -79,6 +82,8 @@ public class TestPrototype
     assertNotNull(_proto);
     _testDir = _qat.findTestDir(new File(ROOT));
     assertTrue(_testDir.isDirectory());
+    _mock = _proto.new MockPrototype();
+    assertNotNull(_mock);
   }
 
   /**
@@ -94,15 +99,15 @@ public class TestPrototype
     _testDir = null;
   }
 
-
-  // ======================================================================
-  // BEGIN TESTS
-  // ======================================================================
+  
+  // ===============================================================================
+  // TESTS FOR PUBLIC METHODS
+  // ===============================================================================
 
   /**
    * NORMAL.TEST File createFile(File, String)
    */
-//  @Test
+  @Test
   public void testCreateFile()
   {
     MsgCtrl.auditMsgsOn(false);
@@ -110,10 +115,12 @@ public class TestPrototype
     MsgCtrl.where(this);
 
     // SETUP: Define source root
+    String srcName = "pdc/FileMap.java";
+
     MsgCtrl.msgln("\ttestCreateFile ROOT = " + ROOT);
 
     // RUN: Generate new test file QA_Tool/src/pdc/TestFileMap.java
-    _target = _proto.createFile(_testDir, SRCNAME);
+    _target = _proto.createFile(_testDir, srcName);
 
     // VERIFY
     String path = _target.getAbsolutePath();
@@ -131,7 +138,7 @@ public class TestPrototype
 
 
   /**
-   * NORMAL.TEST File writeFile(File)
+   * NORMAL.TEST File writeFile(File) uses pdc/Prototype.java
    */
   @Test
   public void testWriteFile()
@@ -141,38 +148,39 @@ public class TestPrototype
     MsgCtrl.where(this);
 
     // SETUP: Create the file in the right place
-    _target = _proto.createFile(_testDir, SRCNAME);
+    String srcName = "pdc/Prototype.java";
+    String testFile = "TestPrototype.java";
+    int NBR_PUBLIC_TESTS = 2;
+    int NBR_PROTECTED_TESTS = 0;
+    String[] rawSigs = {
+        "public java.io.File pdc.Prototype.createFile(java.io.File,java.lang.String)",
+        "public java.io.File pdc.Prototype.writeFile(java.io.File,java.lang.String)"};    
+    String[] expSigs = {
+        "File createFile(File, String)", "File writeFile(File, String)"};    
 
-    // RUN: The source class file must be passed for methods to be extracted    
-    _target = _proto.writeFile(_target, SRCNAME);
+    _target = _proto.createFile(_testDir, srcName);
+
+    // RUN: The source class file must be passed for methods to be extracted
+    _target = _proto.writeFile(_target, srcName);
     MsgCtrl.msgln("\tGenerated test file " + _target.getAbsolutePath());
     MsgCtrl.msgln("\tGenerated test file size = " + _target.length());
-    assertTrue(_target.exists());
-
-    printFile(_target.getAbsolutePath());
-  }
-
-  
-  /**
-   * NORMAL.TEST Class<?> convertSource(String)
-   */
-  @Test
-  public void testConvertSource()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    // Test file
-    String srcName = "pdc.Prototype.java";
-    Class<?> className = _proto.convertSource(srcName);
-    MsgCtrl.msgln("\t" + srcName + " converts to " + className.toString());
-
-    srcName = "pdc.FileMap.java";
-    className = _proto.convertSource(srcName);
-    MsgCtrl.msgln("\t" + srcName + " converts to " + className.toString());
-  }
     
+    // VERIFY
+    //    printFile(_target.getAbsolutePath());
+    assertTrue(_target.exists());
+    assertEquals(testFile, _target.getName());
+
+    ArrayList<String> publix = _mock.getPublicMethods();
+    assertEquals(NBR_PUBLIC_TESTS, publix.size());
+    assertEquals(expSigs[0], publix.get(0));
+    assertEquals(expSigs[1], publix.get(1));
+    
+    ArrayList<String> protex = _mock.getProtectedMethods();
+    assertEquals(NBR_PROTECTED_TESTS, protex.size());
+
+  }
+
+
   // ======================================================================
   // PRIVATE HELPER METHODS
   // ======================================================================

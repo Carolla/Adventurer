@@ -40,8 +40,6 @@ public class Skill implements IRegistryElement
     protected final String _name;
     protected final String _description;
 
-    /** Errors message for overly long field data */
-    private final String FLDERR_OVERLONG = "Field is overly long by %d characters";
     /** Errors message for missing field */
     private final String FLDERR_MISSING = "%s field is requied to have data";
 

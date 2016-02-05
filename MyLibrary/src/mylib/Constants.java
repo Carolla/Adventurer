@@ -39,6 +39,9 @@ public class Constants
   // Used for converting internal format to delimited strings
   public static final String DELIM = "|";
 
+  public static final String LEFT_PAREN = "(";
+  public static final String RIGHT_PAREN = ")";
+
   /** Initializer for MYLIB_ROOT */
   private static String findMyLibRootDir()
   {
