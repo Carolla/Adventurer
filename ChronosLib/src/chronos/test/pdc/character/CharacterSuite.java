@@ -8,12 +8,12 @@
  */
 
 
-package test.pdc.character;
+package chronos.test.pdc.character;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import chronos.test.pdc.TestRace;
+import chronos.test.pdc.race.TestRace;
 
 
 /**
@@ -33,7 +33,7 @@ import chronos.test.pdc.TestRace;
     //    TestHalfOrc.class,
     //    TestHobbit.class,
     //    TestHuman.class,
-    TestHunger.class,
+//    TestHunger.class,
 //    TestPatron.class
 })
 /** Compilation of all unit tests for regression and integration testing. */

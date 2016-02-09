@@ -9,7 +9,7 @@
  * by email: acline@carolla.com
  */
 
-package chronos.test.pdc;
+package chronos.test.pdc.race;
 
 import static org.junit.Assert.assertTrue;
 

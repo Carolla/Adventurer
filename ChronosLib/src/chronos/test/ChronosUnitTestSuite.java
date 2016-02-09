@@ -17,9 +17,10 @@ import org.junit.runners.Suite;
 import chronos.pdc.character.TestGender;
 import chronos.pdc.character.TestTraitList;
 import chronos.test.pdc.TestOccupation;
-import chronos.test.pdc.TestRace;
 import chronos.test.pdc.TestSkill;
 import chronos.test.pdc.buildings.BuildingsSuite;
+import chronos.test.pdc.character.CharacterSuite;
+import chronos.test.pdc.race.TestRace;
 
 
 /**
@@ -55,6 +56,7 @@ import chronos.test.pdc.buildings.BuildingsSuite;
      BuildingsSuite.class,
      // RegistrySuite.class, too slow
      TestRegistry.class,
+     CharacterSuite.class,
   
     /* PDC test files */
     // TestAdventure.class,

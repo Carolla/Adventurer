@@ -9,7 +9,7 @@ package chronos.pdc.race;
  * by email: acline@carolla.com
  */
 
-import static chronos.pdc.character.TraitList.PrimeTraits.*;
+import static chronos.pdc.character.TraitList.PrimeTraits.CON;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,7 +17,6 @@ import java.util.EnumMap;
 import java.util.List;
 
 import mylib.pdc.MetaDie;
-import pdc.character.race.Dwarf;
 import chronos.Chronos;
 import chronos.civ.PersonKeys;
 import chronos.pdc.character.Gender;
