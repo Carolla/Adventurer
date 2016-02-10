@@ -13,7 +13,7 @@ public class Gender
     MALE, FEMALE
   }
 
-  private Gender_e _gender;;
+  private Gender_e _gender;
 
   public Gender(String genderString)
   {
@@ -52,5 +52,15 @@ public class Gender
     traits.adjust(PrimeTraits.CON, 1);
     traits.adjust(PrimeTraits.CHR, 1);
     return traits;
+  }
+  
+  @Override
+  public String toString()
+  {
+    if (isMale()) {
+      return MALE_STRING;
+    } else {
+      return FEMALE_STRING;
+    }
   }
 }

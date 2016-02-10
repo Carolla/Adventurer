@@ -310,7 +310,7 @@ public class NewHeroIPPanel extends ChronosPanel
    */
   private JTextField makeNameField()
   {
-    _nameField = new JTextField();
+    _nameField = new JTextField(50);
 
     // Create DocumentFilter for restricting input length
     AbstractDocument d = (AbstractDocument) _nameField.getDocument();
@@ -380,6 +380,7 @@ public class NewHeroIPPanel extends ChronosPanel
    */
   private EnumMap<HeroInput, String> submit()
   {
+    _name = _nameField.getText();
     EnumMap<HeroInput, String> input = new EnumMap<HeroInput, String>(HeroInput.class);
     input.put(HeroInput.NAME, _name);
     input.put(HeroInput.GENDER, getGender());

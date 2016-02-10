@@ -50,6 +50,7 @@ public class Cleric extends Klass
     _hpDie = _hitDie;
     _goldDice = _startingGold;
     calcClericMods(traits.getTrait(_primeTrait));
+    _traits = traits;
   }
 
   // 8b. FOR CLERICS ONLY: CSPs/Level, CSPS, Turn Undead
@@ -92,9 +93,9 @@ public class Cleric extends Klass
   }
 
   @Override
-  public void loadKlassTraits(EnumMap<PersonKeys, String> map)
+  public void loadKlassKeys(EnumMap<PersonKeys, String> map)
   {
-    super.loadKlassTraits(map);
+    super.loadKlassKeys(map);
     map.put(PersonKeys.CURRENT_CSP, "" + _CSPs);
     map.put(PersonKeys.MAX_CSP, "" + _CSPs);
     map.put(PersonKeys.CSP_PER_LEVEL, "" + _CSPsPerLevel);

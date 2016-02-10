@@ -47,6 +47,7 @@ public class Wizard extends Klass
     _goldDice = _startingGold;
     calcWizardMods(traits.getTrait(INT));
     _MSPs = _MSPsPerLevel; // for first level
+    _traits = traits;
   }
 
   private void calcWizardMods(int intell)
@@ -83,9 +84,9 @@ public class Wizard extends Klass
 
 
   @Override
-  public void loadKlassTraits(EnumMap<PersonKeys, String> map)
+  public void loadKlassKeys(EnumMap<PersonKeys, String> map)
   {
-    super.loadKlassTraits(map);
+    super.loadKlassKeys(map);
     map.put(PersonKeys.TO_KNOW, "" + _percentToKnow);
     map.put(PersonKeys.CURRENT_MSP, "" + _MSPs);
     map.put(PersonKeys.MAX_MSP, "" + _MSPs);

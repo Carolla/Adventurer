@@ -252,11 +252,12 @@ public class Hero implements IRegistryElement
     // Row 5: Occupation, Description
     map.put(PersonKeys.OCCUPATION, _occ.getName());
     map.put(PersonKeys.DESCRIPTION, _description);
+    _race.loadRaceKeys(map);
 
 
     // Row 7: INT and INT mods: percent to know spell, current MSP, max MSP, MSPs/Level,
     // spells known (in book), and max languages
-    _klass.loadKlassTraits(map);
+    _klass.loadKlassKeys(map);
 
 
     // Row 11: CHR, then Weight and Height of Hero

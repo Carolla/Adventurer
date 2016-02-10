@@ -58,16 +58,21 @@ public abstract class Klass
     switch (klassName) {
       case FIGHTER_CLASS_NAME:
         klass = new Fighter(traits);
+        break;
       case CLERIC_CLASS_NAME:
-        klass =  new Cleric(traits);
+        klass = new Cleric(traits);
+        break;
       case WIZARD_CLASS_NAME:
-        klass =  new Wizard(traits);
+        klass = new Wizard(traits);
+        break;
       case THIEF_CLASS_NAME:
-        klass =  new Thief(traits);
+        klass = new Thief(traits);
+        break;
+      default:
+        throw new NullPointerException("Klass.createKlass(): Cannot find class requested " + klassName);
     }
     klass.rollHP();
-
-    throw new NullPointerException("Klass.createKlass(): Cannot find class requested " + klassName);
+    return klass;
   }
 
 
@@ -89,7 +94,7 @@ public abstract class Klass
     // Walk the list and find the largest trait
     int largest = -1;
     PrimeTraits largestTrait = PrimeTraits.STR;
-    
+
     for (PrimeTraits trait : PrimeTraits.class.getEnumConstants()) {
       int traitVal = traits.getTrait(trait);
       if (largest < traitVal) {
@@ -97,7 +102,7 @@ public abstract class Klass
         largestTrait = trait;
       }
     }
-    
+
     // Swap the prime trait
     traits.swapPrime(_primeTrait, largestTrait);
     return traits;
@@ -144,7 +149,7 @@ public abstract class Klass
   }
 
 
-  public void loadKlassTraits(EnumMap<PersonKeys, String> map)
+  public void loadKlassKeys(EnumMap<PersonKeys, String> map)
   {
     map.put(PersonKeys.KLASSNAME, _klassName);
     map.put(PersonKeys.HP, "" + _HP);
@@ -160,7 +165,7 @@ public abstract class Klass
     result = prime * result + ((_klassName == null) ? 0 : _klassName.hashCode());
     return result;
   }
-  
+
   @Override
   public boolean equals(Object obj)
   {

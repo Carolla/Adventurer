@@ -52,7 +52,7 @@ public class Thief extends Klass
     _primeTrait = PrimeTraits.DEX;
     _hpDie = _hitDie;
     _goldDice = _startingGold;
-    
+    _traits = traits;
   }
 
 

@@ -13,6 +13,7 @@ import java.util.EnumMap;
 
 import chronos.pdc.character.Hero;
 import chronos.pdc.character.Hero.HeroInput;
+import chronos.pdc.character.Klass;
 import chronos.pdc.registry.HeroRegistry;
 
 /**
@@ -30,8 +31,9 @@ public class NewHeroCiv extends BaseCiv
   public static final String[] HAIR_COLOR_LIST =
   {"bald", "black", "blonde", "brown", "gray", "red", "silver", "streaked", "white"};
 
+
   public static final String[] KLASS_LIST =
-  {"Fighter", "Cleric", "Thief", "Wizard"};
+  {Klass.FIGHTER_CLASS_NAME, Klass.CLERIC_CLASS_NAME, Klass.WIZARD_CLASS_NAME, Klass.THIEF_CLASS_NAME};
 
 
   /** ErrorCode for type of error encountered on input */

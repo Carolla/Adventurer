@@ -390,12 +390,7 @@ public class HeroDisplay extends ChronosPanel
     _skillPanel.add(gridCell("", _ds.get(PersonKeys.LITERACY)), "gaptop 10, span 6, growx, wrap");
 
     // Section 2: Occupational Skills title
-    String occupation = _ds.get(PersonKeys.OCCUPATION);
-    int nameIndex = occupation.indexOf(":");
-    String ocpName = occupation.substring(0, nameIndex);
-    String ocpDesc = occupation.substring(nameIndex + 1);
-    String ocpTitle = ocpName.toUpperCase() + " SKILLS: " + ocpDesc;
-    _skillPanel.add(buildMultiCell(ocpTitle, ocpSkills), "growx, wrap");
+    _skillPanel.add(buildMultiCell(_ds.get(PersonKeys.OCCUPATION) + " SKILLS: ", ocpSkills), "growx, wrap");
 
     // Section 3: Racial skills
     _skillPanel
