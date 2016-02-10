@@ -322,7 +322,6 @@ public class Prototype
     String className = sourceText.split(".java")[0];
     // Convert the file path format to package format by replacing the "/" with "."
     className = className.replaceAll("/", ".");
-//    className = className.replace("/", ".");
   
     Class<?> sourceClass = null;
     try {
@@ -340,7 +339,7 @@ public class Prototype
    * @param clazz target source file
    * @return list of public method names for the target (includes arguments to methods)
    */
-  private void getMethods(Class<?> clazz)
+  private void getMethods(Class<?> clazz)       
   {
     String clazzName = clazz.getSimpleName();
     Method[] rawMethodList = clazz.getDeclaredMethods();
