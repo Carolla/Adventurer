@@ -19,10 +19,6 @@ import chronos.pdc.character.TraitList.PrimeTraits;
  */
 public class Elf extends Race
 {
-  // Statics and transients that are not serialized with the Race class hierarchy
-  /** Recommended serialization constant. */
-  static final long serialVersionUID = 1100L;
-
   /** Weight ranges */
   protected final int _maleMedValue = 100;;
   protected final int _femaleMedValue = 80;

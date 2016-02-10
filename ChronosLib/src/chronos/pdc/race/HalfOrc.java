@@ -20,10 +20,6 @@ import chronos.pdc.character.TraitList.PrimeTraits;
  */
 public class HalfOrc extends Race
 {
-  // Statics and transients that are not serialized with the Race class hierarchy
-  /** Recommended serialization constant. */
-  static final long serialVersionUID = 1100L;
-
   /** Racial limits for a Half-Orc for the traits */
   private final int[] minLimit = {9, 7, 7, 7, 13, 7};
   private final int[] maxLimit = {19, 17, 14, 17, 19, 12};

@@ -20,10 +20,6 @@ import chronos.pdc.character.TraitList.PrimeTraits;
  */
 public class Hobbit extends Race
 {
-  // Statics and transients that are not serialized with the Race class hierarchy
-  /** Recommended serialization constant. */
-  static final long serialVersionUID = 1100L;
-
   /** Racial limits for a Hobbit for the traits */
   private final int[] minLimit = {7, 7, 7, 8, 10, 7};
   private final int[] maxLimit = {17, 18, 17, 18, 19, 18};

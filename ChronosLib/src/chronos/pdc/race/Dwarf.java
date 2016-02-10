@@ -32,7 +32,7 @@ public class Dwarf extends Race
   protected final String _wtHighDice = "2d12";
 
   /** Height ranges */
-  protected final int _htMaleMedValue = 48;;
+  protected final int _htMaleMedValue = 48;
   protected final int _htFemaleMedValue = 46;
   protected final String _htLowDice = "d4";
   protected final String _htHighDice = "d6";

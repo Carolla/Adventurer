@@ -31,13 +31,6 @@ import chronos.pdc.race.Race;
  *          </DL>
  */
 public class TestRace  {
-
-	private final String[] _races = { "Human", "Dwarf", "Elf", "Gnome",
-			"Half-Elf", "Half-Orc", "Hobbit" };
-  
-
-
-
 	// -------------------------------------------------------------------------
 	// BEGIN TESTING
 	// -------------------------------------------------------------------------
@@ -55,9 +48,9 @@ public class TestRace  {
 		// NORMAL
 		// Human and Dwarf are only classes implemented now
 		Race aRace = null;
-		for (int k = 0; k < _races.length; k++) {
-			aRace = Race.createRace(_races[k], new Gender("Male"));
-			assertTrue(aRace.getName().equals(_races[k]));
+		for (int k = 0; k < Race.RACE_LIST.length; k++) {
+			aRace = Race.createRace(Race.RACE_LIST[k], new Gender("Male"));
+			assertTrue(aRace.getName().equals(Race.RACE_LIST[k]));
 		}
 	}
 
