@@ -1,5 +1,5 @@
 /**
- * TestQA_Tool.java Copyright (c) 2016, Carolla Development, Inc. All Rights Reserved
+ * TestQATool.java Copyright (c) 2016, Carolla Development, Inc. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
@@ -31,7 +31,7 @@ import pdc.QATool.MockTool;
  * @version Dec 31, 2015 // original <br>
  * @version Jan 19 2016 // updated for unchanging file structure instead of live directories <br>
  */
-public class TestQA_Tool
+public class TestQATool
 {
   // Setup expected comparisons paths
   final String[] allSrcStr =

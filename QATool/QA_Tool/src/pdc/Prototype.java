@@ -103,30 +103,40 @@ public class Prototype
 
 
   /**
-   * Create an empty test file in a corresponding directory as the source's directory. <br>
+   * Create an prototype test file in a corresponding directory as the source's directory. <br>
    * 
-   * @param testDir highest directory in which to place the test file created
-   * @param srcName path of the source file that will correspond to the target test file created
+   * @param srcDir highest directory for all source files
+   * @param testDir highest directory for all test files
+   * @param srcPath path of the source file that will correspond to the target test file created
    * @return the File created
    */
-  public File createFile(File testDir, String srcName)
+  public File createFile(File srcDir, File testDir, String srcPath)
   {
     // Guard against bad combination of directory and source file
+    if (!srcDir.isDirectory()) {
+      System.err.println("createFile: srcDir must be a directory");
+      return null;
+    }
     if (!testDir.isDirectory()) {
       System.err.println("createFile: testDir must be a directory");
       return null;
     }
     // Guard against bad combination of directory and source file
-    if (new File(srcName).isDirectory()) {
-      System.err.println("createFile: srcName cannot be a directory");
+    File srcFile = new File(srcDir + "/" + srcPath);
+    if (!srcFile.exists()) {
+//      System.err.println("createFile: srcPath does not exist");
+      return null;
+    }
+    if (srcFile.isDirectory()) {
+      System.err.println("createFile: srcPath cannot be a directory");
       return null;
     }
 
     // Extract then traverse subdirectories to 'write' destination
-    String[] subdirList = srcName.split("/");
+    String[] subdirList = srcPath.split("/");
     File parent = testDir;
     int k = 0;
-    // Create subdirectories as traversing to the srcName
+    // Create subdirectories as traversing to the srcPath
     for (; k < subdirList.length - 1; k++) {
       File subdir = new File(parent, subdirList[k]);
       subdir.mkdir(); // make the subdir if it doesn't exist
@@ -140,10 +150,38 @@ public class Prototype
     } catch (IOException e) {
       System.err.println("\tcreateFile(): Problems creating the new protoFile. " + e.getMessage());
     }
+    // Write the contents into the prototype test file
+//    writeFile(_protoFile, srcPath);
     _writer.close();
     return _protoFile;
   }
 
+  
+  /** Check on existence of src Path and make test file name for it
+   * 
+   * @param root  parent path for srcPath and test directory
+   * @param srcPath relative path of source file
+   * @return test file name that corresponds to source file
+   */
+  public String getTestFilename(String root, String srcPath) 
+  {
+    // Guard against null source file
+    File srcFile = new File(root + srcPath);
+    if (!srcFile.exists()) {
+      return null;
+    }
+    // Insert the prefix "Test" to the src file name
+    StringBuilder sbTest = new StringBuilder();   
+    sbTest.append(root);
+    // Replace name with Test<Name> 
+    int ndx = srcPath.lastIndexOf("/");  
+    sbTest.append(srcFile.getName().substring(0,ndx+1));
+    sbTest.append("Test");
+    sbTest.append(srcPath.substring(ndx+1));
+    
+    return sbTest.toString();
+  }
+  
 
   /**
    * Writes a prototype test template with JUnit test stubs and Chronos-specific data
@@ -283,7 +321,8 @@ public class Prototype
     // Remove the file extension
     String className = sourceText.split(".java")[0];
     // Convert the file path format to package format by replacing the "/" with "."
-    className = className.replace("/", ".");
+    className = className.replaceAll("/", ".");
+//    className = className.replace("/", ".");
   
     Class<?> sourceClass = null;
     try {
