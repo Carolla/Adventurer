@@ -7,7 +7,7 @@
  * by email: acline@carolla.com
  */
 
-package pdc;
+package pdc.subDir;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,8 +31,6 @@ public class Prototype
   private final String SPACE = " ";
   private final String LEFT_PAREN = "(";
   private final String RIGHT_PAREN = ")";
-
-  private final String JAVA = ".java";
 
   /** Categories of methods to put into the test prototype */
   enum Banner {
@@ -109,8 +107,8 @@ public class Prototype
 
   // ======================================================================
   // PUBLIC METHODS
-  // ======================================================================
-
+  // ======================================================================  
+  
   /**
    * Create an prototype test file in a corresponding directory as the source's directory. <br>
    * 
@@ -140,7 +138,7 @@ public class Prototype
       System.err.println("createFile: srcPath cannot be a directory");
       return null;
     }
-
+  
     // Extract then traverse subdirectories to 'write' destination
     String[] subdirList = srcPath.split("/");
     File parent = testDir;
@@ -167,35 +165,28 @@ public class Prototype
 
 
   /**
-   * Makew a test file name from the source path and test directory. Does not create Files.
+   * Check on existence of src Path and make test file name for it
    * 
-   * @param testPath  directory name for parent of all test classes
+   * @param root parent path for srcPath and test directory
    * @param srcPath relative path of source file
    * @return test file name that corresponds to source file
    */
-  public String makeTestFilename(String testPath, String srcPath)
+  public String getTestFilename(String root, String srcPath)
   {
-    // Guard against non-Java files
-    if (!srcPath.contains(JAVA)) {
+    // Guard against null source file
+    File srcFile = new File(root + srcPath);
+    if (!srcFile.exists()) {
       return null;
     }
-//    // Find the test directory for the source root
-//    QATool qat = new QATool(root);
-//    File testDir = qat.findTestDir(new File(root));
-//    String testRoot = testDir.getAbsolutePath() + "/";
-
     // Insert the prefix "Test" to the src file name
     StringBuilder sbTest = new StringBuilder();
-    sbTest.append(testPath);
-    sbTest.append(srcPath);
+    sbTest.append(root);
     // Replace name with Test<Name>
-    int lastDelim = sbTest.lastIndexOf("/");
-    sbTest.insert(lastDelim+1, "Test");
-    // int ndx = srcPath.lastIndexOf("/");
-    // sbTest.append(srcFile.getName().substring(0, ndx + 1));
-    // sbTest.append("Test");
-    // sbTest.append(srcPath.substring(ndx + 1));
-
+    int ndx = srcPath.lastIndexOf("/");
+    sbTest.append(srcFile.getName().substring(0, ndx + 1));
+    sbTest.append("Test");
+    sbTest.append(srcPath.substring(ndx + 1));
+  
     return sbTest.toString();
   }
 
@@ -219,14 +210,14 @@ public class Prototype
     // 1. Write the copyright notice into the prototype
     String copyright = String.format(COPYRIGHT, _protoFile.getName());
     out.println(copyright);
-
+  
     // 2. Write the package statements for this test class
     String pkgStatement = String.format("\npackage test.%s;\n", target.getParentFile().getName());
     out.println(pkgStatement);
-
+  
     // 3. Write the JUnit import statements
     out.println(JUNIT_IMPORTS);
-
+  
     // 4. Write header comment, author, and version
     // Remove the .java extension from the filename
     String className = target.getName();
@@ -234,22 +225,22 @@ public class Prototype
     String name = className.substring(0, ndx);
     String version = String.format(AUTHOR_VERSION, new Date(), name);
     out.println(version);
-
+  
     // 5. Write the four JUnit setup and teardown methods
     out.println(buildPrepMethods());
-
+  
     // 6. Accummulate and sort test methods by modifier
     // First convert the source file name to a source file class
     Class<?> sourceClass = convertSource(source);
     getMethods(sourceClass); // store lists in class Field
-
+  
     // 7a. Write the public methods beneath a public banner
     writeCodeBlocks(out, _publics, Banner.PUBLIC);
     writeCodeBlocks(out, _protecteds, Banner.PROTECTED);
-
+  
     // 8. Write the class closing brace
     out.println(String.format("} \t// end of %s class", _protoFile.getName()));
-
+  
     out.close();
     return target;
   }
@@ -393,10 +384,10 @@ public class Prototype
         // Tokenize into three parts: method name, parm list, return type
         String name1 = sig1.substring(sig1.indexOf(SPACE) + 1, sig1.indexOf(LEFT_PAREN));
         String name2 = sig2.substring(sig2.indexOf(SPACE) + 1, sig2.indexOf(LEFT_PAREN));
-        String parms1 = sig1.substring(sig1.indexOf(LEFT_PAREN), sig1.indexOf(RIGHT_PAREN) + 1);
-        String parms2 = sig2.substring(sig2.indexOf(LEFT_PAREN), sig2.indexOf(RIGHT_PAREN) + 1);
-        // System.err.println("\t\t sort loops = " + ++count);
-
+        String parms1 = sig1.substring(sig1.indexOf(LEFT_PAREN), sig1.indexOf(RIGHT_PAREN)+1);
+        String parms2 = sig2.substring(sig2.indexOf(LEFT_PAREN), sig2.indexOf(RIGHT_PAREN)+1);
+//        System.err.println("\t\t sort loops = " + ++count);
+        
         // Compare method names
         int retval = name1.compareTo(name2); // compare method names
         // Compare number of parms and parms names

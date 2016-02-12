@@ -10,7 +10,6 @@
 package test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -115,65 +114,134 @@ public class TestPrototype
   // ===============================================================================
 
   /**
-   * @NORMAL.TEST
+   * NORMAL.TEST File createFile(File, String)
    */
-//   @Test
+  @Test
+  public void testCreateFile()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // SETUP: Define source root
+    String[] srcFile = {
+        "pdc/NoFile.java", // src file doesn't exist
+        "pdc/FileMap.java", // contains no test file
+        "pdc/Prototype.java", // contains a test file
+        "pdc/subDir/Prototype.java", // contains no test file in this subdirectory
+    };
+    String[] expFile = {
+        "null", // src file doesn't exist
+        "test/pdc/TestFileMap.java", // contains no test file
+        "test/pdc/TestPrototype.java", // contains a test file
+        "test/pdc/subDir/TestPrototype.java", // contains no test file in this subdirectory
+    };
+
+    // Generate new test file QA_Tool/src/pdc/TestFileMap.java
+    MsgCtrl.msgln("\ttestCreateFile SRC_ROOT = " + SRC_ROOT);
+    File srcDir = new File(SRC_ROOT);
+
+    // 0. RUN Error: Missing source file returns null
+    MsgCtrl.msgln("\tsource file to examine = " + SRC_ROOT + srcFile[0]);
+    _target = _proto.createFile(srcDir, _testDir, srcFile[0]);
+    assertNull(_target);
+
+    // 1. RUN No test file exists for source target
+    MsgCtrl.msgln("\tsource file to examine = " + SRC_ROOT + srcFile[1]);
+    _target = _proto.createFile(srcDir, _testDir, srcFile[1]);
+    assertNotNull(_target);
+    String path = _target.getAbsolutePath();
+    MsgCtrl.msgln("\ttestFile to be created: \t" + expFile[1]);
+    assertTrue(_target.getAbsoluteFile().exists());
+    assertTrue(path.equals(SRC_ROOT + expFile[1]));
+
+    // 2. RUN Test file already exists for the source target
+    MsgCtrl.msgln("\tsource file to examine = " + SRC_ROOT + srcFile[2]);
+    _target = _proto.createFile(srcDir, _testDir, srcFile[2]);
+    assertNotNull(_target);
+    path = _target.getAbsolutePath();
+    MsgCtrl.msgln("\ttestFile to be created: \t" + expFile[2]);
+    assertTrue(_target.getAbsoluteFile().exists());
+    assertTrue(path.equals(SRC_ROOT + expFile[2]));
+
+    // 3. RUN Test file exists but not in target subdirectory, should proceed
+    MsgCtrl.msgln("\tsource file to examine = " + SRC_ROOT + srcFile[3]);
+    _target = _proto.createFile(srcDir, _testDir, srcFile[3]);
+    assertNotNull(_target);
+    path = _target.getAbsolutePath();
+    MsgCtrl.msgln("\ttestFile to be created: \t" + expFile[3]);
+    assertTrue(_target.getAbsoluteFile().exists());
+    assertTrue(path.equals(SRC_ROOT + expFile[3]));
+
+    // TEARDOWN: delete newly created test files but leave existing ones
+    for (int k = 1; k < expFile.length; k++) {
+      File f = new File(SRC_ROOT + expFile[k]);
+      if (f.length() == 0) {
+        f.delete();
+      }
+    }
+  }
+
+
+  /**
+   * @NORMAL.TEST String makeTestFilename(String, String)
+   */
+  @Test
   public void testGetTestFilename()
   {
     MsgCtrl.auditMsgsOn(true);
     MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
-    // SETUP
-    String[] srcFile = {
+    // SETUP Doesn't matter if the test file exists or not; this method is a string builder
+    String[] srcPath = {
         "pdc/QATool.java", // contains a test file
         "pdc/FileMap.java", // contains no test file
-        "pdc/Fakeroonie.java", // src file doesn't exist
+        "pdc/NoFile.java", // src file doesn't exist but doesn't matter for this test
+        "ing_Testing.java", // and something silly
+        "not a Java file" // should return null
     };
-    String[] expFile = {
+    String[] expPath = {
         "pdc/TestQATool.java", // contains a test file
         "pdc/TestFileMap.java", // contains no test file
-        "" // src file doesn't exist
+        "pdc/TestNoFile.java", // src file doesn't exist but doesn't matter for this test
+        "Testing_Testing.java", // and something silly
+        "", // not a java file, should reutrn null
     };
 
     File testDir = _qat.findTestDir(new File(SRC_ROOT));
     String testRoot = testDir.getAbsolutePath() + "/";
     MsgCtrl.msgln("\t Test directory at " + testRoot);
 
-    // RUN For a given source file, find its corresponding test file (or absence of)
-    // Source contains a test file
-    String testPath = _proto.getTestFilename(SRC_ROOT, srcFile[0]);
-    File tf = new File(testRoot + testPath);
-    MsgCtrl.msgln("\t Test file found: " + tf.getAbsolutePath());
-    assertTrue(tf.exists());
-    assertEquals(testRoot + expFile[0], tf.getAbsolutePath());
+    // RUN For a given set of source names, create the correcponding test file names
+    for (int k = 0; k < 3; k++) {
+      // Source contains a test file
+      String testPath = _proto.makeTestFilename(testRoot, srcPath[k]);
+      File tf = new File(testPath);
+      MsgCtrl.msgln("\t Test file name created: " + tf.getAbsolutePath());
+      String fullPath = testRoot + expPath[k];
+      assertTrue(fullPath.equals(tf.getAbsolutePath()));
+    }
 
-    // Source contains no test file
-    testPath = _proto.getTestFilename(SRC_ROOT, srcFile[1]);
-    tf = new File(testRoot + testPath);
-    assertFalse(tf.exists());
-    MsgCtrl.msgln("\t Test file found: " + tf.getAbsolutePath());
-    assertEquals(testRoot + expFile[1], tf.getAbsolutePath());
-
-    // Source does not exist
-    testPath = _proto.getTestFilename(SRC_ROOT, srcFile[2]);
+    // ERROR Source name is not a java file
+    String testPath = _proto.makeTestFilename(testRoot, srcPath[4]);
     assertNull(testPath);
-
   }
+
 
   /**
    * @NORMAL.TEST
    */
-//  @Test
+  @Test
   public void testSrcList()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // For the given root, list all source files (relative path)
     File srcDir = new File(SRC_ROOT);
-    int rootLen = SRC_ROOT.length()-1;    // length of the path to skip
+    int rootLen = SRC_ROOT.length() - 1; // length of the path to skip
     ArrayList<String> srcList = _qat.buildSourceList(srcDir, rootLen);
     File testDir = _qat.findTestDir(srcDir);
     String testRoot = testDir.getAbsolutePath() + "/";
@@ -181,22 +249,22 @@ public class TestPrototype
 
     // RUN For each source file, collect its test name and check if that File exists
     ArrayList<File> testList = new ArrayList<File>(srcList.size());
-    MsgCtrl.msgln("\t" +  srcList.size() +  " total files found.");
+    MsgCtrl.msgln("\t" + srcList.size() + " total files found.");
     int count = 0;
     for (String src : srcList) {
       // Source contains a test file
-      String testName = _proto.getTestFilename(SRC_ROOT, src);
-      MsgCtrl.msgln("\tSource file:" +  src);
+      String testName = _proto.makeTestFilename(SRC_ROOT, src);
+      MsgCtrl.msgln("\tSource file:" + src);
       File testFile = new File(testRoot + testName);
       if (!testFile.exists()) {
         MsgCtrl.msgln("\t\tCreating new test file " + testName);
         _proto.createFile(srcDir, testDir, src);
         count++;
-        testList.add(testFile);   // save the test files for later deletion during cleanup
+        testList.add(testFile); // save the test files for later deletion during cleanup
       }
     }
-    MsgCtrl.msgln("\t" +  count + " new files created.");
-    
+    MsgCtrl.msgln("\t" + count + " new files created.");
+
     // TEARDOWN Delete all files in testDir with zero length
     for (File f : testList) {
       if (f.length() == 0) {
@@ -204,54 +272,8 @@ public class TestPrototype
         f.delete();
       }
     }
-    
+
   }
-
-
-//  /**
-//   * NORMAL.TEST File createFile(File, String)
-//   */
-//  // @Test
-//  public void testCreateFile()
-//  {
-//    MsgCtrl.auditMsgsOn(true);
-//    MsgCtrl.errorMsgsOn(true);
-//    MsgCtrl.where(this);
-//
-//    // SETUP: Define source root
-//    String[] srcFile = {
-//        "pdc/Fakeroonie.java", // src file doesn't exist
-//        "pdc/FileMap.java", // contains no test file
-//        "Prototype.java", // contains a test file
-//        "pdc/subDir/Prototype.java", // contains no test file in this subdirectory
-//    };
-//
-//    MsgCtrl.msgln("\ttestCreateFile SRC_ROOT = " + SRC_ROOT);
-//
-//    // RUN: Generate new test file QA_Tool/src/pdc/TestFileMap.java
-//    for (int k = 1; k < srcFile.length; k++) {
-//      // RUN: Generate new test file QA_Tool/src/pdc/TestFileMap.java
-//      _target = _proto.createFile(_testDir, srcFile[k]);
-//
-//      // VERIFY
-//      String path = _target.getAbsolutePath();
-//      MsgCtrl.msgln("\ttestFile to be created: \t" + PROTO_NAME);
-//      MsgCtrl.msgln("\ttestFile created: \t\t\t" + path);
-//      assertTrue(_target.getAbsoluteFile().exists());
-//      assertTrue(path.equals(PROTO_NAME));
-//      assertEquals(0, _target.length());
-//    }
-//
-//    // Error test: source file does not exist
-//    _target = _proto.createFile(_testDir, ROOT + srcFile[0]);
-//    assertNull(_target);
-//
-//
-//    // TEARDOWN: delete test file and parent dir
-//    // File parent = _target.getParentFile();
-//    // _target.delete();
-//    // parent.delete();
-//  }
 
 
   /**
@@ -260,20 +282,24 @@ public class TestPrototype
   @Test
   public void testWriteFile()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // SETUP: Create the file in the right place
     String srcName = "pdc/Prototype.java";
     String testFile = "TestPrototype.java";
-    int NBR_PUBLIC_TESTS = 2;
+    int NBR_PUBLIC_TESTS = 3;
     int NBR_PROTECTED_TESTS = 0;
-    String[] rawSigs = {
-        "public java.io.File pdc.Prototype.createFile(java.io.File,java.lang.String)",
-        "public java.io.File pdc.Prototype.writeFile(java.io.File,java.lang.String)"};
     String[] expSigs = {
-        "File createFile(File, String)", "File writeFile(File, String)"};
+        "File createFile(File, File, String)",
+        // "void fake1()",
+        // "long fake1(String)",
+        // "File fake1(File, long)",
+        // "File fake2(File, long)",
+        "String makeTestFilename(String, String)",
+        "File writeFile(File, String)",
+    };
 
     File srcDir = new File(SRC_ROOT);
     _target = _proto.createFile(srcDir, _testDir, srcName);
@@ -290,11 +316,18 @@ public class TestPrototype
 
     ArrayList<String> publix = _mock.getPublicMethods();
     assertEquals(NBR_PUBLIC_TESTS, publix.size());
-    assertEquals(expSigs[0], publix.get(0));
-    assertEquals(expSigs[1], publix.get(1));
+    MsgCtrl.msgln("\tPUBLIC METHODS");
+    for (int k = 0; k < publix.size(); k++) {
+      MsgCtrl.msgln("\t\t" + publix.get(k));
+      assertEquals(expSigs[k], publix.get(k));
+    }
 
     ArrayList<String> protex = _mock.getProtectedMethods();
     assertEquals(NBR_PROTECTED_TESTS, protex.size());
+    MsgCtrl.msgln("\tPROTECTED METHODS");
+    for (String s : protex) {
+      MsgCtrl.msgln("\t" + s);
+    }
 
   }
 

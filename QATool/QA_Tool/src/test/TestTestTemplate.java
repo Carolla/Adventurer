@@ -10,7 +10,6 @@
 package test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -23,9 +22,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import chronos.pdc.registry.RegistryFactory;
 import mylib.MsgCtrl;
 import mylib.pdc.Utilities;
+import pdc.FileMap;
 import pdc.TestTemplate;
 
 /**
@@ -43,7 +42,7 @@ public class TestTestTemplate
   private final String SOURCE_ROOT =
       "/Projects/eChronos/QATool/QA_Tool/simTree/src/chronos";
   /** Target source file for testing */
-  private final Class SRC_TARGET = RegistryFactory.class;
+  private final Class SRC_TARGET = FileMap.class;
   private final String TEST_ROOT =
       "/Projects/eChronos/QATool/QA_Tool/simTree/src/chronos/test/";
 
