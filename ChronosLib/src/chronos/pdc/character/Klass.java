@@ -91,20 +91,7 @@ public abstract class Klass
    */
   public TraitList adjustTraitsForKlass(TraitList traits)
   {
-    // Walk the list and find the largest trait
-    int largest = -1;
-    PrimeTraits largestTrait = PrimeTraits.STR;
-
-    for (PrimeTraits trait : PrimeTraits.class.getEnumConstants()) {
-      int traitVal = traits.getTrait(trait);
-      if (largest < traitVal) {
-        largest = traitVal;
-        largestTrait = trait;
-      }
-    }
-
-    // Swap the prime trait
-    traits.swapPrime(_primeTrait, largestTrait);
+    traits.swapPrime(_primeTrait);
     return traits;
   }
 

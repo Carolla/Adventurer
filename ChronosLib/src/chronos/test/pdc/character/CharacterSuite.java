@@ -13,6 +13,7 @@ package chronos.test.pdc.character;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import chronos.pdc.character.TestTraitList;
 import chronos.test.pdc.race.TestRace;
 
 
@@ -24,7 +25,6 @@ import chronos.test.pdc.race.TestRace;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    // PDC.buildings test files:
     TestRace.class,
     TestDwarf.class,
     TestElf.class,
@@ -33,7 +33,7 @@ import chronos.test.pdc.race.TestRace;
     TestHalfOrc.class,
     TestHobbit.class,
     TestHuman.class,
-//    TestHunger.class,
+    TestTraitList.class,
 //    TestPatron.class
 })
 /** Compilation of all unit tests for regression and integration testing. */

@@ -15,7 +15,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import chronos.pdc.character.TestGender;
-import chronos.pdc.character.TestTraitList;
 import chronos.test.pdc.TestOccupation;
 import chronos.test.pdc.TestSkill;
 import chronos.test.pdc.buildings.BuildingsSuite;
@@ -71,7 +70,6 @@ import chronos.test.pdc.race.TestRace;
      TestOccupation.class,
      TestRace.class,
      TestSkill.class,
-     TestTraitList.class,
     // TestTown.class,
 
 })

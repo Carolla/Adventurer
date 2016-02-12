@@ -79,15 +79,33 @@ public class TraitList
   /**
    * Swap the largest raw trait for the prime trait with the specific klass
    * 
-   * @param primeTrait the trait that should be the largest trait 
-   * @param largestTrait the index of the largest trait to swap
+   * @param primeTrait the trait that should be the largest trait
    */
-  public void swapPrime(PrimeTraits primeTrait, PrimeTraits largestTrait)
+  public void swapPrime(PrimeTraits primeTrait)
   {
+    
     int oldPrime = getTrait(primeTrait);
-    int largest = getTrait(largestTrait);
+    PrimeTraits largestTrait = findLargestTrait();
+    int largest = getTrait(largestTrait );
     _traits.put(primeTrait, largest);
     _traits.put(largestTrait, oldPrime);
+  }
+
+  public PrimeTraits findLargestTrait()
+  {
+    // Walk the list and find the largest trait
+    int largest = -1;
+    PrimeTraits largestTrait = PrimeTraits.STR;
+
+    for (PrimeTraits trait : PrimeTraits.values()) {
+      int traitVal = getTrait(trait);
+      if (largest < traitVal) {
+        largest = traitVal;
+        largestTrait = trait;
+      }
+    }
+    
+    return largestTrait;
   }
 
   public int getStrDmgBonus()
@@ -129,7 +147,6 @@ public class TraitList
 
   public void recalcSpeed(int height)
   {
-    // Adjust for height
     if (height < 49) {
       _speed -= 1;
     }
@@ -223,5 +240,10 @@ public class TraitList
   public int getMaxLangs()
   {
     return getTrait(INT) / 2 - 3;
+  }
+
+  public boolean isLargestTrait(PrimeTraits trait)
+  { 
+    return getTrait(findLargestTrait()) == getTrait(trait);
   }
 }
