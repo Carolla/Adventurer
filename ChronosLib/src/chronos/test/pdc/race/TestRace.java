@@ -25,76 +25,21 @@ import chronos.pdc.race.Race;
  * @author Alan Cline
  * @version <DL>
  *          <DT>Build 1.0 Jun 4, 2009 // original
- *          <DD>
  *          <DT>Build 2.0 Jan 18, 2010 // add in non-Human racial tests
- *          <DD>
  *          </DL>
  */
-public class TestRace  {
-	// -------------------------------------------------------------------------
-	// BEGIN TESTING
-	// -------------------------------------------------------------------------
+public class TestRace  
+{
 
-	/**
-	 * Test the various Races that can be created
-	 * 
-	 * @Normal Race.createRace(String ) implemented classes checked
-	 * @Null Race.createRace(String ) N/A
-	 * @Error Race.createRace(String ) unimplemented classes checked
-	 */
 	@Test
 	public void testCreateRace() 
 	{
-		// NORMAL
-		// Human and Dwarf are only classes implemented now
 		Race aRace = null;
 		for (int k = 0; k < Race.RACE_LIST.length; k++) {
 			aRace = Race.createRace(Race.RACE_LIST[k], new Gender("Male"));
 			assertTrue(aRace.getName().equals(Race.RACE_LIST[k]));
 		}
 	}
-
-	
-	// -------------------------------------------------------------------------
-	// QA SUPPORT
-	// -------------------------------------------------------------------------
-	/**
-	 * Tests that are not needed for various reasons, mostly setters and getters
-	 * 
-	 * @Not_Needed Race.Race() simple random call
-	 * @Not_Needed Race.adjTraitsForRace(int[] defValues) wrapper
-	 * @Not_Needed Race.calcHeight(int maleHt, int femaleHt) wrapper
-	 * @Not_Needed Race.calcWeight(int maleWt, int femaleWt) wrapper
-	 * @Not_Needed Race.calcMaxSatiety(int satietyRate)
-	 * @Not_Needed Race.getAge() getter
-	 * @Not_Needed Race.getAgeCategory() getter
-	 * @Not_Needed Race.getGender() getter
-	 * @Not_Needed Race.getHeight() getter
-	 * @Not_Needed Race.getHungerState() getter
-	 * @Not_Needed Race.getMagicAttackAdj() getter
-	 * @Not_Needed Race.getMvmt() getter
-	 * @Not_Needed Race.getRaceName() getter
-	 * @Not_Needed Race.getRaceTypes() getter
-	 * @Not_Needed Race.getToHitMissile() getter
-	 * @Not_Needed Race.getWeight() getter
-	 * @Not_Needed Race.setGender(String gender) setter
-	 * @Not_Needed Race.updateToHitAdjMissile(int defAdj, int dex) setter
-	 */
-	public void testNotNeeded() {
-	}
-
-	public void testNotImplemented() {
-	}
-	/**
-	 * Tests that are not yet implemented Public and protected methods
-	 * 
-	 * @Not_Implemented Race.initAge(int topYoungster)
-	 * @Not_Implemented Race.findRangeDescriptor(double value, double minValue,
-	 *                  double maxValue, String[] descriptors)
-	 * @Not_Implemented Race.packShuttle(EnumMap<PersonFields, String> fields)
-	 * @Not_Implemented Race.verifyTraits(int[] traits, int[] minList, int[]
-	 *                  maxList)
-	 */
 
 } // end of TestRace class
 
