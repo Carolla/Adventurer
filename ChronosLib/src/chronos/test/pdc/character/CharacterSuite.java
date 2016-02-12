@@ -26,13 +26,13 @@ import chronos.test.pdc.race.TestRace;
 @Suite.SuiteClasses({
     // PDC.buildings test files:
     TestRace.class,
-    //    TestDwarf.class,
-    //    TestElf.class,
-    //    TestGnome.class,
-    //    TestHalfElf.class,
-    //    TestHalfOrc.class,
-    //    TestHobbit.class,
-    //    TestHuman.class,
+    TestDwarf.class,
+    TestElf.class,
+    TestGnome.class,
+    TestHalfElf.class,
+    TestHalfOrc.class,
+    TestHobbit.class,
+    TestHuman.class,
 //    TestHunger.class,
 //    TestPatron.class
 })
