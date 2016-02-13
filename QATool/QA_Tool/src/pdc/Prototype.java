@@ -11,14 +11,12 @@ package pdc;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 
 /**
  * @author Alan Cline
@@ -111,144 +109,192 @@ public class Prototype
   // PUBLIC METHODS
   // ======================================================================
 
-  /**
-   * Create an prototype test file in a corresponding directory as the source's directory. <br>
-   * 
-   * @param srcDir highest directory for all source files
-   * @param testDir highest directory for all test files
-   * @param srcPath path of the source file that will correspond to the target test file created
-   * @return the File created
-   */
-  public File createFile(File srcDir, File testDir, String srcPath)
-  {
-    // Guard against bad combination of directory and source file
-    if (!srcDir.isDirectory()) {
-      System.err.println("createFile: srcDir must be a directory");
-      return null;
-    }
-    if (!testDir.isDirectory()) {
-      System.err.println("createFile: testDir must be a directory");
-      return null;
-    }
-    // Guard against bad combination of directory and source file
-    File srcFile = new File(srcDir + "/" + srcPath);
-    if (!srcFile.exists()) {
-      // System.err.println("createFile: srcPath does not exist");
-      return null;
-    }
-    if (srcFile.isDirectory()) {
-      System.err.println("createFile: srcPath cannot be a directory");
-      return null;
-    }
+  // /**
+  // * Create an prototype test file in a corresponding directory as the source's directory. <br>
+  // *
+  // * @param srcDir highest directory for all source files
+  // * @param testDir highest directory for all test files
+  // * @param srcPath path of the source file that will correspond to the target test file created
+  // * @return the File created
+  // */
+  // public File createFile(File srcDir, File testDir, String srcPath)
+  // {
+  // // Guard against bad combination of directory and source file
+  // if (!srcDir.isDirectory()) {
+  // System.err.println("createFile: srcDir must be a directory");
+  // return null;
+  // }
+  // if (!testDir.isDirectory()) {
+  // System.err.println("createFile: testDir must be a directory");
+  // return null;
+  // }
+  // // Guard against bad combination of directory and source file
+  // File srcFile = new File(srcDir + "/" + srcPath);
+  // if (!srcFile.exists()) {
+  // // System.err.println("createFile: srcPath does not exist");
+  // return null;
+  // }
+  // if (srcFile.isDirectory()) {
+  // System.err.println("createFile: srcPath cannot be a directory");
+  // return null;
+  // }
+  //
+  // // Extract then traverse subdirectories to 'write' destination
+  // String[] subdirList = srcPath.split("/");
+  // File parent = testDir;
+  // int k = 0;
+  // // Create subdirectories as traversing to the srcPath
+  // for (; k < subdirList.length - 1; k++) {
+  // File subdir = new File(parent, subdirList[k]);
+  // subdir.mkdir(); // make the subdir if it doesn't exist
+  // parent = subdir;
+  // }
+  // // Last file in subdirList is the prototype's filename
+  // String targetName = parent.getAbsolutePath() + "/Test" + subdirList[k];
+  // _protoFile = new File(targetName);
+  // try {
+  // _writer = new PrintWriter(_protoFile);
+  // } catch (IOException e) {
+  // System.err.println("\tcreateFile(): Problems creating the new protoFile. " + e.getMessage());
+  // }
+  // // Write the contents into the prototype test file
+  // // writeFile(_protoFile, srcPath);
+  // _writer.close();
+  // return _protoFile;
+  // }
 
-    // Extract then traverse subdirectories to 'write' destination
-    String[] subdirList = srcPath.split("/");
-    File parent = testDir;
-    int k = 0;
-    // Create subdirectories as traversing to the srcPath
-    for (; k < subdirList.length - 1; k++) {
-      File subdir = new File(parent, subdirList[k]);
-      subdir.mkdir(); // make the subdir if it doesn't exist
-      parent = subdir;
+  /**
+   * Traverse the root dir and return the test subdir beneath it
+   * 
+   * @param root the directory for all source files
+   * @return the test directory
+   */
+  public File findTestDir(File root)
+  {
+    File testDir = null;
+    // Retrieve first layer of normal files and subdirs under dir
+    File[] allFiles = root.listFiles();
+    // Retrieve TEST subdir
+    for (File f : allFiles) {
+      // System.out.println("getTestDir(): " + f.getPath());
+      if (f.isDirectory()) {
+        if (f.getPath().contains("test")) {
+          testDir = f;
+          break;
+        } else {
+          f = findTestDir(f);
+        }
+      }
     }
-    // Last file in subdirList is the prototype's filename
-    String targetName = parent.getAbsolutePath() + "/Test" + subdirList[k];
-    _protoFile = new File(targetName);
-    try {
-      _writer = new PrintWriter(_protoFile);
-    } catch (IOException e) {
-      System.err.println("\tcreateFile(): Problems creating the new protoFile. " + e.getMessage());
-    }
-    // Write the contents into the prototype test file
-    // writeFile(_protoFile, srcPath);
-    _writer.close();
-    return _protoFile;
+    return testDir;
   }
 
 
-  /**
-   * Makew a test file name from the source path and test directory. Does not create Files.
-   * 
-   * @param testPath  directory name for parent of all test classes
-   * @param srcPath relative path of source file
-   * @return test file name that corresponds to source file
-   */
-  public String makeTestFilename(String testPath, String srcPath)
-  {
-    // Guard against non-Java files
-    if (!srcPath.contains(JAVA)) {
-      return null;
-    }
-//    // Find the test directory for the source root
-//    QATool qat = new QATool(root);
-//    File testDir = qat.findTestDir(new File(root));
-//    String testRoot = testDir.getAbsolutePath() + "/";
+//  /**
+//   * Make a test file name from the source path and test directory. Does not create Files.
+//   * 
+//   * @param testPath directory name for parent of all test classes
+//   * @param srcPath relative path of source file
+//   * @return test file name that corresponds to source file
+//   */
+//  public String makeTestFilename(String testPath, String srcPath)
+//  {
+//    // Guard against non-Java files
+//    if (!srcPath.contains(JAVA)) {
+//      return null;
+//    }
+//    // Insert the prefix "Test" to the src file name
+//    StringBuilder sbTest = new StringBuilder();
+//    sbTest.append(testPath);
+//    sbTest.append(srcPath);
+//    // Replace name with Test<Name>
+//    int ndx = sbTest.lastIndexOf("/");
+//    sbTest.insert(ndx + 1, "Test");
+//
+//    return sbTest.toString();
+//  }
 
-    // Insert the prefix "Test" to the src file name
-    StringBuilder sbTest = new StringBuilder();
-    sbTest.append(testPath);
-    sbTest.append(srcPath);
-    // Replace name with Test<Name>
-    int lastDelim = sbTest.lastIndexOf("/");
-    sbTest.insert(lastDelim+1, "Test");
-    // int ndx = srcPath.lastIndexOf("/");
-    // sbTest.append(srcFile.getName().substring(0, ndx + 1));
-    // sbTest.append("Test");
-    // sbTest.append(srcPath.substring(ndx + 1));
 
-    return sbTest.toString();
-  }
+  // /**
+  // * Make test files for all source classes without them. Put the new test files in the subdir
+  // * corresponding to the source's dubdir under the root.
+  // *
+  // * @param root directory above for all source files
+  // * @param testDir directory avove all test files, but below root
+  // * @return false if any error occurs
+  // */
+  // public boolean makeTestFiles(File root)
+  // {
+  // if ((root == null) || (!root.isDirectory())) {
+  // System.err.println("makeTestFilename(): root arg must be a directory");
+  // return false;
+  // }
+  // File testDir = findTestDir(root);
+  // System.out.println("testDir = " + testDir.getAbsolutePath());
+  //
+  // return true;
+  //
+  // }
 
 
   /**
    * Writes a prototype test template with JUnit test stubs and Chronos-specific data
    * 
    * @param target prototype test file to write into
-   * @param source the java file from which to derive test methods
-   * @return the File written
+   * @param source the java file name from which to derive test methods
+   * @return the test file written
    */
   public File writeFile(File target, String source)
   {
     PrintWriter out = null;
+    // Ensure that all intermediate subdirs exist for the PrintWriter and target file 
+    makeSubtree(target.getPath());
+    // Create the output device in the proper test subdir
     try {
-      out = new PrintWriter(target.getAbsolutePath());
+      out = new PrintWriter(target);
     } catch (FileNotFoundException e) {
-      System.err.print("\twriteFilet(): Couldn't find " + target.getAbsolutePath());
-      System.err.println("\t\t" + e.getMessage());
+      System.err.println("\twriteFile(): \t" + e.getMessage());
+      return null;
     }
-    // 1. Write the copyright notice into the prototype
-    String copyright = String.format(COPYRIGHT, _protoFile.getName());
-    out.println(copyright);
 
-    // 2. Write the package statements for this test class
-    String pkgStatement = String.format("\npackage test.%s;\n", target.getParentFile().getName());
-    out.println(pkgStatement);
+    // Preempt the full fill write
+    out.println("");
 
-    // 3. Write the JUnit import statements
-    out.println(JUNIT_IMPORTS);
 
-    // 4. Write header comment, author, and version
-    // Remove the .java extension from the filename
-    String className = target.getName();
-    int ndx = className.lastIndexOf(".");
-    String name = className.substring(0, ndx);
-    String version = String.format(AUTHOR_VERSION, new Date(), name);
-    out.println(version);
-
-    // 5. Write the four JUnit setup and teardown methods
-    out.println(buildPrepMethods());
-
-    // 6. Accummulate and sort test methods by modifier
-    // First convert the source file name to a source file class
-    Class<?> sourceClass = convertSource(source);
-    getMethods(sourceClass); // store lists in class Field
-
-    // 7a. Write the public methods beneath a public banner
-    writeCodeBlocks(out, _publics, Banner.PUBLIC);
-    writeCodeBlocks(out, _protecteds, Banner.PROTECTED);
-
-    // 8. Write the class closing brace
-    out.println(String.format("} \t// end of %s class", _protoFile.getName()));
+    // // 1. Write the copyright notice into the prototype
+    // String copyright = String.format(COPYRIGHT, _protoFile.getName());
+    // out.println(copyright);
+    //
+    // // 2. Write the package statements for this test class
+    // String pkgStatement = String.format("\npackage test.%s;\n",
+    // target.getParentFile().getName());
+    // out.println(pkgStatement);
+    //
+    // // 3. Write the JUnit import statements
+    // out.println(JUNIT_IMPORTS);
+    //
+    // // 4. Write header comment, author, and version
+    // // Remove the .java extension from the filename
+    // String className = target.getName();
+    // int ndx = className.lastIndexOf(".");
+    // String name = className.substring(0, ndx);
+    // String version = String.format(AUTHOR_VERSION, new Date(), name);
+    // out.println(version);
+    //
+    // // 5. Write the four JUnit setup and teardown methods
+    // out.println(buildPrepMethods());
+    //
+    // // 6. Accummulate and sort test methods by modifier
+    // // First convert the source file name to a source file class
+    // Class<?> sourceClass = convertSource(source);
+    // getMethods(sourceClass); // store lists in class Field
+    //
+    // // 7a. Write the public methods beneath a public banner
+    // writeCodeBlocks(out, _publics, Banner.PUBLIC);
+    // writeCodeBlocks(out, _protecteds, Banner.PROTECTED);
+    //
+    // // 8. Write the class closing brace
+    // out.println(String.format("} \t// end of %s class", _protoFile.getName()));
 
     out.close();
     return target;
@@ -378,6 +424,22 @@ public class Prototype
     sortSignatures(_protecteds);
   }
 
+  
+  /** Ensure that all subdirs in the long path exist
+   * 
+   * @param path long path of a file to be created
+   * @return the short file name
+   */
+  private String makeSubtree(String path) 
+  {
+    // Remove filename from end of path
+    int fnNdx = path.lastIndexOf("/");
+    String prefix = path.substring(0, fnNdx);
+    File subtree = new File(prefix);
+    subtree.mkdirs();
+    return path.substring(fnNdx);
+  }
+  
 
   /**
    * Sort first by method name, then by parm list number and value

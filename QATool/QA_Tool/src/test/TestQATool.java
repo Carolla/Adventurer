@@ -121,6 +121,9 @@ public class TestQATool
   static private final String TEST_PATH =
       "/Projects/eChronos/QATool/QA_Tool/simTree/src/chronos/test";
 
+  /** Use simulated file structure as a read-only source root */
+  static private final String SRC_ROOT = "/Projects/eChronos/QATool/QA_Tool/src";
+
   static private QATool _qat;
   static private MockTool _mock;
 
@@ -176,8 +179,8 @@ public class TestQATool
   @Test
   public void testBuildSourceList()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // SETUP
@@ -221,7 +224,7 @@ public class TestQATool
    * @NORMAL.TEST Using simTree, a snapshot of ChronosLib, scan for matching and missing test and
    *              source files
    */
-  @Test
+//  @Test
   public void testFileScan()
   {
     MsgCtrl.auditMsgsOn(false);
@@ -235,10 +238,8 @@ public class TestQATool
     ArrayList<String> expSrcWoTests = Utilities.convertToArrayList(srcWoTestsStr);
     ArrayList<String> expTestsWoSrc = Utilities.convertToArrayList(testsWoSrcStr);
 
-
     // Run test on simulated directory tree
     _qat.fileScan(new File(ROOT_PATH));
-
 
     // Verify: for MyLib, there are 10 source files and 4 test files
     ArrayList<String> srcPaths = _mock.getSrcPaths();
@@ -272,36 +273,15 @@ public class TestQATool
     assertEquals(0, unaccountedTests);
   }
 
-
-  /**
-   * @NORMAL.TEST Using simTree, a snapshot of ChronosLib, scan for all source file paths
-   */
-  @Test
-  public void testFindTestDir()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    // SETUP
-    File root = new File(ROOT_PATH);
-
-    // RUN: target method returns nothing
-    File testDir = _qat.findTestDir(root);
-
-    // VERIFY
-    assertEquals(testDir.getPath(), TEST_PATH);
-  }
-
   
   /**
    * @NORMAL.TEST Build a set of source filepaths for each dir
    */
-  @Test
+//  @Test
   public void testMatchSrcToTest()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
   
     String[] fakeSrcPaths =
@@ -335,7 +315,20 @@ public class TestQATool
     assertEquals(2, matched.size());
   }
 
-  
+  /**
+   * @NORMAL.TEST void treeScan(File)
+   */
+  @Test
+  public void testWriteNextTestFile()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+    
+    _qat.treeScan(new File(SRC_ROOT));
+    
+  }
+    
   // ======================================================================
   // PRIVATE HELPERS
   // ======================================================================

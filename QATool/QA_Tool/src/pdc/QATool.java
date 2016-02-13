@@ -84,6 +84,7 @@ public class QATool
   /** Root folder for all test files */
   private File _testDir;
 
+  private Prototype _proto; 
 
   // ======================================================================
   // Constructor and Helpers
@@ -97,6 +98,7 @@ public class QATool
       System.err.println("QATool: Path argument must be a directory");
       _root = null;
     }
+    _proto = new Prototype();
   }
 
 
@@ -178,34 +180,37 @@ public class QATool
     _testPaths.clear();
     int srcPrefix = root.getPath().length();
     buildSourceList(root, srcPrefix);
-    _testDir = findTestDir(root);
+    _testDir = _proto.findTestDir(root);
     int testPrefix = _testDir.getPath().length();
     buildTestList(_testDir, testPrefix);
     matchSrcToTest(_srcPaths, _testPaths);
   }
 
-
-  /** Traverse the root dir and return the test subdir */
-  public File findTestDir(File root)
+  /**
+   * Insert "test" after the "src" dir and insert "Test" in front of the filename
+   * 
+   * @param srcPath full path of source file
+   * @return test file name that corresponds to source file
+   */
+  public String makeTestFilename(String srcPath)
   {
-    // Retrieve first layer of normal files and subdirs under dir
-    File[] allFiles = root.listFiles();
-    // Retrieve TEST subdir
-    for (File f : allFiles) {
-      // System.out.println("getTestDir(): " + f.getPath());
-      if (f.isDirectory()) {
-        if (f.getPath().contains(TEST)) {
-          _testDir = f;
-          break;
-        } else {
-          f = findTestDir(f);
-        }
-      }
+    // Guard against non-Java files
+    if (!srcPath.contains(JAVA)) {
+      return null;
     }
-    return _testDir;
+    StringBuilder sbTest = new StringBuilder(srcPath);
+    // Insert the prefix "test" subdir after the src subdir
+    int ndx = srcPath.indexOf("/src");
+    sbTest.insert(ndx+4, "/test");
+    // Insert the prefix "Test" to the src file name
+    // Replace name with Test<Name>
+    ndx = sbTest.lastIndexOf("/");
+    sbTest.insert(ndx + 1, "Test");
+
+    return sbTest.toString();
   }
 
-
+  
   /**
    * Search a list of test names for its corresponding source file name. Fields are kept to record
    * the matching filenames, source files without test files, and test files with source files. Each
@@ -220,41 +225,132 @@ public class QATool
    */
   public void matchSrcToTest(ArrayList<String> srcList, ArrayList<String> testList)
   {
-    // Make a copy because this list is mutable (will decrease)
-    _testsWithoutSrc.addAll(testList);
-    for (String s : srcList) {
-      String compareName = convertToTestname(s);
-      while (!_testsWithoutSrc.isEmpty()) {
-        if (_testsWithoutSrc.contains(compareName)) {
-          _matched.add(s);
-          // Any names left in _testsWithoutSrc have no corresponding src name
-          _testsWithoutSrc.remove(compareName);
-          // System.out.println("\tMatch found. testList size = " + testList.size());
-          break; // stop searching test list now that a match was found
-        }
-        // Add to mismatch list if not found at end of testlist traversal
-        _srcWithoutTests.add(s);
-        // System.out.println("\tNo test file found for " + s);
-        break;
-      }
-    }
+//    // Make a copy because this list is mutable (will decrease)
+//    _testsWithoutSrc.addAll(testList);
+//    for (String s : srcList) {
+//      String compareName = convertToTestname(s);
+//      while (!_testsWithoutSrc.isEmpty()) {
+//        if (_testsWithoutSrc.contains(compareName)) {
+//          _matched.add(s);
+//          // Any names left in _testsWithoutSrc have no corresponding src name
+//          _testsWithoutSrc.remove(compareName);
+//          // System.out.println("\tMatch found. testList size = " + testList.size());
+//          break; // stop searching test list now that a match was found
+//        }
+//        // Add to mismatch list if not found at end of testlist traversal
+//        _srcWithoutTests.add(s);
+//        // System.out.println("\tNo test file found for " + s);
+//        break;
+//      }
+//    }
   }
 
+
+//  /**
+//   * Traverse the root dir and return the test subdir beneath it
+//   * 
+//   * @param root the directory for all source files
+//   * @return the test directory
+//   */
+//  public File findTestDir(File root)
+//  {
+//    // Retrieve first layer of normal files and subdirs under dir
+//    File[] allFiles = root.listFiles();
+//    // Retrieve TEST subdir
+//    for (File f : allFiles) {
+//      // System.out.println("getTestDir(): " + f.getPath());
+//      if (f.isDirectory()) {
+//        if (f.getPath().contains(TEST)) {
+//          _testDir = f;
+//          break;
+//        } else {
+//          f = findTestDir(f);
+//        }
+//      }
+//    }
+//    return _testDir;
+//  }
+
+
+  /**
+   * Traverse the source file tree, writing missing test classes in the corresponding test tree
+   * 
+   * @param srcDir starting directory for source directories
+   * @param testDir subdirectory to srcDir, for test directories
+   */
+  public void treeScan(File srcDir)
+  {
+//    int srcPrefix = srcDir.getPath().length();
+//    buildSourceList(srcDir, srcPrefix);
+    _testDir = _proto.findTestDir(srcDir);
+    writeNextTestFile(srcDir, _testDir, srcDir.getPath());
+    
+//    int testPrefix = _testDir.getPath().length();
+//    buildTestList(_testDir, testPrefix);
+//    matchSrcToTest(_srcPaths, _testPaths);
+  }
+
+  
+  /**
+   * Traverse the root dir structure, writing test files 
+   * 
+   * @param srcDir source directory root
+   * @param testDir test directory root, subdir of srcDir
+   * @param rootLen  length of the original srcDir, a constant throughout recursion
+   */
+  public ArrayList<String> writeNextTestFile(File srcDir, File testDir, String rootPath)
+  {
+    // Retrieve all files and subdirs under dir
+    File[] allFiles = srcDir.listFiles();
+    for (File f : allFiles) {
+      // If file is a directory, recurse down one level
+      String s = f.getPath();
+      System.out.println("Examining " + s);
+      if (f.isDirectory()) {
+        // Skip directories
+        if ((s.contains("authCode") || (s.contains(TEST)))) {
+//          System.err.println("\tSKIPPING ENTIRE DIRECTORY");
+          continue;
+        }
+        writeNextTestFile(f, testDir, rootPath);
+      } else {
+        // Skip non-source files, and hic and test subdirs
+        if ((!s.contains(JAVA)) || (s.contains(HIC))) {
+          System.err.println("\tSKIPPING");
+          continue;
+        } else {
+          // Check if test file exists for current source file
+          String testFileName = makeTestFilename(s);
+//          System.out.println("\twritable file name: \t" + testFileName);
+          // For readability, remove the root prefixes
+          File target = new File(testFileName);
+          if (target.exists()) {
+            System.err.println("\tEXISTS: \t" + testFileName);
+          }
+          else {
+            System.err.println("\tWRITING: \t" + testFileName);
+            _proto.writeFile(target, s);
+          }
+        }
+      }
+    }
+    return _srcPaths;
+  }
 
   // ======================================================================
   // Private helper methods
   // ======================================================================
 
-  /** Remove the pathn prefix and add "Test" prefix to filename */
-  private String convertToTestname(String s)
-  {
-    StringBuilder sb = new StringBuilder(s);
-    int ndx = s.lastIndexOf(FILE_DELIM);
-    if (ndx >= 0) {
-      sb.insert(ndx + 1, "Test");
-    }
-    return sb.toString();
-  }
+//  /** Remove the path prefix and add "Test" prefix to filename */
+//  private String convertToTestname(String s)
+//  {
+//    StringBuilder sb = new StringBuilder(s);
+//    int ndx = s.lastIndexOf(FILE_DELIM);
+//    if (ndx >= 0) {
+//      sb.insert(ndx + 1, "Test");
+//    }
+//    return sb.toString();
+//  }
 
 
   // ======================================================================
