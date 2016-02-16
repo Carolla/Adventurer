@@ -115,7 +115,7 @@ public class Inventory
     } else {
       item.adjustQuantity(1);
       _itemList.set(ndx, item);    // replace the item with updated qty
-    } 
+    }
     return true;
   }
 
@@ -196,25 +196,11 @@ public class Inventory
    * 
    * @return the inventory Items
    */
-  public ArrayList<Item> getAll()
+  public List<Item> getAll()
   {
     return _itemList;
   }
 
-  /**
-   * Return the Item for the given index. This is a convenience method for traversing the inventory
-   * easily from within.
-   * 
-   * @param index position in the list of the requested Item (zero-based)
-   * @return the requested Item; else null
-   */
-  public Item getItem(int index)
-  {
-    if ((index < 0) || (index >= _itemList.size())) {
-      return null;
-    }
-    return _itemList.get(index);
-  }
 
   /**
    * Retrieve an Item reference by name (does not remove it from Inventory but does allow it to be
@@ -226,16 +212,11 @@ public class Inventory
    */
   public Item getItem(String itemName)
   {
-    // // Guard against null input
-    // if (itemName == null) {
-    // return null;
-    // }
-    //
-    // for (Item it : _inventory) {
-    // if (itemName.equalsIgnoreCase(it.getName())) {
-    // return it;
-    // }
-    // }
+    for (Item it : _itemList) {
+      if (it.getName().equalsIgnoreCase(itemName)) {
+        return it;
+      }
+    }
     return null;
   }
 
@@ -245,14 +226,12 @@ public class Inventory
    * @param category which of the available categories should be selected
    * @return an Item list of only the requested category
    */
-  public Inventory getItemsByCategory(ItemCategory category)
+  public List<Item> getItemsByCategory(ItemCategory category)
   {
-    int invSize = _itemList.size();
-    Inventory catList = new Inventory();
-    for (int k = 0; k < invSize; k++) {
-      Item thing = _itemList.get(k);
-      if (thing.getCategory() == category) {
-        catList.addItem(thing);
+    List<Item> catList = new ArrayList<Item>();
+    for (Item i : _itemList) {
+      if (i.getCategory() == category) {
+        catList.add(i);
       }
     }
     return catList;
@@ -265,11 +244,9 @@ public class Inventory
    */
   public List<String> getNameList(ItemCategory cat)
   {
-    Inventory aList = getItemsByCategory(cat);
     List<String> nameList = new ArrayList<String>();
-    for (int k = 0; k < aList.getNbrItems(); k++) {
-      String itemName = aList.getItem(k).getName();
-      nameList.add(itemName);
+    for (Item i : getItemsByCategory(cat)) {
+      nameList.add(i.getName());
     }
     return nameList;
   }

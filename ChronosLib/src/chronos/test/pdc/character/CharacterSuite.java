@@ -35,7 +35,7 @@ import chronos.test.pdc.race.TestRace;
     TestHobbit.class,
     TestHuman.class,
     TestTraitList.class,
-    RangedValueTest.class
+    RangedValueTest.class,
 })
 /** Compilation of all unit tests for regression and integration testing. */
 public class CharacterSuite

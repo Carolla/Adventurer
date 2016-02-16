@@ -16,6 +16,7 @@ import test.civ.TestBuildingDisplayCiv;
 import test.civ.TestHeroDisplayCiv;
 import test.civ.TestMainframeCiv;
 import test.civ.TestNewHeroCiv;
+import test.pdc.TestInventory;
 import test.pdc.command.CommandSuite;
 
 /**
@@ -40,19 +41,10 @@ import test.pdc.command.CommandSuite;
     TestNewHeroCiv.class,
 
     /* PDC subfolder test suites */
-    CommandSuite.class
+    CommandSuite.class,
 
     /** PDC test files */
-    // Util.class
-
-    // TestDwarf.class
-    // TestHuman.class
-    // TestHunger.class
-    // TestInventory.class
-    // TestKlass.class
-    // TestPeasant.class
-    // TestPerson.class
-    // TestRace.class
+    TestInventory.class
 
     /** DMC test files */
 })
