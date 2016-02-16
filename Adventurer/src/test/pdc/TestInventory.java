@@ -16,10 +16,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-
-import mylib.ApplicationException;
 import mylib.MsgCtrl;
 
 import org.junit.After;
@@ -58,12 +54,9 @@ public class TestInventory
   private final int TROBE_WT = 45;
   private final int TROBE_QTY = 2;
 
-  /** Weight (oz) of the starting inventory list */
   private final int STARTING_WT = 18;
-  /** Number of Items in the initial Inventory */
   private final int STARTING_COUNT = 11;
 
-  private static final String GOLD_NAME = "Gold pieces";
   private static final String BOOTS_NAME = "Leather Boots";
 
   @Before
@@ -238,33 +231,6 @@ public class TestInventory
   public void cantGetNullItem()
   {
     assertNull(_bag.getItem(null));
-  }
-
-
-  /**
-   * Test that the default Inventory() ctor created with the proper starting
-   * items
-   * More test must come later when the Inventory is read from a file.
-   * 
-   * @Normal Inventory.initStartingInventory() ok
-   * @Error Inventory.initStartingInventory() tested by Item elsewhere
-   * @Null Inventory.initStartingInventory() N/A
-   */
-  @Test
-  public void testDefaultStartingInventory()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.msgln(this, "\ttestDefaultStartingInventory():");
-
-    // Confirm that both the Inventory and the pre-load item String are
-    // equal in number
-    List<String> items = _bag.getNameList(ItemCategory.ARMS);
-    // NORMAL: Confirm that each starting Item name is in the bag
-    for (int k = 0; k < items.size(); k++) {
-    }
-
-    for (int k = 0; k < items.size(); k++) {
-    }
   }
 }		// end of TestInventory class
 
