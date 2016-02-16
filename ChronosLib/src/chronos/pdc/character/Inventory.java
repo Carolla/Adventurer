@@ -9,7 +9,6 @@
 
 package chronos.pdc.character;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,11 +30,8 @@ import chronos.pdc.Item.ItemCategory;
  *          Nov 25, 2011 // ABC replaced double cash with Items Gold and Silver <br>
  *          Oct 13, 2015 // updated for new Hero generation rules and categories <br>
  */
-public class Inventory implements Serializable
+public class Inventory
 {
-  /** Recommended serialization constant */
-  static final long serialVersionUID = 1111L;
-
   // METADATA CONSTANTS
   /** The weight increment (in ounces) to increase certain APMods */
   static final int AP_INCREMENT = Constants.OUNCES_PER_POUND * 25;
@@ -73,10 +69,7 @@ public class Inventory implements Serializable
    */
   public Inventory()
   {
-    // Create the map to hold the Items
-    // Holds all inventory items
     _itemList = new ArrayList<Item>();
-
   }
 
   // =============================================================================
@@ -84,22 +77,20 @@ public class Inventory implements Serializable
   // =============================================================================
 
   // Assign initial inventory to Hero (8 gpw = 1 lb)
-  public Inventory assignBasicInventory(Inventory inven)
+  public void assignBasicInventory()
   {
     // Basic inventory Items: category, name, quantity, weight (each in fractional lb)
-    inven.addItem(new Item(ItemCategory.EQUIPMENT, "Backpack", 1, 7.0));
-    inven.addItem(new Item(ItemCategory.EQUIPMENT, "Tinderbox", 1, 0.50));
-    inven.addItem(new Item(ItemCategory.EQUIPMENT, "Torch", 1, 1.0));
-    inven.addItem(new Item(ItemCategory.PROVISION, "Rations", 2, 0.50));
-    inven.addItem(new Item(ItemCategory.PROVISION, "Water skein (full)", 1, 1.5));
-    inven.addItem(new Item(ItemCategory.CLOTHING, "Belt pouch, small", 1, 0.25));
-    inven.addItem(new Item(ItemCategory.CLOTHING, "Leather boots", 1, 6.0));
-    inven.addItem(new Item(ItemCategory.CLOTHING, "Belt", 1, 0.25));
-    inven.addItem(new Item(ItemCategory.CLOTHING, "Breeches", 1, 0.50));
-    inven.addItem(new Item(ItemCategory.CLOTHING, "Shirt", 1, 0.50));
-    inven.addItem(new Item(ItemCategory.CLOTHING, "Cloak", 1, 2.0));
-
-    return inven;
+    addItem(new Item(ItemCategory.EQUIPMENT, "Backpack", 1, 7.0));
+    addItem(new Item(ItemCategory.EQUIPMENT, "Tinderbox", 1, 0.50));
+    addItem(new Item(ItemCategory.EQUIPMENT, "Torch", 1, 1.0));
+    addItem(new Item(ItemCategory.PROVISION, "Rations", 2, 0.50));
+    addItem(new Item(ItemCategory.PROVISION, "Water skein (full)", 1, 1.5));
+    addItem(new Item(ItemCategory.CLOTHING, "Belt pouch, small", 1, 0.25));
+    addItem(new Item(ItemCategory.CLOTHING, "Leather boots", 1, 6.0));
+    addItem(new Item(ItemCategory.CLOTHING, "Belt", 1, 0.25));
+    addItem(new Item(ItemCategory.CLOTHING, "Breeches", 1, 0.50));
+    addItem(new Item(ItemCategory.CLOTHING, "Shirt", 1, 0.50));
+    addItem(new Item(ItemCategory.CLOTHING, "Cloak", 1, 2.0));
   }
 
   /**

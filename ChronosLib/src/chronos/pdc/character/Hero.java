@@ -128,10 +128,6 @@ public class Hero implements IRegistryElement
     _race = Race.createRace(raceName, _gender);
     _traits = _race.adjustTraitsForRace(_traits);
 
-    // 5. ENSURE ALL ADJUSTMENTS REMAIN WITH RACIAL LIMITS
-    _traits = _race.verifyRaceLimits(_traits);
-
-
     // 7a. ASSIGN THE INTELLIGENCE MODIFIERS: Known Languages, Max Languages, Literacy Skill
     _knownLangs.add("Common");
     _knownLangs.add(_race.getRacialLanguage());
@@ -166,8 +162,8 @@ public class Hero implements IRegistryElement
 
     // 22. Assign initial inventory
     _inven = new Inventory();
-    _inven = _inven.assignBasicInventory(_inven);
-    _inven = _klass.addKlassItems(_inven);
+    _inven.assignBasicInventory();
+    _klass.addKlassItems(_inven);
   } // end of Hero constructor
 
 
@@ -244,7 +240,6 @@ public class Hero implements IRegistryElement
 
     // Row 4: XP, Speed, Gold/Silver (gp/sp), Gold Banked
     map.put(PersonKeys.XP, "" + _XP);
-    _traits.loadTraitKeys(map);
     map.put(PersonKeys.GOLD, "" + _gold);
     map.put(PersonKeys.SILVER, "" + _silver);
     map.put(PersonKeys.GOLD_BANKED, "" + _goldBanked);
@@ -252,13 +247,6 @@ public class Hero implements IRegistryElement
     // Row 5: Occupation, Description
     map.put(PersonKeys.OCCUPATION, _occ.getName());
     map.put(PersonKeys.DESCRIPTION, _description);
-    _race.loadRaceKeys(map);
-
-
-    // Row 7: INT and INT mods: percent to know spell, current MSP, max MSP, MSPs/Level,
-    // spells known (in book), and max languages
-    _klass.loadKlassKeys(map);
-
 
     // Row 11: CHR, then Weight and Height of Hero
     map.put(PersonKeys.WEIGHT, "" + _weight);
@@ -274,6 +262,10 @@ public class Hero implements IRegistryElement
     }
     String langList = new String(sb);
     map.put(PersonKeys.LANGUAGES, langList);
+    
+    _traits.loadTraitKeys(map);
+    _race.loadRaceKeys(map);
+    _klass.loadKlassKeys(map);
 
     return map;
   }
