@@ -9,11 +9,7 @@
 
 package chronos.pdc;
 
-import java.util.EnumMap;
-
-import mylib.ApplicationException;
 import mylib.dmc.IRegistryElement;
-import chronos.pdc.registry.ItemRegistry;
 
 
 /**
@@ -32,22 +28,6 @@ public class Item implements IRegistryElement
     ARMS, ARMOR, CLOTHING, EQUIPMENT, MAGIC, PROVISION, SPELL_MATERIAL, VALUABLES;
   };
 
-
-  // TODO: These are the fields for the ArrayList passed to the GUI; enum no longer needed
-  /** List of field names for Item fields displayed on the Hero Panel. */
-  public enum ItemFields {
-    CATEGORY, NAME, QTY, LBWT, OZWT;
-  };
-
-
-  /** Recommended serialization constant */
-  static final long serialVersionUID = 1002L;
-
-  /** Weight of Item to nearest lb */
-  public final int LBWT = 0;
-  /** Weight of Item in ounces of remaining fraction lb */
-  public final int OZWT = 1;
-
   /** Category for easier grouping */
   private ItemCategory _category;
   /** Name of this Item */
@@ -57,30 +37,9 @@ public class Item implements IRegistryElement
   /** Number of the kinds of items (quantity) */
   private int _qty;
 
-  /** Standard weight (oz) for a gold piece */
-  static public final int GOLD_WEIGHT = 2;
-  /** Standard weight (oz) for a silver piece */
-  static public final int SILVER_WEIGHT = 1;
-
-  private static ItemRegistry _ireg = null;
-
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
-
-  /** Default constructor */
-  public Item()
-  {}
-
-  public static void setItemRegistry(ItemRegistry ireg)
-  {
-    _ireg = ireg;
-  }
-
-  public static Item getItem(String itemName)
-  {
-    return _ireg.getItem(itemName);
-  }
 
   /**
    * Construct an Item from its name and weight descriptor
@@ -89,24 +48,20 @@ public class Item implements IRegistryElement
    * @param name of the Item
    * @param weight weight of item in lbs.ounces
    * @param initialQty the number of these Items being constructed
-   * @throws ApplicationException if any of the parms are null or illegal
    */
   public Item(ItemCategory cat, String name, int initialQty, double weight)
-      throws ApplicationException
   {
-    // Trim down the name to ensure that no empty string was input
-    if ((name == null) || (name.trim().length() == 0)) {
-      throw new ApplicationException(
-          "Item(): Could not create Item. Empty name passed to Item ctor");
-    }
+    name = name.trim(); // trigger NPE if null passed
+    assert(name.length() > 0);
+     
     if (weight <= 0.0) {
-      throw new ApplicationException(
-          "Item(): Could not create Item. : Illegal (negative) weight for Item");
+      weight = 0.0;
     }
+    
     if (initialQty <= 0) {
-      throw new ApplicationException(
-          "Item(): Could not create Item: Illegal (negative) quantity for Item");
+        initialQty = 0;
     }
+    
     _category = cat;
     _name = name;
     _weight = weight;
@@ -135,66 +90,6 @@ public class Item implements IRegistryElement
     return _qty; // either to updated value or the original
   }
 
-  /**
-   * Copies like the standard <code>Object.clone()</code> method, but without all the baggage of the
-   * <code>Cloneable interface</code>. Used mostly to support the Inventory copies that may damage
-   * originals added or dropped to it. Will catch exceptions from the Item constructor and return a
-   * null.
-   * 
-   * @returns the copied version of the input Item; or null if copying doesn't work
-   */
-  public Item copy()
-  {
-    //    try {
-    //      Item mimic = new Item(_category, _name, _weight, _qty);
-    //      return mimic;
-    //    } catch (ApplicationException ex) {
-    return null;
-    //    }
-  }
-
-  /**
-   * Two Items are considered equal if their class, names and categories are equal. This is a
-   * required implementation for the <code>ArrayList contains()</code> method, and overrides the
-   * <code>Object.equals()</code> method, so must have exactly this signature, and cast to the
-   * target Class within.
-   * 
-   * @param otherThing the Item to be considered
-   * @return true if the Item has the same name (or phrase), or memory address
-   */
-  @Override
-  public boolean equals(IRegistryElement otherThing)
-  {
-    // Check that the parameter exists
-    if (otherThing == null) {
-      return false;
-    }
-
-    // A quick test to see if objects are identical
-    if (this == otherThing) {
-      return true;
-    }
-
-    // Check that a match occurs at least at the Class level
-    if (getClass() != otherThing.getClass()) {
-      return false;
-    }
-
-    // Now we know otherThing is a non-null Item
-    Item whatsIt = (Item) otherThing;
-    // Check for name, category, and weight
-    boolean sameName = this._name.equalsIgnoreCase(whatsIt.getName());
-    boolean sameCat = this._category == whatsIt.getCategory();
-    boolean sameWeight = this._weight == whatsIt.getWeight();
-    return (sameName && sameCat && sameWeight);
-  }
-
-  // @Override
-  // public Predicate<IRegistryElement> getPredicate()
-  // {
-  // // TODO Auto-generated method stub
-  // return null;
-  // }
 
   @Override
   public String getKey()
@@ -244,33 +139,49 @@ public class Item implements IRegistryElement
     return _weight;
   }
 
-  /**
-   * Pack the Item-specific fields into a data shuttle of Strings (EnumMaps must be homogeneous).
-   * Note that any existing data will be overwritten by new values of the same key.
-   * 
-   * @param fields of the Item: category, name, quantity, weight (oz)
-   * @return the data shuttle
-   */
-  public EnumMap<ItemFields, String> packShuttle(
-      EnumMap<ItemFields, String> fields)
+  @Override
+  public int hashCode()
   {
-    fields.put(ItemFields.NAME, _name);
-    fields.put(ItemFields.CATEGORY, _category.name());
-    fields.put(ItemFields.QTY, String.valueOf(_qty));
-    fields.put(ItemFields.OZWT, String.valueOf(_weight));
-    return fields;
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((_category == null) ? 0 : _category.hashCode());
+    result = prime * result + ((_name == null) ? 0 : _name.hashCode());
+    result = prime * result + _qty;
+    long temp;
+    temp = Double.doubleToLongBits(_weight);
+    result = prime * result + (int) (temp ^ (temp >>> 32));
+    return result;
   }
 
-  /**
-   * Set the name of this Item; used for making query templates
-   * 
-   * @param name new name of this Item
-   * @return the Item
-   */
-  public Item setName(String name)
+  
+  @Override
+  public boolean equals(IRegistryElement target)
   {
-    _name = name;
-    return this;
+    return equals((Object) target);
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Item other = (Item) obj;
+    if (_category != other._category)
+      return false;
+    if (_name == null) {
+      if (other._name != null)
+        return false;
+    } else if (!_name.equals(other._name))
+      return false;
+    if (_qty != other._qty)
+      return false;
+    if (Double.doubleToLongBits(_weight) != Double.doubleToLongBits(other._weight))
+      return false;
+    return true;
   }
 
   /**
@@ -286,7 +197,6 @@ public class Item implements IRegistryElement
     if (_category != null) {
       catStr = _category.toString();
     }
-    // return (_name + " (" + catStr + ")\tQty = " + _qty + "\t weight = " + _weight + " oz.");
     return (_name + " (" + catStr + ")");
   }
 } // end of Item class

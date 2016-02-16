@@ -18,6 +18,7 @@ import test.civ.TestMainframeCiv;
 import test.civ.TestNewHeroCiv;
 import test.pdc.TestInventory;
 import test.pdc.command.CommandSuite;
+import chronos.test.pdc.TestItem;
 
 /**
  * Run all unit tests for {@code Adventurer} components. Unit tests are grouped by their components
@@ -44,7 +45,8 @@ import test.pdc.command.CommandSuite;
     CommandSuite.class,
 
     /** PDC test files */
-    TestInventory.class
+    TestInventory.class,
+    TestItem.class
 
     /** DMC test files */
 })

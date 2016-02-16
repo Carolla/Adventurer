@@ -13,7 +13,6 @@ package chronos.pdc.registry;
 import java.util.HashMap;
 
 import mylib.pdc.Registry;
-import chronos.pdc.Item;
 import chronos.pdc.Occupation;
 import chronos.pdc.Skill;
 import chronos.pdc.buildings.Building;
@@ -79,7 +78,6 @@ public class RegistryFactory
     ((BuildingRegistry) _regMap.get(RegKey.BLDG)).initialize(_skedder);
     Skill.setSkillRegistry((SkillRegistry) _regMap.get(RegKey.SKILL));
     Occupation.setOccupationRegistry((OccupationRegistry) _regMap.get(RegKey.OCP));
-    Item.setItemRegistry((ItemRegistry) _regMap.get(RegKey.ITEM));
   }
 
   // ============================================================
