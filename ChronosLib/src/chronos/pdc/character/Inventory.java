@@ -108,13 +108,11 @@ public class Inventory
     if (item == null) {
       return false;
     }
-    // If Item is already in inventory, increase its item count (qty)
-    int ndx = _itemList.indexOf(item);
-    if (ndx == Constants.NOT_FOUND) {
-      _itemList.add(item);
+    
+    if (_itemList.contains(item)) {
+      _itemList.get(_itemList.indexOf(item)).adjustQuantity(item.getQuantity());
     } else {
-      item.adjustQuantity(1);
-      _itemList.set(ndx, item);    // replace the item with updated qty
+      _itemList.add(item);
     }
     return true;
   }
@@ -256,7 +254,7 @@ public class Inventory
    * 
    * @return the count
    */
-  public int getNbrItems()
+  public int size()
   {
     return _itemList.size();
   }
@@ -272,10 +270,8 @@ public class Inventory
    */
   public boolean hasItem(String target)
   {
-    for (int k = 0; k < _itemList.size(); k++) {
-      // Extract the Item from the Inventory and lower-case it
-      Item thing = _itemList.get(k);
-      if (target.equalsIgnoreCase(thing.getName())) {
+    for (Item i : _itemList) {
+      if (i.getName().equalsIgnoreCase(target)) {
         return true;
       }
     }

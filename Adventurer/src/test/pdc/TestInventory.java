@@ -99,16 +99,16 @@ public class TestInventory
   public void testAddItem()
   {
     _bag.addItem(_framis);
-    assertEquals(1, _bag.getNbrItems());
+    assertEquals(1, _bag.size());
   }
 
   @Test
-  public void addintItemThatAlreadyExistsIncreasesCount()
+  public void addingItemThatAlreadyExistsIncreasesCount()
   {
     _bag.addItem(_framis);
     _bag.addItem(_framis);
 
-    assertEquals(1, _bag.getNbrItems());
+    assertEquals(1, _bag.size());
     int framisQty = _bag.getItem("Framis").getQuantity();
     assertEquals(2, framisQty);
   }
@@ -116,9 +116,8 @@ public class TestInventory
   @Test
   public void addingNullItemFails()
   {
-    int count = _bag.getNbrItems();
-    _bag.addItem(null);
-    assertEquals(count, _bag.getNbrItems());
+    assertFalse(_bag.addItem(null));
+    assertEquals(0, _bag.size());
   }
 
   /**
@@ -130,41 +129,13 @@ public class TestInventory
    * @Null Inventory.addItem(Item item) ok
    */
   @Test
-  public void testAddMultipleItem()
+  public void addingDifferentItemsIncreasesInventorySize()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.msgln("\ntestAddMultipleItem(): ");
-    // NORMAL: Add a new multiple Item to the existing inventory
-    // Confirm that it doesn't exist in the bag
-    assertEquals(_bag.hasItem(_trobe.getName()), false);
-    int count = _bag.getNbrItems();
-    // Add the new item
+    int size = _bag.size();
     _bag.addItem(_trobe);
-    int newCount = _bag.getNbrItems();
-    // Verify
-    MsgCtrl.msgln("\t Trobes added to increase Item count from "
-        + count + " to " + newCount);
-    assertEquals(newCount, count + 1);
-    Item tmp = _bag.getItem("Trobe");
-    int trobeQty = tmp.getQuantity();
-    assertEquals(trobeQty, TROBE_QTY);
-    MsgCtrl.msgln("\t Trobe quantity now " + trobeQty);
-
-    // Normal: Add the multiple Item again
-    // Confirm that it already exists
-    assertEquals(true, _bag.hasItem(_trobe.getName()));
-    count = _bag.getNbrItems();
-    // Add the new item
-    _bag.addItem(_trobe);
-    newCount = _bag.getNbrItems();
-    // Verify
-    MsgCtrl.msgln("\t Trobe added again without changing Item count: from "
-        + count + " to " + newCount);
-    assertEquals(newCount, count);
-    Item tmp2 = _bag.getItem("Trobe");
-    trobeQty = tmp2.getQuantity();
-    assertEquals(trobeQty, TROBE_QTY * 2);
-    MsgCtrl.msgln("\t Trobe quantity now " + trobeQty);
+    int size2 = _bag.size();
+    _bag.addItem(_framis);
+    assertTrue(size < size2 && size2 < _bag.size());
   }
 
   /**
@@ -175,17 +146,6 @@ public class TestInventory
   @Test
   public void testAddNullItems()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.msgln("\ntestAddNullItems(): ");
-    int count = _bag.getNbrItems();
-    // Add the new item
-    _bag.addItem(null);
-    int newCount = _bag.getNbrItems();
-    // Verify
-    assertEquals(newCount, count);
-
-    // NULL case returns a false
-    assertFalse(_bag.addItem(null));
   }
 
   /**
@@ -399,26 +359,26 @@ public class TestInventory
 
     // NORMAL
     int count = STARTING_COUNT;
-    assertEquals(count, _bag.getNbrItems());
+    assertEquals(count, _bag.size());
     // There is only one pair of boots; try dropping them twice
     assertTrue(_bag.dropItems(BOOTS_NAME, 1));
     count -= 1;
-    assertEquals(count, _bag.getNbrItems());
+    assertEquals(count, _bag.size());
     assertFalse(_bag.dropItems(BOOTS_NAME, 1));
     count -= 0;					// no change since nothing dropped
-    assertEquals(count, _bag.getNbrItems());
+    assertEquals(count, _bag.size());
 
     // Add some gold coins to ensure that they can be dropped
     Item gold = new Item(ItemCategory.VALUABLES, GOLD_NAME, 2, GOLD_CNT);
     _bag.addItem(gold);
     // Qty changes but not the number of different items
-    assertEquals(count, _bag.getNbrItems());
+    assertEquals(count, _bag.size());
 
     // Add some silver coins to ensure that they can be dropped
     Item silver = new Item(ItemCategory.VALUABLES, SILVER_NAME, 1, SILVER_CNT);
     _bag.addItem(silver);
     // Qty changes but not the number of different items
-    assertEquals(count, _bag.getNbrItems());
+    assertEquals(count, _bag.size());
 
     // Confirm that the silver and gold are in the right quantities
     Item au = _bag.getItem(GOLD_NAME);
@@ -432,37 +392,37 @@ public class TestInventory
     assertTrue(_bag.dropItems(GOLD_NAME, 1));
     auQty -= 3;
     assertTrue(au.getQuantity() == auQty);
-    assertTrue(_bag.getNbrItems() == count);		// there are more gp's in inv.
+    assertTrue(_bag.size() == count);		// there are more gp's in inv.
     // Drop 3 sp at one time
     assertTrue(_bag.dropItems(SILVER_NAME, 3));
     agQty -= 3;
     assertTrue(ag.getQuantity() == agQty);
-    assertTrue(_bag.getNbrItems() == count);		// there are more sp's in inv.
+    assertTrue(_bag.size() == count);		// there are more sp's in inv.
 
     // Drop a mutliple items to 0 qty and confirm that it is removed
     // completely
     // The trobe is added as a pair, so qty start at 2
     assertFalse(_bag.hasItem(_trobe.getName()));
-    int baseCount = _bag.getNbrItems();
+    int baseCount = _bag.size();
     _bag.addItem(_trobe);
     // Confirm that adding two of an Item increases the item count by 1
     assertTrue(_bag.hasItem(_trobe.getName()));
-    assertEquals(_bag.getNbrItems(), baseCount + 1);
+    assertEquals(_bag.size(), baseCount + 1);
     // Now drop both of them at once to remove the Item
     _bag.dropItems("Trobe", 2);
-    assertEquals(_bag.getNbrItems(), baseCount);
+    assertEquals(_bag.size(), baseCount);
     assertFalse(_bag.hasItem(_trobe.getName()));
 
     // NULL: try to add a null or invalid item
     assertFalse(_bag.dropItems(null, 1));
-    assertTrue(_bag.getNbrItems() == count);        // no change to count
+    assertTrue(_bag.size() == count);        // no change to count
 
     // ERROR: Drop negative amounts and more items than is in the Inventory
     assertFalse(_bag.dropItems(GOLD_NAME, -1));
     assertFalse(_bag.dropItems(GOLD_NAME, 0));
     assertFalse(_bag.dropItems(GOLD_NAME, au.getQuantity() + 1));
     // Failed drop attempts do not change the inventory count
-    assertTrue(_bag.getNbrItems() == count);        // no change to count
+    assertTrue(_bag.size() == count);        // no change to count
   }
 
   /**
@@ -475,42 +435,40 @@ public class TestInventory
   @Test
   public void testGetItemByName()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.msgln("\ntestGetItemByName():");
     String[] goodTarget = {
-        "Pair of Boots",         // exists as is
+        "Leather boots",                    // exists as is
         "Belt pouch, small",                // checks for multiword
-        "pair of boots",                    // lowercase check; uppercase present
-        "gold pieces"                                   // lowercase match
+        "leather boots",                    // lowercase check; uppercase present
     };
 
+    _bag.assignBasicInventory();
+    
+    // NORMAL Confirm that all expected items are there...
+    for (String goodItemName : goodTarget) {
+      assertTrue("Failed to find " + goodItemName, _bag.hasItem(goodItemName));
+    }
+  }
+
+  @Test
+  public void cantGetItemNotInInventory()
+  {
     String[] badTarget = {
         "shield",                               // not there
         "plate mail",                           // not there
         "pouch",                               // checks for partial item name
         "gold",                       // partial match
     };
-
-    // NORMAL Confirm that all expected items are there...
-    for (int k = 0; k < goodTarget.length; k++) {
-      Item thing = _bag.getItem(goodTarget[k]);
-      assertNotNull(thing);
-      MsgCtrl.msg("\t \"" + goodTarget[k] + "\"  sought");
-      MsgCtrl.msgln("\t \"" + thing.getName() + " \" retrieved");
-      assertTrue(thing.getName().equalsIgnoreCase(goodTarget[k]));
-    }
-
+    
     // ERROR Confirm that some Items are not found because they are missing
-    // or
-    // the name is a partial match
-    for (int k = 0; k < badTarget.length; k++) {
-      MsgCtrl.msg("\t \"" + badTarget[k] + "\"  sought");
-      Item thing = _bag.getItem(badTarget[k]);
-      assertNull(thing);
-      MsgCtrl.msgln("\t not found");
+    // or the name is a partial match
+    for (String badItemName : badTarget) {
+      assertNull(_bag.getItem(badItemName));
     }
-
-    // NULL Retrieving an Item by null gets a null
+  }
+  
+  @Test
+  public void cantGetNullItem()
+  {
     assertNull(_bag.getItem(null));
   }
 
@@ -550,42 +508,6 @@ public class TestInventory
     assertFalse(_bag.hasItem("null"));        // fail gracefully
   }
 
-  /**
-   * Test the Inventory seach method by asking for items that ARE and ARE NOT
-   * listed
-   * This method takes an Item name and returns a boolan
-   * 
-   * @Normal Inventory.hasItem(String target) ok
-   * @Error Inventory.hasItem(String target) ok
-   * @Null Inventory.hasItem(String target) ok
-   */
-  @Test
-  public void testHasItemByName()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.msgln("\ntestHasItemByName():");
-
-    String[] target = {"Pair of Boots",			// exists as is
-        "Belt pouch, small", 		        // checks for multiword
-        "shield", 						        // not there
-        "pair of boots", 				    // lowercase check; uppercase present
-        "plate mail",					        // not there
-        "pouch",                               // checks for partial item name
-        "gold pieces",                       // lower case version
-        "gold"                                   // partial match
-    };
-
-    // NORMAL and ERROR cases, depending on if item is in inventory or not
-    assertTrue(_bag.hasItem(target[0]) == true);
-    assertTrue(_bag.hasItem(target[1]) == true);
-    assertTrue(_bag.hasItem(target[2]) == false);		// not in inventory
-    assertTrue(_bag.hasItem(target[3]) == true);
-    assertTrue(_bag.hasItem(target[4]) == false);		// not in inventory
-    assertTrue(_bag.hasItem(target[5]) == false);    // partial match
-    assertTrue(_bag.hasItem(target[7]) == false);     // lowercase match
-    assertTrue(_bag.hasItem(target[6]) == true);    // partial match
-    assertTrue(_bag.hasItem("null") == false);
-  }
 
   /**
    * Test that the default Inventory() ctor created with the proper starting
