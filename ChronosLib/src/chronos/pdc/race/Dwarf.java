@@ -21,9 +21,6 @@ import chronos.pdc.race.Race;
 
 public class Dwarf extends Race
 {
-  // Statics and transients that are not serialized with the Race class hierarchy
-  /** Recommended serialization constant. */
-  static final long serialVersionUID = 1100L;
   /** Weight ranges */
   protected final RangedValue _weightRange = new RangedValue(120, "2d8", "2d11");
 

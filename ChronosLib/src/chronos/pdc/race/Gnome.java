@@ -19,10 +19,6 @@ import chronos.pdc.character.Gender;
  */
 public class Gnome extends Race
 {
-  /** Racial limits for a Gnome for the traits */
-  private final int[] minLimit = {7, 7, 7, 7, 8, 7};
-  private final int[] maxLimit = {18, 18, 18, 18, 18, 18};
-
   /** Weight ranges */
   protected final RangedValue _weightRange = new RangedValue(75, "2d4", "2d6");
 
@@ -53,8 +49,6 @@ public class Gnome extends Race
   public Gnome(Gender gender)
   {
     _raceName = "Gnome";
-    _minLimit = minLimit;
-    _maxLimit = maxLimit;
 
     _descriptor = _raceDescriptor;
     _racialThiefMods = _gnomeThiefMods;

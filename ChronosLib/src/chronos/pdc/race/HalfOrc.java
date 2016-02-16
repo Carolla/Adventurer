@@ -19,10 +19,6 @@ import chronos.pdc.character.TraitList.PrimeTraits;
  */
 public class HalfOrc extends Race
 {
-  /** Racial limits for a Half-Orc for the traits */
-  private final int[] minLimit = {9, 7, 7, 7, 13, 7};
-  private final int[] maxLimit = {19, 17, 14, 17, 19, 12};
-
   /** Weight ranges */
   protected final RangedValue _weightRange = new RangedValue(150, "3d8", "4d10");
 
@@ -48,8 +44,6 @@ public class HalfOrc extends Race
   {
     _raceName = "Half-Orc";
     _raceLang = getRaceLang();
-    _minLimit = minLimit;
-    _maxLimit = maxLimit;
 
     _descriptor = _raceDescriptor;
     _racialThiefMods = _halforcThiefMods;

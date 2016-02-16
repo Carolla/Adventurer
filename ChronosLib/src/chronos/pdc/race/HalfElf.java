@@ -17,14 +17,6 @@ import chronos.pdc.character.Gender;
  */
 public class HalfElf extends Race
 {
-  // Statics and transients that are not serialized with the Race class hierarchy
-  /** Recommended serialization constant. */
-  static final long serialVersionUID = 1100L;
-
-  /** Racial limits for a Half-Elf for the traits */
-  private final int[] minLimit = {7, 7, 7, 7, 8, 7};
-  private final int[] maxLimit = {18, 18, 18, 18, 18, 18};
-  
   /** Weight ranges */
   protected final RangedValue _weightRange = new RangedValue(100, "d20", "d20");
 
@@ -54,8 +46,6 @@ public class HalfElf extends Race
   {
     _raceName = "Half-Elf";
     _raceLang = getRaceLang();
-    _minLimit = minLimit;
-    _maxLimit = maxLimit;
 
     _descriptor = _raceDescriptor;
     _racialThiefMods = _halfelfThiefMods;

@@ -20,10 +20,6 @@ import chronos.pdc.character.TraitList.PrimeTraits;
  */
 public class Hobbit extends Race
 {
-  /** Racial limits for a Hobbit for the traits */
-  private final int[] minLimit = {7, 7, 7, 8, 10, 7};
-  private final int[] maxLimit = {17, 18, 17, 18, 19, 18};
-
   /** Weight ranges */
   protected final RangedValue _weightRange = new RangedValue(50, "2d4", "2d6");
 
@@ -53,8 +49,6 @@ public class Hobbit extends Race
   {
     _raceName = "Hobbit";
     _raceLang = "Tolkeen";
-    _minLimit = minLimit;
-    _maxLimit = maxLimit;
 
     _descriptor = _raceDescriptor;
     _racialThiefMods = _hobbitThiefMods;

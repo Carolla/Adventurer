@@ -44,8 +44,8 @@ public abstract class Race
   static protected final double STD_MAX_HEIGHT = 70;
   static protected final double STD_MIN_WEIGHT = 110;
   static protected final double STD_MAX_WEIGHT = 175;
-  protected String _raceName = null;
-  protected String _raceLang = null;
+  protected String _raceName;
+  protected String _raceLang;
   
   protected static MetaDie _md = new MetaDie();
   
@@ -55,8 +55,8 @@ public abstract class Race
   protected int _heightMedValue;
   
   /** Racial limits for a each subclass for the traits */
-  protected int[] _minLimit = null;
-  protected int[] _maxLimit = null;
+  protected int[] _minLimit;
+  protected int[] _maxLimit;
   
   protected String _racialLang;
   protected String _descriptor;
@@ -237,26 +237,6 @@ public abstract class Race
     String descr = descrChoice[rowNbr][colNbr];
     return descr;
   }
-
-
-  /**
-   * Verify that the traits do not exceed the racial limits. If they do, the trait is set to the
-   * limit value.
-   * 
-   * @param _traits traits to examine and possibly redefine
-   * @param minLimit the minimum values for the race, set by the subclass constructor
-   * @param maxLimit the maximum values for the race, set by the subclass constructor
-   * @return the original or modified traits
-   */
-  public TraitList verifyRaceLimits(TraitList _traits)
-  {
-//    for (int k = 0; k < _traits.length; k++) {
-//      _traits[k] = (_traits[k] < _minLimit[k]) ? _minLimit[k] : _traits[k];
-//      _traits[k] = (_traits[k] > _maxLimit[k]) ? _maxLimit[k] : _traits[k];
-//    }
-    return _traits;
-  }
-
   
   public List<String> getSkills()
   {
