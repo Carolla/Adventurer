@@ -49,12 +49,11 @@ public class Cleric extends Klass
     _primeTrait = PrimeTraits.WIS;
     _hpDie = _hitDie;
     _goldDice = _startingGold;
-    calcClericMods(traits.getTrait(_primeTrait));
     _traits = traits;
   }
 
   // 8b. FOR CLERICS ONLY: CSPs/Level, CSPS, Turn Undead
-  private void calcClericMods(int wisdom)
+  public void calcClassMods(int wisdom)
   {
     _CSPsPerLevel = wisdom / 2;
     _CSPs = _CSPsPerLevel; // for level 1

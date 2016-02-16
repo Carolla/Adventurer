@@ -33,6 +33,8 @@ public abstract class Klass
   public static final String CLERIC_CLASS_NAME = "Cleric";
   public static final String WIZARD_CLASS_NAME = "Wizard";
   public static final String THIEF_CLASS_NAME = "Thief";
+  public static final String[] KLASS_LIST =
+  {FIGHTER_CLASS_NAME, CLERIC_CLASS_NAME, WIZARD_CLASS_NAME, THIEF_CLASS_NAME};
 
   // KLASS-SPECIFIC ATTRIBUTES and METHODS
   protected String _klassName;
@@ -71,7 +73,6 @@ public abstract class Klass
       default:
         throw new NullPointerException("Klass.createKlass(): Cannot find class requested " + klassName);
     }
-    klass.rollHP();
     return klass;
   }
 
@@ -119,6 +120,18 @@ public abstract class Klass
   }
 
 
+  public void calcClassMods()
+  {
+    calcClassMods(_traits.getTrait(_primeTrait));
+  }
+
+
+  protected void calcClassMods(int trait)
+  {
+    //Override
+  }
+
+
   public boolean canUseMagic()
   {
     return false;
@@ -143,6 +156,10 @@ public abstract class Klass
     map.put(PersonKeys.HP_MAX, "" + _HP);
   }
 
+  public String className()
+  {
+    return _klassName;
+  }
 
   @Override
   public int hashCode()
@@ -170,4 +187,5 @@ public abstract class Klass
       return false;
     return true;
   }
+
 } // end of abstract Klass class

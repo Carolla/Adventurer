@@ -49,9 +49,5 @@ public class Fighter extends Klass
     return inven;
   }
 
-  public static String className()
-  {
-    return "Fighter";
-  }
 
 } // end of Fighter class

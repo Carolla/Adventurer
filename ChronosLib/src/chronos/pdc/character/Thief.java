@@ -84,7 +84,7 @@ public class Thief extends Klass
    * @param dex of the Hero
    * @return the list of thief skills (index = 0) with the chance of success (index = 1)
    */
-  public String[][] assignThiefSkills(int dex)
+  protected void calcClassMods(int dex)
   {
     // Basic chance per skill for level 1 thief; must be in order of global index constants
     int[] chanceList = {30, 30, 25, 20, 21, 11, 15, 82, 21};
@@ -97,7 +97,6 @@ public class Thief extends Klass
 
     // Adjust skills for dex
     _thiefSkills = adjThiefSkillByDex(_thiefSkills, dex);
-    return _thiefSkills;
   }
 
   /** Adjust the basic skills percents by the Hero's DEX value */

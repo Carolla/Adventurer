@@ -32,8 +32,7 @@ public class NewHeroCiv extends BaseCiv
   {"bald", "black", "blonde", "brown", "gray", "red", "silver", "streaked", "white"};
 
 
-  public static final String[] KLASS_LIST =
-  {Klass.FIGHTER_CLASS_NAME, Klass.CLERIC_CLASS_NAME, Klass.WIZARD_CLASS_NAME, Klass.THIEF_CLASS_NAME};
+  public static final String[] KLASS_LIST = Klass.KLASS_LIST;
 
 
   /** ErrorCode for type of error encountered on input */

@@ -9,8 +9,6 @@
 
 package chronos.pdc.character;
 
-import static chronos.pdc.character.TraitList.PrimeTraits.*;
-
 import java.util.EnumMap;
 import java.util.List;
 
@@ -45,15 +43,14 @@ public class Wizard extends Klass
     _primeTrait = PrimeTraits.INT;
     _hpDie = _hitDie;
     _goldDice = _startingGold;
-    calcWizardMods(traits.getTrait(INT));
-    _MSPs = _MSPsPerLevel; // for first level
     _traits = traits;
   }
 
-  private void calcWizardMods(int intell)
+  protected void calcClassMods(int intell)
   {
     _MSPsPerLevel = intell / 2 - 3;
     _percentToKnow = intell * 5;
+    _MSPs = _MSPsPerLevel; // for first level
   }
 
   @Override

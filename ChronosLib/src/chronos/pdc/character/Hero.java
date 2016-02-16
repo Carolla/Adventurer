@@ -119,6 +119,8 @@ public class Hero implements IRegistryElement
 
     // 3. REARRANGE THE PRIME TRAIT FOR THE KLASS
     _klass = Klass.createKlass(klassName, _traits);
+    _klass.rollHP();
+    _klass.calcClassMods();
     _traits = _klass.adjustTraitsForKlass(_traits);
 
     // 4b. REARRANGE THE PRIME TRAITS FOR THE GENDER
