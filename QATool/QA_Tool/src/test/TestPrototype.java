@@ -38,7 +38,7 @@ import pdc.QATool;
 public class TestPrototype
 {
   /** Root for all source files and subdirectories */
-  static private final String ROOT = System.getProperty("user.dir") + "/src";
+  static private final String ROOT = System.getProperty("user.dir") + "/src/";
   static private final String SRC_ROOT =
       "/Projects/eChronos/QATool/QA_Tool/src/";
 
@@ -119,73 +119,66 @@ public class TestPrototype
   // TESTS FOR PUBLIC METHODS
   // ===============================================================================
 
-  // /**
-  // * NORMAL.TEST File createFile(File, String)
-  // */
-  // @Test
-  // public void testCreateFile()
-  // {
-  // MsgCtrl.auditMsgsOn(false);
-  // MsgCtrl.errorMsgsOn(false);
-  // MsgCtrl.where(this);
-  //
-  // // SETUP: Define source root
-  // String[] srcFile = {
-  // "pdc/NoFile.java", // src file doesn't exist
-  // "pdc/FileMap.java", // contains no test file
-  // "pdc/Prototype.java", // contains a test file
-  // "pdc/subDir/Prototype.java", // contains no test file in this subdirectory
-  // };
-  // String[] expFile = {
-  // "null", // src file doesn't exist
-  // "test/pdc/TestFileMap.java", // contains no test file
-  // "test/pdc/TestPrototype.java", // contains a test file
-  // "test/pdc/subDir/TestPrototype.java", // contains no test file in this subdirectory
-  // };
-  //
-  // // Generate new test file QA_Tool/src/pdc/TestFileMap.java
-  // MsgCtrl.msgln("\ttestCreateFile SRC_ROOT = " + SRC_ROOT);
-  //
-  // // 0. RUN Error: Missing source file returns null
-  // MsgCtrl.msgln("\tsource file to examine = " + SRC_ROOT + srcFile[0]);
-  // _target = _proto.createFile(_srcDir, _testDir, srcFile[0]);
-  // assertNull(_target);
-  //
-  // // 1. RUN No test file exists for source target
-  // MsgCtrl.msgln("\tsource file to examine = " + SRC_ROOT + srcFile[1]);
-  // _target = _proto.createFile(_srcDir, _testDir, srcFile[1]);
-  // assertNotNull(_target);
-  // String path = _target.getAbsolutePath();
-  // MsgCtrl.msgln("\ttestFile to be created: \t" + expFile[1]);
-  // assertTrue(_target.getAbsoluteFile().exists());
-  // assertTrue(path.equals(SRC_ROOT + expFile[1]));
-  //
-  // // 2. RUN Test file already exists for the source target
-  // MsgCtrl.msgln("\tsource file to examine = " + SRC_ROOT + srcFile[2]);
-  // _target = _proto.createFile(_srcDir, _testDir, srcFile[2]);
-  // assertNotNull(_target);
-  // path = _target.getAbsolutePath();
-  // MsgCtrl.msgln("\ttestFile to be created: \t" + expFile[2]);
-  // assertTrue(_target.getAbsoluteFile().exists());
-  // assertTrue(path.equals(SRC_ROOT + expFile[2]));
-  //
-  // // 3. RUN Test file exists but not in target subdirectory, should proceed
-  // MsgCtrl.msgln("\tsource file to examine = " + SRC_ROOT + srcFile[3]);
-  // _target = _proto.createFile(_srcDir, _testDir, srcFile[3]);
-  // assertNotNull(_target);
-  // path = _target.getAbsolutePath();
-  // MsgCtrl.msgln("\ttestFile to be created: \t" + expFile[3]);
-  // assertTrue(_target.getAbsoluteFile().exists());
-  // assertTrue(path.equals(SRC_ROOT + expFile[3]));
-  //
-  // // TEARDOWN: delete newly created test files but leave existing ones
-  // for (int k = 1; k < expFile.length; k++) {
-  // File f = new File(SRC_ROOT + expFile[k]);
-  // if (f.length() == 0) {
-  // f.delete();
-  // }
-  // }
-  // }
+  /**
+   * NORMAL.TEST File writeFile(File) uses pdc/Prototype.java
+   */
+  @Test
+  public void testWriteFile()
+  {
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.where(this);
+
+    // SETUP: Create the file in the right place
+    // These are the expected methods in the target file after it is written
+    String[] expPublics = {
+        "File createFile(File, File, String)",
+        "String getTestFilename(String, String)",
+        "void m1()",
+        "File m2()",
+        "File writeFile(File, String)"
+    };
+    String[] expProtecteds = {
+        "String m3()"
+    };
+
+    MsgCtrl.msgln("User Directory = current directory = " + ROOT);
+
+    String srcName = "pdc/subDir/SubDirSource.java";
+    String expTestFile = ROOT + "test/pdc/subDir/TestSubDirSource.java";
+
+    String targetName = _qat.makeTestFilename(srcName);
+    File target = new File(ROOT + targetName);
+    assertNotNull(target);
+
+    // RUN: The source class file must be passed for methods to be extracted
+    target = _proto.writeFile(target, srcName);
+    MsgCtrl.msgln("\tGenerated test file " + target.getPath());
+    MsgCtrl.msgln("\tGenerated test file size = " + target.length());
+
+    // VERIFY
+    // printFile(target.getAbsolutePath());
+    assertTrue(target.exists());
+    assertEquals(expTestFile, target.getPath());
+
+    ArrayList<String> publix = _mock.getPublicMethods();
+    assertEquals(expPublics.length, publix.size());
+    MsgCtrl.msgln("\tPUBLIC METHODS");
+    for (int k = 0; k < publix.size(); k++) {
+      MsgCtrl.msgln("\t\t" + publix.get(k));
+      assertEquals(expPublics[k], publix.get(k));
+    }
+
+    ArrayList<String> protex = _mock.getProtectedMethods();
+    assertEquals(expProtecteds.length, protex.size());
+    MsgCtrl.msgln("\tPROTECTED METHODS");
+    for (int k = 0; k < protex.size(); k++) {
+      MsgCtrl.msgln("\t\t" + protex.get(k));
+      assertEquals(expProtecteds[k], protex.get(k));
+    }
+    
+  }
+
 
 
   // /**
@@ -314,66 +307,6 @@ public class TestPrototype
   //
   // }
 
-
-  /**
-   * NORMAL.TEST File writeFile(File) uses pdc/Prototype.java
-   */
-  @Test
-  public void testWriteFile()
-  {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
-    MsgCtrl.where(this);
-
-    // SETUP: Create the file in the right place
-    // These are the expected methods in the target file after it is written
-    String[] expPublics = {
-        "File createFile(File, File, String)",
-        "String getTestFilename(String, String)",
-        "void m1()",
-        "File m2()",
-        "File writeFile(File, String)"
-    };
-    String[] expProtecteds = {
-        "String m3()"
-    };
-
-    MsgCtrl.msgln("User Directory = current directory = " + ROOT);
-
-    String srcName = "pdc/subDir/SubDirSource.java";
-    String expTestFile = "test/pdc/subDir/TestSubDirSource.java";
-
-    String targetName = _qat.makeTestFilename(srcName);
-    File target = new File(targetName);
-    assertNotNull(target);
-
-    // RUN: The source class file must be passed for methods to be extracted
-    target = _proto.writeFile(target, srcName);
-    MsgCtrl.msgln("\tGenerated test file " + target.getPath());
-    MsgCtrl.msgln("\tGenerated test file size = " + target.length());
-
-    // VERIFY
-    // printFile(target.getAbsolutePath());
-    assertTrue(target.exists());
-    assertEquals(expTestFile, target.getPath());
-
-    ArrayList<String> publix = _mock.getPublicMethods();
-    assertEquals(expPublics.length, publix.size());
-    MsgCtrl.msgln("\tPUBLIC METHODS");
-    for (int k = 0; k < publix.size(); k++) {
-      MsgCtrl.msgln("\t\t" + publix.get(k));
-      assertEquals(expPublics[k], publix.get(k));
-    }
-
-    ArrayList<String> protex = _mock.getProtectedMethods();
-    assertEquals(expProtecteds.length, protex.size());
-    MsgCtrl.msgln("\tPROTECTED METHODS");
-    for (int k = 0; k < protex.size(); k++) {
-      MsgCtrl.msgln("\t\t" + protex.get(k));
-      assertEquals(expProtecteds[k], protex.get(k));
-    }
-    
-  }
 
 
   // ======================================================================

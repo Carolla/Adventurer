@@ -232,8 +232,7 @@ public class Prototype
     out.println(copyright);
 
     // 2. Write the package statements for this test class
-    String pkgStatement = String.format("\npackage test.%s;\n",
-        target.getParentFile().getName());
+    String pkgStatement = convertSourceToPackage(target);
     out.println(pkgStatement);
 
     // 3. Write the JUnit import statements
@@ -361,6 +360,23 @@ public class Prototype
     return sourceClass;
   }
 
+
+  /**
+   * Return the package statement for the given source file
+   * 
+   * @param target  test file to write out
+   * @return the package statement path
+   */
+  private String convertSourceToPackage(File target)
+  {
+    String s = target.getParentFile().getAbsolutePath();
+    s = s.substring(s.lastIndexOf("src/"));
+    s = s.substring(4);   // remove the src/
+    String pathName = s.replaceAll("/", ".");
+    String pkgStatement = String.format("\npackage %s;\n", pathName);
+
+    return pkgStatement;
+  }
 
   /**
    * Extracts public and protected methods from the source file, sorts each list

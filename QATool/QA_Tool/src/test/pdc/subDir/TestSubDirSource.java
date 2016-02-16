@@ -11,7 +11,7 @@
  * acline@carolla.com 
  */
 
-package test.subDir;
+package test.pdc.subDir;
 
 import static org.junit.Assert.*; 
 import org.junit.After; 
