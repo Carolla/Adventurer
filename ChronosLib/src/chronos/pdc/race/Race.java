@@ -47,6 +47,8 @@ public abstract class Race
   protected String _raceName = null;
   protected String _raceLang = null;
   
+  protected static MetaDie _md = new MetaDie();
+  
   /** Hero male and female weight ranges */
   protected int _weightMedValue;
   /** Hero male and female height ranges */
@@ -279,13 +281,12 @@ public abstract class Race
    */
   private int getDeviationFromMedValue(int medValue, String lowDice, String highDice)
   {
-    MetaDie md = new MetaDie();
     int result = 0;
-    int range = md.rollPercent();
+    int range = _md.rollPercent();
     if (range <= 30) {
-      result = medValue - md.roll(lowDice);
+      result = medValue - _md.roll(lowDice);
     } else if (range >= 71) {
-      result = medValue + md.roll(highDice);
+      result = medValue + _md.roll(highDice);
     } else {
       result = medValue;
     }

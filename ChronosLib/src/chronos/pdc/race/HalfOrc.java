@@ -9,7 +9,6 @@
 
 package chronos.pdc.race;
 
-import mylib.pdc.MetaDie;
 import chronos.pdc.character.Gender;
 import chronos.pdc.character.TraitList;
 import chronos.pdc.character.TraitList.PrimeTraits;
@@ -77,8 +76,7 @@ public class HalfOrc extends Race
   /** Half-orc has 50% chance of knowing elvish */
   private String getRaceLang()
   {
-    MetaDie md = new MetaDie();
-    String s = (md.rollPercent() < 50) ? null : "Orcish";
+    String s = (_md.rollPercent() < 50) ? null : "Orcish";
     return s;
   }
 

@@ -40,6 +40,12 @@ public class TestRace
 			assertTrue(aRace.getName().equals(Race.RACE_LIST[k]));
 		}
 	}
+	
+	@Test
+	public void weightIsCalculatedByCategory()
+	{
+	  
+	}
 
 } // end of TestRace class
 
