@@ -59,13 +59,12 @@ public class TestInventory
   private final int TROBE_QTY = 2;
 
   /** Weight (oz) of the starting inventory list */
-  private final int STARTING_WT = 434;
+  private final int STARTING_WT = 18;
   /** Number of Items in the initial Inventory */
-  private final int STARTING_COUNT = 14;
+  private final int STARTING_COUNT = 11;
 
   private static final String GOLD_NAME = "Gold pieces";
-  private static final String SILVER_NAME = "Silver pieces";
-  private static final String BOOTS_NAME = "Pair of Boots";
+  private static final String BOOTS_NAME = "Leather Boots";
 
   @Before
   public void setUp()
@@ -157,272 +156,41 @@ public class TestInventory
    * @Null Inventory.calcInventoryWeight() N/A -- no input parms
    */
   @Test
-  public void testCalcInvWt()
+  public void inventoryStartsProperly()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.msgln(this, "\tcalcInventoryWeight(): ");
+    _bag.assignBasicInventory();
+    assertEquals(STARTING_WT, _bag.calcInventoryWeight());
+    assertEquals(STARTING_COUNT, _bag.size());
+  }
 
-    // Check starting weight
+  @Test
+  public void addingItemIncreasesWeight()
+  {
     int oldWt = _bag.calcInventoryWeight();
-    MsgCtrl.msgln("\tBag has initial weight of " + oldWt);
-    assertEquals(STARTING_WT, oldWt);
-
-    // Add a Framis Item
     _bag.addItem(_framis);
-    int newWt = _bag.calcInventoryWeight();
-    int framisWt = FRAMIS_WT * FRAMIS_QTY;
-    MsgCtrl.msgln("\tAdding Framis wt (" + framisWt + ") increases Bag from "
-        + oldWt + " to " + newWt);
-    assertEquals(framisWt + oldWt, newWt);
+    assertEquals(oldWt + FRAMIS_QTY * FRAMIS_WT, _bag.calcInventoryWeight());
+  }
 
-    // Adding a Trobe Item actually adds 2 Items
-    oldWt = newWt;
+  @Test
+  public void addingMoreItemsIncreaseWeightMore()
+  {
+    int oldWt = _bag.calcInventoryWeight();
     _bag.addItem(_trobe);
-    newWt = _bag.calcInventoryWeight();
-    int trobeWt = TROBE_WT * TROBE_QTY;
-    MsgCtrl.msgln("\tAdding Trobe wt (" + trobeWt + ") increases Bag from "
-        + oldWt + " to " + newWt);
-    assertEquals(trobeWt + oldWt, newWt);
-
-    // Remove Boots (wt = 40) from the bag (qty =1 for pair)
+    assertEquals(oldWt + TROBE_WT * TROBE_QTY, _bag.calcInventoryWeight());
+  }
+  
+  @Test
+  public void removingItemsDecreasesWeight()
+  {
+    _bag.assignBasicInventory();
+    int oldWt = _bag.calcInventoryWeight();
+    
     Item boots = _bag.getItem(BOOTS_NAME);
     assertNotNull(boots);
-    // Make copy for later
-    Item secondBoots = boots.copy();
-    int bootWt = (int) boots.getWeight();
-    _bag.dropItems(boots.getName(), 1);
-    // Confirm that last set of boots are out of inventory
-    // Do not reuse boots Item since its qty = 0;
+       
+    assertTrue(_bag.dropItems(boots.getName(), 1));
     assertFalse(_bag.hasItem(boots.getName()));
-    oldWt = newWt;
-    newWt = _bag.calcInventoryWeight();
-    MsgCtrl.msgln("\tDropping Boot wt (" + bootWt + ") reduces Bag from "
-        + oldWt + " to " + newWt);
-    assertEquals(oldWt - bootWt, newWt);
-
-    // Remove Quarterstaff (wt = 50) from the bag
-    Item qstaff = _bag.getItem("Quarterstaff");
-    assertNotNull(qstaff);
-    // Make copy for later
-    Item secondStaff = qstaff.copy();
-    int qstaffWt = (int) qstaff.getWeight();
-    oldWt = _bag.calcInventoryWeight();
-    _bag.dropItems("Quarterstaff", 1);
-    // Confirm that quarterstaff is out of inventory
-    assertFalse(_bag.hasItem(qstaff.getName()));
-    // Do not reuse qstaff Item since its qty = 0;
-    oldWt = newWt;
-    newWt = _bag.calcInventoryWeight();
-    MsgCtrl.msgln("\tDropping Quarterstaff wt (" + qstaffWt + ") reduces Bag from "
-        + oldWt + " to " + newWt);
-    assertEquals(oldWt - qstaffWt, newWt);
-
-    // Now remove the framis and two trobes; add back the boots and qstaff
-    _bag.dropItems("Framis", 1);
-    // Confirm that dropped Item is out of inventory
-    assertFalse(_bag.hasItem(_framis.getName()));
-    oldWt = newWt;
-    newWt = _bag.calcInventoryWeight();
-    MsgCtrl.msgln("\tDropping Framis wt (" + framisWt + ") reduces Bag from "
-        + oldWt + " to " + newWt);
-    assertEquals(oldWt - framisWt, newWt);
-
-    // Remove Trobe and confirm that dropped Item is out of inventory
-    _bag.dropItems("Trobe", 2);
-    assertFalse(_bag.hasItem(_trobe.getName()));
-    oldWt = newWt;
-    newWt = _bag.calcInventoryWeight();
-    MsgCtrl.msgln("\tDropping Trobe wt (" + trobeWt + ") reduces Bag from "
-        + oldWt + " to " + newWt);
-    assertEquals(oldWt - trobeWt, newWt);
-
-    // Add boots back in again
-    _bag.addItem(secondBoots);
-    oldWt = newWt;
-    newWt = _bag.calcInventoryWeight();
-    MsgCtrl.msgln("\tRe-adding Boots wt (" + bootWt + ") increases Bag from "
-        + oldWt + " to " + newWt);
-    assertEquals(oldWt + bootWt, newWt);
-
-    // Add quarterstaff back in again
-    _bag.addItem(secondStaff);
-    oldWt = newWt;
-    newWt = _bag.calcInventoryWeight();
-    MsgCtrl.msgln("\tRe-adding Quarterstaff wt (" + qstaffWt + ") increases Bag from "
-        + oldWt + " to " + newWt);
-    newWt = _bag.calcInventoryWeight();
-    assertEquals(oldWt + qstaffWt, newWt);
-
-    // Bag should weigh its initial weight
-    assertEquals(STARTING_WT, newWt);
-  }
-
-  /**
-   * Test that the total load carried--in ounces--is correct: gold and Items
-   * 
-   * @Normal Inventory.calcInventoryWeight()
-   * @Null Inventory.calcInventoryWeight() N/A -- no input parms
-   * @Error Inventory.calcInventoryWeight() N/A -- no input parms
-   * @throws ChronosException if test Item fails to be created
-   */
-  @Test
-  public void testCalcTotalCarried() throws ApplicationException
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.msgln(this, "\ttestCalcTotalCarried(): ");
-
-    final int NBR_GOLD1 = 11;
-    final int NBR_GOLD2 = 7;
-    final int BLATHER_WT = 16;
-    final int GP_WT = 2;
-    final int ORIGINAL_GOLD = 15;
-
-    // Confirm that starting inventory has correct weight
-    int accum = STARTING_WT;
-    int load = _bag.calcInventoryWeight();
-    MsgCtrl.msgln("\tStarting Inventory weight = " + load);
-    assertEquals(STARTING_WT, load);
-
-    // Add an item and check again
-    Item blather = new Item(ItemCategory.PROVISION, "Blather", BLATHER_WT, 1);
-    _bag.addItem(blather);
-    accum += blather.getWeight();
-    load = _bag.calcInventoryWeight();
-    MsgCtrl.msg("\tAdded " + blather.getWeight() + " oz blather");
-    MsgCtrl.msgln("\tCurrent Inventory weight = " + load);
-    assertEquals(load, accum);
-
-    // Add multiple gold and check again; biag starts with 15 gp already
-    Item gold = new Item(ItemCategory.VALUABLES, GOLD_NAME, GP_WT, NBR_GOLD1);
-    // Get the original amount of gold
-    Item au = _bag.getItem(GOLD_NAME);
-    int auQty = au.getQuantity();
-    assertEquals(auQty, ORIGINAL_GOLD);
-    _bag.addItem(gold);
-    int cashWt = GP_WT * NBR_GOLD1;
-    accum += cashWt;      // can't call get weight because of previous gold in
-    // bag
-    load = _bag.calcInventoryWeight();
-    MsgCtrl.msg("\tAdded multiple gold coins: " + cashWt + " oz ");
-    MsgCtrl.msgln("\tGold + Inventory weight = " + load);
-    assertEquals(load, accum);
-
-    // Drop some of the added gold pieces
-    _bag.dropItems(GOLD_NAME, NBR_GOLD2);
-    cashWt = NBR_GOLD2 * GP_WT;
-    accum -= cashWt;
-    load = _bag.calcInventoryWeight();
-    MsgCtrl.msgln("\tRemoving " + NBR_GOLD2 + " gold pieces; weight = "
-        + cashWt + " oz");
-    assertEquals(load, accum);
-
-    // Drop the added item
-    _bag.dropItems("Blather", 1);
-    accum -= blather.getWeight();
-    load = _bag.calcInventoryWeight();
-    MsgCtrl.msg("\tRemoving blather, weight " + blather.getWeight() + " oz");
-    MsgCtrl.msgln("\tCurrent Inventory weight = " + load);
-    assertEquals(load, accum);
-
-    // Drop the rest of the added gold pieces
-    int moreCash = NBR_GOLD1 - NBR_GOLD2;
-    _bag.dropItems(GOLD_NAME, moreCash);
-    cashWt = moreCash * GP_WT;
-    accum -= cashWt;
-    load = _bag.calcInventoryWeight();
-    MsgCtrl.msgln("\tRemoving " + moreCash + " gold pieces; weight = "
-        + cashWt + " oz");
-    assertEquals(load, accum);
-
-    // Compare with original weight
-    MsgCtrl.msgln("\tBack to original weight of " + _bag.calcInventoryWeight() + " oz");
-    assertEquals(load, STARTING_WT);
-  }
-
-  /**
-   * Drop one or more things and compare the final inventory and weights.
-   * First, test for dropping single items, then for multiple quantities
-   * 
-   * @Normal Inventory.dropItems(String thing, int nbrToDrop) ok
-   * @Null Inventory.dropItems(String thing, int nbrToDrop) ok
-   * @Error Inventory.dropItems(String thing, int nbrToDrop) ok
-   *        throws ChronosException if a valid Item cannot be created
-   */
-  @Test
-  public void testDropItems() throws ApplicationException
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.msgln(this, "\ttestDropItems(): ");
-
-    final int SILVER_CNT = 38;
-    final int GOLD_CNT = 12;
-
-    // NORMAL
-    int count = STARTING_COUNT;
-    assertEquals(count, _bag.size());
-    // There is only one pair of boots; try dropping them twice
-    assertTrue(_bag.dropItems(BOOTS_NAME, 1));
-    count -= 1;
-    assertEquals(count, _bag.size());
-    assertFalse(_bag.dropItems(BOOTS_NAME, 1));
-    count -= 0;					// no change since nothing dropped
-    assertEquals(count, _bag.size());
-
-    // Add some gold coins to ensure that they can be dropped
-    Item gold = new Item(ItemCategory.VALUABLES, GOLD_NAME, 2, GOLD_CNT);
-    _bag.addItem(gold);
-    // Qty changes but not the number of different items
-    assertEquals(count, _bag.size());
-
-    // Add some silver coins to ensure that they can be dropped
-    Item silver = new Item(ItemCategory.VALUABLES, SILVER_NAME, 1, SILVER_CNT);
-    _bag.addItem(silver);
-    // Qty changes but not the number of different items
-    assertEquals(count, _bag.size());
-
-    // Confirm that the silver and gold are in the right quantities
-    Item au = _bag.getItem(GOLD_NAME);
-    Item ag = _bag.getItem(SILVER_NAME);
-    int auQty = au.getQuantity();			// s.b. 15
-    int agQty = ag.getQuantity();			// s.b. 7
-
-    // Drop 1 gp three times
-    assertTrue(_bag.dropItems(GOLD_NAME, 1));
-    assertTrue(_bag.dropItems(GOLD_NAME, 1));
-    assertTrue(_bag.dropItems(GOLD_NAME, 1));
-    auQty -= 3;
-    assertTrue(au.getQuantity() == auQty);
-    assertTrue(_bag.size() == count);		// there are more gp's in inv.
-    // Drop 3 sp at one time
-    assertTrue(_bag.dropItems(SILVER_NAME, 3));
-    agQty -= 3;
-    assertTrue(ag.getQuantity() == agQty);
-    assertTrue(_bag.size() == count);		// there are more sp's in inv.
-
-    // Drop a mutliple items to 0 qty and confirm that it is removed
-    // completely
-    // The trobe is added as a pair, so qty start at 2
-    assertFalse(_bag.hasItem(_trobe.getName()));
-    int baseCount = _bag.size();
-    _bag.addItem(_trobe);
-    // Confirm that adding two of an Item increases the item count by 1
-    assertTrue(_bag.hasItem(_trobe.getName()));
-    assertEquals(_bag.size(), baseCount + 1);
-    // Now drop both of them at once to remove the Item
-    _bag.dropItems("Trobe", 2);
-    assertEquals(_bag.size(), baseCount);
-    assertFalse(_bag.hasItem(_trobe.getName()));
-
-    // NULL: try to add a null or invalid item
-    assertFalse(_bag.dropItems(null, 1));
-    assertTrue(_bag.size() == count);        // no change to count
-
-    // ERROR: Drop negative amounts and more items than is in the Inventory
-    assertFalse(_bag.dropItems(GOLD_NAME, -1));
-    assertFalse(_bag.dropItems(GOLD_NAME, 0));
-    assertFalse(_bag.dropItems(GOLD_NAME, au.getQuantity() + 1));
-    // Failed drop attempts do not change the inventory count
-    assertTrue(_bag.size() == count);        // no change to count
+    assertEquals(oldWt - (int) boots.getWeight(), _bag.calcInventoryWeight());
   }
 
   /**

@@ -126,11 +126,8 @@ public class Inventory
   public int calcInventoryWeight()
   {
     int weight = 0;
-    // Get the weight of each Item in the list
-    for (int k = 0; k < _itemList.size(); k++) {
-      // Get the weight of the next item in the collection (in ounces)
-      Item thing = _itemList.get(k);
-      weight += thing.getWeight() * thing.getQuantity();
+    for (Item i : _itemList) {
+      weight += i.getWeight() * i.getQuantity();
     }
     return weight;
   }
@@ -145,46 +142,11 @@ public class Inventory
    */
   public boolean dropItems(String itemName, int nbrToDrop)
   {
-    // // Guard against null Items or negative number
-    // if ((itemName == null) || (nbrToDrop < 1)) {
-    // return false;
-    // }
-    //
-    // // Get Item to work with, if it can be found
-    // Item thing = getItem(itemName);
-    // // if Item doesn't exist, return false
-    // if (thing == null) {
-    // return false;
-    // }
-    // // Get its position for later update
-    // int pos = _inventory.indexOf(thing);
-    // if (pos == Constants.NOT_FOUND) {
-    // return false;
-    // }
-    //
-    // // Find out how many of these things there are
-    // int count = thing.getQuantity();
-    // // Ensure that there are enough to drop as requested
-    // if ((nbrToDrop > count) || (count == 0)) {
-    // return false;
-    // }
-    //
-    // // Adjust the qty to account for the drop nbr
-    // int newCount = 0;
-    // try {
-    // newCount = thing.adjustQuantity(-nbrToDrop);
-    // } catch (ApplicationException e) {
-    // MsgCtrl.errMsg(e.getMessage());
-    // System.exit(0);
-    // }
-    // // If the qty becomes zero, remove the Item from the list
-    // if (newCount == 0) {
-    // _inventory.remove(pos);
-    // }
-    // // If qty is not zero, overwrite adjusted Item back into list
-    // else {
-    // _inventory.set(pos, thing);
-    // }
+    for (Item i : _itemList) {
+      if (i.getName().equalsIgnoreCase(itemName)) {
+        i.adjustQuantity(-1 * nbrToDrop);
+      }
+    }
     return true;
   }
 
@@ -272,7 +234,7 @@ public class Inventory
   {
     for (Item i : _itemList) {
       if (i.getName().equalsIgnoreCase(target)) {
-        return true;
+        return i.getQuantity() > 0;
       }
     }
     return false;

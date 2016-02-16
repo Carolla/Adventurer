@@ -39,9 +39,9 @@ public class Item implements IRegistryElement
     CATEGORY, NAME, QTY, LBWT, OZWT;
   };
 
-  
-   /** Recommended serialization constant */
-   static final long serialVersionUID = 1002L;
+
+  /** Recommended serialization constant */
+  static final long serialVersionUID = 1002L;
 
   /** Weight of Item to nearest lb */
   public final int LBWT = 0;
@@ -63,6 +63,7 @@ public class Item implements IRegistryElement
   static public final int SILVER_WEIGHT = 1;
 
   private static ItemRegistry _ireg = null;
+
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
@@ -73,14 +74,14 @@ public class Item implements IRegistryElement
 
   public static void setItemRegistry(ItemRegistry ireg)
   {
-      _ireg = ireg;
+    _ireg = ireg;
   }
-  
+
   public static Item getItem(String itemName)
   {
-      return _ireg.getItem(itemName);
+    return _ireg.getItem(itemName);
   }
-  
+
   /**
    * Construct an Item from its name and weight descriptor
    * 
@@ -122,19 +123,15 @@ public class Item implements IRegistryElement
    * 
    * @param delta the <i>increase or decrease</i> in quantity for this Item
    * @return the final quantity for the Item
-   * @throws ApplicationException if an attempted to bring an Item to below zero quantity
    */
-  public int adjustQuantity(int delta) throws ApplicationException
+  public int adjustQuantity(int delta)
   {
-    // Guard against dropping more Items than in inventory
-    if ((delta <= 0) && (Math.abs(delta) > _qty)) {
-      throw new ApplicationException("Don't have that many " + getName()
-          + "'s to drop.");
-    }
-    // Change the Item quantiy for small enough decrements, or any increment
-    else {
+    if (delta < 0 && (delta + _qty < 0)) {
+      _qty = 0;
+    } else {
       _qty += delta;
     }
+
     return _qty; // either to updated value or the original
   }
 
@@ -148,12 +145,12 @@ public class Item implements IRegistryElement
    */
   public Item copy()
   {
-//    try {
-//      Item mimic = new Item(_category, _name, _weight, _qty);
-//      return mimic;
-//    } catch (ApplicationException ex) {
-      return null;
-//    }
+    //    try {
+    //      Item mimic = new Item(_category, _name, _weight, _qty);
+    //      return mimic;
+    //    } catch (ApplicationException ex) {
+    return null;
+    //    }
   }
 
   /**
@@ -292,25 +289,5 @@ public class Item implements IRegistryElement
     // return (_name + " (" + catStr + ")\tQty = " + _qty + "\t weight = " + _weight + " oz.");
     return (_name + " (" + catStr + ")");
   }
-
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PUBLIC METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
-
-  public class MockItem
-  {
-    /** Default ctor */
-    public MockItem()
-    {}
-
-    /** Set a new name into the Item */
-    public void setName(String newName)
-    {
-      _name = newName;
-    }
-
-  } // end of MockItem inner class
-
 } // end of Item class
 
