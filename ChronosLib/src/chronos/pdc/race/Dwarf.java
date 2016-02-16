@@ -26,13 +26,11 @@ public class Dwarf extends Race
   static final long serialVersionUID = 1100L;
 
   /** Weight ranges */
-  protected final int _wtMaleMedValue = 150;
   protected final int _wtFemaleMedValue = 120;
   protected final String _wtLowDice = "2d8";
   protected final String _wtHighDice = "2d12";
 
   /** Height ranges */
-  protected final int _htMaleMedValue = 48;
   protected final int _htFemaleMedValue = 46;
   protected final String _htLowDice = "d4";
   protected final String _htHighDice = "d6";
@@ -63,16 +61,10 @@ public class Dwarf extends Race
     _raceName = "Dwarf";
     _raceLang = "Groken";
 
-    if (gender.isMale()) {
-      // Define weight ranges for Hero
-      _heightMedValue = _htMaleMedValue;
-      _weightMedValue = _wtMaleMedValue;
-    } else {
-      // Define height ranges for Hero
-      _weightMedValue = _wtFemaleMedValue;
-      _heightMedValue = _htFemaleMedValue;
-    }
-    
+    // Define height ranges for Hero
+    _weightMedValue = _wtFemaleMedValue;
+    _heightMedValue = _htFemaleMedValue;
+
     _descriptor = _raceDescriptor;
     _racialThiefMods = _dwarfThiefMods;
     _raceSkills = _dwarfSkills;

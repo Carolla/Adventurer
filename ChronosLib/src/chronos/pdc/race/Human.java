@@ -24,17 +24,15 @@ public class Human extends Race
   static final long serialVersionUID = 1100L;
 
   /** Racial limits for a Human for the traits */
-  private final int[] minLimit = { 8,  8,  8,  8,  8,  8};
+  private final int[] minLimit = {8, 8, 8, 8, 8, 8};
   private final int[] maxLimit = {18, 18, 18, 18, 18, 18};
 
   /** Weight ranges */
-  protected final int _maleMedValue = 175;
   protected final int _femaleMedValue = 130;
   protected final String _wtLowDice = "3d12";
   protected final String _wtHighDice = "5d12";
-  
+
   /** Height ranges */
-  protected final int _htMaleMedValue = 68;
   protected final int _htFemaleMedValue = 64;
   protected final String _htLowDice = "d12";
   protected final String _htHighDice = "d12";
@@ -43,38 +41,32 @@ public class Human extends Race
   private final String _raceDescriptor = "a naive look in the eyes";
 
   /** No special human skills, but don't leave this null */
-  private final String[] _humanSkills = { "None" }; 
-  
+  private final String[] _humanSkills = {"None"};
+
   /** Humans get no special mods for thief skills */
   // Find Secret Door | Pick Pockets | Open Locks | Find/Remove Traps | Move Silently |
   //    Hide in Shadows | Listening | Climb Walls | Back Attack
-  protected final int[] _humanThiefMods = {0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  protected final int[] _humanThiefMods = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
   /**
    * Default constructor, called reflectively by Klass
    * @param gender 
    */
-  public Human(Gender gender) 
+  public Human(Gender gender)
   {
     _raceName = "Human";
     _minLimit = minLimit;
     _maxLimit = maxLimit;
     _raceLang = "";
-    
+
     // Define height ranges for Hero
-    if (gender.isMale()) {
-      // Define weight ranges for Hero
-      _heightMedValue = _htMaleMedValue;
-      _weightMedValue = _maleMedValue;
-    } else {
-      // Define height ranges for Hero
-      _weightMedValue = _femaleMedValue;
-      _heightMedValue = _htFemaleMedValue;
-    }
+    _weightMedValue = _femaleMedValue;
+    _heightMedValue = _htFemaleMedValue;
+
     _descriptor = _raceDescriptor;
     _racialThiefMods = _humanThiefMods;
     _raceSkills = _humanSkills;
-  } 
+  }
 
   @Override
   public int calcWeight()

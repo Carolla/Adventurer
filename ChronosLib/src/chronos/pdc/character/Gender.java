@@ -38,6 +38,16 @@ public class Gender
       return Gender_e.FEMALE;
     }
   }
+  
+  public int adjustHeightForGender(int height)
+  {
+    return isMale() ? height *= 1.1 : height;
+  }
+  
+  public int adjustWeightForGender(int weight)
+  {
+    return isMale() ? weight *= 1.3 : weight;
+  }
 
   public String pronoun()
   {

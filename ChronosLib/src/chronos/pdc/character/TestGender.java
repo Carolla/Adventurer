@@ -12,11 +12,13 @@ import chronos.pdc.character.TraitList.PrimeTraits;
 public class TestGender
 {
   private Gender female;
+  private Gender male;
 
   @Before
   public void setup()
   {
     female = new Gender(Gender.FEMALE_STRING);
+    male = new Gender(Gender.MALE_STRING);
   }
 
   @Test
@@ -37,6 +39,20 @@ public class TestGender
     assertTrue(new Gender("CONFUSED").isFemale());
   }
 
+  @Test
+  public void menShouldWeighMoreThanWomen()
+  {
+    int weight = 100;
+    assertTrue(male.adjustWeightForGender(weight) > female.adjustWeightForGender(weight));
+  }
+  
+  @Test
+  public void menShouldBeTallerThanWomen()
+  {
+    int height = 60;
+    assertTrue(male.adjustHeightForGender(height) > female.adjustHeightForGender(height));
+  }
+  
   @Test
   public void adjustingTraitsReducesStrengthInWomen()
   {

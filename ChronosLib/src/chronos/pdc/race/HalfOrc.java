@@ -24,13 +24,11 @@ public class HalfOrc extends Race
   private final int[] maxLimit = {19, 17, 14, 17, 19, 12};
 
   /** Weight ranges */
-  protected final int _maleMedValue = 180;;
   protected final int _femaleMedValue = 150;
   protected final String _wtLowDice = "3d8";
   protected final String _wtHighDice = "4d10";
 
   /** Height ranges */
-  protected final int _htMaleMedValue = 70;;
   protected final int _htFemaleMedValue = 65;
   protected final String _htLowDice = "2d4";
   protected final String _htHighDice = "2d4";
@@ -56,16 +54,9 @@ public class HalfOrc extends Race
     _raceLang = getRaceLang();
     _minLimit = minLimit;
     _maxLimit = maxLimit;
-    // Define height ranges for Hero
-    if (gender.isMale()) {
-      // Define weight ranges for Hero
-      _heightMedValue = _htMaleMedValue;
-      _weightMedValue = _maleMedValue;
-    } else {
-      // Define height ranges for Hero
-      _weightMedValue = _femaleMedValue;
-      _heightMedValue = _htFemaleMedValue;
-    }
+
+    _weightMedValue = _femaleMedValue;
+    _heightMedValue = _htFemaleMedValue;
 
     _descriptor = _raceDescriptor;
     _racialThiefMods = _halforcThiefMods;

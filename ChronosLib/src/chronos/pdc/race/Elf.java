@@ -20,13 +20,11 @@ import chronos.pdc.character.TraitList.PrimeTraits;
 public class Elf extends Race
 {
   /** Weight ranges */
-  protected final int _maleMedValue = 100;;
   protected final int _femaleMedValue = 80;
   protected final String _wtLowDice = "d10";
   protected final String _wtHighDice = "d20";
 
   /** Height ranges */
-  protected final int _htMaleMedValue = 60;;
   protected final int _htFemaleMedValue = 54;
   protected final String _htLowDice = "d4";
   protected final String _htHighDice = "d6";
@@ -57,15 +55,8 @@ public class Elf extends Race
     _raceLang = "Elvish";
 
     // Define height ranges for Hero
-    if (gender.isMale()) {
-      // Define weight ranges for Hero
-      _heightMedValue = _htMaleMedValue;
-      _weightMedValue = _maleMedValue;
-    } else {
-      // Define height ranges for Hero
-      _weightMedValue = _femaleMedValue;
-      _heightMedValue = _htFemaleMedValue;
-    }
+    _weightMedValue = _femaleMedValue;
+    _heightMedValue = _htFemaleMedValue;
 
     _descriptor = _raceDescriptor;
     _racialThiefMods = _elfThiefMods;
