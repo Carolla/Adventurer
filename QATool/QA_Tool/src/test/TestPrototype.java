@@ -11,7 +11,6 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -42,8 +41,6 @@ public class TestPrototype
   static private final String ROOT = System.getProperty("user.dir") + "/src";
   static private final String SRC_ROOT =
       "/Projects/eChronos/QATool/QA_Tool/src/";
-  static private final String TEST_ROOT =
-      "/Projects/eChronos/QATool/QA_Tool/src/test";
 
   /** Object under test */
   static private Prototype _proto;
@@ -77,7 +74,7 @@ public class TestPrototype
 
     _srcDir = new File(SRC_ROOT);
     assertTrue(_srcDir.isDirectory());
-    _testDir = _proto.findTestDir(new File(SRC_ROOT));
+    _testDir = _qat.findTestDir(new File(SRC_ROOT));
     assertTrue(_testDir.isDirectory());
   }
 
@@ -90,7 +87,6 @@ public class TestPrototype
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
 
-    clearEmptyFiles(new File(TEST_ROOT));
     _testDir = null;
     _srcDir = null;
     _qat = null;
@@ -252,25 +248,25 @@ public class TestPrototype
   // }
 
 
-  /**
-   * @NORMAL.TEST Using simTree, a snapshot of ChronosLib, scan for all source file paths
-   */
-  @Test
-  public void testFindTestDir()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    // SETUP
-    File root = new File(SRC_ROOT);
-
-    // RUN: target method returns nothing
-    File testDir = _proto.findTestDir(root);
-
-    // VERIFY
-    assertEquals(testDir.getPath(), TEST_ROOT);
-  }
+  // /**
+  // * @NORMAL.TEST Using simTree, a snapshot of ChronosLib, scan for all source file paths
+  // */
+  // @Test
+  // public void testFindTestDir()
+  // {
+  // MsgCtrl.auditMsgsOn(false);
+  // MsgCtrl.errorMsgsOn(false);
+  // MsgCtrl.where(this);
+  //
+  // // SETUP
+  // File root = new File(SRC_ROOT);
+  //
+  // // RUN: target method returns nothing
+  // File testDir = _qat.findTestDir(root);
+  //
+  // // VERIFY
+  // assertEquals(testDir.getPath(), SRC_ROOT + "test");
+  // }
 
   // /**
   // * @NORMAL.TEST
@@ -330,50 +326,53 @@ public class TestPrototype
     MsgCtrl.where(this);
 
     // SETUP: Create the file in the right place
-    int NBR_PUBLIC_TESTS = 5;
-    int NBR_PROTECTED_TESTS = 0;
     // These are the expected methods in the target file after it is written
-    String[] expSigs = {
+    String[] expPublics = {
         "File createFile(File, File, String)",
-        "void fake1()",
-        "long fake1(String)",
-        "File fake1(File, long)",
-        "File fake2(File, long)",
-        "String makeTestFilename(String, String)",
-        "File writeFile(File, String)",
+        "String getTestFilename(String, String)",
+        "void m1()",
+        "File m2()",
+        "File writeFile(File, String)"
     };
+    String[] expProtecteds = {
+        "String m3()"
+    };
+
+    MsgCtrl.msgln("User Directory = current directory = " + ROOT);
+
     String srcName = "pdc/subDir/SubDirSource.java";
     String expTestFile = "test/pdc/subDir/TestSubDirSource.java";
 
-//    String targetName = _proto.makeTestFilename(_testDir.getAbsolutePath(), srcName);
-    String targetName = _qat.makeTestFilename(SRC_ROOT + srcName);
+    String targetName = _qat.makeTestFilename(srcName);
     File target = new File(targetName);
     assertNotNull(target);
 
     // RUN: The source class file must be passed for methods to be extracted
     target = _proto.writeFile(target, srcName);
-    MsgCtrl.msgln("\tGenerated test file " + target.getAbsolutePath());
+    MsgCtrl.msgln("\tGenerated test file " + target.getPath());
     MsgCtrl.msgln("\tGenerated test file size = " + target.length());
 
     // VERIFY
     // printFile(target.getAbsolutePath());
     assertTrue(target.exists());
-    assertEquals(SRC_ROOT + expTestFile, target.getName());
+    assertEquals(expTestFile, target.getPath());
 
     ArrayList<String> publix = _mock.getPublicMethods();
-    assertEquals(NBR_PUBLIC_TESTS, publix.size());
+    assertEquals(expPublics.length, publix.size());
     MsgCtrl.msgln("\tPUBLIC METHODS");
     for (int k = 0; k < publix.size(); k++) {
       MsgCtrl.msgln("\t\t" + publix.get(k));
-      assertEquals(expSigs[k], publix.get(k));
+      assertEquals(expPublics[k], publix.get(k));
     }
 
     ArrayList<String> protex = _mock.getProtectedMethods();
-    assertEquals(NBR_PROTECTED_TESTS, protex.size());
+    assertEquals(expProtecteds.length, protex.size());
     MsgCtrl.msgln("\tPROTECTED METHODS");
-    for (String s : protex) {
-      MsgCtrl.msgln("\t" + s);
+    for (int k = 0; k < protex.size(); k++) {
+      MsgCtrl.msgln("\t\t" + protex.get(k));
+      assertEquals(expProtecteds[k], protex.get(k));
     }
+    
   }
 
 

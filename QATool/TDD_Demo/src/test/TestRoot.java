@@ -9,7 +9,9 @@
 
 package test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -18,6 +20,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import pdc.Root;
+import pdc.Root.MockRoot;
 
 /**
  * @author Alan Cline
@@ -28,6 +31,7 @@ public class TestRoot
 
   private final double TOLERANCE = 0.01;
 
+  
   /**
    * @throws java.lang.Exception
    */
@@ -71,8 +75,8 @@ public class TestRoot
   {
     Root root = new Root();
     Double[] result = root.getRoot(0.0, 0.0, 1.0);
-    assertNull(result[0]);
-    assertNull(result[1]);
+    assertTrue(result[0].equals(Double.NaN));
+    assertTrue(result[1].equals(Double.NaN));
 
   }
 
@@ -82,17 +86,17 @@ public class TestRoot
     Root root = new Root();
     Double[] result = root.getRoot(0.0, 1.0, 0.0);
     assertEquals(0.0, result[0], TOLERANCE);
-    assertNull(result[1]);
+    assertTrue(result[1].equals(Double.NaN));
 
     root = new Root();
     result = root.getRoot(0.0, 3.0, 9.0);
     assertEquals(-3.0, result[0], TOLERANCE);
-    assertNull(result[1]);
+    assertTrue(result[1].equals(Double.NaN));
 
   }
 
   @Test
-  public void testQuadratic()
+  public void testReal()
   {
     Root root = new Root();
     Double[] result = root.getRoot(1.0, 0.0, 0.0);
@@ -100,13 +104,22 @@ public class TestRoot
     assertEquals(0.0, result[1], TOLERANCE);
     
     result = root.getRoot(1.0, 4.0, 2.0);
-    assertEquals(1.42, result[0], TOLERANCE);
-    assertEquals(-.585, result[1], TOLERANCE);
+    assertEquals(-.586, result[0], TOLERANCE);
+    assertEquals(-3.414, result[1], TOLERANCE);
     
-
   }
 
-  
+  @Test
+  public void testImaginary()
+  {
+    Root root = new Root();
+    MockRoot mock = root.new MockRoot();
+    
+    Double[] result = root.getRoot(1.0, 2.0, 4.0);
+//    assertEquals(0.0, result[0], TOLERANCE);
+//    assertEquals(0.0, result[1], TOLERANCE);
+    assertTrue(mock.getImaginaryFlag());
+  }  
   
   
 }   // end of TestRoot class

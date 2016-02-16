@@ -41,17 +41,17 @@ public class SubDirSource
     return "x";
   }
 
-  File createFile(File x, File y, String s)
+  public File createFile(File x, File y, String s)
   {
     return null;
   }
 
-  String getTestFilename(String s1, String s2)
+  public String getTestFilename(String s1, String s2)
   {
     return "x";
   }
 
-  File writeFile(File x, String s)
+  public File writeFile(File x, String s)
   {
     return null;
   }

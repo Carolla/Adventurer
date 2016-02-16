@@ -17,6 +17,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 
 /**
  * @author Alan Cline
@@ -30,17 +31,11 @@ public class Prototype
   private final String LEFT_PAREN = "(";
   private final String RIGHT_PAREN = ")";
 
-  private final String JAVA = ".java";
-
   /** Categories of methods to put into the test prototype */
-  enum Banner {
+  private enum Banner {
     PUBLIC, PROTECTED
   };
 
-  /** The prototype test class actually is written by a text-savvy output stream */
-  PrintWriter _writer;
-  /** The File to handle I/O stats */
-  File _protoFile;
 
   /** Copyright banner at top of file */
   private final String COPYRIGHT =
@@ -94,7 +89,6 @@ public class Prototype
   ArrayList<String> _publics = new ArrayList<String>();
   ArrayList<String> _protecteds = new ArrayList<String>();
 
-  static private int count = 0;
 
   // ======================================================================
   // CONSTRUCTOR
@@ -163,56 +157,30 @@ public class Prototype
   // return _protoFile;
   // }
 
-  /**
-   * Traverse the root dir and return the test subdir beneath it
-   * 
-   * @param root the directory for all source files
-   * @return the test directory
-   */
-  public File findTestDir(File root)
-  {
-    File testDir = null;
-    // Retrieve first layer of normal files and subdirs under dir
-    File[] allFiles = root.listFiles();
-    // Retrieve TEST subdir
-    for (File f : allFiles) {
-      // System.out.println("getTestDir(): " + f.getPath());
-      if (f.isDirectory()) {
-        if (f.getPath().contains("test")) {
-          testDir = f;
-          break;
-        } else {
-          f = findTestDir(f);
-        }
-      }
-    }
-    return testDir;
-  }
 
-
-//  /**
-//   * Make a test file name from the source path and test directory. Does not create Files.
-//   * 
-//   * @param testPath directory name for parent of all test classes
-//   * @param srcPath relative path of source file
-//   * @return test file name that corresponds to source file
-//   */
-//  public String makeTestFilename(String testPath, String srcPath)
-//  {
-//    // Guard against non-Java files
-//    if (!srcPath.contains(JAVA)) {
-//      return null;
-//    }
-//    // Insert the prefix "Test" to the src file name
-//    StringBuilder sbTest = new StringBuilder();
-//    sbTest.append(testPath);
-//    sbTest.append(srcPath);
-//    // Replace name with Test<Name>
-//    int ndx = sbTest.lastIndexOf("/");
-//    sbTest.insert(ndx + 1, "Test");
-//
-//    return sbTest.toString();
-//  }
+  // /**
+  // * Make a test file name from the source path and test directory. Does not create Files.
+  // *
+  // * @param testPath directory name for parent of all test classes
+  // * @param srcPath relative path of source file
+  // * @return test file name that corresponds to source file
+  // */
+  // public String makeTestFilename(String testPath, String srcPath)
+  // {
+  // // Guard against non-Java files
+  // if (!srcPath.contains(JAVA)) {
+  // return null;
+  // }
+  // // Insert the prefix "Test" to the src file name
+  // StringBuilder sbTest = new StringBuilder();
+  // sbTest.append(testPath);
+  // sbTest.append(srcPath);
+  // // Replace name with Test<Name>
+  // int ndx = sbTest.lastIndexOf("/");
+  // sbTest.insert(ndx + 1, "Test");
+  //
+  // return sbTest.toString();
+  // }
 
 
   // /**
@@ -241,13 +209,13 @@ public class Prototype
    * Writes a prototype test template with JUnit test stubs and Chronos-specific data
    * 
    * @param target prototype test file to write into
-   * @param source the java file name from which to derive test methods
+   * @param source the java path below the source root subdir from which to derive test methods
    * @return the test file written
    */
   public File writeFile(File target, String source)
   {
     PrintWriter out = null;
-    // Ensure that all intermediate subdirs exist for the PrintWriter and target file 
+    // Ensure that all intermediate subdirs exist for the PrintWriter and target file
     makeSubtree(target.getPath());
     // Create the output device in the proper test subdir
     try {
@@ -257,44 +225,42 @@ public class Prototype
       return null;
     }
 
-    // Preempt the full fill write
-    out.println("");
+    out.println("\n// FOR TESTING. CAN BE DELETED\n");
 
+    // 1. Write the copyright notice into the prototype
+    String copyright = String.format(COPYRIGHT, target.getName());
+    out.println(copyright);
 
-    // // 1. Write the copyright notice into the prototype
-    // String copyright = String.format(COPYRIGHT, _protoFile.getName());
-    // out.println(copyright);
-    //
-    // // 2. Write the package statements for this test class
-    // String pkgStatement = String.format("\npackage test.%s;\n",
-    // target.getParentFile().getName());
-    // out.println(pkgStatement);
-    //
-    // // 3. Write the JUnit import statements
-    // out.println(JUNIT_IMPORTS);
-    //
-    // // 4. Write header comment, author, and version
-    // // Remove the .java extension from the filename
-    // String className = target.getName();
-    // int ndx = className.lastIndexOf(".");
-    // String name = className.substring(0, ndx);
-    // String version = String.format(AUTHOR_VERSION, new Date(), name);
-    // out.println(version);
-    //
-    // // 5. Write the four JUnit setup and teardown methods
-    // out.println(buildPrepMethods());
-    //
-    // // 6. Accummulate and sort test methods by modifier
-    // // First convert the source file name to a source file class
-    // Class<?> sourceClass = convertSource(source);
-    // getMethods(sourceClass); // store lists in class Field
-    //
-    // // 7a. Write the public methods beneath a public banner
-    // writeCodeBlocks(out, _publics, Banner.PUBLIC);
-    // writeCodeBlocks(out, _protecteds, Banner.PROTECTED);
-    //
-    // // 8. Write the class closing brace
-    // out.println(String.format("} \t// end of %s class", _protoFile.getName()));
+    // 2. Write the package statements for this test class
+    String pkgStatement = String.format("\npackage test.%s;\n",
+        target.getParentFile().getName());
+    out.println(pkgStatement);
+
+    // 3. Write the JUnit import statements
+    out.println(JUNIT_IMPORTS);
+
+    // 4. Write header comment, author, and version
+    // Remove the .java extension from the filename
+    String className = target.getName();
+    int ndx = className.lastIndexOf(".");
+    String name = className.substring(0, ndx);
+    String version = String.format(AUTHOR_VERSION, new Date(), name);
+    out.println(version);
+
+    // 5. Write the four JUnit setup and teardown methods
+    out.println(buildPrepMethods());
+
+    // 6. Accummulate and sort test methods by modifier
+    // First convert the source file name to a source file class
+    Class<?> sourceClass = convertSource(source);
+    getMethods(sourceClass); // store lists in class Field
+
+    // 7a. Write the public methods beneath a public banner
+    writeCodeBlocks(out, _publics, Banner.PUBLIC);
+    writeCodeBlocks(out, _protecteds, Banner.PROTECTED);
+
+    // 8. Write the class closing brace
+    out.println(String.format("} \t// end of %s class", target.getName()));
 
     out.close();
     return target;
@@ -408,6 +374,10 @@ public class Prototype
     Method[] rawMethodList = clazz.getDeclaredMethods();
     for (Method method : rawMethodList) {
       int modifiers = method.getModifiers();
+      if (modifiers == 0) {
+        System.err.println("WARNING: " + method.getName()
+            + "() has default access; should have a declared access");
+      }
       if ((Modifier.isPublic(modifiers)) || (Modifier.isProtected(modifiers))) {
         String mName = extractSignature(method, clazzName);
         if (mName != null) {
@@ -424,13 +394,14 @@ public class Prototype
     sortSignatures(_protecteds);
   }
 
-  
-  /** Ensure that all subdirs in the long path exist
+
+  /**
+   * Ensure that all subdirs in the long path exist
    * 
    * @param path long path of a file to be created
    * @return the short file name
    */
-  private String makeSubtree(String path) 
+  private String makeSubtree(String path)
   {
     // Remove filename from end of path
     int fnNdx = path.lastIndexOf("/");
@@ -439,7 +410,7 @@ public class Prototype
     subtree.mkdirs();
     return path.substring(fnNdx);
   }
-  
+
 
   /**
    * Sort first by method name, then by parm list number and value

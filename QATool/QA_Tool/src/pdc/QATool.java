@@ -180,11 +180,38 @@ public class QATool
     _testPaths.clear();
     int srcPrefix = root.getPath().length();
     buildSourceList(root, srcPrefix);
-    _testDir = _proto.findTestDir(root);
+    _testDir = findTestDir(root);
     int testPrefix = _testDir.getPath().length();
     buildTestList(_testDir, testPrefix);
     matchSrcToTest(_srcPaths, _testPaths);
   }
+  
+  /**
+   * Traverse the root dir and return the test subdir beneath it
+   * 
+   * @param root the directory for all source files
+   * @return the test directory
+   */
+  public File findTestDir(File root)
+  {
+    File testDir = null;
+    // Retrieve first layer of normal files and subdirs under dir
+    File[] allFiles = root.listFiles();
+    // Retrieve TEST subdir
+    for (File f : allFiles) {
+      // System.out.println("getTestDir(): " + f.getPath());
+      if (f.isDirectory()) {
+        if (f.getPath().contains("test")) {
+          testDir = f;
+          break;
+        } else {
+          f = findTestDir(f);
+        }
+      }
+    }
+    return testDir;
+  }
+
 
   /**
    * Insert "test" after the "src" dir and insert "Test" in front of the filename
@@ -200,11 +227,12 @@ public class QATool
     }
     StringBuilder sbTest = new StringBuilder(srcPath);
     // Insert the prefix "test" subdir after the src subdir
-    int ndx = srcPath.indexOf("/src");
-    sbTest.insert(ndx+4, "/test");
+//    int ndx = srcPath.indexOf("/src");
+//    sbTest.insert(ndx+4, "/test");
+    sbTest.insert(0, "test/");
     // Insert the prefix "Test" to the src file name
     // Replace name with Test<Name>
-    ndx = sbTest.lastIndexOf("/");
+    int ndx = sbTest.lastIndexOf("/");
     sbTest.insert(ndx + 1, "Test");
 
     return sbTest.toString();
@@ -282,7 +310,7 @@ public class QATool
   {
 //    int srcPrefix = srcDir.getPath().length();
 //    buildSourceList(srcDir, srcPrefix);
-    _testDir = _proto.findTestDir(srcDir);
+    _testDir = findTestDir(srcDir);
     writeNextTestFile(srcDir, _testDir, srcDir.getPath());
     
 //    int testPrefix = _testDir.getPath().length();
