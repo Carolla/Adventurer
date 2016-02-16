@@ -72,9 +72,9 @@ public class TestInventory
   {
     _bag = new Inventory();
     _framis = new Item(ItemCategory.VALUABLES, "Framis",
-        FRAMIS_WT, FRAMIS_QTY);
+        FRAMIS_QTY, FRAMIS_WT);
     _trobe = new Item(ItemCategory.ARMS, "Trobe",
-        TROBE_WT, TROBE_QTY);
+        TROBE_QTY, TROBE_WT);
   }
 
   @After
@@ -106,11 +106,11 @@ public class TestInventory
   public void addingItemThatAlreadyExistsIncreasesCount()
   {
     _bag.addItem(_framis);
+    assertEquals(FRAMIS_QTY, _bag.getItem("Framis").getQuantity());
     _bag.addItem(_framis);
 
     assertEquals(1, _bag.size());
-    int framisQty = _bag.getItem("Framis").getQuantity();
-    assertEquals(2, framisQty);
+    assertEquals(FRAMIS_QTY * 2, _bag.getItem("Framis").getQuantity());
   }
 
   @Test
@@ -470,42 +470,6 @@ public class TestInventory
   public void cantGetNullItem()
   {
     assertNull(_bag.getItem(null));
-  }
-
-
-  /**
-   * Test the Inventory seach method by asking for items that ARE and ARE NOT
-   * listed
-   * This method takes an Item name and returns a boolan
-   * 
-   * @Normal Inventory.hasItem(Item item) ok
-   * @Error Inventory.hasItem(Item item) ok
-   * @Null Inventory.hasItem(Item item) ok
-   */
-  @Test
-  public void testHasItemByItem()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.msgln("\ntestHasItemByItem():");
-
-    // We have two tests Items. Search for them (not there), then add them
-    // and
-    // check that they are present, then remove them and check that they are
-    // mising
-    // NORMAL and ERROR cases, depending on if item is in inventory or not
-    assertFalse(_bag.hasItem(_framis.getName()));
-    assertFalse(_bag.hasItem(_trobe.getName()));
-    _bag.addItem(_framis);
-    _bag.addItem(_trobe);       // trobes are added in pairs
-    _bag.addItem(_framis);
-    assertTrue(_bag.hasItem(_framis.getName()));      // 2 framis in bag
-    assertTrue(_bag.hasItem(_trobe.getName()));       // 2 trobes in bag
-    _bag.dropItems("Framis", 1);
-    _bag.dropItems("Trobe", 2);
-    // There is no 1 framis left, and 0 trobes
-    assertTrue(_bag.hasItem(_framis.getName()));      // 1 framis in bag
-    assertFalse(_bag.hasItem(_trobe.getName()));      // 0 trobes in bag
-    assertFalse(_bag.hasItem("null"));        // fail gracefully
   }
 
 
