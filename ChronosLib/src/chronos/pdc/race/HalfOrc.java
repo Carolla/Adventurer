@@ -24,14 +24,10 @@ public class HalfOrc extends Race
   private final int[] maxLimit = {19, 17, 14, 17, 19, 12};
 
   /** Weight ranges */
-  protected final int _femaleMedValue = 150;
-  protected final String _wtLowDice = "3d8";
-  protected final String _wtHighDice = "4d10";
+  protected final RangedValue _weightRange = new RangedValue(150, "3d8", "4d10");
 
   /** Height ranges */
-  protected final int _htFemaleMedValue = 65;
-  protected final String _htLowDice = "2d4";
-  protected final String _htHighDice = "2d4";
+  protected final RangedValue _heightRange = new RangedValue(65, "2d4");
 
   /** Half-orcs are burly and pig-like */
   private final String _raceDescriptor = "a squat snoutish face";
@@ -54,9 +50,6 @@ public class HalfOrc extends Race
     _raceLang = getRaceLang();
     _minLimit = minLimit;
     _maxLimit = maxLimit;
-
-    _weightMedValue = _femaleMedValue;
-    _heightMedValue = _htFemaleMedValue;
 
     _descriptor = _raceDescriptor;
     _racialThiefMods = _halforcThiefMods;
@@ -85,13 +78,13 @@ public class HalfOrc extends Race
   @Override
   public int calcWeight()
   {
-    return super.calcWeight(_wtLowDice, _wtHighDice);
+    return _weightRange.calcValue();
   }
 
   @Override
   public int calcHeight()
   {
-    return super.calcWeight(_htLowDice, _htHighDice);
+    return _heightRange.calcValue();
   };
 
 }

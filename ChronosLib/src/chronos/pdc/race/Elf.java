@@ -20,14 +20,10 @@ import chronos.pdc.character.TraitList.PrimeTraits;
 public class Elf extends Race
 {
   /** Weight ranges */
-  protected final int _femaleMedValue = 80;
-  protected final String _wtLowDice = "d10";
-  protected final String _wtHighDice = "d20";
+  protected final RangedValue _weightRange = new RangedValue(80, "d10", "d20");
 
   /** Height ranges */
-  protected final int _htFemaleMedValue = 54;
-  protected final String _htLowDice = "d4";
-  protected final String _htHighDice = "d6";
+  protected final RangedValue _heightRange = new RangedValue(54, "d4", "d6");
 
   /** Elves have pointed ears */
   private final String _raceDescriptor = "pointed ears";
@@ -54,10 +50,6 @@ public class Elf extends Race
     _raceName = "Elf";
     _raceLang = "Elvish";
 
-    // Define height ranges for Hero
-    _weightMedValue = _femaleMedValue;
-    _heightMedValue = _htFemaleMedValue;
-
     _descriptor = _raceDescriptor;
     _racialThiefMods = _elfThiefMods;
     _raceSkills = _elfSkills;
@@ -73,15 +65,16 @@ public class Elf extends Race
     return traits;
   };
 
+
   @Override
   public int calcWeight()
   {
-    return super.calcWeight(_wtLowDice, _wtHighDice);
+    return _weightRange.calcValue();
   }
 
   @Override
   public int calcHeight()
   {
-    return super.calcWeight(_htLowDice, _htHighDice);
+    return _heightRange.calcValue();
   };
 }

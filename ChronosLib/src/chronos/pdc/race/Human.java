@@ -28,15 +28,11 @@ public class Human extends Race
   private final int[] maxLimit = {18, 18, 18, 18, 18, 18};
 
   /** Weight ranges */
-  protected final int _femaleMedValue = 130;
-  protected final String _wtLowDice = "3d12";
-  protected final String _wtHighDice = "5d12";
+  protected final RangedValue _weightRange = new RangedValue(130, "3d12", "5d12");
 
   /** Height ranges */
-  protected final int _htFemaleMedValue = 64;
-  protected final String _htLowDice = "d12";
-  protected final String _htHighDice = "d12";
-
+  protected final RangedValue _heightRange = new RangedValue(64, "d12");
+  
   /** Human has no Race descriptor, so merely ends the description suffix */
   private final String _raceDescriptor = "a naive look in the eyes";
 
@@ -59,24 +55,21 @@ public class Human extends Race
     _maxLimit = maxLimit;
     _raceLang = "";
 
-    // Define height ranges for Hero
-    _weightMedValue = _femaleMedValue;
-    _heightMedValue = _htFemaleMedValue;
-
     _descriptor = _raceDescriptor;
     _racialThiefMods = _humanThiefMods;
     _raceSkills = _humanSkills;
   }
 
+
   @Override
   public int calcWeight()
   {
-    return super.calcWeight(_wtLowDice, _wtHighDice);
+    return _weightRange.calcValue();
   }
 
   @Override
   public int calcHeight()
   {
-    return super.calcWeight(_htLowDice, _htHighDice);
+    return _heightRange.calcValue();
   };
 }

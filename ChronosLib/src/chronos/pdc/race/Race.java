@@ -125,19 +125,6 @@ public abstract class Race
     return skills;
   }
 
-  /** Calculate the weight of the Hero based on deviation from average */
-  public int calcWeight(String lowDice, String highDice)
-  {
-    int weight = getDeviationFromMedValue(_weightMedValue, lowDice, highDice);
-    return weight;
-  }
-
-  /** Calculate the height of the Hero based on deviation from average */
-  public int calcHeight(String lowDice, String highDice)
-  {
-    int height = getDeviationFromMedValue(_heightMedValue, lowDice, highDice);
-    return height;
-  }
 
   
   /**
@@ -270,28 +257,6 @@ public abstract class Race
     return _traits;
   }
 
-
-  /**
-   * Get the weight (in gpw) for subclass races in range of low, medium, high
-   *
-   * @param medValue the average weight for the Hero
-   * @param lowDice deviation below medValue in dice notation (e.g. 2d4)
-   * @param highDice deviation above medValue in dice notation (e.g. 2d4)
-   * @return the weight of the character
-   */
-  private int getDeviationFromMedValue(int medValue, String lowDice, String highDice)
-  {
-    int result = 0;
-    int range = _md.rollPercent();
-    if (range <= 30) {
-      result = medValue - _md.roll(lowDice);
-    } else if (range >= 71) {
-      result = medValue + _md.roll(highDice);
-    } else {
-      result = medValue;
-    }
-    return result;
-  }
   
   public List<String> getSkills()
   {

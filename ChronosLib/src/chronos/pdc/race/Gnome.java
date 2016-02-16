@@ -24,15 +24,11 @@ public class Gnome extends Race
   private final int[] maxLimit = {18, 18, 18, 18, 18, 18};
 
   /** Weight ranges */
-  protected final int _femaleMedValue = 75;
-  protected final String _wtLowDice = "2d4";
-  protected final String _wtHighDice = "2d6";
+  protected final RangedValue _weightRange = new RangedValue(75, "2d4", "2d6");
 
   /** Height ranges */
-  protected final int _htFemaleMedValue = 39;
-  protected final String _htLowDice = "d3";
-  protected final String _htHighDice = "d3";
-
+  protected final RangedValue _heightRange = new RangedValue(39, "d3");
+  
   /** Gnomes have piercing blue eyes */
   private final String _raceDescriptor = "piercing blue eyes";
 
@@ -60,24 +56,22 @@ public class Gnome extends Race
     _minLimit = minLimit;
     _maxLimit = maxLimit;
 
-    // Define height ranges for Hero
-    _weightMedValue = _femaleMedValue;
-    _heightMedValue = _htFemaleMedValue;
-
     _descriptor = _raceDescriptor;
     _racialThiefMods = _gnomeThiefMods;
     _raceSkills = _gnomeSkills;
   }
 
+
+
   @Override
   public int calcWeight()
   {
-    return super.calcWeight(_wtLowDice, _wtHighDice);
+    return _weightRange.calcValue();
   }
 
   @Override
   public int calcHeight()
   {
-    return super.calcWeight(_htLowDice, _htHighDice);
+    return _heightRange.calcValue();
   };
 }
