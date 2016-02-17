@@ -11,9 +11,13 @@
 package mylib.test.pdc;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Arrays;
 
-import junit.framework.TestCase;
 import mylib.MsgCtrl;
 import mylib.pdc.MetaDie;
 import mylib.pdc.MetaDie.MockMetaDie;
@@ -31,7 +35,7 @@ import org.junit.Test;
  *          Sep 20, 2014 // trying to cut down the number of times a method fails for random value
  *          out of range <br>
  */
-public class TestMetaDie extends TestCase
+public class TestMetaDie
 {
   /** Non-repeatable random generator */
   private MetaDie _md = null;
@@ -40,11 +44,9 @@ public class TestMetaDie extends TestCase
   /** Mock for testing */
   private MockMetaDie _mock = null;
 
-  /**
-   * @throws java.lang.Exception
-   */
+
   @Before
-  public void setUp() throws Exception
+  public void setUp() 
   {
     // Audit messages are OFF at start of each test
     MsgCtrl.auditMsgsOn(false);
@@ -58,11 +60,8 @@ public class TestMetaDie extends TestCase
     assertNotNull(_mdrep);
   }
 
-  /**
-   * @throws java.lang.Exception
-   */
   @After
-  public void tearDown() throws Exception
+  public void tearDown() 
   {
     _md = null;
     _mdrep = null;
@@ -76,6 +75,7 @@ public class TestMetaDie extends TestCase
   // --------------------------------------------------------------------------------------------------------------
 
   /** Test that rollTrait is returning the proper range and randomness */
+  @Test
   public void testRollTraits()
   {
     // Audit messages are OFF at start of each test
@@ -126,7 +126,7 @@ public class TestMetaDie extends TestCase
    * @Null.Test MetaDie.getGaussian(double mean, double low, double high) compile error
    */
   @Test
-  public void testGetGaussian() throws Exception
+  public void testGetGaussian() 
   {
     // Audit messages are OFF at start of each test
     MsgCtrl.auditMsgsOn(false);
@@ -239,6 +239,7 @@ public class TestMetaDie extends TestCase
    * @Error.Test MetaDie.getRandom(int minRange, maxRange) ok
    * @Null.Test MetaDie.getRandom(int minRange, maxRange) compile error
    */
+  @Test
   public void testGetRandom()
   {
     // Audit messages are OFF at start of each test
@@ -307,6 +308,7 @@ public class TestMetaDie extends TestCase
    * @Error.Test MetaDie.roll(int nbrDice, int nbrSides) ok
    * @Null.Test MetaDie.roll(int nbrDice, int nbrSides) compiler error
    */
+  @Test
   public void testRoll()
   {
     // Audit messages are OFF at start of each test
@@ -399,7 +401,8 @@ public class TestMetaDie extends TestCase
    * @Error.Test MetaDie.roll(String notation) ok
    * @Null.Test MetaDie.roll(String notation) ok
    */
-  public void testRollString() throws Exception
+  @Test
+  public void testRollString() 
   {
     // Audit messages are OFF at start of each test
     MsgCtrl.auditMsgsOn(false);
