@@ -2,6 +2,7 @@
 package chronos.test.pdc.character;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -56,6 +57,19 @@ public class TestFighter
     }
     assertEquals(10, maxHp);
     assertEquals(1, minHp);
+  }
+  
+  @Test
+  public void cantUseMagic()
+  {
+    assertFalse(f.canUseMagic());
+  }
+  
+  @Test
+  public void hasSpells()
+  {
+    f.addKlassSpells();
+    assertEquals(0, f.getSpells().size());
   }
   
   @Test
