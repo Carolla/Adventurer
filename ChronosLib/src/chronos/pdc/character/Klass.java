@@ -26,6 +26,8 @@ import chronos.pdc.character.TraitList.PrimeTraits;
  */
 public class Klass
 {
+  // Spells in the Cleric or Wizard's spell book
+  List<String> _spellBook = new ArrayList<String>();
 
   public static final String FIGHTER_CLASS_NAME = "Fighter";
   public static final String CLERIC_CLASS_NAME = "Cleric";
@@ -122,7 +124,7 @@ public class Klass
   /*************************
    ** OVERRIDEABLE METHODS *
    *************************/
-  public void addKlassSpells(List<String> spellbook)
+  public void addKlassSpells()
   {
     //Override
   }
@@ -170,7 +172,7 @@ public class Klass
 
   public List<String> getSpells()
   {
-    return new ArrayList<String>();
+    return _spellBook;
   }
 
   /*************************

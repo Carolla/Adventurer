@@ -332,6 +332,12 @@ public class TestDbReadWriter
   @Test
   public void testErrorConstructorNullArg()
   {
+<<<<<<< Updated upstream
+=======
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+>>>>>>> Stashed changes
     try {
       new DbReadWriter<SomeObject>(null);
     } catch (NullPointerException ex) {
@@ -347,6 +353,12 @@ public class TestDbReadWriter
   @Test
   public void testErrorConstructorEmptyArg()
   {
+<<<<<<< Updated upstream
+=======
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+>>>>>>> Stashed changes
     try {
       new DbReadWriter<SomeObject>("  ");
     } catch (NullPointerException ex) {

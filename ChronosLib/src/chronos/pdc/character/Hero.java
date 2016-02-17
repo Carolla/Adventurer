@@ -10,7 +10,6 @@
 
 package chronos.pdc.character;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Set;
@@ -63,8 +62,6 @@ public class Hero implements IRegistryElement
   /** Each Person has six prime traits, adjusted by gender, race, and klass */
   private TraitList _traits = null;
 
-  // Spells in the Cleric or Wizard's spell book
-  List<String> _spellBook = new ArrayList<String>();
 
   // INT mods
   // Everyone knows Common, and perhaps a race language
@@ -160,7 +157,7 @@ public class Hero implements IRegistryElement
     _occ = Occupation.getRandomOccupation();
 
     // 21. ASSIGN SPELLS TO CLERICS (WIZARDS ALREADY WERE ASSIgned 'READ MAGIC')
-    _klass.addKlassSpells(_spellBook);
+    _klass.addKlassSpells();
 
     // 22. Assign initial inventory
     _inven = new Inventory();

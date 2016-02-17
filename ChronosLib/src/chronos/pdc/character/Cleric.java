@@ -10,7 +10,6 @@
 package chronos.pdc.character;
 
 import java.util.EnumMap;
-import java.util.List;
 
 import chronos.civ.PersonKeys;
 import chronos.pdc.Item;
@@ -28,7 +27,7 @@ public class Cleric extends Klass
   /** Starting die and initial free HP for klass */
   private static final String _hitDie = "d8";
   private static final String _startingGold = "3d6";
-  
+
   // Clerical mods
   private int _CSPsPerLevel = 0;
   private int _CSPs = 0;
@@ -58,10 +57,10 @@ public class Cleric extends Klass
   }
 
   @Override
-  public void addKlassSpells(List<String> spellbook)
+  public void addKlassSpells()
   {
     for (String s : _clericSpells) {
-      spellbook.add(s);
+      _spellBook.add(s);
     }
   }
 

@@ -10,7 +10,6 @@
 package chronos.pdc.character;
 
 import java.util.EnumMap;
-import java.util.List;
 
 import chronos.civ.PersonKeys;
 import chronos.pdc.Item;
@@ -62,9 +61,9 @@ public class Wizard extends Klass
   }
 
   @Override
-  public void addKlassSpells(List<String> spellbook)
+  public void addKlassSpells()
   {
-    spellbook.add("Read Magic");
+    _spellBook.add("Read Magic");
   }
 
   @Override
