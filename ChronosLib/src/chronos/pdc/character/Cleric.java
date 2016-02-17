@@ -78,7 +78,6 @@ public class Cleric extends Klass
     inven.addItem(new Item(ItemCategory.ARMS, "Quarterstaff (dmg=d6T, attack=1)", 1, 3.0));
     inven.addItem(new Item(ItemCategory.MAGIC, "Sacred Satchel", 1, 0.25));
     inven.addItem(new Item(ItemCategory.MAGIC, "Holy symbol, wooden", 1, 0.50));
-    // for testing
     inven.addItem(new Item(ItemCategory.SPELL_MATERIAL, "Rosemary sprig", 1, 0.125));
     inven.addItem(new Item(ItemCategory.SPELL_MATERIAL, "Wolfsbane", 2, 0.25));
     return inven;

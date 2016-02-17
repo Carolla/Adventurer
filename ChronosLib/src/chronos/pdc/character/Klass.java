@@ -90,10 +90,9 @@ public abstract class Klass
    * @param _traits raw traits to rearrange
    * @return traits after klass adjusted
    */
-  public TraitList adjustTraitsForKlass(TraitList traits)
+  public void adjustTraitsForKlass(TraitList traits)
   {
     traits.swapPrime(_primeTrait);
-    return traits;
   }
 
   /**
@@ -103,8 +102,7 @@ public abstract class Klass
    */
   public int rollGold()
   {
-    int gold = _md.roll(_goldDice) * 10;
-    return gold;
+    return _md.roll(_goldDice) * 10;
   }
 
   /**
@@ -114,7 +112,7 @@ public abstract class Klass
    * @param mod the HP mod for the Hero, a CON-based attribute
    * @return the initial Hit Points
    */
-  protected void rollHP()
+  public void rollHP()
   {
     _HP = _md.roll(_hpDie) + _traits.getHpMod();
   }
