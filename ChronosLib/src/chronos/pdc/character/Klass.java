@@ -75,11 +75,20 @@ public abstract class Klass
     }
     return klass;
   }
-
-
-  public List<String> addKlassSpells(List<String> spellbook)
+  
+  protected Klass(TraitList traits, String klassName, PrimeTraits trait, String hitdie, String startinggold)
   {
-    return spellbook;
+    _traits = traits;
+    _klassName = klassName;
+    _primeTrait = trait;
+    _hpDie = hitdie;
+    _goldDice = startinggold;
+  }
+
+
+  public void addKlassSpells(List<String> spellbook)
+  {
+    //Override
   }
 
 

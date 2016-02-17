@@ -26,8 +26,9 @@ public class Cleric extends Klass
 {
 
   /** Starting die and initial free HP for klass */
-  private String _hitDie = "d8";
-  private String _startingGold = "3d6";
+  private static final String _hitDie = "d8";
+  private static final String _startingGold = "3d6";
+  
   // Clerical mods
   private int _CSPsPerLevel = 0;
   private int _CSPs = 0;
@@ -45,11 +46,7 @@ public class Cleric extends Klass
    */
   public Cleric(TraitList traits)
   {
-    _klassName = "Cleric";
-    _primeTrait = PrimeTraits.WIS;
-    _hpDie = _hitDie;
-    _goldDice = _startingGold;
-    _traits = traits;
+    super(traits, CLERIC_CLASS_NAME, PrimeTraits.WIS, _hitDie, _startingGold);
   }
 
   // 8b. FOR CLERICS ONLY: CSPs/Level, CSPS, Turn Undead
@@ -61,12 +58,11 @@ public class Cleric extends Klass
   }
 
   @Override
-  public List<String> addKlassSpells(List<String> spellbook)
+  public void addKlassSpells(List<String> spellbook)
   {
     for (String s : _clericSpells) {
       spellbook.add(s);
     }
-    return spellbook;
   }
 
 

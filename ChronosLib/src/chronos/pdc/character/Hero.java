@@ -160,7 +160,7 @@ public class Hero implements IRegistryElement
     _occ = Occupation.getRandomOccupation();
 
     // 21. ASSIGN SPELLS TO CLERICS (WIZARDS ALREADY WERE ASSIgned 'READ MAGIC')
-    _spellBook = _klass.addKlassSpells(_spellBook);
+    _klass.addKlassSpells(_spellBook);
 
     // 22. Assign initial inventory
     _inven = new Inventory();

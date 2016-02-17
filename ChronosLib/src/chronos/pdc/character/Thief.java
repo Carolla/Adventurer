@@ -23,8 +23,8 @@ import chronos.pdc.character.TraitList.PrimeTraits;
 public class Thief extends Klass
 {
   /** Starting die and initial free HP for klass */
-  private String _hitDie = "d6";
-  private String _startingGold = "2d6";
+  private static final String _hitDie = "d6";
+  private static final String _startingGold = "2d6";
   
   /** Indices into the Hero's prime traits */
   public enum TSKILL {
@@ -48,11 +48,7 @@ public class Thief extends Klass
    */
   public Thief(TraitList traits)
   {
-    _klassName = "Thief";
-    _primeTrait = PrimeTraits.DEX;
-    _hpDie = _hitDie;
-    _goldDice = _startingGold;
-    _traits = traits;
+    super(traits, THIEF_CLASS_NAME, PrimeTraits.DEX, _hitDie, _startingGold);
   }
 
 

@@ -25,8 +25,8 @@ import chronos.pdc.character.TraitList.PrimeTraits;
 public class Wizard extends Klass
 {
   /** Starting die and initial free HP for klass */
-  private String _hitDie = "d4";
-  private String _startingGold = "2d4";
+  private static final String _hitDie = "d4";
+  private static final String _startingGold = "2d4";
 
   private int _MSPs = 0;
   private int _MSPsPerLevel = 0;
@@ -39,11 +39,7 @@ public class Wizard extends Klass
    */
   public Wizard(TraitList traits)
   {
-    _klassName = "Wizard";
-    _primeTrait = PrimeTraits.INT;
-    _hpDie = _hitDie;
-    _goldDice = _startingGold;
-    _traits = traits;
+    super(traits, WIZARD_CLASS_NAME, PrimeTraits.INT, _hitDie, _startingGold);
   }
 
   protected void calcClassMods(int intell)
@@ -67,10 +63,9 @@ public class Wizard extends Klass
   }
 
   @Override
-  public List<String> addKlassSpells(List<String> spellbook)
+  public void addKlassSpells(List<String> spellbook)
   {
     spellbook.add("Read Magic");
-    return spellbook;
   }
 
   @Override

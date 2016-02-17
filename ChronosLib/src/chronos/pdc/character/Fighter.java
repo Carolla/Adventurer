@@ -22,8 +22,8 @@ public class Fighter extends Klass
 {
   
   /** Starting die and initial free HP for klass */
-  private String _hitDie = "d10";
-  private String _startingGold = "5d4";
+  private static final String _hitDie = "d10";
+  private static final String _startingGold = "5d4";
 
 
   /**
@@ -32,11 +32,8 @@ public class Fighter extends Klass
    */
   public Fighter(TraitList traits)
   {
-    _traits = traits;
-    _klassName = "Fighter";
-    _primeTrait = PrimeTraits.STR;
-    _hpDie = _hitDie;
-    _goldDice = _startingGold;
+    
+    super(traits, FIGHTER_CLASS_NAME, PrimeTraits.STR, _hitDie, _startingGold);
   }
 
   @Override
