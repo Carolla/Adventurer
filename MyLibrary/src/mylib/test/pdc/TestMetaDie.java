@@ -13,14 +13,14 @@ package mylib.test.pdc;
 
 import java.util.Arrays;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import junit.framework.TestCase;
 import mylib.MsgCtrl;
 import mylib.pdc.MetaDie;
 import mylib.pdc.MetaDie.MockMetaDie;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 /**
@@ -364,15 +364,30 @@ public class TestMetaDie extends TestCase
         assertTrue(percentDelta < Math.abs(2.0));
       }
     }
-    // ERROR for IllegalArgumentException
-    MockMetaDie mock = _md.new MockMetaDie();
-    assertNotNull(mock);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void illegalRollsThrowException()
+  {
     // nbrDice must be >= 1 and nbrSides >= 2
     // mock method returns true when the exception is thrown
-    assertTrue(mock.roll(-1, 6));
-    assertTrue(mock.roll(0, 6));
-    assertTrue(mock.roll(2, 0));
-    assertTrue(mock.roll(2, -1));
+    try {
+      _md.roll(-1, 6);
+      fail("rolled -1, 6");
+    } catch (IllegalArgumentException e) {
+      try {
+        _md.roll(0, 6);
+        fail("rolled 0, 6");
+      } catch (IllegalArgumentException e2) {
+        try {
+          _md.roll(2, 0);
+          fail("rolled 2, 0");
+        } catch (IllegalArgumentException e3) {
+          _md.roll(2, -1);
+          fail("rolled 2, -1");
+        }
+      }
+    }
   }
 
 

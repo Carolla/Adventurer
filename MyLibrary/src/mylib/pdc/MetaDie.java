@@ -411,26 +411,6 @@ public class MetaDie
      * Created to catch exceptions easier. The test case class a series of bad methods that throw a
      * lot of exceptions.
      * 
-     * @param nbrDice number of rolls to sum
-     * @param nbrSides max range of each roll (number of sides of die)
-     * @return true if the expected exception has been thrown
-     */
-    public boolean roll(int nbrDice, int nbrSides)
-    {
-      try {
-        MetaDie.this.roll(nbrDice, nbrSides);
-      } catch (IllegalArgumentException ex) {
-        MsgCtrl.errMsg(this, ex.getMessage());
-        return true;
-      }
-      return false;
-    }
-
-
-    /**
-     * Created to catch exceptions easier. The test case class a series of bad methods that throw a
-     * lot of exceptions.
-     * 
      * @param notation d20 string format for dice to roll
      * @return true if the expected exception has been thrown
      */
