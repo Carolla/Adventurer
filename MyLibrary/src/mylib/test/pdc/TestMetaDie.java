@@ -372,7 +372,6 @@ public class TestMetaDie extends TestCase
     assertTrue(mock.roll(-1, 6));
     assertTrue(mock.roll(0, 6));
     assertTrue(mock.roll(2, 0));
-    assertTrue(mock.roll(2, 1));
     assertTrue(mock.roll(2, -1));
   }
 

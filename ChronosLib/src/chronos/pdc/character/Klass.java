@@ -24,10 +24,8 @@ import chronos.pdc.character.TraitList.PrimeTraits;
  * @author Alan Cline
  * @version Sept 4 2015 // rewrite to support Hero rewrite <br>
  */
-public abstract class Klass
+public class Klass
 {
-  /** Assign klass specific inventory items */
-  public abstract Inventory addKlassItems(Inventory inventory);
 
   public static final String FIGHTER_CLASS_NAME = "Fighter";
   public static final String CLERIC_CLASS_NAME = "Cleric";
@@ -76,7 +74,7 @@ public abstract class Klass
     return klass;
   }
   
-  protected Klass(TraitList traits, String klassName, PrimeTraits trait, String hitdie, String startinggold)
+  public Klass(TraitList traits, String klassName, PrimeTraits trait, String hitdie, String startinggold)
   {
     _traits = traits;
     _klassName = klassName;
@@ -91,6 +89,11 @@ public abstract class Klass
     //Override
   }
 
+  /** Assign klass specific inventory items */
+  public void addKlassItems(Inventory inventory)
+  {
+    //Override
+  }
 
   /**
    * Swap the largest trait for the prime trait of the klass: <br>
@@ -121,11 +124,11 @@ public abstract class Klass
    * @param mod the HP mod for the Hero, a CON-based attribute
    * @return the initial Hit Points
    */
-  public void rollHP()
+  public int rollHP()
   {
     _HP = _md.roll(_hpDie) + _traits.getHpMod();
+    return _HP;
   }
-
 
   public void calcClassMods()
   {

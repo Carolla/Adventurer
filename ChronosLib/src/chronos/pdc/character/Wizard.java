@@ -51,7 +51,7 @@ public class Wizard extends Klass
 
   @Override
   /** Assign initial inventory to Wizard (8 gpw = 1 lb) */
-  public Inventory addKlassItems(Inventory inven)
+  public void addKlassItems(Inventory inven)
   {
     // Basic inventory Items: category, name, quantity, weight (each in fractional lb)
     inven.addItem(new Item(ItemCategory.ARMS, "Walking stick (dmg=d6T, attack=1)", 1, 3.0));
@@ -59,7 +59,6 @@ public class Wizard extends Klass
     inven.addItem(new Item(ItemCategory.MAGIC, "Magic bag", 1, 0.25));
     // for testing
     inven.addItem(new Item(ItemCategory.SPELL_MATERIAL, "Live spider", 1, 0.125));
-    return inven;
   }
 
   @Override

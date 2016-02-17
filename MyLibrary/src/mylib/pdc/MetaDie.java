@@ -43,7 +43,7 @@ public class MetaDie
   /** Fewest possible dice to roll */
   private static final int MIN_DICE = 1; // fewest dice to roll
   /** Fewest possible sides to a "die" */
-  private static final int MIN_SIDES = 2; // can flip a coin, but no less
+  private static final int MIN_SIDES = 1; // can flip a coin, but no less
 
   /** 68% of the population is centered around the mean, within 1 standard deviation */
   public static final double SIGMA = 0.3413; // positive side of the mean

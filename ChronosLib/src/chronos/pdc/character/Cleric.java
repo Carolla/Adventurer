@@ -68,7 +68,7 @@ public class Cleric extends Klass
 
   @Override
   /** Assign initial inventory to Cleric (8 gpw = 1 lb) */
-  public Inventory addKlassItems(Inventory inven)
+  public void addKlassItems(Inventory inven)
   {
     // Basic inventory Items: category, name, quantity, weight (each in fractional lb)
     inven.addItem(new Item(ItemCategory.ARMS, "Quarterstaff (dmg=d6T, attack=1)", 1, 3.0));
@@ -76,7 +76,6 @@ public class Cleric extends Klass
     inven.addItem(new Item(ItemCategory.MAGIC, "Holy symbol, wooden", 1, 0.50));
     inven.addItem(new Item(ItemCategory.SPELL_MATERIAL, "Rosemary sprig", 1, 0.125));
     inven.addItem(new Item(ItemCategory.SPELL_MATERIAL, "Wolfsbane", 2, 0.25));
-    return inven;
   }
 
 

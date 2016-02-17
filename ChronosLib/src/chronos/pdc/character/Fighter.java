@@ -38,12 +38,11 @@ public class Fighter extends Klass
 
   @Override
   /** Assign initial inventory to Fighte (8 gpw = 1 lb) */
-  public Inventory addKlassItems(Inventory inven)
+  public void addKlassItems(Inventory inven)
   {
     // Basic inventory Items: category, name, quantity, weight (each in fractional lb)
     inven.addItem(new Item(ItemCategory.ARMS, "Sword, short, w/scabbard (dmg=d6, attack=1)", 1, 7.0));
     inven.addItem(new Item(ItemCategory.ARMOR, "Leather (AC=12)", 1, 10.0));
-    return inven;
   }
 
 
