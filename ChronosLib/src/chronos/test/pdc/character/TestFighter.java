@@ -2,11 +2,13 @@
 package chronos.test.pdc.character;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import chronos.pdc.character.Fighter;
+import chronos.pdc.character.Inventory;
 import chronos.pdc.character.TraitList;
 
 public class TestFighter
@@ -55,5 +57,12 @@ public class TestFighter
     assertEquals(10, maxHp);
     assertEquals(1, minHp);
   }
-
+  
+  @Test
+  public void hasKlassItems()
+  {
+    Inventory inventory = new Inventory();
+    f.addKlassItems(inventory);
+    assertTrue(inventory.size() > 0);
+  }
 }

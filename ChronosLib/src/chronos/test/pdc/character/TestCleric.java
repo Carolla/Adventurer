@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import chronos.pdc.character.Cleric;
+import chronos.pdc.character.Inventory;
 import chronos.pdc.character.TraitList;
 
 public class TestCleric
@@ -67,5 +68,13 @@ public class TestCleric
   {
     c.addKlassSpells();
     assertTrue(c.getSpells().size() > 0);
+  }
+  
+  @Test
+  public void hasKlassItems()
+  {
+    Inventory inventory = new Inventory();
+    c.addKlassItems(inventory);
+    assertTrue(inventory.size() > 0);
   }
 }

@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import chronos.pdc.character.Inventory;
 import chronos.pdc.character.TraitList;
 import chronos.pdc.character.Wizard;
 
@@ -61,11 +62,19 @@ public class TestWizard
   {
     assertTrue(w.canUseMagic());
   }
-  
+
   @Test
   public void hasSpells()
   {
     w.addKlassSpells();
     assertTrue(w.getSpells().size() > 0);
+  }
+
+  @Test
+  public void hasKlassItems()
+  {
+    Inventory inventory = new Inventory();
+    w.addKlassItems(inventory);
+    assertTrue(inventory.size() > 0);
   }
 }
