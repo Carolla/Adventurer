@@ -84,27 +84,9 @@ public class Klass
   }
 
 
-  public void addKlassSpells(List<String> spellbook)
+  public String className()
   {
-    //Override
-  }
-
-  /** Assign klass specific inventory items */
-  public void addKlassItems(Inventory inventory)
-  {
-    //Override
-  }
-
-  /**
-   * Swap the largest trait for the prime trait of the klass: <br>
-   * Fighter (STR), Cleric (WIS), Wizard (INT), and Thief (DEX)
-   * 
-   * @param _traits raw traits to rearrange
-   * @return traits after klass adjusted
-   */
-  public void adjustTraitsForKlass(TraitList traits)
-  {
-    traits.swapPrime(_primeTrait);
+    return _klassName;
   }
 
   /**
@@ -128,6 +110,39 @@ public class Klass
   {
     _HP = _md.roll(_hpDie) + _traits.getHpMod();
     return _HP;
+  }
+
+  public void loadKlassKeys(EnumMap<PersonKeys, String> map)
+  {
+    map.put(PersonKeys.KLASSNAME, _klassName);
+    map.put(PersonKeys.HP, "" + _HP);
+    map.put(PersonKeys.HP_MAX, "" + _HP);
+  }
+
+  /*************************
+   ** OVERRIDEABLE METHODS *
+   *************************/
+  public void addKlassSpells(List<String> spellbook)
+  {
+    //Override
+  }
+
+  /** Assign klass specific inventory items */
+  public void addKlassItems(Inventory inventory)
+  {
+    //Override
+  }
+
+  /**
+   * Swap the largest trait for the prime trait of the klass: <br>
+   * Fighter (STR), Cleric (WIS), Wizard (INT), and Thief (DEX)
+   * 
+   * @param _traits raw traits to rearrange
+   * @return traits after klass adjusted
+   */
+  public void adjustTraitsForKlass(TraitList traits)
+  {
+    traits.swapPrime(_primeTrait);
   }
 
   public void calcClassMods()
@@ -158,18 +173,9 @@ public class Klass
     return new ArrayList<String>();
   }
 
-
-  public void loadKlassKeys(EnumMap<PersonKeys, String> map)
-  {
-    map.put(PersonKeys.KLASSNAME, _klassName);
-    map.put(PersonKeys.HP, "" + _HP);
-    map.put(PersonKeys.HP_MAX, "" + _HP);
-  }
-
-  public String className()
-  {
-    return _klassName;
-  }
+  /*************************
+   ** OVERRIDDEN METHODS *
+   *************************/
 
   @Override
   public int hashCode()

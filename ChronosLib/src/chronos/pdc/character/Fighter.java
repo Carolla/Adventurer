@@ -25,14 +25,12 @@ public class Fighter extends Klass
   private static final String _hitDie = "d10";
   private static final String _startingGold = "5d4";
 
-
   /**
    * Default constructor, called reflectively by Klass
    * @param traits 
    */
   public Fighter(TraitList traits)
   {
-    
     super(traits, FIGHTER_CLASS_NAME, PrimeTraits.STR, _hitDie, _startingGold);
   }
 
