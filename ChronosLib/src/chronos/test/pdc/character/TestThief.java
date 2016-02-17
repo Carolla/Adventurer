@@ -16,6 +16,7 @@ public class TestThief
 {
   TraitList defTraits = new TraitList(new int[] {10, 10, 10, 10, 10, 10});
   private Thief t;
+
   @Before
   public void setup()
   {
@@ -38,7 +39,7 @@ public class TestThief
     assertEquals(120, maxGold);
     assertEquals(20, minGold);
   }
-  
+
   @Test
   public void thiefHas1to6Hp()
   {
@@ -55,20 +56,20 @@ public class TestThief
     assertEquals(6, maxHp);
     assertEquals(1, minHp);
   }
-  
+
   @Test
   public void cantUseMagic()
   {
     assertFalse(t.canUseMagic());
   }
-  
+
   @Test
   public void hasSpells()
   {
     t.addKlassSpells();
     assertEquals(0, t.getSpells().size());
   }
-  
+
   @Test
   public void hasKlassItems()
   {

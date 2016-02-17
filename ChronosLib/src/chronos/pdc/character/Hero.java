@@ -57,7 +57,7 @@ public class Hero implements IRegistryElement
   private int _XP;
   private int _AC;
   private int _AC_Magic;
-
+  private int _HP;
 
   /** Each Person has six prime traits, adjusted by gender, race, and klass */
   private TraitList _traits = null;
@@ -66,7 +66,7 @@ public class Hero implements IRegistryElement
   // INT mods
   // Everyone knows Common, and perhaps a race language
   Set<String> _knownLangs = new TreeSet<String>();
-  
+
   // Misc: height and weight of the Hero, affected by race and gender
   int _height;
   int _weight;
@@ -76,7 +76,7 @@ public class Hero implements IRegistryElement
   int _silver;
   // Gold banked. The decimal represents silver pieces
   double _goldBanked;
-  
+
   // Inventory object containing map with ItemCategory key
   private Inventory _inven;
 
@@ -116,7 +116,6 @@ public class Hero implements IRegistryElement
 
     // 3. REARRANGE THE PRIME TRAIT FOR THE KLASS
     _klass = Klass.createKlass(klassName, _traits);
-    _klass.rollHP();
     _klass.calcClassMods();
     _klass.adjustTraitsForKlass(_traits);
 
@@ -132,12 +131,13 @@ public class Hero implements IRegistryElement
     _knownLangs.add(_race.getRacialLanguage());
 
     // 11a. ASSIGN HERO'S HEIGHT AND WEIGHT
+    _HP = _klass.rollHP();
     _weight = _race.calcWeight();
     _height = _race.calcHeight();
 
     // 11b. GET THE HERO'S PHYSICAL DESCRIPTION FROM THIS BODY-TYPE
     _description = initDescription();
-    
+
     // 11c. SET THE HERO'S INITIAL HUNGER STATE
     _hunger = "Full";
 
@@ -236,6 +236,8 @@ public class Hero implements IRegistryElement
     map.put(PersonKeys.LEVEL, "" + _level);
     map.put(PersonKeys.AC, "" + _AC);
     map.put(PersonKeys.AC_MAGIC, "" + _AC_Magic);
+    map.put(PersonKeys.HP, "" + _HP);
+    map.put(PersonKeys.HP_MAX, "" + _HP);
 
     // Row 4: XP, Speed, Gold/Silver (gp/sp), Gold Banked
     map.put(PersonKeys.XP, "" + _XP);
@@ -261,7 +263,7 @@ public class Hero implements IRegistryElement
     }
     String langList = new String(sb);
     map.put(PersonKeys.LANGUAGES, langList);
-    
+
     _traits.loadTraitKeys(map);
     _race.loadRaceKeys(map);
     _klass.loadKlassKeys(map);

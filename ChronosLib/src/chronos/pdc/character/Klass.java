@@ -42,8 +42,6 @@ public class Klass
   protected String _hpDie;
   protected String _goldDice;
   protected TraitList _traits;
-  private int _HP;
-
   private static final MetaDie _md = new MetaDie();
 
   /**
@@ -110,15 +108,12 @@ public class Klass
    */
   public int rollHP()
   {
-    _HP = _md.roll(_hpDie) + _traits.getHpMod();
-    return _HP;
+    return _md.roll(_hpDie) + _traits.getHpMod();
   }
 
   public void loadKlassKeys(EnumMap<PersonKeys, String> map)
   {
     map.put(PersonKeys.KLASSNAME, _klassName);
-    map.put(PersonKeys.HP, "" + _HP);
-    map.put(PersonKeys.HP_MAX, "" + _HP);
   }
 
   /*************************
