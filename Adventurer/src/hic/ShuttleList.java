@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 
@@ -82,9 +83,9 @@ public class ShuttleList extends JDialog {
 	 *            the list of Hero names
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public ShuttleList(List<Hero> summonableHeroes) {
-		// Get String names from Hero List
-		_summonableHeroNames = translateHeroesToNames(summonableHeroes);
+	public ShuttleList(List<String> summonableHeroes) {
+//		// Get String names from Hero List
+		_summonableHeroNames = summonableHeroes;
 
 		// Set "left" list as currently selected
 		_selectedList = _leftList;
@@ -111,8 +112,11 @@ public class ShuttleList extends JDialog {
 			panel.setLayout(new BorderLayout());
 			{
 				DefaultListModel model = new DefaultListModel();
-				for (String hName : _summonableHeroNames) {
-					model.addElement(hName);
+				if (_summonableHeroNames.isEmpty() == false) {
+					for (String hName : _summonableHeroNames) {
+						model.addElement(hName);
+					}
+				//TODO create "else" with error message	
 				}
 				_leftList.setModel(model);
 				_leftList.addFocusListener(new FocusListener() {
@@ -126,7 +130,8 @@ public class ShuttleList extends JDialog {
 						_rightList.clearSelection();
 					}
 				});
-				_leftList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+//				_leftList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+				_leftList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 				panel.add(_leftList, BorderLayout.CENTER);
 			}
 		}
@@ -136,25 +141,22 @@ public class ShuttleList extends JDialog {
 		{
 			JPanel panel = new JPanel();
 			_contentPanel.add(panel, "cell 1 0");
-			panel.setLayout(new MigLayout("", "[]", "[][][]"));
+			panel.setLayout(new MigLayout("", "[]", "[][][]"));			
 			{
 				// JButton button = new JButton(">");
 				// _xferRight = new JButton(">");
 				_xferRight.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						DefaultListModel model = (DefaultListModel) _leftList.getModel();
 						int selIdx = _leftList.getSelectedIndex();
-						if (selIdx >= 0) {
-							Object selectedItem = model.getElementAt(selIdx);
-							model.removeElementAt(selIdx);
-							// Prohibit more than one selected item
-							DefaultListModel rightSelection = (DefaultListModel) _rightList.getModel();
-							if (rightSelection.getSize() < 1) {
-								rightSelection.addElement(selectedItem.toString());
-								// ((DefaultListModel)
-								// _rightList.getModel()).addElement(selectedItem.toString());
-							}
+						DefaultListModel leftModel = (DefaultListModel) _leftList.getModel();
+						DefaultListModel rightModel = (DefaultListModel) _rightList.getModel();
+						// If there IS a selection and NOTHING has been moved to
+						// the right side
+						if ((selIdx >= 0) && (rightModel.getSize() < 1)) {
+							Object selectedItem = leftModel.getElementAt(selIdx);
+							leftModel.removeElementAt(selIdx);
+							rightModel.addElement(selectedItem.toString());
 						}
 					}
 				});
@@ -166,12 +168,13 @@ public class ShuttleList extends JDialog {
 				_xferLeft.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						DefaultListModel model = (DefaultListModel) _rightList.getModel();
+						DefaultListModel leftModel = (DefaultListModel) _leftList.getModel();
+						DefaultListModel rightModel = (DefaultListModel) _rightList.getModel();
 						int selIdx = _rightList.getSelectedIndex();
 						if (selIdx >= 0) {
-							Object selectedItem = model.getElementAt(selIdx);
-							model.removeElementAt(selIdx);
-							((DefaultListModel) _leftList.getModel()).addElement(selectedItem.toString());
+							Object selectedItem = rightModel.getElementAt(selIdx);
+							rightModel.removeElementAt(selIdx);
+							leftModel.addElement(selectedItem.toString());
 						}
 					}
 				});
@@ -200,7 +203,8 @@ public class ShuttleList extends JDialog {
 						_leftList.clearSelection();
 					}
 				});
-				_rightList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+//				_rightList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+				_rightList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 				panel.add(_rightList, BorderLayout.CENTER);
 			}
 		}
@@ -265,6 +269,7 @@ public class ShuttleList extends JDialog {
 						for (String name : hNames) {
 							System.out.print(name + " ");
 						}
+						System.out.println();
 					}
 				});
 				buttonPane.add(_okButton);
@@ -313,7 +318,7 @@ public class ShuttleList extends JDialog {
 	 *            the items already selected
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public ShuttleList(List<Hero> summonableHeroes, List<Hero> partyHeros) {
+	public ShuttleList(List<String> summonableHeroes, List<Hero> partyHeros) {
 		this(summonableHeroes);
 		// Get names of partyHeros
 		List<String> partyHeroNames = translateHeroesToNames(partyHeros);

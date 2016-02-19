@@ -9,6 +9,7 @@
 
 package mylib.pdc;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mylib.dmc.DbReadWriter;
@@ -161,6 +162,46 @@ public abstract class Registry<E extends IRegistryElement>
   {
     return _regRW.getAll();
   }
+  
+	/**
+	 * Retrieve element names in the particular Registry that match the type of
+	 * the object passed in. Uses the getKey() method of IRegistryElement, and
+	 * assumes the key is the object's name field.
+	 * 
+	 * @return the list of names
+	 */
+	public List<String> getNamesByType(E elem) {
+		return _regRW.getAllNames(elem);
+//		List<String> names = new ArrayList<String>();
+//		for (IRegistryElement elem : getAll()) {
+//			if (elem.getClass().equals(obj.getClass())) {
+//				names.add(elem.getKey());
+////				System.out.println(elem.getClass().getName().toString() +
+////						": " + elem.getKey().toString());
+//			}
+//			
+//		}
+//		return names;
+	}
+	
+	/**
+	 * Retrieve elements in the particular Registry that match the type of
+	 * the object passed in.
+	 * 
+	 * @return list of elements
+	 */
+	public List<Object> getElementsByType(Object obj) {
+		List<Object> selectedElements = new ArrayList<Object>();
+		for (IRegistryElement elem : getAll()) {
+			if (elem.getClass().equals(obj.getClass())) {
+				selectedElements.add(elem);
+//				System.out.println(elem.getClass().getName().toString() +
+//						": " + elem.getKey().toString());
+			}
+			
+		}
+		return selectedElements;
+	}
 
   /**
    * Get the number of elements currently in the registry

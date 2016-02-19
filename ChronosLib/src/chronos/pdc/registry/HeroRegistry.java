@@ -10,11 +10,13 @@
 
 package chronos.pdc.registry;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mylib.ApplicationException;
 import mylib.pdc.Registry;
 import chronos.Chronos;
+import chronos.pdc.Adventure;
 import chronos.pdc.character.Hero;
 
 /**
@@ -66,16 +68,55 @@ public class HeroRegistry extends Registry<Hero>
   {
     return (Hero) get(name);
   }
-
-  /**
-   * Retrieves all Heroes in the HeroRegistry
-   * 
-   * @return a list of Heroes
-   */
-  public List<Hero> getHeroList()
-  {
-    return getAll();
+  
+/**
+ * Retrieves names of saved Heroes using superclass method.
+ * 
+ * @return hero names as list
+ */
+  public List<String> getHeroNames() {
+	  return super.getNamesByType(new Hero());
   }
+  
+//  public List<String> toNames() {
+//	  for (Hero h : getSummonableHeroes()) {
+//		
+//	}
+//  }
+
+
+public List<Hero> getSummonableHeroes() {
+	List<Hero> heroes = new ArrayList<Hero>();
+	for (Object o : super.getElementsByType(new Hero())) {
+		heroes.add((Hero) o);
+	}
+	return heroes;
+}
+
+//	/**
+//	 * Retrieves all Heroes in the HeroRegistry
+//	 * 
+//	 * @return a list of Heroes
+//	 */
+//	public List<Hero> getHeroList() 
+//	{
+//		/*
+//		 * Dave's implementation
+//		 */
+//		List<Hero> heroes = new ArrayList<Hero>();
+//		List<?> elements = getAll();
+//		for (Object obj : elements) {
+//			if (obj instanceof Hero) {
+//				heroes.add((Hero) obj);
+//			}
+//		}
+//		return heroes;
+//
+//		/*
+//		 * Previous implementation
+//		 */
+//		// return getAll();
+//	}
 
     
 } // end of HeroRegistry class

@@ -191,6 +191,13 @@ public class DbReadWriter<E extends IRegistryElement>
     close();
     return list;
   }
+  
+  public List<String> getAllNames(E elemType)
+  {
+    List<String> nameList = getAllNamesByType(elemType);
+    close();
+    return nameList;
+  }
 
   
 
@@ -211,6 +218,7 @@ public class DbReadWriter<E extends IRegistryElement>
       List<E> elementList = getAllList();
       for (E obj : elementList) {
         if (obj.getKey().equalsIgnoreCase(name)) {
+        	System.out.println("Obj: " + obj.toString());
           return obj;
         }
       }
@@ -313,6 +321,62 @@ public class DbReadWriter<E extends IRegistryElement>
     }));
     return alist;
   }
+  
+  @SuppressWarnings("serial")
+  private <T> List<String> getAllNamesByType(T elemType)
+  {
+    List<T> alist = new ArrayList<>();
+    _db = open();
+    alist.addAll(_db.query(new Predicate<T>() {
+      public boolean match(T candidate)
+      {
+        return candidate.getClass().equals(elemType.getClass());
+      }
+    }));
+    List<String> names = new ArrayList<>();
+    List<IRegistryElement> iregElems = new ArrayList<>();
+
+    // Cast the matches to type IRegistryElement
+    for(T elem: alist) {
+    	iregElems.add((IRegistryElement) elem);
+    }
+    // Get the names of the elements
+    for(IRegistryElement iElem: iregElems) {
+    	names.add(iElem.getKey());
+    	System.out.println(iElem.getKey());
+    }
+    return names;
+  }
+  
+//	/**
+//	 * Helper method to get specific elements in the registry that match the
+//	 * Type of the object passed in. It opens the db and returns the elements,
+//	 * leaving the db open so that the resulting List is valid. This method
+//	 * avoids duplicating open/close code in other methods.
+//	 * <P>
+//	 * Warning: The List returned is an ObjectSetFacade, and is only available
+//	 * when the db is open. Trying to use the List after the db is closed will
+//	 * throw a DatabaseClosedException.
+//	 * @param <T>
+//	 * 
+//	 * @return the list for further action, leaving the db open
+//	 */
+//  @SuppressWarnings("serial")
+//  private <T> List<T> getAllOfType(Object obj)
+//  {
+//	;
+//    List<T> alist = new ArrayList<T>();
+//    _db = open();
+//    alist.addAll(_db.query(new Predicate<T>() {
+//      public boolean match(T candidate)
+//      {
+//    	  //TODO remove print stmt when done using
+//    	  System.out.println(candidate.toString());
+//        return true;
+//      }
+//    }));
+//    return alist;
+//  }
 
 
   /**
