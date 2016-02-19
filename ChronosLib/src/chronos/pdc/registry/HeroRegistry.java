@@ -75,17 +75,23 @@ public class HeroRegistry extends ConcreteRegistry<Hero>
   }
 
   /**
-   * Retrieves all Heroes in the HeroRegistry
+   * Retrieves names of saved Heroes using superclass method.
    * 
-   * @return a list of Heroes
+   * @return hero names as list
    */
-  public List<String> getNamePlates()
+  public List<String> getHeroNames()
   {
-    List<String> plateList = new ArrayList<String>();
-    for (Hero h : getAll()) {
-      plateList.add(h.toNamePlate());
+    return super.getNamesByType(new Hero());
+  }
+
+
+  public List<Hero> getSummonableHeroes()
+  {
+    List<Hero> heroes = new ArrayList<Hero>();
+    for (Object o : super.getElementsByType(new Hero())) {
+      heroes.add((Hero) o);
     }
-    return plateList;
+    return heroes;
   }
 } // end of HeroRegistry class
 

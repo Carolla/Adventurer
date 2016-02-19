@@ -111,7 +111,7 @@ public class TestHeroRegistry
     String[] expNamePlates = {"Falsoon: Male Human Fighter", "Blythe: Female Elf Druid",
         "Balthazar: Male Human Cleric"};
 
-    List<String> list = _heroReg.getNamePlates();
+    List<String> list = _heroReg.getHeroNames();
     String fullList = list.toString();
     for (int k = 0; k < expNamePlates.length; k++) {
       assertTrue(fullList.contains(list.get(k)));
