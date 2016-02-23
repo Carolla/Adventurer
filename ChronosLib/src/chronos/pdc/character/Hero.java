@@ -45,10 +45,8 @@ public class Hero implements IRegistryElement
   private String _name;
   /** Male or female Person */
   private Gender _gender;
-  /** Person's hair color, used in building their physical appearance */
-  protected String _hairColor;
   /** What we see when we look at the Person */
-  private String _description;
+  private Description _description;
   /** The hungers state of the Hero as he/she burns calories and eats */
   private String _hunger;
 
@@ -66,10 +64,6 @@ public class Hero implements IRegistryElement
   // INT mods
   // Everyone knows Common, and perhaps a race language
   Set<String> _knownLangs = new TreeSet<String>();
-
-  // Misc: height and weight of the Hero, affected by race and gender
-  int _height;
-  int _weight;
 
   // Gold pieces and silver pieces in hand.
   int _gold;
@@ -99,11 +93,9 @@ public class Hero implements IRegistryElement
   public Hero(String name, String gender, String hairColor, String raceName, String klassName)
   {
     // Guards
-    if ((name == null) || (gender == null) || (hairColor == null)) {
+    if (name == null || gender == null || hairColor == null || raceName == null
+        || klassName == null) {
       throw new NullPointerException("Missing input data passed to Hero constructor");
-    }
-    if ((raceName == null) || (klassName == null)) {
-      throw new NullPointerException("Missing Race or Klass passed to Hero constructor");
     }
 
     // Setup internal data
@@ -112,7 +104,6 @@ public class Hero implements IRegistryElement
     // 1. INPUT DATA
     _name = name;
     _gender = new Gender(gender);
-    _hairColor = hairColor;
 
     // 3. REARRANGE THE PRIME TRAIT FOR THE KLASS
     _klass = Klass.createKlass(klassName, _traits);
@@ -132,11 +123,9 @@ public class Hero implements IRegistryElement
 
     // 11a. ASSIGN HERO'S HEIGHT AND WEIGHT
     _HP = _klass.rollHP();
-    _weight = _race.calcWeight();
-    _height = _race.calcHeight();
 
     // 11b. GET THE HERO'S PHYSICAL DESCRIPTION FROM THIS BODY-TYPE
-    _description = initDescription();
+    _description = new Description(_traits.getTrait(PrimeTraits.CHR), _race.getRaceDescriptor(), hairColor, _gender, _race.calcHeight(), _race.calcWeight());
 
     // 11c. SET THE HERO'S INITIAL HUNGER STATE
     _hunger = "Full";
@@ -165,7 +154,6 @@ public class Hero implements IRegistryElement
     _klass.addKlassItems(_inven);
   } // end of Hero constructor
 
-
   public Hero(EnumMap<HeroInput, String> inputMap)
   {
     this(inputMap.get(HeroInput.NAME),
@@ -174,8 +162,6 @@ public class Hero implements IRegistryElement
         inputMap.get(HeroInput.RACE),
         inputMap.get(HeroInput.KLASS));
   }
-
-
 
   public boolean canUseMagic()
   {
@@ -247,11 +233,8 @@ public class Hero implements IRegistryElement
 
     // Row 5: Occupation, Description
     map.put(PersonKeys.OCCUPATION, _occ.getName());
-    map.put(PersonKeys.DESCRIPTION, _description);
 
     // Row 11: CHR, then Weight and Height of Hero
-    map.put(PersonKeys.WEIGHT, "" + _weight);
-    map.put(PersonKeys.HEIGHT, "" + _height);
     map.put(PersonKeys.HUNGER, _hunger);
 
 
@@ -264,6 +247,7 @@ public class Hero implements IRegistryElement
     String langList = new String(sb);
     map.put(PersonKeys.LANGUAGES, langList);
 
+    _description.loadKeys(map);
     _traits.loadTraitKeys(map);
     _race.loadRaceKeys(map);
     _klass.loadKlassKeys(map);
@@ -272,64 +256,9 @@ public class Hero implements IRegistryElement
   }
 
 
-  /**
-   * Check if the first letter of a string is a vowel so the proper article (A or An) can be placed
-   * in front of it.
-   * 
-   * @param target the string to check if the first letter is a vowel or not
-   * @return true if a the target starts with a vowel; else false
-   */
-  private boolean checkFirstVowel(String target)
-  {
-    final Character[] c = {'a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'};
-    boolean retflag = false;
-
-    for (int k = 0; k < c.length; k++) {
-      if (target.charAt(0) == c[k]) {
-        retflag = true;
-      }
-    }
-    return retflag;
-  }
-
   // ====================================================
   // Private helper methods
   // ====================================================
-
-  /**
-   * Build the physical appearance of the Person, without regard to what they are wearing or
-   * anything that can drastically change. The description depends on height, weight, race, klass,
-   * hair color, gender and charisma. A special racial note is appended to all races except Human.
-   * <P>
-   * Template for the attributes in description: \n\t
-   * "A [height_descriptor] and [weight_descriptor]" + "[gender] with [color] hair" +
-   * "and [racial note]". [She | He] is [CHR reflection]". \n\t
-   * 
-   * @return a string that describes the Person's body-type (a Race function).
-   */
-  private String initDescription()
-  {
-    // Infer body-type from racial attributes of height, weight, and charisma
-    int chr = _traits.getTrait(PrimeTraits.CHR);
-    String bodyType = _race.initBodyType(chr, _height, _weight);
-    // Start the description with a vowel-sensitive article
-    String article = (checkFirstVowel(bodyType) == true) ? "An " : "A ";
-
-    // Process baldness.
-    String hairType = (_hairColor.equalsIgnoreCase("bald")) ? "a bald head" : _hairColor + " hair";
-    String desc1 =
-        article + bodyType + " " + _gender.toString().toLowerCase() + " with " + hairType;
-
-    // Get race descriptor for suffix.
-    String desc2 = _race.getRaceDescriptor();
-
-    // Get Charisma description
-    String chrDesc = _race.initCharismaDescriptor(chr);
-    String desc3 = _gender.pronoun() + " is " + chrDesc + ".";
-
-    String desc = desc1 + " and " + desc2 + ". " + desc3;
-    return desc;
-  }
 
   @Override
   public boolean equals(IRegistryElement target)
@@ -350,7 +279,6 @@ public class Hero implements IRegistryElement
     int result = 1;
     result = prime * result + ((_description == null) ? 0 : _description.hashCode());
     result = prime * result + ((_gender == null) ? 0 : _gender.hashCode());
-    result = prime * result + ((_hairColor == null) ? 0 : _hairColor.hashCode());
     result = prime * result + ((_klass == null) ? 0 : _klass.hashCode());
     result = prime * result + ((_name == null) ? 0 : _name.hashCode());
     result = prime * result + ((_occ == null) ? 0 : _occ.hashCode());
@@ -377,11 +305,6 @@ public class Hero implements IRegistryElement
       if (other._gender != null)
         return false;
     } else if (!_gender.equals(other._gender))
-      return false;
-    if (_hairColor == null) {
-      if (other._hairColor != null)
-        return false;
-    } else if (!_hairColor.equals(other._hairColor))
       return false;
     if (_klass == null) {
       if (other._klass != null)

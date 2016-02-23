@@ -168,7 +168,7 @@ public class Chronos
   static public final double MAX_MULTIPLIER = 7.0 / 6.0;
 
   /** Average Trait for a Person (using 4d6-d6 rule), used for calculations */
-  static public final double AVERAGE_TRAIT = 11.5;
+  static public final int AVERAGE_TRAIT = 11;
 
 
   /** Java lib search constant */

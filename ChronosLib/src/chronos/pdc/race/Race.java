@@ -17,7 +17,6 @@ import java.util.EnumMap;
 import java.util.List;
 
 import mylib.pdc.MetaDie;
-import chronos.Chronos;
 import chronos.civ.PersonKeys;
 import chronos.pdc.character.Gender;
 import chronos.pdc.character.TraitList;
@@ -30,20 +29,10 @@ import chronos.pdc.character.TraitList;
  */
 public abstract class Race
 {
-  public static int LOW_TRAIT = 8;
-  public static int HIGH_TRAIT = 18;
   
   public static final String[] RACE_LIST =
       {"Human", "Dwarf", "Elf", "Gnome", "Half-Elf", "Half-Orc", "Hobbit"};
 
-  /**
-   * Some things apply across all Races, e.g. Body Type descriptors. The following height and weight
-   * ranges are dubbed "standard" (human) because what is "short" and "tall" is a human perspective.
-   */
-  static protected final double STD_MIN_HEIGHT = 54;
-  static protected final double STD_MAX_HEIGHT = 70;
-  static protected final double STD_MIN_WEIGHT = 110;
-  static protected final double STD_MAX_WEIGHT = 175;
   protected String _raceName;
   protected String _raceLang;
   
@@ -101,8 +90,6 @@ public abstract class Race
     return traits;
   }
 
-
-
   private void addRacialPoisonResist(int constitution, int magicAttackMod)
   {
     if ((_raceName.equalsIgnoreCase("Dwarf")) ||
@@ -125,8 +112,6 @@ public abstract class Race
     return skills;
   }
 
-
-  
   /**
    * Return the language specific to the race, or null. Half-breed races have a 50% chance of
    * knowing their race language.
@@ -146,96 +131,6 @@ public abstract class Race
   public String getRaceDescriptor()
   {
     return _descriptor;
-  }
-
-  /**
-   * Associate the Charisma of the character with their attractiveness, a simple string matching
-   * algorithm to a description table.
-   * 
-   * @param charisma the Person's prime trait for making friends and negotiating
-   * @return what the person looks like for their Charisma trait
-   */
-  public String initCharismaDescriptor(int charisma)
-  {
-    // Possible descriptors for charismas in increasing order. 
-    // Ranges from CHR=8 to CHR=18 are normal; CHR=7 and CHR=19 are exceptional and rarely occur
-    final String[] _chrDescs = {
-        "crippled and horribly ugly",   // < 8
-        "horribly scarred",             // 8
-        "scarred from war or fire",     // 9
-        "the result of years of misery",  // 10 
-        "weather-beaten and tough",     // 11
-        "nothing special to look at",   // 12
-        "clear-eyed and rugged but not handsome", // 13
-        "slightly attractive if one could scrape off the years of wear and tear", //14
-        "a handsome adventurer", // 15
-        "gorgeous",              // 16 
-        "very attactive",        // 17
-        "stunningly beautiful",  // 18
-        "mesmerizing, and you will do whatever this person suggests to you", // > 18
-    };
-
-    String deschr = null;
-    // Find if Person is ugly, average, or beautiful (brute force lookup)
-    // Check for exception cases first, before calling generic routine
-    if (charisma < LOW_TRAIT) {
-      deschr = _chrDescs[0];
-    } else if (charisma > HIGH_TRAIT) {
-      deschr = _chrDescs[_chrDescs.length - 1];
-    } else {
-      deschr = _chrDescs[charisma - LOW_TRAIT + 1];
-    }
-    return deschr;
-  }
-
-  /**
-   * Associate the height and weight of the character with their Charisma to get a body type
-   * descriptor. For this implementation, height and weight are broken into only three cartegories.
-   * 
-   * @param charisma body types are perceived as favorable or unfavorable depending on the Person's
-   *        CHR
-   * @return what the person looks like for their Charisma trait
-   */
-  public String initBodyType(int charisma, int height, int weight)
-  {
-    // Possible descriptors for positive charismas in a Height x Weight matrix,
-    // must be in increasing order to call findRangeDescriptor
-    final String[][] posBody = {
-        // Light Average Heavy
-        {"petite", "compact", "burly"}, // Short height
-        {"lithe", "athletic", "muscular"}, // Average height
-        {"thin", "tall", "towering"}, // Tall height
-    };
-    // Possible descriptors for negative charismas in a Height x Weight matrix,
-    // must be in increasing order when calling findRangeDescriptor()
-    final String[][] negBody = {
-        {"tiny", "pudgy", "squat"}, // Short height
-        {"slinky", "average-size", "heavy"}, // Average height
-        {"skinny", "tall", "giant"} // Tall height
-    };
-
-    // Find which list to use
-    String[][] descrChoice = ((double) charisma >= Chronos.AVERAGE_TRAIT) ? posBody : negBody;
-    int rowNbr = 1;
-    if (height <= STD_MIN_HEIGHT) {
-      rowNbr = 0;
-    } else if (height >= STD_MAX_HEIGHT) {
-      rowNbr = 2;
-    } else {
-      rowNbr = 1;
-    }
-
-    // Find which category the weight is in
-    int colNbr = 1;
-    if (weight <= STD_MIN_WEIGHT) {
-      colNbr = 0;
-    } else if (weight >= STD_MAX_WEIGHT) {
-      colNbr = 2;
-    } else {
-      colNbr = 1;
-    }
-    String descr = descrChoice[rowNbr][colNbr];
-    return descr;
   }
   
   public List<String> getSkills()
