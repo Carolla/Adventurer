@@ -23,7 +23,7 @@ public class Description
 
   // Possible descriptors for charismas in increasing order. 
   // Ranges from CHR=8 to CHR=18 are normal; CHR=7 and CHR=19 are exceptional and rarely occur
-  final String[] _chrDescs = {
+  private final String[] _chrDescs = {
       "ugly",                         // < 8
       "scarred",                      // 8
       "scarred from war or fire",     // 9
@@ -41,7 +41,7 @@ public class Description
 
   // Possible descriptors for positive charismas in a Height x Weight matrix,
   // must be in increasing order to call findRangeDescriptor
-  final String[][] posBody = {
+  private final String[][] posBody = {
       // Light   Average    Heavy
       {"petite", "compact", "b`urly"},     // Short height
       {"lithe", "athletic", "muscular"}, // Average height
@@ -50,7 +50,7 @@ public class Description
 
   // Possible descriptors for negative charismas in a Height x Weight matrix,
   // must be in increasing order when calling findRangeDescriptor()
-  final String[][] negBody = {
+  private final String[][] negBody = {
       {"puny", "pudgy", "squat"}, // Short height
       {"slinky", "average-size", "heavy"}, // Average height
       {"skinny", "tall", "giant"} // Tall height
@@ -64,7 +64,8 @@ public class Description
   private String _hairColor;
   private Gender _gender;
 
-  public Description(int charisma, String raceDescriptor, String hairColor, Gender gender, int height, int weight)
+  public Description(int charisma, String raceDescriptor, String hairColor, Gender gender,
+      int height, int weight)
   {
     _chr = charisma;
     _raceDescriptor = raceDescriptor;
@@ -74,13 +75,9 @@ public class Description
     _height = height;
     _description = initDescription();
   }
-  
+
 
   /**
-   * Build the physical appearance of the Person, without regard to what they are wearing or
-   * anything that can drastically change. The description depends on height, weight, race, klass,
-   * hair color, gender and charisma. A special racial note is appended to all races except Human.
-   * <P>
    * Template for the attributes in description: \n\t
    * "A [height_descriptor] and [weight_descriptor]" + "[gender] with [color] hair" +
    * "and [racial note]". [She | He] is [CHR reflection]". \n\t
@@ -91,7 +88,8 @@ public class Description
   {
     String bodyType = bodyType(_chr, _height, _weight);
     return article(bodyType) + bodyType + " " + _gender.toString().toLowerCase() + " with "
-        + hairDescription() + " and " + _raceDescriptor + ". " + _gender.pronoun() + " is " + initCharismaDescriptor(_chr) + ".";
+        + hairDescription() + " and " + _raceDescriptor + ". " + _gender.pronoun() + " is "
+        + initCharismaDescriptor(_chr) + ".";
   }
 
   public String hairDescription()
@@ -123,7 +121,6 @@ public class Description
     map.put(PersonKeys.HEIGHT, "" + _height);
   }
 
-
   /**
    * Associate the height and weight of the character with their Charisma to get a body type
    * descriptor. For this implementation, height and weight are broken into only three cartegories.
@@ -140,7 +137,6 @@ public class Description
     return descrChoice[rowNbr][colNbr];
   }
 
-
   private int findBucket(int value, int highValue, int lowValue)
   {
     if (value < lowValue) {
@@ -151,7 +147,6 @@ public class Description
       return 1;
     }
   }
-
 
   /**
    * Associate the Charisma of the character with their attractiveness, a simple string matching
@@ -171,7 +166,6 @@ public class Description
     return _chrDescs[pos];
   }
 
-
   @Override
   public int hashCode()
   {
@@ -180,7 +174,6 @@ public class Description
     result = prime * result + ((_description == null) ? 0 : _description.hashCode());
     return result;
   }
-
 
   @Override
   public boolean equals(Object obj)
