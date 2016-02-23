@@ -152,14 +152,6 @@ public abstract class Command
      * @return true if the subcomment executed correctly.
      */
     public abstract boolean exec();
-
-
-    /** If the command parms are incorrect, then a user message must be displayed.
-     * It is preferred that the error message is specific, and slightly humoros, while still telling the user
-     * how to correct the error.
-     * @return the message to be displayed
-     */
-//    public abstract String usage();
     
     // ============================================================
     // PUBLIC METHODS
@@ -231,11 +223,7 @@ public abstract class Command
     {
         _delay = newDelay;
     }
-
-    // ============================================================
-    // PROTECTED METHODS
-    // ============================================================
-
+    
     /**
      * Return a generic error message if the Command itself has none.
      * The message is displayed to the User in the user IOPanel
@@ -281,24 +269,5 @@ public abstract class Command
     {
         return false;
     }
-
-    /**
-     * TODO This belongs in the Inn, not the Command class // /** // * Gets the Person, including
-     * the Innkeeper, requested by name. // * // * @param nameRequested name of the Person to return
-     * // * @return the Person, or null if not in current room //
-     */
-    // protected Person getTalkee(String nameRequested)
-    // {
-    // // Return the Innkeeper if requested
-    // if (nameRequested.equalsIgnoreCase("Innkeeper") == true) {
-    // _talkee = _curRoom.getInnkeeper();
-    // }
-    // else {
-    // _talkee = _curRoom.getPerson(nameRequested);
-    // }
-    // return _talkee;
-    // }
-
-
 } // end abstract Command class
 

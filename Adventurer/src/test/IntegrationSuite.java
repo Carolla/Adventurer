@@ -19,6 +19,7 @@ import test.integ.TA00b_Quit;
 import test.integ.TA03a_SummonHero;
 import test.integ.TA08_CmdEnter;
 import test.integ.TA09_CmdLeave;
+import test.integ.TA10_ReturnToTown;
 import chronos.test.pdc.registry.RegistrySuite;
 
 
@@ -45,8 +46,8 @@ import chronos.test.pdc.registry.RegistrySuite;
     TA00b_Quit.class,
     TA03a_SummonHero.class,
     TA08_CmdEnter.class,
-    TA09_CmdLeave.class
-
+    TA09_CmdLeave.class,
+    TA10_ReturnToTown.class,
 })
 public class IntegrationSuite
 {
