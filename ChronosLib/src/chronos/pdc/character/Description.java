@@ -1,5 +1,13 @@
-
 package chronos.pdc.character;
+
+/**
+ * Description.java Copyright (c) 2009, Carolla Development, Inc. All Rights Reserved
+ * 
+ * Permission to make digital or hard copies of all or parts of this work for commercial use is
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
+ * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
+ * by email: acline@carolla.com
+ */
 
 import java.util.EnumMap;
 
@@ -8,22 +16,9 @@ import chronos.civ.PersonKeys;
 
 public class Description
 {
-
-  /**
-   * Some things apply across all Races, e.g. Body Type descriptors. The following height and weight
-   * ranges are dubbed "standard" (human) because what is "short" and "tall" is a human perspective.
-   */
-  static protected final int STD_MIN_HEIGHT = 54;
-  static protected final int STD_MAX_HEIGHT = 70;
-  static protected final int STD_MIN_WEIGHT = 110;
-  static protected final int STD_MAX_WEIGHT = 175;
-
-  public static int LOW_TRAIT = 8;
-  public static int HIGH_TRAIT = 18;
-
   // Possible descriptors for charismas in increasing order. 
   // Ranges from CHR=8 to CHR=18 are normal; CHR=7 and CHR=19 are exceptional and rarely occur
-  private final String[] _chrDescs = {
+  private static final String[] _chrDescs = {
       "ugly",                         // < 8
       "scarred",                      // 8
       "scarred from war or fire",     // 9
@@ -41,7 +36,7 @@ public class Description
 
   // Possible descriptors for positive charismas in a Height x Weight matrix,
   // must be in increasing order to call findRangeDescriptor
-  private final String[][] posBody = {
+  private static  final String[][] posBody = {
       // Light   Average    Heavy
       {"petite", "compact", "b`urly"},     // Short height
       {"lithe", "athletic", "muscular"}, // Average height
@@ -50,7 +45,7 @@ public class Description
 
   // Possible descriptors for negative charismas in a Height x Weight matrix,
   // must be in increasing order when calling findRangeDescriptor()
-  private final String[][] negBody = {
+  private static final String[][] negBody = {
       {"puny", "pudgy", "squat"}, // Short height
       {"slinky", "average-size", "heavy"}, // Average height
       {"skinny", "tall", "giant"} // Tall height
@@ -111,7 +106,7 @@ public class Description
         return true;
       }
     }
-    return true;
+    return false;
   }
 
   public void loadKeys(EnumMap<PersonKeys, String> map)
@@ -132,8 +127,8 @@ public class Description
   public String bodyType(int charisma, int height, int weight)
   {
     String[][] descrChoice = (charisma >= Chronos.AVERAGE_TRAIT) ? posBody : negBody;
-    int rowNbr = findBucket(height, STD_MAX_HEIGHT, STD_MIN_HEIGHT);
-    int colNbr = findBucket(weight, STD_MAX_WEIGHT, STD_MIN_WEIGHT);
+    int rowNbr = findBucket(height, Chronos.STD_MAX_HEIGHT, Chronos.STD_MIN_HEIGHT);
+    int colNbr = findBucket(weight, Chronos.STD_MAX_WEIGHT, Chronos.STD_MIN_WEIGHT);
     return descrChoice[rowNbr][colNbr];
   }
 
@@ -157,10 +152,10 @@ public class Description
    */
   public String initCharismaDescriptor(int charisma)
   {
-    int pos = charisma - LOW_TRAIT + 1;
-    if (charisma < LOW_TRAIT) {
+    int pos = charisma - Chronos.LOW_TRAIT + 1;
+    if (charisma < Chronos.LOW_TRAIT) {
       pos = 0;
-    } else if (charisma > HIGH_TRAIT) {
+    } else if (charisma > Chronos.HIGH_TRAIT) {
       pos = _chrDescs.length - 1;
     }
     return _chrDescs[pos];

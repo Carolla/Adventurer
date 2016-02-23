@@ -170,6 +170,17 @@ public class Chronos
   /** Average Trait for a Person (using 4d6-d6 rule), used for calculations */
   static public final int AVERAGE_TRAIT = 11;
 
+  /**
+   * Some things apply across all Races, e.g. Body Type descriptors. The following height and weight
+   * ranges are dubbed "standard" (human) because what is "short" and "tall" is a human perspective.
+   */
+  public static final int STD_MIN_HEIGHT = 54;
+  public static final int STD_MAX_HEIGHT = 70;
+  public static final int STD_MIN_WEIGHT = 110;
+  public static final int STD_MAX_WEIGHT = 175;
+
+  public static final int LOW_TRAIT = 8;
+  public static final int HIGH_TRAIT = 18;
 
   /** Java lib search constant */
   /** 1 gold piece weight = 2 ounces */

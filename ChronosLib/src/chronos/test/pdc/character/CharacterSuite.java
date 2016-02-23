@@ -42,6 +42,8 @@ import chronos.test.pdc.race.TestRace;
     TestCleric.class,
     TestThief.class,
     TestWizard.class,
+    
+    TestDescription.class,
 })
 /** Compilation of all unit tests for regression and integration testing. */
 public class CharacterSuite
