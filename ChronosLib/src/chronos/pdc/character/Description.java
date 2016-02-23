@@ -13,10 +13,10 @@ public class Description
    * Some things apply across all Races, e.g. Body Type descriptors. The following height and weight
    * ranges are dubbed "standard" (human) because what is "short" and "tall" is a human perspective.
    */
-  static protected final double STD_MIN_HEIGHT = 54;
-  static protected final double STD_MAX_HEIGHT = 70;
-  static protected final double STD_MIN_WEIGHT = 110;
-  static protected final double STD_MAX_WEIGHT = 175;
+  static protected final int STD_MIN_HEIGHT = 54;
+  static protected final int STD_MAX_HEIGHT = 70;
+  static protected final int STD_MIN_WEIGHT = 110;
+  static protected final int STD_MAX_WEIGHT = 175;
 
   public static int LOW_TRAIT = 8;
   public static int HIGH_TRAIT = 18;
@@ -43,7 +43,7 @@ public class Description
   // must be in increasing order to call findRangeDescriptor
   final String[][] posBody = {
       // Light   Average    Heavy
-      {"petite", "compact", "burly"},     // Short height
+      {"petite", "compact", "b`urly"},     // Short height
       {"lithe", "athletic", "muscular"}, // Average height
       {"thin", "tall", "towering"},  // Tall height
   };
@@ -57,15 +57,11 @@ public class Description
   };
 
   private String _description;
-
   private int _chr;
   private String _raceDescriptor;
   private int _height;
   private int _weight;
-
-  /** Person's hair color, used in building their physical appearance */
   private String _hairColor;
-
   private Gender _gender;
 
   public Description(int charisma, String raceDescriptor, String hairColor, Gender gender, int height, int weight)
@@ -138,28 +134,22 @@ public class Description
    */
   public String bodyType(int charisma, int height, int weight)
   {
-    // Find which list to use
     String[][] descrChoice = (charisma >= Chronos.AVERAGE_TRAIT) ? posBody : negBody;
-    int rowNbr = 1;
-    if (height < STD_MIN_HEIGHT) {
-      rowNbr = 0;
-    } else if (height > STD_MAX_HEIGHT) {
-      rowNbr = 2;
-    } else {
-      rowNbr = 1;
-    }
+    int rowNbr = findBucket(height, STD_MAX_HEIGHT, STD_MIN_HEIGHT);
+    int colNbr = findBucket(weight, STD_MAX_WEIGHT, STD_MIN_WEIGHT);
+    return descrChoice[rowNbr][colNbr];
+  }
 
-    // Find which category the weight is in
-    int colNbr = 1;
-    if (weight < STD_MIN_WEIGHT) {
-      colNbr = 0;
-    } else if (weight > STD_MAX_WEIGHT) {
-      colNbr = 2;
+
+  private int findBucket(int value, int highValue, int lowValue)
+  {
+    if (value < lowValue) {
+      return 0;
+    } else if (value > highValue) {
+      return 2;
     } else {
-      colNbr = 1;
+      return 1;
     }
-    String descr = descrChoice[rowNbr][colNbr];
-    return descr;
   }
 
 
@@ -179,5 +169,34 @@ public class Description
       pos = _chrDescs.length - 1;
     }
     return _chrDescs[pos];
+  }
+
+
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((_description == null) ? 0 : _description.hashCode());
+    return result;
+  }
+
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Description other = (Description) obj;
+    if (_description == null) {
+      if (other._description != null)
+        return false;
+    } else if (!_description.equals(other._description))
+      return false;
+    return true;
   }
 }
