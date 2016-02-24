@@ -68,50 +68,6 @@ public class MetaDie
 
 
   /**
-   * Returns a Gaussian value within the given range centered about the given average. Numbers
-   * outside the low and high ends are excluded.
-   * <p>
-   * For example, for variance = one sigma (.3413), all numbers will fall between .6587 and 1.3413
-   * of a 1.0 mean, so the call is <code>getGaussian(1.0, .6587, 1.3413)</code>, or using the
-   * standard constants, the call is <code>getGaussian(1.0, 1.0-SIGMA, 1.0+SIGMA)</code>. Dissimilar
-   * <code>lowEnd</code> and <code>highEnd</code> values will alllow asymmetrical distributions,
-   * such as Poisson distributions. The value returned is rounded to the nearest integer.
-   * 
-   * @param mean the average for the distribution, must be greater than 0.0
-   * @param lowEnd lowest permitted deviation, must be less than the mean but greater than 0.0
-   * @param highEnd highest permitted deviation, must be greater than the mean
-   * @return a random value from the distribution defined by the mean and ranges
-   * @throws ApplicationException for any invalid parms
-   */
-  public int getGaussian(double mean, int lowEnd, int highEnd)
-      throws ApplicationException
-  {
-    if (mean <= 0) {
-      mean = 0;
-    }
-
-    if ((lowEnd >= mean) || (lowEnd <= 0)) {
-      throw new ApplicationException("lowEnd must be less than the mean, but greater than 0.0");
-    }
-
-    if ((highEnd <= mean)) {
-      throw new ApplicationException("highEnd must be greater than the mean.");
-    }
-
-    int value = -1;
-
-    double multiplier;
-    do { // exclude end points to sharpen (narrow) the distribution a bit
-      multiplier = Math.abs(_generator.nextGaussian() + 1.0);
-      // Apply multiplier to given mean
-      value = (int) Math.round(multiplier * mean);
-    } while ((value <= lowEnd) || (value >= highEnd));
-
-    return value;
-  }
-
-
-  /**
    * Returns a single random number that falls within the linear range requested. Ranges represent
    * linear distributions with inclusive boundaries, must be positive, and the maxRange must be
    * greater than the minRange.

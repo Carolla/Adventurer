@@ -11,10 +11,8 @@
 package mylib.test.pdc;
 
 
-import static org.junit.Assert.*;
-
-import java.util.Arrays;
-
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import mylib.MsgCtrl;
 import mylib.pdc.MetaDie;
 
@@ -51,104 +49,6 @@ public class TestMetaDie
       assertTrue("Trait " + trait + " too high", trait < 19);
     }
   }
-
-  /**
-   * Test selecting a random Gaussian (normal) multiplier
-   * 
-   * @Normal.Test MetaDie.getGaussian(double mean, double low, double high) ok
-   * @Error.Test MetaDie.getGaussian(double mean, double low, double high) ok
-   * @Null.Test MetaDie.getGaussian(double mean, double low, double high) compile error
-   */
-  @Test
-  public void testGetGaussian()
-  {
-    int NBR_LOOPS = 1000;
-    
-    double[] values = new double[NBR_LOOPS];
-    double[] average = {2, 10, 24, 100};
-
-    for (int m = 0; m < average.length; m++) {
-      double sum = 0.0;
-      double maxDelta = 0.0;
-      double maxDP = 0.0;
-
-      int expMinValue = (int) Math.round((1.0 - MetaDie.SIGMA) * average[m]);
-      int expMaxValue = (int) Math.round((1.0 + MetaDie.SIGMA) * average[m]);
-
-      for (int k = 0; k < NBR_LOOPS; k++) {
-        values[k] = _md.getGaussian(average[m], expMinValue, expMaxValue);
-        sum = sum + values[k];
-        assertTrue(values[k] + ">=" + expMinValue, values[k] >= expMinValue);
-        assertTrue(values[k] + "<=" + expMaxValue, values[k] <= expMaxValue);
-      }
-
-      // Calculate the population statistics
-      double calcAvg = sum / NBR_LOOPS;
-      double expAvg = (expMinValue + expMaxValue) / 2.0;
-      double delta = expAvg - calcAvg;
-      double percentDelta = (delta / expAvg) * 100.0;
-      String deltaStr = String.format("%6.4f", delta);
-      String DPStr = String.format("%4.2f", percentDelta);
-      maxDelta = Math.max(delta, maxDelta);
-      maxDP = Math.max(percentDelta, maxDP);
-      MsgCtrl.msg("\nCalculated Average = " + calcAvg);
-      MsgCtrl.msg("\tExpected Average = " + expAvg);
-      MsgCtrl.msg("\t Delta = " + deltaStr);
-      MsgCtrl.msgln("\t Delta = " + DPStr + "%");
-
-      // To confirm proper distribution, sort and categorize each value
-      Arrays.sort(values);
-      // Fixed sigma divisions for the population
-      double[] ranges = {0.25, 0.5, 0.75, 1.00, 1.25, 1.5, 1.75, 2.00};
-      int[] counts = new int[ranges.length];
-      // Display the ranges for ease of comparing
-      MsgCtrl.msg("\n\tRanges ");
-      for (int p = 0; p < ranges.length; p++) {
-        ranges[p] = ranges[p] * average[m];
-        MsgCtrl.msg("\t" + ranges[p]);
-      }
-      MsgCtrl.msgln("");
-      for (int s = 0; s < values.length; s++) {
-        // MsgCtrl.msg("\t" + values[s]);
-        for (int p = 0; p < ranges.length; p++) {
-          if (values[s] <= ranges[p]) {
-            counts[p]++;
-            // MsgCtrl.msgln("\tAdded to Bucket " + p);
-            break;
-          }
-        }
-      }
-      // Dump the bucket to get the frequency count
-      MsgCtrl.msg("\n\t Bucket List:");
-      int tally = 0;
-      for (int p = 0; p < counts.length; p++) {
-        MsgCtrl.msg("\t\t" + counts[p]);
-        tally += counts[p];
-      }
-      MsgCtrl.msgln("\nTotal values = " + tally);
-
-    } // end of 'm' loop travesing means
-    //
-    //    // ERROR cases: all cases throw Exceptions, which are caught in the mock
-    //    _mock = _md.new MockMetaDie();
-    //    // Case 1: invalid mean
-    //    assertTrue(_mock.getGaussian(0.0, -1, 1));
-    //    assertTrue(_mock.getGaussian(-2.0, -1, 1));
-    //    // Case 2: invalid low end
-    //    assertTrue(_mock.getGaussian(20.0, -1, 2));
-    //    assertTrue(_mock.getGaussian(20.0, 20, 25));
-    //    assertTrue(_mock.getGaussian(10.0, 10, 11));
-    //    // Case 3: invalid high end
-    //    assertTrue(_mock.getGaussian(20.0, 10, 20));
-    //    assertTrue(_mock.getGaussian(20.0, 10, 11));
-    //    assertTrue(_mock.getGaussian(10.0, 9, 0));
-    //    // Case 4: multiple invallid parms (exception will catch first invalid one)
-    //    assertTrue(_mock.getGaussian(0.0, 0, 0));
-    //    assertTrue(_mock.getGaussian(2.0, -1, -1));
-    //    assertTrue(_mock.getGaussian(4.0, 1, 2));
-
-  } // end of test
-
 
   /**
    * Test that random numbers summed are calculated as expected
