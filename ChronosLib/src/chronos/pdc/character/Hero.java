@@ -108,7 +108,6 @@ public class Hero implements IRegistryElement
     // 3. REARRANGE THE PRIME TRAIT FOR THE KLASS
     _klass = Klass.createKlass(klassName, _traits);
     _klass.calcClassMods();
-    _klass.adjustTraitsForKlass(_traits);
 
     // 4b. REARRANGE THE PRIME TRAITS FOR THE GENDER
     _gender.adjustTraitsForGender(_traits);
@@ -116,6 +115,9 @@ public class Hero implements IRegistryElement
     // 4a. REARRANGE THE PRIME TRAITS FOR THE RACE
     _race = Race.createRace(raceName, _gender);
     _traits = _race.adjustTraitsForRace(_traits);
+    
+    //Now, finally, switch traits around
+    _klass.adjustTraitsForKlass(_traits);
 
     // 7a. ASSIGN THE INTELLIGENCE MODIFIERS: Known Languages, Max Languages, Literacy Skill
     _knownLangs.add("Common");
@@ -255,7 +257,11 @@ public class Hero implements IRegistryElement
     return map;
   }
 
-
+  @Override
+  public String toString()
+  {
+    return _name + ": " + _race.getName() + " " + _klass.className() + ". " + _traits;
+  }
   // ====================================================
   // Private helper methods
   // ====================================================

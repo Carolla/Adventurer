@@ -54,7 +54,7 @@ public class HalfOrc extends Race
   /** Half-orc has 50% chance of knowing elvish */
   private String getRaceLang()
   {
-    String s = (_md.rollPercent() < 50) ? null : "Orcish";
+    String s = (_md.rollPercent() < 50) ? "Common" : "Orcish";
     return s;
   }
 

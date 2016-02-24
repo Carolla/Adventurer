@@ -55,7 +55,7 @@ public class HalfElf extends Race
   /** Half-elf has 50% chance of knowing elvish */
   private String getRaceLang()
   {
-    String s = (_md.rollPercent() < 50) ? null : "Elvish";
+    String s = (_md.rollPercent() < 50) ? "Common" : "Elvish";
     return s;
   }
 

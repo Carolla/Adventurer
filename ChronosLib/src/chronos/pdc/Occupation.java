@@ -39,7 +39,8 @@ public class Occupation implements IRegistryElement
       "Weaponsmith", "Weaver", "Woodworker", "Drifter"};
 
   private static OccupationRegistry _ocpreg;
-
+  private static final MetaDie md = new MetaDie();
+  
   /** The name of the occupation the player selected */
   private String _name = null;
   private String _description;
@@ -70,9 +71,7 @@ public class Occupation implements IRegistryElement
 
   public static Occupation getRandomOccupation()
   {
-    MetaDie md = new MetaDie();
-    int maxLimit = _ocpTable.length;
-    int ndx = md.getRandom(1, maxLimit) - 1; // range must be between 1 and maxLimit
+    int ndx = md.getRandom(1, _ocpTable.length) - 1; // range must be between 1 and maxLimit
     return getOccupation(_ocpTable[ndx]);
   }
 

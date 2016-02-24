@@ -83,7 +83,6 @@ public class TraitList
    */
   public void swapPrime(PrimeTraits primeTrait)
   {
-    
     int oldPrime = getTrait(primeTrait);
     PrimeTraits largestTrait = findLargestTrait();
     int largest = getTrait(largestTrait );
@@ -104,7 +103,7 @@ public class TraitList
         largestTrait = trait;
       }
     }
-    
+        
     return largestTrait;
   }
 
@@ -245,5 +244,16 @@ public class TraitList
   public boolean isLargestTrait(PrimeTraits trait)
   { 
     return getTrait(findLargestTrait()) == getTrait(trait);
+  }
+  
+  @Override
+  public String toString()
+  {
+    return "STR: " + getTrait(PrimeTraits.STR) + ", " +
+        "INT: " + getTrait(PrimeTraits.INT) + ", " +
+        "WIS: " + getTrait(PrimeTraits.WIS) + ", " +
+        "DEX: " + getTrait(PrimeTraits.DEX) + ", " +
+        "CON: " + getTrait(PrimeTraits.CON) + ", " +
+        "CHR: " + getTrait(PrimeTraits.CHR);
   }
 }

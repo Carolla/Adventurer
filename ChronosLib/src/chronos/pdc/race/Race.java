@@ -34,7 +34,7 @@ public abstract class Race
       {"Human", "Dwarf", "Elf", "Gnome", "Half-Elf", "Half-Orc", "Hobbit"};
 
   protected String _raceName;
-  protected String _raceLang;
+  protected String _raceLang = "Common";
   
   protected static MetaDie _md = new MetaDie();
   
