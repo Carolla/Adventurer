@@ -171,7 +171,6 @@ public class MetaDie
   public int roll(String notation) throws ApplicationException
   {
     Pattern p = Pattern.compile("(?<A>\\d*)d(?<B>\\d+)(?>(?<ADD>[+-])(?<D>\\d+))?");
-    //    Pattern p = Pattern.compile("(\\d*)?d(\\d+)([+-]\\d)");
     Matcher matcher = p.matcher(notation);
 
     if (matcher.matches()) {

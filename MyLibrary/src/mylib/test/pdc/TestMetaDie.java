@@ -11,8 +11,7 @@
 package mylib.test.pdc;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 
@@ -45,38 +44,13 @@ public class TestMetaDie
   {
     double COUNT = 100000;
     int trait = 0;
-    double sum = 0;
-    double avg = 0.0;
-    int min = 99;
-    int max = -1;
 
-    // Roll a lot of prime traits and check for min, max, and average
     for (int k = 0; k < COUNT; k++) {
-      trait = rollSingleTrait();   // returns a single prime trait between 3 and 18
-      assertTrue("Trait out of range", ((trait >= 1) && (trait <= 18)));
-      sum += trait;
-      min = Math.min(min, trait);
-      max = Math.max(max, trait);
+      trait = _md.rollTrait();
+      assertTrue("Trait " + trait + " too low", trait > 2);
+      assertTrue("Trait " + trait + " too high", trait < 19);
     }
-    avg = sum / COUNT;
-    MsgCtrl.msg("\tMin rolled = " + min + "; \t Max rolled = " + max);
-    MsgCtrl.msgln("\tSum of traits = " + sum);
-    MsgCtrl.msgln("\tAverage = " + avg);
   }
-
-  // private support
-  /** Roll a single trait */
-  private int rollSingleTrait()
-  {
-    int NBR_TRAITS = 6;
-    int value = 0;
-
-    for (int k = 0; k < NBR_TRAITS; k++) {
-      value = _md.rollTrait(); // rolls 4d6 - lowest d6
-    }
-    return value;
-  }
-
 
   /**
    * Test selecting a random Gaussian (normal) multiplier
@@ -89,34 +63,25 @@ public class TestMetaDie
   public void testGetGaussian()
   {
     int NBR_LOOPS = 1000;
+    
     double[] values = new double[NBR_LOOPS];
-    // double[] average = {1, 2, 10, 24, 100, 0.1, 0.5};
     double[] average = {2, 10, 24, 100};
-    // Loop through the limit permutations
+
     for (int m = 0; m < average.length; m++) {
       double sum = 0.0;
       double maxDelta = 0.0;
       double maxDP = 0.0;
-      double calcMin = 1000; // invalid min to be reset
-      double calcMax = 0; // invalid max to be reset
-      // Set the lower and upper boundaries: 1 sigma on either side
+
       int expMinValue = (int) Math.round((1.0 - MetaDie.SIGMA) * average[m]);
       int expMaxValue = (int) Math.round((1.0 + MetaDie.SIGMA) * average[m]);
-      MsgCtrl.msg("\n\t(" + expMinValue + ", " + expMaxValue + ") = ");
 
-      // Generate a population of numbers, plus/minus 32%
       for (int k = 0; k < NBR_LOOPS; k++) {
         values[k] = _md.getGaussian(average[m], expMinValue, expMaxValue);
         sum = sum + values[k];
-        // MsgCtrl.msg("\t" + values[k]);
-        assertTrue((values[k] >= expMinValue) && (values[k] <= expMaxValue));
-        calcMin = Math.min(values[k], expMinValue);
-        calcMax = Math.max(values[k], expMaxValue);
+        assertTrue(values[k] + ">=" + expMinValue, values[k] >= expMinValue);
+        assertTrue(values[k] + "<=" + expMaxValue, values[k] <= expMaxValue);
       }
 
-      // Confirm that the min and max possible values were got
-      MsgCtrl.msg("\n\t[min " + calcMin + "]");
-      MsgCtrl.msg("\t[max " + calcMax + "]");
       // Calculate the population statistics
       double calcAvg = sum / NBR_LOOPS;
       double expAvg = (expMinValue + expMaxValue) / 2.0;
@@ -195,51 +160,28 @@ public class TestMetaDie
   @Test
   public void testGetRandom()
   {
-    // Audit messages are OFF at start of each test
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\ttestGetRandom()");
-
-    // Some min and max possibilities
     int[] mins = {1, 2, 6, 10};
     int[] maxs = {2, 6, 10, 12, 20, 100};
     int NBR_LOOPS = 10000;
 
-    // NORMAL -- flat distribution
-    double maxDelta = 0.0;
     for (int p = 0; p < mins.length; p++) {
       for (int m = 0; m < maxs.length; m++) {
-        // These will be overwritten by true min and max values on first loop
-        int minValue = 100;
-        int maxValue = 1;
-        double sum = 0.0; // clear the sum for each iteration
-        // Skip invalid range boundaries
+        
         if (mins[p] >= maxs[m]) {
-          continue;
+          try {
+            _md.getRandom(mins[p], maxs[m]);
+            fail("Expected exception with min " + mins[p] + " and max " + maxs[m]);
+          } catch (IllegalArgumentException e) {
+            continue;
+          }
         }
-        // Run the ranges for multiple times to get a good population average
+        
         for (int k = 0; k < NBR_LOOPS; k++) {
-          // Traverse the ranges for
           int value = _md.getRandom(mins[p], maxs[m]);
-          // Stats on rolls are average, min value, and max value
-          sum += value;
-          minValue = Math.min(minValue, value);
-          maxValue = Math.max(maxValue, value);
           assertTrue((value >= mins[p]) && (value <= maxs[m]));
         }
-        MsgCtrl.msg("\n\t(" + mins[p] + ", " + maxs[m] + ") = ");
-        MsgCtrl.msg("\t[min " + minValue + "]");
-        MsgCtrl.msg("\t[max " + maxValue + "]");
-        double avg = sum / NBR_LOOPS;
-        double expAvg = (mins[p] + maxs[m]) / 2.0;
-        double delta = expAvg - avg;
-        maxDelta = Math.max(maxDelta, Math.abs(delta));
-        MsgCtrl.msgln("\t\tAverage = " + avg + "\t\tExpected " + expAvg + "\t\tDelta = " + delta);
-        // These are flat distributions, not centralized by adding. The delta is large
-        assertEquals(expAvg, avg, 2.0);
       }
     }
-    MsgCtrl.msgln("Max delta found = " + maxDelta);
   }
 
 
@@ -253,27 +195,13 @@ public class TestMetaDie
   @Test
   public void testRoll()
   {
-    // Audit messages are OFF at start of each test
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    // Generate a sufficiently large population so that averages are closer to expected averages
-    int NBR_LOOPS = 10000; // ten thousand rolls
-    // NORMAL -- try a few normal distros from die rolling
-    // 1d2, 1d4, 1d6, 1d8, 1d12, 1d20, 1d100
-    // 2d6, 2d10, 3d4, 4d6, 2d10
+    int NBR_LOOPS = 10000;
     int[] nbrDice = {1, 2, 3, 4, 6, 100}; // 6 groups of dice
     int[] nbrSides = {2, 4, 6, 8, 10, 12, 20, 100}; // 8 kinds of dice
-    // Loop through the dice permutations
+   
     for (int p = 0; p < nbrDice.length; p++) {
       for (int m = 0; m < nbrSides.length; m++) {
         int value = -1;
-        double sum = 0.0;
-        double maxDelta = 0.0;
-        double maxDP = 0.0;
-        double intMin = 1000; // invalid min to be reset
-        double intMax = 0; // invalid max to be reset
 
         int expMinValue = nbrDice[p];
         int expMaxValue = nbrDice[p] * nbrSides[m];
@@ -282,30 +210,8 @@ public class TestMetaDie
         // Generate a population of number from the same dice configuration
         for (int k = 0; k < NBR_LOOPS; k++) {
           value = _md.roll(nbrDice[p], nbrSides[m]);
-          sum = sum + value;
-          // MsgCtrl.msg("\t" + value);
-          assertTrue((value >= expMinValue) && (value <= expMaxValue));
-          intMin = Math.min(value, expMinValue);
-          intMax = Math.max(value, expMaxValue);
+          assertTrue(value >= expMinValue && value <= expMaxValue);
         }
-        // Confirm that the min and max possible values were got
-        MsgCtrl.msg("\t[min " + intMin + "]");
-        MsgCtrl.msg("\t[max " + intMax + "]");
-        // Calculate the population statistics
-        double calcAvg = sum / NBR_LOOPS;
-        double expAvg = (expMinValue + expMaxValue) / 2.0;
-        double delta = expAvg - calcAvg;
-        double percentDelta = (delta / expAvg) * 100.0;
-        String deltaStr = String.format("%6.4f", delta);
-        String DPStr = String.format("%4.2f", percentDelta);
-        maxDelta = Math.max(delta, maxDelta);
-        maxDP = Math.max(percentDelta, maxDP);
-        MsgCtrl.msg("\nCalculated Average = " + calcAvg);
-        MsgCtrl.msg("\tExpected Average = " + expAvg);
-        MsgCtrl.msg("\t Delta = " + deltaStr);
-        MsgCtrl.msgln("\t Delta = " + DPStr + "%");
-        // Averages must be within 2% error
-        assertTrue(percentDelta < Math.abs(2.0));
       }
     }
   }
