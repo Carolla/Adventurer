@@ -6,9 +6,10 @@
 package mylib.pdc;
 
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import mylib.ApplicationException;
-import mylib.MsgCtrl;
 
 
 /**
@@ -39,18 +40,10 @@ public class MetaDie
   /** Standard random generator class that powers the <code>MetaDie</code> class */
   private Random _generator;
   /** Generic constant if something requested is not found */
-  private static final int NOT_FOUND = -1; // some String method returns
-  /** Fewest possible dice to roll */
-  private static final int MIN_DICE = 1; // fewest dice to roll
-  /** Fewest possible sides to a "die" */
-  private static final int MIN_SIDES = 1; // can flip a coin, but no less
+  //  private static final int NOT_FOUND = -1; // some String method returns
 
   /** 68% of the population is centered around the mean, within 1 standard deviation */
   public static final double SIGMA = 0.3413; // positive side of the mean
-  /** 34% of the population is centered around the mean, for narrower values, */
-  public static final double HALF_SIGMA = 0.17065; // positive side of the mean
-  /** 95% of the population is centered around the mean, within 2 standard deviation */
-  public static final double TWO_SIGMA = 0.6826; // positive side of the mean
 
   /**
    * Creates a Random class for single die throws, using time as the seed. This object pre-defines a
@@ -58,9 +51,8 @@ public class MetaDie
    */
   public MetaDie()
   {
-    _generator = new Random();
+    _generator = new Random(System.currentTimeMillis());
   }
-
 
   /**
    * Creates a Random class using an input value as a seed. This object pre-defines a sequence of
@@ -94,18 +86,20 @@ public class MetaDie
   public int getGaussian(double mean, int lowEnd, int highEnd)
       throws ApplicationException
   {
-    // Guards against bad input parms
     if (mean <= 0) {
-      throw new ApplicationException("Mean must be greater than 0.0");
+      mean = 0;
     }
+
     if ((lowEnd >= mean) || (lowEnd <= 0)) {
       throw new ApplicationException("lowEnd must be less than the mean, but greater than 0.0");
     }
+
     if ((highEnd <= mean)) {
       throw new ApplicationException("highEnd must be greater than the mean.");
     }
-    int value = NOT_FOUND;
-    // Get a multiplier within the desired range
+
+    int value = -1;
+
     double multiplier;
     do { // exclude end points to sharpen (narrow) the distribution a bit
       multiplier = Math.abs(_generator.nextGaussian() + 1.0);
@@ -129,20 +123,11 @@ public class MetaDie
    */
   public int getRandom(int minRange, int maxRange) throws IllegalArgumentException
   {
-    // Guards against bad input parms
-    if ((minRange <= 0) || (maxRange <= 0)) {
-      throw new IllegalArgumentException("Ranges must be positive (greater than 0)");
-    }
     if (minRange >= maxRange) {
       throw new IllegalArgumentException("Max range must be larger than min range");
     }
-    // Ensure that 0 is possible by starting too low and reassigning
-    int value = -1;
-    // Add together equally-probably ints until the range is reached, adjusted for zero-basing
-    while (value < minRange) {
-      value = _generator.nextInt(maxRange) + 1;
-    }
-    return (value);
+
+    return _generator.nextInt(maxRange - minRange) + minRange + 1;
   }
 
 
@@ -155,15 +140,13 @@ public class MetaDie
    * @param nbrDice number of rolls to sum
    * @param nbrSides max range of each roll (number of sides of die)
    * @return the sum of the rolled dice.
-   * @throws IllegalArgumentException if nbrDice < 1 or nbrSides < 2
    */
-  public int roll(int nbrDice, int nbrSides) throws IllegalArgumentException
+  public int roll(int nbrDice, int nbrSides)
   {
-    // Guard against invalid values
-    if ((nbrDice < MIN_DICE) || (nbrSides < MIN_SIDES)) {
-      throw new IllegalArgumentException(
-          "MetaDie.sumRoll(): nbrDice must be >= 1 and nbrSides >= 2");
+    if (nbrSides < 1) {
+      nbrSides = 1;
     }
+
     int sum = 0;
     for (int k = 0; k < nbrDice; k++) {
       sum += _generator.nextInt(nbrSides) + 1;
@@ -185,128 +168,90 @@ public class MetaDie
    * @throws NumberFormatException if notation cannot be numerically parsed
    * @throws ApplicationException if d20 format is invalid
    */
-  public int roll(String notation) throws NumberFormatException, ApplicationException
+  public int roll(String notation) throws ApplicationException
   {
-    // Guard: No notation should fall outside this String length
-    if (notation == null) {
-      throw new NullPointerException("Null received as input");
-    }
-    int MIN_LEN = 2; // e.g., d6
-    int MAX_LEN = 8; // e.g. 10d100-4
-    int len = notation.length();
-    if ((len < MIN_LEN) || (len > MAX_LEN)) {
-      throw new ApplicationException("Invalid length in d20 string notation");
-    }
-    try {
-      // Default to no addon minimum values
-      int addon = 0;
-      int minVal = 0;
-      StringBuffer sb = new StringBuffer(notation);
-      int delim = sb.indexOf("d");
-      if (delim == NOT_FOUND) {
-        throw new ApplicationException("Cannot find the delimiter 'd' in " + notation);
-      }
+    Pattern p = Pattern.compile("(?<A>\\d*)d(?<B>\\d+)(?>(?<ADD>[+-])(?<D>\\d+))?");
+    //    Pattern p = Pattern.compile("(\\d*)?d(\\d+)([+-]\\d)");
+    Matcher matcher = p.matcher(notation);
 
-      // Search for addons
-      int plusIndex = sb.indexOf("+");
-      // If addon value given, parse it first and adjust length
-      // quirk of parseInt: cannot parse '+' sign, but can parse '-' sign
-      if (plusIndex != NOT_FOUND) {
-        addon = Integer.parseInt(sb.substring(plusIndex + 1, len));
-        len = len - plusIndex + 1;
-      } else {
-        plusIndex = sb.indexOf("-");
-        if (plusIndex != NOT_FOUND) {
-          addon = Integer.parseInt(sb.substring(plusIndex, len));
-          len = len - plusIndex;
-        }
-      }
-      // Case: Default coefficient of notation is 1, e.g. "d8" = "1d8"
-      int nbrDice = (delim == 0) ? 1 : Integer.parseInt(sb.substring(0, delim));
+    if (matcher.matches()) {
+      int rolls = getInt(matcher, "A", 1);
+      int faces = getInt(matcher, "B", -1);
+      int addValue = getInt(matcher, "D", 0);
+      int sign = getSign(matcher, "ADD", "+");
 
-      // Get the number following the 'd', ignoring the addon if it exists
-      int nbrSides = Integer.parseInt(sb.substring(delim + 1, len));
-      // Roll and add the numeric equivalent of the input d20 string
-      int sum = roll(nbrDice, nbrSides);
-      // Addjust for any addons that exist
-      minVal = addon;
-      int finalValue = sum + minVal;
-      finalValue = (finalValue <= 0) ? 1 : finalValue;
-      return finalValue;
-    }
-    // This exception is caught and rethrown to allow a clear message
-    catch (NumberFormatException e) {
-      throw new NumberFormatException("Cannot parse the d20 notation " + notation);
-    } catch (NullPointerException e) {
-      throw new NullPointerException("Null received as input");
-    } catch (StringIndexOutOfBoundsException e) {
-      throw new NumberFormatException("Index inconsistent with size in " + notation);
+      return roll(rolls, faces) + sign * addValue;
+    } else {
+      System.out.println("Failed to match");
+      return -1;
     }
   }
 
+  private static boolean isEmpty(String str)
+  {
+    return str == null || str.trim().isEmpty();
+  }
 
-  // TODO: Continue refactor roll(String) from here
-  // /**
-  // * Convert a dice notation string to two numbers, then roll the dice as indicated by the string.
-  // <br>
-  // * Notation format: prefix, delim, suffix, addon, where
-  // * <BL>
-  // * <LI> prefix = {[n][n] >= 1 </LI>
-  // * <LI> delim = 'd' </LI>
-  // * <LI> suffix = n[n][n] <= 100 </LI>
-  // * <LI> addon = ['+' | '-'] n]}, </LI>
-  // * </BL>
-  // * that is, 1-100 required letter 'd', and 1-100, e.g. 2d10, 1d8+1, or 2d4-1.
-  // * Optional +n to provide minimums. <br>
-  // * In cases where a zero result occurrs, e.g., 2d4-2 has two chances of zero result, the value 1
-  // * is returned
-  // *
-  // * @param notation format as explained above
-  // * @return the sum of the rolled dice; else 1 if a zero occurred
-  // * @throws NumberFormatException if notation cannot be numerically parsed
-  // * @throws ApplicationException if d20 format is invalid
-  // */
-  // public int roll(String notation) throws NumberFormatException, ApplicationException
-  // {
-  // // Guard: No notation should fall outside this String length
-  // if (notation == null) {
-  // throw new NullPointerException("Null received as input");
-  // }
-  // int MIN_LEN = 2; // e.g., d6
-  // int MAX_LEN = 8; // e.g. 10d100-4
-  // int len = notation.length();
-  // if ((len < MIN_LEN) || (len > MAX_LEN)) {
-  // throw new ApplicationException("Invalid length in d20 string notation");
-  // }
-  // if (notation.contains("d") == false) {
-  // throw new ApplicationException("d20 notation must have a 'd' delimeter");
-  // }
-  // // Tokenize input to prefix, delim, suffix, and addon
-  // String[] cs = notation.split("d");
-  // String prefix = cs[0];
-  // String suffix = cs[1];
-  // if (cs.length == 3) {
-  // String added = cs[2];
-  // System.err.println("\t roll(): notation = " + notation + " yields\t " + prefix + "\t" + suffix
-  // + "\t" + added);
-  // }
-  // else {
-  // System.err.println("\t roll(): notation = " + notation + " yields\t " + prefix + "\t" +
-  // suffix);
-  // }
+  private static Integer getInt(Matcher matcher, String group, int defaultValue)
+  {
+    String groupValue = matcher.group(group);
+    return isEmpty(groupValue) ? defaultValue : Integer.valueOf(groupValue);
+  }
+
+  private static Integer getSign(Matcher matcher, String group, String positiveValue)
+  {
+    String groupValue = matcher.group(group);
+    return isEmpty(groupValue) || groupValue.equals(positiveValue) ? 1 : -1;
+  }
+
+  //    
+  //    } else {
+  //      return -1;
+  //    }
+  //    
+  //    int MIN_LEN = 2; // e.g., d6
+  //    int MAX_LEN = 8; // e.g. 10d100-4
+  //    int len = notation.length();
+  //    if ((len < MIN_LEN) || (len > MAX_LEN)) {
+  //      throw new ApplicationException("Invalid length in d20 string notation");
+  //    }
   //
-  // }
-  // // This exception is caught and rethrown to allow a clear message
-  // catch (NumberFormatException e) {
-  // throw new NumberFormatException("Cannot parse the d20 notation " + notation);
-  // }
-  // catch (NullPointerException e) {
-  // throw new NullPointerException("Null received as input");
-  // }
-  // catch (StringIndexOutOfBoundsException e) {
-  // throw new NumberFormatException("Index inconsistent with size in " + notation);
-  // }
-  // }
+  //    // Default to no addon minimum values
+  //    int addon = 0;
+  //    int minVal = 0;
+  //    StringBuffer sb = new StringBuffer(notation);
+  //    int delim = sb.indexOf("d");
+  //    if (delim == NOT_FOUND) {
+  //      throw new ApplicationException("Cannot find the delimiter 'd' in " + notation);
+  //    }
+  //
+  //    // Search for addons
+  //    int plusIndex = sb.indexOf("+");
+  //    // If addon value given, parse it first and adjust length
+  //    // quirk of parseInt: cannot parse '+' sign, but can parse '-' sign
+  //    if (plusIndex != NOT_FOUND) {
+  //      addon = Integer.parseInt(sb.substring(plusIndex + 1, len));
+  //      len = len - plusIndex + 1;
+  //    } else {
+  //      plusIndex = sb.indexOf("-");
+  //      if (plusIndex != NOT_FOUND) {
+  //        addon = Integer.parseInt(sb.substring(plusIndex, len));
+  //        len = len - plusIndex;
+  //      }
+  //    }
+  //    // Case: Default coefficient of notation is 1, e.g. "d8" = "1d8"
+  //    int nbrDice = (delim == 0) ? 1 : Integer.parseInt(sb.substring(0, delim));
+  //
+  //    // Get the number following the 'd', ignoring the addon if it exists
+  //    int nbrSides = Integer.parseInt(sb.substring(delim + 1, len));
+  //    // Roll and add the numeric equivalent of the input d20 string
+  //    int sum = roll(nbrDice, nbrSides);
+  //    // Addjust for any addons that exist
+  //    minVal = addon;
+  //    int finalValue = sum + minVal;
+  //    finalValue = (finalValue <= 0) ? 1 : finalValue;
+  //    return finalValue;
+  //  }
 
 
   /**
@@ -317,6 +262,16 @@ public class MetaDie
   public int rollPercent()
   {
     return getRandom(1, 100);
+  }
+
+
+  public int[] rollTraits()
+  {
+    int traits[] = new int[6];
+    for (int i = 0; i < traits.length; i++) {
+      traits[i] = rollTrait();
+    }
+    return traits;
   }
 
 
@@ -337,9 +292,6 @@ public class MetaDie
     int[] tally = new int[NBR_ROLLS];
     for (int k = 0; k < NBR_ROLLS; k++) {
       tally[k] = roll(NBR_DICE, NBR_SIDES);
-      if ((tally[k] < 1) || (tally[k] > 6)) {
-        System.err.println("rollTrait() generated an invalid result on die = " + tally[k]);
-      }
     }
     // Find smallest roll in set
     int min = 99;
@@ -352,92 +304,5 @@ public class MetaDie
     sum -= min;
     return sum;
   }
-
-
-  // --------------------------------------------------------------------------------------------------------------
-  // Inner Class: MockMetaDie
-  // --------------------------------------------------------------------------------------------------------------
-
-  /** Inner class used for testing and accessing outer class members */
-  public class MockMetaDie
-  {
-
-    /** Mock constructor */
-    public MockMetaDie()
-    {}
-
-
-    /**
-     * Created to catch exceptions easier. The test case contains a series of bad methods that throw
-     * a lot of exceptions.
-     * 
-     * @param mean must be > 0
-     * @param low must be [-1.0, 0.0)
-     * @param high must be (0.0, 1.0]
-     * @return true if the expected exception has been thrown
-     */
-    public boolean getGaussian(double mean, int low, int high)
-    {
-      try {
-        MetaDie.this.getGaussian(mean, low, high);
-      } catch (Exception ex) {
-        MsgCtrl.errMsgln(this, ex.getMessage());
-        return true;
-      }
-      return false;
-    }
-
-    /**
-     * Created to catch exceptions easier. The test case contains a series of bad methods that throw
-     * a lot of exceptions.
-     *
-     * @param minRange the smallest positive number requested >= 0 (inclusive)
-     * @param maxRange the largest positive number requested (inclusive)
-     * @return true if the expected exception has been thrown
-     */
-    public boolean getRandom(int minRange, int maxRange)
-    {
-      try {
-        MetaDie.this.getRandom(minRange, maxRange);
-      } catch (IllegalArgumentException ex) {
-        MsgCtrl.errMsg(this, ex.getMessage());
-        return true;
-      }
-      return false;
-    }
-
-
-    /**
-     * Created to catch exceptions easier. The test case class a series of bad methods that throw a
-     * lot of exceptions.
-     * 
-     * @param notation d20 string format for dice to roll
-     * @return true if the expected exception has been thrown
-     */
-    public boolean roll(String notation)
-    {
-      try {
-        MetaDie.this.roll(notation);
-      } catch (Exception ex) {
-        MsgCtrl.errMsgln(this, ex.getMessage());
-        return true;
-      }
-      return false;
-    }
-
-  } // end of MockMetaDie inner class
-
-
-  public int[] rollTraits()
-  {
-    int traits[] = new int[6];
-    for (int i = 0; i < traits.length; i++) {
-      traits[i] = rollTrait();
-    }
-    return traits;
-  }
-
-
-
 } // end of MetaDie class
 
