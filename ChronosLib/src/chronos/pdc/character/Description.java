@@ -187,4 +187,10 @@ public class Description
       return false;
     return true;
   }
+  
+  @Override
+  public String toString()
+  {
+    return _description;
+  }
 }

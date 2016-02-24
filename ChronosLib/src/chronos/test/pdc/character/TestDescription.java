@@ -49,8 +49,9 @@ public class TestDescription
   @Test
   public void twoIdenticalDescriptionsAreEqual()
   {
-    Description desc1 = new Description(10, "red-eyed ", "red", new Gender("Female"), 50, 160);
-    Description desc2 = new Description(10, "red-eyed ", "red", new Gender("Female"), 50, 160);
+    Description desc1 = new Description(19, "red-eyes", "red", new Gender("Female"), 150, 160);
+    System.out.println(desc1);
+    Description desc2 = new Description(19, "red-eyes", "red", new Gender("Female"), 150, 160);
     
     assertEquals(desc1, desc2);
   }

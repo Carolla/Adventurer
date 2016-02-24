@@ -13,8 +13,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Random;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,9 +28,6 @@ import civ.BuildingDisplayCiv;
  */
 public class TA10_ReturnToTown extends IntegrationTest
 {
-
-  private static final Random random = new Random(System.currentTimeMillis());
-  
   @Before
   public void setup()
   {
@@ -47,44 +42,43 @@ public class TA10_ReturnToTown extends IntegrationTest
   @Test
   public void TA10_LeaveFromInsideBuilding()
   {
-    String building = chooseRandomBuilding();
-    _cp.receiveCommand("Enter " + building);
+    for (int i = 0; i < BuildingDisplayCiv.DEFAULT_BUILDINGS.length - 1; i++) {
+      String building = BuildingDisplayCiv.DEFAULT_BUILDINGS[i][0];
+      _cp.receiveCommand("Enter " + building);
 
-    assertFalse(_bldgCiv.isOnTown());
-    assertTrue(_bldgCiv.isInside());
-    assertEquals(building, _bldgCiv.getCurrentBuilding());
+      assertEquals(building, _bldgCiv.getCurrentBuilding());
+      assertFalse(_bldgCiv.isOnTown());
+      assertTrue(_bldgCiv.isInside());
 
-    // TEST
-    assertTrue(_cp.receiveCommand("Return"));
+      // TEST
+      assertTrue(_cp.receiveCommand("Return"));
 
-    // Confirm Hero is no longer on town or in building
-    assertTrue(_bldgCiv.isOnTown());
-    assertFalse(_bldgCiv.isInside());
-    assertEquals("",_bldgCiv.getCurrentBuilding());
+      // Confirm Hero is no longer on town or in building
+      assertTrue(_bldgCiv.isOnTown());
+      assertFalse(_bldgCiv.isInside());
+      assertEquals("", _bldgCiv.getCurrentBuilding());
+    }
   }
+
 
   @Test
   public void TA10_LeaveFromOutsideBuilding()
   {
-    String building = chooseRandomBuilding();
-    _cp.receiveCommand("Approach " + building);
+    for (int i = 0; i < BuildingDisplayCiv.DEFAULT_BUILDINGS.length - 1; i++) {
+      String building = BuildingDisplayCiv.DEFAULT_BUILDINGS[i][0];
+      _cp.receiveCommand("Approach " + building);
 
-    assertFalse(_bldgCiv.isOnTown());
-    assertFalse(_bldgCiv.isInside());
-    assertEquals(building, _bldgCiv.getCurrentBuilding());
+      assertEquals(building, _bldgCiv.getCurrentBuilding());
+      assertFalse(_bldgCiv.isOnTown());
+      assertFalse(_bldgCiv.isInside());
 
-    // TEST
-    assertTrue(_cp.receiveCommand("Return"));
+      // TEST
+      assertTrue(_cp.receiveCommand("Return"));
 
-    // Confirm Hero is no longer on town or in building
-    assertTrue(_bldgCiv.isOnTown());
-    assertFalse(_bldgCiv.isInside());
-    assertEquals("", _bldgCiv.getCurrentBuilding());
-  }
-
-
-  private String chooseRandomBuilding()
-  {
-    return BuildingDisplayCiv.DEFAULT_BUILDINGS[random.nextInt(BuildingDisplayCiv.DEFAULT_BUILDINGS.length)][0];
+      // Confirm Hero is no longer on town or in building
+      assertTrue(_bldgCiv.isOnTown());
+      assertFalse(_bldgCiv.isInside());
+      assertEquals("", _bldgCiv.getCurrentBuilding());
+    }
   }
 }
