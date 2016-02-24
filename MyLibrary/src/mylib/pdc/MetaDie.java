@@ -159,56 +159,6 @@ public class MetaDie
     return isEmpty(groupValue) || groupValue.equals(positiveValue) ? 1 : -1;
   }
 
-  //    
-  //    } else {
-  //      return -1;
-  //    }
-  //    
-  //    int MIN_LEN = 2; // e.g., d6
-  //    int MAX_LEN = 8; // e.g. 10d100-4
-  //    int len = notation.length();
-  //    if ((len < MIN_LEN) || (len > MAX_LEN)) {
-  //      throw new ApplicationException("Invalid length in d20 string notation");
-  //    }
-  //
-  //    // Default to no addon minimum values
-  //    int addon = 0;
-  //    int minVal = 0;
-  //    StringBuffer sb = new StringBuffer(notation);
-  //    int delim = sb.indexOf("d");
-  //    if (delim == NOT_FOUND) {
-  //      throw new ApplicationException("Cannot find the delimiter 'd' in " + notation);
-  //    }
-  //
-  //    // Search for addons
-  //    int plusIndex = sb.indexOf("+");
-  //    // If addon value given, parse it first and adjust length
-  //    // quirk of parseInt: cannot parse '+' sign, but can parse '-' sign
-  //    if (plusIndex != NOT_FOUND) {
-  //      addon = Integer.parseInt(sb.substring(plusIndex + 1, len));
-  //      len = len - plusIndex + 1;
-  //    } else {
-  //      plusIndex = sb.indexOf("-");
-  //      if (plusIndex != NOT_FOUND) {
-  //        addon = Integer.parseInt(sb.substring(plusIndex, len));
-  //        len = len - plusIndex;
-  //      }
-  //    }
-  //    // Case: Default coefficient of notation is 1, e.g. "d8" = "1d8"
-  //    int nbrDice = (delim == 0) ? 1 : Integer.parseInt(sb.substring(0, delim));
-  //
-  //    // Get the number following the 'd', ignoring the addon if it exists
-  //    int nbrSides = Integer.parseInt(sb.substring(delim + 1, len));
-  //    // Roll and add the numeric equivalent of the input d20 string
-  //    int sum = roll(nbrDice, nbrSides);
-  //    // Addjust for any addons that exist
-  //    minVal = addon;
-  //    int finalValue = sum + minVal;
-  //    finalValue = (finalValue <= 0) ? 1 : finalValue;
-  //    return finalValue;
-  //  }
-
-
   /**
    * Returns a linear random number in terms of percent. Same as <code>getRandom(1, 100)</code>.
    * 
@@ -219,7 +169,6 @@ public class MetaDie
     return getRandom(1, 100);
   }
 
-
   public int[] rollTraits()
   {
     int traits[] = new int[6];
@@ -228,7 +177,6 @@ public class MetaDie
     }
     return traits;
   }
-
 
   /**
    * Returns a single trait using the 4d6-1 algorithm: Four d6 dice are rolled, and the lowest die

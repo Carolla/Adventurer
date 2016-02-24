@@ -42,10 +42,10 @@ public class TraitList
   int _speed;
 
   private final EnumMap<PrimeTraits, Integer> _traits = new EnumMap<PrimeTraits, Integer>(
-      PrimeTraits.class);;
+      PrimeTraits.class);
   private static final MetaDie _md = new MetaDie();
-  public static final int DEFAULT_TRAIT_VALUE = 10;
-  public static final int[] DEFAULT_TRAITS = {DEFAULT_TRAIT_VALUE,DEFAULT_TRAIT_VALUE,DEFAULT_TRAIT_VALUE,DEFAULT_TRAIT_VALUE,DEFAULT_TRAIT_VALUE,DEFAULT_TRAIT_VALUE };
+  public static final int DEFTRAIT_VAL = 10;
+  public static final int[] DEFAULT_TRAITS = {DEFTRAIT_VAL,DEFTRAIT_VAL,DEFTRAIT_VAL,DEFTRAIT_VAL,DEFTRAIT_VAL,DEFTRAIT_VAL };
 
   public TraitList()
   {
