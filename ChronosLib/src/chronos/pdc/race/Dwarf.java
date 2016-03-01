@@ -7,7 +7,7 @@
  * by email: acline@carolla.com
  */
 
-package pdc.character.race;
+package chronos.pdc.race;
 
 import chronos.pdc.character.Gender;
 import chronos.pdc.character.TraitList;
@@ -21,22 +21,12 @@ import chronos.pdc.race.Race;
 
 public class Dwarf extends Race
 {
-  // Statics and transients that are not serialized with the Race class hierarchy
-  /** Recommended serialization constant. */
-  static final long serialVersionUID = 1100L;
-
   /** Weight ranges */
-  protected final int _wtMaleMedValue = 150;
-  protected final int _wtFemaleMedValue = 120;
-  protected final String _wtLowDice = "2d8";
-  protected final String _wtHighDice = "2d12";
+  protected final RangedValue _weightRange = new RangedValue(120, "2d8", "2d11");
 
   /** Height ranges */
-  protected final int _htMaleMedValue = 48;;
-  protected final int _htFemaleMedValue = 46;
-  protected final String _htLowDice = "d4";
-  protected final String _htHighDice = "d6";
-
+  protected final RangedValue _heightRange = new RangedValue(65, "d4", "d6");
+  
   /** All Dwarves have beards, even the females */
   private final String _raceDescriptor = "a scraggly beard";
 
@@ -62,16 +52,6 @@ public class Dwarf extends Race
   {
     _raceName = "Dwarf";
     _raceLang = "Groken";
-
-    if (gender.isMale()) {
-      // Define weight ranges for Hero
-      _heightMedValue = _htMaleMedValue;
-      _weightMedValue = _wtMaleMedValue;
-    } else {
-      // Define height ranges for Hero
-      _weightMedValue = _wtFemaleMedValue;
-      _heightMedValue = _htFemaleMedValue;
-    }
     
     _descriptor = _raceDescriptor;
     _racialThiefMods = _dwarfThiefMods;
@@ -92,15 +72,16 @@ public class Dwarf extends Race
     return traits;
   }
 
+
   @Override
   public int calcWeight()
   {
-    return super.calcWeight(_wtLowDice, _wtHighDice);
+    return _weightRange.calcValue();
   }
 
   @Override
   public int calcHeight()
   {
-    return super.calcWeight(_htLowDice, _htHighDice);
+    return _heightRange.calcValue();
   };
 }

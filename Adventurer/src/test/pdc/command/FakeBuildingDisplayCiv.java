@@ -11,7 +11,6 @@ public class FakeBuildingDisplayCiv extends BuildingDisplayCiv
     super(new FakeMainframeCiv(), null, null);
   }
 
-
   private String _currentBuildingName = "";
   public boolean _canApproach = true;
   public boolean _canEnter = true;

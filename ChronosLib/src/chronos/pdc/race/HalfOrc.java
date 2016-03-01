@@ -9,7 +9,6 @@
 
 package chronos.pdc.race;
 
-import mylib.pdc.MetaDie;
 import chronos.pdc.character.Gender;
 import chronos.pdc.character.TraitList;
 import chronos.pdc.character.TraitList.PrimeTraits;
@@ -20,25 +19,11 @@ import chronos.pdc.character.TraitList.PrimeTraits;
  */
 public class HalfOrc extends Race
 {
-  // Statics and transients that are not serialized with the Race class hierarchy
-  /** Recommended serialization constant. */
-  static final long serialVersionUID = 1100L;
-
-  /** Racial limits for a Half-Orc for the traits */
-  private final int[] minLimit = {9, 7, 7, 7, 13, 7};
-  private final int[] maxLimit = {19, 17, 14, 17, 19, 12};
-
   /** Weight ranges */
-  protected final int _maleMedValue = 180;;
-  protected final int _femaleMedValue = 150;
-  protected final String _wtLowDice = "3d8";
-  protected final String _wtHighDice = "4d10";
+  protected final RangedValue _weightRange = new RangedValue(150, "3d8", "4d10");
 
   /** Height ranges */
-  protected final int _htMaleMedValue = 70;;
-  protected final int _htFemaleMedValue = 65;
-  protected final String _htLowDice = "2d4";
-  protected final String _htHighDice = "2d4";
+  protected final RangedValue _heightRange = new RangedValue(65, "2d4");
 
   /** Half-orcs are burly and pig-like */
   private final String _raceDescriptor = "a squat snoutish face";
@@ -59,18 +44,6 @@ public class HalfOrc extends Race
   {
     _raceName = "Half-Orc";
     _raceLang = getRaceLang();
-    _minLimit = minLimit;
-    _maxLimit = maxLimit;
-    // Define height ranges for Hero
-    if (gender.isMale()) {
-      // Define weight ranges for Hero
-      _heightMedValue = _htMaleMedValue;
-      _weightMedValue = _maleMedValue;
-    } else {
-      // Define height ranges for Hero
-      _weightMedValue = _femaleMedValue;
-      _heightMedValue = _htFemaleMedValue;
-    }
 
     _descriptor = _raceDescriptor;
     _racialThiefMods = _halforcThiefMods;
@@ -81,8 +54,7 @@ public class HalfOrc extends Race
   /** Half-orc has 50% chance of knowing elvish */
   private String getRaceLang()
   {
-    MetaDie md = new MetaDie();
-    String s = (md.rollPercent() < 50) ? null : "Orcish";
+    String s = (_md.rollPercent() < 50) ? "Common" : "Orcish";
     return s;
   }
 
@@ -100,13 +72,13 @@ public class HalfOrc extends Race
   @Override
   public int calcWeight()
   {
-    return super.calcWeight(_wtLowDice, _wtHighDice);
+    return _weightRange.calcValue();
   }
 
   @Override
   public int calcHeight()
   {
-    return super.calcWeight(_htLowDice, _htHighDice);
+    return _heightRange.calcValue();
   };
 
 }

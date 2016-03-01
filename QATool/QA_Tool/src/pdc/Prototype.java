@@ -11,6 +11,7 @@ package pdc;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -145,12 +146,19 @@ public class Prototype
 
     // Ensure that all intermediate subdirs exist for the PrintWriter and target file
     makeSubtree(target.getPath());
-    // Create a new output device in the proper test subdir
-    PrintWriter out = null;
+
+    // Ensure that the target file is created anew
     try {
       if (target.exists()) {
-        target.delete();
-      }
+        if (target.delete() == false) {
+          System.err.println("\twriteFile(): \t" + ex1.getMessage());
+          return null;
+        }
+    }
+
+    // Create new output device
+    PrintWriter out = null;
+    try {
       out = new PrintWriter(target);
     } catch (FileNotFoundException e) {
       System.err.println("\twriteFile(): \t" + e.getMessage());

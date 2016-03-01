@@ -20,25 +20,11 @@ import chronos.pdc.character.TraitList.PrimeTraits;
  */
 public class Hobbit extends Race
 {
-  // Statics and transients that are not serialized with the Race class hierarchy
-  /** Recommended serialization constant. */
-  static final long serialVersionUID = 1100L;
-
-  /** Racial limits for a Hobbit for the traits */
-  private final int[] minLimit = {7, 7, 7, 8, 10, 7};
-  private final int[] maxLimit = {17, 18, 17, 18, 19, 18};
-
   /** Weight ranges */
-  protected final int _maleMedValue = 60;;
-  protected final int _femaleMedValue = 50;
-  protected final String _wtLowDice = "2d4";
-  protected final String _wtHighDice = "2d6";
+  protected final RangedValue _weightRange = new RangedValue(50, "2d4", "2d6");
 
   /** Height ranges */
-  protected final int _htMaleMedValue = 36;;
-  protected final int _htFemaleMedValue = 33;
-  protected final String _htLowDice = "d3";
-  protected final String _htHighDice = "d6";
+  protected final RangedValue _heightRange = new RangedValue(33, "d3", "d6");
 
   /** Hobbits have hairy bare feet */
   private final String _raceDescriptor = "hairy bare feet";
@@ -63,19 +49,6 @@ public class Hobbit extends Race
   {
     _raceName = "Hobbit";
     _raceLang = "Tolkeen";
-    _minLimit = minLimit;
-    _maxLimit = maxLimit;
-
-    // Define height ranges for Hero
-    if (gender.isMale()) {
-      // Define weight ranges for Hero
-      _heightMedValue = _htMaleMedValue;
-      _weightMedValue = _maleMedValue;
-    } else {
-      // Define height ranges for Hero
-      _weightMedValue = _femaleMedValue;
-      _heightMedValue = _htFemaleMedValue;
-    }
 
     _descriptor = _raceDescriptor;
     _racialThiefMods = _hobbitThiefMods;
@@ -92,15 +65,16 @@ public class Hobbit extends Race
     return traits;
   };
 
+
   @Override
   public int calcWeight()
   {
-    return super.calcWeight(_wtLowDice, _wtHighDice);
+    return _weightRange.calcValue();
   }
 
   @Override
   public int calcHeight()
   {
-    return super.calcWeight(_htLowDice, _htHighDice);
+    return _heightRange.calcValue();
   };
 }

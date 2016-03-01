@@ -16,7 +16,9 @@ import test.civ.TestBuildingDisplayCiv;
 import test.civ.TestHeroDisplayCiv;
 import test.civ.TestMainframeCiv;
 import test.civ.TestNewHeroCiv;
+import test.pdc.TestInventory;
 import test.pdc.command.CommandSuite;
+import chronos.test.pdc.TestItem;
 
 /**
  * Run all unit tests for {@code Adventurer} components. Unit tests are grouped by their components
@@ -40,19 +42,11 @@ import test.pdc.command.CommandSuite;
     TestNewHeroCiv.class,
 
     /* PDC subfolder test suites */
-    CommandSuite.class
+    CommandSuite.class,
 
     /** PDC test files */
-    // Util.class
-
-    // TestDwarf.class
-    // TestHuman.class
-    // TestHunger.class
-    // TestInventory.class
-    // TestKlass.class
-    // TestPeasant.class
-    // TestPerson.class
-    // TestRace.class
+    TestInventory.class,
+    TestItem.class
 
     /** DMC test files */
 })

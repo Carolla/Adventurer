@@ -8,12 +8,13 @@
  */
 
 
-package test.pdc.character;
+package chronos.test.pdc.character;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import chronos.test.pdc.TestRace;
+import chronos.pdc.race.RangedValueTest;
+import chronos.test.pdc.race.TestRace;
 
 
 /**
@@ -24,17 +25,25 @@ import chronos.test.pdc.TestRace;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    // PDC.buildings test files:
     TestRace.class,
-    //    TestDwarf.class,
-    //    TestElf.class,
-    //    TestGnome.class,
-    //    TestHalfElf.class,
-    //    TestHalfOrc.class,
-    //    TestHobbit.class,
-    //    TestHuman.class,
-    TestHunger.class,
-//    TestPatron.class
+    TestDwarf.class,
+    TestElf.class,
+    TestGnome.class,
+    TestHalfElf.class,
+    TestHalfOrc.class,
+    TestHobbit.class,
+    TestHuman.class,
+    
+    TestTraitList.class,
+    RangedValueTest.class,
+    
+    TestKlass.class,
+    TestFighter.class,
+    TestCleric.class,
+    TestThief.class,
+    TestWizard.class,
+    
+    TestDescription.class,
 })
 /** Compilation of all unit tests for regression and integration testing. */
 public class CharacterSuite

@@ -9,7 +9,6 @@
 
 package chronos.pdc.character;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,11 +30,8 @@ import chronos.pdc.Item.ItemCategory;
  *          Nov 25, 2011 // ABC replaced double cash with Items Gold and Silver <br>
  *          Oct 13, 2015 // updated for new Hero generation rules and categories <br>
  */
-public class Inventory implements Serializable
+public class Inventory
 {
-  /** Recommended serialization constant */
-  static final long serialVersionUID = 1111L;
-
   // METADATA CONSTANTS
   /** The weight increment (in ounces) to increase certain APMods */
   static final int AP_INCREMENT = Constants.OUNCES_PER_POUND * 25;
@@ -73,10 +69,7 @@ public class Inventory implements Serializable
    */
   public Inventory()
   {
-    // Create the map to hold the Items
-    // Holds all inventory items
     _itemList = new ArrayList<Item>();
-
   }
 
   // =============================================================================
@@ -84,22 +77,20 @@ public class Inventory implements Serializable
   // =============================================================================
 
   // Assign initial inventory to Hero (8 gpw = 1 lb)
-  public Inventory assignBasicInventory(Inventory inven)
+  public void assignBasicInventory()
   {
     // Basic inventory Items: category, name, quantity, weight (each in fractional lb)
-    inven.addItem(new Item(ItemCategory.EQUIPMENT, "Backpack", 1, 7.0));
-    inven.addItem(new Item(ItemCategory.EQUIPMENT, "Tinderbox", 1, 0.50));
-    inven.addItem(new Item(ItemCategory.EQUIPMENT, "Torch", 1, 1.0));
-    inven.addItem(new Item(ItemCategory.PROVISION, "Rations", 2, 0.50));
-    inven.addItem(new Item(ItemCategory.PROVISION, "Water skein (full)", 1, 1.5));
-    inven.addItem(new Item(ItemCategory.CLOTHING, "Belt pouch, small", 1, 0.25));
-    inven.addItem(new Item(ItemCategory.CLOTHING, "Leather boots", 1, 6.0));
-    inven.addItem(new Item(ItemCategory.CLOTHING, "Belt", 1, 0.25));
-    inven.addItem(new Item(ItemCategory.CLOTHING, "Breeches", 1, 0.50));
-    inven.addItem(new Item(ItemCategory.CLOTHING, "Shirt", 1, 0.50));
-    inven.addItem(new Item(ItemCategory.CLOTHING, "Cloak", 1, 2.0));
-
-    return inven;
+    addItem(new Item(ItemCategory.EQUIPMENT, "Backpack", 1, 7.0));
+    addItem(new Item(ItemCategory.EQUIPMENT, "Tinderbox", 1, 0.50));
+    addItem(new Item(ItemCategory.EQUIPMENT, "Torch", 1, 1.0));
+    addItem(new Item(ItemCategory.PROVISION, "Rations", 2, 0.50));
+    addItem(new Item(ItemCategory.PROVISION, "Water skein (full)", 1, 1.5));
+    addItem(new Item(ItemCategory.CLOTHING, "Belt pouch, small", 1, 0.25));
+    addItem(new Item(ItemCategory.CLOTHING, "Leather boots", 1, 6.0));
+    addItem(new Item(ItemCategory.CLOTHING, "Belt", 1, 0.25));
+    addItem(new Item(ItemCategory.CLOTHING, "Breeches", 1, 0.50));
+    addItem(new Item(ItemCategory.CLOTHING, "Shirt", 1, 0.50));
+    addItem(new Item(ItemCategory.CLOTHING, "Cloak", 1, 2.0));
   }
 
   /**
@@ -117,14 +108,12 @@ public class Inventory implements Serializable
     if (item == null) {
       return false;
     }
-    // If Item is already in inventory, increase its item count (qty)
-    int ndx = _itemList.indexOf(item);
-    if (ndx == Constants.NOT_FOUND) {
-      _itemList.add(item);
+    
+    if (_itemList.contains(item)) {
+      _itemList.get(_itemList.indexOf(item)).adjustQuantity(item.getQuantity());
     } else {
-      item.adjustQuantity(1);
-      _itemList.set(ndx, item);    // replace the item with updated qty
-    } 
+      _itemList.add(item);
+    }
     return true;
   }
 
@@ -137,11 +126,8 @@ public class Inventory implements Serializable
   public int calcInventoryWeight()
   {
     int weight = 0;
-    // Get the weight of each Item in the list
-    for (int k = 0; k < _itemList.size(); k++) {
-      // Get the weight of the next item in the collection (in ounces)
-      Item thing = _itemList.get(k);
-      weight += thing.getWeight() * thing.getQuantity();
+    for (Item i : _itemList) {
+      weight += i.getWeight() * i.getQuantity();
     }
     return weight;
   }
@@ -156,46 +142,11 @@ public class Inventory implements Serializable
    */
   public boolean dropItems(String itemName, int nbrToDrop)
   {
-    // // Guard against null Items or negative number
-    // if ((itemName == null) || (nbrToDrop < 1)) {
-    // return false;
-    // }
-    //
-    // // Get Item to work with, if it can be found
-    // Item thing = getItem(itemName);
-    // // if Item doesn't exist, return false
-    // if (thing == null) {
-    // return false;
-    // }
-    // // Get its position for later update
-    // int pos = _inventory.indexOf(thing);
-    // if (pos == Constants.NOT_FOUND) {
-    // return false;
-    // }
-    //
-    // // Find out how many of these things there are
-    // int count = thing.getQuantity();
-    // // Ensure that there are enough to drop as requested
-    // if ((nbrToDrop > count) || (count == 0)) {
-    // return false;
-    // }
-    //
-    // // Adjust the qty to account for the drop nbr
-    // int newCount = 0;
-    // try {
-    // newCount = thing.adjustQuantity(-nbrToDrop);
-    // } catch (ApplicationException e) {
-    // MsgCtrl.errMsg(e.getMessage());
-    // System.exit(0);
-    // }
-    // // If the qty becomes zero, remove the Item from the list
-    // if (newCount == 0) {
-    // _inventory.remove(pos);
-    // }
-    // // If qty is not zero, overwrite adjusted Item back into list
-    // else {
-    // _inventory.set(pos, thing);
-    // }
+    for (Item i : _itemList) {
+      if (i.getName().equalsIgnoreCase(itemName)) {
+        i.adjustQuantity(-1 * nbrToDrop);
+      }
+    }
     return true;
   }
 
@@ -205,25 +156,11 @@ public class Inventory implements Serializable
    * 
    * @return the inventory Items
    */
-  public ArrayList<Item> getAll()
+  public List<Item> getAll()
   {
     return _itemList;
   }
 
-  /**
-   * Return the Item for the given index. This is a convenience method for traversing the inventory
-   * easily from within.
-   * 
-   * @param index position in the list of the requested Item (zero-based)
-   * @return the requested Item; else null
-   */
-  public Item getItem(int index)
-  {
-    if ((index < 0) || (index >= _itemList.size())) {
-      return null;
-    }
-    return _itemList.get(index);
-  }
 
   /**
    * Retrieve an Item reference by name (does not remove it from Inventory but does allow it to be
@@ -235,16 +172,11 @@ public class Inventory implements Serializable
    */
   public Item getItem(String itemName)
   {
-    // // Guard against null input
-    // if (itemName == null) {
-    // return null;
-    // }
-    //
-    // for (Item it : _inventory) {
-    // if (itemName.equalsIgnoreCase(it.getName())) {
-    // return it;
-    // }
-    // }
+    for (Item it : _itemList) {
+      if (it.getName().equalsIgnoreCase(itemName)) {
+        return it;
+      }
+    }
     return null;
   }
 
@@ -254,14 +186,12 @@ public class Inventory implements Serializable
    * @param category which of the available categories should be selected
    * @return an Item list of only the requested category
    */
-  public Inventory getItemsByCategory(ItemCategory category)
+  public List<Item> getItemsByCategory(ItemCategory category)
   {
-    int invSize = _itemList.size();
-    Inventory catList = new Inventory();
-    for (int k = 0; k < invSize; k++) {
-      Item thing = _itemList.get(k);
-      if (thing.getCategory() == category) {
-        catList.addItem(thing);
+    List<Item> catList = new ArrayList<Item>();
+    for (Item i : _itemList) {
+      if (i.getCategory() == category) {
+        catList.add(i);
       }
     }
     return catList;
@@ -274,11 +204,9 @@ public class Inventory implements Serializable
    */
   public List<String> getNameList(ItemCategory cat)
   {
-    Inventory aList = getItemsByCategory(cat);
     List<String> nameList = new ArrayList<String>();
-    for (int k = 0; k < aList.getNbrItems(); k++) {
-      String itemName = aList.getItem(k).getName();
-      nameList.add(itemName);
+    for (Item i : getItemsByCategory(cat)) {
+      nameList.add(i.getName());
     }
     return nameList;
   }
@@ -288,7 +216,7 @@ public class Inventory implements Serializable
    * 
    * @return the count
    */
-  public int getNbrItems()
+  public int size()
   {
     return _itemList.size();
   }
@@ -304,11 +232,9 @@ public class Inventory implements Serializable
    */
   public boolean hasItem(String target)
   {
-    for (int k = 0; k < _itemList.size(); k++) {
-      // Extract the Item from the Inventory and lower-case it
-      Item thing = _itemList.get(k);
-      if (target.equalsIgnoreCase(thing.getName())) {
-        return true;
+    for (Item i : _itemList) {
+      if (i.getName().equalsIgnoreCase(target)) {
+        return i.getQuantity() > 0;
       }
     }
     return false;

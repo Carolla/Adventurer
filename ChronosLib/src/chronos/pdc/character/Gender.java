@@ -13,7 +13,7 @@ public class Gender
     MALE, FEMALE
   }
 
-  private Gender_e _gender;;
+  private Gender_e _gender;
 
   public Gender(String genderString)
   {
@@ -38,6 +38,16 @@ public class Gender
       return Gender_e.FEMALE;
     }
   }
+  
+  public int adjustHeightForGender(int height)
+  {
+    return isMale() ? height *= 1.1 : height;
+  }
+  
+  public int adjustWeightForGender(int weight)
+  {
+    return isMale() ? weight *= 1.3 : weight;
+  }
 
   public String pronoun()
   {
@@ -52,5 +62,15 @@ public class Gender
     traits.adjust(PrimeTraits.CON, 1);
     traits.adjust(PrimeTraits.CHR, 1);
     return traits;
+  }
+  
+  @Override
+  public String toString()
+  {
+    if (isMale()) {
+      return MALE_STRING;
+    } else {
+      return FEMALE_STRING;
+    }
   }
 }

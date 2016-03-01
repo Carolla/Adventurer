@@ -23,8 +23,8 @@ import chronos.pdc.character.TraitList.PrimeTraits;
 public class Thief extends Klass
 {
   /** Starting die and initial free HP for klass */
-  private String _hitDie = "d6";
-  private String _startingGold = "2d6";
+  private static final String _hitDie = "d6";
+  private static final String _startingGold = "2d6";
   
   /** Indices into the Hero's prime traits */
   public enum TSKILL {
@@ -44,14 +44,11 @@ public class Thief extends Klass
 
   /**
    * Default constructor, called reflectively by Klass
+   * @param traits 
    */
-  public Thief()
+  public Thief(TraitList traits)
   {
-    _klassName = "Thief";
-    _primeTrait = PrimeTraits.DEX;
-    _hpDie = _hitDie;
-    _goldDice = _startingGold;
-    
+    super(traits, THIEF_CLASS_NAME, PrimeTraits.DEX, _hitDie, _startingGold);
   }
 
 
@@ -68,12 +65,11 @@ public class Thief extends Klass
 
   @Override
   /** Assign initial inventory to Wizard (8 gpw = 1 lb) */
-  public Inventory addKlassItems(Inventory inven)
+  public void addKlassItems(Inventory inven)
   {
     // Basic inventory Items: category, name, quantity, weight (each in fractional lb)
     inven.addItem(new Item(ItemCategory.EQUIPMENT, "Thieves' kit", 1, 1.0));
     inven.addItem(new Item(ItemCategory.ARMS, "Dagger (dmg=d6, attack=1)", 1, 3.0));
-    return inven;
   }
 
 
@@ -83,7 +79,7 @@ public class Thief extends Klass
    * @param dex of the Hero
    * @return the list of thief skills (index = 0) with the chance of success (index = 1)
    */
-  public String[][] assignThiefSkills(int dex)
+  protected void calcClassMods(int dex)
   {
     // Basic chance per skill for level 1 thief; must be in order of global index constants
     int[] chanceList = {30, 30, 25, 20, 21, 11, 15, 82, 21};
@@ -96,7 +92,6 @@ public class Thief extends Klass
 
     // Adjust skills for dex
     _thiefSkills = adjThiefSkillByDex(_thiefSkills, dex);
-    return _thiefSkills;
   }
 
   /** Adjust the basic skills percents by the Hero's DEX value */

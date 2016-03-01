@@ -239,10 +239,6 @@ public class TestPrototype
     MsgCtrl.msgln("\tGenerated test file " + target.getPath());
     MsgCtrl.msgln("\tGenerated test file size = " + target.length());
 
-//    target = _proto.writeFile(new File(targetPath), srcPath);
-//    MsgCtrl.msgln("\tGenerated test file " + target.getPath());
-//    MsgCtrl.msgln("\tGenerated test file size = " + target.length());
-
     // VERIFY
     //printFile(target.getAbsolutePath());
     assertTrue(target.exists());
