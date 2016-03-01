@@ -19,6 +19,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
+import mylib.Constants;
+
 /**
  * @author Alan Cline
  * @version Jan 29, 2016 // original <br>
@@ -103,106 +105,27 @@ public class Prototype
   // PUBLIC METHODS
   // ======================================================================
 
-  // /**
-  // * Create an prototype test file in a corresponding directory as the source's directory. <br>
-  // *
-  // * @param srcDir highest directory for all source files
-  // * @param testDir highest directory for all test files
-  // * @param srcPath path of the source file that will correspond to the target test file created
-  // * @return the File created
-  // */
-  // public File createFile(File srcDir, File testDir, String srcPath)
-  // {
-  // // Guard against bad combination of directory and source file
-  // if (!srcDir.isDirectory()) {
-  // System.err.println("createFile: srcDir must be a directory");
-  // return null;
-  // }
-  // if (!testDir.isDirectory()) {
-  // System.err.println("createFile: testDir must be a directory");
-  // return null;
-  // }
-  // // Guard against bad combination of directory and source file
-  // File srcFile = new File(srcDir + "/" + srcPath);
-  // if (!srcFile.exists()) {
-  // // System.err.println("createFile: srcPath does not exist");
-  // return null;
-  // }
-  // if (srcFile.isDirectory()) {
-  // System.err.println("createFile: srcPath cannot be a directory");
-  // return null;
-  // }
-  //
-  // // Extract then traverse subdirectories to 'write' destination
-  // String[] subdirList = srcPath.split("/");
-  // File parent = testDir;
-  // int k = 0;
-  // // Create subdirectories as traversing to the srcPath
-  // for (; k < subdirList.length - 1; k++) {
-  // File subdir = new File(parent, subdirList[k]);
-  // subdir.mkdir(); // make the subdir if it doesn't exist
-  // parent = subdir;
-  // }
-  // // Last file in subdirList is the prototype's filename
-  // String targetName = parent.getAbsolutePath() + "/Test" + subdirList[k];
-  // _protoFile = new File(targetName);
-  // try {
-  // _writer = new PrintWriter(_protoFile);
-  // } catch (IOException e) {
-  // System.err.println("\tcreateFile(): Problems creating the new protoFile. " + e.getMessage());
-  // }
-  // // Write the contents into the prototype test file
-  // // writeFile(_protoFile, srcPath);
-  // _writer.close();
-  // return _protoFile;
-  // }
+  /**
+   * Insert "test" after the "src" dir, capitalize the original filename, then insert "Test" in
+   * front of the filename.
+   * 
+   * @param srcPath full path of source file
+   * @return test file name that corresponds to source file
+   */
+  public String makeTestFilename(String srcPath)
+  {
+    // Guard against non-Java files
+    if (!srcPath.endsWith(".java")) {
+      return null;
+    }
+    StringBuilder sbTest = new StringBuilder(srcPath);
+    int srcTextNdx = srcPath.lastIndexOf("src");
+    sbTest.insert(srcTextNdx + 4, "test" + Constants.FS);
+    int ndx = sbTest.lastIndexOf(Constants.FS);
+    sbTest.insert(ndx + 1, "Test");
 
-
-  // /**
-  // * Make a test file name from the source path and test directory. Does not create Files.
-  // *
-  // * @param testPath directory name for parent of all test classes
-  // * @param srcPath relative path of source file
-  // * @return test file name that corresponds to source file
-  // */
-  // public String makeTestFilename(String testPath, String srcPath)
-  // {
-  // // Guard against non-Java files
-  // if (!srcPath.contains(JAVA)) {
-  // return null;
-  // }
-  // // Insert the prefix "Test" to the src file name
-  // StringBuilder sbTest = new StringBuilder();
-  // sbTest.append(testPath);
-  // sbTest.append(srcPath);
-  // // Replace name with Test<Name>
-  // int ndx = sbTest.lastIndexOf("/");
-  // sbTest.insert(ndx + 1, "Test");
-  //
-  // return sbTest.toString();
-  // }
-
-
-  // /**
-  // * Make test files for all source classes without them. Put the new test files in the subdir
-  // * corresponding to the source's dubdir under the root.
-  // *
-  // * @param root directory above for all source files
-  // * @param testDir directory avove all test files, but below root
-  // * @return false if any error occurs
-  // */
-  // public boolean makeTestFiles(File root)
-  // {
-  // if ((root == null) || (!root.isDirectory())) {
-  // System.err.println("makeTestFilename(): root arg must be a directory");
-  // return false;
-  // }
-  // File testDir = findTestDir(root);
-  // System.out.println("testDir = " + testDir.getAbsolutePath());
-  //
-  // return true;
-  //
-  // }
+    return sbTest.toString();
+  }
 
 
   /**
@@ -214,18 +137,25 @@ public class Prototype
    */
   public File writeFile(File target, String source)
   {
-    PrintWriter out = null;
+    // Guard Ensure that source file name exists as compiled class name
+    Class<?> sourceClass = convertSourceToClass(source);
+    if (sourceClass == null) {
+      return null;
+    }
+
     // Ensure that all intermediate subdirs exist for the PrintWriter and target file
     makeSubtree(target.getPath());
-    // Create the output device in the proper test subdir
+    // Create a new output device in the proper test subdir
+    PrintWriter out = null;
     try {
+      if (target.exists()) {
+        target.delete();
+      }
       out = new PrintWriter(target);
     } catch (FileNotFoundException e) {
       System.err.println("\twriteFile(): \t" + e.getMessage());
       return null;
     }
-
-    out.println("\n// FOR TESTING. CAN BE DELETED\n");
 
     // 1. Write the copyright notice into the prototype
     String copyright = String.format(COPYRIGHT, target.getName());
@@ -250,8 +180,6 @@ public class Prototype
     out.println(buildPrepMethods());
 
     // 6. Accummulate and sort test methods by modifier
-    // First convert the source file name to a source file class
-    Class<?> sourceClass = convertSource(source);
     getMethods(sourceClass); // store lists in class Field
 
     // 7a. Write the public methods beneath a public banner
@@ -300,7 +228,6 @@ public class Prototype
    * @param methodList list of method declaration from which to derive test methods
    * @return list of test method code blocks for each test method
    */
-  // private ArrayList<String> buildTestMethods(Class<?> srcTarget)
   private ArrayList<String> buildTestMethods(ArrayList<String> methodList)
   {
     // Return list
@@ -344,18 +271,23 @@ public class Prototype
    * @param sourceText the {@code .java} source file
    * @return the equivalent {@.class} file
    */
-  private Class<?> convertSource(String sourceText)
+  private Class<?> convertSourceToClass(String sourceText)
   {
     // Remove the file extension
     String className = sourceText.split(".java")[0];
     // Convert the file path format to package format by replacing the "/" with "."
     className = className.replaceAll("/", ".");
+    // Remove superfluous dot index
+    if (className.startsWith(".")) {
+      className = className.substring(1);
+    }
 
     Class<?> sourceClass = null;
     try {
       sourceClass = Class.forName(className);
     } catch (ClassNotFoundException ex) {
-      System.err.println("convertSource(); " + ex.getMessage());
+      System.err.println("\tconvertSourceToClass(): ClassNotFoundException " + ex.getMessage());
+      System.err.println("\tEnsure that it has been compiled and exists in the bin directory");
     }
     return sourceClass;
   }
@@ -364,102 +296,18 @@ public class Prototype
   /**
    * Return the package statement for the given source file
    * 
-   * @param target  test file to write out
+   * @param target test file to write out
    * @return the package statement path
    */
   private String convertSourceToPackage(File target)
   {
     String s = target.getParentFile().getAbsolutePath();
     s = s.substring(s.lastIndexOf("src/"));
-    s = s.substring(4);   // remove the src/
+    s = s.substring(4); // remove the src/
     String pathName = s.replaceAll("/", ".");
     String pkgStatement = String.format("\npackage %s;\n", pathName);
 
     return pkgStatement;
-  }
-
-  /**
-   * Extracts public and protected methods from the source file, sorts each list
-   * 
-   * @param clazz target source file
-   * @return list of public method names for the target (includes arguments to methods)
-   */
-  private void getMethods(Class<?> clazz)
-  {
-    String clazzName = clazz.getSimpleName();
-    Method[] rawMethodList = clazz.getDeclaredMethods();
-    for (Method method : rawMethodList) {
-      int modifiers = method.getModifiers();
-      if (modifiers == 0) {
-        System.err.println("WARNING: " + method.getName()
-            + "() has default access; should have a declared access");
-      }
-      if ((Modifier.isPublic(modifiers)) || (Modifier.isProtected(modifiers))) {
-        String mName = extractSignature(method, clazzName);
-        if (mName != null) {
-          if (Modifier.isPublic(modifiers)) {
-            _publics.add(mName);
-          } else if (Modifier.isProtected(modifiers)) {
-            _protecteds.add(mName);
-          }
-        }
-      }
-    }
-
-    sortSignatures(_publics);
-    sortSignatures(_protecteds);
-  }
-
-
-  /**
-   * Ensure that all subdirs in the long path exist
-   * 
-   * @param path long path of a file to be created
-   * @return the short file name
-   */
-  private String makeSubtree(String path)
-  {
-    // Remove filename from end of path
-    int fnNdx = path.lastIndexOf("/");
-    String prefix = path.substring(0, fnNdx);
-    File subtree = new File(prefix);
-    subtree.mkdirs();
-    return path.substring(fnNdx);
-  }
-
-
-  /**
-   * Sort first by method name, then by parm list number and value
-   * 
-   * @param sList collection of method signatures
-   */
-  private void sortSignatures(ArrayList<String> sList)
-  {
-    Collections.sort(sList, new Comparator<String>() {
-      @Override
-      public int compare(String sig1, String sig2)
-      {
-        // Tokenize into three parts: method name, parm list, return type
-        String name1 = sig1.substring(sig1.indexOf(SPACE) + 1, sig1.indexOf(LEFT_PAREN));
-        String name2 = sig2.substring(sig2.indexOf(SPACE) + 1, sig2.indexOf(LEFT_PAREN));
-        String parms1 = sig1.substring(sig1.indexOf(LEFT_PAREN), sig1.indexOf(RIGHT_PAREN) + 1);
-        String parms2 = sig2.substring(sig2.indexOf(LEFT_PAREN), sig2.indexOf(RIGHT_PAREN) + 1);
-        // System.err.println("\t\t sort loops = " + ++count);
-
-        // Compare method names
-        int retval = name1.compareTo(name2); // compare method names
-        // Compare number of parms and parms names
-        if (retval == 0) {
-          String[] nbrParms1 = parms1.split(COMMA);
-          String[] nbrParms2 = parms2.split(COMMA);
-          retval = nbrParms1.length - nbrParms2.length;
-          if (retval == 0) {
-            retval = parms1.compareTo(parms2);
-          }
-        }
-        return retval;
-      }
-    });
   }
 
 
@@ -490,6 +338,55 @@ public class Prototype
     String retType = simplifyReturnType(s);
     String methodDecl = simplifyDeclaration(s);
     return (retType + " " + methodDecl);
+  }
+
+
+  /**
+   * Extracts public and protected methods from the source file, sorts each list
+   * 
+   * @param clazz target source file
+   * @return list of public method names for the target (includes arguments to methods)
+   */
+  private void getMethods(Class<?> clazz)
+  {
+    String clazzName = clazz.getSimpleName();
+    Method[] rawMethodList = clazz.getDeclaredMethods();
+    for (Method method : rawMethodList) {
+      int modifiers = method.getModifiers();
+      if (modifiers == 0) {
+        System.err.println("WARNING: " + method.getName()
+            + "() has default access; should have a declared access");
+      }
+      if ((Modifier.isPublic(modifiers)) || (Modifier.isProtected(modifiers))) {
+        String mName = extractSignature(method, clazzName);
+        if (mName != null) {
+          if (Modifier.isPublic(modifiers)) {
+            _publics.add(mName);
+          } else if (Modifier.isProtected(modifiers)) {
+            _protecteds.add(mName);
+          }
+        }
+      }
+    }
+    sortSignatures(_publics);
+    sortSignatures(_protecteds);
+  }
+
+
+  /**
+   * Ensure that all subdirs in the long path exist
+   * 
+   * @param path long path of a file to be created
+   * @return the short file name
+   */
+  private String makeSubtree(String path)
+  {
+    // Remove filename from end of path
+    int fnNdx = path.lastIndexOf("/");
+    String prefix = path.substring(0, fnNdx);
+    File subtree = new File(prefix);
+    subtree.mkdirs();
+    return path.substring(fnNdx);
   }
 
 
@@ -562,6 +459,41 @@ public class Prototype
     dest = decl.substring(lastDot + 1, retNdx);
 
     return dest;
+  }
+
+
+  /**
+   * Sort first by method name, then by parm list number and value
+   * 
+   * @param sList collection of method signatures
+   */
+  private void sortSignatures(ArrayList<String> sList)
+  {
+    Collections.sort(sList, new Comparator<String>() {
+      @Override
+      public int compare(String sig1, String sig2)
+      {
+        // Tokenize into three parts: method name, parm list, return type
+        String name1 = sig1.substring(sig1.indexOf(SPACE) + 1, sig1.indexOf(LEFT_PAREN));
+        String name2 = sig2.substring(sig2.indexOf(SPACE) + 1, sig2.indexOf(LEFT_PAREN));
+        String parms1 = sig1.substring(sig1.indexOf(LEFT_PAREN), sig1.indexOf(RIGHT_PAREN) + 1);
+        String parms2 = sig2.substring(sig2.indexOf(LEFT_PAREN), sig2.indexOf(RIGHT_PAREN) + 1);
+        // System.err.println("\t\t sort loops = " + ++count);
+
+        // Compare method names
+        int retval = name1.compareTo(name2); // compare method names
+        // Compare number of parms and parms names
+        if (retval == 0) {
+          String[] nbrParms1 = parms1.split(COMMA);
+          String[] nbrParms2 = parms2.split(COMMA);
+          retval = nbrParms1.length - nbrParms2.length;
+          if (retval == 0) {
+            retval = parms1.compareTo(parms2);
+          }
+        }
+        return retval;
+      }
+    });
   }
 
 

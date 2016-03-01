@@ -8,7 +8,7 @@
  * acline@carolla.com 
  */
 
-package test.pdc.subDir;
+package pdc.subDir;
 
 import static org.junit.Assert.*; 
 import org.junit.After; 
@@ -75,32 +75,6 @@ public class TestSubDirSource
 	}
 
 	/**
- 	 * @NORMAL_TEST File createFile(File, File, String)
-	 */
-	@Test
-	public void testCreateFile()
-	{
-		MsgCtrl.auditMsgsOn(false);
-		MsgCtrl.errorMsgsOn(false);
-		MsgCtrl.where(this);
-
-		fail("\t\tNot yet implemented");
-	}
-
-	/**
- 	 * @NORMAL_TEST String getTestFilename(String, String)
-	 */
-	@Test
-	public void testGetTestFilename()
-	{
-		MsgCtrl.auditMsgsOn(false);
-		MsgCtrl.errorMsgsOn(false);
-		MsgCtrl.where(this);
-
-		fail("\t\tNot yet implemented");
-	}
-
-	/**
  	 * @NORMAL_TEST String getTestFilename(String, String)
 	 */
 	@Test
@@ -127,49 +101,10 @@ public class TestSubDirSource
 	}
 
 	/**
- 	 * @NORMAL_TEST void m1()
-	 */
-	@Test
-	public void testM1()
-	{
-		MsgCtrl.auditMsgsOn(false);
-		MsgCtrl.errorMsgsOn(false);
-		MsgCtrl.where(this);
-
-		fail("\t\tNot yet implemented");
-	}
-
-	/**
  	 * @NORMAL_TEST File m2()
 	 */
 	@Test
 	public void testM2()
-	{
-		MsgCtrl.auditMsgsOn(false);
-		MsgCtrl.errorMsgsOn(false);
-		MsgCtrl.where(this);
-
-		fail("\t\tNot yet implemented");
-	}
-
-	/**
- 	 * @NORMAL_TEST File m2()
-	 */
-	@Test
-	public void testM2()
-	{
-		MsgCtrl.auditMsgsOn(false);
-		MsgCtrl.errorMsgsOn(false);
-		MsgCtrl.where(this);
-
-		fail("\t\tNot yet implemented");
-	}
-
-	/**
- 	 * @NORMAL_TEST File writeFile(File, String)
-	 */
-	@Test
-	public void testWriteFile()
 	{
 		MsgCtrl.auditMsgsOn(false);
 		MsgCtrl.errorMsgsOn(false);
@@ -195,19 +130,6 @@ public class TestSubDirSource
 	// ===============================================================================
 	// TESTS FOR PROTECTED METHODS
 	// ===============================================================================
-
-	/**
- 	 * @NORMAL_TEST String m3()
-	 */
-	@Test
-	public void testM3()
-	{
-		MsgCtrl.auditMsgsOn(false);
-		MsgCtrl.errorMsgsOn(false);
-		MsgCtrl.where(this);
-
-		fail("\t\tNot yet implemented");
-	}
 
 	/**
  	 * @NORMAL_TEST String m3()

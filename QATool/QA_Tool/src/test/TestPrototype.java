@@ -11,6 +11,7 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -26,6 +27,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import mylib.Constants;
 import mylib.MsgCtrl;
 import pdc.Prototype;
 import pdc.Prototype.MockPrototype;
@@ -120,13 +122,93 @@ public class TestPrototype
   // ===============================================================================
 
   /**
+   * @NORMAL.TEST String makeTestFilename(String srcPath)
+   */
+  @Test
+  public void testMakeTestFilename()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // SETUP Doesn't matter if the test file exists or not; this method is a string builder
+    final String[] srcPath = {
+        "pdc/QATool.java", // contains a test file
+        "pdc/FileMap.java", // contains no test file
+        "pdc/NoFile.java", // src file doesn't exist but doesn't matter for this test
+        "ing_Testing.java", // and something silly
+    };
+    final String[] expPath = {
+        "pdc/TestQATool.java", // contains a test file
+        "pdc/TestFileMap.java", // contains no test file
+        "pdc/TestNoFile.java", // src file doesn't exist but doesn't matter for this test
+        "Testing_Testing.java", // and something silly
+    };
+
+    File testDir = _qat.findTestDir(new File(ROOT));
+    String testPath = testDir.getAbsolutePath();
+    MsgCtrl.msgln("\t Test directory at " + testPath);
+
+    // RUN For a given set of source names, create the correcponding test file names
+    for (int k = 0; k < srcPath.length - 1; k++) {
+      // Source contains a test file
+      String sourcePath = ROOT + srcPath[k];
+      String targetPath = _proto.makeTestFilename(sourcePath);
+      String expFullPath = testPath + Constants.FS + expPath[k];
+      MsgCtrl.msgln("\t Test file name created: " + targetPath);
+      assertTrue(expFullPath.equals(targetPath));
+    }
+
+    // ERROR Source name is not a java file
+    testPath = _proto.makeTestFilename("OtherFile.png");
+    assertNull(testPath);
+  }
+
+  /**
+   * NORMAL.TEST File writeFile(File) uses pdc/subDir/SubDirSource.java for testing
+   */
+  @Test
+  public void testWriteFileMultiples()
+  {
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.where(this);
+
+    // SETUP
+    String baseName = "SubDirSource.java";
+    String testName = "TestSubDirSource.java";
+    String srcPath = "pdc" + Constants.FS + "subDir" + Constants.FS + baseName;
+    String targetPath = _proto.makeTestFilename(ROOT + srcPath);
+    String expTestFile = ROOT + "test" + Constants.FS + "pdc" + Constants.FS + "subDir"
+        + Constants.FS + testName;
+    assertTrue(targetPath.equals(expTestFile));
+    
+    // Run the create the target file twice, without duplicating its contents
+    File target = _proto.writeFile(new File(targetPath), srcPath);
+    MsgCtrl.msgln("\tGenerated test file " + target.getPath());
+    MsgCtrl.msgln("\tGenerated test file size = " + target.length());
+
+    // VERIFY
+    long expFileLen = 2888;
+    printFile(target.getAbsolutePath());
+    assertTrue(target.exists());
+    assertTrue(target.length() == expFileLen);
+
+    target = _proto.writeFile(new File(targetPath), srcPath);
+    printFile(target.getAbsolutePath());
+    assertTrue(target.exists());
+    assertTrue(target.length() == expFileLen);
+  }
+  
+  
+  /**
    * NORMAL.TEST File writeFile(File) uses pdc/Prototype.java
    */
   @Test
   public void testWriteFile()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // SETUP: Create the file in the right place
@@ -142,28 +224,33 @@ public class TestPrototype
         "String m3()"
     };
 
-    MsgCtrl.msgln("User Directory = current directory = " + ROOT);
+    String baseName = "SubDirSource.java";
+    String testName = "TestSubDirSource.java";
+    String srcPath = "pdc" + Constants.FS + "subDir" + Constants.FS + baseName;
+    String targetPath = _proto.makeTestFilename(ROOT + srcPath);
 
-    String srcName = "pdc/subDir/SubDirSource.java";
-    String expTestFile = ROOT + "test/pdc/subDir/TestSubDirSource.java";
-
-    String targetName = _qat.makeTestFilename(srcName);
-    File target = new File(ROOT + targetName);
-    assertNotNull(target);
+    String expTestFile = ROOT + "test" + Constants.FS + "pdc" + Constants.FS + "subDir"
+        + Constants.FS + testName;
+    assertTrue(targetPath.equals(expTestFile));
 
     // RUN: The source class file must be passed for methods to be extracted
-    target = _proto.writeFile(target, srcName);
+    // The srcPath cannot include the ROOT
+    File target = _proto.writeFile(new File(targetPath), srcPath);
     MsgCtrl.msgln("\tGenerated test file " + target.getPath());
     MsgCtrl.msgln("\tGenerated test file size = " + target.length());
 
+//    target = _proto.writeFile(new File(targetPath), srcPath);
+//    MsgCtrl.msgln("\tGenerated test file " + target.getPath());
+//    MsgCtrl.msgln("\tGenerated test file size = " + target.length());
+
     // VERIFY
-    // printFile(target.getAbsolutePath());
+    //printFile(target.getAbsolutePath());
     assertTrue(target.exists());
     assertEquals(expTestFile, target.getPath());
 
     ArrayList<String> publix = _mock.getPublicMethods();
     assertEquals(expPublics.length, publix.size());
-    MsgCtrl.msgln("\tPUBLIC METHODS");
+    MsgCtrl.msgln("\n\tPUBLIC METHODS");
     for (int k = 0; k < publix.size(); k++) {
       MsgCtrl.msgln("\t\t" + publix.get(k));
       assertEquals(expPublics[k], publix.get(k));
@@ -176,68 +263,32 @@ public class TestPrototype
       MsgCtrl.msgln("\t\t" + protex.get(k));
       assertEquals(expProtecteds[k], protex.get(k));
     }
-    
+
   }
 
-
-
-  // /**
-  // * @NORMAL.TEST String makeTestFilename(String, String)
+  /// **
+  // * Insert "test" after the "src" dir and insert "Test" in front of the filename
+  // *
+  // * @param srcPath full path of source file
+  // * @return test file name that corresponds to source file
   // */
-  // @Test
-  // public void testMakeTestFilename()
+  // public String makeTestFilename(String srcPath)
   // {
-  // MsgCtrl.auditMsgsOn(false);
-  // MsgCtrl.errorMsgsOn(false);
-  // MsgCtrl.where(this);
-  //
-  // // SETUP Doesn't matter if the test file exists or not; this method is a string builder
-  // String[] srcPath = {
-  // "pdc/QATool.java", // contains a test file
-  // "pdc/FileMap.java", // contains no test file
-  // "pdc/NoFile.java", // src file doesn't exist but doesn't matter for this test
-  // "ing_Testing.java", // and something silly
-  // "not a Java file" // should return null
-  // };
-  // String[] expPath = {
-  // "pdc/TestQATool.java", // contains a test file
-  // "pdc/TestFileMap.java", // contains no test file
-  // "pdc/TestNoFile.java", // src file doesn't exist but doesn't matter for this test
-  // "Testing_Testing.java", // and something silly
-  // "", // not a java file, should reutrn null
-  // };
-  //
-  // File testDir = _proto.findTestDir(new File(SRC_ROOT));
-  // String testPath = testDir.getAbsolutePath();
-  // MsgCtrl.msgln("\t Test directory at " + testPath);
-  //
-  // // RUN For a given set of source names, create the correcponding test file names
-  // for (int k = 0; k < 3; k++) {
-  // // Source contains a test file
-  // String targetPath = _proto.makeTestFilename(testPath, srcPath[k]);
-  // String expFullPath = testPath + "/" + expPath[k];
-  // MsgCtrl.msgln("\t Test file name created: " + targetPath);
-  // assertTrue(expFullPath.equals(targetPath));
+  // // Guard against non-Java files
+  // if (!srcPath.contains(JAVA)) {
+  // return null;
   // }
+  // StringBuilder sbTest = new StringBuilder(srcPath);
+  // // Insert the prefix "test" subdir after the src subdir
+  // // int ndx = srcPath.indexOf("/src");
+  // // sbTest.insert(ndx+4, "/test");
+  // sbTest.insert(0, "test/");
+  // // Insert the prefix "Test" to the src file name
+  // // Replace name with Test<Name>
+  // int ndx = sbTest.lastIndexOf("/");
+  // sbTest.insert(ndx + 1, "Test");
   //
-  // // ERROR Source name is not a java file
-  // testPath = _proto.makeTestFilename(testPath, srcPath[4]);
-  // assertNull(testPath);
-  // }
-
-  // /**
-  // * NORMAL.TEST void makeTestFiles(File, File)
-  // */
-  // @Test
-  // public void testMakeTestFiles()
-  // {
-  // MsgCtrl.auditMsgsOn(true);
-  // MsgCtrl.errorMsgsOn(true);
-  // MsgCtrl.where(this);
-  //
-  // // RUN given src and test directory root, create test files for source files missing them
-  // boolean worked = _proto.makeTestFiles(_srcDir);
-  // assertTrue(worked);
+  // return sbTest.toString();
   // }
 
 
@@ -306,7 +357,6 @@ public class TestPrototype
   // }
   //
   // }
-
 
 
   // ======================================================================

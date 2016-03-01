@@ -11,6 +11,8 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -21,8 +23,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import mylib.Constants;
 import mylib.MsgCtrl;
-import mylib.pdc.Utilities;
 import pdc.QATool;
 import pdc.QATool.MockTool;
 
@@ -30,6 +32,7 @@ import pdc.QATool.MockTool;
  * @author Alan Cline
  * @version Dec 31, 2015 // original <br>
  * @version Jan 19 2016 // updated for unchanging file structure instead of live directories <br>
+ * @version Feb 23 2016 // updated for unchanging simTree structure and be platform-independent <br>
  */
 public class TestQATool
 {
@@ -114,15 +117,10 @@ public class TestQATool
           "pdc/FakeSkill.java", "pdc/FormatSample", "pdc/MockRace.java"
       };
 
-
   /** Use simulated file structure as a read-only source root */
-  static private final String ROOT_PATH = "/Projects/eChronos/QATool/QA_Tool/simTree/src/chronos";
-  /** Use simulated file structure as a read-only test root */
-  static private final String TEST_PATH =
-      "/Projects/eChronos/QATool/QA_Tool/simTree/src/chronos/test";
+  static private final String ROOT = System.getProperty("user.dir") + "/src/";
+  // /** Use simulated file structure as a read-only test root */
 
-  /** Use simulated file structure as a read-only source root */
-  static private final String SRC_ROOT = "/Projects/eChronos/QATool/QA_Tool/src";
 
   static private QATool _qat;
   static private MockTool _mock;
@@ -149,7 +147,7 @@ public class TestQATool
   public void setUp() throws Exception
   {
     /** Create QA Tool using simulated directory structure */
-    _qat = new QATool(ROOT_PATH);
+    _qat = new QATool(ROOT);
     assertNotNull(_qat);
     _mock = _qat.new MockTool();
     assertNotNull(_mock);
@@ -173,176 +171,291 @@ public class TestQATool
   // BEGIN TESTS
   // ======================================================================
 
+
   /**
-   * @NORMAL.TEST Using simTree, a snapshot of ChronosLib, scan for all source file paths
+   * @ERROR.TEST QATool(String path)
+   */
+  @SuppressWarnings("unused")
+  @Test
+  public void testCtorError()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // Path is set to null
+    try {
+      IllegalArgumentException ex = null;
+      QATool badTool = new QATool(null);
+    } catch (IllegalArgumentException ex) {
+      MsgCtrl.msgln("\ttestCtorError: expected exception caught");
+      assertNotNull(ex);
+    }
+    // Path is not set to a directory
+    try {
+      IllegalArgumentException ex = null;
+      String filePath = ROOT + Constants.FS + "Chronos" + Constants.FS + "civ + Constants.FS" +
+          "UserMsg.java";
+      QATool badTool = new QATool(filePath);
+    } catch (IllegalArgumentException ex) {
+      MsgCtrl.msgln("\ttestCtorError: expected exception caught");
+      assertNotNull(ex);
+    }
+  }
+
+
+  /**
+   * @NORMAL.TEST File findTestDir(File root)
    */
   @Test
-  public void testBuildSourceList()
+  public void testFindTestDir()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
-    // SETUP
-    File root = new File(ROOT_PATH);
-    int offset = ROOT_PATH.length();
+    // Normal case for current directory
+    String expPath = ROOT + "test";
+    MsgCtrl.msgln("\ttestFindTestDir: expPath = \t" + expPath);
+    File tf = _qat.findTestDir(new File(ROOT));
+    String resultPath = tf.getPath();
+    MsgCtrl.msgln("\ttestFindTestDir: result = \t" + resultPath);
+    assertTrue(resultPath.equals(expPath));
 
-    // RUN: target method returns nothing
-    ArrayList<String> srcPaths = _qat.buildSourceList(root, offset);
-    assertEquals(srcPaths.size(), allSrcStr.length);
-
-    // VERIFY
-    ArrayList<String> paths = _mock.getSrcPaths();
-    assertEquals(allSrcStr.length, paths.size());
+    // Normal case for simTree
+    String simPath = Constants.FS + "Projects" + Constants.FS + "eChronos" + Constants.FS +
+        "QATool" + Constants.FS + "QA_Tool" + Constants.FS + "simTree" + Constants.FS + "src";
+    expPath = "/Projects/eChronos/QATool/QA_Tool/simTree/src/chronos/test";
+    MsgCtrl.msgln("\ttestFindTestDir: expPath = \t" + expPath);
+    tf = _qat.findTestDir(new File(simPath));
+    resultPath = tf.getPath();
+    MsgCtrl.msgln("\ttestFindTestDir: result = \t" + resultPath);
+    assertTrue(resultPath.equals(expPath));
   }
 
 
   /**
-   * @NORMAL.TEST Using simTree, a snapshot of ChronosLib, scan for all test file paths
+   * @ERROR.TEST File findTestDir(File root)
    */
   @Test
-  public void testBuildTestList()
+  public void testFindTestDirError()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    // SETUP
-    File testDir = new File(TEST_PATH);
-    int offset = TEST_PATH.length();
+    // Error case: cannot find a test dir
+    String simPath2 = ROOT + "deadend";
+    File tf = _qat.findTestDir(new File(simPath2));
+    assertNull(tf);
 
-    // RUN: target method returns nothing
-    _qat.buildTestList(testDir, offset);
-
-    // VERIFY
-    ArrayList<String> paths = _mock.getTestPaths();
-    assertEquals(allTestsStr.length, paths.size());
-  }
-
-
-  /**
-   * @NORMAL.TEST Using simTree, a snapshot of ChronosLib, scan for matching and missing test and
-   *              source files
-   */
-//  @Test
-  public void testFileScan()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    // Setup for arraylist
-    ArrayList<String> expAllSrc = Utilities.convertToArrayList(allSrcStr);
-    ArrayList<String> expAllTests = Utilities.convertToArrayList(allTestsStr);
-    ArrayList<String> expMatchingSrc = Utilities.convertToArrayList(matchingSrcStr);
-    ArrayList<String> expSrcWoTests = Utilities.convertToArrayList(srcWoTestsStr);
-    ArrayList<String> expTestsWoSrc = Utilities.convertToArrayList(testsWoSrcStr);
-
-    // Run test on simulated directory tree
-    _qat.fileScan(new File(ROOT_PATH));
-
-    // Verify: for MyLib, there are 10 source files and 4 test files
-    ArrayList<String> srcPaths = _mock.getSrcPaths();
-    int nbrSrc = srcPaths.size();
-    // dumpList(srcPaths, "ALL SOURCE FILES = " + nbrSrc);
-    assertEquals(expAllSrc.size(), nbrSrc);
-
-    ArrayList<String> testPaths = _mock.getTestPaths();
-    int nbrTests = testPaths.size();
-    // dumpList(testPaths, "ALL TEST FILES = " + nbrTests);
-    assertEquals(expAllTests.size(), nbrTests);
-
-    ArrayList<String> matched = _mock.getMatched();
-    int nbrMatching = matched.size();
-    // dumpList(matched, "SOURCE FILE WITH MATCHING TESTS = " + nbrMatching);
-    assertEquals(expMatchingSrc.size(), nbrMatching);
-
-    ArrayList<String> srcWoTests = _mock.getSrcWithoutTests();
-    int nbrMissingTests = srcWoTests.size();
-    // dumpList(srcWoTests, "SRC FILES WITHOUT TESTS = " + nbrMissingTests);
-    assertEquals(expSrcWoTests.size(), nbrMissingTests);
-
-    ArrayList<String> testsWoSrc = _mock.getTestsWithoutSrc();
-    int nbrMissingSource = testsWoSrc.size();
-    // dumpList(testsWoSrc, "TEST FILES WITHOUT SOURCE = " + nbrMissingSource );
-    assertEquals(expTestsWoSrc.size(), nbrMissingSource);
-
-    int unaccountedSrc = nbrSrc - nbrMatching - nbrMissingTests;
-    int unaccountedTests = nbrTests - nbrMatching - nbrMissingSource;
-    assertEquals(0, unaccountedSrc);
-    assertEquals(0, unaccountedTests);
-  }
-
-  
-  /**
-   * @NORMAL.TEST Build a set of source filepaths for each dir
-   */
-//  @Test
-  public void testMatchSrcToTest()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-  
-    String[] fakeSrcPaths =
-        {"this/dir/Filename.java", "this/dir/File1.java", "this/subir/File2.java"};
-  
-    String[] fakeTestPaths =
-        {"this/dir/TestFilename.java", "this/dir/TestFile1.java", "this/subir/File2.java",
-            "this/subir2/TestFile2.java"};
-  
-    // Setup for arraylist
-    ArrayList<String> fakeSrc = new ArrayList<String>();
-    for (int k = 0; k < fakeSrcPaths.length; k++) {
-      fakeSrc.add(fakeSrcPaths[k]);
-    }
-    ArrayList<String> fakeTests = new ArrayList<String>();
-    for (int k = 0; k < fakeTestPaths.length; k++) {
-      fakeTests.add(fakeTestPaths[k]);
-    }
-    // Find matching test files for given source files
-    _qat.matchSrcToTest(fakeSrc, fakeTests);
-    ArrayList<String> matched = _mock.getMatched();
-    dumpList(matched, "MATCHED SOURCE FILES = " + matched.size());
-    assertEquals(2, matched.size());
-  
-    ArrayList<String> srcWithoutTests = _mock.getSrcWithoutTests();
-    dumpList(srcWithoutTests, "SOURCE WITHOUT TESTS = " + srcWithoutTests.size());
-    assertEquals(2, matched.size());
-  
-    ArrayList<String> testsWithoutSrc = _mock.getTestsWithoutSrc();
-    dumpList(testsWithoutSrc, "TESTS WITHOUT SOURCE FILES = " + testsWithoutSrc.size());
-    assertEquals(2, matched.size());
+    // Error return null when testDir is found after it is found once
+    // First find normal testdir before attempting second one
+    tf = _qat.findTestDir(new File(ROOT));
+    assertNotNull(tf);
+    tf = _qat.findTestDir(new File(simPath2));
+    assertNull(tf);
   }
 
   /**
-   * @NORMAL.TEST void treeScan(File)
+   * @NORMAL.TEST ArrayList<String> writeNextTestFile(File srcDir, File testDir, String rootPath)
    */
   @Test
   public void testWriteNextTestFile()
   {
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.where(this);
+
+    // SETUP to traverse the simtree
+    String simTreePath =
+        System.getProperty("user.dir") + Constants.FS + "simTree" + Constants.FS + "src";
+    MsgCtrl.msgln("\tsumTreePath = " + simTreePath);
+    File srcDir = new File(simTreePath);
+    File testDir = _qat.findTestDir(srcDir);
+    int srcLen = srcDir.getPath().length();
+
+    // Run the target method
+    ArrayList<String> srcPaths = _qat.writeNextTestFile(srcDir, testDir, srcLen);
+
+  }
+
+
+  // /**
+  // * @NORMAL.TEST void matchSrcToTest(ArrayList<String> srcList, ArrayList<String> testList)
+  // */
+  // @Test
+  // public void testMatchSrcToTest()
+  // {
+  // MsgCtrl.auditMsgsOn(true);
+  // MsgCtrl.errorMsgsOn(true);
+  // MsgCtrl.where(this);
+  //
+  // String[] fakeSrcPaths =
+  // {"this/dir/Filename.java", "this/dir/File1.java", "this/subir/File2.java"};
+  //
+  // String[] fakeTestPaths =
+  // {"this/dir/TestFilename.java", "this/dir/TestFile1.java", "this/subir/File2.java",
+  // "this/subir2/TestFile2.java"};
+  //
+  // // SETUP for arraylist
+  // ArrayList<String> fakeSrc = new ArrayList<String>();
+  // for (int k = 0; k < fakeSrcPaths.length; k++) {
+  // fakeSrc.add(fakeSrcPaths[k]);
+  // }
+  // ArrayList<String> fakeTests = new ArrayList<String>();
+  // for (int k = 0; k < fakeTestPaths.length; k++) {
+  // fakeTests.add(fakeTestPaths[k]);
+  // }
+  //
+  // // RUN Find matching test files for given source files
+  // _qat.matchSrcToTest(fakeSrc, fakeTests);
+  // ArrayList<String> matched = _mock.getMatched();
+  // dumpList(matched, "MATCHED SOURCE FILES = " + matched.size());
+  // assertEquals(2, matched.size());
+  //
+  // ArrayList<String> srcWithoutTests = _mock.getSrcWithoutTests();
+  // dumpList(srcWithoutTests, "SOURCE WITHOUT TESTS = " + srcWithoutTests.size());
+  // assertEquals(2, matched.size());
+  //
+  // ArrayList<String> testsWithoutSrc = _mock.getTestsWithoutSrc();
+  // dumpList(testsWithoutSrc, "TESTS WITHOUT SOURCE FILES = " + testsWithoutSrc.size());
+  // assertEquals(2, matched.size());
+  // }
+
+
+  // /**
+  // * @NORMAL.TEST Using simTree, a snapshot of ChronosLib, scan for all source file paths
+  // */
+  // @Test
+  // public void testBuildSourceList()
+  // {
+  // MsgCtrl.auditMsgsOn(false);
+  // MsgCtrl.errorMsgsOn(false);
+  // MsgCtrl.where(this);
+  //
+  // // SETUP
+  // File root = new File(ROOT);
+  // int offset = ROOT.length();
+  //
+  // // RUN: target method returns nothing
+  // ArrayList<String> srcPaths = _qat.buildSourceList(root, offset);
+  // assertEquals(srcPaths.size(), allSrcStr.length);
+  //
+  // // VERIFY
+  // ArrayList<String> paths = _mock.getSrcPaths();
+  // assertEquals(allSrcStr.length, paths.size());
+  // }
+  //
+  //
+  // /**
+  // * @NORMAL.TEST Using simTree, a snapshot of ChronosLib, scan for all test file paths
+  // */
+  // @Test
+  // public void testBuildTestList()
+  // {
+  // MsgCtrl.auditMsgsOn(false);
+  // MsgCtrl.errorMsgsOn(false);
+  // MsgCtrl.where(this);
+  //
+  // // SETUP
+  //
+  // File testDir = _qat.findTestDir(new File(ROOT));
+  // int offset = (int) testDir.length();
+  //
+  // // RUN: target method returns nothing
+  // _qat.buildTestList(testDir, offset);
+  //
+  // // VERIFY
+  // ArrayList<String> paths = _mock.getTestPaths();
+  // assertEquals(allTestsStr.length, paths.size());
+  // }
+  //
+  //
+  // /**
+  // * @NORMAL.TEST Using simTree, a snapshot of ChronosLib, scan for matching and missing test and
+  // * source files
+  // */
+  // @Test
+  // public void testFileScan()
+  // {
+  // MsgCtrl.auditMsgsOn(false);
+  // MsgCtrl.errorMsgsOn(false);
+  // MsgCtrl.where(this);
+  //
+  // // Setup for arraylist
+  // ArrayList<String> expAllSrc = Utilities.convertToArrayList(allSrcStr);
+  // ArrayList<String> expAllTests = Utilities.convertToArrayList(allTestsStr);
+  // ArrayList<String> expMatchingSrc = Utilities.convertToArrayList(matchingSrcStr);
+  // ArrayList<String> expSrcWoTests = Utilities.convertToArrayList(srcWoTestsStr);
+  // ArrayList<String> expTestsWoSrc = Utilities.convertToArrayList(testsWoSrcStr);
+  //
+  // // Run test on simulated directory tree
+  // _qat.fileScan(new File(ROOT));
+  //
+  // // Verify: for MyLib, there are 10 source files and 4 test files
+  // ArrayList<String> srcPaths = _mock.getSrcPaths();
+  // int nbrSrc = srcPaths.size();
+  // // dumpList(srcPaths, "ALL SOURCE FILES = " + nbrSrc);
+  // assertEquals(expAllSrc.size(), nbrSrc);
+  //
+  // ArrayList<String> testPaths = _mock.getTestPaths();
+  // int nbrTests = testPaths.size();
+  // // dumpList(testPaths, "ALL TEST FILES = " + nbrTests);
+  // assertEquals(expAllTests.size(), nbrTests);
+  //
+  // ArrayList<String> matched = _mock.getMatched();
+  // int nbrMatching = matched.size();
+  // // dumpList(matched, "SOURCE FILE WITH MATCHING TESTS = " + nbrMatching);
+  // assertEquals(expMatchingSrc.size(), nbrMatching);
+  //
+  // ArrayList<String> srcWoTests = _mock.getSrcWithoutTests();
+  // int nbrMissingTests = srcWoTests.size();
+  // // dumpList(srcWoTests, "SRC FILES WITHOUT TESTS = " + nbrMissingTests);
+  // assertEquals(expSrcWoTests.size(), nbrMissingTests);
+  //
+  // ArrayList<String> testsWoSrc = _mock.getTestsWithoutSrc();
+  // int nbrMissingSource = testsWoSrc.size();
+  // // dumpList(testsWoSrc, "TEST FILES WITHOUT SOURCE = " + nbrMissingSource );
+  // assertEquals(expTestsWoSrc.size(), nbrMissingSource);
+  //
+  // int unaccountedSrc = nbrSrc - nbrMatching - nbrMissingTests;
+  // int unaccountedTests = nbrTests - nbrMatching - nbrMissingSource;
+  // assertEquals(0, unaccountedSrc);
+  // assertEquals(0, unaccountedTests);
+  // }
+
+
+  /**
+   * @NORMAL.TEST void treeScan(File srcDir)
+   */
+  @Test
+  public void testTreeScan()
+  {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-    
-    _qat.treeScan(new File(SRC_ROOT));
-    
+
+    _qat.treeScan(new File(ROOT));
+
   }
-    
+
+
   // ======================================================================
   // PRIVATE HELPERS
   // ======================================================================
 
-//  /** Convert a String[] to a ArrayList<String> for easier handling */
-//  private ArrayList<String> convertToArrayList(String[] strs)
-//  {
-//    // Setup for arraylist
-//    ArrayList<String> alist = new ArrayList<String>();
-//    for (int k = 0; k < strs.length; k++) {
-//      alist.add(strs[k]);
-//    }
-//    return alist;
-//  }
+  // /** Convert a String[] to a ArrayList<String> for easier handling */
+  // private ArrayList<String> convertToArrayList(String[] strs)
+  // {
+  // // Setup for arraylist
+  // ArrayList<String> alist = new ArrayList<String>();
+  // for (int k = 0; k < strs.length; k++) {
+  // alist.add(strs[k]);
+  // }
+  // return alist;
+  // }
+
 
   /** Display the contents of an arraylist, with intro message */
   private void dumpList(ArrayList<String> plist, String msg)

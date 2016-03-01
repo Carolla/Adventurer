@@ -1,8 +1,8 @@
 DIRECTORIES
-authcode
+authCode
 
 FILES
 ing_Testing.java
 pdc/Fakeroonie.java
-
+Chronos.java
 
