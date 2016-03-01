@@ -182,22 +182,29 @@ public class TestPrototype
     String expTestFile = ROOT + "test" + Constants.FS + "pdc" + Constants.FS + "subDir"
         + Constants.FS + testName;
     assertTrue(targetPath.equals(expTestFile));
-    
+
+    // SETUP Remove the target file fresh copy
+    File target = new File(targetPath);
+    target.delete();
+    assertTrue(!target.exists());
+
     // Run the create the target file twice, without duplicating its contents
-    File target = _proto.writeFile(new File(targetPath), srcPath);
+    target = _proto.writeFile(new File(targetPath), srcPath);
     MsgCtrl.msgln("\tGenerated test file " + target.getPath());
     MsgCtrl.msgln("\tGenerated test file size = " + target.length());
 
     // VERIFY
-    long expFileLen = 2888;
-    printFile(target.getAbsolutePath());
+    long expFileLen = 2988;
     assertTrue(target.exists());
-    assertTrue(target.length() == expFileLen);
+    assertEquals(expFileLen, target.length());
 
     target = _proto.writeFile(new File(targetPath), srcPath);
-    printFile(target.getAbsolutePath());
+    // printFile(target.getAbsolutePath());
     assertTrue(target.exists());
     assertTrue(target.length() == expFileLen);
+    
+    // Remove test file
+    target.delete();
   }
   
   
@@ -233,13 +240,22 @@ public class TestPrototype
         + Constants.FS + testName;
     assertTrue(targetPath.equals(expTestFile));
 
+    // SETUP Remove the target file fresh copy
+    File target = new File(targetPath);
+    target.delete();
+    assertTrue(!target.exists());
+
     // RUN: The source class file must be passed for methods to be extracted
     // The srcPath cannot include the ROOT
-    File target = _proto.writeFile(new File(targetPath), srcPath);
+    target = _proto.writeFile(target, srcPath);
     MsgCtrl.msgln("\tGenerated test file " + target.getPath());
     MsgCtrl.msgln("\tGenerated test file size = " + target.length());
 
     // VERIFY
+    long expFileLen = 2988;
+    assertTrue(target.exists());
+    assertEquals(expFileLen, target.length());
+
     //printFile(target.getAbsolutePath());
     assertTrue(target.exists());
     assertEquals(expTestFile, target.getPath());
@@ -260,99 +276,9 @@ public class TestPrototype
       assertEquals(expProtecteds[k], protex.get(k));
     }
 
+    // Remove test file
+    target.delete();
   }
-
-  /// **
-  // * Insert "test" after the "src" dir and insert "Test" in front of the filename
-  // *
-  // * @param srcPath full path of source file
-  // * @return test file name that corresponds to source file
-  // */
-  // public String makeTestFilename(String srcPath)
-  // {
-  // // Guard against non-Java files
-  // if (!srcPath.contains(JAVA)) {
-  // return null;
-  // }
-  // StringBuilder sbTest = new StringBuilder(srcPath);
-  // // Insert the prefix "test" subdir after the src subdir
-  // // int ndx = srcPath.indexOf("/src");
-  // // sbTest.insert(ndx+4, "/test");
-  // sbTest.insert(0, "test/");
-  // // Insert the prefix "Test" to the src file name
-  // // Replace name with Test<Name>
-  // int ndx = sbTest.lastIndexOf("/");
-  // sbTest.insert(ndx + 1, "Test");
-  //
-  // return sbTest.toString();
-  // }
-
-
-  // /**
-  // * @NORMAL.TEST Using simTree, a snapshot of ChronosLib, scan for all source file paths
-  // */
-  // @Test
-  // public void testFindTestDir()
-  // {
-  // MsgCtrl.auditMsgsOn(false);
-  // MsgCtrl.errorMsgsOn(false);
-  // MsgCtrl.where(this);
-  //
-  // // SETUP
-  // File root = new File(SRC_ROOT);
-  //
-  // // RUN: target method returns nothing
-  // File testDir = _qat.findTestDir(root);
-  //
-  // // VERIFY
-  // assertEquals(testDir.getPath(), SRC_ROOT + "test");
-  // }
-
-  // /**
-  // * @NORMAL.TEST
-  // */
-  // @Test
-  // public void testSrcList()
-  // {
-  // MsgCtrl.auditMsgsOn(false);
-  // MsgCtrl.errorMsgsOn(false);
-  // MsgCtrl.where(this);
-  //
-  // // For the given root, list all source files (relative path)
-  // File srcDir = new File(SRC_ROOT);
-  // int rootLen = SRC_ROOT.length() - 1; // length of the path to skip
-  // ArrayList<String> srcList = _qat.buildSourceList(srcDir, rootLen);
-  // File testDir = _proto.findTestDir(srcDir);
-  // String testRoot = testDir.getAbsolutePath() + "/";
-  // MsgCtrl.msgln("\t Test directory at " + testRoot + "\n");
-  //
-  // // RUN For each source file, collect its test name and check if that File exists
-  // ArrayList<File> testList = new ArrayList<File>(srcList.size());
-  // MsgCtrl.msgln("\t" + srcList.size() + " total files found.");
-  // int count = 0;
-  // for (String src : srcList) {
-  // // Source contains a test file
-  // String testName = _proto.makeTestFilename(SRC_ROOT, src);
-  // MsgCtrl.msgln("\tSource file:" + src);
-  // File testFile = new File(testRoot + testName);
-  // if (!testFile.exists()) {
-  // MsgCtrl.msgln("\t\tCreating new test file " + testName);
-  // _proto.createFile(srcDir, testDir, src);
-  // count++;
-  // testList.add(testFile); // save the test files for later deletion during cleanup
-  // }
-  // }
-  // MsgCtrl.msgln("\t" + count + " new files created.");
-  //
-  // // TEARDOWN Delete all files in testDir with zero length
-  // for (File f : testList) {
-  // if (f.length() == 0) {
-  // MsgCtrl.msgln("\t\tCleaning up...Deleting test file " + f.getName());
-  // f.delete();
-  // }
-  // }
-  //
-  // }
 
 
   // ======================================================================

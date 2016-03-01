@@ -11,7 +11,6 @@ package pdc;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -147,18 +146,11 @@ public class Prototype
     // Ensure that all intermediate subdirs exist for the PrintWriter and target file
     makeSubtree(target.getPath());
 
-    // Ensure that the target file is created anew
-    try {
-      if (target.exists()) {
-        if (target.delete() == false) {
-          System.err.println("\twriteFile(): \t" + ex1.getMessage());
-          return null;
-        }
-    }
-
     // Create new output device
     PrintWriter out = null;
     try {
+      // Ensure that the target file is created anew
+      target.delete();
       out = new PrintWriter(target);
     } catch (FileNotFoundException e) {
       System.err.println("\twriteFile(): \t" + e.getMessage());
@@ -357,6 +349,10 @@ public class Prototype
    */
   private void getMethods(Class<?> clazz)
   {
+    // Clear old data from lists
+    _publics.clear();
+    _protecteds.clear();
+    
     String clazzName = clazz.getSimpleName();
     Method[] rawMethodList = clazz.getDeclaredMethods();
     for (Method method : rawMethodList) {
