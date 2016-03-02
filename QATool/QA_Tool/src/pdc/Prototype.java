@@ -134,8 +134,10 @@ public class Prototype
    * @param target prototype test file to write into
    * @param source the java path below the source root subdir from which to derive test methods
    * @return the test file written
+   * @throws ClassNotFoundException if the .class file is not found, possibly because it was not
+   *           compiled yet
    */
-  public File writeFile(File target, String source)
+  public File writeFile(File target, String source) 
   {
     // Guard Ensure that source file name exists as compiled class name
     Class<?> sourceClass = convertSourceToClass(source);
@@ -286,8 +288,8 @@ public class Prototype
     try {
       sourceClass = Class.forName(className);
     } catch (ClassNotFoundException ex) {
-      System.err.println("\tconvertSourceToClass(): ClassNotFoundException " + ex.getMessage());
-      System.err.println("\tEnsure that it has been compiled and exists in the bin directory");
+//      System.err.println("\tconvertSourceToClass(): " + className + ".class file not found");
+//      System.err.println("\tEnsure that it has been compiled and exists in the bin directory");
     }
     return sourceClass;
   }
@@ -352,7 +354,7 @@ public class Prototype
     // Clear old data from lists
     _publics.clear();
     _protecteds.clear();
-    
+
     String clazzName = clazz.getSimpleName();
     Method[] rawMethodList = clazz.getDeclaredMethods();
     for (Method method : rawMethodList) {

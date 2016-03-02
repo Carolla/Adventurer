@@ -170,8 +170,8 @@ public class TestPrototype
   @Test
   public void testWriteFileMultiples()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // SETUP
@@ -202,12 +202,12 @@ public class TestPrototype
     // printFile(target.getAbsolutePath());
     assertTrue(target.exists());
     assertTrue(target.length() == expFileLen);
-    
+
     // Remove test file
     target.delete();
   }
-  
-  
+
+
   /**
    * NORMAL.TEST File writeFile(File) uses pdc/Prototype.java
    */
@@ -256,7 +256,7 @@ public class TestPrototype
     assertTrue(target.exists());
     assertEquals(expFileLen, target.length());
 
-    //printFile(target.getAbsolutePath());
+    // printFile(target.getAbsolutePath());
     assertTrue(target.exists());
     assertEquals(expTestFile, target.getPath());
 
