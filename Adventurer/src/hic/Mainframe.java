@@ -157,12 +157,21 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
   /**
    * Remove the current panel and return to the main action panel, as many levels as it takes
    */
-  public void backToMain()
+  public void backToMain(String newFrameTitle)
   {
     while (_leftPanelStack.size() > 1) {
       _leftPanelStack.pop();
     }
-    replaceLeftPanel(_leftPanelStack.pop());
+    
+    if(newFrameTitle == null)
+    {
+        replaceLeftPanel(_leftPanelStack.pop());
+    } else {
+      ChronosPanel panel = _leftPanelStack.pop();
+      panel.setTitle(newFrameTitle);
+      replaceLeftPanel(panel);
+    }
+
   }
 
   /**
@@ -241,6 +250,16 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
   {
     _helpdlg.setVisible(true);
     _helpdlg.showHelp(_helpTitle, _helpText);
+  }
+  
+  /**
+   * Allows external setting of the title into the border of the left-side panel
+   * @param new title for panel
+   */
+  public void setLeftTitle(String title)
+  {
+      setPanelTitle(title);
+      redraw();
   }
 
   
@@ -345,15 +364,16 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
   }
 
 
-  /**
-   * Display a title onto the border of a panel in one of the panel holders
-   *
-   * @param title of the panel to set
-   */
+    /**
+     * Display a title onto the border of the left side command panel. Add one space char on either
+     * side for aesthetics
+     *
+     * @param title of the panel to set
+     */
   private void setPanelTitle(String title)
   {
     TitledBorder border = (TitledBorder) _leftHolder.getBorder();
-    border.setTitle(title);
+    border.setTitle(" " + title + " ");
   }
 
 

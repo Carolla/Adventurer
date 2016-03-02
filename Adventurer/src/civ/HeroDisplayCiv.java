@@ -38,212 +38,242 @@ import hic.HeroDisplay;
  */
 public class HeroDisplayCiv extends BaseCiv
 {
-  /** Associated Hero */
-  private Hero _hero = null;
-  /** Associated GUI */
-  private HeroDisplay _widget = null;
+    /** Associated Hero */
+    private Hero _hero = null;
+    /** Associated GUI */
+    private HeroDisplay _heroDisp = null;
 
-  /** The categories for hunger, to convert Satiety points into a hunger state */
-  enum hungerStage {
-    FULL, NOT_HUNGRY, HUNGRY, WEAK, FAINT, STARVED
-  };
+    /** The categories for hunger, to convert Satiety points into a hunger state */
+    enum hungerStage {
+        FULL, NOT_HUNGRY, HUNGRY, WEAK, FAINT, STARVED
+    };
 
-  /** Whether character is being loaded. */
-  public static boolean LOADING_CHAR = false;
-  /** Whether character is being created. */
-  public static boolean NEW_CHAR = false;
+    /** Whether character is being loaded. */
+    public static boolean LOADING_CHAR = false;
+    /** Whether character is being created. */
+    public static boolean NEW_CHAR = false;
 
-  /** Hero data are converted and sent to the GUI in this EnumMap */
-  private EnumMap<PersonKeys, String> _outputMap = new EnumMap<PersonKeys, String>(PersonKeys.class);;
+    /** Hero data are converted and sent to the GUI in this EnumMap */
+    private EnumMap<PersonKeys, String> _outputMap =
+            new EnumMap<PersonKeys, String>(PersonKeys.class);;
 
-  /** Reference to parent civ */
-  private final MainframeCiv _mfCiv;
+    /** Reference to parent civ */
+    private final MainframeCiv _mfCiv;
+
+    /** Reference to MainActionCiv */
+    private final MainActionCiv _maCiv;
+
+    private HeroRegistry _dorm;
 
 
-  /*
-   * CONSTRUCTOR(S) AND RELATED METHODS
-   */
+    /*
+     * CONSTRUCTOR(S) AND RELATED METHODS
+     */
 
-  /**
-   * Displays a newly created Hero before it is saved in the Dormitory
-   * 
-   * @param mf mainframe connection for displaying widgets
-   * @param regFact to access the Dormitory, where Heroes are stoed
-   */
-  public HeroDisplayCiv(MainframeCiv mfCiv)
-  {
-    if (!HeroDisplayCiv.LOADING_CHAR) {
-      HeroDisplayCiv.NEW_CHAR = true;
+    /**
+     * Displays a newly created Hero before it is saved in the Dormitory
+     * 
+     * @param maCiv
+     * 
+     * @param mf mainframe connection for displaying widgets
+     * @param regFact to access the Dormitory, where Heroes are stoed
+     */
+    public HeroDisplayCiv(MainframeCiv mfCiv, MainActionCiv maCiv)
+    {
+        if (!HeroDisplayCiv.LOADING_CHAR) {
+            HeroDisplayCiv.NEW_CHAR = true;
+        }
+
+        _mfCiv = mfCiv;
+        _maCiv = maCiv;
+        _dorm = new HeroRegistry();
+    }
+
+    /** Restore the mainframe panels to their previous state */
+    public void backToMain(String newFrameTitle)
+    {
+        _mfCiv.backToMain(newFrameTitle);
+    }
+
+    /**
+     * Delete the Person
+     * 
+     * @return true if the delete worked correctly; else false
+     */
+    public boolean deletePerson()
+    {
+        _maCiv.toggleSummonEnabled();
+        return false;
+    }
+
+    /**
+     * Display the Hero the HeroDisplay widget.
+     * 
+     * @param firstTime Heroes disable Delete button
+     * @param hero to display
+     */
+    public void displayHero(Hero hero, boolean firstTime)
+    {
+        _hero = hero;
+        _outputMap = hero.loadAttributes(_outputMap);
+        _heroDisp = new HeroDisplay(this, firstTime);
+
+        _mfCiv.replaceLeftPanel(_heroDisp);
+    }
+
+
+    public EnumMap<PersonKeys, String> getAttributes()
+    {
+        return _outputMap;
+    }
+
+    /** Restore the mainframe panels to their previous state */
+    public void back()
+    {
+        _mfCiv.back();
+    }
+
+    public List<String> getKlassSkills()
+    {
+        return _hero.getKlassSkills();
+    }
+
+    public List<String> getOcpSkills()
+    {
+        return _hero.getOcpSkills();
+    }
+
+    public List<String> getRaceSkills()
+    {
+        return _hero.getRaceSkills();
+    }
+
+    /**
+     * @return the collection of Items
+     */
+    public Inventory getInventory()
+    {
+        return _hero.getInventory();
+    }
+
+
+    /**
+     * Retrieve a list of all items in the given invenotry by name
+     * 
+     * @param cat category of item to build a subset from
+     * @return the list of names for the subset inventory
+     */
+    public List<String> getInventoryNames(ItemCategory cat)
+    {
+        return getInventory().getNameList(cat);
+    }
+
+
+    /*
+     * @return the length of the inventory (number of Items)
+     */
+    public int getInventorySize()
+    {
+        return getInventory().getNbrItems();
+    }
+
+
+    /**
+     * @return the list of spells known
+     */
+    public List<String> getSpellBook()
+    {
+        return _hero.getSpellBook();
+    }
+
+    public boolean populateAbilityScores(AttributeList attribs)
+    {
+        return true;
+    }
+
+    /**
+     * Format the inventory data and tell the widget to display it
+     * 
+     * @param itemList list of Items to display
+     * @return false is an error occurs
+     */
+    public boolean populateInventory(List<Item> itemList)
+    {
+        // Create a shuttle to contain the data and convert to widget String
+        // format
+        // List<String> items = convertItems(itemList);
+        // _widget.displayInventory(items);
+        return true;
+    }
+
+    /**
+     * Format the Skill data and tell the widget to display it
+     * 
+     * @param _skills list of Hero's skills to display
+     * @return false is an error occurs
+     */
+    public boolean populateSkills(List<Skill> _skills)
+    {
+        // Create a shuttle to contain the data and convert to widget String
+        // format
+        // List<String> skillList = convertSkills(_skills);
+        // if (!Constants.IN_TEST) {
+        // _widget.displaySkills(skillList);
+        // }
+        return true;
+    }
+
+
+    /**
+     * Rename the Hero to the name selected
+     * 
+     * @param name the new name for the character
+     * @return true if the rename worked correctly; else false
+     */
+    public void renamePerson(String name)
+    {
+        _hero.setName(name);
+    }
+
+
+    /**
+     * Save the Hero into the Dormitory, adding a new Hero or overwriting an old one
+     * 
+     * @param overwrite if true, then will overwrite an existing Hero
+     * @return true if all save operations worked as expected
+     */
+    public boolean savePerson(boolean overwrite)
+    {
+        boolean retflag = false;
+        // Save when NOT in overwrite mode
+        if (overwrite == false) {
+            retflag = _dorm.add(_hero);
+        } else {
+            retflag = _dorm.update(_hero);
+        }
+        // Enable SummonHerosButton on MainActionCiv
+        if (retflag == true) {
+            _maCiv.toggleSummonEnabled();
+        }
+        return retflag;
+    }
+
+    /**
+     * Retrieves Hero name plate from hero registry. Name plate contains the hero's name, gender,
+     * race and klass
+     * 
+     * @param name name of the hero you want the name plate for
+     * @return name plate as a string
+     */
+    public String getNamePlate(String name)
+    {
+        return _dorm.getNamePlate(name);
     }
     
-    _mfCiv = mfCiv;
-  }
-
-  /** Restore the mainframe panels to their previous state */
-  public void backToMain()
-  {
-    _mfCiv.backToMain();
-  }
-
-  /**
-   * Delete the Person
-   * 
-   * @return true if the delete worked correctly; else false
-   */
-  public boolean deletePerson()
-  {
-    // return _hero.delete();
-    return false;
-  }
-
-  /**
-   * Display the Hero the HeroDisplay widget.
-   * 
-   * @param firstTime Heroes disable Delete button
-   * @param hero to display
-   */
-  public void displayHero(Hero hero, boolean firstTime)
-  {
-    _hero = hero;
-    _outputMap = hero.loadAttributes(_outputMap);
-    _widget = new HeroDisplay(this, firstTime);
-
-    _mfCiv.replaceLeftPanel(_widget);
-  }
-
-
-  public EnumMap<PersonKeys, String> getAttributes()
-  {
-    return _outputMap;
-  }
-
-  /** Restore the mainframe panels to their previous state */
-  public void back()
-  {
-    _mfCiv.back();
-  }
-
-  public List<String> getKlassSkills()
-  {
-    return _hero.getKlassSkills();
-  }
-
-  public List<String> getOcpSkills()
-  {
-    return _hero.getOcpSkills();
-  }
-
-  public List<String> getRaceSkills()
-  {
-    return _hero.getRaceSkills();
-  }
-
-  /**
-   * @return the collection of Items
-   */
-  public Inventory getInventory()
-  {
-    return _hero.getInventory();
-  }
-
-
-  /**
-   * Retrieve a list of all items in the given invenotry by name
-   * 
-   * @param cat category of item to build a subset from
-   * @return the list of names for the subset inventory
-   */
-  public List<String> getInventoryNames(ItemCategory cat)
-  {
-    return getInventory().getNameList(cat);
-  }
-
-
-  /*
-   * @return the length of the inventory (number of Items)
-   */
-  public int getInventorySize()
-  {
-    return getInventory().getNbrItems();
-  }
-
-
-  /**
-   * @return the list of spells known
-   */
-  public List<String> getSpellBook()
-  {
-    return _hero.getSpellBook();
-  }
-
-  public boolean populateAbilityScores(AttributeList attribs)
-  {
-    return true;
-  }
-
-  /**
-   * Format the inventory data and tell the widget to display it
-   * 
-   * @param itemList list of Items to display
-   * @return false is an error occurs
-   */
-  public boolean populateInventory(List<Item> itemList)
-  {
-    // Create a shuttle to contain the data and convert to widget String
-    // format
-    // List<String> items = convertItems(itemList);
-    // _widget.displayInventory(items);
-    return true;
-  }
-
-  /**
-   * Format the Skill data and tell the widget to display it
-   * 
-   * @param _skills list of Hero's skills to display
-   * @return false is an error occurs
-   */
-  public boolean populateSkills(List<Skill> _skills)
-  {
-    // Create a shuttle to contain the data and convert to widget String
-    // format
-    // List<String> skillList = convertSkills(_skills);
-    // if (!Constants.IN_TEST) {
-    // _widget.displaySkills(skillList);
-    // }
-    return true;
-  }
-
-
-  /**
-   * Rename the Hero to the name selected
-   * 
-   * @param name the new name for the character
-   * @return true if the rename worked correctly; else false
-   */
-  public void renamePerson(String name)
-  {
-    _hero.setName(name);
-  }
-
-  
-  /**
-   * Save the Hero into the Dormitory, adding a new Hero or overwriting an old one
-   * 
-   * @param overwrite if true, then will overwrite an existing Hero
-   * @return true if all save operations worked as expected
-   */
-  public boolean savePerson(boolean overwrite)
-  {
-    boolean retflag = false;
-    HeroRegistry dorm = new HeroRegistry();
-    // Save when NOT in overwrite mode
-    if (overwrite == false) {
-      retflag = dorm.add(_hero);
-    } else {
-      retflag = dorm.update(_hero);
+    public void setActionPanelTitle(String namePlate)
+    {
+        
     }
-    return retflag;
-  }
 
 } // end of HeroDisplayCiv class
 

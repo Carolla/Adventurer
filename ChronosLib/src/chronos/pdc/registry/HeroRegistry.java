@@ -16,6 +16,7 @@ import java.util.List;
 import mylib.ApplicationException;
 import mylib.pdc.Registry;
 import chronos.Chronos;
+import chronos.civ.PersonKeys;
 import chronos.pdc.Adventure;
 import chronos.pdc.character.Hero;
 
@@ -91,6 +92,19 @@ public List<Hero> getSummonableHeroes() {
 		heroes.add((Hero) o);
 	}
 	return heroes;
+}
+
+
+public String getNamePlate(String name)
+{
+    Hero hero = getHero(name);
+    // Two-row namePlate before Attribute grid: Name, Gender, Race, Klass
+    String namePlate = name + ": "
+            + hero.getGender() + " "
+            + hero.getRaceName() + " "
+            + hero.getKlassName();
+
+    return namePlate;
 }
 
 //	/**

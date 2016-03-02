@@ -35,6 +35,7 @@ import javax.swing.text.DocumentFilter;
 
 import chronos.pdc.character.Hero;
 import civ.HeroDisplayCiv;
+import civ.MainActionCiv;
 import civ.MainframeCiv;
 import civ.NewHeroCiv;
 import civ.NewHeroCiv.ErrorCode;
@@ -133,6 +134,7 @@ public class NewHeroIPPanel extends ChronosPanel
   /** Associated validating CIV object */
   private NewHeroCiv _nhCiv;
   private MainframeCiv _mfCiv;
+  private MainActionCiv _maCiv;
 
   // ============================================================
   // Constructors and constructor helpers
@@ -145,12 +147,14 @@ public class NewHeroIPPanel extends ChronosPanel
    * 
    * @param nhCiv controls this ChronosPanel
    * @param mfCiv  mainframeCiv needed for displaying the panel
+ * @param maCiv 
    */
-  public NewHeroIPPanel(NewHeroCiv nhCiv, MainframeCiv mfCiv) 
+  public NewHeroIPPanel(NewHeroCiv nhCiv, MainframeCiv mfCiv, MainActionCiv maCiv) 
   {
     super(NEW_HERO_TITLE);
     _nhCiv = nhCiv;
     _mfCiv = mfCiv;
+    _maCiv = maCiv;
     
     // GENERAL SETUP
     // Set the preferred and max size, adjusting for panel border thickness
@@ -264,7 +268,7 @@ public class NewHeroIPPanel extends ChronosPanel
           setVisible(false);
           // Create the new Hero and display it
            Hero hero = _nhCiv.createHero(input);
-           HeroDisplayCiv hDispCiv = new HeroDisplayCiv(_mfCiv);
+           HeroDisplayCiv hDispCiv = new HeroDisplayCiv(_mfCiv, _maCiv);
            hDispCiv.displayHero(hero, true);    // initial Hero needs true arg to check overwriting
         }
       }

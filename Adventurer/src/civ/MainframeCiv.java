@@ -70,9 +70,9 @@ public class MainframeCiv extends BaseCiv implements UserMsg
   }
 
 
-  public void backToMain()
+  public void backToMain(String newFrameTitle)
   {
-    _mf.backToMain();
+    _mf.backToMain(newFrameTitle);
   }
 
 
@@ -114,6 +114,15 @@ public class MainframeCiv extends BaseCiv implements UserMsg
   {
     _ioPanel = panel;
     _mf.replaceLeftPanel(panel);
+  }
+  
+  /**
+   * Allows left-side panel title to be set externally
+   * @param title to set the title for
+   */
+  public void setLeftPanelTitle(String title)
+  {
+      _mf.setLeftTitle(title);
   }
 
 

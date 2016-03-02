@@ -19,19 +19,24 @@ package hic;
  */
 public interface MainframeInterface
 {
-  public void back();
-  public void backToMain();
+    public void back();
 
-  /** Display a prompt message asking for confirmation */
-  public boolean displayPrompt(String msg);
+    public void backToMain(String newFrameTitle);
 
-  public void replaceLeftPanel(ChronosPanel leftPanel);
-  public void replaceRightPanel(ChronosPanel rightPanel);
-  
-  /** Put a title into the frame's border */
-  public void setTitle(String title);
+    /** Display a prompt message asking for confirmation */
+    public boolean displayPrompt(String msg);
 
-  public void showHelp();
+    public void replaceLeftPanel(ChronosPanel leftPanel);
+
+    public void replaceRightPanel(ChronosPanel rightPanel);
+
+    /** Put a title into the frame's border */
+    public void setTitle(String title);
+
+    /** Sets title of left-side panel **/
+    public void setLeftTitle(String title);
+
+    public void showHelp();
 
 
 } // end of MainframeInterface
