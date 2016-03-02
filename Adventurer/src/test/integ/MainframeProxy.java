@@ -78,7 +78,7 @@ public class MainframeProxy implements MainframeInterface
 
 
   @Override
-  public void backToMain()
+  public void backToMain(String string)
   {
     // MsgCtrl.where(this);
   }
@@ -93,6 +93,14 @@ public void setImagePanel(ImagePanel imagePanel) {
 @Override
 public void displayImage(String title, String imageName) {
     // MsgCtrl.where(this);
+}
+
+
+@Override
+public void setLeftTitle(String title)
+{
+  // TODO Auto-generated method stub
+  
 }
 
 } // end of MainframeProxy class

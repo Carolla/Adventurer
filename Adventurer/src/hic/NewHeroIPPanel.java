@@ -27,16 +27,15 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.AbstractDocument;
 
+import mylib.Constants;
+import net.miginfocom.swing.MigLayout;
 import chronos.hic.NameFieldLimiter;
 import chronos.pdc.character.Hero;
 import chronos.pdc.character.Hero.HeroInput;
 import chronos.pdc.race.Race;
 import civ.HeroDisplayCiv;
-import civ.MainframeCiv;
 import civ.NewHeroCiv;
 import civ.NewHeroCiv.ErrorCode;
-import mylib.Constants;
-import net.miginfocom.swing.MigLayout;
 
 /**
  * Allows the author to input a few key attributes of their Hero. A CIV object is called to validate
@@ -110,7 +109,6 @@ public class NewHeroIPPanel extends ChronosPanel
   private JTextField _nameField = null;
 
   /** Associated validating CIV object */
-  private NewHeroCiv _nhCiv;
   private JRadioButton _maleButt;
   private JRadioButton _femaleButt;
   private ButtonGroup _groupSex;
@@ -120,7 +118,9 @@ public class NewHeroIPPanel extends ChronosPanel
 
   private final String MALE = "Male";
   private final String FEMALE = "Female";
+  
   private HeroDisplayCiv _hdCiv;
+  private NewHeroCiv _nhCiv;
   
   // ============================================================
   // Constructors and constructor helpers
@@ -133,8 +133,9 @@ public class NewHeroIPPanel extends ChronosPanel
    * 
    * @param nhCiv controls this ChronosPanel
    * @param mfCiv mainframeCiv needed for displaying the panel
+ * @param maCiv 
    */
-  public NewHeroIPPanel(NewHeroCiv nhCiv, HeroDisplayCiv hdCiv, MainframeCiv mfCiv)
+  public NewHeroIPPanel(NewHeroCiv nhCiv, HeroDisplayCiv hdCiv)
   {
     super(NEW_HERO_TITLE);
     _nhCiv = nhCiv;

@@ -10,7 +10,6 @@
 
 package chronos.pdc.registry;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import mylib.ApplicationException;
@@ -72,26 +71,6 @@ public class HeroRegistry extends ConcreteRegistry<Hero>
   public List<Hero> getAll()
   {
     return _regRW.query(_heroQuery);
-  }
-
-  /**
-   * Retrieves names of saved Heroes using superclass method.
-   * 
-   * @return hero names as list
-   */
-  public List<String> getHeroNames()
-  {
-    return super.getNamesByType(new Hero());
-  }
-
-
-  public List<Hero> getSummonableHeroes()
-  {
-    List<Hero> heroes = new ArrayList<Hero>();
-    for (Object o : super.getElementsByType(new Hero())) {
-      heroes.add((Hero) o);
-    }
-    return heroes;
   }
 } // end of HeroRegistry class
 

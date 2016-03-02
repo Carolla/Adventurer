@@ -15,9 +15,7 @@ import hic.HeroDisplay;
 import java.util.EnumMap;
 
 import chronos.civ.PersonKeys;
-import chronos.pdc.Item.ItemCategory;
 import chronos.pdc.character.Hero;
-import chronos.pdc.character.Inventory;
 import chronos.pdc.registry.HeroRegistry;
 
 
@@ -38,18 +36,21 @@ public class HeroDisplayCiv extends BaseCiv
   /** Associated Hero */
   private Hero _hero = null;
   /** Associated GUI */
-  private HeroDisplay _widget = null;
+  private HeroDisplay _heroDisp = null;
 
   /** Hero data are converted and sent to the GUI in this EnumMap */
-  private EnumMap<PersonKeys, String> _outputMap = new EnumMap<PersonKeys, String>(PersonKeys.class);;
+  private EnumMap<PersonKeys, String> _outputMap =
+      new EnumMap<PersonKeys, String>(PersonKeys.class);;
 
   /** Reference to parent civ */
   private final MainframeCiv _mfCiv;
 
-  /** Reference to HeroRegistry to save new Heroes */
+  /** Reference to MainActionCiv */
+  private final MainActionCiv _maCiv;
+
   private HeroRegistry _dorm;
 
-  
+
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
@@ -57,19 +58,43 @@ public class HeroDisplayCiv extends BaseCiv
   /**
    * Displays a newly created Hero before it is saved in the Dormitory
    * 
+   * @param maCiv
+   * 
    * @param mf mainframe connection for displaying widgets
    * @param regFact to access the Dormitory, where Heroes are stoed
    */
-  public HeroDisplayCiv(MainframeCiv mfCiv, HeroRegistry heroReg)
-  { 
+  public HeroDisplayCiv(MainframeCiv mfCiv, MainActionCiv maCiv)
+  {
     _mfCiv = mfCiv;
-    _dorm = heroReg;
+    _maCiv = maCiv;
+    _dorm = new HeroRegistry();
   }
 
   /** Restore the mainframe panels to their previous state */
-  public void backToMain()
+  public void backToMain(String newFrameTitle)
   {
-    _mfCiv.backToMain();
+    _mfCiv.backToMain(newFrameTitle);
+  }
+
+  /**
+   * Display the Hero the HeroDisplay widget.
+   * 
+   * @param firstTime Heroes disable Delete button
+   * @param hero to display
+   */
+  public void displayHero(Hero hero, boolean firstTime)
+  {
+    _hero = hero;
+    _outputMap = hero.loadAttributes(_outputMap);
+    _heroDisp = new HeroDisplay(this, _outputMap, firstTime);
+
+    _mfCiv.replaceLeftPanel(_heroDisp);
+  }
+
+
+  public EnumMap<PersonKeys, String> getAttributes()
+  {
+    return _outputMap;
   }
 
   /** Restore the mainframe panels to their previous state */
@@ -109,40 +134,25 @@ public class HeroDisplayCiv extends BaseCiv
    */
   public boolean savePerson(boolean overwrite)
   {
-    boolean saved = false;
-    
+    boolean retflag = false;
     // Save when NOT in overwrite mode
     if (overwrite == false) {
-      saved = _dorm.add(_hero);
+      retflag = _dorm.add(_hero);
     } else {
-      saved = _dorm.update(_hero);
+      retflag = _dorm.update(_hero);
     }
-    return saved;
+    // Enable SummonHerosButton on MainActionCiv
+    if (retflag == true) {
+      _maCiv.toggleSummonEnabled();
+    }
+    return retflag;
   }
 
-  /**
-   * Display the Hero the HeroDisplay widget.
-   * 
-   * @param firstTime Heroes disable Delete button
-   * @param hero to display
-   */
-  public void displayHero(Hero hero, boolean firstTime)
+
+  public void setActionPanelTitle(String namePlate)
   {
-    _hero = hero;
-    Inventory inventory = _hero.getInventory();
-    
-    _outputMap = hero.loadAttributes(_outputMap);
-    _widget = new HeroDisplay(this, _outputMap);
-    
-    _widget.addSkills(_hero.getOcpSkills(), _hero.getRaceSkills(), _hero.getKlassSkills());
-    _widget.addInventory(inventory);
-    _widget.addMagicItem(inventory.getNameList(ItemCategory.MAGIC));
-    if (_hero.canUseMagic()) {
-      _widget.addMaterials(inventory.getNameList(ItemCategory.SPELL_MATERIAL));
-      _widget.addSpell(_hero.getSpellBook());
-    }
 
-    _mfCiv.replaceLeftPanel(_widget);
   }
+
 } // end of HeroDisplayCiv class
 

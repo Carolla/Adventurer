@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.After;
@@ -111,10 +112,15 @@ public class TestHeroRegistry
     String[] expNamePlates = {"Falsoon: Male Human Fighter", "Blythe: Female Elf Druid",
         "Balthazar: Male Human Cleric"};
 
-    List<String> list = _heroReg.getHeroNames();
-    String fullList = list.toString();
+    List<Hero> list = _heroReg.getAll();
+    List<String> plateList = new ArrayList<String>();
+    for (Hero h : list) {
+      plateList.add(h.toNamePlate());
+    }
+    
+    String fullList = plateList.toString();
     for (int k = 0; k < expNamePlates.length; k++) {
-      assertTrue(fullList.contains(list.get(k)));
+      assertTrue(fullList.contains(expNamePlates[k]));
     }
   }
 

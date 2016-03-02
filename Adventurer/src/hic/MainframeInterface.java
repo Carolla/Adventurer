@@ -20,16 +20,21 @@ package hic;
 public interface MainframeInterface
 {
   public void back();
-  public void backToMain();
+
+    public void backToMain(String newFrameTitle);
 
   /** Display a prompt message asking for confirmation */
   public boolean displayPrompt(String msg);
 
   public void replaceLeftPanel(ChronosPanel leftPanel);
+
   public void replaceRightPanel(ChronosPanel rightPanel);
   
   /** Put a title into the frame's border */
   public void setTitle(String title);
+
+    /** Sets title of left-side panel **/
+    public void setLeftTitle(String title);
 
   public void showHelp();
   public void setImagePanel(ImagePanel imagePanel);

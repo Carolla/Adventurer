@@ -9,6 +9,11 @@
 
 package civ;
 
+import hic.ChronosPanel;
+import hic.IOPanel;
+import hic.Mainframe;
+import hic.NewHeroIPPanel;
+
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,6 +24,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
+import mylib.Constants;
+import net.miginfocom.swing.MigLayout;
+import pdc.command.CommandFactory;
 import chronos.pdc.Adventure;
 import chronos.pdc.Chronos;
 import chronos.pdc.character.Hero;
@@ -28,14 +36,6 @@ import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.HeroRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
-import hic.ChronosPanel;
-import hic.IOPanel;
-import hic.Mainframe;
-import hic.NewHeroIPPanel;
-import hic.ShuttleList;
-import mylib.Constants;
-import net.miginfocom.swing.MigLayout;
-import pdc.command.CommandFactory;
 
 /**
  * The main civ behind the Mainframe screen. It creates the MainActionPanel consisting of the
@@ -50,6 +50,7 @@ public class MainActionCiv extends BaseCiv
   private AdventureRegistry _advReg;
   private HeroRegistry _dorm;
   private MainframeCiv _mfCiv;
+  private HeroDisplayCiv _hdCiv;
   private RegistryFactory _rf;
   private Scheduler _skedder;
 
@@ -64,10 +65,17 @@ public class MainActionCiv extends BaseCiv
   private final String SUMMON_HERO_TITLE = " Summon Heroes ";
   private final String CREATE_HERO_TITLE = " Create a New Hero ";
 
-
   private final String REGISTRAR_IMAGE = "raw_Register.jpg";
   private final String HALL_IMAGE = "icn_HallOfHeroes.jpg";
   private final String ADV_IMAGE = "icn_Town.jpg";
+
+  private ChronosPanel _actionPanel;
+  private JButton _summonButton;
+
+  // Button ToolTips
+  private static final String SUMMON_DISABLED_HOVER = "Create heroes to enable summoning";
+  private static final String SUMMON_ENABLED_HOVER = " Heroes waiting to be summoned";
+  private static final String SMN_ENBLD_SINGL_HOVER = " Hero waiting to be summoned";
 
   // ============================================================
   // Constructors and constructor helpers
@@ -81,6 +89,7 @@ public class MainActionCiv extends BaseCiv
   public MainActionCiv(MainframeCiv mfciv)
   {
     _mfCiv = mfciv;
+    _hdCiv = new HeroDisplayCiv(_mfCiv, this);
     constructCoreMembers();
     _mfCiv.replaceLeftPanel(createActionPanel());
   }
@@ -103,16 +112,38 @@ public class MainActionCiv extends BaseCiv
   public void createHero()
   {
     NewHeroCiv nhCiv = new NewHeroCiv(_mfCiv, _dorm);
-    HeroDisplayCiv hdCiv = new HeroDisplayCiv(_mfCiv, _dorm);
-    NewHeroIPPanel ipPanel = new NewHeroIPPanel(nhCiv, hdCiv, _mfCiv);
+    HeroDisplayCiv hdCiv = new HeroDisplayCiv(_mfCiv, this);
+    NewHeroIPPanel ipPanel = new NewHeroIPPanel(nhCiv, hdCiv);
     _mfCiv.replaceLeftPanel(ipPanel);
-    ipPanel.setDefaultFocus(); // default focus only works after panel is displayed
+    ipPanel.setDefaultFocus(); // default focus only works after panel is
+    // displayed
   }
 
   public List<String> getAdventureList()
   {
     List<String> adventures = _advReg.getAdventureList();
     return adventures;
+  }
+
+  /**
+   * Sets Summon Heroes button to enabled or disabled based on the presence of saved heroes in the
+   * dormitory.
+   */
+  public void toggleSummonEnabled()
+  {
+    int nbrHeroes = _dorm.getNbrElements();
+    if (nbrHeroes > 0) {
+      _summonButton.setEnabled(true);
+      if (nbrHeroes == 1)
+      {
+        _summonButton.setToolTipText(nbrHeroes + SMN_ENBLD_SINGL_HOVER);
+      } else {
+        _summonButton.setToolTipText(nbrHeroes + SUMMON_ENABLED_HOVER);
+      }
+    } else {
+      _summonButton.setEnabled(false);
+      _summonButton.setToolTipText(SUMMON_DISABLED_HOVER);
+    }
   }
 
   // ============================================================
@@ -155,26 +186,29 @@ public class MainActionCiv extends BaseCiv
   private ChronosPanel createActionPanel()
   {
     JButton adventureButton = createAdventureButton();
-    JButton summonButton = createSummonHeroesButton();
+    _summonButton = createSummonHeroesButton();
     JButton creationButton = createNewHeroButton();
 
-    ChronosPanel actionPanel = new ChronosPanel(INITIAL_OPENING_TITLE);
+    // Set status of Summon Button
+    toggleSummonEnabled();
+
+    _actionPanel = new ChronosPanel(INITIAL_OPENING_TITLE);
 
     // Align all buttons in a single column
-    actionPanel.setLayout(new MigLayout("wrap 1"));
+    _actionPanel.setLayout(new MigLayout("wrap 1"));
     Dimension frame = Mainframe.getWindowSize();
-    actionPanel.setPreferredSize(
-        new Dimension((int) (frame.width - FRAME_PADDING) / 2, frame.height - FRAME_PADDING));
-    actionPanel.setBackground(Constants.MY_BROWN);
+    _actionPanel
+        .setPreferredSize(new Dimension((int) (frame.width - FRAME_PADDING) / 2,
+            frame.height - FRAME_PADDING));
+    _actionPanel.setBackground(Constants.MY_BROWN);
 
     /** Buttons are at 25% to allow space for Command Line later */
-    actionPanel.add(adventureButton, "hmax 25%, grow");
-    actionPanel.add(summonButton, "hmax 25%, grow");
-    actionPanel.add(creationButton, "hmax 25%, grow");
+    _actionPanel.add(adventureButton, "hmax 25%, grow");
+    _actionPanel.add(_summonButton, "hmax 25%, grow");
+    _actionPanel.add(creationButton, "hmax 25%, grow");
 
-    return actionPanel;
+    return _actionPanel;
   }
-
 
   /**
    * Create the behavior for selecting an adventure, which drives the frame update. <br>
@@ -194,7 +228,8 @@ public class MainActionCiv extends BaseCiv
         Object[] adventuresArr = adventures.toArray();
         Object selectedValue =
             JOptionPane.showInputDialog(null, "Select an Adventure", "Adventures",
-                JOptionPane.INFORMATION_MESSAGE, null, adventuresArr, adventuresArr[0]);
+                JOptionPane.INFORMATION_MESSAGE, null, adventuresArr,
+                adventuresArr[0]);
         if (selectedValue != null) {
           loadSelectedAdventure((String) selectedValue);
         }
@@ -246,34 +281,32 @@ public class MainActionCiv extends BaseCiv
 
     button.addActionListener(new ActionListener() {
 
-      // This happens when SummonHeros is clicked
+      // This happens when SummonHeroes is clicked
       public void actionPerformed(ActionEvent e)
       {
-        final ShuttleList slist = new ShuttleList(_dorm.getHeroNames());
-        setUpShuttleList(slist);
-      }
+        // Show Hero chooser
+        List<Hero> heroList = _dorm.getAll();
+        List<String> plateList = new ArrayList<String>(heroList.size());
+        for (Hero hero : heroList) {
+          plateList.add(hero.toNamePlate());
+        }
 
-      // Additional setup of hero ShuttleList
-      private void setUpShuttleList(final ShuttleList slist)
-      {
-        slist.setTitle("Choose your Adventurers!");
-        slist.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent arg0)
-          {
-            List<Hero> list = new ArrayList<>();
-            for (Hero s : slist.getSelectedHeroes(_dorm)) {
-              list.add(s);
-            }
-            list.get(0);
-            slist.dispose();
-          }
-        });
-        slist.setVisible(true);
-      }
+        // Convert to "plain" array
+        Object[] plateArray = plateList.toArray();
+        // Capture selection
+        String selectedPlate = null;
+        selectedPlate =
+            (String) JOptionPane.showInputDialog(null, "Select your Hero", "Heroes",
+                JOptionPane.PLAIN_MESSAGE, null, plateArray, plateArray[0]);
 
+        // Get matching name from hero list
+        Hero selectedHero = heroList.get(plateList.indexOf(selectedPlate));
+        if (selectedHero != null) {
+          _hdCiv.displayHero(selectedHero, false);
+        }
+      }
     });
     return button;
   }
-
 
 } // end of MainActionCiv class
