@@ -173,7 +173,7 @@ public class TestQATool
    */
   @SuppressWarnings("unused")
   @Test
-  public void testCtorError()
+  public void ctorNullParmError()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
@@ -204,7 +204,7 @@ public class TestQATool
    * @NORMAL.TEST File findTestDir(File root)
    */
   @Test
-  public void testFindTestDir()
+  public void findTestDir()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
@@ -242,7 +242,30 @@ public class TestQATool
    * @ERROR.TEST File findTestDir(File root)
    */
   @Test
-  public void testErrorFindTestDir()
+  public void findTestDirBadPathError()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+  
+    // Error case: cannot find a test dir
+    String simPath2 = ROOT + "deadend";
+    File tf = _qat.findTestDir(new File(simPath2));
+    assertNull(tf);
+  
+    // Error return null when testDir is found after it is found once
+    // First find normal testdir before attempting second one
+    tf = _qat.findTestDir(new File(ROOT));
+    assertNotNull(tf);
+    tf = _qat.findTestDir(new File(simPath2));
+    assertNull(tf);
+  }
+
+  /**
+   * @ERROR.TEST File findTestDir(File root)
+   */
+  @Test
+  public void testDirNotFoundError()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
@@ -261,33 +284,10 @@ public class TestQATool
 
   
   /**
-   * @ERROR.TEST File findTestDir(File root)
-   */
-  @Test
-  public void testFindTestDirError()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    // Error case: cannot find a test dir
-    String simPath2 = ROOT + "deadend";
-    File tf = _qat.findTestDir(new File(simPath2));
-    assertNull(tf);
-
-    // Error return null when testDir is found after it is found once
-    // First find normal testdir before attempting second one
-    tf = _qat.findTestDir(new File(ROOT));
-    assertNotNull(tf);
-    tf = _qat.findTestDir(new File(simPath2));
-    assertNull(tf);
-  }
-
-  /**
    * @NORMAL.TEST ArrayList<String> writeNextTestFile(File srcDir, File testDir, String rootPath)
    */
   @Test
-  public void testWriteNextTestFile()
+  public void writeNextTestFile()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
@@ -314,7 +314,7 @@ public class TestQATool
    * @NORMAL.TEST void treeScan(File srcDir)
    */
   @Test
-  public void testTreeScan()
+  public void treeScan()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);

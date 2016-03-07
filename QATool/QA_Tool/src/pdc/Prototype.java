@@ -283,7 +283,6 @@ public class Prototype
     if (className.startsWith(".")) {
       className = className.substring(1);
     }
-
     Class<?> sourceClass = null;
     try {
       sourceClass = Class.forName(className);

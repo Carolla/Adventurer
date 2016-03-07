@@ -41,8 +41,8 @@ public class TestPrototype
 {
   /** Root for all source files and subdirectories */
   static private final String ROOT = System.getProperty("user.dir") + "/src/";
-  static private final String SRC_ROOT =
-      "/Projects/eChronos/QATool/QA_Tool/src/";
+//  static private final String SRC_ROOT =
+//      "/Projects/eChronos/QATool/QA_Tool/src/";
 
   /** Object under test */
   static private Prototype _proto;
@@ -74,9 +74,9 @@ public class TestPrototype
     _mock = _proto.new MockPrototype();
     assertNotNull(_mock);
 
-    _srcDir = new File(SRC_ROOT);
+    _srcDir = new File(ROOT);
     assertTrue(_srcDir.isDirectory());
-    _testDir = _qat.findTestDir(new File(SRC_ROOT));
+    _testDir = _qat.findTestDir(new File(ROOT));
     assertTrue(_testDir.isDirectory());
   }
 
@@ -125,7 +125,7 @@ public class TestPrototype
    * @NORMAL.TEST String makeTestFilename(String srcPath)
    */
   @Test
-  public void testMakeTestFilename()
+  public void makeTestFilename()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
@@ -168,7 +168,7 @@ public class TestPrototype
    * NORMAL.TEST File writeFile(File) uses pdc/subDir/SubDirSource.java for testing
    */
   @Test
-  public void testWriteFileMultiples()
+  public void writeFileMultiples()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
@@ -212,7 +212,7 @@ public class TestPrototype
    * NORMAL.TEST File writeFile(File) uses pdc/Prototype.java
    */
   @Test
-  public void testWriteFile()
+  public void writeFile()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);

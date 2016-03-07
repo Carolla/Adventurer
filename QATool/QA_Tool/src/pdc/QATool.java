@@ -233,10 +233,8 @@ public class QATool
    */
   public void treeScan(File srcDir)
   {
-
     _testDir = findTestDir(srcDir);
-    // writeNextTestFile(srcDir, _testDir, srcDir.getPath().length());
-
+     writeNextTestFile(srcDir, _testDir, srcDir.getPath().length());
   }
 
 
