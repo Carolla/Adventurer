@@ -158,7 +158,8 @@ public class Prototype
       System.err.println("\twriteFile(): \t" + e.getMessage());
       return null;
     }
-
+    
+    System.out.println("\tWriting test class file " + target.getName());
     // 1. Write the copyright notice into the prototype
     String copyright = String.format(COPYRIGHT, target.getName());
     out.println(copyright);

@@ -14,7 +14,7 @@
 package pdc;
 
 
-// Simply for Testing
+// Simply for Testing the exclusion file
 
 /**
  * @author Alan Cline

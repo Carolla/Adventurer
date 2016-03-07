@@ -41,8 +41,8 @@ public class TestPrototype
 {
   /** Root for all source files and subdirectories */
   static private final String ROOT = System.getProperty("user.dir") + "/src/";
-//  static private final String SRC_ROOT =
-//      "/Projects/eChronos/QATool/QA_Tool/src/";
+  /** Exlusion file must be directly beneath src root */
+  static private final String EXCLUDE_PATH = ROOT + Constants.FS + "ScanExclusions.txt";
 
   /** Object under test */
   static private Prototype _proto;
@@ -66,7 +66,7 @@ public class TestPrototype
   @BeforeClass
   public static void setUpBeforeClass() throws Exception
   {
-    _qat = new QATool(ROOT);
+    _qat = new QATool(ROOT, EXCLUDE_PATH);
     assertNotNull(_qat);
 
     _proto = new Prototype();

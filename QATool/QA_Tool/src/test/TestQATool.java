@@ -116,8 +116,10 @@ public class TestQATool
           "pdc/FakeSkill.java", "pdc/FormatSample", "pdc/MockRace.java"
       };
 
-  /** Use simulated file structure as a read-only source root */
+  /** Root for all source files and subdirectories */
   static private final String ROOT = System.getProperty("user.dir") + "/src/";
+  /** Exlusion file must be directly beneath src root */
+  static private final String EXCLUDE_PATH = ROOT + Constants.FS + "ScanExclusions.txt";
 
   static private QATool _qat;
   static private MockTool _mock;
@@ -143,7 +145,7 @@ public class TestQATool
   public void setUp() throws Exception
   {
     /** Create QA Tool using simulated directory structure */
-    _qat = new QATool(ROOT);
+    _qat = new QATool(ROOT, EXCLUDE_PATH);
     assertNotNull(_qat);
     _mock = _qat.new MockTool();
     assertNotNull(_mock);
@@ -182,17 +184,26 @@ public class TestQATool
     // Path is set to null
     try {
       IllegalArgumentException ex = null;
-      QATool badTool = new QATool(null);
+      QATool badTool1 = new QATool(null, null);
     } catch (IllegalArgumentException ex) {
       MsgCtrl.msgln("\ttestCtorError: expected exception caught");
       assertNotNull(ex);
     }
+    // Exclusion path is set to null
+    try {
+      IllegalArgumentException ex = null;
+      QATool badTool1 = new QATool(ROOT, null);
+    } catch (IllegalArgumentException ex) {
+      MsgCtrl.msgln("\ttestCtorError: expected exception caught");
+      assertNotNull(ex);
+    }
+    
     // Path is not set to a directory
     try {
       IllegalArgumentException ex = null;
       String filePath = ROOT + Constants.FS + "Chronos" + Constants.FS + "civ + Constants.FS" +
           "UserMsg.java";
-      QATool badTool = new QATool(filePath);
+      QATool badTool = new QATool(filePath, EXCLUDE_PATH);
     } catch (IllegalArgumentException ex) {
       MsgCtrl.msgln("\ttestCtorError: expected exception caught");
       assertNotNull(ex);
