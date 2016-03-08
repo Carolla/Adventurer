@@ -109,8 +109,11 @@ public class QATool
       System.err.println("USAGE: QATool <root source path> <exclusion filename>");
       System.exit(-1);  
     }
+    System.out.println("QA Tool starting scan of missing test classes: ");
+    
     QATool qat = new QATool(args[0], args[1]);
     qat.treeScan(_rootFile);
+    
     System.out.println("QA Tool complete: ");
     System.out.println("\t Directories scanned: " + _dirsScanned);
     System.out.println("\t Files scanned: " + _filesScanned);
@@ -126,18 +129,23 @@ public class QATool
    */
   public QATool(String srcPath, String exclusionPath) throws IllegalArgumentException
   {
+    // Guards against missing or bad arguments
     if (srcPath == null) {
-      throw new IllegalArgumentException("QATool: No source directory specified");
+      throw new IllegalArgumentException("QATool: Source directory null.");
     }
     _rootFile = new File(srcPath);
     if (!_rootFile.isDirectory()) {
-      _rootFile = null;
-      throw new IllegalArgumentException("QATool: Path argument must be a directory");
+      throw new IllegalArgumentException("QATool: Source directory not specified.");
     }
-    // Create the template generator
-    _proto = new Prototype();
-    // Set the file to avoid certain keywords
+    if (exclusionPath == null) {
+      throw new IllegalArgumentException("QATool: Exclusion file null.");
+    }
     _excludeFile = new File(srcPath + Constants.FS + exclusionPath);
+    if (!_excludeFile.isFile()) {
+      throw new IllegalArgumentException("QATool: Exclusions file not specified.");
+    }
+    _rootFile = new File(srcPath);
+    _proto = new Prototype();
     setExclusions(_excludeFile, _rootFile);
   }
 
@@ -211,7 +219,8 @@ public class QATool
         } else {
           // Check if test file exists for current source file
           String testFileName = _proto.makeTestFilename(s);
-          String s2 = testFileName.substring(s.indexOf("src") + 3);
+          // Remove the over-qualified src root to provide only the subdir name
+          String s2 = s.substring(s.indexOf("src") + 3);
           // System.out.println("\tWritable file name: \t" + s2);
           // For readability, remove the root prefixes
           File target = new File(testFileName);

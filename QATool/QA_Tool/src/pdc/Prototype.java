@@ -159,7 +159,7 @@ public class Prototype
       return null;
     }
     
-    System.out.println("\tWriting test class file " + target.getName());
+    System.out.println("\tWriting test class file " + source);
     // 1. Write the copyright notice into the prototype
     String copyright = String.format(COPYRIGHT, target.getName());
     out.println(copyright);
@@ -284,6 +284,7 @@ public class Prototype
     if (className.startsWith(".")) {
       className = className.substring(1);
     }
+    // Replace src with bin
     Class<?> sourceClass = null;
     try {
       sourceClass = Class.forName(className);
@@ -378,7 +379,7 @@ public class Prototype
     sortSignatures(_protecteds);
   }
 
-
+  
   /**
    * Ensure that all subdirs in the long path exist
    * 

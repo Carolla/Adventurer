@@ -1,5 +1,5 @@
 /**
- * FileMap.java 
+ * FileMap.java
  */
 
 package pdc;
@@ -61,7 +61,7 @@ public class FileMap
     }
 
     // Required format : | |-- File name
-//    hline = "\n" + hline + "\n" + hline;
+    // hline = "\n" + hline + "\n" + hline;
     hline = "\n" + hline;
     hline += FILE_PREFIX;
     for (int i = 0; i < files.length; i++) {

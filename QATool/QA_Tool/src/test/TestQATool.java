@@ -32,94 +32,15 @@ import pdc.QATool.MockTool;
  * @version Dec 31, 2015 // original <br>
  * @version Jan 19 2016 // updated for unchanging file structure instead of live directories <br>
  * @version Feb 23 2016 // updated for unchanging simTree structure and be platform-independent <br>
+ * @version Mar 8 2016 // removed simTree and debugged platform-independency <br>
  */
 public class TestQATool
 {
-  // Setup expected comparisons paths
-  final String[] allSrcStr =
-      {"Chronos.java", "civ/DefaultLists.java", "civ/DefaultUserMsg.java",
-          "civ/HeroDefaults.java", "civ/OccupationKeys.java", "civ/PersonKeys.java",
-          "civ/SkillKeys.java", "civ/UserMsg.java",
-          "pdc/buildings/Bank.java", "pdc/buildings/Building.java",
-          "pdc/buildings/ClericsGuild.java", "pdc/buildings/FightersGuild.java",
-          "pdc/buildings/Inn.java", "pdc/buildings/Jail.java",
-          "pdc/buildings/RoguesGuild.java", "pdc/buildings/Store.java",
-          "pdc/buildings/WizardsGuild.java",
-          "pdc/character/Cleric.java", "pdc/character/Fighter.java", "pdc/character/Hero.java",
-          "pdc/character/Inventory.java", "pdc/character/Klass.java", "pdc/character/Thief.java",
-          "pdc/character/Wizard.java",
-          "pdc/command/Command.java", "pdc/command/DeltaCmdList.java", "pdc/command/Event.java",
-          "pdc/command/EventTest.java", "pdc/command/intCmdPatronEnter.java",
-          "pdc/command/intCmdPatronLeave.java", "pdc/command/NullCommand.java",
-          "pdc/command/Scheduler.java", "pdc/command/TestEvent.java",
-          "pdc/registry/AdventureRegistry.java", "pdc/registry/BuildingeRegistry.java",
-          "pdc/registry/HelpTextObject.java", "pdc/registry/HeroRegistry.java",
-          "pdc/registry/ItemRegistry.java", "pdc/registry/NPCRegistry.java",
-          "pdc/registry/OccupationRegistry.java", "pdc/registry/RegistryFactory.java",
-          "pdc/registry/SkillRegistry.java", "pdc/registry/TownRegistry.java",
-          "pdc/Adventure.java", "pdc/Arena.java", "pdc/AttributeList.java",
-          "pdc/GameClock.java", "pdc/Item.java", "pdc/MiscKeys.java",
-          "pdc/NPC.java", "pdc/NullNPC.java", "pdc/Occupation.java", "pdc/Race.java",
-          "pdc/Skill.java", "pdc/Town.java",
-      };
-  final String[] allTestsStr =
-      {"ChronosTestSuite.java", "Template.java",
-          "pdc/buildings/BuildingsSuite.java", "pdc/buildings/ConcreteBuilding.java",
-          "pdc/buildings/FakeBuilding.java", "pdc/buildings/TestArena.java",
-          "pdc/buildings/TestBank.java", "pdc/buildings/TestBuilding.java",
-          "pdc/buildings/TestClericsGuild.java", "pdc/buildings/TestFightersGuild.java",
-          "pdc/buildings/TestInn.java", "pdc/buildings/TestJail.java",
-          "pdc/buildings/TestRgouesGuild.java", "pdc/buildings/TestStore.java",
-          "pdc/buildings/WizardsGuild.java",
-          "pdc/command/EventTest.java", "pdc/command/FakeScheduler.java",
-          "pdc/registry/FakeRegistry.java", "pdc/registry/RegistrySuite.java",
-          "pdc/registry/TestAdventureRegistry.java", "pdc/registry/TestRegistryFactory.java",
-          "pdc/FakeSkill.java", "pdc/FormatSample.java", "pdc/MockRace.java",
-          "pdc/TestAdventure.java", "pdc/TestItem.java", "pdc/TestNPC.java",
-          "pdc/TestOccupation.java", "pdc/TestRace.java", "pdc/TestSkill.java",
-          "pdc/TestTown.java"
-      };
-  final String[] matchingSrcStr =
-      {"pdc/buildings/Bank.java", "pdc/buildings/Building.java",
-          "pdc/buildings/ClericsGuild.java", "pdc/buildings/FightersGuild.java",
-          "pdc/buildings/Inn.java", "pdc/buildings/Jail.java", "pdc/buildings/RoguesGuild.java",
-          "pdc/buildings/Store.java", "pdc/buildings/WizardsGuild.java",
-          "pdc/registry/TestAdventureRegistry.java", "pdc/registry/TestRegistryFactory.java",
-          "pdc/Adventure.java", "pdc/Item.java", "pdc/NPC.java", "pdc/Occupation.java",
-          "pdc/Race.java", "pdc/Skill.java", "pdc/Town.java"
-
-  };
-  final String[] srcWoTestsStr =
-      {"civ/DefaultLists.java", "civ/DefaultUserMsg.java", "civ/HeroDefaults.java",
-          "civ/OccupationKeys.java", "civ/PersonKeys.java", "civ/SkillKeys.java",
-          "civ/UserMsg.java",
-          "pdc/character/Cleric.java", "pdc/character/Fighter.java", "pdc/character/Hero.java",
-          "pdc/character/Inventory.java", "pdc/character/Klass.java", "pdc/character/Thief.java",
-          "pdc/character/Wizard.java",
-          "pdc/command/Command.java", "pdc/command/DeltaCmdList.java", "pdc/command/Event.java",
-          "pdc/command/Event.java", "pdc/command/intCmdPatronEnter.java",
-          "pdc/command/intCmdPatronLeave.java", "pdc/command/NullCommand.java",
-          "pdc/command/Scheduler.java", "pdc/command/TestEvent.java",
-          "pdc/registry/BuildingeRegistry.java", "pdc/registry/HelpTextObject.java",
-          "pdc/registry/HeroRegistry.java", "pdc/registry/ItemRegistry.java",
-          "pdc/registry/NPCRegistry.java", "pdc/registry/OccupationRegistry.java",
-          "pdc/registry/SkillRegistry.java", "pdc/registry/TownRegistry.java",
-          "pdc/Arena.java", "pdc/AttibuteList.java", "pdc/GameClock.java",
-          "pdc/MiscKeys", "pdc/NullNPC.java", "Chronos.java"
-      };
-  final String[] testsWoSrcStr =
-      {"ChronosTestSuite.java", "Template.java",
-          "pdc/buildings/BuildingsSuite.java", "pdc/buildings/ConcreteBuilding.java",
-          "pdc/buildings/FakeBuilding.java", "pdc/buildings/TestArena.java",
-          "pdc/command/EventTest.java", "pdc/command/FakeScheduler.java",
-          "pdc/registry/FakeRegistry.java", "pdc/registry/RegistrySuite.java",
-          "pdc/FakeSkill.java", "pdc/FormatSample", "pdc/MockRace.java"
-      };
 
   /** Root for all source files and subdirectories */
   static private final String ROOT = System.getProperty("user.dir") + "/src/";
   /** Exlusion file must be directly beneath src root */
-  static private final String EXCLUDE_PATH = ROOT + Constants.FS + "ScanExclusions.txt";
+  static private final String EXCLUDE_FILE =  "ScanExclusions.txt";
 
   static private QATool _qat;
   static private MockTool _mock;
@@ -145,7 +66,7 @@ public class TestQATool
   public void setUp() throws Exception
   {
     /** Create QA Tool using simulated directory structure */
-    _qat = new QATool(ROOT, EXCLUDE_PATH);
+    _qat = new QATool(ROOT, EXCLUDE_FILE);
     assertNotNull(_qat);
     _mock = _qat.new MockTool();
     assertNotNull(_mock);
@@ -203,7 +124,7 @@ public class TestQATool
       IllegalArgumentException ex = null;
       String filePath = ROOT + Constants.FS + "Chronos" + Constants.FS + "civ + Constants.FS" +
           "UserMsg.java";
-      QATool badTool = new QATool(filePath, EXCLUDE_PATH);
+      QATool badTool = new QATool(filePath, EXCLUDE_FILE);
     } catch (IllegalArgumentException ex) {
       MsgCtrl.msgln("\ttestCtorError: expected exception caught");
       assertNotNull(ex);
@@ -229,23 +150,23 @@ public class TestQATool
     MsgCtrl.msgln("\ttestFindTestDir: result = \t" + resultPath);
     assertTrue(resultPath.equals(expPath));
 
-    // Normal case for simTree directory
-    String simRoot = System.getProperty("user.dir");
-    StringBuilder sb = new StringBuilder(simRoot);
-    sb.append(Constants.FS);
-    sb.append("simTree");
-    sb.append(Constants.FS);
-    sb.append("src");
-    sb.append(Constants.FS);
-    String srcPath = sb.toString();
-    MsgCtrl.msgln("\tFindTestDir(); simulated source root = " + srcPath);
-
-    expPath = srcPath + "test";  
-    MsgCtrl.msgln("\ttestFindTestDir: expPath = \t" + expPath);
-    tf = _qat.findTestDir(new File(srcPath));
-    resultPath = tf.getPath();
-    MsgCtrl.msgln("\ttestFindTestDir: result = \t" + resultPath);
-    assertTrue(resultPath.equals(expPath));
+//    // Normal case for simTree directory
+//    String simRoot = System.getProperty("user.dir");
+//    StringBuilder sb = new StringBuilder(simRoot);
+//    sb.append(Constants.FS);
+//    sb.append("simTree");
+//    sb.append(Constants.FS);
+//    sb.append("src");
+//    sb.append(Constants.FS);
+//    String srcPath = sb.toString();
+//    MsgCtrl.msgln("\tFindTestDir(); simulated source root = " + srcPath);
+//
+//    expPath = srcPath + "test";  
+//    MsgCtrl.msgln("\ttestFindTestDir: expPath = \t" + expPath);
+//    tf = _qat.findTestDir(new File(srcPath));
+//    resultPath = tf.getPath();
+//    MsgCtrl.msgln("\ttestFindTestDir: result = \t" + resultPath);
+//    assertTrue(resultPath.equals(expPath));
   }
 
   
@@ -282,7 +203,7 @@ public class TestQATool
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    // Error case for a testdir not found using simTree
+    // Error case for a testdir not found
     String simRoot = System.getProperty("user.dir");
     StringBuilder sb = new StringBuilder(simRoot);
     sb.append(Constants.FS);
@@ -314,7 +235,6 @@ public class TestQATool
 
     // Run the target method
       ArrayList<String> srcPaths = _qat.writeNextTestFile(srcDir, testDir, srcLen);
-      
       for (String s : srcPaths) {
         MsgCtrl.msgln("\t" + s);
       }
