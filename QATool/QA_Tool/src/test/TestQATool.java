@@ -40,10 +40,16 @@ public class TestQATool
   /** Root for all source files and subdirectories */
   static private final String ROOT = System.getProperty("user.dir") + "/src/";
   /** Exlusion file must be directly beneath src root */
-  static private final String EXCLUDE_FILE =  "ScanExclusions.txt";
+  static private final String EXCLUDE_FILE = ROOT + "ScanExclusions.txt";
 
   static private QATool _qat;
   static private MockTool _mock;
+
+  private String[] expPaths = {"subDir/TestSubDirSource.java",
+      "TestFileMap.java", "TestTestTemplate.java", "TestPrototype.java", "TestQATool.java"
+  };
+  private ArrayList<File> _files;
+
 
   /**
    * @throws java.lang.Exception
@@ -71,6 +77,12 @@ public class TestQATool
     _mock = _qat.new MockTool();
     assertNotNull(_mock);
     assertNotNull(_mock.getRoot());
+
+    // Create a list of test files
+    _files = new ArrayList<File>();
+    for (String s : expPaths) {
+      _files.add(new File(ROOT + "test/pdc/" + s));
+    }
   }
 
   /**
@@ -89,7 +101,6 @@ public class TestQATool
   // ======================================================================
   // BEGIN TESTS
   // ======================================================================
-
 
   /**
    * @ERROR.TEST QATool(String path)
@@ -118,7 +129,7 @@ public class TestQATool
       MsgCtrl.msgln("\ttestCtorError: expected exception caught");
       assertNotNull(ex);
     }
-    
+
     // Path is not set to a directory
     try {
       IllegalArgumentException ex = null;
@@ -149,27 +160,9 @@ public class TestQATool
     String resultPath = tf.getPath();
     MsgCtrl.msgln("\ttestFindTestDir: result = \t" + resultPath);
     assertTrue(resultPath.equals(expPath));
-
-//    // Normal case for simTree directory
-//    String simRoot = System.getProperty("user.dir");
-//    StringBuilder sb = new StringBuilder(simRoot);
-//    sb.append(Constants.FS);
-//    sb.append("simTree");
-//    sb.append(Constants.FS);
-//    sb.append("src");
-//    sb.append(Constants.FS);
-//    String srcPath = sb.toString();
-//    MsgCtrl.msgln("\tFindTestDir(); simulated source root = " + srcPath);
-//
-//    expPath = srcPath + "test";  
-//    MsgCtrl.msgln("\ttestFindTestDir: expPath = \t" + expPath);
-//    tf = _qat.findTestDir(new File(srcPath));
-//    resultPath = tf.getPath();
-//    MsgCtrl.msgln("\ttestFindTestDir: result = \t" + resultPath);
-//    assertTrue(resultPath.equals(expPath));
   }
 
-  
+
   /**
    * @ERROR.TEST File findTestDir(File root)
    */
@@ -179,12 +172,12 @@ public class TestQATool
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-  
+
     // Error case: cannot find a test dir
     String simPath2 = ROOT + "deadend";
     File tf = _qat.findTestDir(new File(simPath2));
     assertNull(tf);
-  
+
     // Error return null when testDir is found after it is found once
     // First find normal testdir before attempting second one
     tf = _qat.findTestDir(new File(ROOT));
@@ -192,6 +185,7 @@ public class TestQATool
     tf = _qat.findTestDir(new File(simPath2));
     assertNull(tf);
   }
+
 
   /**
    * @ERROR.TEST File findTestDir(File root)
@@ -207,69 +201,71 @@ public class TestQATool
     String simRoot = System.getProperty("user.dir");
     StringBuilder sb = new StringBuilder(simRoot);
     sb.append(Constants.FS);
-    sb.append("simTree");     // has not test subdir
+    sb.append("simTree"); // has not test subdir
     String srcPath = sb.toString();
     MsgCtrl.msgln("\tFindTestDir(); simulated source root = " + srcPath);
 
     assertNull(_qat.findTestDir(new File(srcPath)));
   }
 
-  
+
   /**
    * @NORMAL.TEST ArrayList<String> writeNextTestFile(File srcDir, File testDir, String rootPath)
    */
   @Test
   public void writeNextTestFile()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
-    // SETUP to traverse the simtree
-    String simTreePath =
-        System.getProperty("user.dir") + Constants.FS + "simTree" + Constants.FS + "src";
-    MsgCtrl.msgln("\tsimTreePath = " + simTreePath);
-    File srcDir = new File(simTreePath);
+    // SETUP to traverse the src tree
+    MsgCtrl.msgln("\tnavigatinf " + ROOT);
+    File srcDir = new File(ROOT);
     File testDir = _qat.findTestDir(srcDir);
     int srcLen = srcDir.getPath().length();
 
     // Run the target method
-      ArrayList<String> srcPaths = _qat.writeNextTestFile(srcDir, testDir, srcLen);
-      for (String s : srcPaths) {
-        MsgCtrl.msgln("\t" + s);
-      }
+    ArrayList<String> srcPaths = _qat.writeNextTestFile(srcDir, testDir, srcLen);
+    for (String s : srcPaths) {
+      MsgCtrl.msgln("\t" + s);
+    }
   }
 
 
   /**
+   * @throws InterruptedException
    * @NORMAL.TEST void treeScan(File srcDir)
    */
   @Test
-  public void treeScan()
+  public void treeScan() throws InterruptedException
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
+    // RUN
     _qat.treeScan(new File(ROOT));
+
+    // VERIFY
+    for (File f : _files) {
+      MsgCtrl.msgln("\t " + f.getPath() + "\t\t\t" + f.length());
+      assertTrue(f.exists());
+    }
+
+    // TEARDOWN Remove test/pdc tree
+    for (File f : _files) {
+      assertTrue(f.delete());
+    }
+    // Remove the new subdirectories
+    assertTrue(new File(ROOT + "test/pdc/subDir").delete());
+    assertTrue(new File(ROOT + "test/pdc").delete());
   }
 
 
   // ======================================================================
   // PRIVATE HELPERS
   // ======================================================================
-
-  // /** Convert a String[] to a ArrayList<String> for easier handling */
-  // private ArrayList<String> convertToArrayList(String[] strs)
-  // {
-  // // Setup for arraylist
-  // ArrayList<String> alist = new ArrayList<String>();
-  // for (int k = 0; k < strs.length; k++) {
-  // alist.add(strs[k]);
-  // }
-  // return alist;
-  // }
-
 
   /** Display the contents of an arraylist, with intro message */
   private void dumpList(ArrayList<String> plist, String msg)

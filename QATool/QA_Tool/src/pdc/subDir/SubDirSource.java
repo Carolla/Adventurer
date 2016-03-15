@@ -28,30 +28,30 @@ public class SubDirSource
   public SubDirSource()
   {}
 
-  public void m1()
-  {}
-
-  public File m2()
-  {
-    return null;
-  }
-
-  protected String m3()
-  {
-    return "x";
-  }
-
-  public File createFile(File x, File y, String s)
-  {
-    return null;
-  }
-
   public String getTestFilename(String s1, String s2)
   {
     return "x";
   }
 
-  public File writeFile(File x, String s)
+  public void m(File f)
+  {}
+
+  public File m(String s, int x)
+  {
+    return null;
+  }
+
+  public String m(String s, int x, long k)
+  {
+    return "x";
+  }
+
+  protected File createFile(File x, File y, String s)
+  {
+    return null;
+  }
+
+  protected File writeFile(File x, String s)
   {
     return null;
   }

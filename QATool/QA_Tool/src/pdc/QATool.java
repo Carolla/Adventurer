@@ -140,7 +140,7 @@ public class QATool
     if (exclusionPath == null) {
       throw new IllegalArgumentException("QATool: Exclusion file null.");
     }
-    _excludeFile = new File(srcPath + Constants.FS + exclusionPath);
+    _excludeFile = new File(exclusionPath);
     if (!_excludeFile.isFile()) {
       throw new IllegalArgumentException("QATool: Exclusions file not specified.");
     }
@@ -219,17 +219,14 @@ public class QATool
         } else {
           // Check if test file exists for current source file
           String testFileName = _proto.makeTestFilename(s);
-          // Remove the over-qualified src root to provide only the subdir name
-          String s2 = s.substring(s.indexOf("src") + 3);
-          // System.out.println("\tWritable file name: \t" + s2);
-          // For readability, remove the root prefixes
           File target = new File(testFileName);
           if (target.exists()) {
 //            System.err.println("\tEXISTS: \t" + testFileName);
           } else {
             // Remove the root to get the relative pathname
-//            System.err.println("\tWRITING: \t" + s2);
-            if (_proto.writeFile(target, s2) == null) {
+            String srcName = s.substring(s.indexOf("src") + 3);
+//            System.err.println("\tWRITING: \t" + testFileName);
+            if (_proto.writeFile(target, srcName) == null) {
               System.err.println("Cannot find .class file for " + target.getPath());
             } else {
             _filesWritten++;

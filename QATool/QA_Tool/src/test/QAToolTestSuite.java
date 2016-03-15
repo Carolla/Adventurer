@@ -26,7 +26,6 @@ import org.junit.runners.Suite;
     TestPrototype.class,
     TestQATool.class
 
-    /** DMC test files */
   })
 
 public class QAToolTestSuite

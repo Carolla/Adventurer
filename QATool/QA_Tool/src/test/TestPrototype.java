@@ -42,7 +42,7 @@ public class TestPrototype
   /** Root for all source files and subdirectories */
   static private final String ROOT = System.getProperty("user.dir") + "/src/";
   /** Exlusion file must be directly beneath src root */
-  static private final String EXCLUDE_PATH = ROOT + Constants.FS + "ScanExclusions.txt";
+  static private final String EXCLUDE_PATH = ROOT + "ScanExclusions.txt";
 
   /** Object under test */
   static private Prototype _proto;
@@ -55,9 +55,6 @@ public class TestPrototype
   static private File _testDir;
   /** Helper object */
   static private QATool _qat;
-
-  // /** Target protoType file */
-  // private File _target;
 
 
   /**
@@ -127,22 +124,24 @@ public class TestPrototype
   @Test
   public void makeTestFilename()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
     // SETUP Doesn't matter if the test file exists or not; this method is a string builder
     final String[] srcPath = {
         "pdc/QATool.java", // contains a test file
         "pdc/FileMap.java", // contains no test file
-        "pdc/NoFile.java", // src file doesn't exist but doesn't matter for this test
-        "ing_Testing.java", // and something silly
+        "pdc/NoFile.java",
+        "pdc/subdir/BottomFile.java", // bottom of file tree
+        "ing_Testing.java", // and something at src level
     };
     final String[] expPath = {
         "pdc/TestQATool.java", // contains a test file
         "pdc/TestFileMap.java", // contains no test file
         "pdc/TestNoFile.java", // src file doesn't exist but doesn't matter for this test
-        "Testing_Testing.java", // and something silly
+        "pdc/subdir/TestBottomFile.java", // bottom of file tree
+        "Testing_Testing.java", // and something at src level
     };
 
     File testDir = _qat.findTestDir(new File(ROOT));
@@ -163,6 +162,7 @@ public class TestPrototype
     testPath = _proto.makeTestFilename("OtherFile.png");
     assertNull(testPath);
   }
+
 
   /**
    * NORMAL.TEST File writeFile(File) uses pdc/subDir/SubDirSource.java for testing
@@ -185,8 +185,7 @@ public class TestPrototype
 
     // SETUP Remove the target file fresh copy
     File target = new File(targetPath);
-    target.delete();
-    assertTrue(!target.exists());
+    assertTrue(target.delete());
 
     // Run the create the target file twice, without duplicating its contents
     target = _proto.writeFile(new File(targetPath), srcPath);
@@ -194,7 +193,7 @@ public class TestPrototype
     MsgCtrl.msgln("\tGenerated test file size = " + target.length());
 
     // VERIFY
-    long expFileLen = 2988;
+    long expFileLen = 3021;
     assertTrue(target.exists());
     assertEquals(expFileLen, target.length());
 
@@ -203,8 +202,6 @@ public class TestPrototype
     assertTrue(target.exists());
     assertTrue(target.length() == expFileLen);
 
-    // Remove test file
-    target.delete();
   }
 
 
@@ -219,16 +216,22 @@ public class TestPrototype
     MsgCtrl.where(this);
 
     // SETUP: Create the file in the right place
+    /* These are the public methods in the test file that will be written as test methods:
+        "String getTestFilename(String s1, String s2)",
+        "void m(File f)",
+        "File m(String s, int x)",
+        "String m(String s, int x, long k)",
+    */    
     // These are the expected methods in the target file after it is written
     String[] expPublics = {
-        "File createFile(File, File, String)",
         "String getTestFilename(String, String)",
-        "void m1()",
-        "File m2()",
-        "File writeFile(File, String)"
+        "void m1(File)",
+        "File m2(String, int)",
+        "String m3(String, int, long)",
     };
     String[] expProtecteds = {
-        "String m3()"
+        "File createFile(File, File, String)",
+        "File writeFile(File, String)",
     };
 
     String baseName = "SubDirSource.java";
@@ -252,7 +255,7 @@ public class TestPrototype
     MsgCtrl.msgln("\tGenerated test file size = " + target.length());
 
     // VERIFY
-    long expFileLen = 2988;
+    long expFileLen = 3021;
     assertTrue(target.exists());
     assertEquals(expFileLen, target.length());
 
@@ -276,8 +279,6 @@ public class TestPrototype
       assertEquals(expProtecteds[k], protex.get(k));
     }
 
-    // Remove test file
-    target.delete();
   }
 
 

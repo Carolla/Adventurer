@@ -38,7 +38,6 @@ public class Prototype
     PUBLIC, PROTECTED
   };
 
-
   /** Copyright banner at top of file */
   private final String COPYRIGHT =
       "/** \n * %s Copyright (c) 2016, Carolla Development, Inc. All Rights Reserved \n * \n" +
@@ -137,7 +136,7 @@ public class Prototype
    * @throws ClassNotFoundException if the .class file is not found, possibly because it was not
    *           compiled yet
    */
-  public File writeFile(File target, String source) 
+  public File writeFile(File target, String source)
   {
     // Guard Ensure that source file name exists as compiled class name
     Class<?> sourceClass = convertSourceToClass(source);
@@ -158,8 +157,12 @@ public class Prototype
       System.err.println("\twriteFile(): \t" + e.getMessage());
       return null;
     }
-    
-    System.out.println("\tWriting test class file " + source);
+
+    // For readability, remove the root prefixes but keep the subdir references
+    String targetPath = target.getPath();
+    int cutPoint = targetPath.indexOf("test");
+    String shortName = targetPath.substring(cutPoint);
+    System.out.println("\tWriting test class file " + shortName);
     // 1. Write the copyright notice into the prototype
     String copyright = String.format(COPYRIGHT, target.getName());
     out.println(copyright);
@@ -200,6 +203,104 @@ public class Prototype
   // ======================================================================
   // PRIVATE HELPER METHODS
   // ======================================================================
+
+  /**
+   * Sort all method names and number overloaded methods. The Methods are not in any particular
+   * order, so the bare method name must be sorted a little first.
+   * 
+   * @param mList list of method names to check
+   * @param mSig signature to check for uniqueness, and possibly increment for number
+   */
+  private ArrayList<String> forceUnique(ArrayList<String> mList)
+  {
+    if (mList.size() <= 1) {
+      return mList;
+    }
+    // All signatures must be sorted for this to work
+    sortSignatures(mList);
+
+    // Get first sig to get started
+    for (int k = 0; k < mList.size() - 1; k++) {
+      String firstSig = mList.get(k);
+      String firstName = extractNameOnly(firstSig);
+      String nextSig = mList.get(k + 1);
+      String nextName = extractNameOnly(nextSig);
+      // First get bare name for comparison
+      // Check if overloaded methods are in list
+      if (nextName.equals(firstName)) {
+        String[] names = numerateNames(firstSig, nextSig);
+        // Replace old names with modified names
+        mList.remove(k);
+        mList.add(k, names[0]);
+        mList.remove(k + 1);
+        mList.add(k + 1, names[1]);
+      } else {
+        continue;
+      }
+    }
+    return mList;
+  }
+
+
+  /**
+   * Number two sorted signatures, then give the second a higher numerical suffix than the first
+   * 
+   * @Return the numbered signatures first, then the new one, made unique, to add
+   */
+  private String[] numerateNames(String firstName, String secondName)
+  {
+    String[] mNames = new String[2];
+    StringBuilder sb1 = new StringBuilder(firstName);
+    StringBuilder sb2 = new StringBuilder(secondName);
+    // Get number of first name
+    int paren1 = firstName.indexOf(LEFT_PAREN);
+    int paren2 = secondName.indexOf(LEFT_PAREN);
+    char c1 = sb1.charAt(paren1 - 1);
+    char c2 = '-';
+    if (isDigit(c1)) {
+      c2 = (char) (c1 + 1);
+      sb2.insert(paren2, c2);
+    } else {
+      // bare name has no numeric suffix
+      sb1.insert(paren2, "1");
+      sb2.insert(paren2, "2");
+    }
+    mNames[0] = sb1.toString();
+    mNames[1] = sb2.toString();
+    return mNames;
+  }
+
+
+  /** Determine if the given character is a digit from 1 to 9
+   * 
+   * @param ch character to check
+   * @return true if c is a numeric digit
+   */
+  private boolean isDigit(char ch)
+  {
+    return (ch >= '1' && ch <= '9');
+  }
+
+  /**
+   * Pull the method name from the signature to compare uniqueness. Any numeric suffix will be
+   * ignored
+   * 
+   * @param mName method signature
+   * @return bare name stripped of return value, parm list, and numeric suffix
+   */
+  private String extractNameOnly(String mName)
+  {
+    // Extract only the method name
+    int pNdx = mName.indexOf(LEFT_PAREN);
+    char c = (char) mName.charAt(pNdx-1);
+    if (isDigit(c)) {
+      --pNdx;
+    }
+    int spaceNdx = mName.indexOf(SPACE);
+    String shortName = mName.substring(spaceNdx+1, pNdx);
+    return shortName;
+  }
+
 
   /** Writes the setUp and tearDown methods at the method and class level */
   private String buildPrepMethods()
@@ -289,8 +390,8 @@ public class Prototype
     try {
       sourceClass = Class.forName(className);
     } catch (ClassNotFoundException ex) {
-//      System.err.println("\tconvertSourceToClass(): " + className + ".class file not found");
-//      System.err.println("\tEnsure that it has been compiled and exists in the bin directory");
+      // System.err.println("\tconvertSourceToClass(): " + className + ".class file not found");
+      // System.err.println("\tEnsure that it has been compiled and exists in the bin directory");
     }
     return sourceClass;
   }
@@ -375,11 +476,15 @@ public class Prototype
         }
       }
     }
-    sortSignatures(_publics);
-    sortSignatures(_protecteds);
+    // Once all methods are collected
+    // sortSignatures(_publics);
+    // sortSignatures(_protecteds);
+    // Ensure that overloaded method are distinguished by number
+    _publics = forceUnique(_publics);
+    _protecteds = forceUnique(_protecteds);
   }
 
-  
+
   /**
    * Ensure that all subdirs in the long path exist
    * 
