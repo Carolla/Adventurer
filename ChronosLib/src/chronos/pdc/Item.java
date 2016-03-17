@@ -10,6 +10,8 @@
 package chronos.pdc;
 
 import mylib.dmc.IRegistryElement;
+import mylib.pdc.Registry;
+import chronos.pdc.registry.ItemRegistry;
 
 
 /**
@@ -26,7 +28,9 @@ public class Item implements IRegistryElement
   /** Enum of various category of Inventory Items */
   public enum ItemCategory {
     ARMS, ARMOR, CLOTHING, EQUIPMENT, MAGIC, PROVISION, SPELL_MATERIAL, VALUABLES;
-  };
+  }
+
+  private static Registry<Item> _itemRegistry;;
 
   /** Category for easier grouping */
   private ItemCategory _category;
@@ -198,6 +202,16 @@ public class Item implements IRegistryElement
       catStr = _category.toString();
     }
     return (_name + " (" + catStr + ")");
+  }
+
+  public static void setItemRegistry(ItemRegistry itemRegistry)
+  {
+    _itemRegistry = itemRegistry;
+  }
+  
+  public static Item getItem(String name)
+  {
+    return _itemRegistry.get(name);
   }
 } // end of Item class
 

@@ -12,7 +12,6 @@ package chronos.pdc.character;
 import java.util.ArrayList;
 
 import chronos.pdc.Item;
-import chronos.pdc.Item.ItemCategory;
 import chronos.pdc.character.TraitList.PrimeTraits;
 
 /**
@@ -67,9 +66,8 @@ public class Thief extends Klass
   /** Assign initial inventory to Wizard (8 gpw = 1 lb) */
   public void addKlassItems(Inventory inven)
   {
-    // Basic inventory Items: category, name, quantity, weight (each in fractional lb)
-    inven.addItem(new Item(ItemCategory.EQUIPMENT, "Thieves' kit", 1, 1.0));
-    inven.addItem(new Item(ItemCategory.ARMS, "Dagger (dmg=d6, attack=1)", 1, 3.0));
+    inven.addItem(Item.getItem("Thieves' kit"));
+    inven.addItem(Item.getItem("Dagger"));
   }
 
 

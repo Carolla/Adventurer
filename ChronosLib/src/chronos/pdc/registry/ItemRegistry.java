@@ -100,6 +100,33 @@ public class ItemRegistry extends Registry<Item>
       {Item.ItemCategory.EQUIPMENT.name(), "Water/wine skein", "16", "9"},
   };
 
+  private static String[][] _characterInventory = {
+      // Basic inventory Items: category, name, quantity, weight (each in fractional lb)
+      {ItemCategory.ARMS.name(), "Quarterstaff", "1", "3.0"},
+      {ItemCategory.MAGIC.name(), "Sacred Satchel", "1", "0.25"},
+      {ItemCategory.MAGIC.name(), "Holy symbol, wooden", "1", "0.50"},
+      {ItemCategory.SPELL_MATERIAL.name(), "Rosemary sprig", "1", "0.125"},
+      {ItemCategory.SPELL_MATERIAL.name(), "Wolfsbane", "2", "0.25"},
+      {ItemCategory.ARMS.name(), "Short sword", "1", "7.0"},
+      {ItemCategory.ARMOR.name(), "Leather (AC=12)", "1", "10.0"},
+      {ItemCategory.EQUIPMENT.name(), "Thieves' kit", "1", "1.0"},
+      {ItemCategory.ARMS.name(), "Dagger", "1", "3.0"},
+      {ItemCategory.ARMS.name(), "Walking stick", "1", "3.0"},
+      {ItemCategory.MAGIC.name(), "Spell book", "1", "5.0"},
+      {ItemCategory.MAGIC.name(), "Magic bag", "1", "0.25"},
+      {ItemCategory.SPELL_MATERIAL.name(), "Live spider", "1", "0.125"},
+      {ItemCategory.EQUIPMENT.name(), "Backpack", "1", "7.0"},
+      {ItemCategory.EQUIPMENT.name(), "Tinderbox", "1", "0.50"},
+      {ItemCategory.EQUIPMENT.name(), "Torch", "1", "1.0"},
+      {ItemCategory.PROVISION.name(), "Rations", "2", "0.50"},
+      {ItemCategory.PROVISION.name(), "Water skein (full)", "1", "1.5"},
+      {ItemCategory.CLOTHING.name(), "Belt pouch, small", "1", "0.25"},
+      {ItemCategory.CLOTHING.name(), "Leather boots", "1", "6.0"},
+      {ItemCategory.CLOTHING.name(), "Belt", "1", "0.25"},
+      {ItemCategory.CLOTHING.name(), "Breeches", "1", "0.50"},
+      {ItemCategory.CLOTHING.name(), "Shirt", "1", "0.50"},
+      {ItemCategory.CLOTHING.name(), "Cloak", "1", "2.0"}
+  };
 
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
@@ -113,8 +140,8 @@ public class ItemRegistry extends Registry<Item>
   {
     super(Chronos.ItemRegPath);
     if (_shouldInitialize) {
-        initialize();
-    }        
+      initialize();
+    }
   }
 
 
@@ -132,13 +159,10 @@ public class ItemRegistry extends Registry<Item>
     tablz.add(_innMenu);
     tablz.add(_rogueEquipment);
     tablz.add(_storeInventory);
-    try {
-      // Load each of the tables
-      for (int k = 0; k < tablz.size(); k++) {
-        loadTable(tablz.get(k));
-      }
-    } catch (ApplicationException ex) {
-      System.err.println("ItemRegistry.initialize(): " + ex.getMessage());
+    tablz.add(_characterInventory);
+
+    for (int k = 0; k < tablz.size(); k++) {
+      loadTable(tablz.get(k));
     }
   }
 
@@ -155,7 +179,7 @@ public class ItemRegistry extends Registry<Item>
    */
   public Item getItem(String name)
   {
-      return (Item) get(name);
+    return (Item) get(name);
   }
 
 
@@ -179,7 +203,7 @@ public class ItemRegistry extends Registry<Item>
    * @param table the initial Items to load
    * @throw ApplicationException if the Item could not be added to the db
    */
-  private void loadTable(String[][] table) throws ApplicationException
+  private void loadTable(String[][] table)
   {
     // Save the Items required for the new Hero's inventory
     for (int k = 0; k < table.length; k++) {
@@ -193,23 +217,5 @@ public class ItemRegistry extends Registry<Item>
       }
     }
   }
-
-
-  /*
-   * INNER CLASS: MockItemRegistry for Testing 
-   */
-
-
-  /** Inner class for testing Person */
-  public class MockItemRegistry
-  {
-    /** Default constructor */
-    public MockItemRegistry()
-    {}
-
-
-  } // end of MockItemRegistry inner class
-
-
 } // end of ItemRegistry class
 

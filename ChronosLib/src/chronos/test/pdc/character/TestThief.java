@@ -69,12 +69,4 @@ public class TestThief
     t.addKlassSpells();
     assertEquals(0, t.getSpells().size());
   }
-
-  @Test
-  public void hasKlassItems()
-  {
-    Inventory inventory = new Inventory();
-    t.addKlassItems(inventory);
-    assertTrue(inventory.size() > 0);
-  }
 }

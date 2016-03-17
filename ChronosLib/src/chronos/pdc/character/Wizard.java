@@ -13,7 +13,6 @@ import java.util.EnumMap;
 
 import chronos.civ.PersonKeys;
 import chronos.pdc.Item;
-import chronos.pdc.Item.ItemCategory;
 import chronos.pdc.character.TraitList.PrimeTraits;
 
 /**
@@ -52,12 +51,10 @@ public class Wizard extends Klass
   /** Assign initial inventory to Wizard (8 gpw = 1 lb) */
   public void addKlassItems(Inventory inven)
   {
-    // Basic inventory Items: category, name, quantity, weight (each in fractional lb)
-    inven.addItem(new Item(ItemCategory.ARMS, "Walking stick (dmg=d6T, attack=1)", 1, 3.0));
-    inven.addItem(new Item(ItemCategory.MAGIC, "Spell book", 1, 5.0));
-    inven.addItem(new Item(ItemCategory.MAGIC, "Magic bag", 1, 0.25));
-    // for testing
-    inven.addItem(new Item(ItemCategory.SPELL_MATERIAL, "Live spider", 1, 0.125));
+    inven.addItem(Item.getItem("Walking stick"));
+    inven.addItem(Item.getItem("Spell book"));
+    inven.addItem(Item.getItem("Magic bag"));
+    inven.addItem(Item.getItem("Live spider"));
   }
 
   @Override

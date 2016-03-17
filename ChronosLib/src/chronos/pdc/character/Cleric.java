@@ -13,7 +13,6 @@ import java.util.EnumMap;
 
 import chronos.civ.PersonKeys;
 import chronos.pdc.Item;
-import chronos.pdc.Item.ItemCategory;
 import chronos.pdc.character.TraitList.PrimeTraits;
 
 /**
@@ -69,12 +68,11 @@ public class Cleric extends Klass
   /** Assign initial inventory to Cleric (8 gpw = 1 lb) */
   public void addKlassItems(Inventory inven)
   {
-    // Basic inventory Items: category, name, quantity, weight (each in fractional lb)
-    inven.addItem(new Item(ItemCategory.ARMS, "Quarterstaff (dmg=d6T, attack=1)", 1, 3.0));
-    inven.addItem(new Item(ItemCategory.MAGIC, "Sacred Satchel", 1, 0.25));
-    inven.addItem(new Item(ItemCategory.MAGIC, "Holy symbol, wooden", 1, 0.50));
-    inven.addItem(new Item(ItemCategory.SPELL_MATERIAL, "Rosemary sprig", 1, 0.125));
-    inven.addItem(new Item(ItemCategory.SPELL_MATERIAL, "Wolfsbane", 2, 0.25));
+    inven.addItem(Item.getItem("Quarterstaff"));
+    inven.addItem(Item.getItem("Sacred Satchel"));
+    inven.addItem(Item.getItem("Holy symbol, wooden"));
+    inven.addItem(Item.getItem("Rosemary sprig"));
+    inven.addItem(Item.getItem("Wolfsbane"));
   }
 
 

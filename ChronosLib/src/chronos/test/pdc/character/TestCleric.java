@@ -69,12 +69,4 @@ public class TestCleric
     c.addKlassSpells();
     assertTrue(c.getSpells().size() > 0);
   }
-  
-  @Test
-  public void hasKlassItems()
-  {
-    Inventory inventory = new Inventory();
-    c.addKlassItems(inventory);
-    assertTrue(inventory.size() > 0);
-  }
 }

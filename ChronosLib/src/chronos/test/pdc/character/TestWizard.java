@@ -69,12 +69,4 @@ public class TestWizard
     w.addKlassSpells();
     assertTrue(w.getSpells().size() > 0);
   }
-
-  @Test
-  public void hasKlassItems()
-  {
-    Inventory inventory = new Inventory();
-    w.addKlassItems(inventory);
-    assertTrue(inventory.size() > 0);
-  }
 }

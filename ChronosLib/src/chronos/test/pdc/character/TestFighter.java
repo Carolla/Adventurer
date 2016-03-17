@@ -71,12 +71,4 @@ public class TestFighter
     f.addKlassSpells();
     assertEquals(0, f.getSpells().size());
   }
-  
-  @Test
-  public void hasKlassItems()
-  {
-    Inventory inventory = new Inventory();
-    f.addKlassItems(inventory);
-    assertTrue(inventory.size() > 0);
-  }
 }
