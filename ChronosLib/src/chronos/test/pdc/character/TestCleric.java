@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import chronos.pdc.character.Cleric;
-import chronos.pdc.character.Inventory;
 import chronos.pdc.character.TraitList;
 
 public class TestCleric

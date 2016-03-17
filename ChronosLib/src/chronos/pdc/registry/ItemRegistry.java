@@ -53,7 +53,6 @@ public class ItemRegistry extends Registry<Item>
       {Item.ItemCategory.EQUIPMENT.name(), "Torches", "8", "3"}, // 0.5 lb
       {Item.ItemCategory.EQUIPMENT.name(), "Rations", "2", "3"}, // 0.125 lb
       {Item.ItemCategory.EQUIPMENT.name(), "Water skein", "80", "1"}, // 5.0 lb
-      {Item.ItemCategory.ARMS.name(), "Quarterstaff", "48", "1"} // 3.0 lb
   };
 
   // 6 Items for the Bank's assets, wills, and loans
@@ -102,30 +101,17 @@ public class ItemRegistry extends Registry<Item>
 
   private static String[][] _characterInventory = {
       // Basic inventory Items: category, name, quantity, weight (each in fractional lb)
-      {ItemCategory.ARMS.name(), "Quarterstaff", "1", "3.0"},
-      {ItemCategory.MAGIC.name(), "Sacred Satchel", "1", "0.25"},
-      {ItemCategory.MAGIC.name(), "Holy symbol, wooden", "1", "0.50"},
-      {ItemCategory.SPELL_MATERIAL.name(), "Rosemary sprig", "1", "0.125"},
-      {ItemCategory.SPELL_MATERIAL.name(), "Wolfsbane", "2", "0.25"},
-      {ItemCategory.ARMS.name(), "Short sword", "1", "7.0"},
-      {ItemCategory.ARMOR.name(), "Leather (AC=12)", "1", "10.0"},
-      {ItemCategory.EQUIPMENT.name(), "Thieves' kit", "1", "1.0"},
-      {ItemCategory.ARMS.name(), "Dagger", "1", "3.0"},
-      {ItemCategory.ARMS.name(), "Walking stick", "1", "3.0"},
-      {ItemCategory.MAGIC.name(), "Spell book", "1", "5.0"},
-      {ItemCategory.MAGIC.name(), "Magic bag", "1", "0.25"},
-      {ItemCategory.SPELL_MATERIAL.name(), "Live spider", "1", "0.125"},
-      {ItemCategory.EQUIPMENT.name(), "Backpack", "1", "7.0"},
-      {ItemCategory.EQUIPMENT.name(), "Tinderbox", "1", "0.50"},
-      {ItemCategory.EQUIPMENT.name(), "Torch", "1", "1.0"},
-      {ItemCategory.PROVISION.name(), "Rations", "2", "0.50"},
-      {ItemCategory.PROVISION.name(), "Water skein (full)", "1", "1.5"},
-      {ItemCategory.CLOTHING.name(), "Belt pouch, small", "1", "0.25"},
-      {ItemCategory.CLOTHING.name(), "Leather boots", "1", "6.0"},
-      {ItemCategory.CLOTHING.name(), "Belt", "1", "0.25"},
-      {ItemCategory.CLOTHING.name(), "Breeches", "1", "0.50"},
-      {ItemCategory.CLOTHING.name(), "Shirt", "1", "0.50"},
-      {ItemCategory.CLOTHING.name(), "Cloak", "1", "2.0"}
+      {ItemCategory.ARMS.name(), "Quarterstaff", "1", "48"},
+      {ItemCategory.MAGIC.name(), "Sacred Satchel", "1", "2"},
+      {ItemCategory.MAGIC.name(), "Holy symbol, wooden", "1", "8"},
+      {ItemCategory.SPELL_MATERIAL.name(), "Rosemary sprig", "1", "1"},
+      {ItemCategory.SPELL_MATERIAL.name(), "Wolfsbane", "2", "2"},
+      {ItemCategory.ARMS.name(), "Short sword", "1", "102"},
+      {ItemCategory.ARMOR.name(), "Leather Armor", "1", "160"},
+      {ItemCategory.ARMS.name(), "Walking stick", "1", "48"},
+      {ItemCategory.MAGIC.name(), "Spell book", "1", "80"},
+      {ItemCategory.MAGIC.name(), "Magic bag", "1", "2"},
+      {ItemCategory.SPELL_MATERIAL.name(), "Live spider", "1", "1"}
   };
 
   /*
