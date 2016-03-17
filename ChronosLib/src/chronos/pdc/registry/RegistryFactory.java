@@ -68,7 +68,9 @@ public class RegistryFactory
   {
     _regMap.put(RegKey.HERO, new HeroRegistry());
     _regMap.put(RegKey.ITEM, new ItemRegistry());
-    _regMap.put(RegKey.SKILL, new SkillRegistry());
+    SkillRegistry skReg = new SkillRegistry();
+    _regMap.put(RegKey.SKILL, skReg);
+    Skill.setSkillRegistry(skReg);
     _regMap.put(RegKey.OCP, new OccupationRegistry((SkillRegistry) _regMap.get(RegKey.SKILL)));
     _regMap.put(RegKey.NPC, new NPCRegistry());
     _regMap.put(RegKey.BLDG,new BuildingRegistry());
