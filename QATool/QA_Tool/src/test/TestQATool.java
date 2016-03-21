@@ -41,7 +41,7 @@ public class TestQATool
   static private final String ROOT =
       System.getProperty("user.dir") + Constants.FS + "src" + Constants.FS;
   /** Exlusion file must be directly beneath src root */
-  static private final String EXCLUDE_FILE = ROOT + "ScanExclusions.txt";
+  static private final String EXCLUDE_FILE = "ScanExclusions.txt";
 
   static private QATool _qat;
   static private MockTool _mock;
@@ -216,8 +216,8 @@ public class TestQATool
   @Test
   public void testWriteNextTestFile()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // SETUP to traverse the src tree
@@ -241,8 +241,8 @@ public class TestQATool
   @Test
   public void testTreeScan() throws InterruptedException
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
     // RUN
@@ -259,8 +259,8 @@ public class TestQATool
       assertTrue(f.delete());
     }
     // Remove the new subdirectories
-    assertTrue(new File(ROOT + "test/pdc/subDir").delete());
-    assertTrue(new File(ROOT + "test/pdc").delete());
+    new File(ROOT + "test/pdc/subDir").delete();
+    new File(ROOT + "test/pdc").delete();
   }
 
 

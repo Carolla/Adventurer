@@ -44,7 +44,7 @@ public class TestPrototype
   static private final String ROOT =
       System.getProperty("user.dir") + Constants.FS + "src" + Constants.FS;
   /** Exlusion file must be directly beneath src root */
-  static private final String EXCLUDE_PATH = ROOT + "ScanExclusions.txt";
+  static private final String EXCLUDE_PATH = "ScanExclusions.txt";
 
   /** Object under test */
   static private Prototype _proto;
