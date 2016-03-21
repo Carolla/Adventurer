@@ -118,6 +118,8 @@ public class QATool
     System.out.println("\t Directories scanned: " + _dirsScanned);
     System.out.println("\t Files scanned: " + _filesScanned);
     System.out.println("\t Test files written: " + _filesWritten);
+    
+    System.exit(0);
   }
   
   
@@ -140,13 +142,15 @@ public class QATool
     if (exclusionPath == null) {
       throw new IllegalArgumentException("QATool: Exclusion file null.");
     }
-    _excludeFile = new File(exclusionPath);
+    
+    _excludeFile = new File(srcPath + Constants.FS + exclusionPath);
     if (!_excludeFile.isFile()) {
       throw new IllegalArgumentException("QATool: Exclusions file not specified.");
     }
     _rootFile = new File(srcPath);
     _proto = new Prototype();
     setExclusions(_excludeFile, _rootFile);
+    
   }
 
 
