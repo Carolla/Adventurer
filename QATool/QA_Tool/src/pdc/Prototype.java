@@ -271,7 +271,8 @@ public class Prototype
   }
 
 
-  /** Determine if the given character is a digit from 1 to 9
+  /**
+   * Determine if the given character is a digit from 1 to 9
    * 
    * @param ch character to check
    * @return true if c is a numeric digit
@@ -292,12 +293,12 @@ public class Prototype
   {
     // Extract only the method name
     int pNdx = mName.indexOf(LEFT_PAREN);
-    char c = (char) mName.charAt(pNdx-1);
+    char c = (char) mName.charAt(pNdx - 1);
     if (isDigit(c)) {
       --pNdx;
     }
     int spaceNdx = mName.indexOf(SPACE);
-    String shortName = mName.substring(spaceNdx+1, pNdx);
+    String shortName = mName.substring(spaceNdx + 1, pNdx);
     return shortName;
   }
 
@@ -391,7 +392,10 @@ public class Prototype
       sourceClass = Class.forName(className);
     } catch (ClassNotFoundException ex) {
       // System.err.println("\tconvertSourceToClass(): " + className + ".class file not found");
-      // System.err.println("\tEnsure that it has been compiled and exists in the bin directory");
+    }
+    if (sourceClass == null) {
+      System.err.println(
+          "\tEnsure that " + sourceText + " has been compiled and exists in the bin directory");
     }
     return sourceClass;
   }
@@ -650,7 +654,17 @@ public class Prototype
       return _protecteds;
     }
 
+    public Class<?> getSourceClass(String srcPath)
+    {
+      return Prototype.this.convertSourceToClass(srcPath);
+    }
+
+    public void sortSignatures(ArrayList<String> myList)
+    {
+      Prototype.this.sortSignatures(myList);
+    }
 
   } // end of MockPrototype inner class
 
+  
 } // end of Prototype class

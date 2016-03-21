@@ -38,7 +38,8 @@ public class TestQATool
 {
 
   /** Root for all source files and subdirectories */
-  static private final String ROOT = System.getProperty("user.dir") + "/src/";
+  static private final String ROOT =
+      System.getProperty("user.dir") + Constants.FS + "src" + Constants.FS;
   /** Exlusion file must be directly beneath src root */
   static private final String EXCLUDE_FILE = ROOT + "ScanExclusions.txt";
 
