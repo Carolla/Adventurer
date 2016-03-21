@@ -46,7 +46,7 @@ public class TestQATool
   static private QATool _qat;
   static private MockTool _mock;
 
-  private String[] expPaths = {"subDir/TestSubDirSource.java",
+  private String[] expPaths = {"subDir" + Constants.FS + "TestSubDirSource.java",
       "TestFileMap.java", "TestTestTemplate.java", "TestPrototype.java", "TestQATool.java"
   };
   private ArrayList<File> _files;
@@ -148,7 +148,7 @@ public class TestQATool
    * @NORMAL.TEST File findTestDir(File root)
    */
   @Test
-  public void findTestDir()
+  public void testFindTestDir()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
@@ -168,7 +168,7 @@ public class TestQATool
    * @ERROR.TEST File findTestDir(File root)
    */
   @Test
-  public void findTestDirBadPathError()
+  public void testFindTestDirBadPathError()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
@@ -214,7 +214,7 @@ public class TestQATool
    * @NORMAL.TEST ArrayList<String> writeNextTestFile(File srcDir, File testDir, String rootPath)
    */
   @Test
-  public void writeNextTestFile()
+  public void testWriteNextTestFile()
   {
     MsgCtrl.auditMsgsOn(true);
     MsgCtrl.errorMsgsOn(true);
@@ -239,7 +239,7 @@ public class TestQATool
    * @NORMAL.TEST void treeScan(File srcDir)
    */
   @Test
-  public void treeScan() throws InterruptedException
+  public void testTreeScan() throws InterruptedException
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);

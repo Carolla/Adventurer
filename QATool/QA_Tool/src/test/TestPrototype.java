@@ -33,7 +33,6 @@ import mylib.MsgCtrl;
 import pdc.Prototype;
 import pdc.Prototype.MockPrototype;
 import pdc.QATool;
-import test.pdc.subDir.TestSubDirSource;
 
 /**
  * @author Alan Cline
@@ -174,11 +173,16 @@ public class TestPrototype
   @Test
   public void testWriteFile()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
     // SETUP: Create the file in the right place
+    // Create this class to avoid compile errors before test file is created
+    class TestSubDirSource {
+      public TestSubDirSource(){}
+    }
+
     // Source methods that will be written as test methods (for doc only)
     @SuppressWarnings("unused")
     String[] srcMethods = {
@@ -259,7 +263,8 @@ public class TestPrototype
     }
     // Read the file and compare the actual test methods in the file
     MsgCtrl.msgln("\tReflecting on " + targetPath);
-    // Ensure that the newly created test class exists; it must be compled first
+
+    // Ensure that the newly created test class exists; it must be compiled first
     TestSubDirSource testTarget = new TestSubDirSource();
     assertNotNull(testTarget);
     Method[] mList = testTarget.getClass().getDeclaredMethods();
@@ -322,6 +327,7 @@ public class TestPrototype
   // PRIVATE HELPER METHODS
   // ======================================================================
 
+  
   /** Clear all zero-length files from the root down */
   private static void clearEmptyFiles(File root)
   {
