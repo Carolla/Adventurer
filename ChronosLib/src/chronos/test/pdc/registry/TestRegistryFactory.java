@@ -22,8 +22,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import chronos.Chronos;
 import chronos.civ.DefaultUserMsg;
+import chronos.pdc.Chronos;
 import chronos.pdc.command.Scheduler;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;

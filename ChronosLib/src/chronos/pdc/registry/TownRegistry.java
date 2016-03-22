@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mylib.pdc.Registry;
-import chronos.Chronos;
+import chronos.pdc.Chronos;
 import chronos.pdc.Town;
 import chronos.pdc.buildings.Building;
 

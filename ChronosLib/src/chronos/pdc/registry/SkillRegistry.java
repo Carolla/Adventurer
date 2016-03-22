@@ -12,7 +12,7 @@ package chronos.pdc.registry;
 import java.util.List;
 
 import mylib.pdc.Registry;
-import chronos.Chronos;
+import chronos.pdc.Chronos;
 import chronos.pdc.Skill;
 
 /**

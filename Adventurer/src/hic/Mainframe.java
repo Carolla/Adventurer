@@ -32,7 +32,7 @@ import mylib.Constants;
 import mylib.hic.HelpDialog;
 import mylib.hic.IHelpText;
 import net.miginfocom.swing.MigLayout;
-import chronos.Chronos;
+import chronos.pdc.Chronos;
 import civ.Adventurer;
 
 /**

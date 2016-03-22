@@ -15,7 +15,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import chronos.Chronos;
+import chronos.pdc.Chronos;
 
 /**
  * Collection of static utility routines

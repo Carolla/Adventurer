@@ -31,7 +31,7 @@ import javax.swing.text.StyledDocument;
 
 import mylib.Constants;
 import net.miginfocom.swing.MigLayout;
-import chronos.Chronos;
+import chronos.pdc.Chronos;
 import civ.CommandParser;
 /**
  * This class serves as the text output and command line input after an Adventure is selected

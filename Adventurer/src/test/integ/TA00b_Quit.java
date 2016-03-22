@@ -16,7 +16,7 @@ import java.io.File;
 
 import org.junit.Test;
 
-import chronos.Chronos;
+import chronos.pdc.Chronos;
 
 /**
  * Ensure that the program exits back to the system, closing all registries, but not deleting them.

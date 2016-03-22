@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 import mylib.ApplicationException;
 import mylib.pdc.Registry;
-import chronos.Chronos;
+import chronos.pdc.Chronos;
 import chronos.pdc.NPC;
 
 /**

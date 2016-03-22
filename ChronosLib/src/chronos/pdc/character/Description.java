@@ -11,8 +11,8 @@ package chronos.pdc.character;
 
 import java.util.EnumMap;
 
-import chronos.Chronos;
 import chronos.civ.PersonKeys;
+import chronos.pdc.Chronos;
 
 public class Description
 {

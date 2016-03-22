@@ -17,7 +17,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import chronos.Chronos;
+import chronos.pdc.Chronos;
 
 /**
  * The {@code ImagePanel} class extends {@code ChronosPanel} so that it is easy to draw onto. It is

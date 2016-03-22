@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 
 import mylib.Constants;
 import net.miginfocom.swing.MigLayout;
-import chronos.Chronos;
+import chronos.pdc.Chronos;
 
 @SuppressWarnings("serial")
 public class ImageDisplayPanel extends JPanel

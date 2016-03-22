@@ -7,7 +7,7 @@
  * by email: acline@carolla.com
  */
 
-package chronos;
+package chronos.pdc;
 
 import java.awt.Font;
 import java.io.File;

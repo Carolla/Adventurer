@@ -14,7 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
-import chronos.Chronos;
+import chronos.pdc.Chronos;
 
 @SuppressWarnings("serial")
 public class WideScreenPanel extends JPanel

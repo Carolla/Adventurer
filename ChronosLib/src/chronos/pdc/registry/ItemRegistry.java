@@ -15,7 +15,7 @@ import java.util.List;
 
 import mylib.ApplicationException;
 import mylib.pdc.Registry;
-import chronos.Chronos;
+import chronos.pdc.Chronos;
 import chronos.pdc.Item;
 import chronos.pdc.Item.ItemCategory;
 
