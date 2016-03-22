@@ -1,7 +1,5 @@
 /**
-
-
- * QAToolTestSuite.java Copyright (c) 2009, Carolla Development, Inc. All Rights Reserved
+ * QAToolTestSuite.java Copyright (c) 2016, Carolla Development, Inc. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
@@ -14,6 +12,8 @@ package test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import test.pdc.TestSuiteBuilder;
+
 
 /**
  * Run all unit tests for the QA Tool.
@@ -25,13 +25,17 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
 
     /** PDC test files */
+    TestSuiteBuilder.class,
+
+    /** Root-level test files */
     TestPrototype.class,
     TestQATool.class
 
-  })
+})
 
 public class QAToolTestSuite
 {
+}
 
-} // end of QAToolTestSuite class
+// end of QAToolTestSuite class
 

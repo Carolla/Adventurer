@@ -15,9 +15,11 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import mylib.Constants;
 
@@ -37,15 +39,6 @@ public class Prototype
   private enum Banner {
     PUBLIC, PROTECTED
   };
-
-  /** Copyright banner at top of file */
-  private final String COPYRIGHT =
-      "/** \n * %s Copyright (c) 2016, Carolla Development, Inc. All Rights Reserved \n * \n" +
-          " * Permission to make digital or hard copies of all or parts of this work for \n" +
-          " * commercial use is prohibited. To republish, to post on servers, to reuse, \n" +
-          " * or to redistribute to lists, requires prior specific permission and/or a fee. \n" +
-          " * Request permission to use from Carolla Development, Inc. by email: \n" +
-          " * acline@carolla.com \n */";
 
   /** Set of JUnit import statements */
   private final String JUNIT_IMPORTS =
@@ -162,9 +155,11 @@ public class Prototype
     String targetPath = target.getPath();
     int cutPoint = targetPath.indexOf("test");
     String shortName = targetPath.substring(cutPoint);
-    System.out.println("\tWriting test class file " + shortName);
+//    System.out.println("\tWriting test class file " + shortName);
+    
     // 1. Write the copyright notice into the prototype
-    String copyright = String.format(COPYRIGHT, target.getName());
+    int year = new GregorianCalendar().get(Calendar.YEAR);
+    String copyright = String.format(Constants.COPYRIGHT, target.getName(), year);
     out.println(copyright);
 
     // 2. Write the package statements for this test class

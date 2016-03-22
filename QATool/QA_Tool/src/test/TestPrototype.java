@@ -170,8 +170,8 @@ public class TestPrototype
   @Test
   public void testWriteFile()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // SETUP: Create the file in the right place
@@ -236,7 +236,7 @@ public class TestPrototype
     MsgCtrl.msgln("\tGenerated test file size = " + target.length());
 
     // VERIFY
-    long expFileLen = 3021;
+    long expFileLen = 3022;
     assertTrue(target.exists());
     assertEquals(expFileLen, target.length());
 
@@ -285,8 +285,8 @@ public class TestPrototype
   @Test
   public void testWriteFileMultiples()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // SETUP
@@ -308,7 +308,7 @@ public class TestPrototype
     MsgCtrl.msgln("\tGenerated test file size = " + target.length());
 
     // VERIFY
-    long expFileLen = 3021;
+    long expFileLen = 3022;
     assertTrue(target.exists());
     assertEquals(expFileLen, target.length());
 
@@ -317,4 +317,5 @@ public class TestPrototype
     assertTrue(target.length() == expFileLen);
 
   }
+  
 } // end of TestPrototype class

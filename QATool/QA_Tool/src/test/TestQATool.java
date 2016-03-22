@@ -241,8 +241,8 @@ public class TestQATool
   @Test
   public void testTreeScan() throws InterruptedException
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // RUN

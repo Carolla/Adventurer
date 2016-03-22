@@ -14,7 +14,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -36,6 +40,8 @@ public class TestSuiteBuilder
   private final String TESTDIR =
       System.getProperty("user.dir") + Constants.FS + "src" + Constants.FS + "test";
 
+  /** Name of test suite */
+  private final String SUITE_NAME = "QATestSuite.java";
   /** SuiteBuilder class under test */
   static private SuiteBuilder _sb;
 
@@ -84,27 +90,61 @@ public class TestSuiteBuilder
    * @NORMAL.TEST ArrayList<String> collectTestFiles(String testDirPath)
    */
   @Test
+  public void testWriteSuite()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // SETUP
+    // Remove the target file if it exists
+    String targetPath = TESTDIR + Constants.FS + SUITE_NAME;
+    File target = new File(targetPath);
+    target.delete();
+    assertTrue(!target.exists());
+
+    int rootLen = TESTDIR.length() + 1; // include the file separator
+    ArrayList<String> testList = new ArrayList<String>();
+    testList = _sb.collectTestFileNames(new File(TESTDIR), rootLen);
+
+    // RUN
+    File suite = _sb.writeFile(target, testList);
+
+    // VERIFY
+    assertTrue(target.exists());
+    long suiteLen = 951;
+    assertEquals(suiteLen, suite.length());
+    assertTrue(target.exists());
+    
+    printFile(targetPath);
+  }
+
+
+  /**
+   * @NORMAL.TEST ArrayList<String> collectTestFiles(String testDirPath)
+   */
+  @Test
   public void testCollectTestFiles()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // SETUP Expected file names
-    String[] expFiles = {"pdc/TestSuiteBuilder.java", "TestProtype.java", "TestQATool.java"};
+    String[] expFiles = {"pdc/TestSuiteBuilder.java", "TestPrototype.java", "TestQATool.java"};
 
     ArrayList<String> expected = new ArrayList<String>(expFiles.length);
     for (int k = 0; k < expFiles.length; k++) {
       expected.add(TESTDIR + Constants.FS + expFiles[k]);
     }
 
-    ArrayList<String> fileList = _sb.collectTestFileNames(new File(TESTDIR));
+    int rootLen = TESTDIR.length() + 1; // include the file separator
+    ArrayList<String> fileList = _sb.collectTestFileNames(new File(TESTDIR), rootLen);
     assertEquals(expFiles.length, fileList.size());
     for (int k = 0; k < expFiles.length; k++) {
       MsgCtrl.msgln("\tTest file : " + fileList.get(k));
       assertTrue(expFiles[k].equals(fileList.get(k)));
     }
-
   }
 
 
@@ -136,6 +176,33 @@ public class TestSuiteBuilder
       MsgCtrl.errMsgln("\tExpected exception: " + ex1.getMessage());
     }
 
+  }
+
+  // ===============================================================================
+  // PRIVATE HELPER METHODS
+  // ===============================================================================
+
+  /** Print the suite file contents */
+  private void printFile(String fName)
+  {
+    Scanner in = null;
+    try {
+      in = new Scanner(new FileReader(fName));
+    } catch (FileNotFoundException e) {
+      MsgCtrl.errMsgln("\tprintFile: Could not find file " + fName);
+      MsgCtrl.errMsgln("\t" + e.getMessage());
+    }
+    String line = null;
+    MsgCtrl.msgln("\nPRINTING FILE " + fName + ":\n");
+    try {
+      while ((line = in.nextLine()) != null) {
+        MsgCtrl.msgln(line);
+      }
+      // This exception ends the file read
+    } catch (NoSuchElementException e2) {
+      ;
+    }
+    in.close();
   }
 
 
