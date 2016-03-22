@@ -83,7 +83,7 @@ public class TestTemplate
   public ArrayList<String> getMethods(String path)
   {
     // Guard against unknown class path
-    Class clazz = null;
+    Class<?> clazz = null;
     try {
       clazz = Class.forName(path);
     } catch (Exception ex) {

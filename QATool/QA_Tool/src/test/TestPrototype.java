@@ -15,12 +15,11 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
+
+import mylib.Constants;
+import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -28,8 +27,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import mylib.Constants;
-import mylib.MsgCtrl;
 import pdc.Prototype;
 import pdc.Prototype.MockPrototype;
 import pdc.QATool;
@@ -243,7 +240,6 @@ public class TestPrototype
     assertTrue(target.exists());
     assertEquals(expFileLen, target.length());
 
-    // printFile(target.getAbsolutePath());
     assertTrue(target.exists());
     assertEquals(expTestFile, target.getPath());
 
@@ -317,71 +313,8 @@ public class TestPrototype
     assertEquals(expFileLen, target.length());
 
     target = _proto.writeFile(new File(targetPath), srcPath);
-    // printFile(target.getAbsolutePath());
     assertTrue(target.exists());
     assertTrue(target.length() == expFileLen);
 
   }
-
-  // ======================================================================
-  // PRIVATE HELPER METHODS
-  // ======================================================================
-
-  
-  /** Clear all zero-length files from the root down */
-  private static void clearEmptyFiles(File root)
-  {
-    MsgCtrl.msgln("Runnning tearDownAfterClass:");
-
-    // Guard against non-directory root
-    if ((root == null) || (!root.isDirectory())) {
-      MsgCtrl.errMsgln("\tclearEmptyFiles(): root is not a directory");
-      return;
-    }
-    // Retrieve first layer of normal files and subdirs under dir
-    File[] allFiles = root.listFiles();
-    for (File f : allFiles) {
-      if (f.isDirectory()) {
-        if (f.listFiles().length == 0) {
-          f.delete();
-        }
-        clearEmptyFiles(f);
-      } else if (f.length() <= 1) {
-        MsgCtrl.msgln("\tDeleting empty file " + f.getPath());
-        f.delete();
-      }
-    }
-    // Remove empty directory if all its files have been deleted
-    allFiles = root.listFiles();
-    if (allFiles.length == 0) {
-      MsgCtrl.msgln("\t\tDeleting empty directory " + root.getPath());
-      root.delete();
-    }
-  }
-
-
-  /** Display to the console the prototype as written so far */
-  private void printFile(String fName)
-  {
-    Scanner in = null;
-    try {
-      in = new Scanner(new FileReader(fName));
-    } catch (FileNotFoundException e) {
-      MsgCtrl.errMsgln("\tprintFile: Could not find file " + fName);
-      MsgCtrl.errMsgln("\t" + e.getMessage());
-    }
-    String line = null;
-    MsgCtrl.msgln("\nPRINTING FILE " + fName + ":\n");
-    try {
-      while ((line = in.nextLine()) != null) {
-        MsgCtrl.msgln(line);
-      }
-      // This exception ends the file read
-    } catch (NoSuchElementException e2) {
-      ;
-    }
-    in.close();
-  }
-
-
 } // end of TestPrototype class

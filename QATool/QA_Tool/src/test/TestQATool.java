@@ -262,21 +262,4 @@ public class TestQATool
     new File(ROOT + "test/pdc/subDir").delete();
     new File(ROOT + "test/pdc").delete();
   }
-
-
-  // ======================================================================
-  // PRIVATE HELPERS
-  // ======================================================================
-
-  /** Display the contents of an arraylist, with intro message */
-  private void dumpList(ArrayList<String> plist, String msg)
-  {
-    MsgCtrl.msgln("\t" + msg);
-    for (int k = 0; k < plist.size(); k++) {
-      String s = plist.get(k);
-      MsgCtrl.msgln("\t\t" + s);
-    }
-  }
-
-
 } // end of TestQA_Tool test class
