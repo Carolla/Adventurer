@@ -213,13 +213,13 @@ public class SuiteBuilder
     writeGroup(out, "Base", group);
 
     group = returnGroup(Category.PDC, fileList);
-    writeGroup(out, "PDC", group);
+    writeGroup(out, Category.PDC.toString(), group);
 
     group = returnGroup(Category.CIV, fileList);
-    writeGroup(out, "CIV", group);
+    writeGroup(out, Category.CIV.toString(), group);
 
     group = returnGroup(Category.DMC, fileList);
-    writeGroup(out, "DMC", group);
+    writeGroup(out, Category.DMC.toString(), group);
 
   }
 
