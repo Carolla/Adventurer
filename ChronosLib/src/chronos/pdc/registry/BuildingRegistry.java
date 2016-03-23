@@ -65,9 +65,7 @@ public class BuildingRegistry extends Registry<Building>
 
   @Override
   protected void initialize()
-  {
-
-  }
+  {}
 
   /**
    * Retrieve a building by name from the building registry
