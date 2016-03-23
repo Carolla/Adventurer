@@ -74,10 +74,6 @@ public class TestDbReadWriter
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-
-    // Clear the database and remove the file
-    _regRW.dbClear();
-
   }
 
   // ====================================================================
@@ -133,37 +129,6 @@ public class TestDbReadWriter
   }
 
 
-  /**
-   * mylib.dmc.DbReadWriter(String) throws NullPointerException
-   *
-   * @Normal.Test Remove all elements from the db: a test-only method
-   */
-  @Test
-  public void testDbClear()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    SomeObject so1 = new SomeObject("first object saved");
-    SomeObject so2 = new SomeObject("second object saved");
-    SomeObject so3 = new SomeObject("third object saved");
-
-    // Add these three and check the db size
-    int nbrElems = _regRW.size();
-    _regRW.addElement(so1);
-    _regRW.addElement(so2);
-    _regRW.addElement(so3);
-
-    // Check that they are there
-    assertEquals(nbrElems + 3, _regRW.size());
-
-    // Clear them all
-    _regRW.dbClear();
-    assertEquals(0, _regRW.size());
-    assertNull(_regRW.containsElement(so2));
-  }
-
 
   /**
    * @Normal.Test Delete a selected object
@@ -198,9 +163,6 @@ public class TestDbReadWriter
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    // Clear the database
-    _regRW.dbClear();
-
     // Add some elements
     _regRW.addElement(new SomeObject("first object saved"));
     _regRW.addElement(new SomeObject("second object saved"));
@@ -230,10 +192,6 @@ public class TestDbReadWriter
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-
-    // Clear the database
-    _regRW.dbClear();
-
     // Add some elements
     _regRW.addElement(new SomeObject("first object saved"));
     _regRW.addElement(new SomeObject("second object saved"));
@@ -246,12 +204,6 @@ public class TestDbReadWriter
     List<SomeObject> slist = _regRW.getAll();
     assertNotNull(slist);
     assertEquals(6, slist.size());
-
-    // Clear the database and try again
-    _regRW.dbClear();
-    slist = _regRW.getAll();
-    assertNotNull(slist);
-    assertEquals(0, slist.size());
   }
 
 

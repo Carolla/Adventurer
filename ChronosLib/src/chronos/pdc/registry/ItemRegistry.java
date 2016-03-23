@@ -39,80 +39,56 @@ public class ItemRegistry extends Registry<Item>
    * Weight (ea), and Quantity. Cash will be set from the Klass initCash() method as Gold and
    * Silver, both of Category CASH
    */
-  static private String[][] _heroInventory = {
-      {Item.ItemCategory.VALUABLES.name(), "Gold pieces", "2", "15"}, // 1.875 lb
-      {Item.ItemCategory.VALUABLES.name(), "Silver pieces", "1", "8"}, // 0.5 lb
-      {Item.ItemCategory.EQUIPMENT.name(), "Backpack", "160", "1"}, // 10.0 lb
-      {Item.ItemCategory.CLOTHING.name(), "Cloak", "32", "1"}, // 2.0 lb
-      {Item.ItemCategory.CLOTHING.name(), "Belt", "5", "1"}, // 0.3125 lb
-      {Item.ItemCategory.EQUIPMENT.name(), "Belt pouch, small", "2", "1"}, // 0.125 lb
-      {Item.ItemCategory.CLOTHING.name(), "Breeches", "16", "1"}, // 1.0 lb
-      {Item.ItemCategory.CLOTHING.name(), "Pair of Boots", "40", "1"}, // 2.5 lb
-      {Item.ItemCategory.CLOTHING.name(), "Shirt", "8", "1"}, // 0.5 lb
-      {Item.ItemCategory.EQUIPMENT.name(), "Tinderbox, Flint & Steel", "5", "1"}, // 0.3125 lb
-      {Item.ItemCategory.EQUIPMENT.name(), "Torches", "8", "3"}, // 0.5 lb
-      {Item.ItemCategory.EQUIPMENT.name(), "Rations", "2", "3"}, // 0.125 lb
-      {Item.ItemCategory.EQUIPMENT.name(), "Water skein", "80", "1"}, // 5.0 lb
-  };
-
-  // 6 Items for the Bank's assets, wills, and loans
-  static private String[][] _bankAssets = {
-      // {"CASH", "Gold pieces", "2", "5000"},
-      // {"CASH", "Silver pieces", "1", "1000"},
-      {Item.ItemCategory.VALUABLES.name(), "Platinum pieces", "2", "100"},
-      {Item.ItemCategory.VALUABLES.name(), "Gem, topaz", "25", "10"},
-      {Item.ItemCategory.VALUABLES.name(), "Gem, ruby", "100", "8"},
-      {Item.ItemCategory.VALUABLES.name(), "Gem, emerald", "250", "3"},
-      {Item.ItemCategory.EQUIPMENT.name(), "Will and Testament", "1", "1"},
-      {Item.ItemCategory.EQUIPMENT.name(), "Loan", "1", "1"},
-  };
-
-  // 11 Items for the Inn's menu
-  static private String[][] _innMenu = {
-      {"PROVISION", "Ale", "8", "25"},
-      {"PROVISION", "Apple", "3", "12"},
-      {"PROVISION", "Bread", "2", "25"},
-      {"PROVISION", "Cheese", "3", "25"},
-      {"PROVISION", "Goat milk", "8", "25"},
-      {"PROVISION", "Hard candy", "2", "10"},
-      {"PROVISION", "Mead", "8", "10"},
-      {"PROVISION", "Roast Beef, serving", "8", "25"},
-      {"PROVISION", "Roast Boar, serving", "8", "25"},
-      {"PROVISION", "Turkey leg", "12", "25"},
-      {"PROVISION", "Wine", "8", "25"},
-  };
-
-  // 5 Items for the Thieves' Den equipment for the Rogues' Den building
-  static private String[][] _rogueEquipment = {
-      {Item.ItemCategory.ARMS.name(), "Dagger", "16", "15"},
-      {Item.ItemCategory.ARMS.name(), "Poison (L1)", "4", "3"},
-      {Item.ItemCategory.EQUIPMENT.name(), "Thieve's Kit", "8", "4"},
-      {Item.ItemCategory.EQUIPMENT.name(), "Lockpick", "4", "2"},
-      {Item.ItemCategory.EQUIPMENT.name(), "Skeleton Key", "4", "2"},
-  };
-
-  // TODO: Fill in this long list from the Players' Manual
-  // 3 Items (for now) for the General Store's inventory
-  static private String[][] _storeInventory = {
-      {Item.ItemCategory.EQUIPMENT.name(), "Lantern", "32", "5"},
-      {Item.ItemCategory.EQUIPMENT.name(), "Flask of Oil", "10", "5"},
-      {Item.ItemCategory.EQUIPMENT.name(), "Water/wine skein", "16", "9"},
-  };
-
-  private static String[][] _characterInventory = {
-      // Basic inventory Items: category, name, quantity, weight (each in fractional lb)
-      {ItemCategory.ARMS.name(), "Quarterstaff", "1", "48"},
-      {ItemCategory.MAGIC.name(), "Sacred Satchel", "1", "2"},
-      {ItemCategory.MAGIC.name(), "Holy symbol, wooden", "1", "8"},
-      {ItemCategory.SPELL_MATERIAL.name(), "Rosemary sprig", "1", "1"},
-      {ItemCategory.SPELL_MATERIAL.name(), "Wolfsbane", "2", "2"},
-      {ItemCategory.ARMS.name(), "Short sword", "1", "102"},
-      {ItemCategory.ARMOR.name(), "Leather Armor", "1", "160"},
-      {ItemCategory.ARMS.name(), "Walking stick", "1", "48"},
-      {ItemCategory.MAGIC.name(), "Spell book", "1", "80"},
-      {ItemCategory.MAGIC.name(), "Magic bag", "1", "2"},
-      {ItemCategory.SPELL_MATERIAL.name(), "Live spider", "1", "1"}
-  };
+//  static private List<Item> Inventory = {
+//      {ItemCategory.VALUABLES.name(), "Gold pieces", "2", "15"}, // 1.875 lb
+//      {ItemCategory.VALUABLES.name(), "Silver pieces", "1", "8"}, // 0.5 lb
+//      {ItemCategory.EQUIPMENT.name(), "Backpack", "160", "1"}, // 10.0 lb
+//      {ItemCategory.CLOTHING.name(), "Cloak", "32", "1"}, // 2.0 lb
+//      {ItemCategory.CLOTHING.name(), "Belt", "5", "1"}, // 0.3125 lb
+//      {ItemCategory.EQUIPMENT.name(), "Belt pouch, small", "2", "1"}, // 0.125 lb
+//      {ItemCategory.CLOTHING.name(), "Breeches", "16", "1"}, // 1.0 lb
+//      {ItemCategory.CLOTHING.name(), "Pair of Boots", "40", "1"}, // 2.5 lb
+//      {ItemCategory.CLOTHING.name(), "Shirt", "8", "1"}, // 0.5 lb
+//      {ItemCategory.EQUIPMENT.name(), "Tinderbox, Flint & Steel", "5", "1"}, // 0.3125 lb
+//      {ItemCategory.EQUIPMENT.name(), "Torches", "8", "3"}, // 0.5 lb
+//      {ItemCategory.EQUIPMENT.name(), "Rations", "2", "3"}, // 0.125 lb
+//      {ItemCategory.EQUIPMENT.name(), "Water skein", "80", "1"}, // 5.0 lb
+//      {ItemCategory.VALUABLES.name(), "Platinum pieces", "2", "100"},
+//      {ItemCategory.VALUABLES.name(), "Gem, topaz", "25", "10"},
+//      {ItemCategory.VALUABLES.name(), "Gem, ruby", "100", "8"},
+//      {ItemCategory.VALUABLES.name(), "Gem, emerald", "250", "3"},
+//      {ItemCategory.EQUIPMENT.name(), "Will and Testament", "1", "1"},
+//      {ItemCategory.EQUIPMENT.name(), "Loan", "1", "1"},
+//      {ItemCategory.PROVISION.name(), "Ale", "8", "25"},
+//      {ItemCategory.PROVISION.name(), "Apple", "3", "12"},
+//      {ItemCategory.PROVISION.name(), "Bread", "2", "25"},
+//      {ItemCategory.PROVISION.name(), "Cheese", "3", "25"},
+//      {ItemCategory.PROVISION.name(), "Goat milk", "8", "25"},
+//      {ItemCategory.PROVISION.name(), "Hard candy", "2", "10"},
+//      {ItemCategory.PROVISION.name(), "Mead", "8", "10"},
+//      {ItemCategory.PROVISION.name(), "Roast Beef, serving", "8", "25"},
+//      {ItemCategory.PROVISION.name(), "Roast Boar, serving", "8", "25"},
+//      {ItemCategory.PROVISION.name(), "Turkey leg", "12", "25"},
+//      {ItemCategory.PROVISION.name(), "Wine", "8", "25"},
+//      {ItemCategory.ARMS.name(), "Dagger", "16", "15"},
+//      {ItemCategory.ARMS.name(), "Poison (L1)", "4", "3"},
+//      {ItemCategory.EQUIPMENT.name(), "Thieve's Kit", "8", "4"},
+//      {ItemCategory.EQUIPMENT.name(), "Lockpick", "4", "2"},
+//      {ItemCategory.EQUIPMENT.name(), "Skeleton Key", "4", "2"},
+//      {ItemCategory.EQUIPMENT.name(), "Lantern", "32", "5"},
+//      {ItemCategory.EQUIPMENT.name(), "Flask of Oil", "10", "5"},
+//      {ItemCategory.EQUIPMENT.name(), "Water/wine skein", "16", "9"},
+//      {ItemCategory.ARMS.name(), "Quarterstaff", "1", "48"},
+//      {ItemCategory.MAGIC.name(), "Sacred Satchel", "1", "2"},
+//      {ItemCategory.MAGIC.name(), "Holy symbol, wooden", "1", "8"},
+//      {ItemCategory.ARMS.name(), "Short sword", "1", "102"},
+//      {ItemCategory.ARMOR.name(), "Leather Armor", "1", "160"},
+//      {ItemCategory.ARMS.name(), "Walking stick", "1", "48"},
+//      {ItemCategory.MAGIC.name(), "Spell book", "1", "80"},
+//      {ItemCategory.MAGIC.name(), "Magic bag", "1", "2"},
+//      {ItemCategory.SPELL_MATERIAL.name(), "Live spider", "1", "1"},
+//      {ItemCategory.SPELL_MATERIAL.name(), "Fake spider", "1", "1"}
+//  };
 
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
@@ -140,12 +116,7 @@ public class ItemRegistry extends Registry<Item>
   {
     // Here are the list of tables to load
     List<String[][]> tablz = new ArrayList<String[][]>();
-    tablz.add(_heroInventory);
-    tablz.add(_bankAssets);
-    tablz.add(_innMenu);
-    tablz.add(_rogueEquipment);
-    tablz.add(_storeInventory);
-    tablz.add(_characterInventory);
+//    tablz.add(_universeInventory);
 
     for (int k = 0; k < tablz.size(); k++) {
       loadTable(tablz.get(k));
