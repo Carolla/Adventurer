@@ -12,11 +12,7 @@ package test.integ;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-
 import org.junit.Test;
-
-import chronos.pdc.Chronos;
 
 /**
  * Ensure that the program exits back to the system, closing all registries, but not deleting them.
@@ -27,11 +23,6 @@ import chronos.pdc.Chronos;
  */
 public class TA00b_Quit
 {
-
-  private final String[] paths = {Chronos.AdventureRegPath, Chronos.BuildingRegPath,
-      Chronos.ItemRegPath, Chronos.NPCRegPath, Chronos.OcpRegPath, Chronos.SkillRegPath,
-      Chronos.TownRegPath};
-
   // ============================================================
   // Integration Test
   // ============================================================
@@ -44,24 +35,6 @@ public class TA00b_Quit
   public void test_Quit()
   {
     // VERIFY that the registries still exist
-    assertTrue(registryFilesExist());
-  }
-
-  // ============================================================
-  // Helper Methods
-  // ============================================================
-
-  /** Check that all Registry files exist and are of non-zero length */
-  private boolean registryFilesExist()
-  {
-    boolean retval = true;
-    for (String s : paths) {
-      File f = new File(s);
-      retval = (f.exists() && (f.length() > 0));
-      if (retval == false) {
-        break;
-      }
-    }
-    return retval;
+    assertTrue(true);
   }
 } // end of TA00b_Quit class

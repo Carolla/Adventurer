@@ -11,8 +11,6 @@ package mylib.dmc;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * Handles all object persistence operations and database management with a db4o
@@ -39,7 +37,7 @@ import java.util.TreeSet;
  */
 public class DbReadWriter<E extends IRegistryElement> {
 
-	private Set<E> _elements;
+	private List<E> _elements;
 
 	// ================================================================================
 	// CONSTRUCTOR(S) AND RELATED METHODS
@@ -49,7 +47,7 @@ public class DbReadWriter<E extends IRegistryElement> {
 	 * Creates the read writer for a particular registry and opens the database
 	 */
 	public DbReadWriter(String filepath) {
-		_elements = new TreeSet<E>();
+		_elements = new ArrayList<E>();
 	}
 
 	// ================================================================================
@@ -67,7 +65,9 @@ public class DbReadWriter<E extends IRegistryElement> {
 			throw new NullPointerException("Cannot add null Object");
 		}
 
-		_elements.add(obj);
+		if (!containsElement(obj)) {
+			_elements.add(obj);
+		}
 	}
 
 	/**
@@ -111,7 +111,7 @@ public class DbReadWriter<E extends IRegistryElement> {
 	 */
 	public E get(String name) {
 		for (E item : _elements) {
-			if (item.getKey().equals(name)) {
+			if (item.getKey().equalsIgnoreCase(name)) {
 				return item;
 			}
 		}
