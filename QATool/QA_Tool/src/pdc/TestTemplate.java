@@ -42,6 +42,11 @@ public class TestTemplate
   public TestTemplate()
   {}
 
+  
+  /** Just so this can be compiled */
+  static public void main(String[] args)
+  {}
+  
 
   // ======================================================================
   // PUBLIC METHODS

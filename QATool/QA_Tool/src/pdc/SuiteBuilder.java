@@ -33,16 +33,12 @@ public class SuiteBuilder
   static private String WRONGARGS_MSG = "Wrong number of arguments given";
   static private String BADDIR_MSG = "Directory given is not a test directory";
 
-  static private int _filesScanned;
-  static private int _filesWritten;
-  static private int _dirsScanned;
-
+  /** Default test suite to be created */
+  static private final String SUITE_NAME = "UnitTestSuite.java";
+  
   enum Category {
     BASE, PDC, CIV, DMC, SIC
   };
-
-  /** Collection of file names to write into the Test Suite */
-  ArrayList<String> _filenames;
 
   /** Package statement to insert into suite file */
   private final String PKG_STATEMENT = "package test;\n";
@@ -68,13 +64,15 @@ public class SuiteBuilder
   /** Test group comment */
   private final String GROUP_CMT = "\t\t/** %s Test Files */";
 
-
-  /** This object */
-  static private SuiteBuilder _sb;
+  /** Root dir for all test files */
+  static private File _testRoot;
+  
+  /** Collection of file names to write into the Test Suite */
+  static private ArrayList<String> _filenames;
 
 
   // ======================================================================
-  // CONSTRUCTOR
+  // CONSTRUCTOR AND ITS HELPERS
   // ======================================================================
 
   /** Default constructor */
@@ -83,6 +81,15 @@ public class SuiteBuilder
     _filenames = new ArrayList<String>();
   }
 
+  /** Execute the methods to collect and write the unit suite */
+  private void run()
+  {
+    ArrayList<String> fileList = collectTestFileNames(_testRoot, _testRoot.getPath().length());
+    File target = new File(_testRoot.getPath() + Constants.FS + SUITE_NAME);
+    writeFile(target, fileList);
+  }
+  
+
   // ======================================================================
   // PUBLIC METHODS
   // ======================================================================
@@ -90,19 +97,30 @@ public class SuiteBuilder
   /**
    * Given the root test tree, scan all test files from the test directory downward
    * 
-   * @param args
+   * @param args[0] contains the test subdir in which to place the test suite
    */
   public static void main(String[] args) throws IllegalArgumentException
   {
     // Guards for invalid argument
     if (args.length != 1) {
+      System.err.println(USAGE_MSG);
       throw new IllegalArgumentException(WRONGARGS_MSG);
     }
-    File testRoot = new File(args[0]);
-    if (!testRoot.isDirectory()) {
+    _testRoot = new File(args[0]);
+    if (!_testRoot.isDirectory()) {
+      System.err.println(USAGE_MSG);
       throw new IllegalArgumentException(BADDIR_MSG);
     }
-    _sb = new SuiteBuilder();
+    SuiteBuilder sb = new SuiteBuilder();
+    sb.run();
+    
+    System.out.println(String.format("\n%s files collected", _filenames.size()));
+    File suite = new File(_testRoot.getPath() + Constants.FS + SUITE_NAME);
+    if (suite.isFile()) {
+      System.out.println("Unit Test Suite created at " + suite.getPath());
+    } else {
+      System.err.println("Unit Test Suite was not created.");
+    }
   }
 
 
@@ -120,13 +138,11 @@ public class SuiteBuilder
     for (File f : allFiles) {
       // If file is a directory, recurse down one level
       String path = f.getPath();
-      String s = path.substring(rootlen);
+      String s = path.substring(rootlen+1);
       // System.out.println("\tExamining " + s);
       if (f.isDirectory()) {
-        _dirsScanned++;
         collectTestFileNames(f, rootlen);
       } else {
-        _filesScanned++;
         // Skip HIC subdir
         if (s.contains("hic")) {
           continue;
@@ -145,7 +161,7 @@ public class SuiteBuilder
   /**
    * Writes a test suite for all test classes found, organized by test subdirectory
    * 
-   * @param target name of test suite file to write into
+   * @param target  file to become the suite
    * @param fList the list of all test files to add to suite
    * @return the test file written
    */
@@ -155,24 +171,24 @@ public class SuiteBuilder
     PrintWriter out = null;
     try {
       // Ensure that the target file is created anew
-      target.delete();
+      // target.delete();
       out = new PrintWriter(target);
     } catch (FileNotFoundException e) {
       System.err.println("\twriteFile(): \t" + e.getMessage());
       return null;
     }
-
+  
     // 1. Write the copyright notice into the prototype
     int year = new GregorianCalendar().get(Calendar.YEAR);
     String copyright = String.format(Constants.COPYRIGHT, target.getName(), year);
     out.println(copyright);
-
+  
     // 2. Write the package statement
     out.println(PKG_STATEMENT);
-
+  
     // 3. Write the import statements
     out.println(IMPORTS);
-
+  
     // 4. Write header comment, author, and version
     // Remove the .java extension from the filename
     String className = target.getName();
@@ -180,10 +196,10 @@ public class SuiteBuilder
     String name = className.substring(0, ndx);
     String version = String.format(AUTHOR_VERSION, new Date(), name);
     out.println(version);
-
+  
     // 5. Write the class definition opening
     out.println(TEST_LIST);
-
+  
     // 6. Replace the .java extension with .class extension for all test filenames
     ArrayList<String> testNames = new ArrayList<String>();
     for (String nm : _filenames) {
@@ -192,12 +208,12 @@ public class SuiteBuilder
     }
     // 6. Write the test class list by group
     writeByGroup(out, testNames);
-
+  
     // 7. Write the class closing brace
     String s = target.getName();
     String clsName = s.substring(0, s.indexOf(".java"));
     out.println(String.format(CLASS_CLOSING, clsName));
-
+  
     out.close();
     return target;
   }
@@ -207,6 +223,28 @@ public class SuiteBuilder
   // PRIVATE METHODS
   // ======================================================================
 
+  /** Group test files names by test subdir, returning each group in its own List */
+  private ArrayList<String> returnGroup(Category cat, ArrayList<String> nameList)
+  {
+    ArrayList<String> group = new ArrayList<String>();
+    String prefix = cat.toString().toLowerCase();
+    for (String s : nameList) {
+      // Check for base tests not in a subdir
+      if ((cat == Category.BASE) && (s.startsWith("Test"))) {
+        group.add(s);
+      } else {
+        if (s.startsWith(prefix)) {
+          // Remove the subdir prefix
+//          String name = s.substring(s.indexOf(Constants.FS) + 1);
+          String name = s.substring(s.lastIndexOf(Constants.FS) + 1);
+          group.add(name);
+        }
+      }
+    }
+    return group;
+  }
+
+  
   private void writeByGroup(PrintWriter out, ArrayList<String> fileList)
   {
     ArrayList<String> group = returnGroup(Category.BASE, fileList);
@@ -237,27 +275,6 @@ public class SuiteBuilder
       out.println("\t\t" + nm);
     }
     out.println();
-  }
-
-
-  /** Group test files names by test subdir, returning each group in its own List */
-  private ArrayList<String> returnGroup(Category cat, ArrayList<String> nameList)
-  {
-    ArrayList<String> group = new ArrayList<String>();
-    for (String s : nameList) {
-      // Check for base tests not in a subdir
-      if ((cat == Category.BASE) && (s.startsWith("Test"))) {
-        group.add(s);
-      } else {
-        String prefix = cat.toString().toLowerCase();
-        if (s.startsWith(prefix)) {
-          // Remove the subdir prefix
-          String name = s.substring(s.indexOf(Constants.FS) + 1);
-          group.add(name);
-        }
-      }
-    }
-    return group;
   }
 
 
