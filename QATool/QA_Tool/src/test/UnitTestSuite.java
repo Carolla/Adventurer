@@ -34,8 +34,6 @@ import test.pdc.subDir.TestSubDirSource;
 
 		/** PDC Test Files */
 		TestSubDirSource.class,
-
-		
 		TestFileMap.class,
 		TestPrototype.class,
 		TestQATool.class,
