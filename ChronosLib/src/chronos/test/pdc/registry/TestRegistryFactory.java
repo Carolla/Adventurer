@@ -9,12 +9,7 @@
 
 package chronos.test.pdc.registry;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-
 import mylib.MsgCtrl;
 import mylib.pdc.Registry;
 
@@ -23,11 +18,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import chronos.civ.DefaultUserMsg;
-import chronos.pdc.Chronos;
 import chronos.pdc.command.Scheduler;
 import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
-import chronos.pdc.registry.SkillRegistry;
 
 
 /**
@@ -74,34 +66,6 @@ public class TestRegistryFactory
    */
   public void _testsNotNeeded()
   {}
-
-  /**
-   * Get a Registry, and if it doesn't exist, create it and add the entry to the factory's map
-   * 
-   * @Normal.Test Get a registry that already exists
-   */
-  @Test
-  public void testGetRegistry_Exists()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    // SETUP: ensure that registry to be created already exists
-    SkillRegistry testreg = (SkillRegistry) _rf.getRegistry(RegKey.SKILL);
-    File regfile = new File(Chronos.SkillRegPath);
-
-    // DO:
-    SkillRegistry testreg2 = (SkillRegistry) _rf.getRegistry(RegKey.SKILL);
-
-    // VERIFY: factory has same registry file exists
-    assertTrue(regfile.exists());
-    assertEquals(testreg, testreg2);
-
-    // TEARDOWN
-    // Nothing to do
-  }
-
 
   /**
    * Get a Registry, and if it doesn't exist, create it and add the entry to the factory's map

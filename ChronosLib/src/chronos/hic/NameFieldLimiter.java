@@ -1,4 +1,4 @@
-package hic;
+package chronos.hic;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -21,6 +21,7 @@ public class NameFieldLimiter extends DocumentFilter {
 	{
 		_length = length;
 	}
+	
 	@Override
 	public void insertString(DocumentFilter.FilterBypass fb, int offset,
 			String string, AttributeSet attr) throws BadLocationException {

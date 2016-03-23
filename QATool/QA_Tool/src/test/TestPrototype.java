@@ -155,7 +155,7 @@ public class TestPrototype
       String targetPath = _proto.makeTestFilename(sourcePath);
       String expFullPath = testPath + Constants.FS + expPath[k];
       MsgCtrl.msgln("\t Test file name created: " + targetPath);
-      assertTrue(expFullPath.equals(targetPath));
+      assertEquals(expFullPath, targetPath);
     }
 
     // ERROR Source name is not a java file

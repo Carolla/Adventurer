@@ -10,22 +10,20 @@
 package mylib.test.dmc;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.util.List;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
 
 import mylib.Constants;
 import mylib.MsgCtrl;
 import mylib.dmc.DbReadWriter;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Test the database read/writer interface methods
@@ -49,14 +47,6 @@ public class TestDbReadWriter
   /** Place temporary test files in resource directory */
   static private final String REG_PATH = Constants.MYLIB_RESOURCES + "Test.reg";
 
-  @AfterClass
-  static public void tearDownAfterClass()
-  {
-    File testFile = new File(REG_PATH);
-    assertTrue(testFile.exists());
-    testFile.delete(); // remove the test file
-  }
-
   @Before
   public void setUp()
   {
@@ -74,10 +64,6 @@ public class TestDbReadWriter
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-
-    // Clear the database and remove the file
-    _regRW.dbClear();
-
   }
 
   // ====================================================================
@@ -105,6 +91,13 @@ public class TestDbReadWriter
   }
 
 
+  @Test
+  public void getIsCaseInsensitive()
+  {
+	 _regRW.addElement(new SomeObject("UPPER"));
+	 assertNotNull(_regRW.get("upper"));
+  }
+  
   /**
    * @Normal.Test Ensure that the correct number of objects stored in the db is returned
    */
@@ -133,37 +126,6 @@ public class TestDbReadWriter
   }
 
 
-  /**
-   * mylib.dmc.DbReadWriter(String) throws NullPointerException
-   *
-   * @Normal.Test Remove all elements from the db: a test-only method
-   */
-  @Test
-  public void testDbClear()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    SomeObject so1 = new SomeObject("first object saved");
-    SomeObject so2 = new SomeObject("second object saved");
-    SomeObject so3 = new SomeObject("third object saved");
-
-    // Add these three and check the db size
-    int nbrElems = _regRW.size();
-    _regRW.addElement(so1);
-    _regRW.addElement(so2);
-    _regRW.addElement(so3);
-
-    // Check that they are there
-    assertEquals(nbrElems + 3, _regRW.size());
-
-    // Clear them all
-    _regRW.dbClear();
-    assertEquals(0, _regRW.size());
-    assertNull(_regRW.containsElement(so2));
-  }
-
 
   /**
    * @Normal.Test Delete a selected object
@@ -184,7 +146,7 @@ public class TestDbReadWriter
     // Verify its gone
     _regRW.deleteElement(so);
     assertEquals(nbrElems, _regRW.size());
-    assertNull(_regRW.containsElement(so));
+    assertFalse(_regRW.containsElement(so));
   }
 
 
@@ -197,9 +159,6 @@ public class TestDbReadWriter
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-
-    // Clear the database
-    _regRW.dbClear();
 
     // Add some elements
     _regRW.addElement(new SomeObject("first object saved"));
@@ -230,10 +189,6 @@ public class TestDbReadWriter
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-
-    // Clear the database
-    _regRW.dbClear();
-
     // Add some elements
     _regRW.addElement(new SomeObject("first object saved"));
     _regRW.addElement(new SomeObject("second object saved"));
@@ -246,12 +201,6 @@ public class TestDbReadWriter
     List<SomeObject> slist = _regRW.getAll();
     assertNotNull(slist);
     assertEquals(6, slist.size());
-
-    // Clear the database and try again
-    _regRW.dbClear();
-    slist = _regRW.getAll();
-    assertNotNull(slist);
-    assertEquals(0, slist.size());
   }
 
 
@@ -307,12 +256,12 @@ public class TestDbReadWriter
 
     // Test object not within the db
     SomeObject so = new SomeObject("four");
-    assertNull(_regRW.containsElement(so));
+    assertFalse(_regRW.containsElement(so));
 
     // Add a test object
     _regRW.addElement(so);
     assertEquals(nbrBefore + 1, _regRW.size());
-    assertNotNull(_regRW.containsElement(so));
+    assertTrue(_regRW.containsElement(so));
 
     // Fail when trying to add it again
     _regRW.addElement(so);
@@ -385,7 +334,7 @@ public class TestDbReadWriter
 
     SomeObject so9 = new SomeObject("object not in db");
     // Check for unadded element
-    assertNull(_regRW.containsElement(so9));
+    assertFalse(_regRW.containsElement(so9));
     _regRW.deleteElement(so9);
   }
   

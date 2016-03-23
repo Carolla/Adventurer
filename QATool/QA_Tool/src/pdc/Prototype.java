@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.regex.Pattern;
 
 import mylib.Constants;
 
@@ -138,7 +139,7 @@ public class Prototype
     }
 
     // Ensure that all intermediate subdirs exist for the PrintWriter and target file
-    makeSubtree(target.getPath());
+    makeSubtree(target);
 
     // Create new output device
     PrintWriter out = null;
@@ -372,11 +373,11 @@ public class Prototype
    * @return the equivalent {@.class} file
    */
   private Class<?> convertSourceToClass(String sourceText)
-  {
+  {	  
     // Remove the file extension
     String className = sourceText.split(".java")[0];
     // Convert the file path format to package format by replacing the "/" with "."
-    className = className.replaceAll("/", ".");
+    className = className.replaceAll(Pattern.quote(Constants.FS), ".");
     // Remove superfluous dot index
     if (className.startsWith(".")) {
       className = className.substring(1);
@@ -405,7 +406,7 @@ public class Prototype
   private String convertSourceToPackage(File target)
   {
     String s = target.getParentFile().getAbsolutePath();
-    s = s.substring(s.lastIndexOf("src/"));
+    s = s.substring(s.lastIndexOf("src" + Constants.FS));
     s = s.substring(4); // remove the src/
     String pathName = s.replaceAll("/", ".");
     String pkgStatement = String.format("\npackage %s;\n", pathName);
@@ -487,17 +488,15 @@ public class Prototype
   /**
    * Ensure that all subdirs in the long path exist
    * 
-   * @param path long path of a file to be created
+   * @param target long path of a file to be created
    * @return the short file name
    */
-  private String makeSubtree(String path)
+  private String makeSubtree(File target)
   {
     // Remove filename from end of path
-    int fnNdx = path.lastIndexOf("/");
-    String prefix = path.substring(0, fnNdx);
-    File subtree = new File(prefix);
+    File subtree = target.getParentFile();
     subtree.mkdirs();
-    return path.substring(fnNdx);
+    return subtree.getName();
   }
 
 

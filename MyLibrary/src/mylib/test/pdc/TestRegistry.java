@@ -15,7 +15,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,7 +71,6 @@ public class TestRegistry
   @After
   public void tearDown() throws Exception
   {
-    _dbReadWriter.deleteFile();
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
   }
@@ -421,11 +419,6 @@ public class TestRegistry
       super(filepath);
       _objects = new ArrayList<SomeObject>();
     }
-
-    public void deleteFile() {
-      File f = new File(_regPath);
-      f.delete();
-    }
     
     @Override
     public void addElement(SomeObject obj)
@@ -434,12 +427,9 @@ public class TestRegistry
     }
 
     @Override
-    public SomeObject containsElement(SomeObject obj)
+    public boolean containsElement(SomeObject obj)
     {
-      if (_objects.contains(obj))
-        return obj;
-      else
-        return null;
+      return _objects.contains(obj);
     }
 
     @Override

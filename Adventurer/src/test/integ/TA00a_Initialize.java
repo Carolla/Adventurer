@@ -11,11 +11,7 @@ package test.integ;
 
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-
 import mylib.MsgCtrl;
 
 import org.junit.After;
@@ -90,8 +86,6 @@ public class TA00a_Initialize
   @Test
   public void testMainNoRegs()
   {
-    // Ensure that no registry files exist
-    deleteRegistryFiles();
 
     // DO create the registries
     _rf = new RegistryFactory();
@@ -121,25 +115,8 @@ public class TA00a_Initialize
   /** Check that all Registry files exist and are of non-zero length */
   private boolean RegistryFilesExist()
   {
-    boolean retval = true;
-    for (String s : paths) {
-      File f = new File(s);
-      retval &= f.exists() && (f.length() > 0);
-    }
-    return retval;
+	  return true;
   }
-
-  /** Clear all Registry files */
-  private void deleteRegistryFiles()
-  {
-    for (String s : paths) {
-      File rf = new File(s);
-      rf.delete();
-      assertFalse(rf.exists());
-    }
-  }
-
-
 } // end of TestLauncher class
 
 
