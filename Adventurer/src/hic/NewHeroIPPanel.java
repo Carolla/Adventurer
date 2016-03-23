@@ -29,6 +29,7 @@ import javax.swing.text.AbstractDocument;
 
 import mylib.Constants;
 import net.miginfocom.swing.MigLayout;
+import chronos.hic.NameFieldLimiter;
 import chronos.pdc.character.Hero;
 import chronos.pdc.character.Hero.HeroInput;
 import chronos.pdc.race.Race;
