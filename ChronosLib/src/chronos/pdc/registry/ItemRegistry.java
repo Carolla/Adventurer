@@ -129,7 +129,7 @@ public class ItemRegistry extends Registry<Item>
    */
 
   /**
-   * Get a particlar Item by name
+   * Get a particular Item by name
    * 
    * @param name of the Item
    * @return the Item

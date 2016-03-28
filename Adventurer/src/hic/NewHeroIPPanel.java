@@ -27,9 +27,6 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.AbstractDocument;
 
-import mylib.Constants;
-import net.miginfocom.swing.MigLayout;
-import chronos.hic.NameFieldLimiter;
 import chronos.pdc.character.Hero;
 import chronos.pdc.character.Hero.HeroInput;
 import chronos.pdc.race.Race;
@@ -37,19 +34,21 @@ import civ.HeroDisplayCiv;
 import civ.MainframeCiv;
 import civ.NewHeroCiv;
 import civ.NewHeroCiv.ErrorCode;
+import mylib.Constants;
+import net.miginfocom.swing.MigLayout;
 
 /**
- * Allows the author to input a few key attributes of their Hero. A CIV object
- * is called to validate the data and create the {@code Hero} object. <BL> <LI>
- * Name: All Persons must have a name by which they are addressed, and are
- * associated with a file in which they are saved.</LI> <LI>Gender: Females are,
- * on average, shorter, lighter, and have less Strength than Males (the
- * default), but have a higher Constitution and Charisma.</LI> <LI>Hair color: A
- * cosmetic attribute for effect. No semantic information.</LI> <LI>Race: Human
- * is the default, but others are available: Dwarf, Elf, Gnome, Half-Elf,
- * Half-Orc, or Hobbit. Each have special penalties and bonuses compared to the
- * Human.</LI> <LI>Klass: Any Person can start as a Level 1 Fighter, Cleric,
- * Wizard, or Rogue. All but Fighters inherit special abilities.</LI>
+ * Allows the author to input a few key attributes of their Hero. A CIV object is called to validate
+ * the data and create the {@code Hero} object. <BL>
+ * <LI>Name: All Persons must have a name by which they are addressed, and are associated with a
+ * file in which they are saved.</LI>
+ * <LI>Gender: Females are, on average, shorter, lighter, and have less Strength than Males (the
+ * default), but have a higher Constitution and Charisma.</LI>
+ * <LI>Hair color: A cosmetic attribute for effect. No semantic information.</LI>
+ * <LI>Race: Human is the default, but others are available: Dwarf, Elf, Gnome, Half-Elf, Half-Orc,
+ * or Hobbit. Each have special penalties and bonuses compared to the Human.</LI>
+ * <LI>Klass: Any Person can start as a Level 1 Fighter, Cleric, Wizard, or Rogue. All but Fighters
+ * inherit special abilities.</LI>
  * <P>
  * </BL>
  * 
@@ -61,341 +60,364 @@ import civ.NewHeroCiv.ErrorCode;
  *          Oct 15 2009 // set focus on Hero name field; add Help actions <br>
  *          Jun 6 2010 // revised to support NewHeroDisplayCiv <br>
  *          Apr 2 2011 // major overhaul with non-Swing MigLayout manager <br>
- *          Sep 20 2015 // major update for new inputs and revised character
- *          generation <br>
- *          Nov 9 2015 // separated Mainframe and ChronsPanel concerns, and
- *          their civs <br>
+ *          Sep 20 2015 // major update for new inputs and revised character generation <br>
+ *          Nov 9 2015 // separated Mainframe and ChronsPanel concerns, and their civs <br>
  */
 @SuppressWarnings("serial")
-public class NewHeroIPPanel extends ChronosPanel {
-	/** Replace left-side panel with this title */
-	static private final String NEW_HERO_TITLE = " Create Your Kind of Hero ";
-	/** Prompt for hero's name */
-	private final String HERO_NAME_PROMPT = "What is your Hero's Name?";
-	/** Hair color prompt */
-	private final String HERO_HAIR_PROMPT = "What color is your hair?";
-	/** Gender prompt */
-	private final String HERO_GENDER_PROMPT = "What gender are you?";
-	/** Race prompt */
-	private final String HERO_RACE_PROMPT = "Choose your Race";
-	/** Occupation prompt */
-	private final String HERO_KLASS_PROMPT = "What Guild to you belong to?";
+public class NewHeroIPPanel extends ChronosPanel
+{
+  /** Replace left-side panel with this title */
+  static private final String NEW_HERO_TITLE = " Create Your Kind of Hero ";
+  /** Prompt for hero's name */
+  private final String HERO_NAME_PROMPT = "What is your Hero's Name?";
+  /** Hair color prompt */
+  private final String HERO_HAIR_PROMPT = "What color is your hair?";
+  /** Gender prompt */
+  private final String HERO_GENDER_PROMPT = "What gender are you?";
+  /** Race prompt */
+  private final String HERO_RACE_PROMPT = "Choose your Race";
+  /** Occupation prompt */
+  private final String HERO_KLASS_PROMPT = "What Guild to you belong to?";
 
-	/** Space between buttons */
-	private final String SPACER = "          ";
+  /** Space between buttons */
+  private final String SPACER = "          ";
 
-	/** Title for error message dialog */
-	private final String HERO_ERROR_TITLE = "COULDN'T CREATE HERO";
-	/** Error message when name (required field) is omitted */
-	private final String ERRMSG_NAME_MISSING = "Your Hero must have a name!";
-	/** Error message when namefield is too long */
-	private final String ERRMSG_NAME_TOO_LONG = "Your Hero's name is too long (45 char limit). \nTry perhaps your Hero's nickname?";
+  /** Title for error message dialog */
+  private final String HERO_ERROR_TITLE = "COULDN'T CREATE HERO";
+  /** Error message when name (required field) is omitted */
+  private final String ERRMSG_NAME_MISSING = "Your Hero must have a name!";
+  /** Error message when namefield is too long */
+  private final String ERRMSG_NAME_TOO_LONG =
+      "Your Hero's name is too long (45 char limit). \nTry perhaps your Hero's nickname?";
 
-	// TODO: Constant.MY_BROWN needs to be brightened here for some reason.
-	// Perhaps a background panel
-	// is affecting it?
-	/** Background color inherited from parent */
-	private Color _backColor = Constants.MY_BROWN;
+  // TODO: Constant.MY_BROWN needs to be brightened here for some reason.
+  // Perhaps a background panel
+  // is affecting it?
+  /** Background color inherited from parent */
+  private Color _backColor = Constants.MY_BROWN;
 
-	/** Input data from user */
-	private String _name;
+  /** Input data from user */
+  private String _name;
 
-	/** Contains user input field data */
-	EnumMap<HeroInput, String> input;
+  /** Contains user input field data */
+  EnumMap<HeroInput, String> _input;
 
-	/**
-	 * Captures the name text for the hero and the window title; Needed as
-	 * attribute because data is extracted outside actionListener
-	 */
-	private JTextField _nameField = null;
+  /**
+   * Captures the name text for the hero and the window title; Needed as attribute because data is
+   * extracted outside actionListener
+   */
+  private JTextField _nameField = null;
 
-	/** Associated validating CIV object */
-	private NewHeroCiv _nhCiv;
-	private MainframeCiv _mfCiv;
-	private JRadioButton maleButt;
-	private JRadioButton femaleButt;
-	private ButtonGroup groupSex;
-	private JComboBox<String> hairCombo;
-	private JComboBox<String> klassCombo;
-	private JComboBox<String> raceCombo;
+  /** Associated validating CIV object */
+  private NewHeroCiv _nhCiv;
+  private MainframeCiv _mfCiv;
+  private JRadioButton _maleButt;
+  private JRadioButton _femaleButt;
+  private ButtonGroup _groupSex;
+  private JComboBox<String> _hairCombo;
+  private JComboBox<String> _klassCombo;
+  private JComboBox<String> _raceCombo;
 
-	// ============================================================
-	// Constructors and constructor helpers
-	// ============================================================
+  private final String MALE = "Male";
+  private final String FEMALE = "Female";
+  
+  // ============================================================
+  // Constructors and constructor helpers
+  // ============================================================
 
-	/**
-	 * Creates the panel format and places the action components (e.g., radio
-	 * buttons and drop down boxes). Also creates the associated CIV object to
-	 * manage the data. The action components are created in private helper
-	 * methods.
-	 * 
-	 * @param nhCiv
-	 *            controls this ChronosPanel
-	 * @param mfCiv
-	 *            mainframeCiv needed for displaying the panel
-	 */
-	public NewHeroIPPanel(NewHeroCiv nhCiv, MainframeCiv mfCiv) {
-		super(NEW_HERO_TITLE);
-		_nhCiv = nhCiv;
-		_mfCiv = mfCiv;
+  /**
+   * Creates the panel format and places the action components (e.g., radio buttons and drop down
+   * boxes). Also creates the associated CIV object to manage the data. The action components are
+   * created in private helper methods.
+   * 
+   * @param nhCiv controls this ChronosPanel
+   * @param mfCiv mainframeCiv needed for displaying the panel
+   */
+  public NewHeroIPPanel(NewHeroCiv nhCiv, MainframeCiv mfCiv)
+  {
+    super(NEW_HERO_TITLE);
+    _nhCiv = nhCiv;
+    _mfCiv = mfCiv;
 
-		// GENERAL SETUP
-		setPreferredSize(Mainframe.getWindowSize());
+    // GENERAL SETUP
+    setPreferredSize(Mainframe.getWindowSize());
 
-		int pad = Mainframe.PAD;
-		Border matte = BorderFactory.createMatteBorder(pad, pad, pad, pad,
-				Color.WHITE);
-		setBorder(matte);
-		setBackground(_backColor);
+    int pad = Mainframe.PAD;
+    Border matte = BorderFactory.createMatteBorder(pad, pad, pad, pad,
+        Color.WHITE);
+    setBorder(matte);
+    setBackground(_backColor);
 
-		// Set Panel layout to special MiGLayout
-		setLayout(new MigLayout("", "[center]"));
+    // Set Panel layout to special MiGLayout
+    setLayout(new MigLayout("", "[center]"));
 
-		/* HERO NAME AND PROMPT COMPONENTS */
-		// Add name components to the name subpanel
-		// Create a hero name prompt label centered
-		add(new JLabel(HERO_NAME_PROMPT), "push, aligncenter, span");
+    /* HERO NAME AND PROMPT COMPONENTS */
+    // Add name components to the name subpanel
+    // Create a hero name prompt label centered
+    add(new JLabel(HERO_NAME_PROMPT), "push, aligncenter, span");
 
-		// Create the input text field to collect the Hero's name give it
-		// default focus
-		_nameField = makeNameField();
-		add(_nameField, "push, align center, span");
+    // Create the input text field to collect the Hero's name give it
+    // default focus
+    _nameField = makeNameField();
+    add(_nameField, "push, align center, span");
 
-		/*
-		 * THIS GRID POPULATES HORIZONTALLY: Save all Components for later data
-		 * extraction
-		 */
-		// Prompts for gender radio buttons and air color combo box */
-		add(new JLabel(HERO_GENDER_PROMPT), "push, align center, gaptop 5%");
-		add(new JLabel(HERO_HAIR_PROMPT), "push, align center, wrap");
+    /*
+     * THIS GRID POPULATES HORIZONTALLY: Save all Components for later data extraction
+     */
+    // Prompts for gender radio buttons and air color combo box */
+    add(new JLabel(HERO_GENDER_PROMPT), "push, align center, gaptop 5%");
+    add(new JLabel(HERO_HAIR_PROMPT), "push, align center, wrap");
 
-		/* Gender radio buttons */
-		add(makeGenderPanel());
-		/* Hair color drop-down box */
-		add(makeHairCombo(), "wrap");
+    /* Gender radio buttons */
+    add(makeGenderPanel());
+    /* Hair color drop-down box */
+    add(makeHairCombo(), "wrap");
 
-		/* Prompts for Race and Occupation drop-downs */
-		add(new JLabel(HERO_RACE_PROMPT), "push, align center, gaptop 5%");
-		add(new JLabel(HERO_KLASS_PROMPT), "push, align center, wrap");
+    /* Prompts for Race and Occupation drop-downs */
+    add(new JLabel(HERO_RACE_PROMPT), "push, align center, gaptop 5%");
+    add(new JLabel(HERO_KLASS_PROMPT), "push, align center, wrap");
 
-		/* Add the Race drop-down combo */
-		add(makeRaceCombo(), "push, align center");
-		/* Add the Occupation drop-down combo */
-		add(makeKlassCombo(), "push, align center, wrap");
+    /* Add the Race drop-down combo */
+    add(makeRaceCombo(), "push, align center");
+    /* Add the Occupation drop-down combo */
+    add(makeKlassCombo(), "push, align center, wrap");
 
-		/* Add a button panel containing the Submit and Cancel buttons */
-		add(makeButtonPanel(), "push, align center, span, gaptop 20%");
+    /* Add a button panel containing the Submit and Cancel buttons */
+    add(makeButtonPanel(), "push, align center, span, gaptop 20%");
 
-	} // end NewHeroIPPanel constructor
+  } // end NewHeroIPPanel constructor
 
-	// ============================================================
-	// Private Methods
-	// ============================================================
+  // ============================================================
+  // Private Methods
+  // ============================================================
 
-	/**
-	 * Set the name field to have the default focus NOTE: For some reason,
-	 * requestFocusInWindow() does not work here
-	 */
-	public void setDefaultFocus() {
-		_nameField.requestFocus();
-	}
+  /**
+   * Set the name field to have the default focus NOTE: For some reason, requestFocusInWindow() does
+   * not work here
+   */
+  public void setDefaultFocus()
+  {
+    _nameField.requestFocus();
+  }
 
-	/**
-	 * Create a button panel containing Submit and Cancel buttons
-	 * 
-	 * @return the JPanel
-	 */
-	private JPanel makeButtonPanel() {
-		// Create the containing panel
-		JPanel buttonPanel = new JPanel();
-		buttonPanel.setBackground(_backColor);
+  // TODO Make this MyLibrary utility to hide ugly implementation
+  private String getGender()
+  {
+    String cmdValue = _groupSex.getSelection().getActionCommand();
+    return (cmdValue.equals(MALE)) ? MALE : FEMALE;
+  }
 
-		// Create the CANCEL button
-		JButton cancelButton = new JButton("CANCEL");
-		// Clear editFlag and data, then return back to main action panel if
-		// Cancel is pressed
-		cancelButton.addActionListener((a) -> _nhCiv.back());
+  /**
+   * Create a button panel containing Submit and Cancel buttons
+   * 
+   * @return the JPanel
+   */
+  private JPanel makeButtonPanel()
+  {
+    // Create the containing panel
+    JPanel buttonPanel = new JPanel();
+    buttonPanel.setBackground(_backColor);
 
-		// Create the SUBMIT button
-		JButton submitButton = new JButton("SUBMIT");
+    // Create the CANCEL button
+    JButton cancelButton = new JButton("CANCEL");
+    // Clear editFlag and data, then return back to main action panel if
+    // Cancel is pressed
+    cancelButton.addActionListener((a) -> _nhCiv.back());
 
-		// Display error message if received from submit button, or new Hero if
-		// OK
-		submitButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				// Call the Civ to validate the attributes. If no errors, Hero
-				// is created and displayed
-				EnumMap<HeroInput, String> input = submit();
-				if (input.size() > 0) {
-					// Create the new Hero and display it
-					Hero hero = _nhCiv.createHero(input);
-					HeroDisplayCiv hDispCiv = new HeroDisplayCiv(_mfCiv);
-					hDispCiv.displayHero(hero, true); // initial Hero needs true
-														// arg to check
-														// overwriting
-				}
-			}
-		});
+    // Create the SUBMIT button
+    JButton submitButton = new JButton("SUBMIT");
 
-		// Create a little space between buttons
-		JLabel space = new JLabel(SPACER);
-		// Add the two buttons to the panel
-		buttonPanel.add(submitButton);
-		buttonPanel.add(space);
-		buttonPanel.add(cancelButton);
-		return buttonPanel;
-	}
+    // Display error message if received from submit button, or new Hero if
+    // OK
+    submitButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent event)
+      {
+        // Call the Civ to validate the attributes. If no errors, Hero
+        // is created and displayed
+        EnumMap<HeroInput, String> input = submit();
+        if ((input != null) && (input.size() > 0)) {
+          // Create the new Hero and display it
+          Hero hero = _nhCiv.createHero(input);
+          HeroDisplayCiv hDispCiv = new HeroDisplayCiv(_mfCiv);
+          hDispCiv.displayHero(hero, true); // initial Hero needs true
+          // arg to check
+          // overwriting
+        }
+      }
+    });
 
-	/**
-	 * Create the gender radiobuttons, bordered panel and associated action
-	 * before placement
-	 * 
-	 * @return the JPanel of radiobuttons
-	 */
-	private JPanel makeGenderPanel() {
-		// Create the panel to contain the radio button group
-		JPanel radioPanel = new JPanel();
-		Border border = BorderFactory.createLineBorder(Color.WHITE);
-		radioPanel.setBorder(border);
-		radioPanel.setBackground(_backColor);
+    // Create a little space between buttons
+    JLabel space = new JLabel(SPACER);
+    // Add the two buttons to the panel
+    buttonPanel.add(submitButton);
+    buttonPanel.add(space);
+    buttonPanel.add(cancelButton);
+    return buttonPanel;
+  }
 
-		// Create the radio button group
-		groupSex = new ButtonGroup();
+  /**
+   * Create the gender radiobuttons, bordered panel and associated action before placement
+   * 
+   * @return the JPanel of radiobuttons
+   */
+  private JPanel makeGenderPanel()
+  {
+    // Create the panel to contain the radio button group
+    JPanel radioPanel = new JPanel();
+    Border border = BorderFactory.createLineBorder(Color.WHITE);
+    radioPanel.setBorder(border);
+    radioPanel.setBackground(_backColor);
 
-		// Define the male radio button (default to Male button selected)
-		maleButt = new JRadioButton("Male", true);
-		maleButt.setEnabled(true);
-		maleButt.setBackground(_backColor);
+    // Create the radio button group
+    _groupSex = new ButtonGroup();
 
-		// Define the female radio button
-		femaleButt = new JRadioButton("Female", false);
-		femaleButt.setBackground(_backColor);
+    /* Define the male radio button (default to Male button selected)
+     * Per Cay Horstman (Volume 1, p389) radioButton,actionCommand is always null, 
+     * so can be used as a default value setting for retrieving actual user selection
+     */
+    // TODO Make radio button constructors as MyLibrary utility to hide ugly implementation
+    _maleButt = new JRadioButton("Male", true);
+    _maleButt.setActionCommand("Male");
+    _maleButt.setEnabled(true);
+    _maleButt.setBackground(_backColor);
 
-		// Buttons must be added to BOTH the group and to the panel
-		groupSex.add(maleButt);
-		groupSex.add(femaleButt);
-		radioPanel.add(maleButt);
-		radioPanel.add(femaleButt);
-		return radioPanel;
-	}
+    // TODO Make radio button constructors as MyLibrary utility to hide ugly implementation
+    // Define the female radio button
+    _femaleButt = new JRadioButton("Female", false);
+    _femaleButt.setActionCommand("Female");
+    _femaleButt.setBackground(_backColor);
 
-	/**
-	 * Create a combo box of hair colors from which the user may select
-	 * 
-	 * @return the JComboBox<String> of hair color options
-	 */
-	private JComboBox<String> makeHairCombo() {
-		hairCombo = new JComboBox<String>(NewHeroCiv.HAIR_COLOR_LIST);
-		hairCombo.setEditable(false);
-		hairCombo.setBackground(Color.WHITE);
-		return hairCombo;
-	}
+    // Buttons must be added to BOTH the group and the panel
+    _groupSex.add(_maleButt);
+    _groupSex.add(_femaleButt);
+    radioPanel.add(_maleButt);
+    radioPanel.add(_femaleButt);
+    return radioPanel;
+  }
 
-	/**
-	 * Create a combo box of Guilds (Klasses) that the Hero may want to be
-	 * 
-	 * @return the JComboBox<String> of Guild options
-	 */
-	private JComboBox<String> makeKlassCombo() {
-		klassCombo = new JComboBox<String>(NewHeroCiv.KLASS_LIST);
-		klassCombo.setEditable(false);
-		klassCombo.setBackground(Color.WHITE);
-		return klassCombo;
-	}
+  /**
+   * Create a combo box of hair colors from which the user may select
+   * 
+   * @return the JComboBox<String> of hair color options
+   */
+  private JComboBox<String> makeHairCombo()
+  {
+    _hairCombo = new JComboBox<String>(NewHeroCiv.HAIR_COLOR_LIST);
+    _hairCombo.setEditable(false);
+    _hairCombo.setBackground(Color.WHITE);
+    return _hairCombo;
+  }
 
-	/**
-	 * Create the Hero's name input field and associated action before placement
-	 * 
-	 * @return the JTextField
-	 */
-	private JTextField makeNameField() {
-		_nameField = new JTextField(50);
+  /**
+   * Create a combo box of Guilds (Klasses) that the Hero may want to be
+   * 
+   * @return the JComboBox<String> of Guild options
+   */
+  private JComboBox<String> makeKlassCombo()
+  {
+    _klassCombo = new JComboBox<String>(NewHeroCiv.KLASS_LIST);
+    _klassCombo.setEditable(false);
+    _klassCombo.setBackground(Color.WHITE);
+    return _klassCombo;
+  }
 
-		// Create DocumentFilter for restricting input length
-		AbstractDocument d = (AbstractDocument) _nameField.getDocument();
-		d.setDocumentFilter(new NameFieldLimiter(NewHeroCiv.MAX_NAMELEN));
-		_nameField.setName("heroName");
+  /**
+   * Create the Hero's name input field and associated action before placement
+   * 
+   * @return the JTextField
+   */
+  private JTextField makeNameField()
+  {
+    _nameField = new JTextField(50);
 
-		// Extract Hero's name and update Hero's name into MainFrame Title
-		// if Enter key is hit or text field loses focus.
-		_nameField.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				_name = _nameField.getText().trim();
-				setHeroBorder();
-			}
-		});
+    // Create DocumentFilter for restricting input length
+    AbstractDocument d = (AbstractDocument) _nameField.getDocument();
+    // Fix this bug
+    // d.setDocumentFilter(new NameFieldLimiter(NewHeroCiv.MAX_NAMELEN));
+    _nameField.setName("heroName");
 
-		return _nameField;
-	}
+    // Extract Hero's name and update Hero's name into MainFrame Title
+    // if Enter key is hit or text field loses focus.
+    _nameField.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent event)
+      {
+        _name = _nameField.getText().trim();
+        setHeroBorder();
+      }
+    });
 
-	private void setHeroBorder() {
-		Border matte = BorderFactory.createMatteBorder(Mainframe.PAD,
-				Mainframe.PAD, Mainframe.PAD, Mainframe.PAD, Color.WHITE);
-		Border heroBorder = BorderFactory.createTitledBorder(matte,
-				NEW_HERO_TITLE + _name, TitledBorder.CENTER,
-				TitledBorder.DEFAULT_POSITION);
-		setBorder(heroBorder);
-	}
+    return _nameField;
+  }
 
-	/**
-	 * Create a combo box of Races that the Hero may be
-	 * 
-	 * @return the JComboBox<String> of Race options
-	 */
-	private JComboBox<String> makeRaceCombo() {
-		// Build the box with label
-		raceCombo = new JComboBox<String>(Race.RACE_LIST);
-		raceCombo.setEditable(false);
-		raceCombo.setBackground(Color.WHITE);
-		return raceCombo;
-	}
+  /**
+   * Create a combo box of Races that the Hero may be
+   * 
+   * @return the JComboBox<String> of Race options
+   */
+  private JComboBox<String> makeRaceCombo()
+  {
+    // Build the box with label
+    _raceCombo = new JComboBox<String>(Race.RACE_LIST);
+    _raceCombo.setEditable(false);
+    _raceCombo.setBackground(Color.WHITE);
+    return _raceCombo;
+  }
 
-	/**
-	 * Display the error message received after submitting a new Hero.
-	 */
-	private void showErrorMessage(ErrorCode error) {
-		// Display missing name error, then set control to name field
-		if (error == ErrorCode.NAME_MISSING) {
-			JOptionPane.showMessageDialog(null, ERRMSG_NAME_MISSING,
-					HERO_ERROR_TITLE, JOptionPane.ERROR_MESSAGE);
-		}
-		// Display overly long name error, then set control to name field
-		else if (error == ErrorCode.NAME_TOO_LONG) {
-			JOptionPane.showMessageDialog(null, ERRMSG_NAME_TOO_LONG,
-					HERO_ERROR_TITLE, JOptionPane.ERROR_MESSAGE);
-		}
-		_nameField.requestFocusInWindow();
+  private void setHeroBorder()
+  {
+    Border matte = BorderFactory.createMatteBorder(Mainframe.PAD,
+        Mainframe.PAD, Mainframe.PAD, Mainframe.PAD, Color.WHITE);
+    Border heroBorder = BorderFactory.createTitledBorder(matte,
+        NEW_HERO_TITLE + _name, TitledBorder.CENTER,
+        TitledBorder.DEFAULT_POSITION);
+    setBorder(heroBorder);
+  }
 
-	}
+  /**
+   * Display the error message received after submitting a new Hero.
+   */
+  private void showErrorMessage(ErrorCode error)
+  {
+    // Display missing name error, then set control to name field
+    if (error == ErrorCode.NAME_MISSING) {
+      JOptionPane.showMessageDialog(null, ERRMSG_NAME_MISSING,
+          HERO_ERROR_TITLE, JOptionPane.ERROR_MESSAGE);
+    }
+    // Display overly long name error, then set control to name field
+    else if (error == ErrorCode.NAME_TOO_LONG) {
+      JOptionPane.showMessageDialog(null, ERRMSG_NAME_TOO_LONG,
+          HERO_ERROR_TITLE, JOptionPane.ERROR_MESSAGE);
+    }
+    _nameField.requestFocusInWindow();
 
-	/**
-	 * Get an empty enumMap, pack the input fields into it, and send it to the
-	 * Civ for validation.
-	 * 
-	 * @return One of the ErrorCode enum values (NO_ERROR if all went well)
-	 */
-	private EnumMap<HeroInput, String> submit() {
-		EnumMap<HeroInput, String> input = new EnumMap<HeroInput, String>(
-				HeroInput.class);
-		input.put(HeroInput.NAME, _nameField.getText());
-		input.put(HeroInput.GENDER, getGender());
-		input.put(HeroInput.HAIR, String.valueOf(hairCombo.getSelectedItem()));
-		input.put(HeroInput.RACE, String.valueOf(raceCombo.getSelectedItem()));
-		input.put(HeroInput.KLASS, String.valueOf(klassCombo.getSelectedItem()));
+  }
 
-		if (_name == null || _name.isEmpty()) {
-			input.clear(); // empty input is a failure
-			showErrorMessage(ErrorCode.NAME_MISSING);
-		}
-		return input;
-	}
+  /**
+   * Get an empty enumMap, pack the input fields into it, and send it to the Civ for validation.
+   * 
+   * @return One of the ErrorCode enum values (NO_ERROR if all went well)
+   */
+  private EnumMap<HeroInput, String> submit()
+  {
+    EnumMap<HeroInput, String> input = new EnumMap<HeroInput, String>(
+        HeroInput.class);
+    
+    // Name is mandatory user input
+    String name = (_nameField.getText()).trim();
+    if (name == null || name.isEmpty()) {
+      input.clear(); // empty input is a failure
+      showErrorMessage(ErrorCode.NAME_MISSING);
+      return null;
+    }
+    input.put(HeroInput.NAME, name);
+    input.put(HeroInput.GENDER, getGender());
+    input.put(HeroInput.HAIR, String.valueOf(_hairCombo.getSelectedItem()));
+    input.put(HeroInput.RACE, String.valueOf(_raceCombo.getSelectedItem()));
+    input.put(HeroInput.KLASS, String.valueOf(_klassCombo.getSelectedItem()));
 
-	private String getGender() {
-		if (groupSex.getSelection().equals(maleButt)) {
-			return "Male";
-		} else {
-			return "Female";
-		}
-	}
+    return input;
+  }
+
+
 } // end NewHeroIPPanel class
 

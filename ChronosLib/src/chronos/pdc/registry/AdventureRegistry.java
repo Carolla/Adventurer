@@ -127,5 +127,7 @@ public class AdventureRegistry extends Registry<Adventure>
     }
     return advList;
   }
+  
+  
 } // end of AdventureRegistry class
 

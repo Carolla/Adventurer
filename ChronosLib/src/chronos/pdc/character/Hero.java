@@ -15,11 +15,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import mylib.dmc.IRegistryElement;
 import chronos.civ.PersonKeys;
 import chronos.pdc.Occupation;
 import chronos.pdc.character.TraitList.PrimeTraits;
 import chronos.pdc.race.Race;
+import mylib.dmc.IRegistryElement;
 
 
 
@@ -88,7 +88,7 @@ public class Hero implements IRegistryElement
    * @param hairColor selected hair color for this Person
    * @param raceName the concrete subclass object of Race, e.g., Human or Hobbit
    * @param klassName the concrete subclass object of Klass, e.g. Fighter or Thief
-
+   * 
    */
   public Hero(String name, String gender, String hairColor, String raceName, String klassName)
   {
@@ -123,7 +123,8 @@ public class Hero implements IRegistryElement
     _HP = _klass.rollHP();
 
     // 11b. GET THE HERO'S PHYSICAL DESCRIPTION FROM THIS BODY-TYPE
-    _description = new Description(_traits.getTrait(PrimeTraits.CHR), _race.getRaceDescriptor(), hairColor, _gender, _race.calcHeight(), _race.calcWeight());
+    _description = new Description(_traits.getTrait(PrimeTraits.CHR), _race.getRaceDescriptor(),
+        hairColor, _gender, _race.calcHeight(), _race.calcWeight());
 
     // 11c. SET THE HERO'S INITIAL HUNGER STATE
     _hunger = "Full";
@@ -202,7 +203,7 @@ public class Hero implements IRegistryElement
   }
 
   /**
-   * Load all the Hero attriutes into a single output map, keyed by the {@code PersonKeys} enum
+   * Load all the Hero attributes into a single output map, keyed by the {@code PersonKeys} enum
    * 
    * @param map the keyed map of Hero data attributes
    * @return the EnumMap with attribute data
@@ -210,11 +211,13 @@ public class Hero implements IRegistryElement
   public EnumMap<PersonKeys, String> loadAttributes(EnumMap<PersonKeys, String> map)
   {
     // Now load the attributes in display order (values in parens are derived)
-    // Row 1: Name
+    // Row 1: Name 
     map.put(PersonKeys.NAME, _name);
 
     // Row 2: Gender, Race and Klass
     map.put(PersonKeys.GENDER, _gender.toString());
+    map.put(PersonKeys.RACENAME, _race.getName());
+    map.put(PersonKeys.KLASSNAME, _klass.className());
 
     // Row 3: Level, Current HP, Max HP, AC, (AC with Magic adj)
     map.put(PersonKeys.LEVEL, "" + _level);
@@ -253,10 +256,15 @@ public class Hero implements IRegistryElement
     return map;
   }
 
+  public String toNamePlate()
+  {
+    return _name + ": " + _gender.toString() + " " + _race.getName() + " " + _klass.className();
+  }
+
   @Override
   public String toString()
   {
-    return _name + ": " + _race.getName() + " " + _klass.className() + ". " + _traits;
+    return toNamePlate() + ". " + _traits;
   }
   // ====================================================
   // Private helper methods

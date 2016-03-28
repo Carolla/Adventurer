@@ -10,44 +10,52 @@
 
 package chronos.pdc.registry;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import mylib.ApplicationException;
-import mylib.pdc.Registry;
 import chronos.pdc.Chronos;
 import chronos.pdc.character.Hero;
+import mylib.ApplicationException;
+import mylib.dmc.DbReadWriter;
+import mylib.pdc.Registry;
 
 /**
- * Contains all Heros in the game.
+ * Contains all Heros in the game. 
+ * This is the only {@code Registry} that currently uses {@code db4o} for persistence;
+ * the other Registries are in-memory copies and must be initialized each time.
  * 
  * @author Tim Armstrong
  * @version Mar 13, 2013 // original <br>
  *          Dec 9 2015 // added a few interfacing methods to Registry <br>
- *          Dec 25 2015 // ABC: added GetAllHeroes() <br>
+ *          Dec 25 2015 // ABC added GetAllHeroes() <br>
+ *          Mar 25 2016 // ABC Added getNamplares() <br>
+ *          Mar 28 2016 // ABC Extended HeroRegistry to use DbReadWriter as subclass override <br>
  */
 public class HeroRegistry extends Registry<Hero>
 {
-  /*
-   * CONSTRUCTOR(S) AND RELATED METHODS
-   */
-
+  /** Requires an actual persistence database instead of in-memory List */
+  private DbReadWriter _regRW;
+  
+  
   /**
    * Init this Hero Registry
    */
   public HeroRegistry()
   {
     super(Chronos.PersonRegPath);
+    if (_shouldInitialize) {
+      initialize();
+    }
   }
 
 
   /**
-   * Create the Hero Registry with the tables given (none), converting each element to a Hero object
-   * and saving it in the database.
+   * Open the Hero Registry database. 
    */
   @Override
   public void initialize()
   {
-    // No default Heroes in HeroRegistry
+    _regRW = new DbReadWriter(Chronos.HeroRegPath);
   }
 
 
@@ -74,9 +82,26 @@ public class HeroRegistry extends Registry<Hero>
    */
   public List<Hero> getHeroList()
   {
-    return getAll();
+    List<Hero> heroList = new ArrayList<Hero>();
+    heroList = super.getAll();
+    return heroList;
   }
 
-    
+  /**
+   * Retrieves all Heroes in the HeroRegistry
+   * 
+   * @return a list of Heroes
+   */
+  public List<String> getNamePlates()
+  {
+    List<Hero> heroList = getHeroList();
+    List<String> plateList = new ArrayList<String>(heroList.size());
+    for (Hero h : heroList) {
+      plateList.add(h.toNamePlate());
+    }
+    return plateList;
+  }
+
+  
 } // end of HeroRegistry class
 
