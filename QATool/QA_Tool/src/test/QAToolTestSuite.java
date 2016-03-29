@@ -12,6 +12,8 @@ package test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import test.pdc.TestSuiteBuilder;
+
 
 /**
  * Run all unit tests for the QA Tool.
