@@ -117,7 +117,7 @@ public class DbReadWriter <E extends IRegistryElement>
    * database, file, and DbReadWriter.
    */
   @SuppressWarnings("serial")
-  public void dbClear()
+  public void clear()
   {
     List<E> alist = new ArrayList<E>();
     _db = open();
@@ -185,15 +185,6 @@ public class DbReadWriter <E extends IRegistryElement>
     }
   }
 
-  public List<E> getAll()
-  {
-    List<E> list = getAllList();
-    close();
-    return list;
-  }
-
-  
-
   /**
    * Retrieve the first element that matches the name. The object's {@code getKey} method is called.
    * 
@@ -206,7 +197,7 @@ public class DbReadWriter <E extends IRegistryElement>
     if (!exists(name)) {
       return null;
     }
-
+  
     try {
       List<E> elementList = getAllList();
       for (E obj : elementList) {
@@ -220,25 +211,13 @@ public class DbReadWriter <E extends IRegistryElement>
     }
   }
 
-  // TODO: Might be needed later, but not now
-  // /**
-  // * Set the database to ReadOnly (true) or ReadWrite (false), depending on the parm. Reset the
-  // * current configuration as indicated, close the database, and open it with the new requested
-  // * configuration.
-  // *
-  // * @param roFlag true for readOnly, false for the default ReadWrite
-  // */
-  // public void setReadOnly(boolean roFlag)
-  // {
-  // ExtObjectContainer objectContainer = (ExtObjectContainer) open(_regPath);
-  //
-  // // Get the current configuration; needs Extended services for this
-  // Configuration config = objectContainer.configure();
-  // // Set the configuration to the desired state
-  // config.readOnly(roFlag);
-  //
-  // objectContainer.close();
-  // }
+
+  public List<E> getAll()
+  {
+    List<E> list = getAllList();
+    close();
+    return list;
+  }
 
 
   public boolean isOpen()
