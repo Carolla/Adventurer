@@ -17,6 +17,7 @@ import mylib.MsgCtrl;
  * 
  * @author Alan Cline
  * @version Feb 7, 2015 // original <br>
+ *          Mar 39 2016 // added MsgCtrl.where(this) to locate when this proxy runs <br>
  */
 public class IOPanelProxy implements IOPanelInterface
 {
@@ -28,6 +29,7 @@ public class IOPanelProxy implements IOPanelInterface
   {
     MsgCtrl.auditMsgsOn(true);
     MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.where(this);
   }
 
   @Override
@@ -56,7 +58,6 @@ public class IOPanelProxy implements IOPanelInterface
     MsgCtrl.where(this);
     return _msgOut;
   }
-
 
 
 } // end of IOPanelProxy

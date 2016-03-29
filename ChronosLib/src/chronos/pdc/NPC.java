@@ -32,7 +32,9 @@ public class NPC implements IRegistryElement
   /** Description when the Patron is at a distance of about 20-50 ft. */
   private String _farDescription = null;
 
-  /** Description when the Patron is up close and personal (less than 10'), and could include smells */
+  /**
+   * Description when the Patron is up close and personal (less than 10'), and could include smells
+   */
   private String _nearDescription = null;
 
   /** Affinity, a adjustment from -25% to +25% likely to befriend Hero. */
@@ -67,37 +69,33 @@ public class NPC implements IRegistryElement
   }
 
   /**
-   * Normal contructor:
+   * Normal constructor: no parm can be empty or null except the note
    * 
    * @param name of this Patron
-   * @param affinity must be within range else throws exception
+   * @param farDesc appearance when far from Patron; cannot be empty or null
+   * @param nearDesc appearance when up close and personal, can include smells; cannot be empty or
+   *        null
+   * @param affinity must be within range [-5,+5] else throws IllegalArgumentException
    * @param peaceflag true if Patron will fight in bar brawl
    * @param note profession of the NPC, as a note (unused in game)
-   * @param farDesc appearance when far from Patron
-   * @param nearDesc appearance when up close and personal, can include smells
    * @throws ApplicationException if null entries or invalid affinity value
    */
-  public NPC(String name, String note, int affinity, boolean peaceFlag, String farDesc,
-      String nearDesc)
-      throws ApplicationException
+  public NPC(String name, String farDesc, String nearDesc, int affinity, boolean peaceFlag,
+      String note) throws NullPointerException, IllegalArgumentException
   {
     // Guard conditions
 
-    // if ((name == null) || (name.trim().length() == 0)) {
-    // throw new ApplicationException(
-    // "Patron(): Name cannot be null or empty");
-    // }
-    // if ((farDesc == null) || (farDesc.trim().length() == 0)) {
-    // throw new ApplicationException(
-    // "Patron(): Far Description cannot be null or empty");
-    // }
-    // if ((nearDesc == null) || (nearDesc.trim().length() == 0)) {
-    // throw new ApplicationException(
-    // "Patron(): Near Description cannot be null or empty");
-    // }
-
+    if ((name == null) || (name.trim().length() == 0)) {
+      throw new NullPointerException("Patron(): Name cannot be null or empty");
+    }
+    if ((farDesc == null) || (farDesc.trim().length() == 0)) {
+      throw new NullPointerException("Patron(): Far Description cannot be null or empty");
+    }
+    if ((nearDesc == null) || (nearDesc.trim().length() == 0)) {
+      throw new NullPointerException("Patron(): Near Description cannot be null or empty");
+    }
     if ((affinity < MIN_AFFINITY) || (affinity > MAX_AFFINITY)) {
-      throw new ApplicationException(
+      throw new IllegalArgumentException(
           "Patron(): Affinity value out of range; cannot be "
               + affinity);
     }
@@ -118,7 +116,7 @@ public class NPC implements IRegistryElement
   {
     return _nearDescription;
   }
-  
+
   /*
    * PUBLIC METHODS
    */
@@ -139,7 +137,7 @@ public class NPC implements IRegistryElement
     boolean bfriend = (_affinity == p._affinity) && (_peacekeeper == p._peacekeeper);
     return (bName && bFarDesc && bNearDesc && bfriend);
   }
-  
+
   @Override
   public boolean equals(Object obj)
   {

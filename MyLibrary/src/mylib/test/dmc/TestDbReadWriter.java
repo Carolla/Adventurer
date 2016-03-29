@@ -317,8 +317,8 @@ public class TestDbReadWriter
   @Test
   public void testUniqueness()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     int nbrBefore = _dbrw.size();
@@ -376,8 +376,8 @@ public class TestDbReadWriter
   // @Test
   public void testErrorAddNullObject()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     try {
@@ -395,8 +395,8 @@ public class TestDbReadWriter
   // @Test
   public void testErrorDeleteNonexistingElement()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     SomeObject so9 = new SomeObject("object not in db");

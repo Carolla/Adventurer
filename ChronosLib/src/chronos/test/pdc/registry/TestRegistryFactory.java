@@ -10,8 +10,6 @@
 package chronos.test.pdc.registry;
 
 import static org.junit.Assert.assertNull;
-import mylib.MsgCtrl;
-import mylib.pdc.Registry;
 
 import org.junit.After;
 import org.junit.Before;
@@ -20,6 +18,8 @@ import org.junit.Test;
 import chronos.civ.DefaultUserMsg;
 import chronos.pdc.command.Scheduler;
 import chronos.pdc.registry.RegistryFactory;
+import mylib.MsgCtrl;
+import mylib.pdc.Registry;
 
 
 /**
@@ -45,7 +45,7 @@ public class TestRegistryFactory
   {
     skedder = new Scheduler(new DefaultUserMsg());
     _rf = new RegistryFactory();
-    _rf.initRegistries(skedder);
+    _rf.initRegistries();
   }
 
   @After

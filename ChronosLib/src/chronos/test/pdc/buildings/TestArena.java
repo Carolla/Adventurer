@@ -104,8 +104,8 @@ public class TestArena
   @Test
   public void testNullArena() throws Exception
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.msgln(this, "\t testNullArena()");
 
     // ERROR null name parm; current arena must be closed already
@@ -116,41 +116,10 @@ public class TestArena
     }
   }
 
-  //
-  //    /** Verify that the target object is saved to the file
-  //     * @Normal  save the object to the file and check file size
-  //     * @throws Exception for anything unexpected
-  //     */
-  //    @Test
-  //    public void testSave() throws Exception
-  //    {
-  //        MsgCtrl.auditMsgsOn(true);
-  //        MsgCtrl.errorMsgsOn(true);
-  //        MsgCtrl.msgln(this, "\t testSave()");
-  //
-  //        // NORMAL Check file size of arena before and after save
-  //        // Ensure that there is no arena file
-  //        _arena.close(true);
-  //        File dgn = new File(NAME_PATH);
-  //        assertEquals(dgn.exists(), false);
-  //        MsgCtrl.msgln("\t Arena size before saving = " + dgn.length());
-  //        // Now create a new Arena
-  //        _arena = Arena.getInstance(NAME);
-  //        // Save arena and check filesize
-  //        try {
-  //            _arena.save();
-  //            _arena.close(false);
-  //            assertEquals(dgn.exists(), true);
-  //            MsgCtrl.msgln("\t Arena size after saving = " + dgn.length());
-  //        } catch (Exception ex) {
-  //            MsgCtrl.errMsg("\t " + ex.getMessage());
-  //        }
-  //    }
-
 
   /** Chronos.pdc.Arena
-   * @Not_Needed  getName()                             // getter
-   * @Not_Needed  close(boolean)                      // support method, tested in state prep/cleanup
+   * @Not_Needed  getName()       // getter
+   * @Not_Needed  close(boolean)  // support method, tested in state prep/cleanup
    */
   public void not_Needed()
   {}

@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.junit.BeforeClass;
 
-import pdc.command.CommandFactory;
 import chronos.civ.DefaultUserMsg;
 import chronos.pdc.Adventure;
 import chronos.pdc.buildings.Building;
@@ -22,6 +21,7 @@ import civ.BuildingDisplayCiv;
 import civ.CommandParser;
 import civ.MainActionCiv;
 import civ.MainframeCiv;
+import pdc.command.CommandFactory;
 
 public class IntegrationTest
 {
@@ -39,7 +39,7 @@ public class IntegrationTest
   @BeforeClass
   public static void setUpBeforeClass()
   {
-    _regFactory.initRegistries(_skedder);
+    _regFactory.initRegistries();
     
     BuildingRegistry bReg = (BuildingRegistry) _regFactory.getRegistry(RegKey.BLDG);
     AdventureRegistry advReg = (AdventureRegistry) _regFactory.getRegistry(RegKey.ADV);

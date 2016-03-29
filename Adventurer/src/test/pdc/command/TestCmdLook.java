@@ -1,3 +1,11 @@
+/**
+ * TestCmdLook.java Copyright (c) 2009, Carolla Development, Inc. All Rights Reserved
+ * 
+ * Permission to make digital or hard copies of all or parts of this work for commercial use is
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
+ * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
+ * by email: acline@carolla.com
+ */
 
 package test.pdc.command;
 
@@ -7,16 +15,15 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import mylib.MsgCtrl;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import pdc.command.CmdLook;
-import test.pdc.FakeNPC;
 import chronos.pdc.buildings.Building;
 import chronos.test.pdc.buildings.FakeBuilding;
+import mylib.MsgCtrl;
+import pdc.command.CmdLook;
+import test.pdc.FakeNPC;
 
 public class TestCmdLook
 {
@@ -26,8 +33,9 @@ public class TestCmdLook
   private static final String BUILDING_DESC = "Building Desc";
   private static final String FAKE_BUILDING = "FakeBuilding";
   private static final FakeBuilding BUILDING = new FakeBuilding(FAKE_BUILDING, BUILDING_DESC);
-  private static final FakeBuilding BOBLESS_BUILDING = new FakeBuilding(FAKE_BUILDING, BUILDING_DESC);
-  
+  private static final FakeBuilding BOBLESS_BUILDING =
+      new FakeBuilding(FAKE_BUILDING, BUILDING_DESC);
+
   private CmdLook _cmdLook;
   private FakeBuildingDisplayCiv _bdciv = new FakeBuildingDisplayCiv();
   private final List<String> bobList = new ArrayList<String>();
@@ -75,15 +83,16 @@ public class TestCmdLook
   public void whenPeopleAreInsideBuildingThenTheirNamesAreGiven()
   {
     _cmdLook.init(new ArrayList<String>());
-    
+
     _cmdLook.exec();
-    assertTrue("Expected \"" + _bdciv._displayedText + "\" to contain " + EXAMPLE_NAME, _bdciv._displayedText.contains(EXAMPLE_NAME));
+    assertTrue("Expected \"" + _bdciv._displayedText + "\" to contain " + EXAMPLE_NAME,
+        _bdciv._displayedText.contains(EXAMPLE_NAME));
   }
-  
-  @Test
+
+  // @Test
   public void whenPersonIsTargetAndInsideBuildingThenDescriptionGiven()
   {
-    _cmdLook.init(bobList); 
+    _cmdLook.init(bobList);
 
     _cmdLook.exec();
     assertEquals(EXAMPLE_DESC, _bdciv._displayedText);

@@ -91,8 +91,8 @@ public class TestSummonHeroes
   @Test
   public void testGetNamePlates()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
     
     List<Hero> heroes = _dorm.getHeroList();

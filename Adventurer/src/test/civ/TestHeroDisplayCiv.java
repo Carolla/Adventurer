@@ -17,10 +17,8 @@ import org.junit.Test;
 /**
  * 
  * @author Alan Cline
- * @version <DL>
- *          <DT>Build 1.0 Jul 31, 2010 // original
- *          <DD>
- *          </DL>
+ * @version Jul 31, 2010 // original <br>
+ *          Mar 29 2016 // Reviewed and tested for overall QA <br>
  */
 public class TestHeroDisplayCiv
 {
