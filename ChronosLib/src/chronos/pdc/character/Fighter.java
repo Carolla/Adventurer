@@ -17,29 +17,29 @@ import chronos.pdc.character.TraitList.PrimeTraits;
  * @version Sep 4, 2015 // original <br>
  *          Oct 17, 2015 // added klass-specific inventory items <br>
  */
-public class Fighter extends Klass
-{
+public class Fighter extends Klass {
 
-  /** Starting die and initial free HP for klass */
-  private static final String _hitDie = "d10";
-  private static final String _startingGold = "5d4";
+	/** Starting die and initial free HP for klass */
+	private static final String _hitDie = "d10";
+	private static final String _startingGold = "5d4";
+	private String[] _fighterItems = { "Short sword", "Leather Armor" };
 
-  /**
-   * Default constructor, called reflectively by Klass
-   * @param traits 
-   */
-  public Fighter(TraitList traits)
-  {
-    super(traits, FIGHTER_CLASS_NAME, PrimeTraits.STR, _hitDie, _startingGold);
-  }
+	/**
+	 * Default constructor, called reflectively by Klass
+	 * 
+	 * @param traits
+	 */
+	public Fighter(TraitList traits) {
+		super(traits, FIGHTER_CLASS_NAME, PrimeTraits.STR, _hitDie,
+				_startingGold);
+	}
 
-  @Override
-  /** Assign initial inventory to Fighte (8 gpw = 1 lb) */
-  public void addKlassItems(Inventory inven)
-  {
-    inven.addItem(Item.getItem("Short sword"));
-    inven.addItem(Item.getItem("Leather Armor"));
-  }
+	@Override
+	public void addKlassItems(Inventory inven) {
+		for (String itemName : _fighterItems) {
+			inven.addItem(Item.getItem(itemName));
+		}
 
+	}
 
 } // end of Fighter class
