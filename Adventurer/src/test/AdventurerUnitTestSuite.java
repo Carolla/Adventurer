@@ -1,5 +1,5 @@
 /**
- * UnitTestSuite.java Copyright (c) 2009, Carolla Development, Inc. All Rights Reserved
+ * AdventureUnitTestSuite.java Copyright (c) 2009, Carolla Development, Inc. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
@@ -12,13 +12,9 @@ package test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import test.civ.TestBuildingDisplayCiv;
-import test.civ.TestHeroDisplayCiv;
-import test.civ.TestMainframeCiv;
-import test.civ.TestNewHeroCiv;
-import test.pdc.TestInventory;
-import test.pdc.command.CommandSuite;
-import chronos.test.pdc.TestItem;
+import test.civ.CivTestSuite;
+import test.dmc.DmcTestSuite;
+import test.pdc.PdcTestSuite;
 
 /**
  * Run all unit tests for {@code Adventurer} components. Unit tests are grouped by their components
@@ -30,28 +26,21 @@ import chronos.test.pdc.TestItem;
  * 
  * @author Alan Cline
  * @version Sept 7 2014 // original <br>
+ *          Mar 29 2016 // Reviewed and tested for overall QA <br>
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 
-    /** CIV test files */
-    TestBuildingDisplayCiv.class,
-    TestHeroDisplayCiv.class,
-    // TestMainActionCiv.class,
-    TestMainframeCiv.class,
-    TestNewHeroCiv.class,
+  // All MVP Component unit test suites
+  CivTestSuite.class,
+  PdcTestSuite.class,
+  DmcTestSuite.class,
+  
 
-    /* PDC subfolder test suites */
-    CommandSuite.class,
-
-    /** PDC test files */
-    TestInventory.class,
-    TestItem.class,
-
-    /** DMC test files */
 })
+
 public class AdventurerUnitTestSuite
 {
 
-} // end of UnitTestSuite class
+} // end of AdventureUnitTestSuite
 

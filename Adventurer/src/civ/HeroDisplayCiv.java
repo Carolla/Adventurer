@@ -10,8 +10,6 @@
 package civ;
 
 
-import hic.HeroDisplay;
-
 import java.util.EnumMap;
 
 import chronos.civ.PersonKeys;
@@ -19,6 +17,9 @@ import chronos.pdc.Item.ItemCategory;
 import chronos.pdc.character.Hero;
 import chronos.pdc.character.Inventory;
 import chronos.pdc.registry.HeroRegistry;
+import chronos.pdc.registry.RegistryFactory;
+import chronos.pdc.registry.RegistryFactory.RegKey;
+import hic.HeroDisplay;
 
 
 /**
@@ -46,7 +47,10 @@ public class HeroDisplayCiv extends BaseCiv
   /** Reference to parent civ */
   private final MainframeCiv _mfCiv;
 
+  /** Reference to HeroRegistry to save new Heroes */
+  private HeroRegistry _dorm;
 
+  
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
@@ -106,13 +110,14 @@ public class HeroDisplayCiv extends BaseCiv
   public boolean savePerson(boolean overwrite)
   {
     boolean retflag = false;
-    HeroRegistry dorm = new HeroRegistry();
+    RegistryFactory rf = RegistryFactory.getInstance();
+    _dorm = (HeroRegistry) rf.getRegistry(RegKey.HERO);
     
     // Save when NOT in overwrite mode
     if (overwrite == false) {
-      retflag = dorm.add(_hero);
+      retflag = _dorm.add(_hero);
     } else {
-      retflag = dorm.update(_hero);
+      retflag = _dorm.update(_hero);
     }
     return retflag;
   }

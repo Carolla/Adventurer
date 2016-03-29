@@ -53,14 +53,11 @@ public class Adventure implements IRegistryElement
     if ((advName == null) || (townName == null) || (arenaName == null) || (overview == null)) {
       throw new NullPointerException("Adventure cannot have null parms");
     }
-
     // Set the parms
-    else {
-      _name = advName;
-      _townName = townName;
-      _arenaName = arenaName;
-      _overview = overview;
-    }
+    _name = advName;
+    _townName = townName;
+    _arenaName = arenaName;
+    _overview = overview;
   }
 
   // ============================================================

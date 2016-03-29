@@ -18,9 +18,9 @@ import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 
-import net.miginfocom.swing.MigLayout;
 import chronos.pdc.character.Hero;
 import chronos.pdc.registry.HeroRegistry;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * ShuttleList is a pop-up dialog for selecting party members when the Summon
@@ -82,10 +82,11 @@ public class ShuttleList extends JDialog {
 	 *            the list of Hero names
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public ShuttleList(List<Hero> summonableHeroes) {
+	public ShuttleList(List<String> summonableHeroes) {
 		// Get String names from Hero List
-		_summonableHeroNames = translateHeroesToNames(summonableHeroes);
-
+//		_summonableHeroNames = translateHeroesToNames(summonableHeroes);
+	  _summonableHeroNames = summonableHeroes;
+	  
 		// Set "left" list as currently selected
 		_selectedList = _leftList;
 
@@ -313,7 +314,7 @@ public class ShuttleList extends JDialog {
 	 *            the items already selected
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public ShuttleList(List<Hero> summonableHeroes, List<Hero> partyHeros) {
+	public ShuttleList(List<String> summonableHeroes, List<Hero> partyHeros) {
 		this(summonableHeroes);
 		// Get names of partyHeros
 		List<String> partyHeroNames = translateHeroesToNames(partyHeros);

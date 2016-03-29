@@ -1,0 +1,6 @@
+DIRECTORIES
+civ
+
+FILES
+Template.java
+FakeSkill.java

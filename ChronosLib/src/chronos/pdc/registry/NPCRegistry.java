@@ -11,10 +11,10 @@ package chronos.pdc.registry;
 
 import java.util.ArrayList;
 
-import mylib.ApplicationException;
-import mylib.pdc.Registry;
 import chronos.pdc.Chronos;
 import chronos.pdc.NPC;
+import mylib.ApplicationException;
+import mylib.pdc.Registry;
 
 /**
  * Contains the Patrons for the Inn. They interact with the Hero
@@ -489,7 +489,7 @@ public class NPCRegistry extends Registry<NPC>
     String nearDesc = _patronTable[pos][Index.NEAR_DESC.ordinal()];
     // Create the new NPC
     try {
-      npc = new NPC(name, note, affinity, peace, farDesc, nearDesc);
+      npc = new NPC(name, farDesc, nearDesc, affinity, peace, note);
     } catch (ApplicationException ex) {
       System.err.println("Problem creating NPC at init table " + pos);
     }

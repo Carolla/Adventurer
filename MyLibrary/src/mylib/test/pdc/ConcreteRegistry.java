@@ -54,10 +54,10 @@ public class ConcreteRegistry extends Registry<SomeObject>
   protected void init(String filename)
   {}
 
-  public void setDbReadWriter(DbReadWriter<SomeObject> regRW)
-  {
-    _regRW = regRW;
-  }
+//  public void setDbReadWriter(DbReadWriter<SomeObject> regRW)
+//  {
+//    _regRW = regRW;
+//  }
 
 
   // ============================================================

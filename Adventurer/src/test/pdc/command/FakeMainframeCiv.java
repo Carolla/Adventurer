@@ -38,11 +38,6 @@ public class FakeMainframeCiv extends MainframeCiv
   {
     //Do nothing
   }
-  @Override
-  protected void doConstructorWork()
-  {
-    //Do nothing
-  }
   
   @Override
   public void quit()

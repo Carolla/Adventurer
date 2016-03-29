@@ -18,17 +18,17 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import mylib.Constants;
-import mylib.MsgCtrl;
-import mylib.dmc.DbReadWriter;
-import mylib.dmc.IRegistryElement;
-import mylib.test.dmc.SomeObject;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.db4o.query.Predicate;
+
+import mylib.Constants;
+import mylib.MsgCtrl;
+import mylib.dmc.DbReadWriter;
+import mylib.dmc.IRegistryElement;
+import mylib.test.dmc.SomeObject;
 
 
 
@@ -55,14 +55,14 @@ public class TestRegistry
 
   /** A predicate for retrieving objects by name */
   Predicate<IRegistryElement> _pred = null;
-  private FakeDbReadWriter _dbReadWriter = new FakeDbReadWriter(TEST_FILEPATH);
+//  private FakeDbReadWriter _dbReadWriter = new FakeDbReadWriter(TEST_FILEPATH);
 
   @Before
   public void setUp() throws Exception
   {
     // Create a Registry object, which will be initialized if one doesn't exist
     _testReg = new ConcreteRegistry(TEST_FILEPATH);
-    _testReg.setDbReadWriter(_dbReadWriter);
+//    _testReg.setDbReadWriter(_dbReadWriter);
 
     // Ensure that registry exists with no elements
     assertEquals(0, _testReg.getNbrElements());
@@ -426,11 +426,11 @@ public class TestRegistry
       _objects.add((SomeObject) obj);
     }
 
-    @Override
-    public boolean containsElement(SomeObject obj)
-    {
-      return _objects.contains(obj);
-    }
+//    @Override
+//    public boolean contains(SomeObject obj)
+//    {
+//      return _objects.contains(obj);
+//    }
 
     @Override
     public void deleteElement(SomeObject obj)

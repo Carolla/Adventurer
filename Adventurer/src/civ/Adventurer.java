@@ -11,6 +11,8 @@ package civ;
 
 import java.awt.EventQueue;
 
+import hic.Mainframe;
+
 /**
  * This Launcher class detects command line arguments, takes appropriate loading action, initializes
  * all singleton Registries, and turns control over the Mainframe GUI singleton.
@@ -57,7 +59,7 @@ public class Adventurer
       {
         try {
           // Create the MainframeCiv and turn contol over to it
-          new MainframeCiv();
+          MainframeCiv mfc = new MainframeCiv(new Mainframe());
         } catch (Exception e) {
           e.printStackTrace();
           System.exit(-1);

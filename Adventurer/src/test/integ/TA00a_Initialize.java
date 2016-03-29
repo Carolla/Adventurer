@@ -12,18 +12,16 @@ package test.integ;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import chronos.civ.DefaultUserMsg;
 import chronos.pdc.Chronos;
-import chronos.pdc.command.Scheduler;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
+import mylib.MsgCtrl;
 
 /**
  * Test the Adventurer (Launcher) class: ensure that all Registries are created.
@@ -53,7 +51,8 @@ public class TA00a_Initialize extends IntegrationTest
   public static void setUpBeforeClass()
   {
     _rf = new RegistryFactory();
-    _rf.initRegistries(new Scheduler(new DefaultUserMsg()));
+//    _rf.initRegistries(new Scheduler(new DefaultUserMsg()));
+    _rf.initRegistries();
   }
 
   /**
@@ -89,7 +88,8 @@ public class TA00a_Initialize extends IntegrationTest
 
     // DO create the registries
     _rf = new RegistryFactory();
-    _rf.initRegistries(new Scheduler(new DefaultUserMsg()));
+//    _rf.initRegistries(new Scheduler(new DefaultUserMsg()));
+    _rf.initRegistries();
 
     // VERIFY all registry files created
     assertTrue(RegistryFilesExist());

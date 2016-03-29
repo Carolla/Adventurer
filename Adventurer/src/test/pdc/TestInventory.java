@@ -16,7 +16,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.Before;
@@ -25,20 +24,16 @@ import org.junit.Test;
 import chronos.pdc.Item;
 import chronos.pdc.Item.ItemCategory;
 import chronos.pdc.character.Inventory;
+import mylib.MsgCtrl;
 
 /**
  * Tests the Inventory repository, a collection of Item objects.
  * 
  * @author Alan Cline
- * @version <DL>
- *          <DT>Build 1.0 Jun 8, 2009 // original
- *          <DD>
- *          <DT>Build 1.1 Aug 14 2010 // updated for QA tags and regression
- *          <DD>
- *          <DT>Build 1.2 Apr 11 2011 // TAA updated QA, added mutliple null
- *          tests and ensured function
- *          <DD>
- *          </DL>
+ * @version Jun 8, 2009 // original <br>
+ *          Aug 14 2010 // updated for QA tags and regression <br>
+ *          Apr 11 2011 // TAA updated QA, added mutliple null ests and ensured function <br>
+ *          Mar 29 2016 // Reviewed and updated for overall QA testing <br>
  */
 public class TestInventory
 {

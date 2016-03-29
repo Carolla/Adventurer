@@ -11,8 +11,6 @@ package chronos.test.pdc;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import mylib.ApplicationException;
-import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.Before;
@@ -20,25 +18,17 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.pdc.Adventure;
+import mylib.MsgCtrl;
 
 /**
  * Unit tests for {@code chronos.pdc.Adventure}
  * 
  * @author Al Cline
  * @version Sep 21, 2014 // original <br>
+ *          Mar 29 2016 // reviewed and updated for overall QA <br>
  */
-
-/*
- * close() dump() equals(Object) getKey() getName() getTownName() getArenaName() getOverview()
- * getArena() getTown() isOpen() open() toString()
- */
-
-
 public class TestAdventure
 {
-  //  static private RegistryFactory _rf;
-  // static private TownRegistry _treg;
-
 
   /** Default Adventure */
   private final String DEF_ADVENTURE = "The Quest for Rogahn and Zelligar";
@@ -59,8 +49,6 @@ public class TestAdventure
   @BeforeClass
   public static void _setUpBeforeClass() throws Exception
   {
-    // _rf = RegistryFactory.getInstance();
-    // _treg = (TownRegistry) _rf.getRegistry(RegKey.TOWN);
   }
 
   /**
@@ -91,8 +79,8 @@ public class TestAdventure
   @Test
   public void testAdventureCtor()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // SETUP Dump the names in the Town Registry
@@ -110,35 +98,38 @@ public class TestAdventure
   @Test
   public void testAdventureNulls()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // SETUP None
-    // DO create a simple adventure with legal Town
+    
+    // RUN 
+    // Trigger exceptions for null parms
+    Adventure adv = null;
     try {
-      Adventure adv = new Adventure(null, DEF_TOWN, DEF_ARENA, DEF_OVERVIEW);
+      adv = new Adventure(null, DEF_TOWN, DEF_ARENA, DEF_OVERVIEW);
+    } catch (NullPointerException ex) {
+      MsgCtrl.errMsgln("Expected: " + ex.getMessage());
       assertNull(adv);
-    } catch (ApplicationException ex) {
-      MsgCtrl.errMsgln("Experted msg: " + ex.getMessage());
     }
     try {
-      Adventure adv = new Adventure(DEF_ADVENTURE, null, DEF_ARENA, DEF_OVERVIEW);
+      adv = new Adventure(DEF_ADVENTURE, null, DEF_ARENA, DEF_OVERVIEW);
+    } catch (NullPointerException ex) {
+      MsgCtrl.errMsgln("Expected: " + ex.getMessage());
       assertNull(adv);
-    } catch (ApplicationException ex) {
-      MsgCtrl.errMsgln("Experted msg: " + ex.getMessage());
     }
     try {
-      Adventure adv = new Adventure(DEF_ADVENTURE, DEF_TOWN, null, DEF_OVERVIEW);
+      adv = new Adventure(DEF_ADVENTURE, DEF_TOWN, null, DEF_OVERVIEW);
+    } catch (NullPointerException ex) {
+      MsgCtrl.errMsgln("Expected: " + ex.getMessage());
       assertNull(adv);
-    } catch (ApplicationException ex) {
-      MsgCtrl.errMsgln("Experted msg: " + ex.getMessage());
     }
     try {
-      Adventure adv = new Adventure(DEF_ADVENTURE, DEF_TOWN, DEF_ARENA, null);
+      adv = new Adventure(DEF_ADVENTURE, DEF_TOWN, DEF_ARENA, null);
+    } catch (NullPointerException ex) {
+      MsgCtrl.errMsgln("Expected: " + ex.getMessage());
       assertNull(adv);
-    } catch (ApplicationException ex) {
-      MsgCtrl.errMsgln("Experted msg: " + ex.getMessage());
     }
   }
 
@@ -148,7 +139,6 @@ public class TestAdventure
    * List of class methods that do not need unit tests
    * 
    */
-  @Test
   public void _notNeeded()
   {}
 

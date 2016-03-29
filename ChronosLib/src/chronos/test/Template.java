@@ -10,13 +10,14 @@
 package chronos.test;
 
 import static org.junit.Assert.fail;
-import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import mylib.MsgCtrl;
 
 /**
  * @author alancline
@@ -70,7 +71,7 @@ public class Template
   {
     MsgCtrl.auditMsgsOn(true);
     MsgCtrl.errorMsgsOn(true);
-    MsgCtrl.msgln(this, ": test<MethodName>()");
+    MsgCtrl.where(this);
 
     // SETUP
     // DO

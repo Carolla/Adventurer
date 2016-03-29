@@ -65,17 +65,17 @@ public abstract class Race
   static public Race createRace(String raceName, Gender gender)
   {
     Race race = null;
-    if (raceName.equals("Dwarf")) {
+    if (raceName.toLowerCase().equals("dwarf")) {
       race =  new Dwarf(gender);
-    } else if (raceName.equals("Elf")) {
+    } else if (raceName.toLowerCase().equals("elf")) {
       race =  new Elf(gender);
-    } else if (raceName.equals("Gnome")) {
+    } else if (raceName.toLowerCase().equals("gnome")) {
       race =  new Gnome(gender);
-    } else if (raceName.equals("Half-Elf")) {
+    } else if (raceName.toLowerCase().equals("half-elf")) {
       race =  new HalfElf(gender);
-    } else if (raceName.equals("Half-Orc")) {
+    } else if (raceName.toLowerCase().equals("half-orc")) {
       race =  new HalfOrc(gender);
-    } else if (raceName.equals("Hobbit")) {
+    } else if (raceName.toLowerCase().equals("hobbit")) {
       race =  new Hobbit(gender);
     } else {
       race =  new Human(gender);      

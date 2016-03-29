@@ -12,10 +12,10 @@ package chronos.pdc;
 import java.util.ArrayList;
 import java.util.List;
 
+import chronos.pdc.registry.OccupationRegistry;
 import mylib.ApplicationException;
 import mylib.dmc.IRegistryElement;
 import mylib.pdc.MetaDie;
-import chronos.pdc.registry.OccupationRegistry;
 
 /**
  * An occupation gives a person some skill from their previous experience. Occupations are
@@ -64,9 +64,10 @@ public class Occupation implements IRegistryElement
     _ocpreg = ocpreg;
   }
 
-  public static Occupation getOccupation(String occup)
+  public static Occupation getOccupation(String ocpName)
   {
-    return _ocpreg.getOccupation(occup);
+    Occupation occup = _ocpreg.getOccupation(ocpName);
+    return occup;
   }
 
   public static Occupation getRandomOccupation()

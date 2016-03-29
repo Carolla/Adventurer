@@ -1,5 +1,5 @@
 /**
- * AdventurerSuite.java Copyright (c) 2009, Carolla Development, Inc. All Rights Reserved
+ * AdventurerTestSuite.java Copyright (c) 2009, Carolla Development, Inc. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
@@ -11,6 +11,9 @@ package test;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+
+import chronos.test.ChronosUnitTestSuite;
+import mylib.test.MyLibraryUnitTestSuite;
 
 
 /**
@@ -24,19 +27,28 @@ import org.junit.runners.Suite;
  * @version Jun 4 2009 // original <br>
  *          Jan 18 2010 // add Occupation and Skill class testing <br>
  *          Jul 11 2010 // updated for tests with CIV support <br>
- *          Jul 26 2014 // {@code UC00a. Initilization} classes added: {@code Adventurer} (the app
+ *          Jul 26 2014 // {@code UC00a. Initialization} classes added: {@code Adventurer} (the app
  *          Launcher), {@code MainframeCiv}; <br>
+ *          Mar 29 2016 // Reviewed and updated for overall QA testing <br>
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    UnitTestSuite.class,
 
-    /* Adventurer integration test suite */
-    IntegrationSuite.class,
+//    // All Unit Tests in Adventurer
+//    AdventurerUnitTestSuite.class,
+//
+//    /* Adventurer integration test suite */
+//    AdventurerIntegTestSuite.class,
+//
+//    // Regression test suites for all supporting libraries
+//    MyLibraryUnitTestSuite.class,
+//    ChronosUnitTestSuite.class,
 
 })
+
 public class AdventurerTestSuite
 {
+}
 
-} // end of AdventurerSuite class
+// end of AdventurerSuite class
 

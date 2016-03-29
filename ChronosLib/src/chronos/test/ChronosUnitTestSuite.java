@@ -9,17 +9,20 @@
 
 package chronos.test;
 
-import mylib.test.pdc.TestRegistry;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import chronos.test.pdc.TestAdventure;
+import chronos.test.pdc.TestItem;
+import chronos.test.pdc.TestNPC;
 import chronos.test.pdc.TestOccupation;
 import chronos.test.pdc.TestSkill;
-import chronos.test.pdc.buildings.BuildingsSuite;
-import chronos.test.pdc.character.CharacterSuite;
-import chronos.test.pdc.character.TestGender;
-import chronos.test.pdc.race.TestRace;
+import chronos.test.pdc.TestTown;
+import chronos.test.pdc.buildings.BuildingsTestSuite;
+import chronos.test.pdc.character.CharacterTestSuite;
+import chronos.test.pdc.command.CommandTestSuite;
+import chronos.test.pdc.race.RaceTestSuite;
+import chronos.test.pdc.registry.RegistryTestSuite;
 
 
 /**
@@ -37,40 +40,31 @@ import chronos.test.pdc.race.TestRace;
  *          July 26, 2014 // {@code UC00a. Initialization} added: {@code RegistryFactory} <br>
  *          Sep 20, 2014 // Organized test file list <br>
  *          Dec 25, 2015 // verify testfile names against prod files names <br>
+ *          Mar 29 2016 // reviewed and updated all test classes <br>
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 
     /* CIV test files */
-    // TestHeroDefaults,
-    // TestMiscKeys.class,
-    // TestOccupationsKeys.class,
-    // TestSkillKeys.class,
-    // TestUserMsg.class,
+    // None
+
+    /* PDC test suite from subdirectories */
+    BuildingsTestSuite.class,
+    CharacterTestSuite.class,
+    CommandTestSuite.class,
+    RaceTestSuite.class,
+    RegistryTestSuite.class,
+
+    /* PDC test files */
+    TestAdventure.class,
+    TestItem.class,
+    TestNPC.class,
+    TestOccupation.class,
+    TestSkill.class,
+    TestTown.class,
 
     /* DMC test files */
     // None
-
-    /* PDC subfolder test suites */
-     BuildingsSuite.class,
-     // RegistrySuite.class, too slow
-     TestRegistry.class,
-     CharacterSuite.class,
-  
-    /* PDC test files */
-    // TestAdventure.class,
-    // TestArena.class,
-    // TestAttributeList.class,
-    // TestGameClock.class,
-    // TestItem.class,
-    // TestMiscKeys.class,
-    // TestNPC.class,
-    // TestNullNPC.class,
-     TestGender.class,
-     TestOccupation.class,
-     TestRace.class,
-     TestSkill.class,
-    // TestTown.class,
 
 })
 /** Compilation of all unit tests for regression and integration testing. */

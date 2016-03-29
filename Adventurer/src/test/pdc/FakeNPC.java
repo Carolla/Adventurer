@@ -6,11 +6,11 @@ public class FakeNPC extends NPC
 {
   public FakeNPC(String name)
   {
-    super(name, "", 0, false, "", "");
+    super(name, "farDesc", "nearDesc", 0, false, "Note");
   }
   
   public FakeNPC(String name, String description)
   {
-    super(name, "", 0, false, description, description);
+    super(name, "farDesc", description, 0, false, "Note");
   }
 }
