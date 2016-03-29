@@ -1,5 +1,5 @@
 /**
- * RegressionTestSuite.java Copyright (c) 2009, Carolla Development, Inc. All Rights Reserved
+ * AdventurerTestSuite.java Copyright (c) 2009, Carolla Development, Inc. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
@@ -46,7 +46,7 @@ import mylib.test.MyLibraryUnitTestSuite;
 
 })
 
-public class RegressionTestSuite
+public class AdventurerTestSuite
 {
 }
 
