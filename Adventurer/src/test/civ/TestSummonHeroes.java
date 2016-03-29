@@ -14,16 +14,18 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
+import mylib.MsgCtrl;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import test.integ.MainframeProxy;
 import chronos.pdc.character.Hero;
 import chronos.pdc.registry.HeroRegistry;
 import civ.MainframeCiv;
-import mylib.MsgCtrl;
 
 /**
  * @author Al Cline
@@ -40,7 +42,7 @@ public class TestSummonHeroes
   public static void setUpBeforeClass() throws Exception
   {
     // Init the system
-    MainframeCiv mfc = new MainframeCiv();
+    MainframeCiv mfc = new MainframeCiv(new MainframeProxy());
     assertNotNull(mfc);
     _dorm = new HeroRegistry();
     assertNotNull(_dorm);

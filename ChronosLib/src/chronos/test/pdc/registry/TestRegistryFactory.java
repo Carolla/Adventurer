@@ -45,7 +45,7 @@ public class TestRegistryFactory
   {
     skedder = new Scheduler(new DefaultUserMsg());
     _rf = new RegistryFactory();
-    _rf.initRegistries();
+    _rf.initRegistries(skedder);
   }
 
   @After

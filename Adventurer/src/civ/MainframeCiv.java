@@ -9,14 +9,12 @@
 
 package civ;
 
-import chronos.civ.UserMsg;
-import chronos.pdc.command.Scheduler;
-import chronos.pdc.registry.RegistryFactory;
 import hic.ChronosPanel;
 import hic.IOPanel;
 import hic.ImagePanel;
 import hic.Mainframe;
 import hic.MainframeInterface;
+import chronos.civ.UserMsg;
 
 /**
  * The main civ behind the Adventurer program. 
@@ -33,7 +31,6 @@ import hic.MainframeInterface;
 public class MainframeCiv extends BaseCiv implements UserMsg
 {
   private MainframeInterface _mf;
-  private RegistryFactory _rf;
   private IOPanel _ioPanel;
   private ImagePanel _imagePanel;
 
@@ -47,33 +44,23 @@ public class MainframeCiv extends BaseCiv implements UserMsg
 
   public MainframeCiv()
   {
-    initializeAll();
+	  this(new Mainframe());
   }
 
   public MainframeCiv(MainframeInterface mf)
   {
     _mf = mf;
-    initializeAll();
-    displayMainframe();
+    _imagePanel = new ImagePanel();
+    doConstructorWork();
   }
 
-  protected void displayMainframe()
+  protected void doConstructorWork()
   {
-	_mf.setImagePanel(new ImagePanel());
+	_mf.setImagePanel(_imagePanel);
     displayImage(INITIAL_IMAGE_TITLE, INITIAL_IMAGE);
-    _mf = new Mainframe();
     _mf.replaceRightPanel(_imagePanel);
-    new MainActionCiv(this, _rf);
+    new MainActionCiv(this);
   }
-
-  private void initializeAll()
-  {
-    // Create the background thread for command line processing
-    Scheduler _skedder = new Scheduler(null); 
-    _rf = new RegistryFactory();
-    _rf.initRegistries();
-  }
-
 
   // ============================================================
   // Public methods

@@ -12,11 +12,12 @@ package chronos.pdc.registry;
 
 import java.util.HashMap;
 
+import mylib.pdc.Registry;
 import chronos.pdc.Item;
 import chronos.pdc.Occupation;
 import chronos.pdc.Skill;
 import chronos.pdc.buildings.Building;
-import mylib.pdc.Registry;
+import chronos.pdc.command.Scheduler;
 
 /**
  * Creates singleton registries of various kinds and keeps count of existing registries
@@ -27,9 +28,7 @@ import mylib.pdc.Registry;
  *          July 25, 2014 // ABC added collection funtionality <br>
  */
 public class RegistryFactory
-{
-  static private RegistryFactory _rf;
-  
+{  
   private HashMap<RegKey, Registry<?>> _regMap = null;
 
   /** Public list of all possible registries subclasses, in rough dependency order. */
@@ -59,17 +58,6 @@ public class RegistryFactory
   // ============================================================
   // Constructor(s) and Related Methods
   // ============================================================
-
-  /** Call from anywhere to get access to any Registry */
-  static public RegistryFactory getInstance()
-  {
-    if (_rf == null) {
-      _rf = new RegistryFactory();
-      _rf.initRegistries();
-    }
-    return _rf;
-  }
-  
   
   // This map is needed by other classes; do not move
   public RegistryFactory()
@@ -77,9 +65,7 @@ public class RegistryFactory
     _regMap = new HashMap<RegKey, Registry<?>>();
   }
 
-  // TODO Clean this method
-//  public void initRegistries(Scheduler _skedder)
-  public void initRegistries()
+  public void initRegistries(Scheduler _skedder)
   {
     _regMap.put(RegKey.HERO, new HeroRegistry());
     _regMap.put(RegKey.ITEM, new ItemRegistry());
@@ -96,8 +82,7 @@ public class RegistryFactory
 
     Item.setItemRegistry((ItemRegistry) _regMap.get(RegKey.ITEM));
     Building.setNpcRegistry((NPCRegistry) _regMap.get(RegKey.NPC));
-//    ((BuildingRegistry) _regMap.get(RegKey.BLDG)).initialize(_skedder);
-    ((BuildingRegistry) _regMap.get(RegKey.BLDG)).initialize();
+    ((BuildingRegistry) _regMap.get(RegKey.BLDG)).initialize(_skedder);
     Skill.setSkillRegistry((SkillRegistry) _regMap.get(RegKey.SKILL));
     Occupation.setOccupationRegistry((OccupationRegistry) _regMap.get(RegKey.OCP));
   }

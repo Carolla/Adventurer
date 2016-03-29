@@ -9,6 +9,12 @@
 
 package civ;
 
+import hic.ChronosPanel;
+import hic.IOPanel;
+import hic.Mainframe;
+import hic.NewHeroIPPanel;
+import hic.ShuttleList;
+
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,6 +25,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
+import mylib.Constants;
+import net.miginfocom.swing.MigLayout;
+import pdc.command.CommandFactory;
 import chronos.pdc.Adventure;
 import chronos.pdc.Chronos;
 import chronos.pdc.character.Hero;
@@ -28,14 +37,6 @@ import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.HeroRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
-import hic.ChronosPanel;
-import hic.IOPanel;
-import hic.Mainframe;
-import hic.NewHeroIPPanel;
-import hic.ShuttleList;
-import mylib.Constants;
-import net.miginfocom.swing.MigLayout;
-import pdc.command.CommandFactory;
 
 /**
  * The main civ behind the Mainframe screen. It creates the MainActionPanel consisting of the
@@ -80,16 +81,23 @@ public class MainActionCiv extends BaseCiv
    * 
    * @param mfCiv handler for the mainframe
    */
-  public MainActionCiv(MainframeCiv mfciv, RegistryFactory rf)
+  public MainActionCiv(MainframeCiv mfciv)
   {
     _mfCiv = mfciv;
-    _rf = rf;
-    // constructCoreMembers();
-    _advReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
-    _dorm = (HeroRegistry) _rf.getRegistry(RegKey.HERO);
+     constructCoreMembers();
     _mfCiv.replaceLeftPanel(createActionPanel());
   }
 
+    private void constructCoreMembers()
+    {
+      _skedder = new Scheduler(_mfCiv); // Skedder first for injection
+  
+      _rf = new RegistryFactory();
+      _rf.initRegistries(_skedder);
+  
+       _advReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
+       _dorm = (HeroRegistry) _rf.getRegistry(RegKey.HERO);
+     }
   
   // ============================================================
   // Public methods
@@ -98,7 +106,8 @@ public class MainActionCiv extends BaseCiv
   public void createHero()
   {
     NewHeroCiv nhCiv = new NewHeroCiv(_mfCiv, _dorm);
-    NewHeroIPPanel ipPanel = new NewHeroIPPanel(nhCiv, _mfCiv);
+    HeroDisplayCiv hdCiv = new HeroDisplayCiv(_mfCiv, _dorm);
+    NewHeroIPPanel ipPanel = new NewHeroIPPanel(nhCiv, hdCiv, _mfCiv);
     _mfCiv.replaceLeftPanel(ipPanel);
     ipPanel.setDefaultFocus(); // default focus only works after panel is displayed
   }
@@ -118,11 +127,6 @@ public class MainActionCiv extends BaseCiv
   // ============================================================
   // Private methods
   // ============================================================
-
-  public HeroRegistry getDormitory()
-  {
-    return _dorm;
-  }
 
   /**
    * Load the selected adventure from the Adventure registry. Replace the opening button panel with
@@ -255,7 +259,6 @@ public class MainActionCiv extends BaseCiv
       public void actionPerformed(ActionEvent e)
       {
         // Make sure the dorm is most recent
-        _dorm = (HeroRegistry) RegistryFactory.getInstance().getRegistry(RegKey.HERO);
         summonableHeroes = _dorm.getNamePlates();
         // Add a few fake names 
         padHeroes(summonableHeroes);

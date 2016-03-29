@@ -11,7 +11,6 @@
 package mylib.test.pdc;
 
 import mylib.ApplicationException;
-import mylib.dmc.DbReadWriter;
 import mylib.pdc.Registry;
 import mylib.test.dmc.SomeObject;
 

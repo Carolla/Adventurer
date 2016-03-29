@@ -29,8 +29,8 @@ public class IntegrationTest
   protected static final List<String> _bldgs = new ArrayList<String>();
   protected static final Scheduler _skedder = new Scheduler(new DefaultUserMsg());
   protected static final MainframeCiv _mfCiv = new MainframeCiv(new MainframeProxy());
+  protected static final MainActionCiv _maCiv = new MainActionCiv(_mfCiv);
   protected static final RegistryFactory _regFactory = new RegistryFactory();
-  protected static final MainActionCiv _maCiv = new MainActionCiv(_mfCiv, _regFactory);
 
   protected static BuildingDisplayCiv _bldgCiv;
   protected static CommandFactory _cmdFac;
@@ -39,7 +39,7 @@ public class IntegrationTest
   @BeforeClass
   public static void setUpBeforeClass()
   {
-    _regFactory.initRegistries();
+    _regFactory.initRegistries(_skedder);
     
     BuildingRegistry bReg = (BuildingRegistry) _regFactory.getRegistry(RegKey.BLDG);
     AdventureRegistry advReg = (AdventureRegistry) _regFactory.getRegistry(RegKey.ADV);

@@ -10,6 +10,8 @@
 package civ;
 
 
+import hic.HeroDisplay;
+
 import java.util.EnumMap;
 
 import chronos.civ.PersonKeys;
@@ -17,9 +19,6 @@ import chronos.pdc.Item.ItemCategory;
 import chronos.pdc.character.Hero;
 import chronos.pdc.character.Inventory;
 import chronos.pdc.registry.HeroRegistry;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
-import hic.HeroDisplay;
 
 
 /**
@@ -61,9 +60,10 @@ public class HeroDisplayCiv extends BaseCiv
    * @param mf mainframe connection for displaying widgets
    * @param regFact to access the Dormitory, where Heroes are stoed
    */
-  public HeroDisplayCiv(MainframeCiv mfCiv)
+  public HeroDisplayCiv(MainframeCiv mfCiv, HeroRegistry heroReg)
   { 
     _mfCiv = mfCiv;
+    _dorm = heroReg;
   }
 
   /** Restore the mainframe panels to their previous state */
@@ -110,8 +110,6 @@ public class HeroDisplayCiv extends BaseCiv
   public boolean savePerson(boolean overwrite)
   {
     boolean retflag = false;
-    RegistryFactory rf = RegistryFactory.getInstance();
-    _dorm = (HeroRegistry) rf.getRegistry(RegKey.HERO);
     
     // Save when NOT in overwrite mode
     if (overwrite == false) {

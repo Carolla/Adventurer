@@ -27,6 +27,7 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.AbstractDocument;
 
+import chronos.hic.NameFieldLimiter;
 import chronos.pdc.character.Hero;
 import chronos.pdc.character.Hero.HeroInput;
 import chronos.pdc.race.Race;
@@ -110,7 +111,6 @@ public class NewHeroIPPanel extends ChronosPanel
 
   /** Associated validating CIV object */
   private NewHeroCiv _nhCiv;
-  private MainframeCiv _mfCiv;
   private JRadioButton _maleButt;
   private JRadioButton _femaleButt;
   private ButtonGroup _groupSex;
@@ -120,6 +120,7 @@ public class NewHeroIPPanel extends ChronosPanel
 
   private final String MALE = "Male";
   private final String FEMALE = "Female";
+  private HeroDisplayCiv _hdCiv;
   
   // ============================================================
   // Constructors and constructor helpers
@@ -133,11 +134,11 @@ public class NewHeroIPPanel extends ChronosPanel
    * @param nhCiv controls this ChronosPanel
    * @param mfCiv mainframeCiv needed for displaying the panel
    */
-  public NewHeroIPPanel(NewHeroCiv nhCiv, MainframeCiv mfCiv)
+  public NewHeroIPPanel(NewHeroCiv nhCiv, HeroDisplayCiv hdCiv, MainframeCiv mfCiv)
   {
     super(NEW_HERO_TITLE);
     _nhCiv = nhCiv;
-    _mfCiv = mfCiv;
+    _hdCiv = hdCiv;
 
     // GENERAL SETUP
     setPreferredSize(Mainframe.getWindowSize());
@@ -238,8 +239,7 @@ public class NewHeroIPPanel extends ChronosPanel
         if ((input != null) && (input.size() > 0)) {
           // Create the new Hero and display it
           Hero hero = _nhCiv.createHero(input);
-          HeroDisplayCiv hDispCiv = new HeroDisplayCiv(_mfCiv);
-          hDispCiv.displayHero(hero, true); // initial Hero needs true
+          _hdCiv.displayHero(hero, true); // initial Hero needs true
           // arg to check
           // overwriting
         }
@@ -332,8 +332,7 @@ public class NewHeroIPPanel extends ChronosPanel
 
     // Create DocumentFilter for restricting input length
     AbstractDocument d = (AbstractDocument) _nameField.getDocument();
-    // Fix this bug
-    // d.setDocumentFilter(new NameFieldLimiter(NewHeroCiv.MAX_NAMELEN));
+    d.setDocumentFilter(new NameFieldLimiter(NewHeroCiv.MAX_NAMELEN));
     _nameField.setName("heroName");
 
     // Extract Hero's name and update Hero's name into MainFrame Title

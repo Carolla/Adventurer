@@ -16,11 +16,11 @@ public class FakeMainframeCiv extends MainframeCiv
     super(null);
   }
   
-  protected void constructMembers()
+  protected void doConstructorWork()
   {
     // None to make :-)
   }
-
+  
   @Override
   public void displayErrorText(String msg)
   {
@@ -36,7 +36,7 @@ public class FakeMainframeCiv extends MainframeCiv
   @Override
   public void displayImage(String title, String imageName)
   {
-    //Do nothing
+	  //Do nothing
   }
   
   @Override

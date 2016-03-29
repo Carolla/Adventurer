@@ -12,16 +12,14 @@ package test.integ;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.pdc.Chronos;
-import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
-import mylib.MsgCtrl;
 
 /**
  * Test the Adventurer (Launcher) class: ensure that all Registries are created.
@@ -32,7 +30,6 @@ import mylib.MsgCtrl;
  */
 public class TA00a_Initialize extends IntegrationTest
 {
-  static private RegistryFactory _rf;
   /**
    * INFO ONLY: Keys used by RegistryFactory public enum RegKey { ADV("Adventure"),
    * BLDG("Building"), ITEM("Item"), NPC("NPC"), OCP("Occupation"), SKILL("Skill"), TOWN("Town");
@@ -47,14 +44,6 @@ public class TA00a_Initialize extends IntegrationTest
   // Fixtures
   // ============================================================
 
-  @BeforeClass
-  public static void setUpBeforeClass()
-  {
-    _rf = new RegistryFactory();
-//    _rf.initRegistries(new Scheduler(new DefaultUserMsg()));
-    _rf.initRegistries();
-  }
-
   /**
    * @throws java.lang.Exception
    */
@@ -62,7 +51,7 @@ public class TA00a_Initialize extends IntegrationTest
   public void setUp() throws Exception
   {
     assertEquals(paths.length, RegKey.values().length);
-    assertTrue(paths.length == _rf.getNumberOfRegistries());
+    assertTrue(paths.length == _regFactory.getNumberOfRegistries());
   }
 
 
@@ -85,17 +74,11 @@ public class TA00a_Initialize extends IntegrationTest
   @Test
   public void testMainNoRegs()
   {
-
-    // DO create the registries
-    _rf = new RegistryFactory();
-//    _rf.initRegistries(new Scheduler(new DefaultUserMsg()));
-    _rf.initRegistries();
-
     // VERIFY all registry files created
     assertTrue(RegistryFilesExist());
 
     // VERIFY all registries exist: get number objects in RegistryFactory map
-    assertTrue(RegKey.values().length == _rf.getNumberOfRegistries());
+    assertTrue(RegKey.values().length == _regFactory.getNumberOfRegistries());
   }
 
 

@@ -13,11 +13,11 @@ package chronos.pdc.registry;
 import java.util.ArrayList;
 import java.util.List;
 
-import chronos.pdc.Chronos;
-import chronos.pdc.character.Hero;
 import mylib.ApplicationException;
 import mylib.dmc.DbReadWriter;
 import mylib.pdc.Registry;
+import chronos.pdc.Chronos;
+import chronos.pdc.character.Hero;
 
 /**
  * Contains all Heros in the game. 
@@ -34,7 +34,7 @@ import mylib.pdc.Registry;
 public class HeroRegistry extends Registry<Hero>
 {
   /** Requires an actual persistence database instead of in-memory List */
-  private DbReadWriter _regRW;
+  private DbReadWriter<Hero> _regRW;
   
   
   /**
@@ -55,7 +55,7 @@ public class HeroRegistry extends Registry<Hero>
   @Override
   public void initialize()
   {
-    _regRW = new DbReadWriter(Chronos.HeroRegPath);
+    _regRW = new DbReadWriter<Hero>(Chronos.HeroRegPath);
   }
 
 

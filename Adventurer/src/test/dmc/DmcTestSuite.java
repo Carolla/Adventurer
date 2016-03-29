@@ -12,13 +12,6 @@ package test.dmc;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import test.civ.TestBuildingDisplayCiv;
-import test.civ.TestHeroDisplayCiv;
-import test.civ.TestMainframeCiv;
-import test.civ.TestNewHeroCiv;
-import test.civ.TestSummonHeroes;
-import test.pdc.character.TestHunger;
-
 
 /**
  * {@code pdc.command.Test*.java} regression test suite 
