@@ -39,7 +39,6 @@ import test.pdc.PdcTestSuite;
 
 })
 
-
 public class AdventurerUnitTestSuite
 {
 

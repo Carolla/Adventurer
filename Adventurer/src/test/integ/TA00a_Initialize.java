@@ -30,7 +30,7 @@ import mylib.MsgCtrl;
  * @version July 19, 2014 // ABC original
  * 
  */
-public class TA00a_Initialize
+public class TA00a_Initialize extends IntegrationTest
 {
   static private RegistryFactory _rf;
   /**

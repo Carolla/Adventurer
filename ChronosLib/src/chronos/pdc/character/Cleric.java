@@ -64,7 +64,6 @@ public class Cleric extends Klass {
 	}
 
 	@Override
-	/** Assign initial inventory to Cleric (8 gpw = 1 lb) */
 	public void addKlassItems(Inventory inven) {
 		for (String itemName : _clericItems) {
 			inven.addItem(Item.getItem(itemName));

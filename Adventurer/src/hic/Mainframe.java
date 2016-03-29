@@ -78,6 +78,7 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
 
   /** Singleton Help Dialog for all help text */
   private HelpDialog _helpdlg;
+  private ImagePanel _imagePanel;
 
   /** Help Title for the mainframe */
   private static final String _helpTitle = "GREETINGS ADVENTURER!";
@@ -121,10 +122,6 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     // Create the right side image panel and title
 //    _imagePanel = new ImagePanel();
 //    replaceRightPanel(_imagePanel);
-
-//    // Create the left side button panel and its handler 
-//    MainActionPanel map = new MainActionPanel(this);
-//    replaceLeftPanel(map);
     
     // Display the Mainframe and panels now
     setVisible(true);
@@ -409,5 +406,18 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     }
 
   } // end of Terminator inner class
+
+
+@Override
+public void setImagePanel(ImagePanel imagePanel) {
+    _imagePanel = imagePanel;	
+}
+
+
+@Override
+public void displayImage(String title, String imageName) {
+    _imagePanel.setTitle(title);
+    _imagePanel.setImageByName(imageName);
+}
   
 } // end of Mainframe outer class

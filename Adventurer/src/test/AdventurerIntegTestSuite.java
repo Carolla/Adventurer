@@ -14,11 +14,6 @@ import org.junit.runners.Suite;
 
 import test.integ.TA00a_Initialize;
 import test.integ.TA00b_Quit;
-import test.integ.TA03a_SummonHero;
-import test.integ.TA08_CmdEnter;
-import test.integ.TA09_CmdLeave;
-import test.integ.TA10_ReturnToTown;
-
 
 /**
  * Regression test suite for all the {@code JUnit} unit and integration test cases for

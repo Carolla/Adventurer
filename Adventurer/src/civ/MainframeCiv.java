@@ -59,7 +59,7 @@ public class MainframeCiv extends BaseCiv implements UserMsg
 
   protected void displayMainframe()
   {
-    _imagePanel = new ImagePanel();
+	_mf.setImagePanel(new ImagePanel());
     displayImage(INITIAL_IMAGE_TITLE, INITIAL_IMAGE);
     _mf = new Mainframe();
     _mf.replaceRightPanel(_imagePanel);
@@ -100,8 +100,7 @@ public class MainframeCiv extends BaseCiv implements UserMsg
 
   public void displayImage(String title, String imageName)
   {
-    _imagePanel.setTitle(title);
-    _imagePanel.setImageByName(imageName);
+	_mf.displayImage(title, imageName);	  
   }
 
 
