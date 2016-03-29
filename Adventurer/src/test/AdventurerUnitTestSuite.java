@@ -46,7 +46,7 @@ import chronos.test.pdc.TestItem;
 
     /** PDC test files */
     TestInventory.class,
-    TestItem.class
+    TestItem.class,
 
     /** DMC test files */
 })
