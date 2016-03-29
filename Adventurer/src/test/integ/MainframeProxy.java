@@ -10,6 +10,7 @@
 package test.integ;
 
 import hic.ChronosPanel;
+import hic.ImagePanel;
 import hic.MainframeInterface;
 
 
@@ -81,6 +82,18 @@ public class MainframeProxy implements MainframeInterface
   {
     // MsgCtrl.where(this);
   }
+
+
+@Override
+public void setImagePanel(ImagePanel imagePanel) { 
+// MsgCtrl.where(this);
+}
+
+
+@Override
+public void displayImage(String title, String imageName) {
+    // MsgCtrl.where(this);
+}
 
 } // end of MainframeProxy class
 

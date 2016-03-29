@@ -32,6 +32,8 @@ public interface MainframeInterface
   public void setTitle(String title);
 
   public void showHelp();
+  public void setImagePanel(ImagePanel imagePanel);
+  public void displayImage(String title, String imageName);
 
 
 } // end of MainframeInterface

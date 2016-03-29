@@ -43,7 +43,7 @@ public class TA08_CmdEnter extends IntegrationTest
    * @throws java.lang.Exception
    */
   @After
-  public void tearDown() throws Exception
+  public void tearDown()
   {
     // Set Hero back to town with no current Building
     resetBuildingState();
@@ -59,11 +59,9 @@ public class TA08_CmdEnter extends IntegrationTest
 
   /**
    * Normal case: Enter a valid building from the town (no current building)
-   * 
-   * @throws InterruptedException
    */
   @Test
-  public void test_EnterBuildingFromTownOrExterior() throws InterruptedException
+  public void test_EnterBuildingFromTownOrExterior()
   {
     MsgCtrl.where(this);
 
@@ -90,11 +88,9 @@ public class TA08_CmdEnter extends IntegrationTest
 
   /**
    * Normal case: Enter a valid building from outside the current Building (no parms)
-   * 
-   * @throws InterruptedException
    */
   @Test
-  public void test_EnterCurrentBuilding() throws InterruptedException
+  public void test_EnterCurrentBuilding()
   {
     MsgCtrl.where(this);
 
@@ -109,7 +105,6 @@ public class TA08_CmdEnter extends IntegrationTest
 
       // TEST
       _cp.receiveCommand("Enter");
-      // User Cmd is executed automatically
 
       // VERIFY
       // Confirm Hero is no longer on town, but is inside a building
