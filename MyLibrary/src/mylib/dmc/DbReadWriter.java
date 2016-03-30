@@ -285,6 +285,7 @@ public class DbReadWriter <E extends IRegistryElement>
     List<E> alist = new ArrayList<E>();
     _db = open();
     alist.addAll(_db.query(new Predicate<E>() {
+      @Override
       public boolean match(E candidate)
       {
         return true;

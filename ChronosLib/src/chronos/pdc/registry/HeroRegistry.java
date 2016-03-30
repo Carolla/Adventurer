@@ -13,11 +13,11 @@ package chronos.pdc.registry;
 import java.util.ArrayList;
 import java.util.List;
 
+import chronos.pdc.Chronos;
+import chronos.pdc.character.Hero;
 import mylib.ApplicationException;
 import mylib.dmc.DbReadWriter;
 import mylib.pdc.Registry;
-import chronos.pdc.Chronos;
-import chronos.pdc.character.Hero;
 
 /**
  * Contains all Heros in the game. 
@@ -34,11 +34,11 @@ import chronos.pdc.character.Hero;
 public class HeroRegistry extends Registry<Hero>
 {
   /** Requires an actual persistence database instead of in-memory List */
-  private DbReadWriter<Hero> _regRW;
+  private DbReadWriter<Hero> _db;
   
   
   /**
-   * Init this Hero Registry
+   * Default constructor
    */
   public HeroRegistry()
   {
@@ -50,18 +50,19 @@ public class HeroRegistry extends Registry<Hero>
 
 
   /**
-   * Open the Hero Registry database. 
+   * Loads the in-memory HeroRegistry from the persistence database.
    */
   @Override
   public void initialize()
-  {
-    _regRW = new DbReadWriter<Hero>(Chronos.HeroRegPath);
+  { 
+    _db = new DbReadWriter<Hero>(Chronos.HeroRegPath);
+    _regRW = _db.getAll();
   }
 
 
-  /*
-   * PUBLIC METHODS
-   */
+  // ========================================================
+  //  PUBLIC METHODS
+  // ========================================================
 
   /**
    * Retrieves the Hero with the requested unique name
@@ -72,7 +73,7 @@ public class HeroRegistry extends Registry<Hero>
    */
   public Hero getHero(String name)
   {
-    return (Hero) get(name);
+    return super.get(name);
   }
 
   /**
@@ -80,10 +81,10 @@ public class HeroRegistry extends Registry<Hero>
    * 
    * @return a list of Heroes
    */
-  public List<Hero> getHeroList()
+  @Override
+  public List<Hero> getAll()
   {
-    List<Hero> heroList = new ArrayList<Hero>();
-    heroList = super.getAll();
+    List<Hero> heroList = super.getAll();
     return heroList;
   }
 
@@ -94,7 +95,7 @@ public class HeroRegistry extends Registry<Hero>
    */
   public List<String> getNamePlates()
   {
-    List<Hero> heroList = getHeroList();
+    List<Hero> heroList = getAll();
     List<String> plateList = new ArrayList<String>(heroList.size());
     for (Hero h : heroList) {
       plateList.add(h.toNamePlate());
@@ -102,6 +103,37 @@ public class HeroRegistry extends Registry<Hero>
     return plateList;
   }
 
+
+  /**
+   * Save new Hero, both to db and Registry
+   */
+  public void saveHero(Hero hero)
+  {
+    super.add(hero);
+    _db.addElement(hero);
+  }
+
+  
+  // ========================================================
+  //  Inner Class: MockHeroRegistry
+  // ========================================================
+
+  public class MockHeroRegistry
+  {
+    
+    public MockHeroRegistry(){}
+    
+    public DbReadWriter<Hero> getDb()
+    {
+      return HeroRegistry.this._db;
+    }
+    
+    public List<Hero> getList()
+    {
+      return HeroRegistry.this._regRW;
+    }
+    
+  }
   
 } // end of HeroRegistry class
 

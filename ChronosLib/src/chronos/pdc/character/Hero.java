@@ -76,10 +76,23 @@ public class Hero implements IRegistryElement
 
   private Occupation _occ;
 
-
+  /** Used with test Hero class */
+  private String _raceName;
+  private String _klassName;
+  
   // ====================================================
   // CONSTRUCTOR(S) AND RELATED METHODS
   // ====================================================
+  
+  /** Creates an empty Hero, for testing purposes */
+  public Hero(String name, String gender, String raceName, String klassName)
+  {
+    _name = name;
+    _gender = new Gender(gender);
+    _raceName = raceName;
+    _klassName = klassName;
+  }
+  
   /**
    * Create the Person from the basic non-klass attributes.
    * 
@@ -192,6 +205,16 @@ public class Hero implements IRegistryElement
     return _race.getSkills();
   }
 
+  public String getRaceName()
+  {
+    return _raceName;
+  }
+  
+  public String getKlassName()
+  {
+    return _klassName;
+  }
+
   public List<String> getOcpSkills()
   {
     return _occ.getSkillNames();
@@ -258,7 +281,7 @@ public class Hero implements IRegistryElement
 
   public String toNamePlate()
   {
-    return _name + ": " + _gender.toString() + " " + _race.getName() + " " + _klass.className();
+    return _name + ": " + _gender.toString() + " " + _raceName + " " + _klassName;
   }
 
   @Override

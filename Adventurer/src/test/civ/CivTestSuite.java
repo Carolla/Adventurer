@@ -24,8 +24,7 @@ import test.pdc.character.TestHunger;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 
-    /* PDC.Character test files */
-    TestHunger.class,
+    /* Civ test files */
     TestBuildingDisplayCiv.class,
     TestHeroDisplayCiv.class,
     TestMainframeCiv.class,

@@ -11,7 +11,6 @@ package chronos.pdc.registry;
 
 import java.util.List;
 
-import mylib.pdc.Registry;
 import chronos.pdc.Chronos;
 import chronos.pdc.buildings.Bank;
 import chronos.pdc.buildings.Building;
@@ -23,6 +22,7 @@ import chronos.pdc.buildings.RoguesGuild;
 import chronos.pdc.buildings.Store;
 import chronos.pdc.buildings.WizardsGuild;
 import chronos.pdc.command.Scheduler;
+import mylib.pdc.Registry;
 
 /**
  * All Town Buildings are collected here. The initial (default) Registry contains 8 buildings.
