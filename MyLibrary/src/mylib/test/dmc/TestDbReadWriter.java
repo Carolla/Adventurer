@@ -384,8 +384,7 @@ public class TestDbReadWriter
       _dbrw.addElement(null);
       fail("No exception thrown when adding null element");
     } catch (NullPointerException ex) {
-      MsgCtrl
-          .errMsgln("\tExpected NullPointerException for adding null object: " + ex.getMessage());
+      MsgCtrl.errMsgln("\tExpected NullPointerException for adding null object: " + ex.getMessage());
     }
   }
 
