@@ -376,7 +376,7 @@ public class Prototype
   {	  
     // Remove the file extension
     String className = sourceText.split(".java")[0];
-    // Convert the file path format to package format by replacing the "/" with "."
+    // Convert the file path format to package format by replacing the "/" with "." or "\" with Windoze
     className = className.replaceAll(Pattern.quote(Constants.FS), ".");
     // Remove superfluous dot index
     if (className.startsWith(".")) {
@@ -408,7 +408,7 @@ public class Prototype
     String s = target.getParentFile().getAbsolutePath();
     s = s.substring(s.lastIndexOf("src" + Constants.FS));
     s = s.substring(4); // remove the src/
-    String pathName = s.replaceAll("/", ".");
+    String pathName = s.replaceAll(Pattern.quote(Constants.FS), ".");
     String pkgStatement = String.format("\npackage %s;\n", pathName);
 
     return pkgStatement;

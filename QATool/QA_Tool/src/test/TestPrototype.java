@@ -123,7 +123,7 @@ public class TestPrototype
   @Test
   public void testMakeTestFilename()
   {
-    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.auditMsgsOn(true);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
@@ -132,7 +132,7 @@ public class TestPrototype
         "pdc" + Constants.FS + "QATool.java", // contains a test file
         "pdc" + Constants.FS + "FileMap.java", // contains no test file
         "pdc" + Constants.FS + "NoFile.java",
-        "pdc" + Constants.FS + "subdir/BottomFile.java", // bottom of file tree
+        "pdc" + Constants.FS + "subdir" + Constants.FS + "BottomFile.java", // bottom of file tree
         "ing_Testing.java", // and something at src level
     };
     final String[] expPath = {
@@ -140,7 +140,7 @@ public class TestPrototype
         "pdc" + Constants.FS + "TestFileMap.java", // contains no test file
         "pdc" + Constants.FS + "TestNoFile.java", // src file doesn't exist but doesn't matter for
                                                   // this test
-        "pdc" + Constants.FS + "subdir/TestBottomFile.java", // bottom of file tree
+        "pdc" + Constants.FS + "subdir" + Constants.FS + "TestBottomFile.java", // bottom of file tree
         "Testing_Testing.java", // and something at src level
     };
 
