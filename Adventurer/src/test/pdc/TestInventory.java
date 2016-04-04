@@ -16,15 +16,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import chronos.pdc.Item;
-import chronos.pdc.Item.ItemCategory;
 import chronos.pdc.character.Inventory;
-import mylib.MsgCtrl;
 
 /**
  * Tests the Inventory repository, a collection of Item objects.
@@ -32,200 +31,164 @@ import mylib.MsgCtrl;
  * @author Alan Cline
  * @version Jun 8, 2009 // original <br>
  *          Aug 14 2010 // updated for QA tags and regression <br>
- *          Apr 11 2011 // TAA updated QA, added mutliple null ests and ensured function <br>
+ *          Apr 11 2011 // TAA updated QA, added mutliple null ests and ensured
+ *          function <br>
  *          Mar 29 2016 // Reviewed and updated for overall QA testing <br>
  */
-public class TestInventory
-{
-  /** Collection used for testing */
-  private Inventory _bag;
+public class TestInventory {
+	/** Collection used for testing */
+	private Inventory _bag;
 
-  // Two Test items
-  private Item _framis;
-  private final int FRAMIS_WT = 32;
-  private final int FRAMIS_QTY = 1;
+	private final int STARTING_WT = 323;
+	private final int STARTING_COUNT = 11;
 
-  private Item _trobe;
-  private final int TROBE_WT = 45;
-  private final int TROBE_QTY = 2;
+	private static final String BOOTS_NAME = "Boots";
 
-  private final int STARTING_WT = 18;
-  private final int STARTING_COUNT = 11;
+	@Before
+	public void setUp() {
+		_bag = new Inventory();
+	}
 
-  private static final String BOOTS_NAME = "Leather Boots";
+	@After
+	public void tearDown() {
+		MsgCtrl.auditMsgsOn(false);
+	}
 
-  @Before
-  public void setUp()
-  {
-    _bag = new Inventory();
-    _framis = new Item(ItemCategory.VALUABLES, "Framis",
-        FRAMIS_QTY, FRAMIS_WT);
-    _trobe = new Item(ItemCategory.ARMS, "Trobe",
-        TROBE_QTY, TROBE_WT);
-  }
+	// -------------------------------------------------------------------------
+	// BEGIN TESTING
+	// -------------------------------------------------------------------------
 
-  @After
-  public void tearDown()
-  {
-    MsgCtrl.auditMsgsOn(false);
-  }
+	/**
+	 * Add new and old single Items to the Inventory; verify their count and
+	 * quantities
+	 * 
+	 * @Normal Inventory.addItem(Item item) ok
+	 * @Error Inventory.addItem(Item item) can't think of a test case
+	 * @Null Inventory.addItem(Item item) ok
+	 */
+	@Test
+	public void testAddItem() {
+		_bag.addItem("Belt");
+		assertEquals(1, _bag.size());
+	}
 
-  // -------------------------------------------------------------------------
-  // BEGIN TESTING
-  // -------------------------------------------------------------------------
+	@Test
+	public void addingItemThatAlreadyExistsIncreasesCount() {
+		_bag.addItem("Belt");
+		_bag.addItem("Belt");
+		assertEquals(1, _bag.size());
+		
+		assertEquals(2, _bag.getItem("Belt").getQuantity());
+	}
 
-  /**
-   * Add new and old single Items to the Inventory; verify their count and
-   * quantities
-   * 
-   * @Normal Inventory.addItem(Item item) ok
-   * @Error Inventory.addItem(Item item) can't think of a test case
-   * @Null Inventory.addItem(Item item) ok
-   */
-  @Test
-  public void testAddItem()
-  {
-    _bag.addItem(_framis);
-    assertEquals(1, _bag.size());
-  }
+	@Test
+	public void addingNullItemFails() {
+		assertFalse(_bag.addItem(null));
+		assertEquals(0, _bag.size());
+	}
 
-  @Test
-  public void addingItemThatAlreadyExistsIncreasesCount()
-  {
-    _bag.addItem(_framis);
-    assertEquals(FRAMIS_QTY, _bag.getItem("Framis").getQuantity());
-    _bag.addItem(_framis);
+	/**
+	 * Add multiple of same Item to the Inventory; verify their count and
+	 * quantities
+	 * 
+	 * @Normal Inventory.addItem(Item item) ok
+	 * @Error Inventory.addItem(Item item) N/A
+	 * @Null Inventory.addItem(Item item) ok
+	 */
+	@Test
+	public void addingDifferentItemsIncreasesInventorySize() {
+		int size = _bag.size();
+		_bag.addItem("Belt");
+		int size2 = _bag.size();
+		_bag.addItem("Cloak");
+		assertTrue(size < size2 && size2 < _bag.size());
+	}
 
-    assertEquals(1, _bag.size());
-    assertEquals(FRAMIS_QTY * 2, _bag.getItem("Framis").getQuantity());
-  }
+	/**
+	 * Adding null in inconvenient places
+	 * 
+	 * @Null Inventory.addItem(Item item)
+	 */
+	@Test
+	public void testAddNullItems() {
+	}
 
-  @Test
-  public void addingNullItemFails()
-  {
-    assertFalse(_bag.addItem(null));
-    assertEquals(0, _bag.size());
-  }
+	/**
+	 * Test that the all Items weights remain in sync as items are dropped and
+	 * added
+	 * 
+	 * @Normal Inventory.calcInventoryWeight()
+	 * @Error Inventory.calcInventoryWeight() N/A -- no input parms
+	 * @Null Inventory.calcInventoryWeight() N/A -- no input parms
+	 */
+	@Test
+	public void inventoryStartsProperly() {
+		_bag.assignBasicInventory();
+		assertEquals(STARTING_WT, _bag.calcInventoryWeight());
+		assertEquals(STARTING_COUNT, _bag.size());
+	}
 
-  /**
-   * Add multiple of same Item to the Inventory; verify their count and
-   * quantities
-   * 
-   * @Normal Inventory.addItem(Item item) ok
-   * @Error Inventory.addItem(Item item) N/A
-   * @Null Inventory.addItem(Item item) ok
-   */
-  @Test
-  public void addingDifferentItemsIncreasesInventorySize()
-  {
-    int size = _bag.size();
-    _bag.addItem(_trobe);
-    int size2 = _bag.size();
-    _bag.addItem(_framis);
-    assertTrue(size < size2 && size2 < _bag.size());
-  }
+	@Test
+	public void addingItemIncreasesWeight() {
+		int oldWt = _bag.calcInventoryWeight();
+		_bag.addItem("Belt");
+		assertTrue(oldWt <= _bag.calcInventoryWeight());
+	}
 
-  /**
-   * Adding null in inconvenient places
-   * 
-   * @Null Inventory.addItem(Item item)
-   */
-  @Test
-  public void testAddNullItems()
-  {
-  }
+	@Test
+	public void removingItemsDecreasesWeight() {
+		_bag.assignBasicInventory();
+		int oldWt = _bag.calcInventoryWeight();
 
-  /**
-   * Test that the all Items weights remain in sync as items are dropped and
-   * added
-   * 
-   * @Normal Inventory.calcInventoryWeight()
-   * @Error Inventory.calcInventoryWeight() N/A -- no input parms
-   * @Null Inventory.calcInventoryWeight() N/A -- no input parms
-   */
-  @Test
-  public void inventoryStartsProperly()
-  {
-    _bag.assignBasicInventory();
-    assertEquals(STARTING_WT, _bag.calcInventoryWeight());
-    assertEquals(STARTING_COUNT, _bag.size());
-  }
+		Item boots = _bag.getItem(BOOTS_NAME);
+		assertNotNull(boots);
 
-  @Test
-  public void addingItemIncreasesWeight()
-  {
-    int oldWt = _bag.calcInventoryWeight();
-    _bag.addItem(_framis);
-    assertEquals(oldWt + FRAMIS_QTY * FRAMIS_WT, _bag.calcInventoryWeight());
-  }
+		assertTrue(_bag.dropItems(boots.getName(), 1));
+		assertFalse(_bag.hasItem(boots.getName()));
+		assertTrue(oldWt >= _bag.calcInventoryWeight());
+	}
 
-  @Test
-  public void addingMoreItemsIncreaseWeightMore()
-  {
-    int oldWt = _bag.calcInventoryWeight();
-    _bag.addItem(_trobe);
-    assertEquals(oldWt + TROBE_WT * TROBE_QTY, _bag.calcInventoryWeight());
-  }
-  
-  @Test
-  public void removingItemsDecreasesWeight()
-  {
-    _bag.assignBasicInventory();
-    int oldWt = _bag.calcInventoryWeight();
-    
-    Item boots = _bag.getItem(BOOTS_NAME);
-    assertNotNull(boots);
-       
-    assertTrue(_bag.dropItems(boots.getName(), 1));
-    assertFalse(_bag.hasItem(boots.getName()));
-    assertEquals(oldWt - (int) boots.getWeight(), _bag.calcInventoryWeight());
-  }
+	/**
+	 * Retrieve (by copy) Items from the inventory by name
+	 * 
+	 * @Normal Inventory.getItem(String name) ok
+	 * @Error Inventory.getItem(String name) ok
+	 * @Null Inventory.getItem(String name) ok
+	 */
+	@Test
+	public void testGetItemByName() {
+		String[] goodTarget = { "Boots", // exists as is
+				"Belt pouch", // checks for multiword
+				"boots", // lowercase check; uppercase present
+		};
 
-  /**
-   * Retrieve (by copy) Items from the inventory by name
-   * 
-   * @Normal Inventory.getItem(String name) ok
-   * @Error Inventory.getItem(String name) ok
-   * @Null Inventory.getItem(String name) ok
-   */
-  @Test
-  public void testGetItemByName()
-  {
-    String[] goodTarget = {
-        "Leather boots",                    // exists as is
-        "Belt pouch, small",                // checks for multiword
-        "leather boots",                    // lowercase check; uppercase present
-    };
+		_bag.assignBasicInventory();
 
-    _bag.assignBasicInventory();
-    
-    // NORMAL Confirm that all expected items are there...
-    for (String goodItemName : goodTarget) {
-      assertTrue("Failed to find " + goodItemName, _bag.hasItem(goodItemName));
-    }
-  }
+		// NORMAL Confirm that all expected items are there...
+		for (String goodItemName : goodTarget) {
+			assertTrue("Failed to find " + goodItemName,
+					_bag.hasItem(goodItemName));
+		}
+	}
 
-  @Test
-  public void cantGetItemNotInInventory()
-  {
-    String[] badTarget = {
-        "shield",                               // not there
-        "plate mail",                           // not there
-        "pouch",                               // checks for partial item name
-        "gold",                       // partial match
-    };
-    
-    // ERROR Confirm that some Items are not found because they are missing
-    // or the name is a partial match
-    for (String badItemName : badTarget) {
-      assertNull(_bag.getItem(badItemName));
-    }
-  }
-  
-  @Test
-  public void cantGetNullItem()
-  {
-    assertNull(_bag.getItem(null));
-  }
-}		// end of TestInventory class
+	@Test
+	public void cantGetItemNotInInventory() {
+		String[] badTarget = { "shield", // not there
+				"plate mail", // not there
+				"pouch", // checks for partial item name
+				"gold", // partial match
+		};
+
+		// ERROR Confirm that some Items are not found because they are missing
+		// or the name is a partial match
+		for (String badItemName : badTarget) {
+			assertNull(_bag.getItem(badItemName));
+		}
+	}
+
+	@Test
+	public void cantGetNullItem() {
+		assertNull(_bag.getItem(null));
+	}
+} // end of TestInventory class
 

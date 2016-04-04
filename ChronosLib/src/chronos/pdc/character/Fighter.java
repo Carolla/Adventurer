@@ -9,7 +9,6 @@
 
 package chronos.pdc.character;
 
-import chronos.pdc.Item;
 import chronos.pdc.character.TraitList.PrimeTraits;
 
 /**
@@ -37,7 +36,7 @@ public class Fighter extends Klass {
 	@Override
 	public void addKlassItems(Inventory inven) {
 		for (String itemName : _fighterItems) {
-			inven.addItem(Item.getItem(itemName));
+			inven.addItem(itemName);
 		}
 
 	}

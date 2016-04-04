@@ -12,7 +12,6 @@ package chronos.pdc.character;
 import java.util.EnumMap;
 
 import chronos.civ.PersonKeys;
-import chronos.pdc.Item;
 import chronos.pdc.character.TraitList.PrimeTraits;
 
 /**
@@ -29,7 +28,7 @@ public class Wizard extends Klass {
 	private int _MSPsPerLevel = 0;
 	private int _percentToKnow = 0;
 	private int _spellsKnown = 0;
-	private String[] _wizardItems = { "Walking stick", "Spell book", "Magic bag", "Live spider" };
+	private String[] _wizardItems = { "Walking stick", "Spell book", "Magic bag" };
 
 	/**
 	 * Default constructor, called reflectively by Klass
@@ -51,7 +50,7 @@ public class Wizard extends Klass {
 	public void addKlassItems(Inventory inven)
 	{
 		for (String itemName : _wizardItems ) {
-			inven.addItem(Item.getItem(itemName));
+			inven.addItem(itemName);
 		}
 	}
 
