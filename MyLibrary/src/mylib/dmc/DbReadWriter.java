@@ -219,13 +219,6 @@ public class DbReadWriter <E extends IRegistryElement>
     return list;
   }
 
-
-  public boolean isOpen()
-  {
-    return _open;
-  }
-
-
   /** Finds all elements in the given Registry ReadWriter */
   public int size()
   {

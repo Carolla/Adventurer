@@ -109,7 +109,7 @@ public class ItemRegistry extends Registry<Item>
   @Override
   public void initialize()
   {
-	  _regRW.addAll(Inventory);
+	  _list.addAll(Inventory);
   }
 
 

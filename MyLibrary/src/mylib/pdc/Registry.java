@@ -45,7 +45,7 @@ public abstract class Registry<E extends IRegistryElement>
   private boolean _shouldInitialize;
 
   /** Registries are in-memory object structures except for HeroRegistry. */
-  protected List<E> _regRW;
+  protected List<E> _list;
 
   /**
    * Initialize registry with beginning data from static tables, called when the registry file does
@@ -69,7 +69,7 @@ public abstract class Registry<E extends IRegistryElement>
    */
   public Registry(String filename)
   {
-    _regRW = new ArrayList<E>();
+    _list = new ArrayList<E>();
     init(filename);
     if (_shouldInitialize) {
       initialize();
@@ -83,7 +83,7 @@ public abstract class Registry<E extends IRegistryElement>
     // Creates registry file and reloads it (new registry will be empty)
     // _regRW = new DbReadWriter<E>(filename);
 
-    if (_regRW.size() == 0) {
+    if (_list.size() == 0) {
       _shouldInitialize = true;
     }
   }
@@ -111,7 +111,7 @@ public abstract class Registry<E extends IRegistryElement>
     // Ensure that only unique objects are added
     if (contains(obj) == false) {
       // _regRW.addElement(obj);
-      _regRW.add(obj);
+      _list.add(obj);
       retval = true;
     }
 
@@ -126,7 +126,7 @@ public abstract class Registry<E extends IRegistryElement>
    */
   public boolean contains(E target)
   {
-    return (_regRW.contains(target)) ? true : false;
+    return (_list.contains(target)) ? true : false;
   }
 
 
@@ -138,7 +138,7 @@ public abstract class Registry<E extends IRegistryElement>
    */
   public void delete(E obj)
   {
-    _regRW.remove(obj);
+    _list.remove(obj);
   }
 
 
@@ -151,7 +151,7 @@ public abstract class Registry<E extends IRegistryElement>
   public E get(String name)
   {
     E element = null;
-    for (E elem : _regRW) {
+    for (E elem : _list) {
       if (elem.getKey().equals(name)) {
         element = elem;
         break;
@@ -169,7 +169,7 @@ public abstract class Registry<E extends IRegistryElement>
   public List<E> getAll()
   {
     List<E> list = new ArrayList<E>();
-    for (E elem : _regRW) {
+    for (E elem : _list) {
       list.add(elem);
     }
     return list;
@@ -183,7 +183,7 @@ public abstract class Registry<E extends IRegistryElement>
    */
   public int getNbrElements()
   {
-    return _regRW.size();
+    return _list.size();
   }
 
   public boolean forceAdd(E obj)
@@ -210,10 +210,10 @@ public abstract class Registry<E extends IRegistryElement>
       return false;
     }
     // Guard: if target is not in the registry, return immediately.
-    if (_regRW.contains(target)) {
+    if (_list.contains(target)) {
       // Retrieve the target element and overwrite it
-      _regRW.remove(target);
-      _regRW.add(target);
+      _list.remove(target);
+      _list.add(target);
       retval = true;
     }
     return retval;

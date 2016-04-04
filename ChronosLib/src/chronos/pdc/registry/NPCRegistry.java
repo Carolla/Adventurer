@@ -439,6 +439,6 @@ public class NPCRegistry extends Registry<NPC>
   @Override
   public void initialize()
   {
-    _regRW.addAll(_patronTable);
+    _list.addAll(_patronTable);
   }
 } // end of NPCRegistry class

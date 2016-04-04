@@ -126,7 +126,7 @@ public class OccupationRegistry extends Registry<Occupation>
   @Override
   public void initialize()
   {
-    _regRW.addAll(_occupTable);
+    _list.addAll(_occupTable);
   }
 
 

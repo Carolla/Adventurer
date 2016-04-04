@@ -168,8 +168,8 @@ public class SkillRegistry extends Registry<Skill>
   @Override
   protected void initialize()
   {
-	  _regRW.addAll(_occupSkillTable);
-	  _regRW.addAll(_racialSkillTable);
+	  _list.addAll(_occupSkillTable);
+	  _list.addAll(_racialSkillTable);
   }
 
 

@@ -53,7 +53,7 @@ public class HeroRegistry extends Registry<Hero>
   public void initialize()
   { 
     _db = new DbReadWriter<Hero>(Chronos.HeroRegPath);
-    _regRW = _db.getAll();
+    _list = _db.getAll();
   }
 
 
@@ -108,29 +108,6 @@ public class HeroRegistry extends Registry<Hero>
   {
     super.add(hero);
     _db.addElement(hero);
-  }
-
-  
-  // ========================================================
-  //  Inner Class: MockHeroRegistry
-  // ========================================================
-
-  public class MockHeroRegistry
-  {
-    
-    public MockHeroRegistry(){}
-    
-    public DbReadWriter<Hero> getDb()
-    {
-      return HeroRegistry.this._db;
-    }
-    
-    public List<Hero> getList()
-    {
-      return HeroRegistry.this._regRW;
-    }
-    
-  }
-  
+  } 
 } // end of HeroRegistry class
 
