@@ -10,9 +10,10 @@
 package mylib.test.dmc;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ import org.junit.Test;
 import mylib.Constants;
 import mylib.MsgCtrl;
 import mylib.dmc.DbReadWriter;
+import mylib.dmc.DbReadWriter.MockDBRW;
 
 /**
  * Test the database read/writer interface methods
@@ -43,6 +45,7 @@ public class TestDbReadWriter
 {
   /** Object under test */
   private DbReadWriter<SomeObject> _dbrw;
+  private MockDBRW _mock;
 
   /** Place temporary test files in resource directory */
   static private final String REG_PATH = Constants.MYLIB_RESOURCES + "Test.reg";
@@ -52,11 +55,13 @@ public class TestDbReadWriter
   {
     _dbrw = new DbReadWriter<SomeObject>(REG_PATH);
     assertNotNull(_dbrw);
+    _mock = _dbrw.new MockDBRW();
+    assertNotNull(_mock);
+    // Start each test with an empty db
+    _dbrw.clear();
   }
 
   /**
-   * Closes db, delete it and its mock to null state, db file used for test is deleted
-   * 
    * @throws java.lang.Exception to catch unexpected events
    */
   @After
@@ -64,11 +69,12 @@ public class TestDbReadWriter
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-    
-    _dbrw.clear();
+
+    _mock = null;
+    _dbrw.close();
   }
 
-  
+
   // ====================================================================
   // BEGIN TESTS
   // ====================================================================
@@ -83,7 +89,6 @@ public class TestDbReadWriter
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    _dbrw.clear();
     SomeObject so = new SomeObject("SO object");
     _dbrw.addElement(so);
     assertEquals(1, _dbrw.size());
@@ -93,7 +98,7 @@ public class TestDbReadWriter
     assertEquals(2, _dbrw.size());
   }
 
-  
+
   /**
    * @Normal.Test void clear()
    */
@@ -104,7 +109,8 @@ public class TestDbReadWriter
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    // SETUP Add three objects to be cleared
+    // SETUP
+    // Add three objects to be cleared
     SomeObject so1 = new SomeObject("First S");
     SomeObject so2 = new SomeObject("Second S");
     SomeObject so3 = new SomeObject("Third S");
@@ -122,7 +128,28 @@ public class TestDbReadWriter
 
 
   /**
-   * @Normal.Test E containsElement(final E target)
+   * @Error.Test void close()
+   */
+  @Test
+  public void testClose()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // SETUP close the open database
+    assertTrue(_mock.isOpen());
+    _dbrw.close();
+    assertFalse(_mock.isOpen());
+
+    // RUN run transaction on closed db
+    SomeObject so = new SomeObject("test object");
+    assertFalse(_dbrw.addElement(so));
+    assertFalse(_dbrw.containsElement(so));
+  }
+
+  /**
+   * @Normal.Test boolean containsElement(final E target)
    */
   @Test
   public void testContainsElement()
@@ -141,15 +168,11 @@ public class TestDbReadWriter
     _dbrw.addElement(so3);
 
     // Check that they are there
-    SomeObject f2 = _dbrw.containsElement(so2);
-    assertNotNull(f2);
-    assertEquals(f2.toString(), so2.toString());
-
-    SomeObject f1 = _dbrw.containsElement(so1);
-    assertNotNull(f1);
-    assertEquals(f1.toString(), so1.toString());
+    assertTrue(_dbrw.containsElement(so2));
+    assertTrue(_dbrw.containsElement(so1));
 
     // Check that they are not removed
+    assertNotNull(_dbrw.containsElement(so1));
     assertNotNull(_dbrw.containsElement(so2));
   }
 
@@ -173,12 +196,12 @@ public class TestDbReadWriter
 
     // Verify its gone
     _dbrw.deleteElement(so1);
+    assertFalse(_dbrw.containsElement(so1));
     assertEquals(1, _dbrw.size());
-    assertNull(_dbrw.containsElement(so1));
-    
+
     _dbrw.deleteElement(so2);
     assertEquals(0, _dbrw.size());
-    assertNull(_dbrw.containsElement(so2));
+    assertFalse(_dbrw.containsElement(so2));
   }
 
 
@@ -191,7 +214,7 @@ public class TestDbReadWriter
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-  
+
     // Add some elements
     _dbrw.addElement(new SomeObject("first object saved"));
     _dbrw.addElement(new SomeObject("second object saved"));
@@ -202,7 +225,7 @@ public class TestDbReadWriter
     SomeObject so6 = new SomeObject("last object");
     _dbrw.addElement(so6);
     assertEquals(6, _dbrw.size());
-  
+
     // RUN Get does not change db size
     SomeObject f3 = _dbrw.get("third object saved");
     assertNotNull(f3);
@@ -213,14 +236,14 @@ public class TestDbReadWriter
     // RUN with object having extra space
     SomeObject f6 = _dbrw.get("last object    ");
     assertNull(f6);
-    
+
     // Delete and try to get again
     _dbrw.deleteElement(so6);
     assertEquals(5, _dbrw.size());
     assertNull(_dbrw.get("last object"));
   }
 
-  
+
   /**
    * @Normal.Test List<E> getAll()
    */
@@ -230,7 +253,7 @@ public class TestDbReadWriter
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-    
+
     // SETUP Add some elements
     _dbrw.addElement(new SomeObject("first object saved"));
     _dbrw.addElement(new SomeObject("second object saved"));
@@ -243,14 +266,35 @@ public class TestDbReadWriter
 
     // RUN
     List<SomeObject> slist = _dbrw.getAll();
-    
+
     // VERIFY
     assertNotNull(slist);
     assertEquals(6, slist.size());
     assertEquals(6, _dbrw.size());
-    
+
     _dbrw.deleteElement(so3);
     assertEquals(5, _dbrw.size());
+  }
+
+
+  /**
+   * @Error.Test EmbeddedObjectContainer open()
+   */
+  @Test
+  public void testOpen()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // SETUP close the open database
+    _dbrw.close();
+
+    // RUN run transaction on closed db
+    SomeObject so = new SomeObject("test object");
+    _dbrw.addElement(so);
+    MsgCtrl.errMsgln("\tExpected error:");
+    assertFalse(_dbrw.containsElement(so));
   }
 
 
@@ -291,7 +335,7 @@ public class TestDbReadWriter
     assertEquals(nbrObjs, _dbrw.size());
   }
 
-  
+
   // ====================================================================
   // SUPPLEMENTAL TESTS
   // ====================================================================
@@ -305,12 +349,12 @@ public class TestDbReadWriter
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-    
+
     _dbrw.addElement(new SomeObject("UPPER"));
     assertNotNull(_dbrw.get("upper"));
   }
 
-  
+
   /**
    * @Normal.Test Supplemental test for {@code addElement()}
    */
@@ -325,7 +369,7 @@ public class TestDbReadWriter
 
     // Test object not within the db
     SomeObject so = new SomeObject("four");
-    assertNull(_dbrw.containsElement(so));
+    assertFalse(_dbrw.containsElement(so));
 
     // Add a test object
     _dbrw.addElement(so);
@@ -338,60 +382,68 @@ public class TestDbReadWriter
   }
 
 
-
   /**
    * mylib.dmc.DbReadWriter(String) throws NullPointerException
    *
    * @Error.Test Null filename for constructor; force null pointer exception
    */
-  // @Test
+  @Test
   public void testErrorConstructorNullArg()
   {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    DbReadWriter<SomeObject> newDb = null;
     try {
-      new DbReadWriter<SomeObject>(null);
+      newDb = new DbReadWriter<SomeObject>(null);
     } catch (NullPointerException ex) {
       MsgCtrl.errMsgln("\tExpected NullPointerException: " + ex.getMessage());
     }
+    assertNull(newDb);
   }
 
+  
   /**
    * mylib.dmc.DbReadWriter(String) throws NullPointerException
    *
    * @Error.Test Empty filename for constructor; force null pointer exception
    */
-  // @Test
+  @Test
   public void testErrorConstructorEmptyArg()
   {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    DbReadWriter<SomeObject> newDb = null;
     try {
-      new DbReadWriter<SomeObject>("  ");
+      newDb = new DbReadWriter<SomeObject>("  ");
     } catch (NullPointerException ex) {
       MsgCtrl.errMsgln("\tExpected NullPointerException: " + ex.getMessage());
     }
+    assertNull(newDb);
   }
 
 
   /**
    * @Error.Test force a NullPointerException object cannot be null
    */
-  // @Test
+  @Test
   public void testErrorAddNullObject()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    try {
-      _dbrw.addElement(null);
-      fail("No exception thrown when adding null element");
-    } catch (NullPointerException ex) {
-      MsgCtrl.errMsgln("\tExpected NullPointerException for adding null object: " + ex.getMessage());
-    }
+    assertFalse(_dbrw.addElement(null));
   }
 
+  
   /**
    * @Normal.Test Delete a nonexisting object
    */
-  // @Test
+  @Test
   public void testErrorDeleteNonexistingElement()
   {
     MsgCtrl.auditMsgsOn(false);
@@ -400,8 +452,7 @@ public class TestDbReadWriter
 
     SomeObject so9 = new SomeObject("object not in db");
     // Check for unadded element
-    assertNull(_dbrw.containsElement(so9));
-    _dbrw.deleteElement(so9);
+    assertFalse(_dbrw.containsElement(so9));
   }
 
 
