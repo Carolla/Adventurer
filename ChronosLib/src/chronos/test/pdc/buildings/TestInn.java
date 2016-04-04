@@ -12,10 +12,6 @@ package chronos.test.pdc.buildings;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import mylib.ApplicationException;
 import mylib.MsgCtrl;
 
@@ -23,9 +19,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import chronos.pdc.NPC;
 import chronos.pdc.buildings.Inn;
-import chronos.pdc.registry.NPCRegistry;
 
 /**
  * Verify that the Inn exists as a meeting place for Heroes, allows conversation with the Innkeeper
@@ -44,29 +38,6 @@ public class TestInn
   private final int TEST_OPEN = 1000;
   /** Business closing hour for test Inn */
   private final int TEST_CLOSING = 1200;
-
-  public class FakeNpcRegistry extends NPCRegistry
-  {
-    List<NPC> _list = new ArrayList<NPC>();
-
-    public FakeNpcRegistry()
-    {
-      _list.add(new NPC());
-      _list.add(new NPC());
-    }
-
-    @Override
-    public List<NPC> getAll()
-    {
-      return _list;
-    }
-
-    @Override
-    protected void init(String filename)
-    {
-
-    }
-  }
 
   /**
    * Creates the test Inn, but many tests in this class create their own different Inns

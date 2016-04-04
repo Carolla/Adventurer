@@ -16,7 +16,6 @@ import java.util.List;
 import mylib.ApplicationException;
 import mylib.dmc.IRegistryElement;
 import chronos.pdc.NPC;
-import chronos.pdc.registry.NPCRegistry;
 
 
 /**
@@ -59,8 +58,6 @@ public abstract class Building implements IRegistryElement
   /** Path to Internal Display Image **/
   protected final String _internalImagePath;
   protected final List<NPC> _patrons = new ArrayList<NPC>();
-  protected static NPCRegistry _npcRegistry;
-
 
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
@@ -352,10 +349,4 @@ public abstract class Building implements IRegistryElement
     }
     return MISSING_PERSON;
   }
-
-  public static void setNpcRegistry(NPCRegistry reg)
-  {
-    _npcRegistry = reg;
-  }
-
 } // end of abstract Building class

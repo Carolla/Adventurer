@@ -9,9 +9,8 @@
 
 package chronos.pdc;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import mylib.ApplicationException;
 import mylib.dmc.IRegistryElement;
 
 /**
@@ -47,10 +46,10 @@ public class NPC implements IRegistryElement
   private String _note = null;
 
   /** List of helpful friendly responses to the Hero (rumors) */
-  private ArrayList<String> _rumors = null;
+  private List<String> _rumors = null;
 
   /** List of rebuffs and negative responses to the Hero (retorts) */
-  private ArrayList<String> _retorts = null;
+  private List<String> _retorts = null;
 
   /** Min range for affinity; each point represents 5% less chance of success */
   private final int MIN_AFFINITY = -5;
@@ -75,13 +74,13 @@ public class NPC implements IRegistryElement
    * @param farDesc appearance when far from Patron; cannot be empty or null
    * @param nearDesc appearance when up close and personal, can include smells; cannot be empty or
    *        null
-   * @param affinity must be within range [-5,+5] else throws IllegalArgumentException
+   * @param affinity must be within range [-5,+5]
    * @param peaceflag true if Patron will fight in bar brawl
    * @param note profession of the NPC, as a note (unused in game)
-   * @throws ApplicationException if null entries or invalid affinity value
+   * @param arrayList2 
+   * @param arrayList 
    */
-  public NPC(String name, String farDesc, String nearDesc, int affinity, boolean peaceFlag,
-      String note) throws NullPointerException, IllegalArgumentException
+  public NPC(String name, String note, int affinity, String farDesc, String nearDesc, List<String> replies, List<String> retorts) throws NullPointerException
   {
     // Guard conditions
 
@@ -94,17 +93,18 @@ public class NPC implements IRegistryElement
     if ((nearDesc == null) || (nearDesc.trim().length() == 0)) {
       throw new NullPointerException("Patron(): Near Description cannot be null or empty");
     }
-    if ((affinity < MIN_AFFINITY) || (affinity > MAX_AFFINITY)) {
-      throw new IllegalArgumentException(
-          "Patron(): Affinity value out of range; cannot be "
-              + affinity);
+    if (affinity < MIN_AFFINITY) {
+      affinity = MIN_AFFINITY;
+    } else if (affinity > MAX_AFFINITY) {
+      affinity = MAX_AFFINITY;
     }
+    
     _name = name;
     _farDescription = farDesc;
     _nearDescription = nearDesc;
     _affinity = affinity;
-    _peacekeeper = peaceFlag;
     _note = note;
+    setMessages(replies, retorts);
   }
 
   public String getDescription()
@@ -187,21 +187,21 @@ public class NPC implements IRegistryElement
   /**
    * Set the positive and negative messages into the Patron for conversation
    * 
-   * @param posMsgs the list of helpful friendly responses to the Hero (rumors)
-   * @param negMsgs the list of rebuffs and negative responses to the Hero (retorts)
+   * @param replies the list of helpful friendly responses to the Hero (rumors)
+   * @param retorts the list of rebuffs and negative responses to the Hero (retorts)
    * @return true if lists are not null and not empty
    */
-  public boolean setMessages(ArrayList<String> posMsgs,
-      ArrayList<String> negMsgs)
+  public boolean setMessages(List<String> replies,
+      List<String> retorts)
   {
-    if ((posMsgs == null) || (posMsgs.size() == 0)) {
+    if ((replies == null) || (replies.size() == 0)) {
       return false;
     }
-    if ((negMsgs == null) || (negMsgs.size() == 0)) {
+    if ((retorts == null) || (retorts.size() == 0)) {
       return false;
     }
-    _rumors = posMsgs;
-    _retorts = negMsgs;
+    _rumors = replies;
+    _retorts = retorts;
     return true;
   }
 
@@ -215,63 +215,4 @@ public class NPC implements IRegistryElement
   {
     return _name + " (" + _note + ")";
   }
-
-
-
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PRIVATE METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
-
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ MockPatron INNER CLASS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
-
-  public class MockPatron
-  {
-    /** Mock contructor */
-    public MockPatron()
-    {}
-
-    /**
-     * Get the number of messages (rumors or retorts) this NPC has
-     * 
-     * @param pos true to get rumors, else gets retorts
-     * @return the number of positive or negative messages
-     */
-    public int getNbrMessages(boolean pos)
-    {
-      return (pos == true) ? _rumors.size() : _retorts.size();
-    }
-
-
-    /**
-     * Return positive or negative messages
-     * 
-     * @param pos if true, returns rumors; else retors
-     * @param idx which of the messages to return
-     * @return the requested message
-     */
-    public String getMsg(boolean pos, int idx)
-    {
-      return (pos == true) ? _rumors.get(idx) : _retorts.get(idx);
-    }
-
-
-    /** Return the positive messages */
-    public ArrayList<String> getRumors()
-    {
-      return _rumors;
-    }
-
-    /** Return the negative messages */
-    public ArrayList<String> getRetorts()
-    {
-      return _retorts;
-    }
-
-  } // end of MockPatron inner class
-
-
 } // end of NPC class

@@ -78,9 +78,6 @@ public class AdventureRegistry extends Registry<Adventure>
   public AdventureRegistry()
   {
     super(Chronos.AdventureRegPath);
-    if (_shouldInitialize) {
-      initialize();
-    }
   }
 
 

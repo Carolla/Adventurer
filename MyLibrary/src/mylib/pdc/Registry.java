@@ -41,9 +41,9 @@ public abstract class Registry<E extends IRegistryElement>
    * The DMC registry class for handling persistence. Each derived-class {@code Registry} has its
    * own ReadWriter
    */
-//  protected DbReadWriter<E> _regRW;
-  protected boolean _shouldInitialize;
-  
+  // protected DbReadWriter<E> _regRW;
+  private boolean _shouldInitialize;
+
   /** Registries are in-memory object structures except for HeroRegistry. */
   protected List<E> _regRW;
 
@@ -71,13 +71,17 @@ public abstract class Registry<E extends IRegistryElement>
   {
     _regRW = new ArrayList<E>();
     init(filename);
+    if (_shouldInitialize) {
+      initialize();
+      _shouldInitialize = false;
+    }
   }
 
 
   protected void init(String filename)
   {
     // Creates registry file and reloads it (new registry will be empty)
-//    _regRW = new DbReadWriter<E>(filename);
+    // _regRW = new DbReadWriter<E>(filename);
 
     if (_regRW.size() == 0) {
       _shouldInitialize = true;
@@ -106,7 +110,7 @@ public abstract class Registry<E extends IRegistryElement>
     }
     // Ensure that only unique objects are added
     if (contains(obj) == false) {
-//      _regRW.addElement(obj);
+      // _regRW.addElement(obj);
       _regRW.add(obj);
       retval = true;
     }
@@ -137,7 +141,7 @@ public abstract class Registry<E extends IRegistryElement>
     _regRW.remove(obj);
   }
 
-  
+
   /**
    * Retrieve one or more objects by name. The object's {@code getKey()} method is called.
    * 
@@ -156,7 +160,7 @@ public abstract class Registry<E extends IRegistryElement>
     return element;
   }
 
-  
+
   /**
    * Gets all the elements of the Registry
    * 
@@ -171,7 +175,7 @@ public abstract class Registry<E extends IRegistryElement>
     return list;
   }
 
-  
+
   /**
    * Get the number of elements currently in the registry
    * 

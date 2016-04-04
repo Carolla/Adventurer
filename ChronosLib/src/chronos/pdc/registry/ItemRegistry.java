@@ -99,10 +99,6 @@ public class ItemRegistry extends Registry<Item>
   public ItemRegistry()
   {
     super(Chronos.ItemRegPath);
-    if (_shouldInitialize) {
-      initialize();
-      _shouldInitialize = false;
-    }
   }
 
 

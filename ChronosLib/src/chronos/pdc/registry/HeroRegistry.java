@@ -43,9 +43,6 @@ public class HeroRegistry extends Registry<Hero>
   public HeroRegistry()
   {
     super(Chronos.PersonRegPath);
-    if (_shouldInitialize) {
-      initialize();
-    }
   }
 
 

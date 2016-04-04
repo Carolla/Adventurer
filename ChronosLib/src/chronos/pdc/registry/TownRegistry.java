@@ -45,8 +45,6 @@ public class TownRegistry extends Registry<Town>
   /** List of 8 buildings to add to default Town (Guilds listed first) */
   public static final String[] DEF_BUILDING_LIST = {"Arcaneum", "Jail", "Monastery",
       "Rat's Pack", "Rouge's Tavern", "Stadium", "The Bank", "Ugly Ogre Inn"};
-  private BuildingRegistry _buildingRegistry;
-
 
   // ==============================================================================
   // CONSTRUCTOR(S) AND RELATED METHODS
@@ -58,13 +56,9 @@ public class TownRegistry extends Registry<Town>
    * 
    * @param init flag to initialize registry for default data if true
    */
-  protected TownRegistry(BuildingRegistry buildingRegistry)
+  protected TownRegistry()
   {
     super(Chronos.TownRegPath);
-    _buildingRegistry = buildingRegistry;
-    if (_shouldInitialize) {
-      initialize();
-    }
   }
 
   // ==============================================================================
@@ -84,8 +78,9 @@ public class TownRegistry extends Registry<Town>
     // Convert string[] to arraylist
     int bSize = DEF_BUILDING_LIST.length;
     List<Building> bldgList = new ArrayList<Building>(bSize);
+    BuildingRegistry breg = new BuildingRegistry();
     for (int k = 0; k < bSize; k++) {
-      bldgList.add(_buildingRegistry.getBuilding(DEF_BUILDING_LIST[k]));
+      bldgList.add(breg.getBuilding(DEF_BUILDING_LIST[k]));
     }
     // Now add all buildings' names into the Town
     town.addBuildings(bldgList);
