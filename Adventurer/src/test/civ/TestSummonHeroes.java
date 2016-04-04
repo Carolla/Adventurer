@@ -14,18 +14,17 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
-import mylib.MsgCtrl;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import test.integ.MainframeProxy;
 import chronos.pdc.character.Hero;
 import chronos.pdc.registry.HeroRegistry;
 import civ.MainframeCiv;
+import mylib.MsgCtrl;
+import test.integ.MainframeProxy;
 
 /**
  * @author Al Cline
@@ -97,7 +96,7 @@ public class TestSummonHeroes
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
     
-    List<Hero> heroes = _dorm.getHeroList();
+    List<Hero> heroes = _dorm.getAll();
     assertEquals(3, heroes.size());
     for (Hero h : heroes) {
       MsgCtrl.msgln("\t" + h.toNamePlate());

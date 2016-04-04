@@ -69,7 +69,6 @@ public abstract class Registry<E extends IRegistryElement>
    */
   public Registry(String filename)
   {
-//    _regRW = new DbReadWriter<E>(filename);
     _regRW = new ArrayList<E>();
     init(filename);
   }
