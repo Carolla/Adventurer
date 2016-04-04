@@ -10,6 +10,7 @@
 package mylib.pdc;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import mylib.dmc.IRegistryElement;
@@ -41,7 +42,7 @@ public abstract class Registry<E extends IRegistryElement>
    * The DMC registry class for handling persistence. Each derived-class {@code Registry} has its
    * own ReadWriter
    */
-  // protected DbReadWriter<E> _regRW;
+  protected String _filename;
   private boolean _shouldInitialize;
 
   /** Registries are in-memory object structures except for HeroRegistry. */
@@ -70,6 +71,7 @@ public abstract class Registry<E extends IRegistryElement>
   public Registry(String filename)
   {
     _list = new ArrayList<E>();
+    _filename = filename;
     init(filename);
     if (_shouldInitialize) {
       initialize();
@@ -80,9 +82,6 @@ public abstract class Registry<E extends IRegistryElement>
 
   protected void init(String filename)
   {
-    // Creates registry file and reloads it (new registry will be empty)
-    // _regRW = new DbReadWriter<E>(filename);
-
     if (_list.size() == 0) {
       _shouldInitialize = true;
     }
@@ -102,20 +101,16 @@ public abstract class Registry<E extends IRegistryElement>
    */
   public boolean add(E obj)
   {
-    boolean retval = false;
-
     // Ensure that a null or an empty key is not being added
     if ((obj == null) || (obj.getKey().trim().length() == 0)) {
-      return retval;
-    }
-    // Ensure that only unique objects are added
-    if (contains(obj) == false) {
-      // _regRW.addElement(obj);
-      _list.add(obj);
-      retval = true;
+      return false;
     }
 
-    return retval;
+    if (!contains(obj)) {
+      return _list.add(obj);
+    }
+
+    return false;
   }
 
   /**
@@ -126,7 +121,15 @@ public abstract class Registry<E extends IRegistryElement>
    */
   public boolean contains(E target)
   {
-    return (_list.contains(target)) ? true : false;
+    if (target == null)
+      return false;
+    
+    for (E elem : _list) {
+      if (elem.getKey().equals(target.getKey())) {
+        return true;
+      }
+    }
+    return false;
   }
 
 
@@ -138,7 +141,12 @@ public abstract class Registry<E extends IRegistryElement>
    */
   public void delete(E obj)
   {
-    _list.remove(obj);
+    for (Iterator<E> it = _list.iterator(); it.hasNext();) {
+      E elem = it.next();
+      if (elem.getKey().equals(obj.getKey())) {
+        it.remove();
+      }
+    }
   }
 
 
@@ -150,14 +158,12 @@ public abstract class Registry<E extends IRegistryElement>
    */
   public E get(String name)
   {
-    E element = null;
     for (E elem : _list) {
       if (elem.getKey().equals(name)) {
-        element = elem;
-        break;
+        return elem;
       }
     }
-    return element;
+    return null;
   }
 
 
@@ -168,11 +174,7 @@ public abstract class Registry<E extends IRegistryElement>
    */
   public List<E> getAll()
   {
-    List<E> list = new ArrayList<E>();
-    for (E elem : _list) {
-      list.add(elem);
-    }
-    return list;
+    return _list;
   }
 
 
@@ -186,13 +188,6 @@ public abstract class Registry<E extends IRegistryElement>
     return _list.size();
   }
 
-  public boolean forceAdd(E obj)
-  {
-    delete(obj);
-    return add(obj);
-  }
-
-
   /**
    * Update an existing object in the registry. The existing object must already be in the database,
    * and will be replaced with the first one it finds that matches it. The element's getKey() method
@@ -204,19 +199,15 @@ public abstract class Registry<E extends IRegistryElement>
    */
   public boolean update(final E target)
   {
-    boolean retval = false;
-    // Guard against null replacements or missing elements
     if (target == null) {
       return false;
     }
-    // Guard: if target is not in the registry, return immediately.
-    if (_list.contains(target)) {
-      // Retrieve the target element and overwrite it
-      _list.remove(target);
-      _list.add(target);
-      retval = true;
+
+    if (contains(target)) {
+      delete(target); //by name
     }
-    return retval;
+    add(target);
+    return true;
   }
 
 

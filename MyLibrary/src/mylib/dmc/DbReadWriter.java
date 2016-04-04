@@ -14,6 +14,7 @@ import java.util.List;
 
 import com.db4o.Db4oEmbedded;
 import com.db4o.EmbeddedObjectContainer;
+import com.db4o.config.EmbeddedConfiguration;
 import com.db4o.ext.DatabaseClosedException;
 import com.db4o.ext.DatabaseFileLockedException;
 import com.db4o.ext.DatabaseReadOnlyException;
@@ -93,13 +94,11 @@ public class DbReadWriter <E extends IRegistryElement>
       throw new NullPointerException("Cannot add null Object");
     }
     _db = open();
-    // Add element only if it is unique
     try {
       if (containsElement(obj) == null) {
         _db.store(obj);
         _db.commit();
       }
-      // Catch exceptions thrown by store() or commit()
     } catch (DatabaseClosedException | DatabaseReadOnlyException ex) {
       System.err.println(ex.getMessage());
       ex.printStackTrace();
@@ -147,7 +146,7 @@ public class DbReadWriter <E extends IRegistryElement>
    * @param target name of the object with specific fields to find
    * @return the object found, else null
    */
-  public E containsElement(final E target)
+  private E containsElement(final E target)
   {
     for (E elem : getAllList()) {
       if (elem.getKey().equals(target.getKey())) {
@@ -172,6 +171,7 @@ public class DbReadWriter <E extends IRegistryElement>
       return;
     }
     // Object must be retrieved before it can be deleted
+    _db = open();
     try {
       E obj = containsElement(target);
       if (obj != null) {
@@ -197,7 +197,8 @@ public class DbReadWriter <E extends IRegistryElement>
     if (!exists(name)) {
       return null;
     }
-  
+
+    _db = open();
     try {
       List<E> elementList = getAllList();
       for (E obj : elementList) {
@@ -214,6 +215,7 @@ public class DbReadWriter <E extends IRegistryElement>
 
   public List<E> getAll()
   {
+    _db = open();
     List<E> list = getAllList();
     close();
     return list;
@@ -222,6 +224,7 @@ public class DbReadWriter <E extends IRegistryElement>
   /** Finds all elements in the given Registry ReadWriter */
   public int size()
   {
+    _db = open();
     List<E> alist = getAllList();
     close();
     return alist.size();
@@ -276,7 +279,6 @@ public class DbReadWriter <E extends IRegistryElement>
   private List<E> getAllList()
   {
     List<E> alist = new ArrayList<E>();
-    _db = open();
     alist.addAll(_db.query(new Predicate<E>() {
       @Override
       public boolean match(E candidate)
@@ -284,7 +286,6 @@ public class DbReadWriter <E extends IRegistryElement>
         return true;
       }
     }));
-//    close();
     return alist;
   }
 
@@ -302,7 +303,9 @@ public class DbReadWriter <E extends IRegistryElement>
   {
     try {
       if (_open == false) {
-//    	  EmbeddedConfiguration eCon = EmbeddedConfiguration.newConfiguration();
+//        EmbeddedConfiguration conf =  Db4oEmbedded.newConfiguration();
+//        conf.addConfigurationItem(new );
+//        _db = Db4oEmbedded.openFile(conf, _regPath);
         _db = Db4oEmbedded.openFile( _regPath);
         _open = true;
       }

@@ -13,11 +13,10 @@ package chronos.pdc.registry;
 import java.util.ArrayList;
 import java.util.List;
 
+import mylib.ApplicationException;
+import mylib.test.pdc.ConcreteRegistry;
 import chronos.pdc.Chronos;
 import chronos.pdc.character.Hero;
-import mylib.ApplicationException;
-import mylib.dmc.DbReadWriter;
-import mylib.pdc.Registry;
 
 /**
  * Contains all Heros in the game. 
@@ -31,12 +30,8 @@ import mylib.pdc.Registry;
  *          Mar 25 2016 // ABC Added getNamplares() <br>
  *          Mar 28 2016 // ABC Extended HeroRegistry to use DbReadWriter as subclass override <br>
  */
-public class HeroRegistry extends Registry<Hero>
+public class HeroRegistry extends ConcreteRegistry<Hero>
 {
-  /** Requires an actual persistence database instead of in-memory List */
-  private DbReadWriter<Hero> _db;
-  
-  
   /**
    * Default constructor
    */
@@ -44,18 +39,6 @@ public class HeroRegistry extends Registry<Hero>
   {
     super(Chronos.PersonRegPath);
   }
-
-
-  /**
-   * Loads the in-memory HeroRegistry from the persistence database.
-   */
-  @Override
-  public void initialize()
-  { 
-    _db = new DbReadWriter<Hero>(Chronos.HeroRegPath);
-    _list = _db.getAll();
-  }
-
 
   // ========================================================
   //  PUBLIC METHODS
@@ -78,18 +61,6 @@ public class HeroRegistry extends Registry<Hero>
    * 
    * @return a list of Heroes
    */
-  @Override
-  public List<Hero> getAll()
-  {
-    List<Hero> heroList = super.getAll();
-    return heroList;
-  }
-
-  /**
-   * Retrieves all Heroes in the HeroRegistry
-   * 
-   * @return a list of Heroes
-   */
   public List<String> getNamePlates()
   {
     List<Hero> heroList = getAll();
@@ -100,14 +71,5 @@ public class HeroRegistry extends Registry<Hero>
     return plateList;
   }
 
-
-  /**
-   * Save new Hero, both to db and Registry
-   */
-  public void saveHero(Hero hero)
-  {
-    super.add(hero);
-    _db.addElement(hero);
-  } 
 } // end of HeroRegistry class
 

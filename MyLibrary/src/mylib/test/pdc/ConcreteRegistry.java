@@ -11,8 +11,9 @@
 package mylib.test.pdc;
 
 import mylib.ApplicationException;
+import mylib.dmc.DbReadWriter;
+import mylib.dmc.IRegistryElement;
 import mylib.pdc.Registry;
-import mylib.test.dmc.SomeObject;
 
 
 /**
@@ -31,12 +32,14 @@ import mylib.test.dmc.SomeObject;
  *          Jun 13 2011 // TAA: updated/deprecated methods <br>
  *          Sep 27 2014 // ABC removed unneeded methods and encapsulated DBRW better <br>
  */
-public class ConcreteRegistry extends Registry<SomeObject>
+public class ConcreteRegistry<E extends IRegistryElement> extends Registry<E>
 {
 
   // ============================================================
   // CONSTRUCTOR AND RELATED METHODS
   // ============================================================
+
+  private DbReadWriter<E> _regRW;
 
   /**
    * Default constructor
@@ -44,39 +47,38 @@ public class ConcreteRegistry extends Registry<SomeObject>
    * @param filename of the file to act as db repository
    * @throws ApplicationException if the constructor fails
    */
-  public ConcreteRegistry(String filename) throws ApplicationException
+  public ConcreteRegistry(String filename)
   {
     super(filename);
   }
 
-  @Override
-  protected void init(String filename)
-  {}
+  public void setDbReadWriter(DbReadWriter<E> regRW)
+  {
+    _regRW = regRW;
+  }
 
-//  public void setDbReadWriter(DbReadWriter<SomeObject> regRW)
-//  {
-//    _regRW = regRW;
-//  }
-
-
-  // ============================================================
-  // Required implementations of abstract METHODS
-  // ============================================================
-
-  /*
-   * Sets some predetermined data into the registry to act as default
-   */
   @Override
   protected void initialize()
   {
-    // Create three objects to initialize database
-    SomeObject obj1 = new SomeObject(1, "one");
-    SomeObject obj2 = new SomeObject(2, "two");
-    SomeObject obj3 = new SomeObject(3, "three");
-    add(obj1);
-    add(obj2);
-    add(obj3);
+    _regRW = new DbReadWriter<E>(_filename);
+    _list = _regRW.getAll();
   }
 
+  @Override
+  public boolean add(E obj)
+  {
+    if (super.add(obj)) {
+      _regRW.addElement(obj);
+      return true;
+    }
+    return false;
+  } 
+  
+  @Override
+  public void delete(E obj)
+  {
+    super.delete(obj);
+    _regRW.deleteElement(obj);
+  }
 } // end of ConcreteRegistry outer class
 

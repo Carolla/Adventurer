@@ -10,21 +10,18 @@
 package test.civ;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
+import mylib.MsgCtrl;
+
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.pdc.character.Hero;
 import chronos.pdc.registry.HeroRegistry;
-import civ.MainframeCiv;
-import mylib.MsgCtrl;
-import test.integ.MainframeProxy;
 
 /**
  * @author Al Cline
@@ -32,7 +29,10 @@ import test.integ.MainframeProxy;
  */
 public class TestSummonHeroes
 {
-  private static HeroRegistry _dorm;
+  private static HeroRegistry _dorm = new HeroRegistry(); 
+  private static Hero hero1 = new Hero("Alpha", "male", "brown", "Human", "Fighter");
+  private static Hero hero2 = new Hero("Beta", "female", "blond", "Elf", "Thief");
+  private static Hero hero3 = new Hero("Gamma", "male", "brown", "Dwarf", "Cleric");
   
   /**
    * @throws java.lang.Exception
@@ -40,23 +40,9 @@ public class TestSummonHeroes
   @BeforeClass
   public static void setUpBeforeClass() throws Exception
   {
-    // Init the system
-    MainframeCiv mfc = new MainframeCiv(new MainframeProxy());
-    assertNotNull(mfc);
-    _dorm = new HeroRegistry();
-    assertNotNull(_dorm);
-    
-    Hero hero1 = new Hero("Alpha", "male", "brown", "Human", "Fighter");
-    assertNotNull(hero1);
-    Hero hero2 = new Hero("Beta", "female", "blond", "Elf", "Thief");
-    assertNotNull(hero2);
-    Hero hero3 = new Hero("Gamma", "male", "brown", "Dwarf", "Cleric");
-    assertNotNull(hero3);
-
     _dorm.add(hero1);
     _dorm.add(hero2);
     _dorm.add(hero3);
-    assertEquals(3, _dorm.getNbrElements());
   }
 
   /**
@@ -65,16 +51,11 @@ public class TestSummonHeroes
   @AfterClass
   public static void tearDownAfterClass() throws Exception
   {
-    _dorm = null;
+    _dorm.delete(hero1);
+    _dorm.delete(hero2);
+    _dorm.delete(hero3);
   }
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @Before
-  public void setUp() throws Exception
-  {}
-
+  
   /**
    * @throws java.lang.Exception
    */

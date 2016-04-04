@@ -83,7 +83,6 @@ public class TestDbReadWriter
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    _dbrw.clear();
     SomeObject so = new SomeObject("SO object");
     _dbrw.addElement(so);
     assertEquals(1, _dbrw.size());
@@ -121,38 +120,6 @@ public class TestDbReadWriter
   }
 
 
-  /**
-   * @Normal.Test E containsElement(final E target)
-   */
-  @Test
-  public void testContainsElement()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    SomeObject so1 = new SomeObject("first object saved");
-    SomeObject so2 = new SomeObject("second object saved");
-    SomeObject so3 = new SomeObject("third object saved");
-
-    // Add these three and then retrieve two of them
-    _dbrw.addElement(so1);
-    _dbrw.addElement(so2);
-    _dbrw.addElement(so3);
-
-    // Check that they are there
-    SomeObject f2 = _dbrw.containsElement(so2);
-    assertNotNull(f2);
-    assertEquals(f2.toString(), so2.toString());
-
-    SomeObject f1 = _dbrw.containsElement(so1);
-    assertNotNull(f1);
-    assertEquals(f1.toString(), so1.toString());
-
-    // Check that they are not removed
-    assertNotNull(_dbrw.containsElement(so2));
-  }
-
 
   /**
    * @Normal.Test void deleteElement(E target)
@@ -174,11 +141,9 @@ public class TestDbReadWriter
     // Verify its gone
     _dbrw.deleteElement(so1);
     assertEquals(1, _dbrw.size());
-    assertNull(_dbrw.containsElement(so1));
     
     _dbrw.deleteElement(so2);
     assertEquals(0, _dbrw.size());
-    assertNull(_dbrw.containsElement(so2));
   }
 
 
@@ -325,12 +290,10 @@ public class TestDbReadWriter
 
     // Test object not within the db
     SomeObject so = new SomeObject("four");
-    assertNull(_dbrw.containsElement(so));
 
     // Add a test object
     _dbrw.addElement(so);
     assertEquals(nbrBefore + 1, _dbrw.size());
-    assertNotNull(_dbrw.containsElement(so));
 
     // Fail when trying to add it again
     _dbrw.addElement(so);
@@ -399,8 +362,6 @@ public class TestDbReadWriter
     MsgCtrl.where(this);
 
     SomeObject so9 = new SomeObject("object not in db");
-    // Check for unadded element
-    assertNull(_dbrw.containsElement(so9));
     _dbrw.deleteElement(so9);
   }
 

@@ -111,28 +111,6 @@ public class SomeObject implements IRegistryElement
 
 
   /**
-   * Get the word field
-   * 
-   * @return word field key
-   */
-  public String getWord()
-  {
-    return _word;
-  }
-
-
-  /**
-   * Set the unique key to a different field, in this case, the number
-   * 
-   * @return the text field of this object to use as a key
-   */
-  public void setKey(String field)
-  {
-    _key = field;
-  }
-
-
-  /**
    * Setter for testing
    * 
    * @param value new value to store
