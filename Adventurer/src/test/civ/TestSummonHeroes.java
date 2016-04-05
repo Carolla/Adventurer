@@ -41,11 +41,8 @@ public class TestSummonHeroes
   public static void setUpBeforeClass() throws Exception
   {
     _dorm.add(hero1);
-    System.out.println(_dorm.getAll());
     _dorm.add(hero2);
-    System.out.println(_dorm.getAll());
     _dorm.add(hero3);
-    System.out.println(_dorm.getAll());
   }
 
   /**
