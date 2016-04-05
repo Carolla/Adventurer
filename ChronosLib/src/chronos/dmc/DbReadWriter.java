@@ -13,7 +13,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mylib.dmc.IRegistryElement;
+import chronos.pdc.Occupation;
+import chronos.pdc.Skill;
+import chronos.pdc.character.Description;
+import chronos.pdc.character.Gender;
 import chronos.pdc.character.Hero;
+import chronos.pdc.character.Inventory;
+import chronos.pdc.character.Klass;
+import chronos.pdc.character.TraitList;
+import chronos.pdc.race.Race;
 
 import com.db4o.Db4oEmbedded;
 import com.db4o.EmbeddedObjectContainer;
@@ -291,6 +299,16 @@ public class DbReadWriter<E extends IRegistryElement>
     }));
     return alist;
   }
+  
+  
+  public List<E> query(Predicate<E> pred)
+  {
+    List<E> alist = new ArrayList<E>();
+    open();
+    alist.addAll(_db.query(pred));
+    close();
+    return alist;
+  }
 
 
   /**
@@ -302,13 +320,21 @@ public class DbReadWriter<E extends IRegistryElement>
    * NOTE: The folder structure must exist before a db file within it can be created. db4o will not
    * create folders: db4o will throw an enigmatic System IO error.
    */
+  private static Class<?>[] classes = {Hero.class, Klass.class, Race.class, TraitList.class,
+      Gender.class, Occupation.class, Description.class, Inventory.class, Skill.class};
+
   private EmbeddedObjectContainer open()
   {
     try {
       if (_open == false) {
         EmbeddedConfiguration config = Db4oEmbedded.newConfiguration();
-        config.common().activationDepth(25);
-        config.common().updateDepth(25);
+        config.common().activationDepth(255);
+        config.common().updateDepth(255);
+        for (Class<?> c : classes) {
+          config.common().objectClass(c).cascadeOnActivate(true);
+          config.common().objectClass(c).cascadeOnUpdate(true);
+          config.common().objectClass(c).cascadeOnDelete(true);
+        }
 
         _db = Db4oEmbedded.openFile(config, _regPath);
         _open = true;

@@ -18,10 +18,12 @@ import chronos.pdc.Chronos;
 import chronos.pdc.character.Hero;
 import chronos.test.pdc.ConcreteRegistry;
 
+import com.db4o.query.Predicate;
+
 /**
- * Contains all Heros in the game. 
- * This is the only {@code Registry} that currently uses {@code db4o} for persistence;
- * the other Registries are in-memory copies and must be initialized each time.
+ * Contains all Heros in the game. This is the only {@code Registry} that currently uses
+ * {@code db4o} for persistence; the other Registries are in-memory copies and must be initialized
+ * each time.
  * 
  * @author Tim Armstrong
  * @version Mar 13, 2013 // original <br>
@@ -42,7 +44,7 @@ public class HeroRegistry extends ConcreteRegistry<Hero>
   }
 
   // ========================================================
-  //  PUBLIC METHODS
+  // PUBLIC METHODS
   // ========================================================
 
   /**
@@ -64,7 +66,15 @@ public class HeroRegistry extends ConcreteRegistry<Hero>
    */
   public List<String> getNamePlates()
   {
-    List<Hero> heroList = getAll();
+    @SuppressWarnings("serial")
+    List<Hero> heroList = _regRW.query(new Predicate<Hero>() {
+      @Override
+      public boolean match(Hero h)
+      {
+        return true;
+      }
+
+    });
     List<String> plateList = new ArrayList<String>(heroList.size());
     for (Hero h : heroList) {
       plateList.add(h.toNamePlate());

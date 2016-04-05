@@ -83,21 +83,21 @@ public class MainActionCiv extends BaseCiv
   public MainActionCiv(MainframeCiv mfciv)
   {
     _mfCiv = mfciv;
-     constructCoreMembers();
+    constructCoreMembers();
     _mfCiv.replaceLeftPanel(createActionPanel());
   }
 
-    public void constructCoreMembers()
-    {
-      _skedder = new Scheduler(_mfCiv); // Skedder first for injection
-  
-      _rf = new RegistryFactory();
-      _rf.initRegistries(_skedder);
-  
-       _advReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
-       _dorm = (HeroRegistry) _rf.getRegistry(RegKey.HERO);
-     }
-  
+  public void constructCoreMembers()
+  {
+    _skedder = new Scheduler(_mfCiv); // Skedder first for injection
+
+    _rf = new RegistryFactory();
+    _rf.initRegistries(_skedder);
+
+    _advReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
+    _dorm = (HeroRegistry) _rf.getRegistry(RegKey.HERO);
+  }
+
   // ============================================================
   // Public methods
   // ============================================================
@@ -259,66 +259,50 @@ public class MainActionCiv extends BaseCiv
       {
         // Make sure the dorm is most recent
         summonableHeroes = _dorm.getNamePlates();
-        // Add a few fake names 
-//        padHeroes(summonableHeroes);
 
         System.out.println(String.format("Printing %s Hero Names:", summonableHeroes.size()));
         for (String s : summonableHeroes) {
           System.out.println(s);
         }
-        
-         if (_partyHeros == null) {
-         _partyHeros = new ArrayList<Hero>();
-         }
-        
-         if (_partyHeros.size() == 0) {
-         showPartyPickerWhenPartyEmpty();
-         } else {
-         showPartyPickerWhenMembersAlreadySelected();
-         }
+
+        if (_partyHeros == null) {
+          _partyHeros = new ArrayList<Hero>();
+        }
+
+        if (_partyHeros.size() == 0) {
+          showPartyPickerWhenPartyEmpty();
+        } else {
+          showPartyPickerWhenMembersAlreadySelected();
+        }
       }
 
-//      private void padHeroes(List<String> list)
-//      {
-//        if (list.size() < 3) {
-//          list.add("Gronkhar the Smelly: male gnome thief");
-//          list.add("Siobhan the Obsiquious: female human wizard");
-//          list.add("Sir Will-not-be-appearing-in-this-movie: male Spiderman fan");
-//        }
-//      }
+      private void showPartyPickerWhenPartyEmpty()
+      {
+        System.out.println("Party Picker displayed with currently empty party.");
+        final ShuttleList slist = new ShuttleList(summonableHeroes);
+        setPropsForShuttleList(slist);
+      }
 
-       private void showPartyPickerWhenPartyEmpty()
-       {
-       System.out.println("Party Picker displayed with currently empty party.");
-       // padHeroes(_summonableHeroes);
-       final ShuttleList slist = new ShuttleList(summonableHeroes);
-       setPropsForShuttleList(slist);
-       }
-      
-       private void showPartyPickerWhenMembersAlreadySelected()
-       {
-       System.out.println("Party Picker displayed with members already selected.");
-       final ShuttleList slist = new ShuttleList(summonableHeroes, _partyHeros);
-       setPropsForShuttleList(slist);
-       }
+      private void showPartyPickerWhenMembersAlreadySelected()
+      {
+        System.out.println("Party Picker displayed with members already selected.");
+        final ShuttleList slist = new ShuttleList(summonableHeroes, _partyHeros);
+        setPropsForShuttleList(slist);
+      }
 
-       // Additional settings for the ShuttleList
-       private void setPropsForShuttleList(final ShuttleList slist)
-       {
-       slist.setTitle("Choose your Adventurers!");
-       slist.addActionListener(new ActionListener() {
-       public void actionPerformed(ActionEvent arg0)
-       {
-       List<Hero> list = new ArrayList<Hero>();
-       for (Hero s : slist.getSelectedHeroes(_dorm)) {
-       list.add(s);
-       }
-       _partyHeros = list;
-       slist.dispose();
-       }
-       });
-       slist.setVisible(true);
-       }
+      // Additional settings for the ShuttleList
+      private void setPropsForShuttleList(final ShuttleList slist)
+      {
+        slist.setTitle("Choose your Adventurers!");
+        slist.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent arg0)
+          {
+            _partyHeros.addAll(slist.getSelectedHeroes(_dorm));
+            slist.dispose();
+          }
+        });
+        slist.setVisible(true);
+      }
 
     });
     return button;

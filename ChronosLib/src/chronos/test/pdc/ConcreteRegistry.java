@@ -39,7 +39,7 @@ public class ConcreteRegistry<E extends IRegistryElement> extends Registry<E>
   // CONSTRUCTOR AND RELATED METHODS
   // ============================================================
 
-  private DbReadWriter<E> _regRW;
+  protected DbReadWriter<E> _regRW;
 
   /**
    * Default constructor

@@ -73,6 +73,8 @@ public class Hero implements IRegistryElement
   // CONSTRUCTOR(S) AND RELATED METHODS
   // ====================================================
   
+  public Hero() {}; //db4o attempt
+  
   /**
    * Create the Person from the basic non-klass attributes.
    * 
