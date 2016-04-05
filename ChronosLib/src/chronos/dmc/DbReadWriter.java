@@ -307,9 +307,8 @@ public class DbReadWriter<E extends IRegistryElement>
     try {
       if (_open == false) {
         EmbeddedConfiguration config = Db4oEmbedded.newConfiguration();
-        config.common().objectClass(Hero.class).cascadeOnActivate(true);
-        config.common().objectClass(Hero.class).cascadeOnDelete(true);
-        config.common().objectClass(Hero.class).cascadeOnUpdate(true);
+        config.common().activationDepth(25);
+        config.common().updateDepth(25);
 
         _db = Db4oEmbedded.openFile(config, _regPath);
         _open = true;
