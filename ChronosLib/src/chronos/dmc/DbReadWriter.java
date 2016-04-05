@@ -7,10 +7,13 @@
  * by email: acline@carolla.com
  */
 
-package mylib.dmc;
+package chronos.dmc;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import mylib.dmc.IRegistryElement;
+import chronos.pdc.character.Hero;
 
 import com.db4o.Db4oEmbedded;
 import com.db4o.EmbeddedObjectContainer;
@@ -44,7 +47,7 @@ import com.db4o.query.Predicate;
  *          Dec 7, 2013 // changed dbOpen signature <br>
  *          Dec 23, 2015 // refactored for better encapsulation <br>
  */
-public class DbReadWriter <E extends IRegistryElement>
+public class DbReadWriter<E extends IRegistryElement>
 {
   /** The path of the database file */
   protected final String _regPath;
@@ -107,7 +110,7 @@ public class DbReadWriter <E extends IRegistryElement>
     }
   }
 
-  
+
   /**
    * Deletes all elements in the registry. Each item is removed from the database so db4o's OID can
    * be used to delete it.
@@ -303,10 +306,12 @@ public class DbReadWriter <E extends IRegistryElement>
   {
     try {
       if (_open == false) {
-//        EmbeddedConfiguration conf =  Db4oEmbedded.newConfiguration();
-//        conf.addConfigurationItem(new );
-//        _db = Db4oEmbedded.openFile(conf, _regPath);
-        _db = Db4oEmbedded.openFile( _regPath);
+        EmbeddedConfiguration config = Db4oEmbedded.newConfiguration();
+        config.common().objectClass(Hero.class).cascadeOnActivate(true);
+        config.common().objectClass(Hero.class).cascadeOnDelete(true);
+        config.common().objectClass(Hero.class).cascadeOnUpdate(true);
+
+        _db = Db4oEmbedded.openFile(config, _regPath);
         _open = true;
       }
     } catch (Db4oIOException | DatabaseFileLockedException | IncompatibleFileFormatException

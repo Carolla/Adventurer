@@ -9,7 +9,7 @@
 
 package test.civ;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -41,8 +41,11 @@ public class TestSummonHeroes
   public static void setUpBeforeClass() throws Exception
   {
     _dorm.add(hero1);
+    System.out.println(_dorm.getAll());
     _dorm.add(hero2);
+    System.out.println(_dorm.getAll());
     _dorm.add(hero3);
+    System.out.println(_dorm.getAll());
   }
 
   /**
@@ -78,11 +81,9 @@ public class TestSummonHeroes
     MsgCtrl.where(this);
     
     List<Hero> heroes = _dorm.getAll();
-    assertEquals(3, heroes.size());
-    for (Hero h : heroes) {
-      MsgCtrl.msgln("\t" + h.toNamePlate());
-    }
-    
+    assertTrue(heroes.contains(hero1));
+    assertTrue(heroes.contains(hero2));
+    assertTrue(heroes.contains(hero3));
   }
   
   

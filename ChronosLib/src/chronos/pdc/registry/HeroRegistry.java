@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mylib.ApplicationException;
-import mylib.test.pdc.ConcreteRegistry;
 import chronos.pdc.Chronos;
 import chronos.pdc.character.Hero;
+import chronos.test.pdc.ConcreteRegistry;
 
 /**
  * Contains all Heros in the game. 
@@ -32,6 +32,7 @@ import chronos.pdc.character.Hero;
  */
 public class HeroRegistry extends ConcreteRegistry<Hero>
 {
+
   /**
    * Default constructor
    */

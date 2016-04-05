@@ -7,7 +7,7 @@
  * by email: acline@carolla.com
  */
 
-package mylib.test.dmc;
+package chronos.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -16,13 +16,15 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
+import mylib.Constants;
+import mylib.MsgCtrl;
+import mylib.test.dmc.SomeObject;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import mylib.Constants;
-import mylib.MsgCtrl;
-import mylib.dmc.DbReadWriter;
+import chronos.dmc.DbReadWriter;
 
 /**
  * Test the database read/writer interface methods

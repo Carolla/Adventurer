@@ -8,25 +8,22 @@
  */
 
 
-package mylib.test.pdc;
+package chronos.test.pdc;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import mylib.Constants;
 import mylib.MsgCtrl;
-import mylib.dmc.DbReadWriter;
 import mylib.dmc.IRegistryElement;
 import mylib.test.dmc.SomeObject;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import chronos.dmc.DbReadWriter;
 
 import com.db4o.query.Predicate;
 
@@ -362,58 +359,5 @@ public class TestRegistry
    */
   void _testsToBeImplemented()
   {}
-
-  public class FakeDbReadWriter extends DbReadWriter<SomeObject>
-  {
-    private List<SomeObject> _objects;
-
-    public FakeDbReadWriter(String filepath)
-    {
-      super(filepath);
-      _objects = new ArrayList<SomeObject>();
-    }
-    
-    @Override
-    public void addElement(SomeObject obj)
-    {
-      _objects.add((SomeObject) obj);
-    }
-
-//    @Override
-//    public boolean contains(SomeObject obj)
-//    {
-//      return _objects.contains(obj);
-//    }
-
-    @Override
-    public void deleteElement(SomeObject obj)
-    {
-      _objects.remove(((SomeObject) obj));
-    }
-
-    @Override
-    public int size()
-    {
-      return _objects.size();
-    }
-
-    @Override
-    public List<SomeObject> getAll()
-    {
-      return _objects;
-    }
-
-    @Override
-    public SomeObject get(String name)
-    {
-      for (SomeObject obj : _objects) {
-        if (obj.getKey().equals(name)) {
-          return obj;
-        }
-      }
-      return null;
-    }
-  }
-
 } // end of TestRegistry class
 

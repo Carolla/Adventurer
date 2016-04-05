@@ -146,14 +146,14 @@ public class Hero implements IRegistryElement
     _klass.addKlassItems(_inven);
   } // end of Hero constructor
 
-  public Hero(EnumMap<HeroInput, String> inputMap)
-  {
-    this(inputMap.get(HeroInput.NAME),
-        inputMap.get(HeroInput.GENDER),
-        inputMap.get(HeroInput.HAIR),
-        inputMap.get(HeroInput.RACE),
-        inputMap.get(HeroInput.KLASS));
-  }
+//  public Hero(EnumMap<HeroInput, String> inputMap)
+//  {
+//    this(inputMap.get(HeroInput.NAME),
+//        inputMap.get(HeroInput.GENDER),
+//        inputMap.get(HeroInput.HAIR),
+//        inputMap.get(HeroInput.RACE),
+//        inputMap.get(HeroInput.KLASS));
+//  }
 
   public boolean canUseMagic()
   {
