@@ -53,14 +53,14 @@ public class BuildingRegistry extends Registry<Building>
     // The constructors load the default data
     Inn inn = new Inn();
     inn.initPatrons(skedder);
-    super.forceAdd(inn); // Ugly Ogre Inn
-    super.forceAdd(new Store()); // Rat's Pack
-    super.forceAdd(new Jail()); // Jail
-    super.forceAdd(new Bank()); // The Bank
-    super.forceAdd(new FightersGuild()); // Stadium
-    super.forceAdd(new RoguesGuild()); // Rouge's Tavern
-    super.forceAdd(new ClericsGuild()); // Monastery
-    super.forceAdd(new WizardsGuild()); // Arcaneum
+    super.add(inn); // Ugly Ogre Inn
+    super.add(new Store()); // Rat's Pack
+    super.add(new Jail()); // Jail
+    super.add(new Bank()); // The Bank
+    super.add(new FightersGuild()); // Stadium
+    super.add(new RoguesGuild()); // Rouge's Tavern
+    super.add(new ClericsGuild()); // Monastery
+    super.add(new WizardsGuild()); // Arcaneum
   }
 
   @Override

@@ -11,7 +11,6 @@ package chronos.pdc.character;
 
 import java.util.ArrayList;
 
-import chronos.pdc.Item;
 import chronos.pdc.character.TraitList.PrimeTraits;
 
 /**
@@ -35,7 +34,7 @@ public class Thief extends Klass {
 			"Hide in Shadows", "Listening", "Climb Walls",
 			"Back Attack +4 (if Move Silently roll succeeds)" };
 
-	private String[] _thiefItems = { "Thieves' kit", "Dagger" };
+	private String[] _thiefItems = { "Thief's Kit", "Dagger" };
 
 	private final int NBR_SKILLS = _skillName.length;
 	private String[][] _thiefSkills = new String[NBR_SKILLS][2];
@@ -62,7 +61,7 @@ public class Thief extends Klass {
 	@Override
 	public void addKlassItems(Inventory inven) {
 		for (String itemName : _thiefItems ) {
-			inven.addItem(Item.getItem(itemName));
+			inven.addItem(itemName);
 		}
 	}
 

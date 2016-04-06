@@ -109,15 +109,15 @@ public class HeroDisplayCiv extends BaseCiv
    */
   public boolean savePerson(boolean overwrite)
   {
-    boolean retflag = false;
+    boolean saved = false;
     
     // Save when NOT in overwrite mode
     if (overwrite == false) {
-      retflag = _dorm.add(_hero);
+      saved = _dorm.add(_hero);
     } else {
-      retflag = _dorm.update(_hero);
+      saved = _dorm.update(_hero);
     }
-    return retflag;
+    return saved;
   }
 
   /**

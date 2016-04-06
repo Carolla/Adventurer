@@ -9,6 +9,8 @@ import static chronos.pdc.character.TraitList.PrimeTraits.STR;
 import static chronos.pdc.character.TraitList.PrimeTraits.WIS;
 
 import java.util.EnumMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 import mylib.pdc.MetaDie;
 import chronos.civ.PersonKeys;
@@ -41,8 +43,7 @@ public class TraitList
   private int _AP;
   int _speed;
 
-  private final EnumMap<PrimeTraits, Integer> _traits = new EnumMap<PrimeTraits, Integer>(
-      PrimeTraits.class);
+  private final Map<Integer, Integer> _traits = new TreeMap<Integer, Integer>();
   private static final MetaDie _md = new MetaDie();
   public static final int DEFTRAIT_VAL = 10;
   public static final int[] DEFAULT_TRAITS = {DEFTRAIT_VAL,DEFTRAIT_VAL,DEFTRAIT_VAL,DEFTRAIT_VAL,DEFTRAIT_VAL,DEFTRAIT_VAL };
@@ -55,7 +56,7 @@ public class TraitList
   public TraitList(int[] traits)
   {
     for (PrimeTraits t : PrimeTraits.values()) {
-      _traits.put(t, traits[t.ordinal()]);
+      _traits.put(t.ordinal(), traits[t.ordinal()]);
     }
 
     _AP = getTrait(STR) + getTrait(DEX);
@@ -65,13 +66,13 @@ public class TraitList
 
   public int getTrait(PrimeTraits trait)
   {
-    return _traits.get(trait);
+    return _traits.get(trait.ordinal());
   }
 
-  public int adjust(PrimeTraits con, int i)
+  public int adjust(PrimeTraits t, int i)
   {
-    if (_traits.containsKey(con)) {
-      return _traits.put(con, _traits.get(con) + i);
+    if (_traits.containsKey(t.ordinal())) {
+      return _traits.put(t.ordinal(), _traits.get(t.ordinal()) + i);
     }
     return 0;
   }
@@ -86,8 +87,8 @@ public class TraitList
     int oldPrime = getTrait(primeTrait);
     PrimeTraits largestTrait = findLargestTrait();
     int largest = getTrait(largestTrait );
-    _traits.put(primeTrait, largest);
-    _traits.put(largestTrait, oldPrime);
+    _traits.put(primeTrait.ordinal(), largest);
+    _traits.put(largestTrait.ordinal(), oldPrime);
   }
 
   public PrimeTraits findLargestTrait()

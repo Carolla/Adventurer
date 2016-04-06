@@ -12,8 +12,6 @@ package test.civ;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import test.pdc.character.TestHunger;
-
 
 /**
  * {@code pdc.command.Test*.java} regression test suite 

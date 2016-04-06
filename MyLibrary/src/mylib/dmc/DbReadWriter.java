@@ -14,6 +14,7 @@ import java.util.List;
 
 import com.db4o.Db4oEmbedded;
 import com.db4o.EmbeddedObjectContainer;
+import com.db4o.config.EmbeddedConfiguration;
 import com.db4o.ext.DatabaseClosedException;
 import com.db4o.ext.DatabaseFileLockedException;
 import com.db4o.ext.DatabaseReadOnlyException;
@@ -93,8 +94,16 @@ public class DbReadWriter<E extends IRegistryElement>
    */
   public boolean addElement(E obj)
   {
+<<<<<<< HEAD
     boolean retval = false;
     // Add element only if it is unique
+=======
+    // Guard: null object not permitted
+    if (obj == null) {
+      throw new NullPointerException("Cannot add null Object");
+    }
+    _db = open();
+>>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
     try {
       dbGuard(obj);
       if (!containsElement(obj)) {
@@ -102,10 +111,18 @@ public class DbReadWriter<E extends IRegistryElement>
         _db.commit();
         retval = true;
       }
+<<<<<<< HEAD
       // Catch exceptions thrown by store() or commit()
     } catch (NullPointerException | DatabaseClosedException | DatabaseReadOnlyException ex) {
       // handleDbException(ex);
       retval = false;
+=======
+    } catch (DatabaseClosedException | DatabaseReadOnlyException ex) {
+      System.err.println(ex.getMessage());
+      ex.printStackTrace();
+    } finally {
+      close();
+>>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
     }
     return retval;
   }
@@ -164,7 +181,11 @@ public class DbReadWriter<E extends IRegistryElement>
    * @param target name of the object with specific fields to find
    * @return the object found, else null
    */
+<<<<<<< HEAD
   public boolean containsElement(final E target)
+=======
+  private E containsElement(final E target)
+>>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
   {
     boolean retval = false;
     for (E elem : getAllList()) {
@@ -190,6 +211,7 @@ public class DbReadWriter<E extends IRegistryElement>
       return;
     }
     // Object must be retrieved before it can be deleted
+    _db = open();
     try {
       Object obj = get(target.getKey());
       if (obj != null) {
@@ -214,12 +236,23 @@ public class DbReadWriter<E extends IRegistryElement>
     if (!exists(name)) {
       return null;
     }
+<<<<<<< HEAD
     // _db = open();
     // try {
     List<E> elementList = getAllList();
     for (E obj : elementList) {
       if (obj.getKey().equalsIgnoreCase(name)) {
         return obj;
+=======
+
+    _db = open();
+    try {
+      List<E> elementList = getAllList();
+      for (E obj : elementList) {
+        if (obj.getKey().equalsIgnoreCase(name)) {
+          return obj;
+        }
+>>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
       }
     }
     return null;
@@ -228,10 +261,12 @@ public class DbReadWriter<E extends IRegistryElement>
 
   public List<E> getAll()
   {
+    _db = open();
     List<E> list = getAllList();
     return list;
   }
 
+<<<<<<< HEAD
 
   public boolean isOpen()
   {
@@ -267,9 +302,12 @@ public class DbReadWriter<E extends IRegistryElement>
   }
 
 
+=======
+>>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
   /** Finds all elements in the given Registry ReadWriter */
   public int size()
   {
+    _db = open();
     List<E> alist = getAllList();
     return alist.size();
   }
@@ -316,6 +354,7 @@ public class DbReadWriter<E extends IRegistryElement>
   private List<E> getAllList()
   {
     List<E> alist = new ArrayList<E>();
+<<<<<<< HEAD
     _db = open();
     try {
       alist = _db.query(new Predicate<E>() {
@@ -329,13 +368,55 @@ public class DbReadWriter<E extends IRegistryElement>
       handleDbException(ex);
     }
 
+=======
+    alist.addAll(_db.query(new Predicate<E>() {
+      @Override
+      public boolean match(E candidate)
+      {
+        return true;
+      }
+    }));
+    return alist;
+  }
+  
+  
+  public List<E> query(Predicate<E> pred)
+  {
+    List<E> alist = new ArrayList<E>();
+    List<E> blist = new ArrayList<E>();
+    open();
+    alist.addAll(_db.query(pred));
+    blist.addAll(getAllList());
+    System.out.println(alist);
+    System.out.println(blist);
+    close();
+>>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
     return alist;
   }
 
 
   private void handleDbException(Exception ex)
   {
+<<<<<<< HEAD
     System.err.println(ex.getClass() + ": " + ex.getMessage());
+=======
+    try {
+      if (_open == false) {
+        EmbeddedConfiguration config = Db4oEmbedded.newConfiguration();
+        config.common().activationDepth(255);
+        config.common().updateDepth(255);
+  
+        _db = Db4oEmbedded.openFile(config, _regPath);
+        _open = true;
+      }
+    } catch (Db4oIOException | DatabaseFileLockedException | IncompatibleFileFormatException
+        | OldFormatException | DatabaseReadOnlyException ex) {
+      System.out.println(ex.getMessage());
+      ex.printStackTrace();
+      System.exit(-1);
+    }
+    return _db;
+>>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
   }
 
 

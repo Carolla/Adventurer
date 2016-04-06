@@ -9,6 +9,8 @@
 
 package chronos.test;
 
+import mylib.test.dmc.TestDbReadWriter;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -16,6 +18,7 @@ import chronos.test.pdc.TestAdventure;
 import chronos.test.pdc.TestItem;
 import chronos.test.pdc.TestNPC;
 import chronos.test.pdc.TestOccupation;
+import chronos.test.pdc.TestRegistry;
 import chronos.test.pdc.TestSkill;
 import chronos.test.pdc.TestTown;
 import chronos.test.pdc.buildings.BuildingsTestSuite;
@@ -64,7 +67,8 @@ import chronos.test.pdc.registry.RegistryTestSuite;
     TestTown.class,
 
     /* DMC test files */
-    // None
+    TestRegistry.class,
+    TestDbReadWriter.class
 
 })
 /** Compilation of all unit tests for regression and integration testing. */

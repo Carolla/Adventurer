@@ -24,12 +24,9 @@ import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.pdc.Occupation;
-import chronos.pdc.Skill;
-import chronos.test.pdc.registry.FakeSkillRegistry;
 
 
 /**
@@ -58,14 +55,6 @@ public class TestOccupation
   private Occupation _ocp = null;
   private final String LONGNAME = "All names are required to be within "
       + Occupation.OCC_NAME_LIMIT + "  characters";
-
-  @BeforeClass
-  public static void runOnce()
-  {
-    FakeSkillRegistry skillReg = new FakeSkillRegistry();
-    skillReg.initialize();
-    Skill.setSkillRegistry(skillReg);
-  }
 
   /**
    * @throws java.lang.Exception for unexpected exception

@@ -13,16 +13,17 @@ package chronos.pdc.registry;
 import java.util.ArrayList;
 import java.util.List;
 
+import mylib.ApplicationException;
 import chronos.pdc.Chronos;
 import chronos.pdc.character.Hero;
-import mylib.ApplicationException;
-import mylib.dmc.DbReadWriter;
-import mylib.pdc.Registry;
+import chronos.test.pdc.ConcreteRegistry;
+
+import com.db4o.query.Predicate;
 
 /**
- * Contains all Heros in the game. 
- * This is the only {@code Registry} that currently uses {@code db4o} for persistence;
- * the other Registries are in-memory copies and must be initialized each time.
+ * Contains all Heros in the game. This is the only {@code Registry} that currently uses
+ * {@code db4o} for persistence; the other Registries are in-memory copies and must be initialized
+ * each time.
  * 
  * @author Tim Armstrong
  * @version Mar 13, 2013 // original <br>
@@ -31,18 +32,16 @@ import mylib.pdc.Registry;
  *          Mar 25 2016 // ABC Added getNamplares() <br>
  *          Mar 28 2016 // ABC Extended HeroRegistry to use DbReadWriter as subclass override <br>
  */
-public class HeroRegistry extends Registry<Hero>
+public class HeroRegistry extends ConcreteRegistry<Hero>
 {
-  /** Requires an actual persistence database instead of in-memory List */
-  private DbReadWriter<Hero> _db;
-  
-  
+
   /**
    * Default constructor
    */
   public HeroRegistry()
   {
     super(Chronos.PersonRegPath);
+<<<<<<< HEAD
     if (_shouldInitialize) {
       initialize();
     }
@@ -57,11 +56,12 @@ public class HeroRegistry extends Registry<Hero>
   { 
     _db = new DbReadWriter<Hero>(Chronos.HeroRegPath);
     _regRW = _db.getAll();
+=======
+>>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
   }
 
-
   // ========================================================
-  //  PUBLIC METHODS
+  // PUBLIC METHODS
   // ========================================================
 
   /**
@@ -120,21 +120,17 @@ public class HeroRegistry extends Registry<Hero>
    * 
    * @return a list of Heroes
    */
-  @Override
-  public List<Hero> getAll()
-  {
-    List<Hero> heroList = super.getAll();
-    return heroList;
-  }
-
-  /**
-   * Retrieves all Heroes in the HeroRegistry
-   * 
-   * @return a list of Heroes
-   */
   public List<String> getNamePlates()
   {
-    List<Hero> heroList = getAll();
+    @SuppressWarnings("serial")
+    List<Hero> heroList = _regRW.query(new Predicate<Hero>() {
+      @Override
+      public boolean match(Hero h)
+      {
+        return true;
+      }
+
+    });
     List<String> plateList = new ArrayList<String>(heroList.size());
     for (Hero h : heroList) {
       plateList.add(h.toNamePlate());
@@ -142,6 +138,7 @@ public class HeroRegistry extends Registry<Hero>
     return plateList;
   }
 
+<<<<<<< HEAD
 
   
 
@@ -173,5 +170,7 @@ public class HeroRegistry extends Registry<Hero>
     
   } // end of MockHeroRegistry inner class
   
+=======
+>>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
 } // end of HeroRegistry class
 

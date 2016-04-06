@@ -8,27 +8,23 @@
  */
 
 
-package mylib.test.pdc;
+package chronos.test.pdc;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
+import mylib.Constants;
+import mylib.MsgCtrl;
+import mylib.dmc.DbReadWriter;
+import mylib.dmc.IRegistryElement;
+import mylib.test.dmc.SomeObject;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.db4o.query.Predicate;
-
-import mylib.Constants;
-import mylib.MsgCtrl;
-import mylib.dmc.DbReadWriter;
-import mylib.dmc.IRegistryElement;
-import mylib.test.dmc.SomeObject;
 
 
 
@@ -50,27 +46,25 @@ import mylib.test.dmc.SomeObject;
  */
 public class TestRegistry
 {
-  private ConcreteRegistry _testReg = null;
+  private ConcreteRegistry<SomeObject> _testReg = null;
   private static final String TEST_FILEPATH = Constants.MYLIB_RESOURCES + "Test.reg";
 
   /** A predicate for retrieving objects by name */
   Predicate<IRegistryElement> _pred = null;
-//  private FakeDbReadWriter _dbReadWriter = new FakeDbReadWriter(TEST_FILEPATH);
+  private DbReadWriter<SomeObject> _dbReadWriter = new DbReadWriter<SomeObject>(TEST_FILEPATH);
 
   @Before
   public void setUp() throws Exception
   {
     // Create a Registry object, which will be initialized if one doesn't exist
-    _testReg = new ConcreteRegistry(TEST_FILEPATH);
-//    _testReg.setDbReadWriter(_dbReadWriter);
-
-    // Ensure that registry exists with no elements
-    assertEquals(0, _testReg.getNbrElements());
+    _testReg = new ConcreteRegistry<SomeObject>(TEST_FILEPATH);
+    _testReg.setDbReadWriter(_dbReadWriter);
   }
 
   @After
   public void tearDown() throws Exception
   {
+    _dbReadWriter.clear();
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
   }
@@ -239,32 +233,6 @@ public class TestRegistry
   }
 
   /**
-   * mylib.test.pdc.get(String)
-   * 
-   * @Normal.Test Get an element by its key <br>
-   * @Normal.Test Change key and try to get it again <br>
-   * @Normal.Test Get a list of elements that have the same key <br>
-   * @Normal.Test Get an element with an empty (whitespace) key <br>
-   * @Error.Test Get an element with an null key <br>
-   */
-  @Test
-  public void testGet_ByString()
-  {
-    _testReg.initialize();
-    assertEquals(3, _testReg.getNbrElements());
-
-    // Normal Get a list of elements that have the same key
-    // Add some same non-key values for different keys to get a list
-    SomeObject so11 = new SomeObject(1, "eleventy");
-    SomeObject so12 = new SomeObject(2, "eleventy");
-    SomeObject so13 = new SomeObject(3, "eleventy");
-    _testReg.add(so11);
-    _testReg.add(so12);
-    _testReg.add(so13);
-    assertEquals(6, _testReg.getNbrElements());
-  }
-
-  /**
    * mylib.test.pdc.getAll()
    * 
    * @Normal.Test Get all elements in the registry <br>
@@ -273,19 +241,14 @@ public class TestRegistry
   @Test
   public void testGetAll()
   {
-    // Normal dump all the objects in the registry
-    // Add some elements first because setup() cleared the registry
-    _testReg.initialize();
-    List<SomeObject> list = _testReg.getAll();
-    assertEquals(3, list.size());
+    int preSize = _testReg.getNbrElements();
 
     // Add two and try again
     SomeObject s1 = new SomeObject(1, "supplement A");
     SomeObject s2 = new SomeObject(2, "supplement B");
     _testReg.add(s1);
     _testReg.add(s2);
-    list = _testReg.getAll();
-    assertEquals(5, list.size());
+    assertEquals(preSize + 2, _testReg.getNbrElements());
   }
 
 
@@ -352,12 +315,8 @@ public class TestRegistry
     MsgCtrl.msgln("\tRegistry contains " + _testReg.getNbrElements() + " elements.");
     assertEquals(1, _testReg.getNbrElements());
 
-    // Normal update it with a different object but attempt should fail
-    SomeObject so2 = new SomeObject(2, "two");
-    assertFalse(_testReg.update(so2));
-    assertEquals(1, _testReg.getNbrElements());
-
     // Normal Ensure that one object is swapped for the itself (same incident) without incident
+    SomeObject so2 = new SomeObject(2, "two");
     assertTrue(_testReg.add(so2));
     assertTrue(_testReg.contains(so2));
     assertTrue(_testReg.update(so2));
@@ -372,16 +331,6 @@ public class TestRegistry
     MsgCtrl.msgln("\tObject tried to update to make a duplicate...");
     MsgCtrl.msgln("\t...but update bypassed, so Registry still contains "
         + _testReg.getNbrElements() + " elements.");
-
-    // Error Try to replace an object that does not exist in the registry
-    SomeObject soNone = new SomeObject(-99, "None");
-    assertFalse(_testReg.update(soNone));
-    assertEquals(2, _testReg.getNbrElements());
-    MsgCtrl.msgln("\tOriginal not found, so registry still contains "
-        + _testReg.getNbrElements() + " elements.");
-
-    // Null Replace an object with a null object
-    assertFalse(_testReg.update(null));
   }
 
 
@@ -409,6 +358,7 @@ public class TestRegistry
    */
   void _testsToBeImplemented()
   {}
+<<<<<<< HEAD:MyLibrary/src/mylib/test/pdc/TestRegistry.java
 
   public class FakeDbReadWriter extends DbReadWriter<SomeObject>
   {
@@ -462,5 +412,7 @@ public class TestRegistry
     }
   }
 
+=======
+>>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815:ChronosLib/src/chronos/test/pdc/TestRegistry.java
 } // end of TestRegistry class
 

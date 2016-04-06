@@ -19,6 +19,7 @@ import chronos.pdc.NPC;
 import chronos.pdc.command.Scheduler;
 import chronos.pdc.command.intCmdPatronEnter;
 import chronos.pdc.command.intCmdPatronLeave;
+import chronos.pdc.registry.NPCRegistry;
 
 /**
  * Main building in town for rest, food, conversation, and sometimes even a bar brawl. Heroes can be
@@ -110,7 +111,7 @@ public class Inn extends Building
    */
   public void initPatrons(Scheduler skedder)
   {
-    List<NPC> patrons = _npcRegistry.getAll();
+    List<NPC> patrons = new NPCRegistry().getAll();
     // The starterList has no zero-delay intCmdEnter commands, each containing the
     // Patron who shall enter at the designated delay time.
     List<intCmdPatronEnter> starterList = createStarterList(patrons);

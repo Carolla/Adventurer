@@ -9,21 +9,24 @@
 
 package test.integ;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
+import mylib.MsgCtrl;
+
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.pdc.character.Hero;
 import chronos.pdc.registry.HeroRegistry;
+<<<<<<< HEAD:Adventurer/src/test/integ/TA03a_SummonHeroes.java
 import chronos.pdc.registry.HeroRegistry.MockHeroRegistry;
 import mylib.MsgCtrl;
+=======
+>>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815:Adventurer/src/test/civ/TestSummonHeroes.java
 
 /**
  * @author Al Cline
@@ -31,6 +34,7 @@ import mylib.MsgCtrl;
  */
 public class TA03a_SummonHeroes
 {
+<<<<<<< HEAD:Adventurer/src/test/integ/TA03a_SummonHeroes.java
   private static HeroRegistry _dorm;
   private static MockHeroRegistry _mock;
 
@@ -42,6 +46,12 @@ public class TA03a_SummonHeroes
     }
   }
 
+=======
+  private static HeroRegistry _dorm = new HeroRegistry(); 
+  private static Hero hero1 = new Hero("Alpha", "male", "brown", "Human", "Fighter");
+  private static Hero hero2 = new Hero("Beta", "female", "blond", "Elf", "Thief");
+  private static Hero hero3 = new Hero("Gamma", "male", "brown", "Dwarf", "Cleric");
+>>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815:Adventurer/src/test/civ/TestSummonHeroes.java
   
   /**
    * @throws java.lang.Exception
@@ -49,6 +59,7 @@ public class TA03a_SummonHeroes
   @BeforeClass
   public static void setUpBeforeClass() throws Exception
   {
+<<<<<<< HEAD:Adventurer/src/test/integ/TA03a_SummonHeroes.java
     // Init the system
 //    MainframeCiv mfc = new MainframeCiv(new MainframeProxy());
 //    assertNotNull(mfc);
@@ -65,10 +76,11 @@ public class TA03a_SummonHeroes
     HeroProxy hero3 = new HeroProxy("Gamma", "male", "Dwarf", "Cleric");
     assertNotNull(hero3);
 
+=======
+>>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815:Adventurer/src/test/civ/TestSummonHeroes.java
     _dorm.add(hero1);
     _dorm.add(hero2);
     _dorm.add(hero3);
-    assertEquals(3, _dorm.getNbrElements());
   }
 
   /**
@@ -77,6 +89,7 @@ public class TA03a_SummonHeroes
   @AfterClass
   public static void tearDownAfterClass() throws Exception
   {
+<<<<<<< HEAD:Adventurer/src/test/integ/TA03a_SummonHeroes.java
     _mock = null;
     _dorm.close();
     _dorm = null;
@@ -90,6 +103,13 @@ public class TA03a_SummonHeroes
   public void setUp() throws Exception
   {}
 
+=======
+    _dorm.delete(hero1);
+    _dorm.delete(hero2);
+    _dorm.delete(hero3);
+  }
+  
+>>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815:Adventurer/src/test/civ/TestSummonHeroes.java
   /**
    * @throws java.lang.Exception
    */
@@ -113,11 +133,9 @@ public class TA03a_SummonHeroes
     MsgCtrl.where(this);
     
     List<Hero> heroes = _dorm.getAll();
-    assertEquals(3, heroes.size());
-    for (Hero h : heroes) {
-      MsgCtrl.msgln("\t" + h.toNamePlate());
-    }
-    
+    assertTrue(heroes.contains(hero1));
+    assertTrue(heroes.contains(hero2));
+    assertTrue(heroes.contains(hero3));
   }
   
   

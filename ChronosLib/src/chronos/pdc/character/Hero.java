@@ -59,39 +59,21 @@ public class Hero implements IRegistryElement
 
   /** Each Person has six prime traits, adjusted by gender, race, and klass */
   private TraitList _traits = null;
-
-
-  // INT mods
-  // Everyone knows Common, and perhaps a race language
   Set<String> _knownLangs = new TreeSet<String>();
 
   // Gold pieces and silver pieces in hand.
   int _gold;
   int _silver;
-  // Gold banked. The decimal represents silver pieces
   double _goldBanked;
-
-  // Inventory object containing map with ItemCategory key
+  
   private Inventory _inven;
-
   private Occupation _occ;
-
-  /** Used with test Hero class */
-  private String _raceName;
-  private String _klassName;
   
   // ====================================================
   // CONSTRUCTOR(S) AND RELATED METHODS
   // ====================================================
   
-  /** Creates an empty Hero, for testing purposes */
-  public Hero(String name, String gender, String raceName, String klassName)
-  {
-    _name = name;
-    _gender = new Gender(gender);
-    _raceName = raceName;
-    _klassName = klassName;
-  }
+  public Hero() {}; //db4o attempt
   
   /**
    * Create the Person from the basic non-klass attributes.
@@ -166,14 +148,14 @@ public class Hero implements IRegistryElement
     _klass.addKlassItems(_inven);
   } // end of Hero constructor
 
-  public Hero(EnumMap<HeroInput, String> inputMap)
-  {
-    this(inputMap.get(HeroInput.NAME),
-        inputMap.get(HeroInput.GENDER),
-        inputMap.get(HeroInput.HAIR),
-        inputMap.get(HeroInput.RACE),
-        inputMap.get(HeroInput.KLASS));
-  }
+//  public Hero(EnumMap<HeroInput, String> inputMap)
+//  {
+//    this(inputMap.get(HeroInput.NAME),
+//        inputMap.get(HeroInput.GENDER),
+//        inputMap.get(HeroInput.HAIR),
+//        inputMap.get(HeroInput.RACE),
+//        inputMap.get(HeroInput.KLASS));
+//  }
 
   public boolean canUseMagic()
   {
@@ -203,16 +185,6 @@ public class Hero implements IRegistryElement
   public List<String> getRaceSkills()
   {
     return _race.getSkills();
-  }
-
-  public String getRaceName()
-  {
-    return _raceName;
-  }
-  
-  public String getKlassName()
-  {
-    return _klassName;
   }
 
   public List<String> getOcpSkills()
@@ -281,7 +253,7 @@ public class Hero implements IRegistryElement
 
   public String toNamePlate()
   {
-    return _name + ": " + _gender.toString() + " " + _raceName + " " + _klassName;
+    return _name + ": " + _gender.toString() + " " + _race.getName()+ " " + _klass.className();
   }
 
   @Override

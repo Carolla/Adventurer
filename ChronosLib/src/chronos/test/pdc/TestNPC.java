@@ -10,10 +10,8 @@
 
 package chronos.test.pdc;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 
@@ -24,7 +22,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import chronos.pdc.NPC;
-import chronos.pdc.NPC.MockPatron;
 
 /**
  * Ensure that the patron class works correctly
@@ -37,8 +34,6 @@ public class TestNPC
 {
   /** test target object */
   private NPC _npc = null;
-  /** mock for target object */
-  private MockPatron _mock = null;
 
   /** Msglists and messages */
   ArrayList<String> _rumors = new ArrayList<String>(3);
@@ -51,10 +46,8 @@ public class TestNPC
   @Before
   public void setUp() throws Exception
   {
-    _npc = new NPC("Falsoon", "far description", "near description", 0, true, "Note");
+    _npc = new NPC("Falsoon", "Note", 0, "far description", "near description", new ArrayList<String>(), new ArrayList<String>());
     assertNotNull(_npc);
-    _mock = _npc.new MockPatron();
-    assertNotNull(_mock);
     // Initialize msg lists with expected values
     for (int k = 0; k < 3; k++) {
       _rumors.add(_testMsgs[k]);
@@ -70,78 +63,8 @@ public class TestNPC
   @After
   public void tearDown() throws Exception
   {
-    _npc = null;
-    _mock = null;
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
-  }
-
-
-  /**
-   * @ERROR.TEST NPC(String name, String farDesc, String nearDesc, int affinity, boolean peaceFlag,
-   *             String note) throws NullPointerException, IllegalArgumentException
-   */
-  @Test
-  public void testPatronErr()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.msgln(this, "\n testPatron()");
-
-    // Null note should work because parm is optional
-    _npc = new NPC("Falsoon", "far description", "near description", 0, true, null);
-    assertNotNull(_npc);
-    _npc = null;
-
-    // Null name
-    try {
-      _npc = new NPC(" ", "far description", "near description", 0, true, "Note");
-    } catch (NullPointerException ex) {
-      MsgCtrl.msgln("\t Expected exception: " + ex.getMessage());
-      assertNull(_npc);
-    }
-    // Empty name
-    try {
-      _npc = new NPC(" ", "far description", "near description", 0, true, "Note");
-    } catch (NullPointerException ex) {
-      MsgCtrl.msgln("\t Expected exception: " + ex.getMessage());
-    }
-    // Null far description
-    try {
-      _npc = new NPC("Falsoon", null, "near description", 0, true, "Note");
-    } catch (NullPointerException ex) {
-      MsgCtrl.msgln("\t Expected exception: " + ex.getMessage());
-    }
-    // Null near description
-    try {
-      _npc = new NPC("Falsoon", "far description", null, 0, true, "Note");
-    } catch (NullPointerException ex) {
-      MsgCtrl.msgln("\t Expected exception: " + ex.getMessage());
-    }
-    // Empty near description
-    try {
-      _npc = new NPC("Falsoon", "far description", "  ", 0, true, "Note");
-    } catch (NullPointerException ex) {
-      MsgCtrl.msgln("\t Expected exception: " + ex.getMessage());
-    }
-    // Boundary: affinity in/out of negative range
-    _npc = new NPC("Falsoon", "far description", "near description", -5, true, "Note");
-    assertNotNull(_npc);
-    _npc = null;
-    try {
-      _npc = new NPC("Falsoon", "far description", "near description", -6, true, "Note");
-    } catch (IllegalArgumentException ex) {
-      MsgCtrl.msgln("\t Expected exception: " + ex.getMessage());
-    }
-    // Boundary: affinity in/out of positive
-    _npc = new NPC("Falsoon", "far description", "near description", 5, true, "Note");
-    assertNotNull(_npc);
-    _npc = null;
-    try {
-      _npc = new NPC("Falsoon", "far description", "near description", 6, true, "Note");
-    } catch (IllegalArgumentException ex) {
-      MsgCtrl.msgln("\t Expected exception: " + ex.getMessage());
-    }
   }
 
 
@@ -169,8 +92,6 @@ public class TestNPC
 
     // Create a patron with messages
     _npc.setMessages(_rumors, _retorts);
-    assertEquals(3, dumpMsgs(_mock.getRumors()));
-    assertEquals(3, dumpMsgs(_mock.getRetorts()));
   }
 
 
@@ -194,26 +115,4 @@ public class TestNPC
     assertFalse(_npc.setMessages(_rumors, emptyList));
 
   }
-
-
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PRIVATE METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
-
-  /**
-   * Display an arraylist of messages
-   * 
-   * @return the number of messages displayed
-   */
-  private int dumpMsgs(ArrayList<String> msgList)
-  {
-    for (String s : msgList) {
-      MsgCtrl.msgln("\t\t" + s);
-    }
-    return msgList.size();
-  }
-
-
-
 } // end of TestPatron class

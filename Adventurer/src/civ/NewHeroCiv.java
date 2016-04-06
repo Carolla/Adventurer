@@ -75,7 +75,11 @@ public class NewHeroCiv extends BaseCiv
    */
   public Hero createHero(EnumMap<HeroInput, String> inputMap)
   {
-    Hero myHero = new Hero(inputMap);
+    Hero myHero = new Hero(inputMap.get(HeroInput.NAME),
+      inputMap.get(HeroInput.GENDER),
+      inputMap.get(HeroInput.HAIR),
+      inputMap.get(HeroInput.RACE),
+      inputMap.get(HeroInput.KLASS));
     return myHero;
   }
 } // end of NewHeroCiv class

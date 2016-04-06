@@ -12,7 +12,6 @@ package chronos.pdc.character;
 import java.util.EnumMap;
 
 import chronos.civ.PersonKeys;
-import chronos.pdc.Item;
 import chronos.pdc.character.TraitList.PrimeTraits;
 
 /**
@@ -66,7 +65,7 @@ public class Cleric extends Klass {
 	@Override
 	public void addKlassItems(Inventory inven) {
 		for (String itemName : _clericItems) {
-			inven.addItem(Item.getItem(itemName));
+			inven.addItem(itemName);
 		}
 	}
 

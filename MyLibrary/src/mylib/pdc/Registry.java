@@ -10,6 +10,7 @@
 package mylib.pdc;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import mylib.dmc.IRegistryElement;
@@ -41,10 +42,15 @@ public abstract class Registry<E extends IRegistryElement>
    * The DMC registry class for handling persistence. Each derived-class {@code Registry} has its
    * own ReadWriter
    */
+<<<<<<< HEAD
   protected boolean _shouldInitialize;
+=======
+  protected String _filename;
+  private boolean _shouldInitialize;
+>>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
 
   /** Registries are in-memory object structures except for HeroRegistry. */
-  protected List<E> _regRW;
+  protected List<E> _list;
 
   /**
    * Initialize registry with beginning data from static tables, called when the registry file does
@@ -68,17 +74,26 @@ public abstract class Registry<E extends IRegistryElement>
    */
   public Registry(String filename)
   {
-    _regRW = new ArrayList<E>();
+    _list = new ArrayList<E>();
+    _filename = filename;
     init(filename);
+    if (_shouldInitialize) {
+      initialize();
+      _shouldInitialize = false;
+    }
   }
 
 
   protected void init(String filename)
   {
+<<<<<<< HEAD
     // Creates registry file and reloads it (new registry will be empty)
     // _regRW = new DbReadWriter<E>(filename);
 
     if (_regRW.size() == 0) {
+=======
+    if (_list.size() == 0) {
+>>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
       _shouldInitialize = true;
     }
   }
@@ -97,19 +112,23 @@ public abstract class Registry<E extends IRegistryElement>
    */
   public boolean add(E obj)
   {
-    boolean retval = false;
-
     // Ensure that a null or an empty key is not being added
     if ((obj == null) || (obj.getKey().trim().length() == 0)) {
-      return retval;
+      return false;
     }
+<<<<<<< HEAD
     // Ensure that only unique objects are added
     if (contains(obj) == false) {
       _regRW.add(obj);
       retval = true;
+=======
+
+    if (!contains(obj)) {
+      return _list.add(obj);
+>>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
     }
 
-    return retval;
+    return false;
   }
 
   /**
@@ -120,7 +139,19 @@ public abstract class Registry<E extends IRegistryElement>
    */
   public boolean contains(E target)
   {
+<<<<<<< HEAD
     return _regRW.contains(target);
+=======
+    if (target == null)
+      return false;
+    
+    for (E elem : _list) {
+      if (elem.getKey().equals(target.getKey())) {
+        return true;
+      }
+    }
+    return false;
+>>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
   }
 
 
@@ -132,7 +163,12 @@ public abstract class Registry<E extends IRegistryElement>
    */
   public void delete(E obj)
   {
-    _regRW.remove(obj);
+    for (Iterator<E> it = _list.iterator(); it.hasNext();) {
+      E elem = it.next();
+      if (elem.getKey().equals(obj.getKey())) {
+        it.remove();
+      }
+    }
   }
 
 
@@ -144,14 +180,12 @@ public abstract class Registry<E extends IRegistryElement>
    */
   public E get(String name)
   {
-    E element = null;
-    for (E elem : _regRW) {
+    for (E elem : _list) {
       if (elem.getKey().equals(name)) {
-        element = elem;
-        break;
+        return elem;
       }
     }
-    return element;
+    return null;
   }
 
 
@@ -162,11 +196,7 @@ public abstract class Registry<E extends IRegistryElement>
    */
   public List<E> getAll()
   {
-    List<E> list = new ArrayList<E>();
-    for (E elem : _regRW) {
-      list.add(elem);
-    }
-    return list;
+    return _list;
   }
 
 
@@ -177,9 +207,10 @@ public abstract class Registry<E extends IRegistryElement>
    */
   public int getNbrElements()
   {
-    return _regRW.size();
+    return _list.size();
   }
 
+<<<<<<< HEAD
   // TODO Remove this method. It subverts how BuildingRegistry should work
   public boolean forceAdd(E obj)
   {
@@ -188,6 +219,8 @@ public abstract class Registry<E extends IRegistryElement>
   }
 
 
+=======
+>>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
   /**
    * Update an existing object in the registry. The existing object must already be in the database,
    * and will be replaced with the first one it finds that matches it. The element's getKey() method
@@ -199,19 +232,15 @@ public abstract class Registry<E extends IRegistryElement>
    */
   public boolean update(final E target)
   {
-    boolean retval = false;
-    // Guard against null replacements or missing elements
     if (target == null) {
       return false;
     }
-    // Guard: if target is not in the registry, return immediately.
-    if (_regRW.contains(target)) {
-      // Retrieve the target element and overwrite it
-      _regRW.remove(target);
-      _regRW.add(target);
-      retval = true;
+
+    if (contains(target)) {
+      delete(target); //by name
     }
-    return retval;
+    add(target);
+    return true;
   }
 
 

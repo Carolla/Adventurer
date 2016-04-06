@@ -12,10 +12,11 @@ package chronos.pdc;
 import java.util.ArrayList;
 import java.util.List;
 
-import chronos.pdc.registry.OccupationRegistry;
 import mylib.ApplicationException;
 import mylib.dmc.IRegistryElement;
 import mylib.pdc.MetaDie;
+import chronos.pdc.registry.OccupationRegistry;
+import chronos.pdc.registry.SkillRegistry;
 
 /**
  * An occupation gives a person some skill from their previous experience. Occupations are
@@ -38,7 +39,6 @@ public class Occupation implements IRegistryElement
       "Miner", "Navigator", "Sailor", "Shipwright", "Tailor", "Trader", "Trapper",
       "Weaponsmith", "Weaver", "Woodworker", "Drifter"};
 
-  private static OccupationRegistry _ocpreg;
   private static final MetaDie md = new MetaDie();
   
   /** The name of the occupation the player selected */
@@ -58,22 +58,10 @@ public class Occupation implements IRegistryElement
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
-
-  public static void setOccupationRegistry(OccupationRegistry ocpreg)
-  {
-    _ocpreg = ocpreg;
-  }
-
-  public static Occupation getOccupation(String ocpName)
-  {
-    Occupation occup = _ocpreg.getOccupation(ocpName);
-    return occup;
-  }
-
   public static Occupation getRandomOccupation()
   {
     int ndx = md.getRandom(1, _ocpTable.length) - 1; // range must be between 1 and maxLimit
-    return getOccupation(_ocpTable[ndx]);
+    return new OccupationRegistry().getOccupation(_ocpTable[ndx]);
   }
 
   /**
@@ -84,11 +72,11 @@ public class Occupation implements IRegistryElement
    * @throws ApplicationException if the description is too long
    * @throws NullPointerException if the parms are null
    */
-  public Occupation(String name, String description, String trait, List<String> skills)
+  public Occupation(String name, String description, String trait, List<String> arrayList)
   {
     // GUARDS
     // Name cannot be null
-    if (name == null || description == null || trait == null || skills == null) {
+    if (name == null || description == null || trait == null || arrayList == null) {
       throw new NullPointerException(name
           + ": Occupation must have a name, description, trait and skills; received null");
     }
@@ -104,8 +92,10 @@ public class Occupation implements IRegistryElement
     _name = name;
     _description = description;
     _trait = trait;
-    for (String skill : skills) {
-      _skills.add(Skill.getSkill(skill));
+    
+    SkillRegistry skReg = new SkillRegistry();
+    for (String skill : arrayList) {
+      _skills.add(skReg.getSkill(skill));
     }
   }
 

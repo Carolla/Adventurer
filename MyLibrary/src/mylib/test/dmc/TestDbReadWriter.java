@@ -17,14 +17,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import mylib.Constants;
 import mylib.MsgCtrl;
 import mylib.dmc.DbReadWriter;
 import mylib.dmc.DbReadWriter.MockDBRW;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Test the database read/writer interface methods
@@ -127,6 +127,7 @@ public class TestDbReadWriter
   }
 
 
+<<<<<<< HEAD
   /**
    * @Error.Test void close()
    */
@@ -176,6 +177,8 @@ public class TestDbReadWriter
     assertNotNull(_dbrw.containsElement(so2));
   }
 
+=======
+>>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
 
   /**
    * @Normal.Test void deleteElement(E target)
@@ -198,10 +201,16 @@ public class TestDbReadWriter
     _dbrw.deleteElement(so1);
     assertFalse(_dbrw.containsElement(so1));
     assertEquals(1, _dbrw.size());
+<<<<<<< HEAD
 
     _dbrw.deleteElement(so2);
     assertEquals(0, _dbrw.size());
     assertFalse(_dbrw.containsElement(so2));
+=======
+    
+    _dbrw.deleteElement(so2);
+    assertEquals(0, _dbrw.size());
+>>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
   }
 
 
@@ -369,12 +378,14 @@ public class TestDbReadWriter
 
     // Test object not within the db
     SomeObject so = new SomeObject("four");
+<<<<<<< HEAD
     assertFalse(_dbrw.containsElement(so));
+=======
+>>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
 
     // Add a test object
     _dbrw.addElement(so);
     assertEquals(nbrBefore + 1, _dbrw.size());
-    assertNotNull(_dbrw.containsElement(so));
 
     // Fail when trying to add it again
     _dbrw.addElement(so);
@@ -451,8 +462,12 @@ public class TestDbReadWriter
     MsgCtrl.where(this);
 
     SomeObject so9 = new SomeObject("object not in db");
+<<<<<<< HEAD
     // Check for unadded element
     assertFalse(_dbrw.containsElement(so9));
+=======
+    _dbrw.deleteElement(so9);
+>>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
   }
 
 
