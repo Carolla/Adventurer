@@ -272,26 +272,6 @@ public class Hero implements IRegistryElement
   }
 
   @Override
-  public String getKey()
-  {
-    return _name;
-  }
-
-  @Override
-  public int hashCode()
-  {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((_description == null) ? 0 : _description.hashCode());
-    result = prime * result + ((_gender == null) ? 0 : _gender.hashCode());
-    result = prime * result + ((_klass == null) ? 0 : _klass.hashCode());
-    result = prime * result + ((_name == null) ? 0 : _name.hashCode());
-    result = prime * result + ((_occ == null) ? 0 : _occ.hashCode());
-    result = prime * result + ((_race == null) ? 0 : _race.hashCode());
-    return result;
-  }
-
-  @Override
   public boolean equals(Object obj)
   {
     if (this == obj)
@@ -332,6 +312,26 @@ public class Hero implements IRegistryElement
     } else if (!_race.equals(other._race))
       return false;
     return true;
+  }
+
+  @Override
+  public String getKey()
+  {
+    return _name;
+  }
+
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((_description == null) ? 0 : _description.hashCode());
+    result = prime * result + ((_gender == null) ? 0 : _gender.hashCode());
+    result = prime * result + ((_klass == null) ? 0 : _klass.hashCode());
+    result = prime * result + ((_name == null) ? 0 : _name.hashCode());
+    result = prime * result + ((_occ == null) ? 0 : _occ.hashCode());
+    result = prime * result + ((_race == null) ? 0 : _race.hashCode());
+    return result;
   }
 
 } // end of Hero class

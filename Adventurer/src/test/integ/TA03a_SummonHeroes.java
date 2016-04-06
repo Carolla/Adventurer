@@ -9,7 +9,7 @@
 
 package test.integ;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -22,11 +22,6 @@ import org.junit.Test;
 
 import chronos.pdc.character.Hero;
 import chronos.pdc.registry.HeroRegistry;
-<<<<<<< HEAD:Adventurer/src/test/integ/TA03a_SummonHeroes.java
-import chronos.pdc.registry.HeroRegistry.MockHeroRegistry;
-import mylib.MsgCtrl;
-=======
->>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815:Adventurer/src/test/civ/TestSummonHeroes.java
 
 /**
  * @author Al Cline
@@ -34,24 +29,10 @@ import mylib.MsgCtrl;
  */
 public class TA03a_SummonHeroes
 {
-<<<<<<< HEAD:Adventurer/src/test/integ/TA03a_SummonHeroes.java
-  private static HeroRegistry _dorm;
-  private static MockHeroRegistry _mock;
-
-  static class HeroProxy extends Hero 
-  {
-    public HeroProxy(String name, String gender, String racename, String klassname)
-    {
-      super(name, gender, racename, klassname);
-    }
-  }
-
-=======
   private static HeroRegistry _dorm = new HeroRegistry(); 
   private static Hero hero1 = new Hero("Alpha", "male", "brown", "Human", "Fighter");
   private static Hero hero2 = new Hero("Beta", "female", "blond", "Elf", "Thief");
   private static Hero hero3 = new Hero("Gamma", "male", "brown", "Dwarf", "Cleric");
->>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815:Adventurer/src/test/civ/TestSummonHeroes.java
   
   /**
    * @throws java.lang.Exception
@@ -59,25 +40,6 @@ public class TA03a_SummonHeroes
   @BeforeClass
   public static void setUpBeforeClass() throws Exception
   {
-<<<<<<< HEAD:Adventurer/src/test/integ/TA03a_SummonHeroes.java
-    // Init the system
-//    MainframeCiv mfc = new MainframeCiv(new MainframeProxy());
-//    assertNotNull(mfc);
-    _dorm = new HeroRegistry();
-    assertNotNull(_dorm);
-    _mock = _dorm.new MockHeroRegistry();
-    assertNotNull(_mock);
-
-    _mock.clear();
-    HeroProxy hero1 = new HeroProxy("Alpha", "male", "Human", "Fighter");
-    assertNotNull(hero1);
-    HeroProxy hero2 = new HeroProxy("Beta", "female", "Elf", "Thief");
-    assertNotNull(hero2);
-    HeroProxy hero3 = new HeroProxy("Gamma", "male", "Dwarf", "Cleric");
-    assertNotNull(hero3);
-
-=======
->>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815:Adventurer/src/test/civ/TestSummonHeroes.java
     _dorm.add(hero1);
     _dorm.add(hero2);
     _dorm.add(hero3);
@@ -89,27 +51,11 @@ public class TA03a_SummonHeroes
   @AfterClass
   public static void tearDownAfterClass() throws Exception
   {
-<<<<<<< HEAD:Adventurer/src/test/integ/TA03a_SummonHeroes.java
-    _mock = null;
-    _dorm.close();
-    _dorm = null;
-  }
-
-  
-  /**
-   * @throws java.lang.Exception
-   */
-  @Before
-  public void setUp() throws Exception
-  {}
-
-=======
     _dorm.delete(hero1);
     _dorm.delete(hero2);
     _dorm.delete(hero3);
   }
-  
->>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815:Adventurer/src/test/civ/TestSummonHeroes.java
+
   /**
    * @throws java.lang.Exception
    */

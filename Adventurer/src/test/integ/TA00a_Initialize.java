@@ -12,18 +12,13 @@ package test.integ;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import mylib.MsgCtrl;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.pdc.Chronos;
-import chronos.pdc.registry.HeroRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
-import mylib.MsgCtrl;
 
 /**
  * Integration test for initializing the application class: ensure that all Registries are created.
@@ -48,43 +43,6 @@ public class TA00a_Initialize // extends IntegrationTest
 
 
   // ============================================================
-  // Fixtures
-  // ============================================================
-  @BeforeClass
-  public static void setUpBeforeClass()
-  {
-  }
-
-  @AfterClass
-  public static void tearDownAfterClass()
-  {
-  }
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @Before
-  public void setUp() throws Exception
-  {
-  }
-
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @After
-  public void tearDown() throws Exception
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-
-    // This registry has persistence, so must be closed
-    HeroRegistry heroReg = (HeroRegistry) _regFactory.getRegistry(RegKey.HERO);
-    heroReg.close();
-}
-
-
-  // ============================================================
   // Integration Test
   // ============================================================
 
@@ -95,7 +53,6 @@ public class TA00a_Initialize // extends IntegrationTest
     MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
-    _regFactory.initRegistries();
     assertEquals(paths.length, RegKey.values().length);
     assertTrue(paths.length == _regFactory.getNumberOfRegistries());
   }

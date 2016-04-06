@@ -87,20 +87,6 @@ public class MainActionCiv extends BaseCiv
     _mfCiv.replaceLeftPanel(createActionPanel());
   }
 
-<<<<<<< HEAD
-    public void constructCoreMembers()
-    {
-      _skedder = new Scheduler(_mfCiv); // Skedder first for injection
-  
-      _rf = new RegistryFactory();
-//      _rf.initRegistries(_skedder);
-      _rf.initRegistries();
-  
-       _advReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
-       _dorm = (HeroRegistry) _rf.getRegistry(RegKey.HERO);
-     }
-  
-=======
   public void constructCoreMembers()
   {
     _skedder = new Scheduler(_mfCiv); // Skedder first for injection
@@ -112,7 +98,6 @@ public class MainActionCiv extends BaseCiv
     _dorm = (HeroRegistry) _rf.getRegistry(RegKey.HERO);
   }
 
->>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
   // ============================================================
   // Public methods
   // ============================================================

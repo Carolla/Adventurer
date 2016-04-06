@@ -35,73 +35,26 @@ import com.db4o.query.Predicate;
 public class HeroRegistry extends ConcreteRegistry<Hero>
 {
 
+  @SuppressWarnings("serial")
+  private static final Predicate<Hero> _heroQuery = new Predicate<Hero>() {
+    @Override
+    public boolean match(Hero h)
+    {
+      return true;
+    }
+  };
+
   /**
    * Default constructor
    */
   public HeroRegistry()
   {
     super(Chronos.PersonRegPath);
-<<<<<<< HEAD
-    if (_shouldInitialize) {
-      initialize();
-    }
-  }
-
-
-  /**
-   * Loads the in-memory HeroRegistry from the database.
-   */
-  @Override
-  public void initialize()
-  { 
-    _db = new DbReadWriter<Hero>(Chronos.HeroRegPath);
-    _regRW = _db.getAll();
-=======
->>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
   }
 
   // ========================================================
   // PUBLIC METHODS
   // ========================================================
-
-  /**
-   * Save new Hero, both to db and Registry
-   */
-  @Override
-  public boolean add(Hero hero)
-  {
-    boolean retval = super.add(hero);
-    try {
-      _db.addElement(hero);
-    } catch (Exception ex) {
-      // TODO Auto-generated catch block
-      ex.printStackTrace();
-    }
-    return retval;
-  }
-
-
-  /**
-   * Close the HeroRegistry, which closes the database
-   */
-  public void close()
-  {
-    _db.close();
-  }
-
-  
-  
-  /**
-   * Verifies if the given object exists in the database. The object's equal() method is called.
-   * 
-   * @param target object to match against for comparison
-   * @return true if the registry contains the element, else false
-   */
-  public boolean dbContains(Hero target)
-  {
-    return (_db.containsElement(target)) ? true : false;
-  }
-
 
   /**
    * Retrieves the Hero with the requested unique name
@@ -115,6 +68,12 @@ public class HeroRegistry extends ConcreteRegistry<Hero>
     return super.get(name);
   }
 
+  @Override
+  public List<Hero> getAll()
+  {
+    return _regRW.query(_heroQuery);
+  }
+
   /**
    * Retrieves all Heroes in the HeroRegistry
    * 
@@ -122,55 +81,11 @@ public class HeroRegistry extends ConcreteRegistry<Hero>
    */
   public List<String> getNamePlates()
   {
-    @SuppressWarnings("serial")
-    List<Hero> heroList = _regRW.query(new Predicate<Hero>() {
-      @Override
-      public boolean match(Hero h)
-      {
-        return true;
-      }
-
-    });
-    List<String> plateList = new ArrayList<String>(heroList.size());
-    for (Hero h : heroList) {
+    List<String> plateList = new ArrayList<String>();
+    for (Hero h : getAll()) {
       plateList.add(h.toNamePlate());
     }
     return plateList;
   }
-
-<<<<<<< HEAD
-
-  
-
-  
-  // ========================================================
-  //  Inner Class: MockHeroRegistry
-  // ========================================================
-
-  public class MockHeroRegistry
-  {
-    public MockHeroRegistry(){}
-    
-    public DbReadWriter<Hero> getDb()
-    {
-      return HeroRegistry.this._db;
-    }
-    
-    public List<Hero> getList()
-    {
-      return HeroRegistry.this._regRW;
-    }
-    
-    /** Clear the database and the memory list */
-    public void clear()
-    {
-      _db.clear();
-      _regRW.clear();
-    }
-    
-  } // end of MockHeroRegistry inner class
-  
-=======
->>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
 } // end of HeroRegistry class
 

@@ -12,16 +12,9 @@ package chronos.pdc.registry;
 
 import java.util.HashMap;
 
-<<<<<<< HEAD
-import chronos.pdc.Item;
-import chronos.pdc.Occupation;
-import chronos.pdc.Skill;
-import chronos.pdc.buildings.Building;
-import mylib.pdc.Registry;
-=======
 import mylib.pdc.Registry;
 import chronos.pdc.command.Scheduler;
->>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
+
 
 /**
  * Creates singleton registries of various kinds and keeps count of existing registries
@@ -70,30 +63,10 @@ public class RegistryFactory
     _regMap = new HashMap<RegKey, Registry<?>>();
   }
 
-  // public void initRegistries(Scheduler _skedder)
-  public void initRegistries()
+  public void initRegistries(Scheduler _skedder)
   {
     _regMap.put(RegKey.HERO, new HeroRegistry());
     _regMap.put(RegKey.ITEM, new ItemRegistry());
-<<<<<<< HEAD
-
-    SkillRegistry skReg = new SkillRegistry();
-    _regMap.put(RegKey.SKILL, skReg);
-    Skill.setSkillRegistry(skReg);
-
-    _regMap.put(RegKey.OCP, new OccupationRegistry((SkillRegistry) _regMap.get(RegKey.SKILL)));
-    _regMap.put(RegKey.NPC, new NPCRegistry());
-    _regMap.put(RegKey.BLDG, new BuildingRegistry());
-    _regMap.put(RegKey.TOWN, new TownRegistry((BuildingRegistry) _regMap.get(RegKey.BLDG)));
-    _regMap.put(RegKey.ADV, new AdventureRegistry());
-
-    Item.setItemRegistry((ItemRegistry) _regMap.get(RegKey.ITEM));
-    Building.setNpcRegistry((NPCRegistry) _regMap.get(RegKey.NPC));
-    // ((BuildingRegistry) _regMap.get(RegKey.BLDG)).initialize(_skedder);
-    ((BuildingRegistry) _regMap.get(RegKey.BLDG)).initialize();
-    Skill.setSkillRegistry((SkillRegistry) _regMap.get(RegKey.SKILL));
-    Occupation.setOccupationRegistry((OccupationRegistry) _regMap.get(RegKey.OCP));
-=======
     _regMap.put(RegKey.SKILL, new SkillRegistry());    
     _regMap.put(RegKey.OCP, new OccupationRegistry());
     _regMap.put(RegKey.NPC, new NPCRegistry());
@@ -102,7 +75,6 @@ public class RegistryFactory
     _regMap.put(RegKey.ADV, new AdventureRegistry());
 
     ((BuildingRegistry) _regMap.get(RegKey.BLDG)).initialize(_skedder);
->>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
   }
 
 

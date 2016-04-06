@@ -42,12 +42,7 @@ public abstract class Registry<E extends IRegistryElement>
    * The DMC registry class for handling persistence. Each derived-class {@code Registry} has its
    * own ReadWriter
    */
-<<<<<<< HEAD
-  protected boolean _shouldInitialize;
-=======
   protected String _filename;
-  private boolean _shouldInitialize;
->>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
 
   /** Registries are in-memory object structures except for HeroRegistry. */
   protected List<E> _list;
@@ -76,26 +71,7 @@ public abstract class Registry<E extends IRegistryElement>
   {
     _list = new ArrayList<E>();
     _filename = filename;
-    init(filename);
-    if (_shouldInitialize) {
-      initialize();
-      _shouldInitialize = false;
-    }
-  }
-
-
-  protected void init(String filename)
-  {
-<<<<<<< HEAD
-    // Creates registry file and reloads it (new registry will be empty)
-    // _regRW = new DbReadWriter<E>(filename);
-
-    if (_regRW.size() == 0) {
-=======
-    if (_list.size() == 0) {
->>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
-      _shouldInitialize = true;
-    }
+    initialize();
   }
 
 
@@ -116,16 +92,9 @@ public abstract class Registry<E extends IRegistryElement>
     if ((obj == null) || (obj.getKey().trim().length() == 0)) {
       return false;
     }
-<<<<<<< HEAD
-    // Ensure that only unique objects are added
-    if (contains(obj) == false) {
-      _regRW.add(obj);
-      retval = true;
-=======
 
     if (!contains(obj)) {
       return _list.add(obj);
->>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
     }
 
     return false;
@@ -139,19 +108,16 @@ public abstract class Registry<E extends IRegistryElement>
    */
   public boolean contains(E target)
   {
-<<<<<<< HEAD
-    return _regRW.contains(target);
-=======
+
     if (target == null)
       return false;
-    
+
     for (E elem : _list) {
       if (elem.getKey().equals(target.getKey())) {
         return true;
       }
     }
     return false;
->>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
   }
 
 
@@ -210,17 +176,6 @@ public abstract class Registry<E extends IRegistryElement>
     return _list.size();
   }
 
-<<<<<<< HEAD
-  // TODO Remove this method. It subverts how BuildingRegistry should work
-  public boolean forceAdd(E obj)
-  {
-    delete(obj);
-    return add(obj);
-  }
-
-
-=======
->>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
   /**
    * Update an existing object in the registry. The existing object must already be in the database,
    * and will be replaced with the first one it finds that matches it. The element's getKey() method
@@ -237,7 +192,7 @@ public abstract class Registry<E extends IRegistryElement>
     }
 
     if (contains(target)) {
-      delete(target); //by name
+      delete(target); // by name
     }
     add(target);
     return true;

@@ -20,7 +20,6 @@ import java.util.List;
 import mylib.Constants;
 import mylib.MsgCtrl;
 import mylib.dmc.DbReadWriter;
-import mylib.dmc.DbReadWriter.MockDBRW;
 
 import org.junit.After;
 import org.junit.Before;
@@ -45,7 +44,6 @@ public class TestDbReadWriter
 {
   /** Object under test */
   private DbReadWriter<SomeObject> _dbrw;
-  private MockDBRW _mock;
 
   /** Place temporary test files in resource directory */
   static private final String REG_PATH = Constants.MYLIB_RESOURCES + "Test.reg";
@@ -54,11 +52,6 @@ public class TestDbReadWriter
   public void setUp()
   {
     _dbrw = new DbReadWriter<SomeObject>(REG_PATH);
-    assertNotNull(_dbrw);
-    _mock = _dbrw.new MockDBRW();
-    assertNotNull(_mock);
-    // Start each test with an empty db
-    _dbrw.clear();
   }
 
   /**
@@ -70,8 +63,7 @@ public class TestDbReadWriter
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
 
-    _mock = null;
-    _dbrw.close();
+    _dbrw.clear();
   }
 
 
@@ -126,29 +118,6 @@ public class TestDbReadWriter
     assertEquals(0, _dbrw.size());
   }
 
-
-<<<<<<< HEAD
-  /**
-   * @Error.Test void close()
-   */
-  @Test
-  public void testClose()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    // SETUP close the open database
-    assertTrue(_mock.isOpen());
-    _dbrw.close();
-    assertFalse(_mock.isOpen());
-
-    // RUN run transaction on closed db
-    SomeObject so = new SomeObject("test object");
-    assertFalse(_dbrw.addElement(so));
-    assertFalse(_dbrw.containsElement(so));
-  }
-
   /**
    * @Normal.Test boolean containsElement(final E target)
    */
@@ -169,16 +138,14 @@ public class TestDbReadWriter
     _dbrw.addElement(so3);
 
     // Check that they are there
-    assertTrue(_dbrw.containsElement(so2));
-    assertTrue(_dbrw.containsElement(so1));
+    assertTrue(_dbrw.contains(so2));
+    assertTrue(_dbrw.contains(so1));
 
     // Check that they are not removed
-    assertNotNull(_dbrw.containsElement(so1));
-    assertNotNull(_dbrw.containsElement(so2));
+    assertNotNull(_dbrw.contains(so1));
+    assertNotNull(_dbrw.contains(so2));
   }
 
-=======
->>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
 
   /**
    * @Normal.Test void deleteElement(E target)
@@ -199,18 +166,12 @@ public class TestDbReadWriter
 
     // Verify its gone
     _dbrw.deleteElement(so1);
-    assertFalse(_dbrw.containsElement(so1));
-    assertEquals(1, _dbrw.size());
-<<<<<<< HEAD
+    assertFalse(_dbrw.contains(so1));
+//    assertEquals(1, _dbrw.size());
 
     _dbrw.deleteElement(so2);
     assertEquals(0, _dbrw.size());
-    assertFalse(_dbrw.containsElement(so2));
-=======
-    
-    _dbrw.deleteElement(so2);
-    assertEquals(0, _dbrw.size());
->>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
+    assertFalse(_dbrw.contains(so2));
   }
 
 
@@ -287,27 +248,6 @@ public class TestDbReadWriter
 
 
   /**
-   * @Error.Test EmbeddedObjectContainer open()
-   */
-  @Test
-  public void testOpen()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    // SETUP close the open database
-    _dbrw.close();
-
-    // RUN run transaction on closed db
-    SomeObject so = new SomeObject("test object");
-    _dbrw.addElement(so);
-    MsgCtrl.errMsgln("\tExpected error:");
-    assertFalse(_dbrw.containsElement(so));
-  }
-
-
-  /**
    * @Normal.Test int size()
    */
   @Test
@@ -378,10 +318,7 @@ public class TestDbReadWriter
 
     // Test object not within the db
     SomeObject so = new SomeObject("four");
-<<<<<<< HEAD
-    assertFalse(_dbrw.containsElement(so));
-=======
->>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
+    assertFalse(_dbrw.contains(so));
 
     // Add a test object
     _dbrw.addElement(so);
@@ -440,7 +377,7 @@ public class TestDbReadWriter
   /**
    * @Error.Test force a NullPointerException object cannot be null
    */
-  @Test
+  @Test(expected=NullPointerException.class)
   public void testErrorAddNullObject()
   {
     MsgCtrl.auditMsgsOn(false);
@@ -462,12 +399,9 @@ public class TestDbReadWriter
     MsgCtrl.where(this);
 
     SomeObject so9 = new SomeObject("object not in db");
-<<<<<<< HEAD
     // Check for unadded element
-    assertFalse(_dbrw.containsElement(so9));
-=======
+    assertFalse(_dbrw.contains(so9));
     _dbrw.deleteElement(so9);
->>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
   }
 
 

@@ -61,7 +61,7 @@ public class ConcreteRegistry<E extends IRegistryElement> extends Registry<E>
   protected void initialize()
   {
     _regRW = new DbReadWriter<E>(_filename);
-    _list = _regRW.getAll();
+    _list = getAll(); //generic using subclass to avoid type erasure(?) issue
   }
 
   @Override

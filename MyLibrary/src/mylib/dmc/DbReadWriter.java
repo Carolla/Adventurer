@@ -57,9 +57,6 @@ public class DbReadWriter<E extends IRegistryElement>
 
   /** Exception message for null argument */
   static private final String ERR_NULL_ARG = "Argument cannot be null or empty";
-  static private final String ERR_DBCLOSED = "Database must be open for this method";
-  static private final String NO_ARG = "Placeholder for methods that have no arg";
-
 
   // ================================================================================
   // CONSTRUCTOR(S) AND RELATED METHODS
@@ -73,13 +70,11 @@ public class DbReadWriter<E extends IRegistryElement>
    */
   public DbReadWriter(String filepath) throws NullPointerException
   {
-    // Guard
     if (!exists(filepath)) {
       throw new NullPointerException(ERR_NULL_ARG);
     }
+
     _regPath = filepath;
-    // Opens database for all method calls
-    _db = open();
   }
 
 
@@ -94,37 +89,24 @@ public class DbReadWriter<E extends IRegistryElement>
    */
   public boolean addElement(E obj)
   {
-<<<<<<< HEAD
-    boolean retval = false;
-    // Add element only if it is unique
-=======
     // Guard: null object not permitted
     if (obj == null) {
       throw new NullPointerException("Cannot add null Object");
     }
-    _db = open();
->>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
     try {
-      dbGuard(obj);
-      if (!containsElement(obj)) {
+      _db = open();
+      if (!containsElement(obj.getKey())) {
         _db.store(obj);
         _db.commit();
-        retval = true;
+        return true;
       }
-<<<<<<< HEAD
-      // Catch exceptions thrown by store() or commit()
-    } catch (NullPointerException | DatabaseClosedException | DatabaseReadOnlyException ex) {
-      // handleDbException(ex);
-      retval = false;
-=======
     } catch (DatabaseClosedException | DatabaseReadOnlyException ex) {
       System.err.println(ex.getMessage());
       ex.printStackTrace();
     } finally {
       close();
->>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
     }
-    return retval;
+    return false;
   }
 
 
@@ -135,39 +117,137 @@ public class DbReadWriter<E extends IRegistryElement>
    * WARNING: This method is for testing only. An application should never have a need to clear the
    * database, file, and DbReadWriter.
    */
-  @SuppressWarnings("serial")
   public void clear()
   {
-    List<E> alist = new ArrayList<E>();
     try {
-      dbGuard(NO_ARG);
-      alist = _db.query(new Predicate<E>() {
-        @Override
-        public boolean match(E candidate)
-        {
-          return true;
-        }
-      });
-      // There is no clear() for the object set in the db, so each must be removed individually
-      for (E elem : alist) {
+      open();
+      for (E elem : getAllList()) {
         _db.delete(elem);
       }
+      _db.commit();
     } catch (Db4oIOException | DatabaseClosedException | DatabaseReadOnlyException ex) {
       handleDbException(ex);
+    } finally {
+      close();
+    }
+  }
+
+  public boolean contains(final E target)
+  {
+    try {
+      open();
+      return containsElement(target.getKey());
+    } finally {
+      close();
+    }
+  }
+
+  /**
+   * Delete an object from the database. The object must be retrieved before being deleted. The
+   * caller must handle exceptions if the database is closed or Read-Only.
+   * 
+   * @param target object to delete
+   * @return true if delete was successful, else false
+   */
+  public void deleteElement(E target)
+  {
+    if (target == null) {
+      return;
+    }
+
+    try {
+      _db = open();
+      for (E el : getAllList()) {
+        if (el.getKey().equalsIgnoreCase(target.getKey())) {
+          _db.delete(el);
+        }
+      }
+      _db.commit();
+    } catch (Db4oIOException | DatabaseClosedException | DatabaseReadOnlyException ex) {
+      handleDbException(ex);
+    } finally {
+      close();
     }
   }
 
 
   /**
+   * Retrieve the first element that matches the name. The object's {@code getKey} method is called.
+   * 
+   * @param name key of the target object to match against for comparison
+   * @return the object with matching name; else null if not found
+   */
+  public E get(String name)
+  {
+    if (!exists(name)) {
+      return null;
+    }
+
+    _db = open();
+    try {
+      List<E> elementList = getAllList();
+      for (E obj : elementList) {
+        if (obj.getKey().equalsIgnoreCase(name)) {
+          return obj;
+        }
+      }
+    } finally {
+      close();
+    }
+    return null;
+  }
+
+
+  public List<E> getAll()
+  {
+    try {
+      open();
+      List<E> list = getAllList();
+      return list;
+    } finally {
+      close();
+    }
+  }
+
+  public List<E> query(Predicate<E> pred)
+  {
+    List<E> alist = new ArrayList<E>();
+    try {
+      open();
+      alist.addAll(_db.query(pred));
+      return alist;
+    } finally {
+      close();
+    }
+  }
+
+
+  /** Finds all elements in the given Registry ReadWriter */
+  public int size()
+  {
+    try {
+      _db = open();
+      List<E> alist = getAllList();
+      return alist.size();
+    } finally {
+      close();
+    }
+  }
+
+
+  // ================================================================================
+  // PRIVATE METHODS
+  // ================================================================================
+
+  /**
    * Close the open database (and resets the open/close flag).
    */
-  public void close()
+  private void close()
   {
     if (_open) {
       try {
         _db.close();
         _open = false;
-        System.out.println("\t -- database closed");
       } catch (Db4oIOException ex) {
         handleDbException(ex);
       }
@@ -181,152 +261,17 @@ public class DbReadWriter<E extends IRegistryElement>
    * @param target name of the object with specific fields to find
    * @return the object found, else null
    */
-<<<<<<< HEAD
-  public boolean containsElement(final E target)
-=======
-  private E containsElement(final E target)
->>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
+  private boolean containsElement(final String target)
   {
-    boolean retval = false;
+    if (target == null)
+      return false;
+
     for (E elem : getAllList()) {
-      if (elem.getKey().equals(target.getKey())) {
-        retval = true;
+      if (elem.getKey().equals(target)) {
+        return true;
       }
     }
-    return retval;
-  }
-
-
-  /**
-   * Delete an object from the database. The object must be retrieved before being deleted. The
-   * caller must handle exceptions if the database is closed or Read-Only.
-   * 
-   * @param target object to delete
-   * @return true if delete was successful, else false
-   */
-  public void deleteElement(E target)
-  {
-    // Guards: Illegal to delete via null: entire database content would be deleted
-    if (target == null) {
-      return;
-    }
-    // Object must be retrieved before it can be deleted
-    _db = open();
-    try {
-      Object obj = get(target.getKey());
-      if (obj != null) {
-        _db = open();
-        _db.delete(obj);
-      }
-    } catch (Db4oIOException | DatabaseClosedException | DatabaseReadOnlyException ex) {
-      handleDbException(ex);
-    }
-  }
-
-
-  /**
-   * Retrieve the first element that matches the name. The object's {@code getKey} method is called.
-   * 
-   * @param name key of the target object to match against for comparison
-   * @return the object with matching name; else null if not found
-   */
-  public E get(String name)
-  {
-    // Guard: name must not be null or empty
-    if (!exists(name)) {
-      return null;
-    }
-<<<<<<< HEAD
-    // _db = open();
-    // try {
-    List<E> elementList = getAllList();
-    for (E obj : elementList) {
-      if (obj.getKey().equalsIgnoreCase(name)) {
-        return obj;
-=======
-
-    _db = open();
-    try {
-      List<E> elementList = getAllList();
-      for (E obj : elementList) {
-        if (obj.getKey().equalsIgnoreCase(name)) {
-          return obj;
-        }
->>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
-      }
-    }
-    return null;
-  }
-
-
-  public List<E> getAll()
-  {
-    _db = open();
-    List<E> list = getAllList();
-    return list;
-  }
-
-<<<<<<< HEAD
-
-  public boolean isOpen()
-  {
-    return _open;
-  }
-
-
-  /**
-   * Create a new db only if it doesn't exist; else db4o will throw an exception. Create the object
-   * container for transaction processing with the default configuration. db4o tutorial says, "If
-   * the file with this name already exists, it will be opened as db4o database, otherwise a new
-   * db4o database will be created."
-   * <P>
-   * NOTE: The folder structure must exist before a db file within it can be created. db4o will not
-   * create folders: db4o will throw an enigmatic System IO error.
-   */
-  public EmbeddedObjectContainer open()
-  {
-    try {
-      if (_open == false) {
-        _db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), _regPath);
-        _open = true;
-        System.out.println("\t database open--");
-      }
-    } catch (Db4oIOException | IncompatibleFileFormatException
-        | OldFormatException | DatabaseReadOnlyException ex) {
-      handleDbException(ex);
-    } catch (DatabaseFileLockedException ex) {
-      System.err.println("DbReadWriter.open(): " + ex.toString());
-      System.err.println("\t = " + ex.getCause());
-    }
-    return _db;
-  }
-
-
-=======
->>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
-  /** Finds all elements in the given Registry ReadWriter */
-  public int size()
-  {
-    _db = open();
-    List<E> alist = getAllList();
-    return alist.size();
-  }
-
-
-  // ================================================================================
-  // PRIVATE METHODS
-  // ================================================================================
-
-  private boolean dbGuard(Object obj) throws NullPointerException, DatabaseClosedException
-  {
-    // Guard: null object not permitted
-    if (obj == null) {
-      throw new NullPointerException(ERR_NULL_ARG);
-    }
-    if (!isOpen()) {
-      throw new DatabaseClosedException();
-    }
-    return true;
+    return false;
   }
 
 
@@ -343,7 +288,7 @@ public class DbReadWriter<E extends IRegistryElement>
 
   /**
    * Helper method to get all the elements in the registry. It opens the db and returns all
-   * elements, leaving the db open so that the resulting List is valid. 
+   * elements, leaving the db open so that the resulting List is valid.
    * <P>
    * Warning: The List returned is an ObjectSetFacade, and is only available when the db is open.
    * Trying to use the List after the db is closed will throw a DatabaseClosedException.
@@ -354,21 +299,6 @@ public class DbReadWriter<E extends IRegistryElement>
   private List<E> getAllList()
   {
     List<E> alist = new ArrayList<E>();
-<<<<<<< HEAD
-    _db = open();
-    try {
-      alist = _db.query(new Predicate<E>() {
-        @Override
-        public boolean match(E candidate)
-        {
-          return true;
-        }
-      });
-    } catch (Db4oIOException | DatabaseClosedException ex) {
-      handleDbException(ex);
-    }
-
-=======
     alist.addAll(_db.query(new Predicate<E>() {
       @Override
       public boolean match(E candidate)
@@ -378,34 +308,31 @@ public class DbReadWriter<E extends IRegistryElement>
     }));
     return alist;
   }
-  
-  
-  public List<E> query(Predicate<E> pred)
-  {
-    List<E> alist = new ArrayList<E>();
-    List<E> blist = new ArrayList<E>();
-    open();
-    alist.addAll(_db.query(pred));
-    blist.addAll(getAllList());
-    System.out.println(alist);
-    System.out.println(blist);
-    close();
->>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
-    return alist;
-  }
 
 
   private void handleDbException(Exception ex)
   {
-<<<<<<< HEAD
     System.err.println(ex.getClass() + ": " + ex.getMessage());
-=======
+  }
+
+
+  /**
+   * Create a new db only if it doesn't exist; else db4o will throw an exception. Create the object
+   * container for transaction processing with the default configuration. db4o tutorial says, "If
+   * the file with this name already exists, it will be opened as db4o database, otherwise a new
+   * db4o database will be created."
+   * <P>
+   * NOTE: The folder structure must exist before a db file within it can be created. db4o will not
+   * create folders: db4o will throw an enigmatic System IO error.
+   */
+  private EmbeddedObjectContainer open()
+  {
     try {
       if (_open == false) {
         EmbeddedConfiguration config = Db4oEmbedded.newConfiguration();
         config.common().activationDepth(255);
         config.common().updateDepth(255);
-  
+
         _db = Db4oEmbedded.openFile(config, _regPath);
         _open = true;
       }
@@ -416,25 +343,5 @@ public class DbReadWriter<E extends IRegistryElement>
       System.exit(-1);
     }
     return _db;
->>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815
   }
-
-
-  // ================================================================================
-  // INNER CLASS
-  // ================================================================================
-
-  public class MockDBRW
-  {
-    public MockDBRW()
-    {}
-
-    public boolean isOpen()
-    {
-      return DbReadWriter.this._open;
-    }
-
-  } // end of MockDBRW class
-
-
 } // end of RegistryReadWriter class

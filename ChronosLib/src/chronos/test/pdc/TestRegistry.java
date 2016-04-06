@@ -231,6 +231,17 @@ public class TestRegistry
     }
     assertEquals(0, _testReg.getNbrElements());
   }
+  
+  @Test
+  public void deletePersistsAfterClosingDb()
+  {
+    SomeObject so = new SomeObject(4, "perfect");
+    _testReg.add(so);
+    _testReg.delete(so);
+    
+    _testReg = new ConcreteRegistry<SomeObject>(TEST_FILEPATH);
+    assertFalse(_testReg.contains(so));
+  }
 
   /**
    * mylib.test.pdc.getAll()
@@ -358,61 +369,5 @@ public class TestRegistry
    */
   void _testsToBeImplemented()
   {}
-<<<<<<< HEAD:MyLibrary/src/mylib/test/pdc/TestRegistry.java
-
-  public class FakeDbReadWriter extends DbReadWriter<SomeObject>
-  {
-    private List<SomeObject> _objects;
-
-    public FakeDbReadWriter(String filepath)
-    {
-      super(filepath);
-      _objects = new ArrayList<SomeObject>();
-    }
-    
-    @Override
-    public boolean addElement(SomeObject obj)
-    {
-      return _objects.add((SomeObject) obj);
-    }
-
-//    @Override
-//    public boolean contains(SomeObject obj)
-//    {
-//      return _objects.contains(obj);
-//    }
-
-    @Override
-    public void deleteElement(SomeObject obj)
-    {
-      _objects.remove(((SomeObject) obj));
-    }
-
-    @Override
-    public int size()
-    {
-      return _objects.size();
-    }
-
-    @Override
-    public List<SomeObject> getAll()
-    {
-      return _objects;
-    }
-
-    @Override
-    public SomeObject get(String name)
-    {
-      for (SomeObject obj : _objects) {
-        if (obj.getKey().equals(name)) {
-          return obj;
-        }
-      }
-      return null;
-    }
-  }
-
-=======
->>>>>>> 18c7205744d12480b19e6fc1a43bbbcd874a2815:ChronosLib/src/chronos/test/pdc/TestRegistry.java
 } // end of TestRegistry class
 

@@ -11,22 +11,16 @@ package chronos.test.pdc.registry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.pdc.character.Hero;
 import chronos.pdc.registry.HeroRegistry;
-import chronos.pdc.registry.HeroRegistry.MockHeroRegistry;
-import mylib.MsgCtrl;
-import mylib.dmc.DbReadWriter;
 
 /**
  * @author Al Cline
@@ -35,65 +29,27 @@ import mylib.dmc.DbReadWriter;
 public class TestHeroRegistry
 {
   private HeroRegistry _heroReg;
-  private MockHeroRegistry _mock;
-  private DbReadWriter<Hero> _dbrw;
 
-  static private Hero _hero1;
-  static private Hero _hero2;
-  static private Hero _hero3;
+  static private Hero _hero1 = new Hero("Falsoon", "Male", "Brown", "Human", "Fighter");
+  static private Hero _hero2 = new Hero("Blythe", "Female", "Red", "Elf", "Wizard");
+  static private Hero _hero3 = new Hero("Balthazar", "Male", "Bald", "Human", "Cleric");
 
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception
-  {
-    _hero1 = new Hero("Falsoon", "Male", "Human", "Fighter");
-    _hero2 = new Hero("Blythe", "Female", "Elf", "Druid");
-    _hero3 = new Hero("Balthazar", "Male", "Human", "Cleric");
-  }
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @AfterClass
-  public static void tearDownAfterClass() throws Exception
-  {
-    _hero1 = null;
-    _hero2 = null;
-    _hero3 = null;
-  }
-
-  /**
-   * @throws java.lang.Exception
-   */
   @Before
-  public void setUp() throws Exception
+  public void setUp() 
   {
     _heroReg = new HeroRegistry();
-    assertNotNull(_heroReg);
-    _mock = _heroReg.new MockHeroRegistry();
-    assertNotNull(_mock);
 
-    // Start with onluy those elements added
-    _mock.clear();
-    assertEquals(0, _heroReg.getNbrElements());
-    _heroReg.add(_hero1);
-    _heroReg.add(_hero2);
-    _heroReg.add(_hero3);
-    assertEquals(3, _heroReg.getNbrElements());
+    assertTrue(_heroReg.add(_hero1));
+    assertTrue(_heroReg.add(_hero2));
+    assertTrue(_heroReg.add(_hero3));
   }
 
-  /**
-   * @throws java.lang.Exception
-   */
   @After
-  public void tearDown() throws Exception
+  public void tearDown() 
   {
-    _heroReg.close();
-    _mock = null;
-    _heroReg = null;
+    _heroReg.delete(_hero1);
+    _heroReg.delete(_hero2);
+    _heroReg.delete(_hero3);
   }
 
 
@@ -102,44 +58,24 @@ public class TestHeroRegistry
   // ========================================================
 
   /**
-   * @NORMAL.TEST HeroRegistry HeroRegistry()
-   */
-  @Test
-  public void testCtor()
-  {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
-    MsgCtrl.where(this);
-
-    _dbrw = _mock.getDb();
-    assertNotNull(_dbrw);
-    List<Hero> regRW = _mock.getList();
-    assertNotNull(regRW);
-  }
-
-
-  /**
    * @NORMAL.TEST boolean add(Hero hero)
    */
   @Test
   public void testAdd()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
-    MsgCtrl.where(this);
-
     // SETUP Create new heroes to add
-    Hero newHero = new Hero("Red Shirt", "male", "Human", "Fighter");
-
-    // RUN Check duplicates
+    Hero newHero = new Hero("Red Shirt", "male", "White", "Human", "Fighter");
+    int oldNbrHeros = _heroReg.getNbrElements();
+    assertTrue(_heroReg.add(newHero));
+    assertEquals(oldNbrHeros + 1, _heroReg.getNbrElements());
+    _heroReg.delete(newHero);
+  }
+  
+  @Test
+  public void addFailsWhenAlreadyInRegistry()
+  {
     assertTrue(_heroReg.contains(_hero2));
     assertFalse(_heroReg.add(_hero2));
-
-    // VERIFY that both list and db are updated...
-    assertEquals(3, _heroReg.getNbrElements());
-    assertTrue(_heroReg.add(newHero));
-    assertEquals(4, _heroReg.getNbrElements());
-
   }
 
 
@@ -149,17 +85,9 @@ public class TestHeroRegistry
   @Test
   public void testGetHero()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
-    MsgCtrl.where(this);
-
     int nbr = _heroReg.getNbrElements();
+    _heroReg.get("Blythe");
     assertEquals(nbr, _heroReg.getNbrElements());
-    
-    Hero savedHero = _heroReg.get("Blythe");
-    assertEquals(nbr, _heroReg.getNbrElements());
-    assertEquals("Elf", savedHero.getRaceName());
-    assertEquals("Druid", savedHero.getKlassName());
   }
 
 
@@ -169,20 +97,8 @@ public class TestHeroRegistry
   @Test
   public void testGetAll()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
-    MsgCtrl.where(this);
-
-    // RUN
     List<Hero> heroList = _heroReg.getAll();
-
-    // VERIFY
-    assertEquals(3, heroList.size());
-    assertEquals(3, _heroReg.getNbrElements());
-    // TOD Not sure why this returns null always
-    // DbReadWriter<Hero> db = _mock.getDb();
-    // int x = db.size();
-    // assertEquals(3, x);
+    assertEquals(_heroReg.getNbrElements(), heroList.size());
   }
 
 
@@ -192,17 +108,13 @@ public class TestHeroRegistry
   @Test
   public void testGetNamePlates()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
-    MsgCtrl.where(this);
-
     String[] expNamePlates = {"Falsoon: Male Human Fighter", "Blythe: Female Elf Druid",
         "Balthazar: Male Human Cleric"};
 
     List<String> list = _heroReg.getNamePlates();
+    String fullList = list.toString();
     for (int k = 0; k < expNamePlates.length; k++) {
-      MsgCtrl.msgln("\t" + list.get(k));
-      assertEquals(expNamePlates[k], list.get(k));
+      assertTrue(fullList.contains(list.get(k)));
     }
   }
 

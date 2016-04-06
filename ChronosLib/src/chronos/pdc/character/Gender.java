@@ -65,6 +65,30 @@ public class Gender
   }
   
   @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((_gender == null) ? 0 : _gender.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Gender other = (Gender) obj;
+    if (_gender != other._gender)
+      return false;
+    return true;
+  }
+
+  @Override
   public String toString()
   {
     if (isMale()) {
