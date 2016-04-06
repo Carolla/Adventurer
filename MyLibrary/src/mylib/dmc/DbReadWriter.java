@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.db4o.Db4oEmbedded;
-import com.db4o.ObjectContainer;
+import com.db4o.EmbeddedObjectContainer;
 import com.db4o.ext.DatabaseClosedException;
 import com.db4o.ext.DatabaseFileLockedException;
 import com.db4o.ext.DatabaseReadOnlyException;
@@ -52,7 +52,7 @@ public class DbReadWriter<E extends IRegistryElement>
   private boolean _open = false;
 
   /** actual database */
-  private ObjectContainer _db = null;
+  private EmbeddedObjectContainer _db = null;
 
   /** Exception message for null argument */
   static private final String ERR_NULL_ARG = "Argument cannot be null or empty";
@@ -72,12 +72,13 @@ public class DbReadWriter<E extends IRegistryElement>
    */
   public DbReadWriter(String filepath) throws NullPointerException
   {
+    // Guard
     if (!exists(filepath)) {
       throw new NullPointerException(ERR_NULL_ARG);
     }
     _regPath = filepath;
     // Opens database for all method calls
-    open();
+    _db = open();
   }
 
 
@@ -103,7 +104,7 @@ public class DbReadWriter<E extends IRegistryElement>
       }
       // Catch exceptions thrown by store() or commit()
     } catch (NullPointerException | DatabaseClosedException | DatabaseReadOnlyException ex) {
-//      handleDbException(ex);
+      // handleDbException(ex);
       retval = false;
     }
     return retval;
@@ -149,6 +150,7 @@ public class DbReadWriter<E extends IRegistryElement>
       try {
         _db.close();
         _open = false;
+        System.out.println("\t -- database closed");
       } catch (Db4oIOException ex) {
         handleDbException(ex);
       }
@@ -227,7 +229,6 @@ public class DbReadWriter<E extends IRegistryElement>
   public List<E> getAll()
   {
     List<E> list = getAllList();
-    // close();
     return list;
   }
 
@@ -247,16 +248,20 @@ public class DbReadWriter<E extends IRegistryElement>
    * NOTE: The folder structure must exist before a db file within it can be created. db4o will not
    * create folders: db4o will throw an enigmatic System IO error.
    */
-  public ObjectContainer open()
+  public EmbeddedObjectContainer open()
   {
     try {
       if (_open == false) {
         _db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), _regPath);
         _open = true;
+        System.out.println("\t database open--");
       }
-    } catch (Db4oIOException | DatabaseFileLockedException | IncompatibleFileFormatException
+    } catch (Db4oIOException | IncompatibleFileFormatException
         | OldFormatException | DatabaseReadOnlyException ex) {
       handleDbException(ex);
+    } catch (DatabaseFileLockedException ex) {
+      System.err.println("DbReadWriter.open(): " + ex.toString());
+      System.err.println("\t = " + ex.getCause());
     }
     return _db;
   }
@@ -300,8 +305,7 @@ public class DbReadWriter<E extends IRegistryElement>
 
   /**
    * Helper method to get all the elements in the registry. It opens the db and returns all
-   * elements, leaving the db open so that the resulting List is valid. This method avoids
-   * duplicating open/close code in other methods.
+   * elements, leaving the db open so that the resulting List is valid. 
    * <P>
    * Warning: The List returned is an ObjectSetFacade, and is only available when the db is open.
    * Trying to use the List after the db is closed will throw a DatabaseClosedException.
@@ -313,14 +317,18 @@ public class DbReadWriter<E extends IRegistryElement>
   {
     List<E> alist = new ArrayList<E>();
     _db = open();
-    alist.addAll(_db.query(new Predicate<E>() {
-      @Override
-      public boolean match(E candidate)
-      {
-        return true;
-      }
-    }));
-    // close();
+    try {
+      alist = _db.query(new Predicate<E>() {
+        @Override
+        public boolean match(E candidate)
+        {
+          return true;
+        }
+      });
+    } catch (Db4oIOException | DatabaseClosedException ex) {
+      handleDbException(ex);
+    }
+
     return alist;
   }
 

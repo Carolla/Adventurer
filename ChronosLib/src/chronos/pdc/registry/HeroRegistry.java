@@ -50,7 +50,7 @@ public class HeroRegistry extends Registry<Hero>
 
 
   /**
-   * Loads the in-memory HeroRegistry from the persistence database.
+   * Loads the in-memory HeroRegistry from the database.
    */
   @Override
   public void initialize()
@@ -63,6 +63,45 @@ public class HeroRegistry extends Registry<Hero>
   // ========================================================
   //  PUBLIC METHODS
   // ========================================================
+
+  /**
+   * Save new Hero, both to db and Registry
+   */
+  @Override
+  public boolean add(Hero hero)
+  {
+    boolean retval = super.add(hero);
+    try {
+      _db.addElement(hero);
+    } catch (Exception ex) {
+      // TODO Auto-generated catch block
+      ex.printStackTrace();
+    }
+    return retval;
+  }
+
+
+  /**
+   * Close the HeroRegistry, which closes the database
+   */
+  public void close()
+  {
+    _db.close();
+  }
+
+  
+  
+  /**
+   * Verifies if the given object exists in the database. The object's equal() method is called.
+   * 
+   * @param target object to match against for comparison
+   * @return true if the registry contains the element, else false
+   */
+  public boolean dbContains(Hero target)
+  {
+    return (_db.containsElement(target)) ? true : false;
+  }
+
 
   /**
    * Retrieves the Hero with the requested unique name
@@ -104,14 +143,7 @@ public class HeroRegistry extends Registry<Hero>
   }
 
 
-  /**
-   * Save new Hero, both to db and Registry
-   */
-  public void saveHero(Hero hero)
-  {
-    super.add(hero);
-    _db.addElement(hero);
-  }
+  
 
   
   // ========================================================
@@ -120,7 +152,6 @@ public class HeroRegistry extends Registry<Hero>
 
   public class MockHeroRegistry
   {
-    
     public MockHeroRegistry(){}
     
     public DbReadWriter<Hero> getDb()
@@ -133,7 +164,14 @@ public class HeroRegistry extends Registry<Hero>
       return HeroRegistry.this._regRW;
     }
     
-  }
+    /** Clear the database and the memory list */
+    public void clear()
+    {
+      _db.clear();
+      _regRW.clear();
+    }
+    
+  } // end of MockHeroRegistry inner class
   
 } // end of HeroRegistry class
 

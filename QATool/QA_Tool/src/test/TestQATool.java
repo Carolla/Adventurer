@@ -27,6 +27,7 @@ import mylib.MsgCtrl;
 import pdc.QATool;
 import pdc.QATool.MockTool;
 
+
 /**
  * @author Alan Cline
  * @version Dec 31, 2015 // original <br>
@@ -36,7 +37,6 @@ import pdc.QATool.MockTool;
  */
 public class TestQATool
 {
-
   /** Root for all source files and subdirectories */
   static private final String ROOT =
       System.getProperty("user.dir") + Constants.FS + "src" + Constants.FS;
@@ -168,7 +168,7 @@ public class TestQATool
    * @ERROR.TEST File findTestDir(File root)
    */
   @Test
-  public void testFindTestDirBadPathError()
+  public void testErrorFindTestDirBadPath()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
@@ -187,12 +187,12 @@ public class TestQATool
     assertNull(tf);
   }
 
-
+  
   /**
    * @ERROR.TEST File findTestDir(File root)
    */
   @Test
-  public void testDirNotFoundError()
+  public void testErrorFindTestDirNotFound()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);

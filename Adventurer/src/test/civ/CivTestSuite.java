@@ -29,7 +29,6 @@ import test.pdc.character.TestHunger;
     TestHeroDisplayCiv.class,
     TestMainframeCiv.class,
     TestNewHeroCiv.class,
-    TestSummonHeroes.class,
 })
 
 public class CivTestSuite

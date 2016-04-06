@@ -12,12 +12,11 @@ package chronos.pdc.registry;
 
 import java.util.HashMap;
 
-import mylib.pdc.Registry;
 import chronos.pdc.Item;
 import chronos.pdc.Occupation;
 import chronos.pdc.Skill;
 import chronos.pdc.buildings.Building;
-import chronos.pdc.command.Scheduler;
+import mylib.pdc.Registry;
 
 /**
  * Creates singleton registries of various kinds and keeps count of existing registries
@@ -28,7 +27,7 @@ import chronos.pdc.command.Scheduler;
  *          July 25, 2014 // ABC added collection funtionality <br>
  */
 public class RegistryFactory
-{  
+{
   private HashMap<RegKey, Registry<?>> _regMap = null;
 
   /** Public list of all possible registries subclasses, in rough dependency order. */
@@ -43,6 +42,7 @@ public class RegistryFactory
     ADV("Adventure"); // default: "The Quest for Rogahn and Zelligar" (Arena = Quasqueton)
 
     private String _name;
+
     private RegKey(String nm)
     {
       _name = nm;
@@ -58,34 +58,37 @@ public class RegistryFactory
   // ============================================================
   // Constructor(s) and Related Methods
   // ============================================================
-  
+
   // This map is needed by other classes; do not move
   public RegistryFactory()
   {
     _regMap = new HashMap<RegKey, Registry<?>>();
   }
 
-  public void initRegistries(Scheduler _skedder)
+  // public void initRegistries(Scheduler _skedder)
+  public void initRegistries()
   {
     _regMap.put(RegKey.HERO, new HeroRegistry());
     _regMap.put(RegKey.ITEM, new ItemRegistry());
-    
+
     SkillRegistry skReg = new SkillRegistry();
     _regMap.put(RegKey.SKILL, skReg);
     Skill.setSkillRegistry(skReg);
-    
+
     _regMap.put(RegKey.OCP, new OccupationRegistry((SkillRegistry) _regMap.get(RegKey.SKILL)));
     _regMap.put(RegKey.NPC, new NPCRegistry());
-    _regMap.put(RegKey.BLDG,new BuildingRegistry());
+    _regMap.put(RegKey.BLDG, new BuildingRegistry());
     _regMap.put(RegKey.TOWN, new TownRegistry((BuildingRegistry) _regMap.get(RegKey.BLDG)));
     _regMap.put(RegKey.ADV, new AdventureRegistry());
 
     Item.setItemRegistry((ItemRegistry) _regMap.get(RegKey.ITEM));
     Building.setNpcRegistry((NPCRegistry) _regMap.get(RegKey.NPC));
-    ((BuildingRegistry) _regMap.get(RegKey.BLDG)).initialize(_skedder);
+    // ((BuildingRegistry) _regMap.get(RegKey.BLDG)).initialize(_skedder);
+    ((BuildingRegistry) _regMap.get(RegKey.BLDG)).initialize();
     Skill.setSkillRegistry((SkillRegistry) _regMap.get(RegKey.SKILL));
     Occupation.setOccupationRegistry((OccupationRegistry) _regMap.get(RegKey.OCP));
   }
+
 
   // ============================================================
   // Public Methods

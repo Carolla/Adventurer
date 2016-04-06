@@ -1,5 +1,5 @@
 /**
- * TestSummonHeroes.java Copyright (c) 2015, Carolla Development, Inc. All Rights Reserved
+ * TA03a_SummonHeroes.java Copyright (c) 2015, Carolla Development, Inc. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
@@ -7,7 +7,7 @@
  * by email: acline@carolla.com
  */
 
-package test.civ;
+package test.integ;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -22,17 +22,26 @@ import org.junit.Test;
 
 import chronos.pdc.character.Hero;
 import chronos.pdc.registry.HeroRegistry;
-import civ.MainframeCiv;
+import chronos.pdc.registry.HeroRegistry.MockHeroRegistry;
 import mylib.MsgCtrl;
-import test.integ.MainframeProxy;
 
 /**
  * @author Al Cline
  * @version Mar 25, 2016 // original <br>
  */
-public class TestSummonHeroes
+public class TA03a_SummonHeroes
 {
   private static HeroRegistry _dorm;
+  private static MockHeroRegistry _mock;
+
+  static class HeroProxy extends Hero 
+  {
+    public HeroProxy(String name, String gender, String racename, String klassname)
+    {
+      super(name, gender, racename, klassname);
+    }
+  }
+
   
   /**
    * @throws java.lang.Exception
@@ -41,16 +50,19 @@ public class TestSummonHeroes
   public static void setUpBeforeClass() throws Exception
   {
     // Init the system
-    MainframeCiv mfc = new MainframeCiv(new MainframeProxy());
-    assertNotNull(mfc);
+//    MainframeCiv mfc = new MainframeCiv(new MainframeProxy());
+//    assertNotNull(mfc);
     _dorm = new HeroRegistry();
     assertNotNull(_dorm);
-    
-    Hero hero1 = new Hero("Alpha", "male", "brown", "Human", "Fighter");
+    _mock = _dorm.new MockHeroRegistry();
+    assertNotNull(_mock);
+
+    _mock.clear();
+    HeroProxy hero1 = new HeroProxy("Alpha", "male", "Human", "Fighter");
     assertNotNull(hero1);
-    Hero hero2 = new Hero("Beta", "female", "blond", "Elf", "Thief");
+    HeroProxy hero2 = new HeroProxy("Beta", "female", "Elf", "Thief");
     assertNotNull(hero2);
-    Hero hero3 = new Hero("Gamma", "male", "brown", "Dwarf", "Cleric");
+    HeroProxy hero3 = new HeroProxy("Gamma", "male", "Dwarf", "Cleric");
     assertNotNull(hero3);
 
     _dorm.add(hero1);
@@ -65,9 +77,12 @@ public class TestSummonHeroes
   @AfterClass
   public static void tearDownAfterClass() throws Exception
   {
+    _mock = null;
+    _dorm.close();
     _dorm = null;
   }
 
+  
   /**
    * @throws java.lang.Exception
    */
@@ -85,6 +100,7 @@ public class TestSummonHeroes
     MsgCtrl.errorMsgsOn(false);
   }
 
+  
   // ============================================================
   // BEGIN TESTING
   // ============================================================

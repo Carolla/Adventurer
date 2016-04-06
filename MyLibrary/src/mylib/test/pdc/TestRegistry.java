@@ -421,9 +421,9 @@ public class TestRegistry
     }
     
     @Override
-    public void addElement(SomeObject obj)
+    public boolean addElement(SomeObject obj)
     {
-      _objects.add((SomeObject) obj);
+      return _objects.add((SomeObject) obj);
     }
 
 //    @Override

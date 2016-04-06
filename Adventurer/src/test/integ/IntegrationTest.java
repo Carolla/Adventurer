@@ -15,12 +15,14 @@ import chronos.pdc.buildings.Building;
 import chronos.pdc.command.Scheduler;
 import chronos.pdc.registry.AdventureRegistry;
 import chronos.pdc.registry.BuildingRegistry;
+import chronos.pdc.registry.HeroRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import civ.BuildingDisplayCiv;
 import civ.CommandParser;
 import civ.MainActionCiv;
 import civ.MainframeCiv;
+import mylib.MsgCtrl;
 import pdc.command.CommandFactory;
 
 public class IntegrationTest
@@ -39,7 +41,11 @@ public class IntegrationTest
   @BeforeClass
   public static void setUpBeforeClass()
   {
-    _regFactory.initRegistries(_skedder);
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.msgln("Integration test base class setUpBeforeClass()");
+//    _regFactory.initRegistries(_skedder);
+    _regFactory.initRegistries();
     
     BuildingRegistry bReg = (BuildingRegistry) _regFactory.getRegistry(RegKey.BLDG);
     AdventureRegistry advReg = (AdventureRegistry) _regFactory.getRegistry(RegKey.ADV);
@@ -57,7 +63,18 @@ public class IntegrationTest
     }
   }
 
+  @BeforeClass
+  public static void tearDownAfterClass()
+  {
+    // This registry has persistence, so must be closed
+    HeroRegistry heroReg = (HeroRegistry) _regFactory.getRegistry(RegKey.HERO);
+    heroReg.close();
 
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+  }
+
+  
   // ============================================================================
   //              HELPER METHODS
   // ============================================================================
@@ -65,6 +82,10 @@ public class IntegrationTest
   /** Hero is onTwon, with not current Building, and not inside one */
   protected void resetBuildingState()
   {
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.where(this);
+
     _bldgCiv.openTown();
     assertTrue(_bldgCiv.isOnTown());
     assertFalse(_bldgCiv.isInside());
