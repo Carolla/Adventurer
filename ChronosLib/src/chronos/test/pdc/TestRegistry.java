@@ -16,14 +16,13 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import mylib.Constants;
 import mylib.MsgCtrl;
+import mylib.dmc.DbReadWriter;
 import mylib.dmc.IRegistryElement;
 import mylib.test.dmc.SomeObject;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import chronos.dmc.DbReadWriter;
 
 import com.db4o.query.Predicate;
 

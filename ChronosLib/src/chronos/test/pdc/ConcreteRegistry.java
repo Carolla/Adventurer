@@ -11,9 +11,9 @@
 package chronos.test.pdc;
 
 import mylib.ApplicationException;
+import mylib.dmc.DbReadWriter;
 import mylib.dmc.IRegistryElement;
 import mylib.pdc.Registry;
-import chronos.dmc.DbReadWriter;
 
 
 /**
