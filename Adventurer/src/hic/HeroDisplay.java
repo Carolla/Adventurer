@@ -117,9 +117,6 @@ public class HeroDisplay extends ChronosPanel
   private final String CONFIRM_RENAME_MSG = " has been renamed";
   private final String CONFIRM_RENAME_TITLE = "Renaming Hero";
 
-  private final String CONFIRM_SUMMON_MSG = " is now the Active Hero.";
-  private final String CONFIRM_SUMMON_TITLE = " Hero has been Summoned.";
-
   // Specific file error messages not handled by FileChooser
   private final String DEL_ERROR_MSG = "Error! Problem deleting ";
   private final String DEL_ERROR_TITLE = "HERO DELETE ERROR";
@@ -133,25 +130,6 @@ public class HeroDisplay extends ChronosPanel
   private final int PANEL_WIDTH = Mainframe.getWindowSize().width / 2;
   private final int PANEL_HEIGHT = Mainframe.getWindowSize().height;
   private final int DATA_WIDTH = PANEL_WIDTH / 2 - Mainframe.PAD;
-
-  /** Size of inventory area */
-  final int INVEN_HEIGHT = 30;
-  /** Number of cash fields */
-  final int CASH_FIELDS = 2;
-
-  // /** HelpDialog reference for all widgets that have context help */
-  // private HelpDialog _help = null;
-  // /** Set the default HelpKey for the general panel */
-  // private HelpKeyListener _helpKey = new HelpKeyListener("HeroDsp");
-
-  /** Disable SaveAs at some time . */
-  private JButton _saveButton;
-  /** Allows summoning of Hero on Hero Attribute Screen. Replaces "Save" on firstime == false . */
-  private JButton _summonButton;
-  /** Change Cancel Button to OK Button at some time . */
-  private JButton _cancelButton;
-  /** Gets rid of unused/unwanted characters */
-  private JButton _delButton;
 
   /** Background color inherited from parent */
   private Color _backColor = Constants.MY_BROWN;
@@ -380,23 +358,6 @@ public class HeroDisplay extends ChronosPanel
     JButton saveButton = new JButton("Save");
     saveButton.addActionListener(new SaveActionListener());
 
-    // SUMMON a new Hero from the Dormitory */
-    _summonButton = new JButton("Summon");
-    _summonButton.addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent e)
-      {
-        JOptionPane.showMessageDialog(null, _ds.get(PersonKeys.NAME) + CONFIRM_SUMMON_MSG,
-            CONFIRM_SUMMON_TITLE, JOptionPane.INFORMATION_MESSAGE);
-
-        // _hdCiv.setActionPanelTitle(getNamePlate());
-
-        // Return to main action
-        _hdCiv.backToMain(getNamePlate(_ds));
-      }
-    });
-
     JButton delButton = new JButton("Delete");
     delButton.addActionListener(new DeleteActionListener());
 
@@ -408,19 +369,14 @@ public class HeroDisplay extends ChronosPanel
 
     // Disable DELETE or CANCEL buttons depending on old or new Hero
     if (firstTime) {
-      _delButton.setEnabled(false);
+      delButton.setEnabled(false);
     } else {
       // _cancelButton.setEnabled(false);
     }
 
-    // Add appropriate buttons
-    if (firstTime) {
-      buttonPanel.add(_saveButton);
-    } else {
-      buttonPanel.add(_summonButton);
-    }
-    buttonPanel.add(_delButton);
-    buttonPanel.add(_cancelButton);
+    buttonPanel.add(saveButton);
+    buttonPanel.add(delButton);
+    buttonPanel.add(cancelButton);
 
     return buttonPanel;
   }
