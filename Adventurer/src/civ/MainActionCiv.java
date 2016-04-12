@@ -300,8 +300,8 @@ public class MainActionCiv extends BaseCiv
                 JOptionPane.PLAIN_MESSAGE, null, plateArray, plateArray[0]);
 
         // Get matching name from hero list
-        Hero selectedHero = heroList.get(plateList.indexOf(selectedPlate));
-        if (selectedHero != null) {
+        if (selectedPlate != null) {
+          Hero selectedHero = heroList.get(plateList.indexOf(selectedPlate));
           _hdCiv.displayHero(selectedHero, false);
         }
       }
