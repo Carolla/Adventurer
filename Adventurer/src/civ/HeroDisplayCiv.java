@@ -15,7 +15,9 @@ import hic.HeroDisplay;
 import java.util.EnumMap;
 
 import chronos.civ.PersonKeys;
+import chronos.pdc.Item.ItemCategory;
 import chronos.pdc.character.Hero;
+import chronos.pdc.character.Inventory;
 import chronos.pdc.registry.HeroRegistry;
 
 
@@ -87,6 +89,15 @@ public class HeroDisplayCiv extends BaseCiv
     _hero = hero;
     _outputMap = hero.loadAttributes(_outputMap);
     _heroDisp = new HeroDisplay(this, _outputMap, firstTime);
+    Inventory inventory = hero.getInventory();
+    
+    _heroDisp.addSkills(_hero.getOcpSkills(), _hero.getRaceSkills(), _hero.getKlassSkills());
+    _heroDisp.addInventory(inventory);
+    _heroDisp.addMagicItem(inventory.getNameList(ItemCategory.MAGIC));
+    if (_hero.canUseMagic()) {
+      _heroDisp.addMaterials(inventory.getNameList(ItemCategory.SPELL_MATERIAL));
+      _heroDisp.addSpell(_hero.getSpellBook());
+    }
 
     _mfCiv.replaceLeftPanel(_heroDisp);
   }

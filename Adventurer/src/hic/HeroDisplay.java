@@ -211,7 +211,7 @@ public class HeroDisplay extends ChronosPanel
   {
     _tabPane.addTab("Attributes", null, buildAttributePanel(),
         "View Hero's personal characteristics");
-
+    
     _tabPane.addTab("Skills & Abilities", null, _skillPanel, "View Hero's special skills and abilities");
     _tabPane.addTab("Inventory", null, _invenPanel, "View Hero's items owned, worn, or wielded");
     _tabPane.addTab("Magic Items", null, _magicPanel, "View Hero's enchanted items");
