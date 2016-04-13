@@ -99,6 +99,148 @@ public class Prototype
   // ======================================================================
 
   /**
+   * Return the source {@code Class} for the given source java file
+   * 
+   * @param sourceText the fully-qualifed (with package name) {@code .java} source filename
+   * @param root  the directory prefix to be removed to get the sourceText file
+   * @return the equivalent {@.class} file
+   */
+  public Class<?> convertSourceToClass(String sourceText)
+  {	  
+    // Remove the file extension
+    String className = sourceText.split(".java")[0];
+    // Convert the file path format to package format by replacing the "/" with "." or "\" with Windoze
+    className = className.replaceAll(Pattern.quote(Constants.FS), ".");
+//    // Remove superfluous dot index
+//    if (className.startsWith(".")) {
+//      className = className.substring(1);
+//    }
+    // Remove any prefix that ends with "src/"
+    className = className.substring(className.lastIndexOf("src.")+4);
+    // Replace src with bin
+    Class<?> sourceClass = null;
+    try {
+      sourceClass = Class.forName(className);
+    } catch (ClassNotFoundException ex) {
+      System.err.println("\tconvertSourceToClass(): " + className + ".class file not found");
+    }
+    if (sourceClass == null) {
+      System.err.println(
+          "\tEnsure that " + sourceText + " has been compiled and exists in the bin directory");
+    }
+    return sourceClass;
+  }
+
+
+  /**
+   * Return the class method signature without package context or throws clauses, but with its
+   * return type, formatted as: <br>
+   * {@code  methodName(argType, argType) : returnType} <br>
+   * where each of the Types are their simple names.
+   * 
+   * @param m the Method object to get full path and properties returned by Class.getMethod()
+   * @param anchorName simple name of the class under reflection
+   * @return the method signature, e.g. as is used in the test method comment
+   */
+  public String extractSignature(Method m, String anchorName)
+  {
+    String s = m.toString();
+    // Skip any method names that do not have the anchorName in it (synthetic classes) and a 'main'
+    if ((!s.contains(anchorName)) || (s.contains("main("))) {
+      return null;
+    }
+    // Remove any throws clauses
+    if (s.contains("throws")) {
+      s = s.substring(0, s.indexOf("throws"));
+    }
+  
+    // Remove the modifer
+    s = s.substring(s.indexOf(SPACE) + 1);
+    String retType = simplifyReturnType(s);
+    String methodDecl = simplifyDeclaration(s);
+    return (retType + " " + methodDecl);
+  }
+
+
+  /**
+   * Sort all method names and number overloaded methods. The Methods are not in any particular
+   * order, so the bare method name must be sorted a little first.
+   * 
+   * @param mList list of method names to check
+   * @param mSig signature to check for uniqueness, and possibly increment for number
+   */
+  public ArrayList<String> forceUnique(ArrayList<String> mList)
+  {
+    if (mList.size() <= 1) {
+      return mList;
+    }
+    // All signatures must be sorted for this to work
+    sortSignatures(mList);
+  
+    // Get first sig to get started
+    for (int k = 0; k < mList.size() - 1; k++) {
+      String firstSig = mList.get(k);
+      String firstName = extractNameOnly(firstSig);
+      String nextSig = mList.get(k + 1);
+      String nextName = extractNameOnly(nextSig);
+      // First get bare name for comparison
+      // Check if overloaded methods are in list
+      if (nextName.equals(firstName)) {
+        String[] names = numerateNames(firstSig, nextSig);
+        // Replace old names with modified names
+        mList.remove(k);
+        mList.add(k, names[0]);
+        mList.remove(k + 1);
+        mList.add(k + 1, names[1]);
+      } else {
+        continue;
+      }
+    }
+    return mList;
+  }
+
+
+  /**
+   * Extracts public and protected methods from the source file, sorts each list
+   * 
+   * @param clazz target source file
+   * @return list of public method names for the target (includes arguments to methods)
+   */
+  public void getMethods(Class<?> clazz)
+  {
+    // Clear old data from lists
+    _publics.clear();
+    _protecteds.clear();
+  
+    String clazzName = clazz.getSimpleName();
+    Method[] rawMethodList = clazz.getDeclaredMethods();
+    for (Method method : rawMethodList) {
+      int modifiers = method.getModifiers();
+      if (modifiers == 0) {
+        System.err.println("WARNING: " + method.getName()
+            + "() has default access; should have a declared access");
+      }
+      if ((Modifier.isPublic(modifiers)) || (Modifier.isProtected(modifiers))) {
+        String mName = extractSignature(method, clazzName);
+        if (mName != null) {
+          if (Modifier.isPublic(modifiers)) {
+            _publics.add(mName);
+          } else if (Modifier.isProtected(modifiers)) {
+            _protecteds.add(mName);
+          }
+        }
+      }
+    }
+    // Once all methods are collected
+    // sortSignatures(_publics);
+    // sortSignatures(_protecteds);
+    // Ensure that overloaded method are distinguished by number
+    _publics = forceUnique(_publics);
+    _protecteds = forceUnique(_protecteds);
+  }
+
+
+  /**
    * Insert "test" after the "src" dir, capitalize the original filename, then insert "Test" in
    * front of the filename.
    * 
@@ -200,41 +342,136 @@ public class Prototype
   // PRIVATE HELPER METHODS
   // ======================================================================
 
-  /**
-   * Sort all method names and number overloaded methods. The Methods are not in any particular
-   * order, so the bare method name must be sorted a little first.
-   * 
-   * @param mList list of method names to check
-   * @param mSig signature to check for uniqueness, and possibly increment for number
-   */
-  private ArrayList<String> forceUnique(ArrayList<String> mList)
+  /** Writes the setUp and tearDown methods at the method and class level */
+  private String buildPrepMethods()
   {
-    if (mList.size() <= 1) {
-      return mList;
-    }
-    // All signatures must be sorted for this to work
-    sortSignatures(mList);
-
-    // Get first sig to get started
-    for (int k = 0; k < mList.size() - 1; k++) {
-      String firstSig = mList.get(k);
-      String firstName = extractNameOnly(firstSig);
-      String nextSig = mList.get(k + 1);
-      String nextName = extractNameOnly(nextSig);
-      // First get bare name for comparison
-      // Check if overloaded methods are in list
-      if (nextName.equals(firstName)) {
-        String[] names = numerateNames(firstSig, nextSig);
-        // Replace old names with modified names
-        mList.remove(k);
-        mList.add(k, names[0]);
-        mList.remove(k + 1);
-        mList.add(k + 1, names[1]);
-      } else {
-        continue;
+    String staticStr = "static ";
+    String[] arg = {"@BeforeClass", "setUpBeforeClass()", "@AfterClass", "tearDownAfterClass()",
+        "@Before", "setUp()", "@After", "tearDown()"};
+  
+    StringBuilder block = new StringBuilder();
+    for (int k = 0; k < arg.length; k = k + 2) {
+      if (k > 2) {
+        staticStr = ""; // only the class setup and teardown uses the static qualifier
       }
+      block.append(String.format(PREP_DECLARE, arg[k], staticStr, arg[k + 1]));
     }
-    return mList;
+    // Before returning, turn off audit and errors messages in tearDown()
+    // Insert the MsgCtrl statements before the closing brace;
+    String msgFlags = "\n\t\tMsgCtrl.auditMsgsOn(false);\n\t\tMsgCtrl.errorMsgsOn(false);\n\t}\n";
+    int ndx = block.lastIndexOf("}");
+    block.replace(ndx, block.length(), msgFlags);
+  
+    return block.toString();
+  }
+
+
+  /**
+   * Write test methods for each of the source methods
+   * 
+   * @param methodList list of method declaration from which to derive test methods
+   * @return list of test method code blocks for each test method
+   */
+  private ArrayList<String> buildTestMethods(ArrayList<String> methodList)
+  {
+    // Return list
+    ArrayList<String> codeBlock = new ArrayList<String>();
+  
+    // ArrayList<String> methods = getMethods(srcTarget);
+    for (String m : methodList) {
+      StringBuilder comment = new StringBuilder();
+      // CREATE THE NORMAL COMMENT BLOCK
+      comment.append(String.format(NORMAL_CMT, m));
+      // Add the @Test annotation
+      comment.append(TEST_ANNOT);
+  
+      // ADD THE TEST DECLARATIAON
+      StringBuilder mName = new StringBuilder();
+      int startNdx = m.indexOf(" ");
+      int endNdx = m.indexOf("(");
+      mName.append(m.substring(startNdx + 1, endNdx));
+      // Uppercase the first letter of the method name for the decl
+      String ch = mName.substring(0, 1);
+      mName.replace(0, 1, ch.toUpperCase());
+      // Pull off the method name only, which is between the first space and the first '('
+      String decl = String.format(M_DECLARATION, mName);
+      comment.append(decl);
+  
+      // ADD THE MSGCTRL BLOCK
+      comment.append(MSGCTRL_BLOCK + "\n\t}\n");
+  
+      // WRITE OUT THE TEST METHOD
+      codeBlock.add(comment.toString());
+      // System.out.println("\n\tbuildTestMethods(): \n" + comment.toString());
+    }
+  
+    return codeBlock;
+  }
+
+
+  /**
+   * Return the package statement for the given source file
+   * 
+   * @param target test file to write out
+   * @return the package statement path
+   */
+  private String convertSourceToPackage(File target)
+  {
+    String s = target.getParentFile().getAbsolutePath();
+    s = s.substring(s.lastIndexOf("src" + Constants.FS));
+    s = s.substring(4); // remove the src/
+    String pathName = s.replaceAll(Pattern.quote(Constants.FS), ".");
+    String pkgStatement = String.format("\npackage %s;\n", pathName);
+
+    return pkgStatement;
+  }
+
+
+  /**
+   * Pull the method name from the signature to compare uniqueness. Any numeric suffix will be
+   * ignored
+   * 
+   * @param mName method signature
+   * @return bare name stripped of return value, parm list, and numeric suffix
+   */
+  private String extractNameOnly(String mName)
+  {
+    // Extract only the method name
+    int pNdx = mName.indexOf(LEFT_PAREN);
+    char c = (char) mName.charAt(pNdx - 1);
+    if (isDigit(c)) {
+      --pNdx;
+    }
+    int spaceNdx = mName.indexOf(SPACE);
+    String shortName = mName.substring(spaceNdx + 1, pNdx);
+    return shortName;
+  }
+
+
+  /**
+   * Determine if the given character is a digit from 1 to 9
+   * 
+   * @param ch character to check
+   * @return true if c is a numeric digit
+   */
+  private boolean isDigit(char ch)
+  {
+    return (ch >= '1' && ch <= '9');
+  }
+
+
+  /**
+   * Ensure that all subdirs in the long path exist
+   * 
+   * @param target long path of a file to be created
+   * @return the short file name
+   */
+  private String makeSubtree(File target)
+  {
+    // Remove filename from end of path
+    File subtree = target.getParentFile();
+    subtree.mkdirs();
+    return subtree.getName();
   }
 
 
@@ -268,241 +505,8 @@ public class Prototype
 
 
   /**
-   * Determine if the given character is a digit from 1 to 9
-   * 
-   * @param ch character to check
-   * @return true if c is a numeric digit
-   */
-  private boolean isDigit(char ch)
-  {
-    return (ch >= '1' && ch <= '9');
-  }
-
-  /**
-   * Pull the method name from the signature to compare uniqueness. Any numeric suffix will be
-   * ignored
-   * 
-   * @param mName method signature
-   * @return bare name stripped of return value, parm list, and numeric suffix
-   */
-  private String extractNameOnly(String mName)
-  {
-    // Extract only the method name
-    int pNdx = mName.indexOf(LEFT_PAREN);
-    char c = (char) mName.charAt(pNdx - 1);
-    if (isDigit(c)) {
-      --pNdx;
-    }
-    int spaceNdx = mName.indexOf(SPACE);
-    String shortName = mName.substring(spaceNdx + 1, pNdx);
-    return shortName;
-  }
-
-
-  /** Writes the setUp and tearDown methods at the method and class level */
-  private String buildPrepMethods()
-  {
-    String staticStr = "static ";
-    String[] arg = {"@BeforeClass", "setUpBeforeClass()", "@AfterClass", "tearDownAfterClass()",
-        "@Before", "setUp()", "@After", "tearDown()"};
-
-    StringBuilder block = new StringBuilder();
-    for (int k = 0; k < arg.length; k = k + 2) {
-      if (k > 2) {
-        staticStr = ""; // only the class setup and teardown uses the static qualifier
-      }
-      block.append(String.format(PREP_DECLARE, arg[k], staticStr, arg[k + 1]));
-    }
-    // Before returning, turn off audit and errors messages in tearDown()
-    // Insert the MsgCtrl statements before the closing brace;
-    String msgFlags = "\n\t\tMsgCtrl.auditMsgsOn(false);\n\t\tMsgCtrl.errorMsgsOn(false);\n\t}\n";
-    int ndx = block.lastIndexOf("}");
-    block.replace(ndx, block.length(), msgFlags);
-
-    return block.toString();
-  }
-
-
-  /**
-   * Write test methods for each of the source methods
-   * 
-   * @param methodList list of method declaration from which to derive test methods
-   * @return list of test method code blocks for each test method
-   */
-  private ArrayList<String> buildTestMethods(ArrayList<String> methodList)
-  {
-    // Return list
-    ArrayList<String> codeBlock = new ArrayList<String>();
-
-    // ArrayList<String> methods = getMethods(srcTarget);
-    for (String m : methodList) {
-      StringBuilder comment = new StringBuilder();
-      // CREATE THE NORMAL COMMENT BLOCK
-      comment.append(String.format(NORMAL_CMT, m));
-      // Add the @Test annotation
-      comment.append(TEST_ANNOT);
-
-      // ADD THE TEST DECLARATIAON
-      StringBuilder mName = new StringBuilder();
-      int startNdx = m.indexOf(" ");
-      int endNdx = m.indexOf("(");
-      mName.append(m.substring(startNdx + 1, endNdx));
-      // Uppercase the first letter of the method name for the decl
-      String ch = mName.substring(0, 1);
-      mName.replace(0, 1, ch.toUpperCase());
-      // Pull off the method name only, which is between the first space and the first '('
-      String decl = String.format(M_DECLARATION, mName);
-      comment.append(decl);
-
-      // ADD THE MSGCTRL BLOCK
-      comment.append(MSGCTRL_BLOCK + "\n\t}\n");
-
-      // WRITE OUT THE TEST METHOD
-      codeBlock.add(comment.toString());
-      // System.out.println("\n\tbuildTestMethods(): \n" + comment.toString());
-    }
-
-    return codeBlock;
-  }
-
-
-  /**
-   * Return the source {@code Class} for the given source java file
-   * 
-   * @param sourceText the {@code .java} source file
-   * @return the equivalent {@.class} file
-   */
-  private Class<?> convertSourceToClass(String sourceText)
-  {	  
-    // Remove the file extension
-    String className = sourceText.split(".java")[0];
-    // Convert the file path format to package format by replacing the "/" with "." or "\" with Windoze
-    className = className.replaceAll(Pattern.quote(Constants.FS), ".");
-    // Remove superfluous dot index
-    if (className.startsWith(".")) {
-      className = className.substring(1);
-    }
-    // Replace src with bin
-    Class<?> sourceClass = null;
-    try {
-      sourceClass = Class.forName(className);
-    } catch (ClassNotFoundException ex) {
-      // System.err.println("\tconvertSourceToClass(): " + className + ".class file not found");
-    }
-    if (sourceClass == null) {
-      System.err.println(
-          "\tEnsure that " + sourceText + " has been compiled and exists in the bin directory");
-    }
-    return sourceClass;
-  }
-
-
-  /**
-   * Return the package statement for the given source file
-   * 
-   * @param target test file to write out
-   * @return the package statement path
-   */
-  private String convertSourceToPackage(File target)
-  {
-    String s = target.getParentFile().getAbsolutePath();
-    s = s.substring(s.lastIndexOf("src" + Constants.FS));
-    s = s.substring(4); // remove the src/
-    String pathName = s.replaceAll(Pattern.quote(Constants.FS), ".");
-    String pkgStatement = String.format("\npackage %s;\n", pathName);
-
-    return pkgStatement;
-  }
-
-
-  /**
-   * Return the class method signature without package context or throws clauses, but with its
-   * return type, formatted as: <br>
-   * {@code  methodName(argType, argType) : returnType} <br>
-   * where each of the Types are their simple names.
-   * 
-   * @param m the Method object to get full path and properties returned by Class.getMethod()
-   * @param anchorName simple name of the class under reflection
-   * @return the method signature, e.g. as is used in the test method comment
-   */
-  private String extractSignature(Method m, String anchorName)
-  {
-    String s = m.toString();
-    // Skip any method names that do not have the anchorName in it (synthetic classes) and a 'main'
-    if ((!s.contains(anchorName)) || (s.contains("main("))) {
-      return null;
-    }
-    // Remove any throws clauses
-    if (s.contains("throws")) {
-      s = s.substring(0, s.indexOf("throws"));
-    }
-
-    // Remove the modifer
-    s = s.substring(s.indexOf(SPACE) + 1);
-    String retType = simplifyReturnType(s);
-    String methodDecl = simplifyDeclaration(s);
-    return (retType + " " + methodDecl);
-  }
-
-
-  /**
-   * Extracts public and protected methods from the source file, sorts each list
-   * 
-   * @param clazz target source file
-   * @return list of public method names for the target (includes arguments to methods)
-   */
-  private void getMethods(Class<?> clazz)
-  {
-    // Clear old data from lists
-    _publics.clear();
-    _protecteds.clear();
-
-    String clazzName = clazz.getSimpleName();
-    Method[] rawMethodList = clazz.getDeclaredMethods();
-    for (Method method : rawMethodList) {
-      int modifiers = method.getModifiers();
-      if (modifiers == 0) {
-        System.err.println("WARNING: " + method.getName()
-            + "() has default access; should have a declared access");
-      }
-      if ((Modifier.isPublic(modifiers)) || (Modifier.isProtected(modifiers))) {
-        String mName = extractSignature(method, clazzName);
-        if (mName != null) {
-          if (Modifier.isPublic(modifiers)) {
-            _publics.add(mName);
-          } else if (Modifier.isProtected(modifiers)) {
-            _protecteds.add(mName);
-          }
-        }
-      }
-    }
-    // Once all methods are collected
-    // sortSignatures(_publics);
-    // sortSignatures(_protecteds);
-    // Ensure that overloaded method are distinguished by number
-    _publics = forceUnique(_publics);
-    _protecteds = forceUnique(_protecteds);
-  }
-
-
-  /**
-   * Ensure that all subdirs in the long path exist
-   * 
-   * @param target long path of a file to be created
-   * @return the short file name
-   */
-  private String makeSubtree(File target)
-  {
-    // Remove filename from end of path
-    File subtree = target.getParentFile();
-    subtree.mkdirs();
-    return subtree.getName();
-  }
-
-
-  /**
    * Reduce a fully qualified class name to it simplified name by removing the dot-delimited full
-   * name to yeild the suffix, the simply name. This is used for return types and argument types
+   * name to yield the suffix, the simple name. This is used for return types and argument types
    * that occur in the method declaration.<br>
    * The method declaration has format, where each type is a fully qualified type: <br>
    * {@code return-type methodName(argType, argType,...) <br>

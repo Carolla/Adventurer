@@ -22,7 +22,7 @@ public class SubDirSource
   
   static public void main(String[] args)
   {
-    System.out.println("SubDirSource running to create .class file");
+    System.out.println("SubDirSource has compiled and created a .class file");
   }
   
   public SubDirSource()

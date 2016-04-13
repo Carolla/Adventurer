@@ -1,11 +1,6 @@
 DIRECTORIES
-.settings
-authCode
-bin
-doc
 
 FILES
 ing_Testing.java
 pdc/Fakeroonie.java
-
-
+pdc/FileMap.java

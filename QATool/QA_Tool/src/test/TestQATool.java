@@ -103,12 +103,35 @@ public class TestQATool
   // BEGIN TESTS
   // ======================================================================
 
+  //@Test
+  public void testOverall()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // Starting file structure
+    String[] srcTree = {"pdc/subDir/SubDirSource.java", "pdc/Fakeroonie.java", "pdc/FileMap.java",
+        "pdc/Prototype.java", "pdc/QATool.java", "pdc/SuiteBuilder.java", "pdc/TestTemplate.java",
+        "ing_Testing.java", "ScanExclusions.txt"};
+
+    // Ending file structure
+    String[] expTree = {"pdc/subDir/TestSubDirSource.java", "pdc/FileMap.java",
+        "test/pdc/Prototype.java", "test/pdc/QATool.java", "test/pdc/SuiteBuilder.java",
+        "test/pdc/TestTemplate.java", "Testing_Testing.java"};
+
+    _qat.treeScan(new File(ROOT));
+
+    // VERIFY match expected files against new tree structure
+  }
+
+
   /**
    * @ERROR.TEST QATool(String path)
    */
   @SuppressWarnings("unused")
   @Test
-  public void ctorNullParmError()
+  public void testErrorCtorNullParm()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
@@ -187,7 +210,7 @@ public class TestQATool
     assertNull(tf);
   }
 
-  
+
   /**
    * @ERROR.TEST File findTestDir(File root)
    */

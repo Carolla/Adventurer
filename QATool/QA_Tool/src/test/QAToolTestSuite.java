@@ -12,8 +12,6 @@ package test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import test.pdc.TestSuiteBuilder;
-
 
 /**
  * Run all unit tests for the QA Tool.
@@ -25,7 +23,7 @@ import test.pdc.TestSuiteBuilder;
 @Suite.SuiteClasses({
 
     /** PDC test files */
-    TestSuiteBuilder.class,
+    // TestSuiteBuilder.class,
 
     /** Root-level test files */
     TestPrototype.class,
