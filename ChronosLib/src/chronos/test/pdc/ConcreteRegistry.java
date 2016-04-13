@@ -10,6 +10,8 @@
 
 package chronos.test.pdc;
 
+import java.util.List;
+
 import mylib.ApplicationException;
 import mylib.dmc.DbReadWriter;
 import mylib.dmc.IRegistryElement;
@@ -80,5 +82,17 @@ public class ConcreteRegistry<E extends IRegistryElement> extends Registry<E>
     super.delete(obj);
     _regRW.deleteElement(obj);
   }
+
+  /**
+   * Retrieve element names in the particular Registry that match the type of
+   * the object passed in. Uses the getKey() method of IRegistryElement, and
+   * assumes the key is the object's name field.
+   * 
+   * @return the list of names
+   */
+  public List<String> getNamesByType(E elem) {
+    return _regRW.getAllNames(elem);
+  }
+  
 } // end of ConcreteRegistry outer class
 

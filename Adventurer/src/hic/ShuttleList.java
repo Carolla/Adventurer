@@ -18,9 +18,9 @@ import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 
+import net.miginfocom.swing.MigLayout;
 import chronos.pdc.character.Hero;
 import chronos.pdc.registry.HeroRegistry;
-import net.miginfocom.swing.MigLayout;
 
 /**
  * ShuttleList is a pop-up dialog for selecting party members when the Summon Heroes Button is
@@ -32,40 +32,10 @@ import net.miginfocom.swing.MigLayout;
 @SuppressWarnings("serial")
 public class ShuttleList extends JDialog
 {
-  // /* Code in main is for testing only */
-  // public static void main(String[] args)
-  // {
-  // try {
-  // List<String> l1 = new ArrayList<String>()
-  // {
-  // {
-  // add("string 1");
-  // add("abcdefg 2");
-  // add("3 bbf4a");
-  // }
-  // };
-  // ShuttleList dialog = new ShuttleList(l1);
-  // dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-  // dialog.setVisible(true);
-  // } catch (Exception e) {
-  // e.printStackTrace();
-  // }
-  // }
-
   private final JPanel _contentPanel = new JPanel();
-
-  // List of Hero names that will appear on the left side of the dialog
-  @SuppressWarnings("rawtypes")
-  private final JList _leftList = new JList();
-
-  // List of Hero names that will appear on the right side of the dialog
-  @SuppressWarnings("rawtypes")
-  private final JList _rightList = new JList();
-
-  // Indicates the currently selected list between the "left" and "right"
-  // lists
-  @SuppressWarnings("rawtypes")
-  private JList _selectedList;
+  private final JList<String>_leftList = new JList<String>();
+  private final JList<String> _rightList = new JList<String>();
+  private JList<String> _selectedList;
 
   // User buttons that appear on the dialog
   private JButton _okButton = new JButton("OK");
@@ -80,10 +50,8 @@ public class ShuttleList extends JDialog
    * 
    * @param summonableHeroes the list of Hero names
    */
-  @SuppressWarnings({"unchecked", "rawtypes"})
-  public ShuttleList(List<String> summonableHeroes)
-  {
-    // Get String names from Hero List
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public ShuttleList(List<String> summonableHeroes) {
     _summonableHeroNames = summonableHeroes;
 
     // Set "left" list as currently selected
@@ -112,9 +80,12 @@ public class ShuttleList extends JDialog
       panel.setLayout(new BorderLayout());
       {
         DefaultListModel model = new DefaultListModel();
+				if (_summonableHeroNames.isEmpty() == false) {
         for (String hName : _summonableHeroNames) {
           model.addElement(hName);
         }
+				//TODO create "else" with error message	
+				}
         _leftList.setModel(model);
         _leftList.addFocusListener(new FocusListener() {
           @Override
@@ -128,7 +99,8 @@ public class ShuttleList extends JDialog
             _rightList.clearSelection();
           }
         });
-        _leftList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+//				_leftList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+				_leftList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         panel.add(_leftList, BorderLayout.CENTER);
       }
     }
@@ -140,42 +112,34 @@ public class ShuttleList extends JDialog
       _contentPanel.add(panel, "cell 1 0");
       panel.setLayout(new MigLayout("", "[]", "[][][]"));
       {
-        // JButton button = new JButton(">");
-        // _xferRight = new JButton(">");
         _xferRight.addActionListener(new ActionListener() {
           @Override
-          public void actionPerformed(ActionEvent arg0)
-          {
-            DefaultListModel model = (DefaultListModel) _leftList.getModel();
+					public void actionPerformed(ActionEvent arg0) {
             int selIdx = _leftList.getSelectedIndex();
-            if (selIdx >= 0) {
-              Object selectedItem = model.getElementAt(selIdx);
-              model.removeElementAt(selIdx);
-              // Prohibit more than one selected item
-              DefaultListModel rightSelection = (DefaultListModel) _rightList.getModel();
-              if (rightSelection.getSize() < 1) {
-                rightSelection.addElement(selectedItem.toString());
-                // ((DefaultListModel)
-                // _rightList.getModel()).addElement(selectedItem.toString());
-              }
+						DefaultListModel leftModel = (DefaultListModel) _leftList.getModel();
+						DefaultListModel rightModel = (DefaultListModel) _rightList.getModel();
+						// If there IS a selection and NOTHING has been moved to
+						// the right side
+						if ((selIdx >= 0) && (rightModel.getSize() < 1)) {
+							Object selectedItem = leftModel.getElementAt(selIdx);
+							leftModel.removeElementAt(selIdx);
+							rightModel.addElement(selectedItem.toString());
             }
           }
         });
         panel.add(_xferRight, "cell 0 1");
       }
       {
-        // JButton button = new JButton("<");
-        // _xferLeft = new JButton("<");
         _xferLeft.addActionListener(new ActionListener() {
           @Override
-          public void actionPerformed(ActionEvent arg0)
-          {
-            DefaultListModel model = (DefaultListModel) _rightList.getModel();
+					public void actionPerformed(ActionEvent arg0) {
+						DefaultListModel leftModel = (DefaultListModel) _leftList.getModel();
+						DefaultListModel rightModel = (DefaultListModel) _rightList.getModel();
             int selIdx = _rightList.getSelectedIndex();
             if (selIdx >= 0) {
-              Object selectedItem = model.getElementAt(selIdx);
-              model.removeElementAt(selIdx);
-              ((DefaultListModel) _leftList.getModel()).addElement(selectedItem.toString());
+							Object selectedItem = rightModel.getElementAt(selIdx);
+							rightModel.removeElementAt(selIdx);
+							leftModel.addElement(selectedItem.toString());
             }
           }
         });
@@ -205,7 +169,8 @@ public class ShuttleList extends JDialog
             _leftList.clearSelection();
           }
         });
-        _rightList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+//				_rightList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+				_rightList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         panel.add(_rightList, BorderLayout.CENTER);
       }
     }
@@ -273,6 +238,7 @@ public class ShuttleList extends JDialog
             for (String name : hNames) {
               System.out.print(name + " ");
             }
+						System.out.println();
           }
         });
         buttonPane.add(_okButton);
@@ -320,9 +286,8 @@ public class ShuttleList extends JDialog
    * @param _summonableHeroes the items that can be selected from
    * @param _partyHeros the items already selected
    */
-  @SuppressWarnings({"unchecked", "rawtypes"})
-  public ShuttleList(List<String> summonableHeroes, List<Hero> partyHeros)
-  {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public ShuttleList(List<String> summonableHeroes, List<Hero> partyHeros) {
     this(summonableHeroes);
     // Get names of partyHeros
     List<String> partyHeroNames = translateHeroesToNames(partyHeros);

@@ -163,7 +163,7 @@ public class HeroDisplay extends ChronosPanel
    * @param hdCiv the intermediary between this GUI and the Person
    * @param ds 
    */
-  public HeroDisplay(HeroDisplayCiv hdCiv, EnumMap<PersonKeys, String> ds)
+  public HeroDisplay(HeroDisplayCiv hdCiv, EnumMap<PersonKeys, String> ds, boolean firstTime)
   {
     super(heroNameplate(ds));
 
@@ -176,7 +176,7 @@ public class HeroDisplay extends ChronosPanel
     _invenPanel = createTabPanel();
     _magicPanel = createTabPanel();
 
-    setupDisplay();
+    setupDisplay(firstTime);
   }
 
   
@@ -192,7 +192,7 @@ public class HeroDisplay extends ChronosPanel
    * 
    * @param firstTime Hero activates buttons differently than dormitory hero
    */
-  private void setupDisplay()
+  private void setupDisplay(boolean firstTime)
   {
     // GENERAL SETUP
     setLayout(new MigLayout());
@@ -201,7 +201,7 @@ public class HeroDisplay extends ChronosPanel
     JTabbedPane tabPane = buildTabPane();
     add(tabPane, "center, wrap");
 
-    JPanel buttonPanel = buildButtonPanel();
+    JPanel buttonPanel = buildButtonPanel(firstTime);
     buttonPanel.setPreferredSize(new Dimension(PANEL_WIDTH, buttonPanel.getHeight()));
     add(buttonPanel, "span, center, gapbottom 20");
   }
@@ -211,7 +211,7 @@ public class HeroDisplay extends ChronosPanel
   {
     _tabPane.addTab("Attributes", null, buildAttributePanel(),
         "View Hero's personal characteristics");
-
+    
     _tabPane.addTab("Skills & Abilities", null, _skillPanel, "View Hero's special skills and abilities");
     _tabPane.addTab("Inventory", null, _invenPanel, "View Hero's items owned, worn, or wielded");
     _tabPane.addTab("Magic Items", null, _magicPanel, "View Hero's enchanted items");
@@ -357,7 +357,7 @@ public class HeroDisplay extends ChronosPanel
    * @param firstTime Hero disables DELETE button; old Hero disables CANCEL button
    * @return button panel
    */
-  private JPanel buildButtonPanel()
+  private JPanel buildButtonPanel(boolean firstTime)
   {
     JButton saveButton = new JButton("Save");
     saveButton.addActionListener(new SaveActionListener());
@@ -371,8 +371,11 @@ public class HeroDisplay extends ChronosPanel
     JPanel buttonPanel = new JPanel();
     buttonPanel.setBackground(_backColor);
 
-    delButton.setEnabled(false);
+    if (firstTime) {
+      delButton.setEnabled(false);
+    }
     cancelButton.setEnabled(true);
+
 
     buttonPanel.add(saveButton);
     buttonPanel.add(delButton);
@@ -500,7 +503,7 @@ public class HeroDisplay extends ChronosPanel
         renameHero();
         JOptionPane.showMessageDialog(this, _heroName + CONFIRM_RENAME_MSG,
             CONFIRM_RENAME_TITLE, JOptionPane.INFORMATION_MESSAGE);
-        _hdCiv.backToMain();
+        _hdCiv.backToMain(null);
         break;
 
       case PROMPT_OVERWRITE:
@@ -508,11 +511,11 @@ public class HeroDisplay extends ChronosPanel
         JOptionPane.showMessageDialog(this, _heroName + CONFIRM_OVERWRITE_MSG,
             CONFIRM_OVERWRITE_TITLE, JOptionPane.INFORMATION_MESSAGE);
         // Return to main action buttons
-        _hdCiv.backToMain();
+        _hdCiv.backToMain(null);
         break;
 
       default:
-        _hdCiv.backToMain();
+        _hdCiv.backToMain(null);
         break;
     }
   }
@@ -647,7 +650,7 @@ public class HeroDisplay extends ChronosPanel
   {
     public void actionPerformed(ActionEvent event)
     {
-      _hdCiv.backToMain();
+      _hdCiv.backToMain(null);
     }
   }
 
@@ -689,7 +692,7 @@ public class HeroDisplay extends ChronosPanel
             _heroName + CONFIRM_SAVE_MSG,
             CONFIRM_SAVE_TITLE,
             JOptionPane.INFORMATION_MESSAGE);
-        _hdCiv.backToMain();
+        _hdCiv.backToMain(null);
       } else {
         // Respond to save attempt failure to Rename or Overwrite the Hero
         doAlternateSaveAction();
@@ -697,4 +700,3 @@ public class HeroDisplay extends ChronosPanel
     }
   }
 } // end HeroDisplay class
-

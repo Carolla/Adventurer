@@ -10,7 +10,6 @@
 
 package chronos.pdc.registry;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import mylib.ApplicationException;
@@ -72,20 +71,6 @@ public class HeroRegistry extends ConcreteRegistry<Hero>
   public List<Hero> getAll()
   {
     return _regRW.query(_heroQuery);
-  }
-
-  /**
-   * Retrieves all Heroes in the HeroRegistry
-   * 
-   * @return a list of Heroes
-   */
-  public List<String> getNamePlates()
-  {
-    List<String> plateList = new ArrayList<String>();
-    for (Hero h : getAll()) {
-      plateList.add(h.toNamePlate());
-    }
-    return plateList;
   }
 } // end of HeroRegistry class
 

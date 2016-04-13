@@ -165,6 +165,21 @@ public abstract class Registry<E extends IRegistryElement>
     return _list;
   }
 
+	/**
+	 * Retrieve elements in the particular Registry that match the type of
+	 * the object passed in.
+	 * 
+	 * @return list of elements
+	 */
+	public List<Object> getElementsByType(Object obj) {
+		List<Object> selectedElements = new ArrayList<Object>();
+		for (IRegistryElement elem : getAll()) {
+			if (elem.getClass().equals(obj.getClass())) {
+				selectedElements.add(elem);
+			}
+		}
+		return selectedElements;
+	}
 
   /**
    * Get the number of elements currently in the registry
