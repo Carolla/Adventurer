@@ -38,7 +38,7 @@ public class TA00a_Initialize extends IntegrationTest
   @Test
   public void testInitRegs()
   {
-    assertEquals(RegKey.values().length, _regFactory.getNumberOfRegistries());
+    assertEquals(RegKey.values().length, _regFactory.size());
   }
 } // end of TA00a_Initialize class
 

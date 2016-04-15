@@ -29,6 +29,7 @@ import net.miginfocom.swing.MigLayout;
 import pdc.command.CommandFactory;
 import chronos.pdc.Adventure;
 import chronos.pdc.Chronos;
+import chronos.pdc.buildings.Inn;
 import chronos.pdc.character.Hero;
 import chronos.pdc.command.Scheduler;
 import chronos.pdc.registry.AdventureRegistry;
@@ -101,6 +102,7 @@ public class MainActionCiv extends BaseCiv
     _rf = new RegistryFactory();
     _rf.initRegistries(_skedder);
 
+    ((Inn) ((BuildingRegistry) _rf.getRegistry(RegKey.BLDG)).getBuilding("Ugly Ogre Inn")).initPatrons(_skedder);
     _advReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
     _dorm = (HeroRegistry) _rf.getRegistry(RegKey.HERO);
   }

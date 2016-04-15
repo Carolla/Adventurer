@@ -37,14 +37,11 @@ import chronos.test.ChronosUnitTestSuite;
 
     // All Unit Tests in Adventurer
     AdventurerUnitTestSuite.class,
-
-    /* Adventurer integration test suite */
-    AdventurerIntegTestSuite.class,
-
-    // Regression test suites for all supporting libraries
     MyLibraryUnitTestSuite.class,
     ChronosUnitTestSuite.class,
 
+    /* Adventurer integration test suite */
+    AdventurerIntegTestSuite.class,
 })
 
 public class AdventurerTestSuite

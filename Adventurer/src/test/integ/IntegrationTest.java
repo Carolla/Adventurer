@@ -15,6 +15,7 @@ import pdc.command.CommandFactory;
 import chronos.civ.DefaultUserMsg;
 import chronos.pdc.Adventure;
 import chronos.pdc.buildings.Building;
+import chronos.pdc.buildings.Inn;
 import chronos.pdc.command.Scheduler;
 import chronos.pdc.registry.AdventureRegistry;
 import chronos.pdc.registry.BuildingRegistry;
@@ -44,6 +45,7 @@ public class IntegrationTest
     _regFactory.initRegistries(_skedder);
     
     BuildingRegistry bReg = (BuildingRegistry) _regFactory.getRegistry(RegKey.BLDG);
+    ((Inn) bReg.getBuilding("Ugly Ogre Inn")).initPatrons(_skedder);
     AdventureRegistry advReg = (AdventureRegistry) _regFactory.getRegistry(RegKey.ADV);
     Adventure adv = advReg.getAll().get(0);
     

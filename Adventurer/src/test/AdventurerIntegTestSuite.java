@@ -44,7 +44,7 @@ import test.integ.TA10_ReturnToTown;
     TA03a_SummonHeroes.class,
     TA03d_DeleteHeroes.class,
     TA08_CmdEnter.class,
-//    TA09_CmdLeave.class,
+    TA09_CmdLeave.class,
     TA10_ReturnToTown.class,
 })
 public class AdventurerIntegTestSuite
