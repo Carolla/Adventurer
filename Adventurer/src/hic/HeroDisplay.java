@@ -146,8 +146,8 @@ public class HeroDisplay extends ChronosPanel
   private HeroDisplayCiv _hdCiv = null;
 
   /** Keys to Hero data to be displayed */
-  EnumMap<PersonKeys, String> _ds;
-  private String _heroName;
+  EnumMap<PersonKeys, String> _ds = new EnumMap<PersonKeys, String>(PersonKeys.class);
+  private String _heroName = "No hero selected";
   private JPanel _skillPanel;
   private JPanel _invenPanel;
   private JPanel _magicPanel;
@@ -163,20 +163,16 @@ public class HeroDisplay extends ChronosPanel
    * @param hdCiv the intermediary between this GUI and the Person
    * @param ds 
    */
-  public HeroDisplay(HeroDisplayCiv hdCiv, EnumMap<PersonKeys, String> ds, boolean firstTime)
+  public HeroDisplay(HeroDisplayCiv hdCiv)
   {
-    super(heroNameplate(ds));
+    super("Nameplate goes here");
 
     _hdCiv = hdCiv;
-    _ds = ds;
-    _heroName = ds.get(PersonKeys.NAME);
 
     _tabPane = new JTabbedPane();
     _skillPanel = createTabPanel();
     _invenPanel = createTabPanel();
     _magicPanel = createTabPanel();
-
-    setupDisplay(firstTime);
   }
 
   
@@ -192,8 +188,12 @@ public class HeroDisplay extends ChronosPanel
    * 
    * @param firstTime Hero activates buttons differently than dormitory hero
    */
-  private void setupDisplay(boolean firstTime)
+  public void displayHero(EnumMap<PersonKeys, String> ds, boolean firstTime)
   {
+    _ds = ds;
+    setTitle(heroNameplate(_ds));
+    _heroName = ds.get(PersonKeys.NAME);
+    
     // GENERAL SETUP
     setLayout(new MigLayout());
     setBackground(_backColor);

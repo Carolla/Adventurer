@@ -40,36 +40,28 @@ public class HeroDisplayCiv extends BaseCiv
   /** Associated GUI */
   private HeroDisplay _heroDisp = null;
 
-  /** Hero data are converted and sent to the GUI in this EnumMap */
-  private EnumMap<PersonKeys, String> _outputMap =
-      new EnumMap<PersonKeys, String>(PersonKeys.class);;
-
   /** Reference to parent civ */
   private final MainframeCiv _mfCiv;
-
-  /** Reference to MainActionCiv */
   private final MainActionCiv _maCiv;
-
-  private HeroRegistry _dorm;
+  private final HeroRegistry _dorm;
 
 
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
-  /**
-   * Displays a newly created Hero before it is saved in the Dormitory
-   * 
-   * @param maCiv
-   * 
-   * @param mf mainframe connection for displaying widgets
-   * @param regFact to access the Dormitory, where Heroes are stoed
-   */
   public HeroDisplayCiv(MainframeCiv mfCiv, MainActionCiv maCiv)
   {
     _mfCiv = mfCiv;
     _maCiv = maCiv;
     _dorm = new HeroRegistry();
+    doConstructorWork();
+  }
+
+  //Override for testing to avoid GUI
+  protected void doConstructorWork()
+  {
+    _heroDisp = new HeroDisplay(this);
   }
 
   /** Restore the mainframe panels to their previous state */
@@ -87,10 +79,17 @@ public class HeroDisplayCiv extends BaseCiv
   public void displayHero(Hero hero, boolean firstTime)
   {
     _hero = hero;
-    _outputMap = hero.loadAttributes(_outputMap);
-    _heroDisp = new HeroDisplay(this, _outputMap, firstTime);
-    Inventory inventory = hero.getInventory();
+
+    EnumMap<PersonKeys, String> _outputMap = hero.loadAttributes();
+    addAdditionalHeroStuff(hero);
+    _heroDisp.displayHero(_outputMap, firstTime);
     
+    _mfCiv.replaceLeftPanel(_heroDisp);
+  }
+
+  private void addAdditionalHeroStuff(Hero hero)
+  {
+    Inventory inventory = hero.getInventory();
     _heroDisp.addSkills(_hero.getOcpSkills(), _hero.getRaceSkills(), _hero.getKlassSkills());
     _heroDisp.addInventory(inventory);
     _heroDisp.addMagicItem(inventory.getNameList(ItemCategory.MAGIC));
@@ -98,14 +97,6 @@ public class HeroDisplayCiv extends BaseCiv
       _heroDisp.addMaterials(inventory.getNameList(ItemCategory.SPELL_MATERIAL));
       _heroDisp.addSpell(_hero.getSpellBook());
     }
-
-    _mfCiv.replaceLeftPanel(_heroDisp);
-  }
-
-
-  public EnumMap<PersonKeys, String> getAttributes()
-  {
-    return _outputMap;
   }
 
   /** Restore the mainframe panels to their previous state */
@@ -158,12 +149,5 @@ public class HeroDisplayCiv extends BaseCiv
     }
     return retflag;
   }
-
-
-  public void setActionPanelTitle(String namePlate)
-  {
-
-  }
-
 } // end of HeroDisplayCiv class
 

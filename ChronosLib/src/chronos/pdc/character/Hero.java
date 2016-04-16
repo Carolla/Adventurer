@@ -15,11 +15,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import mylib.dmc.IRegistryElement;
 import chronos.civ.PersonKeys;
 import chronos.pdc.Occupation;
 import chronos.pdc.character.TraitList.PrimeTraits;
 import chronos.pdc.race.Race;
-import mylib.dmc.IRegistryElement;
 
 
 
@@ -203,8 +203,11 @@ public class Hero implements IRegistryElement
    * @param map the keyed map of Hero data attributes
    * @return the EnumMap with attribute data
    */
-  public EnumMap<PersonKeys, String> loadAttributes(EnumMap<PersonKeys, String> map)
+  public EnumMap<PersonKeys, String> loadAttributes()
   {
+    EnumMap<PersonKeys, String> map =
+        new EnumMap<PersonKeys, String>(PersonKeys.class);
+    
     // Now load the attributes in display order (values in parens are derived)
     // Row 1: Name 
     map.put(PersonKeys.NAME, _name);
