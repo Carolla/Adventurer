@@ -68,10 +68,9 @@ public class HeroDisplayCiv extends BaseCiv
     _mfCiv.back();
   }
 
-  /** Restore the mainframe panels to their previous state */
-  public void backToMain(String newFrameTitle)
+  public void backToMain()
   {
-    _mfCiv.backToMain(newFrameTitle);
+    _mfCiv.backToMain(null);
   }
 
   /**
@@ -85,8 +84,8 @@ public class HeroDisplayCiv extends BaseCiv
     _hero = hero;
 
     EnumMap<PersonKeys, String> _outputMap = hero.loadAttributes();
-    addAdditionalHeroStuff(hero);
     _heroDisp.displayHero(_outputMap, firstTime);
+    addAdditionalHeroStuff(hero);
 
     _mfCiv.replaceLeftPanel(_heroDisp);
   }

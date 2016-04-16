@@ -21,7 +21,7 @@ public interface MainframeInterface
 {
   public void back();
 
-    public void backToMain(String newFrameTitle);
+  public void backToMain(String newFrameTitle);
 
   /** Display a prompt message asking for confirmation */
   public boolean displayPrompt(String msg);

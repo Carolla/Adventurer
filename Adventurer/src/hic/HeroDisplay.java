@@ -486,7 +486,7 @@ public class HeroDisplay extends ChronosPanel
         renameHero();
         JOptionPane.showMessageDialog(this, _heroName + CONFIRM_RENAME_MSG,
             CONFIRM_RENAME_TITLE, JOptionPane.INFORMATION_MESSAGE);
-        _hdCiv.backToMain(null);
+        _hdCiv.backToMain();
         break;
 
       case PROMPT_OVERWRITE:
@@ -494,11 +494,11 @@ public class HeroDisplay extends ChronosPanel
         JOptionPane.showMessageDialog(this, _heroName + CONFIRM_OVERWRITE_MSG,
             CONFIRM_OVERWRITE_TITLE, JOptionPane.INFORMATION_MESSAGE);
         // Return to main action buttons
-        _hdCiv.backToMain(null);
+        _hdCiv.backToMain();
         break;
 
       default:
-        _hdCiv.backToMain(null);
+        _hdCiv.backToMain();
         break;
     }
   }
@@ -593,6 +593,7 @@ public class HeroDisplay extends ChronosPanel
 
     if (n == JOptionPane.YES_OPTION) {
       _hdCiv.deletePerson();
+      _hdCiv.backToMain();
     }
   }
 
@@ -626,7 +627,7 @@ public class HeroDisplay extends ChronosPanel
 
   private void cancelAction()
   {
-    _hdCiv.backToMain(null);
+    _hdCiv.backToMain();
   }
 
 
@@ -648,7 +649,7 @@ public class HeroDisplay extends ChronosPanel
           _heroName + CONFIRM_SAVE_MSG,
           CONFIRM_SAVE_TITLE,
           JOptionPane.INFORMATION_MESSAGE);
-      _hdCiv.backToMain(null);
+      _hdCiv.backToMain();
     } else {
       // Respond to save attempt failure to Rename or Overwrite the Hero
       doAlternateSaveAction();
