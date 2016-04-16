@@ -42,7 +42,6 @@ public class HeroDisplayCiv extends BaseCiv
 
   /** Reference to parent civ */
   private final MainframeCiv _mfCiv;
-  private final MainActionCiv _maCiv;
   private final HeroRegistry _dorm;
 
 
@@ -50,10 +49,9 @@ public class HeroDisplayCiv extends BaseCiv
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
-  public HeroDisplayCiv(MainframeCiv mfCiv, MainActionCiv maCiv)
+  public HeroDisplayCiv(MainframeCiv mfCiv)
   {
     _mfCiv = mfCiv;
-    _maCiv = maCiv;
     _dorm = new HeroRegistry();
     doConstructorWork();
   }
@@ -62,6 +60,12 @@ public class HeroDisplayCiv extends BaseCiv
   protected void doConstructorWork()
   {
     _heroDisp = new HeroDisplay(this);
+  }
+
+  /** Restore the mainframe panels to their previous state */
+  public void back()
+  {
+    _mfCiv.back();
   }
 
   /** Restore the mainframe panels to their previous state */
@@ -99,12 +103,6 @@ public class HeroDisplayCiv extends BaseCiv
     }
   }
 
-  /** Restore the mainframe panels to their previous state */
-  public void back()
-  {
-    _mfCiv.back();
-  }
-
   /**
    * Delete the Person
    * 
@@ -136,18 +134,15 @@ public class HeroDisplayCiv extends BaseCiv
    */
   public boolean savePerson(boolean overwrite)
   {
-    boolean retflag = false;
-    // Save when NOT in overwrite mode
-    if (overwrite == false) {
-      retflag = _dorm.add(_hero);
+    boolean success = false;
+
+    if (!overwrite) {
+      success = _dorm.add(_hero);
     } else {
-      retflag = _dorm.update(_hero);
+      success = _dorm.update(_hero);
     }
-    // Enable SummonHerosButton on MainActionCiv
-    if (retflag == true) {
-      _maCiv.toggleSummonEnabled();
-    }
-    return retflag;
+
+    return success;
   }
 } // end of HeroDisplayCiv class
 

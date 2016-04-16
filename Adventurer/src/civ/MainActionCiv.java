@@ -15,8 +15,6 @@ import hic.Mainframe;
 import hic.NewHeroIPPanel;
 
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,7 +88,7 @@ public class MainActionCiv extends BaseCiv
   public MainActionCiv(MainframeCiv mfciv)
   {
     _mfCiv = mfciv;
-    _hdCiv = new HeroDisplayCiv(_mfCiv, this);
+    _hdCiv = new HeroDisplayCiv(_mfCiv);
     constructCoreMembers();
     _mfCiv.replaceLeftPanel(createActionPanel());
   }
@@ -102,7 +100,8 @@ public class MainActionCiv extends BaseCiv
     _rf = new RegistryFactory();
     _rf.initRegistries(_skedder);
 
-    ((Inn) ((BuildingRegistry) _rf.getRegistry(RegKey.BLDG)).getBuilding("Ugly Ogre Inn")).initPatrons(_skedder);
+    ((Inn) ((BuildingRegistry) _rf.getRegistry(RegKey.BLDG)).getBuilding("Ugly Ogre Inn"))
+        .initPatrons(_skedder);
     _advReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
     _dorm = (HeroRegistry) _rf.getRegistry(RegKey.HERO);
   }
@@ -111,33 +110,25 @@ public class MainActionCiv extends BaseCiv
   // Public methods
   // ============================================================
 
-  public void createHero()
+  private void createHero()
   {
     NewHeroCiv nhCiv = new NewHeroCiv(_mfCiv, _dorm);
-    HeroDisplayCiv hdCiv = new HeroDisplayCiv(_mfCiv, this);
-    NewHeroIPPanel ipPanel = new NewHeroIPPanel(nhCiv, hdCiv);
+    NewHeroIPPanel ipPanel = new NewHeroIPPanel(nhCiv, _hdCiv);
     _mfCiv.replaceLeftPanel(ipPanel);
-    ipPanel.setDefaultFocus(); // default focus only works after panel is
-    // displayed
-  }
-
-  public List<String> getAdventureList()
-  {
-    List<String> adventures = _advReg.getAdventureList();
-    return adventures;
+    ipPanel.setDefaultFocus(); // only works after panel is displayed
+    toggleSummonEnabled();
   }
 
   /**
    * Sets Summon Heroes button to enabled or disabled based on the presence of saved heroes in the
    * dormitory.
    */
-  public void toggleSummonEnabled()
+  private void toggleSummonEnabled()
   {
     int nbrHeroes = _dorm.getNbrElements();
     if (nbrHeroes > 0) {
       _summonButton.setEnabled(true);
-      if (nbrHeroes == 1)
-      {
+      if (nbrHeroes == 1) {
         _summonButton.setToolTipText(nbrHeroes + SMN_ENBLD_SINGL_HOVER);
       } else {
         _summonButton.setToolTipText(nbrHeroes + SUMMON_ENABLED_HOVER);
@@ -158,7 +149,7 @@ public class MainActionCiv extends BaseCiv
    * 
    * @param adventureName selected from the Adventure by the user
    */
-  public void loadSelectedAdventure(String adventureName)
+  private void loadSelectedAdventure(String adventureName)
   {
     Adventure adv = _advReg.getAdventure(adventureName);
 
@@ -223,26 +214,23 @@ public class MainActionCiv extends BaseCiv
   private JButton createAdventureButton()
   {
     JButton button = createButtonWithTextAndIcon(ADV_IMAGE, LOAD_ADVENTURE_TITLE);
-    button.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e)
-      {
-        List<String> adventures = _advReg.getAdventureList();
-        Object[] adventuresArr = adventures.toArray();
-        Object selectedValue =
-            JOptionPane.showInputDialog(null, "Select an Adventure", "Adventures",
-                JOptionPane.INFORMATION_MESSAGE, null, adventuresArr,
-                adventuresArr[0]);
-        if (selectedValue != null) {
-          loadSelectedAdventure((String) selectedValue);
-        }
-      }
-    });
+    button.addActionListener(action -> selectAdventure());
     return button;
   }
+  
+  private void selectAdventure()
+  {
+    List<String> adventures = _advReg.getAdventureList();
+    Object[] adventuresArr = adventures.toArray();
+    Object selectedValue =
+        JOptionPane.showInputDialog(null, "Select an Adventure", "Adventures",
+            JOptionPane.INFORMATION_MESSAGE, null, adventuresArr,
+            adventuresArr[0]);
+    if (selectedValue != null) {
+      loadSelectedAdventure((String) selectedValue);
+    }
+  }
 
-  // ============================================================
-  // Public methods:
-  // ============================================================
 
   private JButton createButtonWithTextAndIcon(String imageFilePath, String buttonText)
   {
@@ -255,9 +243,6 @@ public class MainActionCiv extends BaseCiv
     return button;
   }
 
-  // ============================================================
-  // Public methods:
-  // ============================================================
 
   /**
    * Create the button to call the NewHeroCiv, which will control the NewHeroIOPanel that collects
@@ -272,43 +257,32 @@ public class MainActionCiv extends BaseCiv
     return button;
   }
 
-  // ============================================================
-  // Public methods:
-  // ============================================================
 
   /* This button code is followed by a series of inner methods */
   private JButton createSummonHeroesButton()
   {
     JButton button = createButtonWithTextAndIcon(HALL_IMAGE, SUMMON_HERO_TITLE);
-
-    button.addActionListener(new ActionListener() {
-
-      // This happens when SummonHeroes is clicked
-      public void actionPerformed(ActionEvent e)
-      {
-        // Show Hero chooser
-        List<Hero> heroList = _dorm.getAll();
-        List<String> plateList = new ArrayList<String>(heroList.size());
-        for (Hero hero : heroList) {
-          plateList.add(hero.toNamePlate());
-        }
-
-        // Convert to "plain" array
-        Object[] plateArray = plateList.toArray();
-        // Capture selection
-        String selectedPlate = null;
-        selectedPlate =
-            (String) JOptionPane.showInputDialog(null, "Select your Hero", "Heroes",
-                JOptionPane.PLAIN_MESSAGE, null, plateArray, plateArray[0]);
-
-        // Get matching name from hero list
-        if (selectedPlate != null) {
-          Hero selectedHero = heroList.get(plateList.indexOf(selectedPlate));
-          _hdCiv.displayHero(selectedHero, false);
-        }
-      }
-    });
+    button.addActionListener(action -> summonHero());
     return button;
   }
 
+  private void summonHero()
+  {
+    List<Hero> heroList = _dorm.getAll();
+    List<String> plateList = new ArrayList<String>(heroList.size());
+    for (Hero hero : heroList) {
+      plateList.add(hero.toNamePlate());
+    }
+
+    Object[] plateArray = plateList.toArray();
+
+    String selectedPlate =
+        (String) JOptionPane.showInputDialog(null, "Select your Hero", "Heroes",
+            JOptionPane.PLAIN_MESSAGE, null, plateArray, plateArray[0]);
+
+    if (selectedPlate != null) {
+      Hero selectedHero = heroList.get(plateList.indexOf(selectedPlate));
+      _hdCiv.displayHero(selectedHero, false);
+    }
+  }
 } // end of MainActionCiv class
