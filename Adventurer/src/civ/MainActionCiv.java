@@ -88,7 +88,7 @@ public class MainActionCiv extends BaseCiv
   public MainActionCiv(MainframeCiv mfciv)
   {
     _mfCiv = mfciv;
-    _hdCiv = new HeroDisplayCiv(_mfCiv);
+    _hdCiv = new HeroDisplayCiv(_mfCiv, new HeroRegistry());
     constructCoreMembers();
     _mfCiv.replaceLeftPanel(createActionPanel());
   }

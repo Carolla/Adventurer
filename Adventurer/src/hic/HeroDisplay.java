@@ -9,8 +9,6 @@ package hic;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.EnumMap;
 import java.util.List;
 
@@ -32,65 +30,55 @@ import civ.HeroDisplayCiv;
 
 
 /**
- * Allows the user to show their Person's many attributes. <BL>
- * <LI>Name: All Persons must have a name by which they are addressed, and are associated with a
- * file by which they are saved.</LI>
+ * Allows the user to show their Person's many attributes. <BL> <LI>Name: All Persons must have a
+ * name by which they are addressed, and are associated with a file by which they are saved.</LI>
  * <LI>Experience Points (XP): Reflects the amount of playing experiences encountered by the Person,
  * and gained toward next Level of ability. XP are awarded for gold and treasure recovered, monsters
- * killed, and puzzles solved. All start at XP = 0.</LI>
- * <LI>Level: Reflects the Person's ability, Level 0 being lowest (usually a Peasant), and Level 1
- * usually being the lowest Guild member. Levels may rise to Level 10, master of all they command. A
- * Person may rise in Level (be promoted) in their Guild after obtaining enough XP to achieve that
- * Level. All start at Level = 0.</LI>
- * <LI>Hit Points (HP): Reflects the life of the Person. HP are lost each time the Person is damaged
- * in a fight, and are recovered through healing. When the Person's HP = 0, he or she is dead.
- * (There are other ways of dying too, of course.) HP depend on the Person's Klass and Level;
- * Peasants, lowest of all, start at HP = 10.</LI>
- * <LI>Race: Human is the default, but others are available: Dwarf, Elf, Gnome, Half-Elf, Half-Orc,
- * or Hobbit. Each have special penalties and bonuses compared to the Human.</LI>
- * <LI>Klass: Everyone starts as a Peasant, but can become a Fighter, Cleric, Wizard, or Rogue at
- * the proper Guild. All but Fighters inherit special abilities.</LI>
+ * killed, and puzzles solved. All start at XP = 0.</LI> <LI>Level: Reflects the Person's ability,
+ * Level 0 being lowest (usually a Peasant), and Level 1 usually being the lowest Guild member.
+ * Levels may rise to Level 10, master of all they command. A Person may rise in Level (be promoted)
+ * in their Guild after obtaining enough XP to achieve that Level. All start at Level = 0.</LI> <LI>
+ * Hit Points (HP): Reflects the life of the Person. HP are lost each time the Person is damaged in
+ * a fight, and are recovered through healing. When the Person's HP = 0, he or she is dead. (There
+ * are other ways of dying too, of course.) HP depend on the Person's Klass and Level; Peasants,
+ * lowest of all, start at HP = 10.</LI> <LI>Race: Human is the default, but others are available:
+ * Dwarf, Elf, Gnome, Half-Elf, Half-Orc, or Hobbit. Each have special penalties and bonuses
+ * compared to the Human.</LI> <LI>Klass: Everyone starts as a Peasant, but can become a Fighter,
+ * Cleric, Wizard, or Rogue at the proper Guild. All but Fighters inherit special abilities.</LI>
  * <LI>Armor Class (AC): Reflects defensive ability, mostly due to the armor worn. AC also slightly
- * reflects the Dexterity a Person has to avoid being hit.</LI>
- * <LI>Age: Reflects how old the Person is. As the Person plays, and increases in Age, base traits
- * change, and modifiers adjust accordingly. Age also reflects how long the Person spent in play.
- * </LI>
- * <LI>Gender: Females are, on average, shorter, lighter, and have less Strength than Males, but
- * have a higher Constitution and Charisma.</LI>
- * <LI>Height: The height of the Person, affects speed slightly; also defines how high the Person
- * can reach for something. Height depends on the Person's Race.</LI>
- * <LI>Weight: The weight of the Person, affects non-lethal combat somewhat; also limits the
- * strength of bridges the Person may cross safely. Weight depends on the Person's Race.</LI>
- * <LI>Occupation: Although "No Skills" is an option, most occupations reflect some special skill
- * that the Person acquired in earlier life.</LI>
- * <LI>Gold: The amount of wealth the Person owns, and carries about (adding to his load). The
- * <i>Gold</i> value is the number of gold pieces and silver pieces in G.S format (10 sp = 1 gp).
- * Peasants start with the least gold; Guilds will confer a little wealth on the Person, depending
- * on the Guild.</LI>
- * <LI>Gold Banked: The amount of wealth the Person has stashed away, usually in the local Bank.
- * Banks will charge interest on the amount periodically, but you won't have to carry it around with
- * you, and take the risk of being robbed.</LI>
- * <LI>Weight Carried: The weight the Person is currently carrying. Some weight may slow the Person,
- * and there is a limit to how much the Person can carry. Weight carried affects non-lethal combat
- * somewhat; also limits the strength of bridges the Person may cross safely. Weight carried depends
- * on the Person's Strength.</LI>
- * <LI>Max Languages: The total number of languages a Person can learn, in addition to <i>Common</i>
- * and a Race language.</LI>
- * <LI>Languages: All Persons know the <i>Common</i> language, and perhaps a Race language. Each
- * Person has the ability to learn other languages.</LI>
+ * reflects the Dexterity a Person has to avoid being hit.</LI> <LI>Age: Reflects how old the Person
+ * is. As the Person plays, and increases in Age, base traits change, and modifiers adjust
+ * accordingly. Age also reflects how long the Person spent in play.</LI> <LI>Gender: Females are,
+ * on average, shorter, lighter, and have less Strength than Males, but have a higher Constitution
+ * and Charisma.</LI> <LI>Height: The height of the Person, affects speed slightly; also defines how
+ * high the Person can reach for something. Height depends on the Person's Race.</LI> <LI>Weight:
+ * The weight of the Person, affects non-lethal combat somewhat; also limits the strength of bridges
+ * the Person may cross safely. Weight depends on the Person's Race.</LI> <LI>Occupation: Although
+ * "No Skills" is an option, most occupations reflect some special skill that the Person acquired in
+ * earlier life.</LI> <LI>Gold: The amount of wealth the Person owns, and carries about (adding to
+ * his load). The <i>Gold</i> value is the number of gold pieces and silver pieces in G.S format (10
+ * sp = 1 gp). Peasants start with the least gold; Guilds will confer a little wealth on the Person,
+ * depending on the Guild.</LI> <LI>Gold Banked: The amount of wealth the Person has stashed away,
+ * usually in the local Bank. Banks will charge interest on the amount periodically, but you won't
+ * have to carry it around with you, and take the risk of being robbed.</LI> <LI>Weight Carried: The
+ * weight the Person is currently carrying. Some weight may slow the Person, and there is a limit to
+ * how much the Person can carry. Weight carried affects non-lethal combat somewhat; also limits the
+ * strength of bridges the Person may cross safely. Weight carried depends on the Person's Strength.
+ * </LI> <LI>Max Languages: The total number of languages a Person can learn, in addition to
+ * <i>Common</i> and a Race language.</LI> <LI>Languages: All Persons know the <i>Common</i>
+ * language, and perhaps a Race language. Each Person has the ability to learn other languages.</LI>
  * <LI>Description: Deduced from hair color, weight, height, gender, race, Klass and CHR, it follows
  * the formula "A [body type] [gender] [race] [klass] with [color] hair. She | He is [CHR value]."
  * Body type is derived from weight, height, body-mass-index ratio, e.g. "tall and thin", or
- * "short and squat". CHR value ranges from "stunningly beautiful" (18) to "horribly scarred" (8).
- * </LI>
+ * "short and squat". CHR value ranges from "stunningly beautiful" (18) to "horribly scarred" (8).</LI>
  * <LI>Inventory: The list of Items carried by the Person, usually in their backpack. Items are
- * found in the Dungeon, or purchased in the Store. If you don't have it, you can't use it!</LI>
- * <LI>Special Abilities: The behaviors are specific to a Person's occupation, Race, and Klass.
- * Special abilities may involve detecting secret doors (e.g., Rogues and Elves), throwing spells
- * (e.g. Wizards and Clerics), or just plain luck (e.g, Gamblers).</LI>
- * <LI>Magic Bag (Wizard) or Sacred Satchel (Cleric): If the Person is a spellcaster, then this
- * special container for spell items will appear. Inventory items can be moved to or from the Bag or
- * Satchel to be available for Spells.</LI> </BL>
+ * found in the Dungeon, or purchased in the Store. If you don't have it, you can't use it!</LI> <LI>
+ * Special Abilities: The behaviors are specific to a Person's occupation, Race, and Klass. Special
+ * abilities may involve detecting secret doors (e.g., Rogues and Elves), throwing spells (e.g.
+ * Wizards and Clerics), or just plain luck (e.g, Gamblers).</LI> <LI>Magic Bag (Wizard) or Sacred
+ * Satchel (Cleric): If the Person is a spellcaster, then this special container for spell items
+ * will appear. Inventory items can be moved to or from the Bag or Satchel to be available for
+ * Spells.</LI> </BL>
  * <P>
  * 
  * @see NewHeroIPPanel
@@ -161,7 +149,7 @@ public class HeroDisplay extends ChronosPanel
    * Create the GUI and populate it with various data maps
    * 
    * @param hdCiv the intermediary between this GUI and the Person
-   * @param ds 
+   * @param ds
    */
   public HeroDisplay(HeroDisplayCiv hdCiv)
   {
@@ -175,7 +163,6 @@ public class HeroDisplay extends ChronosPanel
     _magicPanel = createTabPanel();
   }
 
-  
 
   // =================================================================
   // PRIVATE METHODS
@@ -193,7 +180,7 @@ public class HeroDisplay extends ChronosPanel
     _ds = ds;
     setTitle(heroNameplate(_ds));
     _heroName = ds.get(PersonKeys.NAME);
-    
+
     // GENERAL SETUP
     setLayout(new MigLayout());
     setBackground(_backColor);
@@ -211,8 +198,9 @@ public class HeroDisplay extends ChronosPanel
   {
     _tabPane.addTab("Attributes", null, buildAttributePanel(),
         "View Hero's personal characteristics");
-    
-    _tabPane.addTab("Skills & Abilities", null, _skillPanel, "View Hero's special skills and abilities");
+
+    _tabPane.addTab("Skills & Abilities", null, _skillPanel,
+        "View Hero's special skills and abilities");
     _tabPane.addTab("Inventory", null, _invenPanel, "View Hero's items owned, worn, or wielded");
     _tabPane.addTab("Magic Items", null, _magicPanel, "View Hero's enchanted items");
     _tabPane.setSelectedIndex(0);
@@ -360,13 +348,13 @@ public class HeroDisplay extends ChronosPanel
   private JPanel buildButtonPanel(boolean firstTime)
   {
     JButton saveButton = new JButton("Save");
-    saveButton.addActionListener(new SaveActionListener());
+    saveButton.addActionListener(action -> saveAction());
 
     JButton delButton = new JButton("Delete");
-    delButton.addActionListener(new DeleteActionListener());
+    delButton.addActionListener(action -> deleteAction());
 
     JButton cancelButton = new JButton("Cancel");
-    cancelButton.addActionListener(new CancelActionListener());
+    cancelButton.addActionListener(action -> cancelAction());
 
     JPanel buttonPanel = new JPanel();
     buttonPanel.setBackground(_backColor);
@@ -393,7 +381,8 @@ public class HeroDisplay extends ChronosPanel
     _skillPanel.add(gridCell("", _ds.get(PersonKeys.LITERACY)), "gaptop 10, span 6, growx, wrap");
 
     // Section 2: Occupational Skills title
-    _skillPanel.add(buildMultiCell(_ds.get(PersonKeys.OCCUPATION) + " SKILLS: ", ocpSkills), "growx, wrap");
+    _skillPanel.add(buildMultiCell(_ds.get(PersonKeys.OCCUPATION) + " SKILLS: ", ocpSkills),
+        "growx, wrap");
 
     // Section 3: Racial skills
     _skillPanel
@@ -410,17 +399,18 @@ public class HeroDisplay extends ChronosPanel
    * and total. Wielded Weapon and Armor Worn is at top. Inventory is organized by category: ARMS,
    * ARMOR, CLOTHING, EQUIPMENT, PROVISIONS, LIVESTOCK, TRANSPORT : item, quantity, weight, total
    * weight. See also Sacred Satchel and Magic Bag
-   * @param inventory 
+   * 
+   * @param inventory
    */
   public void addInventory(Inventory inventory)
-  {  
+  {
     _invenPanel.add(gridCell("Wielded Weapon:", "None"), "gaptop 10, span 6, growx, wrap 0");
     _invenPanel.add(gridCell("Armor Worn: ", " None"), "span 6, growx, wrap 0");
-  
+
     JPanel blankLine = gridCell("", "");
     blankLine.setBackground(Color.DARK_GRAY);
     _invenPanel.add(blankLine, "span 6, growx, wrap 0");
-  
+
     for (ItemCategory category : ItemCategory.values()) {
       List<String> nameList = inventory.getNameList(category);
       _invenPanel.add(buildMultiCell(category.toString(), nameList), "growx, wrap");
@@ -429,7 +419,8 @@ public class HeroDisplay extends ChronosPanel
 
   /**
    * Builds the inventory of magic items (not spell materials)
-   * @param nameList 
+   * 
+   * @param nameList
    */
   public void addMagicItem(List<String> nameList)
   {
@@ -471,8 +462,6 @@ public class HeroDisplay extends ChronosPanel
     _tabPane.addTab("Spell Book", null, spellPanel, "View Hero's known spells.");
   }
 
-
-  
 
   // ======================================================================
   // PRIVATE METHODS
@@ -521,7 +510,6 @@ public class HeroDisplay extends ChronosPanel
   }
 
 
-
   private JPanel createTabPanel()
   {
     JPanel panel = new JPanel(new MigLayout("fillx, ins 0"));
@@ -543,10 +531,10 @@ public class HeroDisplay extends ChronosPanel
     msgArea.setEditable(false);
     msgArea.setLineWrap(true); // auto line wrapping doesn't seem to work
     msgArea.setWrapStyleWord(true);
-  
+
     // Display the title
     msgArea.append(" " + title + Constants.NEWLINE);
-  
+
     // Display the detailed skill list
     if (nameList.size() == 0) {
       msgArea.append(" + None");
@@ -555,7 +543,7 @@ public class HeroDisplay extends ChronosPanel
         msgArea.append(" + " + name + Constants.NEWLINE);
       }
     }
-  
+
     // Add the text area into a JPanel cell
     JPanel cell = new JPanel(new MigLayout("ins 0"));
     cell.add(msgArea, "growx, wrap");
@@ -570,7 +558,7 @@ public class HeroDisplay extends ChronosPanel
    * 
    * @param label the left-aligned text of the label, cannot be null but can be empty
    * @param value the right-aligned stringified value to display after the label, cannot be null but
-   *        can be empty
+   *          can be empty
    * @return bordered grid cell as Component
    */
   private JPanel gridCell(String label, String value)
@@ -578,13 +566,13 @@ public class HeroDisplay extends ChronosPanel
     JPanel p = new JPanel(new MigLayout("inset 3"));
     p.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
 
-    //    int cellWidth = DATA_WIDTH / PANELS_IN_ROW;
-    //    p.setPreferredSize(new Dimension(cellWidth, FONT_HT));
+    // int cellWidth = DATA_WIDTH / PANELS_IN_ROW;
+    // p.setPreferredSize(new Dimension(cellWidth, FONT_HT));
 
-    //    int datalen = label.length() + value.length() + 1;
-    //    if (datalen > cellWidth) {
-    //      String multiline = "<html>" + label + "<br>" + value + "<br></html>";
-    //      p.add(new JLabel(multiline, SwingConstants.LEFT));
+    // int datalen = label.length() + value.length() + 1;
+    // if (datalen > cellWidth) {
+    // String multiline = "<html>" + label + "<br>" + value + "<br></html>";
+    // p.add(new JLabel(multiline, SwingConstants.LEFT));
 
     p.add(new JLabel(label, SwingConstants.LEFT));
     p.add(new JLabel(value, SwingConstants.RIGHT));
@@ -600,14 +588,14 @@ public class HeroDisplay extends ChronosPanel
   private boolean deletePerson()
   {
     Object[] options = {"Yes", "No"};
-    int n = JOptionPane.showOptionDialog(this, //parent
-        "Are you sure you want to delete?",    //message
-        "Delete confirmation",                 //title
-        JOptionPane.YES_NO_OPTION,             //option type
-        JOptionPane.QUESTION_MESSAGE,          //message type
-        null,                                  //icon
-        options,                               //options
-        options[1]);                           //initial
+    int n = JOptionPane.showOptionDialog(this, // parent
+        "Are you sure you want to delete?", // message
+        "Delete confirmation", // title
+        JOptionPane.YES_NO_OPTION, // option type
+        JOptionPane.QUESTION_MESSAGE, // message type
+        null, // icon
+        options, // options
+        options[1]); // initial
     if (n == JOptionPane.YES_OPTION) {
       return _hdCiv.deletePerson();
     } else {
@@ -631,9 +619,12 @@ public class HeroDisplay extends ChronosPanel
     _hdCiv.savePerson(OVERWRITE);
   }
 
-  /** Swap the main panel title with the HeroDisplay title 
-   * @param ds 
-   * @return */
+  /**
+   * Swap the main panel title with the HeroDisplay title
+   * 
+   * @param ds
+   * @return
+   */
   private static String heroNameplate(EnumMap<PersonKeys, String> ds)
   {
     // Two-row namePlate before Attribute grid: Name, Gender, Race, Klass
@@ -646,57 +637,47 @@ public class HeroDisplay extends ChronosPanel
   }
 
 
-  private final class CancelActionListener implements ActionListener
+  private void cancelAction()
   {
-    public void actionPerformed(ActionEvent event)
-    {
+    _hdCiv.backToMain(null);
+  }
+
+
+  private void deleteAction()
+  {
+    if (deletePerson()) {
+      JOptionPane.showMessageDialog(
+          HeroDisplay.this,
+          _heroName + CONFIRM_DEL_MSG,
+          CONFIRM_DEL_TITLE,
+          JOptionPane.INFORMATION_MESSAGE);
+    } else {
+      String[] sorry = new String[1];
+      sorry[0] = "You dropped your scythe!!";
+      JOptionPane.showOptionDialog(
+          HeroDisplay.this,
+          DEL_ERROR_MSG + _heroName,
+          DEL_ERROR_TITLE,
+          JOptionPane.DEFAULT_OPTION,
+          JOptionPane.ERROR_MESSAGE,
+          null,
+          sorry,
+          null);
+    }
+  }
+
+  private void saveAction()
+  {
+    if (_hdCiv.savePerson(NO_OVERWRITE)) {
+      JOptionPane.showMessageDialog(
+          HeroDisplay.this,
+          _heroName + CONFIRM_SAVE_MSG,
+          CONFIRM_SAVE_TITLE,
+          JOptionPane.INFORMATION_MESSAGE);
       _hdCiv.backToMain(null);
-    }
-  }
-
-
-  private final class DeleteActionListener implements ActionListener
-  {
-    public void actionPerformed(ActionEvent event)
-    {
-      if (deletePerson()) {
-        JOptionPane.showMessageDialog(
-            HeroDisplay.this,
-            _heroName + CONFIRM_DEL_MSG,
-            CONFIRM_DEL_TITLE,
-            JOptionPane.INFORMATION_MESSAGE);
-      } else {
-        String[] sorry = new String[1];
-        sorry[0] = "You dropped your scythe!!";
-        JOptionPane.showOptionDialog(
-            HeroDisplay.this,
-            DEL_ERROR_MSG + _heroName,
-            DEL_ERROR_TITLE,
-            JOptionPane.DEFAULT_OPTION,
-            JOptionPane.ERROR_MESSAGE,
-            null,
-            sorry,
-            null);
-      }
-    }
-  }
-
-
-  private final class SaveActionListener implements ActionListener
-  {
-    public void actionPerformed(ActionEvent event)
-    {
-      if (_hdCiv.savePerson(NO_OVERWRITE)) {
-        JOptionPane.showMessageDialog(
-            HeroDisplay.this,
-            _heroName + CONFIRM_SAVE_MSG,
-            CONFIRM_SAVE_TITLE,
-            JOptionPane.INFORMATION_MESSAGE);
-        _hdCiv.backToMain(null);
-      } else {
-        // Respond to save attempt failure to Rename or Overwrite the Hero
-        doAlternateSaveAction();
-      }
+    } else {
+      // Respond to save attempt failure to Rename or Overwrite the Hero
+      doAlternateSaveAction();
     }
   }
 } // end HeroDisplay class

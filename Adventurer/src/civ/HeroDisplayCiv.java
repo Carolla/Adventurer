@@ -49,10 +49,10 @@ public class HeroDisplayCiv extends BaseCiv
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
-  public HeroDisplayCiv(MainframeCiv mfCiv)
+  public HeroDisplayCiv(MainframeCiv mfCiv, HeroRegistry dorm)
   {
     _mfCiv = mfCiv;
-    _dorm = new HeroRegistry();
+    _dorm = dorm;
     doConstructorWork();
   }
 
