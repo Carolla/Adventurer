@@ -103,25 +103,20 @@ import civ.HeroDisplayCiv;
 @SuppressWarnings("serial")
 public class HeroDisplay extends ChronosPanel
 {
-  private final String PROMPT_HERO_EXISTS_MSG =
-      "Do you want to overwrite, rename, or create a new Hero?";
+  private final String PROMPT_HERO_EXISTS_MSG = "Overwrite, rename, or create a new Hero?";
   private final String PROMPT_HERO_EXISTS_TITLE = "Hero already exists.";
+
   private final String CONFIRM_SAVE_MSG = " is resting in the dormitory until later.";
   private final String CONFIRM_SAVE_TITLE = " Hero is now Registered";
+
   private final String CONFIRM_OVERWRITE_MSG = " has been overwritten in the dormitory.";
   private final String CONFIRM_OVERWRITE_TITLE = "Overwriting Hero";
+
   private final String CONFIRM_RENAME_MSG = " has been renamed";
   private final String CONFIRM_RENAME_TITLE = "Renaming Hero";
 
-  // Specific file error messages not handled by FileChooser
-  private final String DEL_ERROR_MSG = "Error! Problem deleting ";
-  private final String DEL_ERROR_TITLE = "HERO DELETE ERROR";
   private final String CONFIRM_DEL_MSG = " is now in a better place.";
   private final String CONFIRM_DEL_TITLE = " Hero is now Deceased";
-
-  /** Option to overwrite a new Hero or not */
-  private final boolean OVERWRITE = true;
-  private final boolean NO_OVERWRITE = false;
 
   private final int PANEL_WIDTH = Mainframe.getWindowSize().width / 2;
   private final int PANEL_HEIGHT = Mainframe.getWindowSize().height;
@@ -131,15 +126,15 @@ public class HeroDisplay extends ChronosPanel
   private Color _backColor = Constants.MY_BROWN;
 
   /** The backend CIV for this panel */
-  private HeroDisplayCiv _hdCiv = null;
+  private final HeroDisplayCiv _hdCiv;
 
   /** Keys to Hero data to be displayed */
   EnumMap<PersonKeys, String> _ds = new EnumMap<PersonKeys, String>(PersonKeys.class);
   private String _heroName = "No hero selected";
-  private JPanel _skillPanel;
-  private JPanel _invenPanel;
-  private JPanel _magicPanel;
-  private JTabbedPane _tabPane;
+  private final JPanel _skillPanel;
+  private final JPanel _invenPanel;
+  private final JPanel _magicPanel;
+  private final JTabbedPane _tabPane;
 
   // ===============================================================
   // CONSTRUCTOR(S) AND RELATED METHODS
@@ -154,7 +149,6 @@ public class HeroDisplay extends ChronosPanel
   public HeroDisplay(HeroDisplayCiv hdCiv)
   {
     super("Nameplate goes here");
-
     _hdCiv = hdCiv;
 
     _tabPane = new JTabbedPane();
@@ -496,7 +490,7 @@ public class HeroDisplay extends ChronosPanel
         break;
 
       case PROMPT_OVERWRITE:
-        _hdCiv.savePerson(OVERWRITE);
+        _hdCiv.overwritePerson();
         JOptionPane.showMessageDialog(this, _heroName + CONFIRM_OVERWRITE_MSG,
             CONFIRM_OVERWRITE_TITLE, JOptionPane.INFORMATION_MESSAGE);
         // Return to main action buttons
@@ -585,7 +579,7 @@ public class HeroDisplay extends ChronosPanel
    * 
    * @return true if the Person was removed successfully, else false
    */
-  private boolean deletePerson()
+  private void deletePerson()
   {
     Object[] options = {"Yes", "No"};
     int n = JOptionPane.showOptionDialog(this, // parent
@@ -596,10 +590,9 @@ public class HeroDisplay extends ChronosPanel
         null, // icon
         options, // options
         options[1]); // initial
+
     if (n == JOptionPane.YES_OPTION) {
-      return _hdCiv.deletePerson();
-    } else {
-      return false;
+      _hdCiv.deletePerson();
     }
   }
 
@@ -616,18 +609,12 @@ public class HeroDisplay extends ChronosPanel
         JOptionPane.QUESTION_MESSAGE);
 
     _hdCiv.renamePerson(newName);
-    _hdCiv.savePerson(OVERWRITE);
+    _hdCiv.overwritePerson();
   }
 
-  /**
-   * Swap the main panel title with the HeroDisplay title
-   * 
-   * @param ds
-   * @return
-   */
+
   private static String heroNameplate(EnumMap<PersonKeys, String> ds)
   {
-    // Two-row namePlate before Attribute grid: Name, Gender, Race, Klass
     String namePlate = ds.get(PersonKeys.NAME) + ": "
         + ds.get(PersonKeys.GENDER) + " "
         + ds.get(PersonKeys.RACENAME) + " "
@@ -645,30 +632,17 @@ public class HeroDisplay extends ChronosPanel
 
   private void deleteAction()
   {
-    if (deletePerson()) {
-      JOptionPane.showMessageDialog(
-          HeroDisplay.this,
-          _heroName + CONFIRM_DEL_MSG,
-          CONFIRM_DEL_TITLE,
-          JOptionPane.INFORMATION_MESSAGE);
-    } else {
-      String[] sorry = new String[1];
-      sorry[0] = "You dropped your scythe!!";
-      JOptionPane.showOptionDialog(
-          HeroDisplay.this,
-          DEL_ERROR_MSG + _heroName,
-          DEL_ERROR_TITLE,
-          JOptionPane.DEFAULT_OPTION,
-          JOptionPane.ERROR_MESSAGE,
-          null,
-          sorry,
-          null);
-    }
+    deletePerson();
+    JOptionPane.showMessageDialog(
+        HeroDisplay.this,
+        _heroName + CONFIRM_DEL_MSG,
+        CONFIRM_DEL_TITLE,
+        JOptionPane.INFORMATION_MESSAGE);
   }
 
   private void saveAction()
   {
-    if (_hdCiv.savePerson(NO_OVERWRITE)) {
+    if (_hdCiv.createPerson()) {
       JOptionPane.showMessageDialog(
           HeroDisplay.this,
           _heroName + CONFIRM_SAVE_MSG,

@@ -56,7 +56,7 @@ public class HeroDisplayCiv extends BaseCiv
     doConstructorWork();
   }
 
-  //Override for testing to avoid GUI
+  // Override for testing to avoid GUI
   protected void doConstructorWork()
   {
     _heroDisp = new HeroDisplay(this);
@@ -87,7 +87,7 @@ public class HeroDisplayCiv extends BaseCiv
     EnumMap<PersonKeys, String> _outputMap = hero.loadAttributes();
     addAdditionalHeroStuff(hero);
     _heroDisp.displayHero(_outputMap, firstTime);
-    
+
     _mfCiv.replaceLeftPanel(_heroDisp);
   }
 
@@ -108,11 +108,9 @@ public class HeroDisplayCiv extends BaseCiv
    * 
    * @return true if the delete worked correctly; else false
    */
-  public boolean deletePerson()
+  public void deletePerson()
   {
-    System.err.println("Can't delete hero right now");
-    System.exit(-1);
-    return false;
+    _dorm.delete(_hero);
   }
 
   /**
@@ -126,23 +124,14 @@ public class HeroDisplayCiv extends BaseCiv
     _hero.setName(name);
   }
 
-  /**
-   * Save the Hero into the Dormitory, adding a new Hero or overwriting an old one
-   * 
-   * @param overwrite if true, then will overwrite an existing Hero
-   * @return true if all save operations worked as expected
-   */
-  public boolean savePerson(boolean overwrite)
+  public boolean overwritePerson()
   {
-    boolean success = false;
+    return _dorm.update(_hero);
+  }
 
-    if (!overwrite) {
-      success = _dorm.add(_hero);
-    } else {
-      success = _dorm.update(_hero);
-    }
-
-    return success;
+  public boolean createPerson()
+  {
+    return _dorm.add(_hero);
   }
 } // end of HeroDisplayCiv class
 

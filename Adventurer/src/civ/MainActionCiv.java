@@ -110,6 +110,36 @@ public class MainActionCiv extends BaseCiv
   // Public methods
   // ============================================================
 
+  // ============================================================
+  // Private methods
+  // ============================================================
+
+  /**
+   * Load the selected adventure from the Adventure registry. Replace the opening button panel with
+   * the IOPanel (text and command line)
+   * 
+   * @param adventureName selected from the Adventure by the user
+   */
+  public void loadSelectedAdventure(String adventureName)
+  {
+    Adventure adv = _advReg.getAdventure(adventureName);
+
+    // Create all the objects used in town
+    BuildingDisplayCiv bldgCiv = new BuildingDisplayCiv(_mfCiv, adv,
+        (BuildingRegistry) _rf.getRegistry(RegKey.BLDG));
+
+    CommandFactory cmdFac = new CommandFactory(_mfCiv, bldgCiv);
+    cmdFac.initMap();
+    CommandParser parser = new CommandParser(_skedder, cmdFac);
+
+    IOPanel iop = new IOPanel(parser);
+    _mfCiv.replaceLeftPanel(iop);
+    iop.requestFocusInWindow();
+
+    // Wait until everything created to finally display the town
+    bldgCiv.openTown();
+  }
+
   private void createHero()
   {
     NewHeroCiv nhCiv = new NewHeroCiv(_mfCiv, _dorm);
@@ -138,40 +168,6 @@ public class MainActionCiv extends BaseCiv
       _summonButton.setToolTipText(SUMMON_DISABLED_HOVER);
     }
   }
-
-  // ============================================================
-  // Private methods
-  // ============================================================
-
-  /**
-   * Load the selected adventure from the Adventure registry. Replace the opening button panel with
-   * the IOPanel (text and command line)
-   * 
-   * @param adventureName selected from the Adventure by the user
-   */
-  private void loadSelectedAdventure(String adventureName)
-  {
-    Adventure adv = _advReg.getAdventure(adventureName);
-
-    // Create all the objects used in town
-    BuildingDisplayCiv bldgCiv = new BuildingDisplayCiv(_mfCiv, adv,
-        (BuildingRegistry) _rf.getRegistry(RegKey.BLDG));
-
-    CommandFactory cmdFac = new CommandFactory(_mfCiv, bldgCiv);
-    cmdFac.initMap();
-    CommandParser parser = new CommandParser(_skedder, cmdFac);
-
-    IOPanel iop = new IOPanel(parser);
-    _mfCiv.replaceLeftPanel(iop);
-    iop.requestFocusInWindow();
-
-    // Wait until everything created to finally display the town
-    bldgCiv.openTown();
-  }
-
-  // ============================================================
-  // Private methods
-  // ============================================================
 
   /**
    * Create the Adventure, Heroes, and Create-Hero buttons, and button panel for them
@@ -217,7 +213,7 @@ public class MainActionCiv extends BaseCiv
     button.addActionListener(action -> selectAdventure());
     return button;
   }
-  
+
   private void selectAdventure()
   {
     List<String> adventures = _advReg.getAdventureList();
@@ -257,8 +253,6 @@ public class MainActionCiv extends BaseCiv
     return button;
   }
 
-
-  /* This button code is followed by a series of inner methods */
   private JButton createSummonHeroesButton()
   {
     JButton button = createButtonWithTextAndIcon(HALL_IMAGE, SUMMON_HERO_TITLE);
