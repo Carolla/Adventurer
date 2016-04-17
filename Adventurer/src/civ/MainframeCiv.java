@@ -17,8 +17,8 @@ import hic.MainframeInterface;
 import chronos.civ.UserMsg;
 
 /**
- * The main civ behind the Adventurer program. 
- * It initializes the system and brings up the Mainframe, the program's starting screen. 
+ * The main civ behind the Adventurer program. It initializes the system and brings up the
+ * Mainframe, the program's starting screen.
  * 
  * @author Alan Cline
  * @author Tim Armstrong
@@ -34,8 +34,8 @@ public class MainframeCiv extends BaseCiv implements UserMsg
   private IOPanel _ioPanel;
   private ImagePanel _imagePanel;
 
-  private final String INITIAL_IMAGE = "ChronosLogo.jpg";
-  private final String INITIAL_IMAGE_TITLE = "Chronos Logo";
+  private static final String INITIAL_IMAGE = "ChronosLogo.jpg";
+  private static final String INITIAL_IMAGE_TITLE = "Chronos Logo";
 
 
   // ============================================================
@@ -44,7 +44,7 @@ public class MainframeCiv extends BaseCiv implements UserMsg
 
   public MainframeCiv()
   {
-	  this(new Mainframe());
+    this(new Mainframe());
   }
 
   public MainframeCiv(MainframeInterface mf)
@@ -56,7 +56,7 @@ public class MainframeCiv extends BaseCiv implements UserMsg
 
   protected void doConstructorWork()
   {
-	_mf.setImagePanel(_imagePanel);
+    _mf.setImagePanel(_imagePanel);
     displayImage(INITIAL_IMAGE_TITLE, INITIAL_IMAGE);
     _mf.replaceRightPanel(_imagePanel);
     new MainActionCiv(this);
@@ -87,7 +87,7 @@ public class MainframeCiv extends BaseCiv implements UserMsg
 
   public void displayImage(String title, String imageName)
   {
-	_mf.displayImage(title, imageName);	  
+    _mf.displayImage(title, imageName);
   }
 
 
@@ -119,11 +119,12 @@ public class MainframeCiv extends BaseCiv implements UserMsg
 
   /**
    * Allows left-side panel title to be set externally
+   * 
    * @param title to set the title for
    */
   public void setLeftPanelTitle(String title)
   {
-      _mf.setLeftTitle(title);
+    _mf.setLeftTitle(title);
   }
 
 

@@ -71,7 +71,7 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
   private ChronosPanel _leftHolder;
   /** Empty right-side panel holder for initial standard panels. */
   private ChronosPanel _rightHolder;
-    
+
   /** Keep panel states to return to in case CANCEL is hit */
   private Deque<ChronosPanel> _leftPanelStack = new ArrayDeque<ChronosPanel>(5);
   private Deque<ChronosPanel> _rightPanelStack = new ArrayDeque<ChronosPanel>(5);
@@ -111,18 +111,18 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
    * manages program control at the highest level.
    */
   public Mainframe()
-  {    
+  {
     // Define the graphic elements
     setupSizeAndBoundaries();
     createFrameAndMenubar();
 
     // Create the one time help dialog
     prepareHelpDialog();
-        
+
     // Create the right side image panel and title
-//    _imagePanel = new ImagePanel();
-//    replaceRightPanel(_imagePanel);
-    
+    // _imagePanel = new ImagePanel();
+    // replaceRightPanel(_imagePanel);
+
     // Display the Mainframe and panels now
     setVisible(true);
     redraw();
@@ -159,10 +159,10 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     while (_leftPanelStack.size() > 1) {
       _leftPanelStack.pop();
     }
-    
-    if(newFrameTitle == null)
+
+    if (newFrameTitle == null)
     {
-    replaceLeftPanel(_leftPanelStack.pop());
+      replaceLeftPanel(_leftPanelStack.pop());
     } else {
       ChronosPanel panel = _leftPanelStack.pop();
       panel.setTitle(newFrameTitle);
@@ -251,19 +251,20 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
 
   /**
    * Allows external setting of the title into the border of the left-side panel
+   * 
    * @param new title for panel
    */
   public void setLeftTitle(String title)
   {
-      setPanelTitle(title);
-      redraw();
+    setPanelTitle(title);
+    redraw();
   }
 
-  
+
   // ============================================================
   // Private Methods
   // ============================================================
-  
+
   /**
    * Create mainframe layout and menubar; add left and right panel holders
    */
@@ -274,19 +275,19 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     // Add the frame listener to prompt and terminate the application
     setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     addWindowListener(new Terminator());
-  
+
     // Add menu
     setJMenuBar(new Menubar(this));
-  
+
     // Define a left and right ChronosPanel to manage subordinate right- and left-side panels
     _leftHolder = new ChronosPanel(" ");
     _leftHolder.setLayout(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
     _leftHolder = makePanelAsHolder(_leftHolder, Constants.MY_BROWN, Color.WHITE);
-  
+
     _rightHolder = new ChronosPanel(" ");
     _rightHolder.setLayout(new MigLayout("insets 0", "[grow,fill]", "[grow,fill]"));
     _rightHolder = makePanelAsHolder(_rightHolder, Constants.MY_BROWN, Color.WHITE);
-  
+
     _contentPane.add(_leftHolder, "cell 0 0, wmax 50%, grow");
     _contentPane.add(_rightHolder, "cell 1 0, wmax 50%, grow");
     _contentPane.setFocusable(true);
@@ -362,8 +363,8 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
 
 
   /**
-     * Display a title onto the border of the left side command panel. Add one space char on either
-     * side for aesthetics
+   * Display a title onto the border of the left side command panel. Add one space char on either
+   * side for aesthetics
    *
    * @param title of the panel to set
    */
@@ -428,16 +429,18 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
   } // end of Terminator inner class
 
 
-@Override
-public void setImagePanel(ImagePanel imagePanel) {
-    _imagePanel = imagePanel;	
-}
+  @Override
+  public void setImagePanel(ImagePanel imagePanel)
+  {
+    _imagePanel = imagePanel;
+  }
 
 
-@Override
-public void displayImage(String title, String imageName) {
+  @Override
+  public void displayImage(String title, String imageName)
+  {
     _imagePanel.setTitle(title);
     _imagePanel.setImageByName(imageName);
-}
-  
+  }
+
 } // end of Mainframe outer class

@@ -40,42 +40,37 @@ public class HeroDisplayCiv extends BaseCiv
   /** Associated GUI */
   private HeroDisplay _heroDisp = null;
 
-  /** Hero data are converted and sent to the GUI in this EnumMap */
-  private EnumMap<PersonKeys, String> _outputMap =
-      new EnumMap<PersonKeys, String>(PersonKeys.class);;
-
   /** Reference to parent civ */
   private final MainframeCiv _mfCiv;
-
-  /** Reference to MainActionCiv */
-  private final MainActionCiv _maCiv;
-
-  private HeroRegistry _dorm;
+  private final HeroRegistry _dorm;
 
 
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
-  /**
-   * Displays a newly created Hero before it is saved in the Dormitory
-   * 
-   * @param maCiv
-   * 
-   * @param mf mainframe connection for displaying widgets
-   * @param regFact to access the Dormitory, where Heroes are stoed
-   */
-  public HeroDisplayCiv(MainframeCiv mfCiv, MainActionCiv maCiv)
+  public HeroDisplayCiv(MainframeCiv mfCiv, HeroRegistry dorm)
   {
     _mfCiv = mfCiv;
-    _maCiv = maCiv;
-    _dorm = new HeroRegistry();
+    _dorm = dorm;
+    doConstructorWork();
+  }
+
+  // Override for testing to avoid GUI
+  protected void doConstructorWork()
+  {
+    _heroDisp = new HeroDisplay(this);
   }
 
   /** Restore the mainframe panels to their previous state */
-  public void backToMain(String newFrameTitle)
+  public void back()
   {
-    _mfCiv.backToMain(newFrameTitle);
+    _mfCiv.back();
+  }
+
+  public void backToMain()
+  {
+    _mfCiv.backToMain(null);
   }
 
   /**
@@ -87,10 +82,17 @@ public class HeroDisplayCiv extends BaseCiv
   public void displayHero(Hero hero, boolean firstTime)
   {
     _hero = hero;
-    _outputMap = hero.loadAttributes(_outputMap);
-    _heroDisp = new HeroDisplay(this, _outputMap, firstTime);
+
+    EnumMap<PersonKeys, String> _outputMap = hero.loadAttributes();
+    _heroDisp.displayHero(_outputMap, firstTime);
+    addAdditionalHeroStuff(hero);
+
+    _mfCiv.replaceLeftPanel(_heroDisp);
+  }
+
+  private void addAdditionalHeroStuff(Hero hero)
+  {
     Inventory inventory = hero.getInventory();
-    
     _heroDisp.addSkills(_hero.getOcpSkills(), _hero.getRaceSkills(), _hero.getKlassSkills());
     _heroDisp.addInventory(inventory);
     _heroDisp.addMagicItem(inventory.getNameList(ItemCategory.MAGIC));
@@ -98,20 +100,6 @@ public class HeroDisplayCiv extends BaseCiv
       _heroDisp.addMaterials(inventory.getNameList(ItemCategory.SPELL_MATERIAL));
       _heroDisp.addSpell(_hero.getSpellBook());
     }
-
-    _mfCiv.replaceLeftPanel(_heroDisp);
-  }
-
-
-  public EnumMap<PersonKeys, String> getAttributes()
-  {
-    return _outputMap;
-  }
-
-  /** Restore the mainframe panels to their previous state */
-  public void back()
-  {
-    _mfCiv.back();
   }
 
   /**
@@ -119,11 +107,9 @@ public class HeroDisplayCiv extends BaseCiv
    * 
    * @return true if the delete worked correctly; else false
    */
-  public boolean deletePerson()
+  public void deletePerson()
   {
-    System.err.println("Can't delete hero right now");
-    System.exit(-1);
-    return false;
+    _dorm.delete(_hero);
   }
 
   /**
@@ -137,33 +123,14 @@ public class HeroDisplayCiv extends BaseCiv
     _hero.setName(name);
   }
 
-  /**
-   * Save the Hero into the Dormitory, adding a new Hero or overwriting an old one
-   * 
-   * @param overwrite if true, then will overwrite an existing Hero
-   * @return true if all save operations worked as expected
-   */
-  public boolean savePerson(boolean overwrite)
+  public boolean overwritePerson()
   {
-    boolean retflag = false;
-    // Save when NOT in overwrite mode
-    if (overwrite == false) {
-      retflag = _dorm.add(_hero);
-    } else {
-      retflag = _dorm.update(_hero);
-    }
-    // Enable SummonHerosButton on MainActionCiv
-    if (retflag == true) {
-      _maCiv.toggleSummonEnabled();
-    }
-    return retflag;
+    return _dorm.update(_hero);
   }
 
-
-  public void setActionPanelTitle(String namePlate)
+  public boolean createPerson()
   {
-
+    return _dorm.add(_hero);
   }
-
 } // end of HeroDisplayCiv class
 

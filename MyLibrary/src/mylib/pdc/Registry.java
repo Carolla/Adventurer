@@ -147,7 +147,7 @@ public abstract class Registry<E extends IRegistryElement>
   public E get(String name)
   {
     for (E elem : _list) {
-      if (elem.getKey().equals(name)) {
+      if (elem.getKey().equalsIgnoreCase(name)) {
         return elem;
       }
     }

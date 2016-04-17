@@ -12,20 +12,18 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import test.pdc.command.FakeMainframeCiv;
 import chronos.pdc.Adventure;
-import chronos.pdc.buildings.Building;
 import chronos.pdc.registry.BuildingRegistry;
-import chronos.test.pdc.buildings.FakeBuilding;
 import civ.BuildingDisplayCiv;
 import civ.MainframeCiv;
-import test.pdc.command.FakeMainframeCiv;
 
 public class TestBuildingDisplayCiv
 {
   private static Random _rand;
   private static final int numBuildings = BuildingDisplayCiv.DEFAULT_BUILDINGS.length;
   private BuildingDisplayCiv _bdCiv;
-  private BuildingRegistry _breg = new FakeBuildingRegistry();
+  private BuildingRegistry _breg = new BuildingRegistry();
   private MainframeCiv _mf = new FakeMainframeCiv();
   private Adventure _adv;
 
@@ -155,26 +153,6 @@ public class TestBuildingDisplayCiv
       _bdCiv.returnToTown();
       assertEquals(_bdCiv.getCurrentBuilding(), "");
       
-    }
-  }
-
-  public class FakeBuildingRegistry extends BuildingRegistry
-  {
-    public FakeBuildingRegistry()
-    {
-      super();
-    }
-
-    @Override
-    public void initialize()
-    {
-      //Don't do it
-    }
-
-    @Override
-    public Building getBuilding(String name)
-    {
-      return new FakeBuilding(name);
     }
   }
 }

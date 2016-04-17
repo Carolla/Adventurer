@@ -73,8 +73,6 @@ public class RegistryFactory
     _regMap.put(RegKey.BLDG, new BuildingRegistry());
     _regMap.put(RegKey.TOWN, new TownRegistry());
     _regMap.put(RegKey.ADV, new AdventureRegistry());
-
-    ((BuildingRegistry) _regMap.get(RegKey.BLDG)).initialize(_skedder);
   }
 
 
@@ -87,7 +85,7 @@ public class RegistryFactory
    * 
    * @return the number of current Registries
    */
-  public int getNumberOfRegistries()
+  public int size()
   {
     return _regMap.size();
   }

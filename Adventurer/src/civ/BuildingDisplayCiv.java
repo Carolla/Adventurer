@@ -53,7 +53,7 @@ public class BuildingDisplayCiv extends BaseCiv
   public static final String[][] DEFAULT_BUILDINGS = { {"Ugly Ogre Inn", "Bork"},
       {"Rat's Pack", "Dewey N. Howe"}, {"The Bank", "Ogden Moneypenny"},
       {"Stadium", "Aragon"}, {"Arcaneum", "Pendergast"}, {"Monastery", "Balthazar"},
-      {"Rouge's Tavern", "Ripper"}, {"Jail", "The Sheriff"}, {"Quasqueton", "Unknown"}};
+      {"Rouge's Tavern", "Ripper"}, {"Jail", "The Sheriff"}};
 
   // ======================================================================
   // Constructors and constructor helpers

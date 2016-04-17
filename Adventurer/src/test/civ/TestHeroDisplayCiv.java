@@ -11,6 +11,8 @@
 
 package test.civ;
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 
 
@@ -22,32 +24,10 @@ import org.junit.Test;
  */
 public class TestHeroDisplayCiv
 {
-
   @Test
-  public void cantThinkOfAnyTests()
-  {}
-
-  /**
-   * List of methods that do not need JUnit test because they are too trivial,
-   * or some other test method tests them equally well. <br>
-   * <code>heroDisplayCiv()</code>: -- Unused default contructor<br>
-   * <code>convertToModel(DataShuttle&ltNewHeroFields&gt)</code>: -- unused
-   * override <br>
-   * <code>getDefaults()</code>: -- unused override <br>
-   * <code>getFieldData()</code>: -- <br>
-   * <code>getInventorySize()</code>: -- wrapper <br>
-   * <code>isValid(DataShuttle&ltNewHeroFields&gt)</code>: -- unused override <br>
-   * <code>populateAttributes(DataShuttle&ltPersonKeys&gt ds)</code>-- calls
-   * GUI <code>populateInventory(ArrayList&ltItem&gt)</code> -- calls GUI
-   * <code>populateSkills(ArrayList&ltSkill&gt)</code> -- calls GUI
-   */
-  public void notNeeded()
-  {}
-
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
-   * PRIVATE HELPER METHODS!
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
+  public void doNothing()
+  {
+    assertTrue(true);
+  }
 
 } // end of TestHeroDisplayCiv class

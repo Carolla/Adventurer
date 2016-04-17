@@ -12,8 +12,13 @@ package test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import test.integ.TA00a_Initialize;
 import test.integ.TA00b_Quit;
 import test.integ.TA03a_SummonHeroes;
+import test.integ.TA03d_DeleteHeroes;
+import test.integ.TA08_CmdEnter;
+import test.integ.TA09_CmdLeave;
+import test.integ.TA10_ReturnToTown;
 
 /**
  * Regression test suite for all the {@code JUnit} unit and integration test cases for
@@ -34,12 +39,13 @@ import test.integ.TA03a_SummonHeroes;
 @Suite.SuiteClasses({
 
     // All integration tests for each use case
-    // TA00a_Initialize.class,
+    TA00a_Initialize.class,
     TA00b_Quit.class,
     TA03a_SummonHeroes.class,
-    // TA08_CmdEnter.class,
-    // TA09_CmdLeave.class,
-    // TA10_ReturnToTown.class,
+    TA03d_DeleteHeroes.class,
+    TA08_CmdEnter.class,
+    TA09_CmdLeave.class,
+    TA10_ReturnToTown.class,
 })
 public class AdventurerIntegTestSuite
 {
