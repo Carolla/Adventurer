@@ -4,3 +4,4 @@ FILES
 ing_Testing.java
 pdc/Fakeroonie.java
 pdc/FileMap.java
+pdc/SuiteBuilder.java

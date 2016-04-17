@@ -61,7 +61,7 @@ import mylib.Constants;
  * 
  * @author alancline
  * @version Dec 30 2015 // original <br>
- * @version Mar 23 2016 // link the component programs into a single pipeline <br>
+ *          Mar 23 2016 // link the component programs into a single pipeline <br>
  */
 public class QATool
 {
@@ -123,7 +123,7 @@ public class QATool
       System.exit(-1);
 
     }
-    qat.treeScan(_rootFile);
+//    qat.treeScan(_rootFile);
     
     System.out.println("Scanning complete: ");
     System.out.println("\t Directories scanned: " + _dirsScanned);

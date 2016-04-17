@@ -37,7 +37,10 @@ public class QAScanner
   static private int _filesWritten;
   static private int _filesAugmented;
 
-
+  // Write original test files
+  Prototype _proto;
+  
+  
   /**
    * @param args
    */
@@ -52,7 +55,7 @@ public class QAScanner
     QAScanner qas = new QAScanner();
     qas.setExclusions(_exclusionsFile, _srcRoot);
     qas.scan(_srcRoot, _srcRoot.getPath().length(), _exclusionsFile);
-    
+
     System.out.println("Source dirs  scanned = " + QAScanner._dirsScanned);
     System.out.println("Source files scanned = " + QAScanner._filesScanned);
     System.out.println("New test files written = " + QAScanner._filesWritten);
@@ -70,9 +73,19 @@ public class QAScanner
     _filesScanned = 0;
     _filesWritten = 0;
     _filesAugmented = 0;
+    
+    _proto = new Prototype();
   }
 
 
+  /**
+   * Checks that the path for the source directory exists as a directory, and the exclusion paths
+   * exists as a file
+   * 
+   * @param srcDirPath
+   * @param exclusionsFilePath
+   * @return true if both parms are valid
+   */
   static private boolean isValid(String srcDirPath, String exclusionsFilePath)
   {
     _srcRoot = new File(srcDirPath);
@@ -87,7 +100,7 @@ public class QAScanner
 
 
   // ================================================================================
-  // PRIVATE METHODS
+  // PUBLIC METHODS
   // ================================================================================
 
   /**
@@ -99,8 +112,9 @@ public class QAScanner
    * @param excFile list of directories and files to exclude from test class generation
    * @return true of all worked well
    */
-  private boolean scan(File src, int srcPathLen, File excFile)
+  public boolean scan(File src, int srcPathLen, File excFile)
   {
+    boolean retval = false;
     // Retrieve all files and subdirs under dir
     File[] allFiles = src.listFiles();
     for (File f : allFiles) {
@@ -115,7 +129,7 @@ public class QAScanner
         _dirsScanned++;
         // Skip excluded directories
         if (_excDirs.contains(f)) {
-//          System.out.println("SKIPPING directory " + s);
+          System.out.println("\t\tSKIPPING directory " + s);
           continue;
         }
         // Recursing one level down when subdirs are found
@@ -126,16 +140,33 @@ public class QAScanner
         if ((!s.endsWith(".java")) || (s.contains("hic"))) {
           continue;
         } else if (_excFiles.contains(s)) {
-//          System.out.println("SKIPPING file " + s);
+          System.out.println("\t\tSKIPPING file " + s);
           continue;
+        } else {
+          String testName = _proto.makeTestFilename(s);
+          File testFile = new File(testName);
+          if (testFile.exists()) {
+            System.out.println("AUGEMENTING test file " + testName);
+            _proto.augmentFile(testFile, s);
+            retval = true;
+          } else {
+            System.out.println("WRITING test file " + testName);
+            _proto.writeFile(testFile, s);
+            retval = true;
+          }
         }
       }
     }
-    return false;
+    return retval;
   }
 
+  // ================================================================================
+  // PUBLIC METHODS
+  // ================================================================================
 
-  
+
+
+
   /**
    * Read and build the list of directory and files that should be exluded when scanning the source
    * file tree. Exclusions are saved as path names relative to source root directory
