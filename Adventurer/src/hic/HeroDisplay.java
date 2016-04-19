@@ -158,9 +158,9 @@ public class HeroDisplay extends ChronosPanel
     setLayout(new MigLayout());
     setBackground(_backColor);
     
-    add(_tabPane, "center, wrap");
+    add(_tabPane, "cell 0 0");
     _buttonPanel = buildButtonPanel();
-    add(_buttonPanel, "span, center, gapbottom 20");
+    add(_buttonPanel, "cell 0 1");
     
     _skillPanel = createTabPanel();
     _invenPanel = createTabPanel();
@@ -190,14 +190,11 @@ public class HeroDisplay extends ChronosPanel
     }
 
     addHeroToTabPane();
-    add(_buttonPanel, "span, center, gapbottom 20");
   }
 
   // Add the tabbed pane for attributes, inventory and magic tab displays
   private JTabbedPane addHeroToTabPane()
   {
-    _tabPane.removeAll();
-    
     _tabPane.addTab("Attributes", null, buildAttributePanel(),
         "View Hero's personal characteristics");
 
@@ -206,7 +203,7 @@ public class HeroDisplay extends ChronosPanel
     _tabPane.addTab("Inventory", null, _invenPanel, "View Hero's items owned, worn, or wielded");
     _tabPane.addTab("Magic Items", null, _magicPanel, "View Hero's enchanted items");
     _tabPane.setSelectedIndex(0);
-
+    
     return _tabPane;
   }
 
@@ -336,7 +333,7 @@ public class HeroDisplay extends ChronosPanel
     // Row 12: Occupation (full line, possibly multiline)
     attribPanel.add(gridCell("Former Occupation: ", _ds.get(PersonKeys.OCCUPATION)),
         "span 6, growx, wrap");
-
+    
     return attribPanel;
 
   }

@@ -53,13 +53,6 @@ public class HeroDisplayCiv extends BaseCiv
   {
     _mfCiv = mfCiv;
     _dorm = dorm;
-    doConstructorWork();
-  }
-
-  // Override for testing to avoid GUI
-  protected void doConstructorWork()
-  {
-    _heroDisp = new HeroDisplay(this);
   }
 
   /** Restore the mainframe panels to their previous state */
@@ -84,6 +77,7 @@ public class HeroDisplayCiv extends BaseCiv
     _hero = hero;
 
     EnumMap<PersonKeys, String> _outputMap = hero.loadAttributes();
+    _heroDisp = new HeroDisplay(this);
     _heroDisp.displayHero(_outputMap, firstTime);
     addAdditionalHeroStuff(hero);
 
