@@ -138,6 +138,7 @@ public class HeroDisplay extends ChronosPanel
   private JButton _delButton;
   private JButton _saveButton;
   private JButton _cancelButton;
+  private JPanel _buttonPanel;
 
   // ===============================================================
   // CONSTRUCTOR(S) AND RELATED METHODS
@@ -158,9 +159,9 @@ public class HeroDisplay extends ChronosPanel
     setBackground(_backColor);
     
     add(_tabPane, "center, wrap");
-    JPanel buttonPanel = buildButtonPanel();
-    buttonPanel.setPreferredSize(new Dimension(PANEL_WIDTH, buttonPanel.getHeight()));
-    add(buttonPanel, "span, center, gapbottom 20");
+    _buttonPanel = buildButtonPanel();
+    add(_buttonPanel, "span, center, gapbottom 20");
+    
     _skillPanel = createTabPanel();
     _invenPanel = createTabPanel();
     _magicPanel = createTabPanel();
@@ -184,12 +185,12 @@ public class HeroDisplay extends ChronosPanel
     setTitle(heroNameplate(_ds));
     _heroName = ds.get(PersonKeys.NAME);
 
-
     if (firstTime) {
       _delButton.setEnabled(false);
     }
 
     addHeroToTabPane();
+    add(_buttonPanel, "span, center, gapbottom 20");
   }
 
   // Add the tabbed pane for attributes, inventory and magic tab displays
@@ -357,14 +358,14 @@ public class HeroDisplay extends ChronosPanel
     _cancelButton = new JButton("Cancel");
     _cancelButton.addActionListener(action -> cancelAction());
 
-    JPanel buttonPanel = new JPanel();
-    buttonPanel.setBackground(_backColor);
+    _buttonPanel = new JPanel();
+    _buttonPanel.setBackground(_backColor);
 
-    buttonPanel.add(_saveButton);
-    buttonPanel.add(_delButton);
-    buttonPanel.add(_cancelButton);
+    _buttonPanel.add(_saveButton);
+    _buttonPanel.add(_delButton);
+    _buttonPanel.add(_cancelButton);
 
-    return buttonPanel;
+    return _buttonPanel;
   }
 
 
