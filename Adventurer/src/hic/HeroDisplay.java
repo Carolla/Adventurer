@@ -134,7 +134,10 @@ public class HeroDisplay extends ChronosPanel
   private final JPanel _skillPanel;
   private final JPanel _invenPanel;
   private final JPanel _magicPanel;
-  private final JTabbedPane _tabPane;
+  private final JTabbedPane _tabPane = new JTabbedPane();
+  private JButton _delButton;
+  private JButton _saveButton;
+  private JButton _cancelButton;
 
   // ===============================================================
   // CONSTRUCTOR(S) AND RELATED METHODS
@@ -151,7 +154,13 @@ public class HeroDisplay extends ChronosPanel
     super("Nameplate goes here");
     _hdCiv = hdCiv;
 
-    _tabPane = new JTabbedPane();
+    setLayout(new MigLayout());
+    setBackground(_backColor);
+    
+    add(_tabPane, "center, wrap");
+    JPanel buttonPanel = buildButtonPanel();
+    buttonPanel.setPreferredSize(new Dimension(PANEL_WIDTH, buttonPanel.getHeight()));
+    add(buttonPanel, "span, center, gapbottom 20");
     _skillPanel = createTabPanel();
     _invenPanel = createTabPanel();
     _magicPanel = createTabPanel();
@@ -175,21 +184,19 @@ public class HeroDisplay extends ChronosPanel
     setTitle(heroNameplate(_ds));
     _heroName = ds.get(PersonKeys.NAME);
 
-    // GENERAL SETUP
-    setLayout(new MigLayout());
-    setBackground(_backColor);
 
-    JTabbedPane tabPane = buildTabPane();
-    add(tabPane, "center, wrap");
+    if (firstTime) {
+      _delButton.setEnabled(false);
+    }
 
-    JPanel buttonPanel = buildButtonPanel(firstTime);
-    buttonPanel.setPreferredSize(new Dimension(PANEL_WIDTH, buttonPanel.getHeight()));
-    add(buttonPanel, "span, center, gapbottom 20");
+    addHeroToTabPane();
   }
 
   // Add the tabbed pane for attributes, inventory and magic tab displays
-  private JTabbedPane buildTabPane()
+  private JTabbedPane addHeroToTabPane()
   {
+    _tabPane.removeAll();
+    
     _tabPane.addTab("Attributes", null, buildAttributePanel(),
         "View Hero's personal characteristics");
 
@@ -339,29 +346,23 @@ public class HeroDisplay extends ChronosPanel
    * @param firstTime Hero disables DELETE button; old Hero disables CANCEL button
    * @return button panel
    */
-  private JPanel buildButtonPanel(boolean firstTime)
+  private JPanel buildButtonPanel()
   {
-    JButton saveButton = new JButton("Save");
-    saveButton.addActionListener(action -> saveAction());
+    _saveButton = new JButton("Save");
+    _saveButton.addActionListener(action -> saveAction());
 
-    JButton delButton = new JButton("Delete");
-    delButton.addActionListener(action -> deleteAction());
+    _delButton = new JButton("Delete");
+    _delButton.addActionListener(action -> deleteAction());
 
-    JButton cancelButton = new JButton("Cancel");
-    cancelButton.addActionListener(action -> cancelAction());
+    _cancelButton = new JButton("Cancel");
+    _cancelButton.addActionListener(action -> cancelAction());
 
     JPanel buttonPanel = new JPanel();
     buttonPanel.setBackground(_backColor);
 
-    if (firstTime) {
-      delButton.setEnabled(false);
-    }
-    cancelButton.setEnabled(true);
-
-
-    buttonPanel.add(saveButton);
-    buttonPanel.add(delButton);
-    buttonPanel.add(cancelButton);
+    buttonPanel.add(_saveButton);
+    buttonPanel.add(_delButton);
+    buttonPanel.add(_cancelButton);
 
     return buttonPanel;
   }
