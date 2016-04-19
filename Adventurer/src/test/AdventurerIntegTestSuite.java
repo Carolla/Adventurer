@@ -15,7 +15,7 @@ import org.junit.runners.Suite;
 import test.integ.TA00a_Initialize;
 import test.integ.TA00b_Quit;
 import test.integ.TA03a_SummonHeroes;
-import test.integ.TA03d_DeleteHeroes;
+import test.integ.TA04_DeleteHeroes;
 import test.integ.TA08_CmdEnter;
 import test.integ.TA09_CmdLeave;
 import test.integ.TA10_ReturnToTown;
@@ -42,7 +42,7 @@ import test.integ.TA10_ReturnToTown;
     TA00a_Initialize.class,
     TA00b_Quit.class,
     TA03a_SummonHeroes.class,
-    TA03d_DeleteHeroes.class,
+    TA04_DeleteHeroes.class,
     TA08_CmdEnter.class,
     TA09_CmdLeave.class,
     TA10_ReturnToTown.class,

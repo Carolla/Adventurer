@@ -18,11 +18,7 @@ import org.junit.Test;
 import chronos.pdc.character.Hero;
 import chronos.pdc.registry.HeroRegistry;
 
-/**
- * @author Al Cline
- * @version Mar 25, 2016 // original <br>
- */
-public class TA03d_DeleteHeroes
+public class TA04_DeleteHeroes
 {
   private static HeroRegistry _dorm = new HeroRegistry(); 
   private static Hero hero1 = new Hero("Alpha", "male", "brown", "Human", "Fighter");
@@ -42,11 +38,9 @@ public class TA03d_DeleteHeroes
   // ============================================================
 
   @Test
-  public void testGetNamePlates()
+  public void testDeleteHero()
   {    
     _dorm.delete(hero1);
     assertFalse(_dorm.contains(hero1));
   }
-  
-  
-} // end of TestSummonHeroes class
+}

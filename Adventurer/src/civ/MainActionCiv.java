@@ -71,11 +71,6 @@ public class MainActionCiv extends BaseCiv
   private ChronosPanel _actionPanel;
   private JButton _summonButton;
 
-  // Button ToolTips
-  private static final String SUMMON_DISABLED_HOVER = "Create heroes to enable summoning";
-  private static final String SUMMON_ENABLED_HOVER = " Heroes waiting to be summoned";
-  private static final String SMN_ENBLD_SINGL_HOVER = " Hero waiting to be summoned";
-
   // ============================================================
   // Constructors and constructor helpers
   // ============================================================
@@ -110,10 +105,6 @@ public class MainActionCiv extends BaseCiv
   // Public methods
   // ============================================================
 
-  // ============================================================
-  // Private methods
-  // ============================================================
-
   /**
    * Load the selected adventure from the Adventure registry. Replace the opening button panel with
    * the IOPanel (text and command line)
@@ -146,27 +137,6 @@ public class MainActionCiv extends BaseCiv
     NewHeroIPPanel ipPanel = new NewHeroIPPanel(nhCiv, _hdCiv);
     _mfCiv.replaceLeftPanel(ipPanel);
     ipPanel.setDefaultFocus(); // only works after panel is displayed
-    toggleSummonEnabled();
-  }
-
-  /**
-   * Sets Summon Heroes button to enabled or disabled based on the presence of saved heroes in the
-   * dormitory.
-   */
-  private void toggleSummonEnabled()
-  {
-    int nbrHeroes = _dorm.getNbrElements();
-    if (nbrHeroes > 0) {
-      _summonButton.setEnabled(true);
-      if (nbrHeroes == 1) {
-        _summonButton.setToolTipText(nbrHeroes + SMN_ENBLD_SINGL_HOVER);
-      } else {
-        _summonButton.setToolTipText(nbrHeroes + SUMMON_ENABLED_HOVER);
-      }
-    } else {
-      _summonButton.setEnabled(false);
-      _summonButton.setToolTipText(SUMMON_DISABLED_HOVER);
-    }
   }
 
   /**
@@ -177,9 +147,6 @@ public class MainActionCiv extends BaseCiv
     JButton adventureButton = createAdventureButton();
     _summonButton = createSummonHeroesButton();
     JButton creationButton = createNewHeroButton();
-
-    // Set status of Summon Button
-    toggleSummonEnabled();
 
     _actionPanel = new ChronosPanel(INITIAL_OPENING_TITLE);
 
@@ -263,20 +230,25 @@ public class MainActionCiv extends BaseCiv
   private void summonHero()
   {
     List<Hero> heroList = _dorm.getAll();
-    List<String> plateList = new ArrayList<String>(heroList.size());
-    for (Hero hero : heroList) {
-      plateList.add(hero.toNamePlate());
-    }
 
-    Object[] plateArray = plateList.toArray();
+    if (heroList.size() > 0) {
+      List<String> plateList = new ArrayList<String>(heroList.size());
+      for (Hero hero : heroList) {
+        plateList.add(hero.toNamePlate());
+      }
 
-    String selectedPlate =
-        (String) JOptionPane.showInputDialog(null, "Select your Hero", "Heroes",
-            JOptionPane.PLAIN_MESSAGE, null, plateArray, plateArray[0]);
+      Object[] plateArray = plateList.toArray();
 
-    if (selectedPlate != null) {
-      Hero selectedHero = heroList.get(plateList.indexOf(selectedPlate));
-      _hdCiv.displayHero(selectedHero, false);
+      String selectedPlate =
+          (String) JOptionPane.showInputDialog(null, "Select your Hero", "Heroes",
+              JOptionPane.PLAIN_MESSAGE, null, plateArray, plateArray[0]);
+
+      if (selectedPlate != null) {
+        Hero selectedHero = heroList.get(plateList.indexOf(selectedPlate));
+        _hdCiv.displayHero(selectedHero, false);
+      }
+    } else {
+      JOptionPane.showMessageDialog(null, "No heros");
     }
   }
 } // end of MainActionCiv class
