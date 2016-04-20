@@ -11,15 +11,12 @@ package chronos.test.pdc.registry;
 
 import static org.junit.Assert.assertNull;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import chronos.civ.DefaultUserMsg;
 import chronos.pdc.command.Scheduler;
 import chronos.pdc.registry.RegistryFactory;
-import mylib.MsgCtrl;
-import mylib.pdc.Registry;
 
 
 /**
@@ -48,25 +45,6 @@ public class TestRegistryFactory
     _rf.initRegistries(skedder);
   }
 
-  @After
-  public void tearDown() throws Exception
-  {
-    // Turn off messaging at end of each test
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-  }
-
-
-  // ============================================================
-  // Begin Tests
-  // ============================================================
-
-  /**
-   * @Not.Needed {@code RegistryFactory()} -- wrapper method <br>
-   */
-  public void _testsNotNeeded()
-  {}
-
   /**
    * Get a Registry, and if it doesn't exist, create it and add the entry to the factory's map
    * 
@@ -75,23 +53,6 @@ public class TestRegistryFactory
   @Test
   public void testGetRegistry_Errors()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    // SETUP
-
-    // DO: Null request
-    Registry<?> testreg = _rf.getRegistry(null);
-
-    // VERIFY
-    assertNull(testreg);
+    assertNull(_rf.getRegistry(null));
   }
-
-  // ============================================================
-  // Helper Methods
-  // ============================================================
-
-
-
 } // end of TestRegistryFactory

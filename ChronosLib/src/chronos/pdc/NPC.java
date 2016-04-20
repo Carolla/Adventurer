@@ -9,6 +9,7 @@
 
 package chronos.pdc;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mylib.dmc.IRegistryElement;
@@ -26,30 +27,30 @@ import mylib.dmc.IRegistryElement;
 public class NPC implements IRegistryElement
 {
   /** Name of the Patron */
-  private String _name = null;
+  private String _name;
 
   /** Description when the Patron is at a distance of about 20-50 ft. */
-  private String _farDescription = null;
+  private String _farDescription;
 
   /**
    * Description when the Patron is up close and personal (less than 10'), and could include smells
    */
-  private String _nearDescription = null;
+  private String _nearDescription;
 
   /** Affinity, a adjustment from -25% to +25% likely to befriend Hero. */
   private int _affinity = 0;
 
   /** If Peacekeeper flag is set, then patron will attack Hero in a bar brawl once. */
-  private boolean _peacekeeper = false;
+  private boolean _peacekeeper;
 
   /** Word or phrase about the profession of this NPC, used as note to the author */
-  private String _note = null;
+  private String _note;
 
   /** List of helpful friendly responses to the Hero (rumors) */
-  private List<String> _rumors = null;
+  private List<String> _rumors = new ArrayList<String>();
 
   /** List of rebuffs and negative responses to the Hero (retorts) */
-  private List<String> _retorts = null;
+  private List<String> _retorts = new ArrayList<String>();
 
   /** Min range for affinity; each point represents 5% less chance of success */
   private final int MIN_AFFINITY = -5;
@@ -77,8 +78,6 @@ public class NPC implements IRegistryElement
    * @param affinity must be within range [-5,+5]
    * @param peaceflag true if Patron will fight in bar brawl
    * @param note profession of the NPC, as a note (unused in game)
-   * @param arrayList2 
-   * @param arrayList 
    */
   public NPC(String name, String note, int affinity, String farDesc, String nearDesc, List<String> replies, List<String> retorts) throws NullPointerException
   {
@@ -93,6 +92,7 @@ public class NPC implements IRegistryElement
     if ((nearDesc == null) || (nearDesc.trim().length() == 0)) {
       throw new NullPointerException("Patron(): Near Description cannot be null or empty");
     }
+    
     if (affinity < MIN_AFFINITY) {
       affinity = MIN_AFFINITY;
     } else if (affinity > MAX_AFFINITY) {
@@ -104,7 +104,8 @@ public class NPC implements IRegistryElement
     _nearDescription = nearDesc;
     _affinity = affinity;
     _note = note;
-    setMessages(replies, retorts);
+    _rumors.addAll(replies);
+    _retorts.addAll(retorts);
   }
 
   public String getDescription()
@@ -182,29 +183,6 @@ public class NPC implements IRegistryElement
   {
     return _name;
   }
-
-
-  /**
-   * Set the positive and negative messages into the Patron for conversation
-   * 
-   * @param replies the list of helpful friendly responses to the Hero (rumors)
-   * @param retorts the list of rebuffs and negative responses to the Hero (retorts)
-   * @return true if lists are not null and not empty
-   */
-  public boolean setMessages(List<String> replies,
-      List<String> retorts)
-  {
-    if ((replies == null) || (replies.size() == 0)) {
-      return false;
-    }
-    if ((retorts == null) || (retorts.size() == 0)) {
-      return false;
-    }
-    _rumors = replies;
-    _retorts = retorts;
-    return true;
-  }
-
 
   /**
    * Convert the NPC attributes to a string for display in library tree

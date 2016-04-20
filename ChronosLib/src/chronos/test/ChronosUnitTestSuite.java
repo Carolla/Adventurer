@@ -16,7 +16,6 @@ import org.junit.runners.Suite;
 
 import chronos.test.pdc.TestAdventure;
 import chronos.test.pdc.TestItem;
-import chronos.test.pdc.TestNPC;
 import chronos.test.pdc.TestOccupation;
 import chronos.test.pdc.TestRegistry;
 import chronos.test.pdc.TestSkill;
@@ -61,7 +60,6 @@ import chronos.test.pdc.registry.RegistryTestSuite;
     /* PDC test files */
     TestAdventure.class,
     TestItem.class,
-    TestNPC.class,
     TestOccupation.class,
     TestSkill.class,
     TestTown.class,
