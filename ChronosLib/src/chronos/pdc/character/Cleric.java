@@ -9,7 +9,7 @@
 
 package chronos.pdc.character;
 
-import java.util.EnumMap;
+import java.util.Map;
 
 import chronos.civ.PersonKeys;
 import chronos.pdc.character.TraitList.PrimeTraits;
@@ -75,7 +75,7 @@ public class Cleric extends Klass {
 	}
 
 	@Override
-	public void loadKlassKeys(EnumMap<PersonKeys, String> map) {
+	public void loadKlassKeys(Map<PersonKeys, String> map) {
 		super.loadKlassKeys(map);
 		map.put(PersonKeys.CURRENT_CSP, "" + _CSPs);
 		map.put(PersonKeys.MAX_CSP, "" + _CSPs);

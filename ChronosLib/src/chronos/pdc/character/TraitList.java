@@ -8,7 +8,6 @@ import static chronos.pdc.character.TraitList.PrimeTraits.INT;
 import static chronos.pdc.character.TraitList.PrimeTraits.STR;
 import static chronos.pdc.character.TraitList.PrimeTraits.WIS;
 
-import java.util.EnumMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -193,7 +192,7 @@ public class TraitList
     return 0;
   }
 
-  public void loadTraitKeys(EnumMap<PersonKeys, String> map)
+  public void loadTraitKeys(Map<PersonKeys, String> map)
   {
     map.put(PersonKeys.STR, "" + getTrait(STR));
     map.put(PersonKeys.DEX, "" + getTrait(DEX));

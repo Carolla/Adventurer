@@ -9,8 +9,8 @@ package hic;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -129,7 +129,7 @@ public class HeroDisplay extends ChronosPanel
   private final HeroDisplayCiv _hdCiv;
 
   /** Keys to Hero data to be displayed */
-  EnumMap<PersonKeys, String> _ds = new EnumMap<PersonKeys, String>(PersonKeys.class);
+  Map<PersonKeys, String> _ds;
   private String _heroName = "No hero selected";
   private final JPanel _skillPanel;
   private final JPanel _invenPanel;
@@ -179,7 +179,7 @@ public class HeroDisplay extends ChronosPanel
    * 
    * @param firstTime Hero activates buttons differently than dormitory hero
    */
-  public void displayHero(EnumMap<PersonKeys, String> ds, boolean firstTime)
+  public void displayHero(Map<PersonKeys, String> ds, boolean firstTime)
   {
     _ds = ds;
     setTitle(heroNameplate(_ds));
@@ -613,12 +613,12 @@ public class HeroDisplay extends ChronosPanel
   }
 
 
-  private static String heroNameplate(EnumMap<PersonKeys, String> ds)
+  private static String heroNameplate(Map<PersonKeys, String> _ds)
   {
-    String namePlate = ds.get(PersonKeys.NAME) + ": "
-        + ds.get(PersonKeys.GENDER) + " "
-        + ds.get(PersonKeys.RACENAME) + " "
-        + ds.get(PersonKeys.KLASSNAME);
+    String namePlate = _ds.get(PersonKeys.NAME) + ": "
+        + _ds.get(PersonKeys.GENDER) + " "
+        + _ds.get(PersonKeys.RACENAME) + " "
+        + _ds.get(PersonKeys.KLASSNAME);
 
     return namePlate;
   }

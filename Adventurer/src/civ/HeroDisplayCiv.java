@@ -12,7 +12,7 @@ package civ;
 
 import hic.HeroDisplay;
 
-import java.util.EnumMap;
+import java.util.Map;
 
 import chronos.civ.PersonKeys;
 import chronos.pdc.Item.ItemCategory;
@@ -76,7 +76,7 @@ public class HeroDisplayCiv extends BaseCiv
   {
     _hero = hero;
 
-    EnumMap<PersonKeys, String> _outputMap = hero.loadAttributes();
+    Map<PersonKeys, String> _outputMap = hero.loadAttributes();
     _heroDisp = new HeroDisplay(this);
     _heroDisp.displayHero(_outputMap, firstTime);
     addAdditionalHeroStuff(hero);

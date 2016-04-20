@@ -9,7 +9,7 @@ package chronos.pdc.character;
  * by email: acline@carolla.com
  */
 
-import java.util.EnumMap;
+import java.util.Map;
 
 import chronos.civ.PersonKeys;
 import chronos.pdc.Chronos;
@@ -109,7 +109,7 @@ public class Description
     return false;
   }
 
-  public void loadKeys(EnumMap<PersonKeys, String> map)
+  public void loadKeys(Map<PersonKeys, String> map)
   {
     map.put(PersonKeys.DESCRIPTION, _description);
     map.put(PersonKeys.WEIGHT, "" + _weight);

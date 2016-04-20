@@ -12,6 +12,7 @@ package chronos.pdc.character;
 
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -203,9 +204,9 @@ public class Hero implements IRegistryElement
    * @param map the keyed map of Hero data attributes
    * @return the EnumMap with attribute data
    */
-  public EnumMap<PersonKeys, String> loadAttributes()
+  public Map<PersonKeys, String> loadAttributes()
   {
-    EnumMap<PersonKeys, String> map =
+    Map<PersonKeys, String> map =
         new EnumMap<PersonKeys, String>(PersonKeys.class);
     
     // Now load the attributes in display order (values in parens are derived)

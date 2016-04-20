@@ -11,8 +11,8 @@
 package chronos.pdc.character;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 import mylib.pdc.MetaDie;
 import chronos.civ.PersonKeys;
@@ -111,7 +111,7 @@ public class Klass
     return _md.roll(_hpDie) + _traits.getHpMod();
   }
 
-  public void loadKlassKeys(EnumMap<PersonKeys, String> map)
+  public void loadKlassKeys(Map<PersonKeys, String> map)
   {
     map.put(PersonKeys.KLASSNAME, _klassName);
   }

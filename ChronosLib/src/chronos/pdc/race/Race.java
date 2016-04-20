@@ -13,8 +13,8 @@ import static chronos.pdc.character.TraitList.PrimeTraits.CON;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 import mylib.pdc.MetaDie;
 import chronos.civ.PersonKeys;
@@ -165,7 +165,7 @@ public abstract class Race
     return true;
   }
   
-  public void loadRaceKeys(EnumMap<PersonKeys, String> map)
+  public void loadRaceKeys(Map<PersonKeys, String> map)
   {
     map.put(PersonKeys.RACENAME, _raceName);
     map.put(PersonKeys.RMR, "" + _racialPoisonResist); 

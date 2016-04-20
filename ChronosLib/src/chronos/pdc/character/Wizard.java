@@ -9,7 +9,7 @@
 
 package chronos.pdc.character;
 
-import java.util.EnumMap;
+import java.util.Map;
 
 import chronos.civ.PersonKeys;
 import chronos.pdc.character.TraitList.PrimeTraits;
@@ -65,7 +65,7 @@ public class Wizard extends Klass {
 	}
 
 	@Override
-	public void loadKlassKeys(EnumMap<PersonKeys, String> map) {
+	public void loadKlassKeys(Map<PersonKeys, String> map) {
 		super.loadKlassKeys(map);
 		map.put(PersonKeys.TO_KNOW, "" + _percentToKnow);
 		map.put(PersonKeys.CURRENT_MSP, "" + _MSPs);
