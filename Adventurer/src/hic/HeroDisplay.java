@@ -158,9 +158,9 @@ public class HeroDisplay extends ChronosPanel
     setLayout(new MigLayout());
     setBackground(_backColor);
     
-    add(_tabPane, "cell 0 0");
+    add(_tabPane, "cell 0 0, grow");
     _buttonPanel = buildButtonPanel();
-    add(_buttonPanel, "cell 0 1");
+    add(_buttonPanel, "cell 0 1, align center");
     
     _skillPanel = createTabPanel();
     _invenPanel = createTabPanel();
@@ -182,7 +182,6 @@ public class HeroDisplay extends ChronosPanel
   public void displayHero(Map<PersonKeys, String> ds, boolean firstTime)
   {
     _ds = ds;
-    setTitle(heroNameplate(_ds));
     _heroName = ds.get(PersonKeys.NAME);
 
     if (firstTime) {
@@ -456,6 +455,11 @@ public class HeroDisplay extends ChronosPanel
   }
 
 
+  public void setNameplate(String nameplate)
+  {
+    setTitle(nameplate);
+  }
+  
   // ======================================================================
   // PRIVATE METHODS
   // ======================================================================
@@ -558,15 +562,6 @@ public class HeroDisplay extends ChronosPanel
   {
     JPanel p = new JPanel(new MigLayout("inset 3"));
     p.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-
-    // int cellWidth = DATA_WIDTH / PANELS_IN_ROW;
-    // p.setPreferredSize(new Dimension(cellWidth, FONT_HT));
-
-    // int datalen = label.length() + value.length() + 1;
-    // if (datalen > cellWidth) {
-    // String multiline = "<html>" + label + "<br>" + value + "<br></html>";
-    // p.add(new JLabel(multiline, SwingConstants.LEFT));
-
     p.add(new JLabel(label, SwingConstants.LEFT));
     p.add(new JLabel(value, SwingConstants.RIGHT));
 
@@ -610,17 +605,6 @@ public class HeroDisplay extends ChronosPanel
 
     _hdCiv.renamePerson(newName);
     _hdCiv.overwritePerson();
-  }
-
-
-  private static String heroNameplate(Map<PersonKeys, String> _ds)
-  {
-    String namePlate = _ds.get(PersonKeys.NAME) + ": "
-        + _ds.get(PersonKeys.GENDER) + " "
-        + _ds.get(PersonKeys.RACENAME) + " "
-        + _ds.get(PersonKeys.KLASSNAME);
-
-    return namePlate;
   }
 
 
