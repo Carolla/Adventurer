@@ -79,6 +79,7 @@ public class HeroDisplayCiv extends BaseCiv
     Map<PersonKeys, String> _outputMap = hero.loadAttributes();
     _heroDisp = new HeroDisplay(this);
     _heroDisp.displayHero(_outputMap, firstTime);
+    _heroDisp.setNameplate(_hero.toNamePlate());
     addAdditionalHeroStuff(hero);
 
     _mfCiv.replaceLeftPanel(_heroDisp);
