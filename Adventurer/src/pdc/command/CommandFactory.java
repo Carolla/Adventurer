@@ -114,7 +114,6 @@ public class CommandFactory
     if (_commandMap.get(ci.commandToken) != null) {
       return true;
     } else {
-      System.out.println("Couldn't create command " + ci.commandToken);
       return false;
     }
   }

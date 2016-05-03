@@ -195,7 +195,6 @@ public class DbReadWriter<E extends IRegistryElement>
       List<E> elementList = getAllList();
       for (E obj : elementList) {
         if (obj.getKey().equalsIgnoreCase(name)) {
-        	System.out.println("Obj: " + obj.toString());
           return obj;
         }
       }

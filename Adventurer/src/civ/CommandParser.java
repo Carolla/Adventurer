@@ -43,9 +43,6 @@ public class CommandParser
   /** Start the Scheduler up when the CommandParser starts */
   private final Scheduler _skedder;
 
-//  /** All commands and the Parser send error and user messages this "device" */
-//  private MainActionCiv _mainActionCiv;
-
   // ============================================================
   // Constructors and constructor helpers
   // ============================================================

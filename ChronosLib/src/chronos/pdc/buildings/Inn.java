@@ -158,7 +158,6 @@ public class Inn extends Building
   @Override
   public boolean add(NPC npc)
   {
-    System.out.println(npc.getName() + " entered the Inn");
     boolean added = super.add(npc);
 
     if (_patrons.size() >= NBR_PATRONS_TO_BE_BUSY) {
