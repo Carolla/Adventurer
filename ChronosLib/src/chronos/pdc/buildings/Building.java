@@ -349,4 +349,9 @@ public abstract class Building implements IRegistryElement
     }
     return MISSING_PERSON;
   }
+
+  public boolean contains(String target)
+  {
+    return false;
+  }
 } // end of abstract Building class
