@@ -12,10 +12,10 @@ package test.integ;
 import static chronos.pdc.buildings.Building.DEFAULT_BUILDINGS;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import chronos.pdc.buildings.Inn;
+import chronos.pdc.command.intCmdPatronEnter;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.NPCRegistry;
 import chronos.pdc.registry.RegistryFactory.RegKey;
@@ -28,37 +28,42 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
  */
 public class TA14_TalkToPatron extends IntegrationTest
 {
-  private BuildingRegistry breg;
-  private NPCRegistry npcreg;
-
-
-  @Before
-  public void setup()
-  {
-    breg = (BuildingRegistry) _regFactory.getRegistry(RegKey.BLDG);
-    npcreg = (NPCRegistry) _regFactory.getRegistry(RegKey.NPC);
-    Inn inn = (Inn) breg.getBuilding("Ugly Ogre Inn");
-    inn.add(npcreg.getNPC("Bork"));
-  }
+  private static final String[] _patronList = {"Sal", "Scruffy", "Boren", "Meladriel", "Aragon",
+      "Matilda", "Perrin", "Gorbal", "Balthazar", "Pendergast", "Ripper", "Loren", "Bork",
+      "J.P. Pennypacker", "Dewey N. Howe", "The Sheriff"};
 
   @Test
-  public void TalkToInnkeeper()
-  {
-      _cp.receiveCommand("Enter Ugly Ogre Inn");
-      assertTrue(_cp.receiveCommand("Talk to Bork"));
-  }
-  
-  @Test
-  public void TalkToAllBuildingMasters()
+  public void talkToAllBuildingMasters()
   {
     for (int i = 0; i < DEFAULT_BUILDINGS.length; i++) {
       String buildingName = DEFAULT_BUILDINGS[i][0];
       String buildingMaster = DEFAULT_BUILDINGS[i][1];
-      
+
       _cp.receiveCommand("Enter " + buildingName);
-      assertTrue("Couldn't talk to " + buildingMaster + " in " + buildingName, _cp.receiveCommand("Talk to " + buildingMaster));
-      
+      assertTrue("Couldn't talk to " + buildingMaster + " in " + buildingName,
+          _cp.receiveCommand("Talk to " + buildingMaster));
+
       resetBuildingState();
+    }
+  }
+
+  @Test
+  public void canTalkToPatronsInInn()
+  {
+    BuildingRegistry bReg = (BuildingRegistry) _regFactory.getRegistry(RegKey.BLDG);
+    NPCRegistry npcReg = (NPCRegistry) _regFactory.getRegistry(RegKey.NPC);
+    Inn inn = (Inn) bReg.getBuilding("Ugly Ogre Inn");
+
+    for (int i = 0; i < _patronList.length; i++) {
+      String target = _patronList[i];
+      _skedder.sched(new intCmdPatronEnter(0, 0, npcReg.get(target), inn));
+    }
+
+    _cp.receiveCommand("Enter Ugly Ogre Inn");
+
+    for (int i = 0; i < _patronList.length; i++) {
+      String target = _patronList[i];
+      assertTrue("Couldn't talk to " + target, _cp.receiveCommand("Talk to " + target));
     }
   }
 }
