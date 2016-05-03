@@ -6,7 +6,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import static civ.BuildingDisplayCiv.DEFAULT_BUILDINGS;
+import static chronos.pdc.buildings.Building.DEFAULT_BUILDINGS;
 
 import java.util.Random;
 
@@ -162,8 +162,10 @@ public class TestBuildingDisplayCiv
   public void canTalkToPatronInBuilding()
   {
     for (int i = 0; i < DEFAULT_BUILDINGS.length; i++) {
-      _bdCiv.approachBuilding(DEFAULT_BUILDINGS[i][0]);
-      assertTrue(_bdCiv.canTalkTo(DEFAULT_BUILDINGS[i][1]));
+      String buildingName = DEFAULT_BUILDINGS[i][0];
+      String buildingMaster = DEFAULT_BUILDINGS[i][1];
+      _bdCiv.approachBuilding(buildingName);
+      assertTrue("Couldn't talk to " + buildingMaster + " in " + buildingName, _bdCiv.canTalkTo(buildingMaster));
     }
   }
 }

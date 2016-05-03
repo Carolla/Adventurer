@@ -9,6 +9,7 @@
 
 package test.integ;
 
+import static chronos.pdc.buildings.Building.DEFAULT_BUILDINGS;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -45,5 +46,19 @@ public class TA14_TalkToPatron extends IntegrationTest
   {
       _cp.receiveCommand("Enter Ugly Ogre Inn");
       assertTrue(_cp.receiveCommand("Talk to Bork"));
+  }
+  
+  @Test
+  public void TalkToAllBuildingMasters()
+  {
+    for (int i = 0; i < DEFAULT_BUILDINGS.length; i++) {
+      String buildingName = DEFAULT_BUILDINGS[i][0];
+      String buildingMaster = DEFAULT_BUILDINGS[i][1];
+      
+      _cp.receiveCommand("Enter " + buildingName);
+      assertTrue("Couldn't talk to " + buildingMaster + " in " + buildingName, _cp.receiveCommand("Talk to " + buildingMaster));
+      
+      resetBuildingState();
+    }
   }
 }

@@ -29,7 +29,7 @@ public class CmdTalk extends Command
     for (String s : args) {
       _target += s + " ";
     }
-    _target.replace("to",  "").trim();
+    _target = _target.replace("to",  "").trim();
     
     _isInitialized = _bdciv.canTalkTo(_target);
     return _isInitialized;

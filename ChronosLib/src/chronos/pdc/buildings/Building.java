@@ -16,6 +16,7 @@ import java.util.List;
 import mylib.ApplicationException;
 import mylib.dmc.IRegistryElement;
 import chronos.pdc.NPC;
+import chronos.pdc.registry.NPCRegistry;
 
 
 /**
@@ -27,6 +28,12 @@ import chronos.pdc.NPC;
  */
 public abstract class Building implements IRegistryElement
 {
+  /** Default Buildings to initialize registry with */
+  public static final String[][] DEFAULT_BUILDINGS = { {"Ugly Ogre Inn", "Bork"},
+      {"Rat's Pack", "Dewey N. Howe"}, {"The Bank", "J.P. Pennypacker"},
+      {"Stadium", "Aragon"}, {"Arcaneum", "Pendergast"}, {"Monastery", "Balthazar"},
+      {"Rouge's Tavern", "Ripper"}, {"Jail", "The Sheriff"}};
+  
   public static final String MISSING_PERSON = "I don't see that person here";
   /** Default Opening Time for all buildings */
   private final int DEFAULT_OPENHOURS = 900;
@@ -39,7 +46,7 @@ public abstract class Building implements IRegistryElement
   /** Name of this building */
   protected final String _name;
   /** The non-player character (NPC) who owns or manages this Building */
-  protected final String _buildingMaster;
+  protected final NPC _buildingMaster;
 
   /** Buildings have a time in which they are open for business (military time). */
   protected int _openTime;
@@ -58,6 +65,7 @@ public abstract class Building implements IRegistryElement
   /** Path to Internal Display Image **/
   protected final String _internalImagePath;
   protected final List<NPC> _patrons = new ArrayList<NPC>();
+  private static final NPCRegistry _npcRegistry = new NPCRegistry();
 
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
@@ -81,7 +89,7 @@ public abstract class Building implements IRegistryElement
       throw new ApplicationException("Null parms in Building ctor");
     }
     _name = name;
-    _buildingMaster = masterName;
+    _buildingMaster = _npcRegistry.getNPC(masterName);
     _hoverText = hoverText;
     _extDesc = exterior;
     _intDesc = interior;
@@ -190,11 +198,6 @@ public abstract class Building implements IRegistryElement
   public String getIntImagePath()
   {
     return _internalImagePath;
-  }
-
-  public String getMaster()
-  {
-    return _buildingMaster;
   }
 
   public boolean remove(NPC npc)
@@ -352,6 +355,6 @@ public abstract class Building implements IRegistryElement
 
   public boolean contains(String target)
   {
-    return false;
+    return _buildingMaster.getName().equalsIgnoreCase(target) || _patrons.contains(_npcRegistry.getNPC(target));
   }
 } // end of abstract Building class

@@ -49,11 +49,6 @@ public class BuildingDisplayCiv extends BaseCiv
   private final String ERRMSG_JUMPBLDG =
       "You must leave this building before you approach another.";
 
-  /** Default Buildings to initialize registry with */
-  public static final String[][] DEFAULT_BUILDINGS = { {"Ugly Ogre Inn", "Bork"},
-      {"Rat's Pack", "Dewey N. Howe"}, {"The Bank", "Ogden Moneypenny"},
-      {"Stadium", "Aragon"}, {"Arcaneum", "Pendergast"}, {"Monastery", "Balthazar"},
-      {"Rouge's Tavern", "Ripper"}, {"Jail", "The Sheriff"}};
 
   // ======================================================================
   // Constructors and constructor helpers

@@ -72,6 +72,7 @@ public class CommandFactory
     // Just sit there
     _commandMap.put("WAIT", () -> new CmdWait());
     _commandMap.put("LOOK", () -> new CmdLook(_bdCiv));
+    _commandMap.put("TALK", () -> new CmdTalk(_bdCiv));
 
     // Locks the command map as read-only
     _commandMap = Collections.unmodifiableMap(_commandMap);
@@ -91,8 +92,6 @@ public class CommandFactory
 
     // If the command cannot be found, then run the Null command
     if (!canCreateCommand(cmdInput)) {
-      // Display the invalid command error to user
-      // _output.errorOut(ERRMSG_UNKNOWN);
       return command;
     } else {
       // If map contains the command, Supplier<Command> will give new Instance of that
