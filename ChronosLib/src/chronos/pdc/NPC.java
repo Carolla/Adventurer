@@ -66,6 +66,8 @@ public class NPC implements IRegistryElement
   {
     _name = "NPC";
     _note = "new";
+    _nearDescription = "default NPC's near description";
+    _farDescription = "default NPC's far description";
   }
 
   /**

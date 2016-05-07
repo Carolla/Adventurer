@@ -63,17 +63,21 @@ public class CommandFactory
     _commandMap.put("ENTER", () -> new CmdEnter(_bdCiv));
     // Synonym for Leave and then Quit the program
     _commandMap.put("EXIT", () -> new CmdExit(_mfCiv));
+    // Get near description for NPC
+    _commandMap.put("INSPECT", () -> new CmdInspect(_bdCiv));
     // Leave the inside of the Building and go outside
     _commandMap.put("LEAVE", () -> new CmdLeave(_bdCiv));
+    // Get Room Description or Get NPC names
+    _commandMap.put("LOOK", () -> new CmdLook(_bdCiv));
     // End the program.
     _commandMap.put("QUIT", () -> new CmdQuit(_mfCiv, _bdCiv));
     // Return to town view
     _commandMap.put("RETURN", () -> new CmdReturn(_bdCiv));
     // Just sit there
     _commandMap.put("WAIT", () -> new CmdWait());
-    _commandMap.put("LOOK", () -> new CmdLook(_bdCiv));
+    // Get information from an NPC
     _commandMap.put("TALK", () -> new CmdTalk(_bdCiv));
-
+    
     // Locks the command map as read-only
     _commandMap = Collections.unmodifiableMap(_commandMap);
   }
@@ -107,7 +111,6 @@ public class CommandFactory
       return command;
     }
   }
-
 
   public boolean canCreateCommand(CommandInput ci)
   {

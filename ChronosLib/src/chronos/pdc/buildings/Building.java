@@ -45,8 +45,11 @@ public abstract class Building implements IRegistryElement
 
   /** Name of this building */
   protected final String _name;
+  
   /** The non-player character (NPC) who owns or manages this Building */
-  protected final NPC _buildingMaster;
+  protected final NPC _proprietor;
+
+//  protected final String _buildingOwner;
 
   /** Buildings have a time in which they are open for business (military time). */
   protected int _openTime;
@@ -89,7 +92,12 @@ public abstract class Building implements IRegistryElement
       throw new ApplicationException("Null parms in Building ctor");
     }
     _name = name;
-    _buildingMaster = _npcRegistry.getNPC(masterName);
+    
+    _proprietor = _npcRegistry.getNPC(masterName);
+
+    //TODO needs to be created as npc instead of string
+//    _buildingOwner = masterName;
+
     _hoverText = hoverText;
     _extDesc = exterior;
     _intDesc = interior;
@@ -200,6 +208,15 @@ public abstract class Building implements IRegistryElement
     return _internalImagePath;
   }
 
+
+  /**
+   * @return the NPC associated with this building
+   */
+  public String getProprietor()
+  {
+    return _proprietor.getName();
+  }
+
   public boolean remove(NPC npc)
   {
     return _patrons.remove(npc);
@@ -308,7 +325,7 @@ public abstract class Building implements IRegistryElement
   {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((_buildingMaster == null) ? 0 : _buildingMaster.hashCode());
+    result = prime * result + ((_proprietor == null) ? 0 : _proprietor.hashCode());
     result = prime * result + ((_name == null) ? 0 : _name.hashCode());
     return result;
   }
@@ -323,10 +340,10 @@ public abstract class Building implements IRegistryElement
     if (getClass() != obj.getClass())
       return false;
     Building other = (Building) obj;
-    if (_buildingMaster == null) {
-      if (other._buildingMaster != null)
+    if (_proprietor == null) {
+      if (other._proprietor != null)
         return false;
-    } else if (!_buildingMaster.equals(other._buildingMaster))
+    } else if (!_proprietor.equals(other._proprietor))
       return false;
     if (_name == null) {
       if (other._name != null)
@@ -355,6 +372,6 @@ public abstract class Building implements IRegistryElement
 
   public boolean contains(String target)
   {
-    return _buildingMaster.getName().equalsIgnoreCase(target) || _patrons.contains(_npcRegistry.getNPC(target));
+    return _proprietor.getName().equalsIgnoreCase(target) || _patrons.contains(_npcRegistry.getNPC(target));
   }
 } // end of abstract Building class

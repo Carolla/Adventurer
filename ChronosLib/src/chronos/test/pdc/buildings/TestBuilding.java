@@ -202,6 +202,10 @@ public class TestBuilding
 
     // NORMAL Compare two identical buildings but different instances (but both in NPC Registry)
     cb2 = new ConcreteBuilding(NAME, "Aragon", HOVERTEXT, INTRO, DESC);
+
+    MsgCtrl.msgln("\n\t" + _cb.getKey() + " has master " + _cb.getProprietor());
+    MsgCtrl.msgln("\n\t" + _cb.getKey() + " has master " + cb2.getProprietor());
+
     assertFalse(cb2.equals(_cb));
   }
 
@@ -372,6 +376,9 @@ public class TestBuilding
   private void dump(Building bldg)
   {
     MsgCtrl.msg("\t Created: \t" + bldg.getName());
+
+    MsgCtrl.msgln("\t managed by " + bldg.getProprietor());
+
     int[] hours = bldg.getBusinessHours();
     int oTime = hours[0];
     int cTime = hours[1];
