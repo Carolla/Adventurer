@@ -64,6 +64,7 @@ public class TestCmdInspect
         CommandInput ci = new CommandInput("INSPECT", _params);
 //        _inspect = (CmdInspect) _cf.createCommand(ci);
         _inspect = new CmdInspect(_bdCiv);
+        _inspect.setOutput(new FakeMainframeCiv());
         
     }
 

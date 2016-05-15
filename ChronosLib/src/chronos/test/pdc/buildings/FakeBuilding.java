@@ -7,12 +7,12 @@ public class FakeBuilding extends Building
 {
     public FakeBuilding(String name)
     {
-        super(name, "", "", "", "", "", "");
+        super(name, "Bork", "", "", "", "", "");
     }
 
     public FakeBuilding(String name, String interiorDesc)
     {
-      super(name, "", "", "", interiorDesc, "", "");
+      super(name, "Bork", "", "", interiorDesc, "", "");
     }
 
     @Override

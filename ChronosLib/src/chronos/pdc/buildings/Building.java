@@ -30,7 +30,7 @@ public abstract class Building implements IRegistryElement
 {
     /** Default Buildings to initialize registry with */
     public static final String[][] DEFAULT_BUILDINGS = {{"Ugly Ogre Inn", "Bork"},
-            {"Rat's Pack", "Dewey N. Howe"}, {"The Bank", "J.P. Pennypacker"},
+            {"Rat's Pack", "Dewey N. Howe"}, {"The Bank", "J. P. Pennypacker"},
             {"Stadium", "Aragon"}, {"Arcaneum", "Pendergast"}, {"Monastery", "Balthazar"},
             {"Rouge's Tavern", "Ripper"}, {"Jail", "The Sheriff"}};
 

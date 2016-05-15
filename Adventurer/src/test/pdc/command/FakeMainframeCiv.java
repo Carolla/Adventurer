@@ -25,12 +25,14 @@ public class FakeMainframeCiv extends MainframeCiv
   public void displayErrorText(String msg)
   {
     _errors.add(msg);
+      System.err.println("User error message: " + msg);
   }
 
   @Override
   public void displayText(String msg)
   {
     _text.add(msg);
+    System.out.println("User message: " + msg);
   }
   
   @Override
