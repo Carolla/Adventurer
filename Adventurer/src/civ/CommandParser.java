@@ -85,7 +85,9 @@ public class CommandParser
     }
     return isInit;
   }
-
+  
+  //TODO repair error display for bad commands 
+  //TODO fix command window not scrolling
 
   public CommandInput createCommandInput(String textIn)
   {

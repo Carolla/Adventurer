@@ -93,7 +93,6 @@ public class CommandFactory
   {
     // If a good Command cannot be used, this dummy command is run
     Command command = new NullCommand();
-
     // If the command cannot be found, then run the Null command
     if (!canCreateCommand(cmdInput)) {
       return command;
@@ -106,7 +105,7 @@ public class CommandFactory
       }
       // Check that the parms are valid for this command
       if (command.init(cmdInput.parameters) == false) {
-        // _output.errorOut(command.usage());
+         _mfCiv.displayErrorText(command.usage());
       }
       return command;
     }

@@ -1,3 +1,4 @@
+
 package pdc.command;
 
 import static org.junit.Assert.assertNotNull;
@@ -25,9 +26,11 @@ public class CmdInspect extends Command
     static private final int DELAY = 0;
     /** This command takes this number of seconds on the game clock. */
     static private final int DURATION = 5;
-    
+
+    /** NPC on which this command is run */
+    private NPC _npc;
     /** Parm passed into init, can be multi-word. */
-    private String _npcName;
+    private String _targetNpcName;
     /** Needed to get current building. */
     private BuildingDisplayCiv _bdCiv;
 
@@ -38,23 +41,23 @@ public class CmdInspect extends Command
         _bdCiv = bdc;
     }
 
-    /** Takes passed in NPC name tokens, combining them into a single token
+    /**
+     * Takes passed in NPC name tokens, combining them into a single token
      *
-     *@return single-word String NPC name
+     * @return single-word String NPC name
      */
     @Override
     public boolean init(List<String> args)
     {
+        // Guard
+        if (args == null) {
+            return false;
+        }
         boolean retVal = false;
-        if (args.size() == 0) {
-            retVal = false;
-        } else {
-            _npcName = "";
-            for (String token : args) {
-                _npcName += token + " ";
-            }
-            _npcName = _npcName.trim();
-            retVal = true;
+        if (args.size() >= 1) {
+            _targetNpcName = super.convertArgsToString(args).trim();
+            retVal = !_targetNpcName.isEmpty();
+            _isInitialized = retVal;
         }
         return retVal;
     }
@@ -62,19 +65,51 @@ public class CmdInspect extends Command
     @Override
     public boolean exec()
     {
-        // need to force there to be a current building
-        // enterBuilding?
+        boolean retVal = false;
         Building cBuild = _bdCiv.getCurrBuilding();
-        NPC npc = null;
-        List<NPC> npcList = (List<NPC>) cBuild.getPatrons();
-        for (NPC anNpc : npcList) {
-            if (_npcName.equals(anNpc.getName())) {
-               npc = anNpc; 
+        if (cBuild == null) {
+            _output.displayErrorText("You need to go inside to inspect people.");
+            return retVal;
+        }
+        _npc = null;
+        
+        if (_targetNpcName.equalsIgnoreCase(cBuild.getProprietor())) {
+            _npc = cBuild.getProprietorNPC();
+            _output.displayText(_npc.getNearDescription());
+            retVal = true;
+        } else {
+            List<NPC> npcList = (List<NPC>) cBuild.getPatrons();
+            for (NPC anNpc : npcList) {
+                if (_targetNpcName.equalsIgnoreCase(anNpc.getName())) {
+                    _npc = anNpc;
+                    _output.displayText(_npc.getNearDescription());
+                    retVal = true;
+                    break;
+                }
             }
         }
-        System.out.println("\t" + npc.getName() + " = " + npc.getNearDescription());
-        return false;
+        if (retVal == false) {
+            _output.displayText("I don't see " + _targetNpcName
+                    + ".  Perhaps you should have yourself another look 'round to see who's here.");
+        }
+        return retVal;
     }
-    
 
-}
+    public class MockCmdInspect
+    {
+
+        public MockCmdInspect()
+        {}
+
+        public String getNearDes()
+        {
+            return CmdInspect.this._npc.getNearDescription();
+        }
+
+        public void setNpcName(String name)
+        {
+            CmdInspect.this._targetNpcName = name;
+        }
+    }
+
+} // End CmdInspect

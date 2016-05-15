@@ -35,14 +35,14 @@ public class ConcreteBuilding extends Building
      * @param name      of this building
      * @param master    owner or manager of the building
      * @param hoverText     quick phrase for purpose of building
-     * @param intro        first glance of building
-     * @param desc       detailed description of building, usually once inside
+     * @param exterior        first glance of building
+     * @param interior       detailed description of building, usually once inside
      * @throws ApplicationException if NPC cannot be found
      **/
-    public ConcreteBuilding(String name, String master, String hoverText, String intro, String desc) 
+    public ConcreteBuilding(String name, String master, String hoverText, String exterior, String interior) 
                         throws ApplicationException
     {
-        super(name, master, hoverText, intro, desc, null, null);
+        super(name, master, hoverText, exterior, interior, null, null);
     }
 
 

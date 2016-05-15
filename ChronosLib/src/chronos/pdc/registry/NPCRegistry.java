@@ -326,9 +326,9 @@ public class NPCRegistry extends Registry<NPC>
               add("\"Rogahn and Zelligar probably wouldn't like you poking into their home.\"");
               add("\"A group of adventurers went into that place two days ago. They have not returned.\"");
               }}));
-          // J.P. Pennypacker, the Bank manager
+          // J. P. Pennypacker, the Bank manager
           add(new NPC(
-              "J.P. Pennypacker",
+              "J. P. Pennypacker",
               "Bank manager",
               0,
               "A slightly-overweight and balding man stands near the bar talking to the Innkeeper. "
