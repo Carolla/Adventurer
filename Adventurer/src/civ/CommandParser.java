@@ -18,7 +18,6 @@ import java.util.List;
 import chronos.pdc.command.Command;
 import chronos.pdc.command.Scheduler;
 import pdc.command.CommandFactory;
-import pdc.command.CommandInput;
 
 /**
  * Receives a user input string from the command window and converts it to a command object, which
@@ -38,68 +37,87 @@ import pdc.command.CommandInput;
  */
 public class CommandParser
 {
-  private final CommandFactory _factory;
+    private final CommandFactory _factory;
 
-  /** Start the Scheduler up when the CommandParser starts */
-  private final Scheduler _skedder;
+    /** Start the Scheduler up when the CommandParser starts */
+    private final Scheduler _skedder;
 
-  // ============================================================
-  // Constructors and constructor helpers
-  // ============================================================
+    /** Needed for output messages */
+    private MainframeCiv _mfCiv;
+    
+    /** User Error message for entering a bad command token */
+    private final String BAD_TOKEN = "I don't know what you mean, perhaps you misspelled.";
 
-  /**
-   * Creates the singleton CommandParser, and connects to the {@code CommandFactory} and the
-   * {@code MainframeCiv} for displaying parser output to {@code IOPanel}.
-   * @param _fakeSkedder 
-   * 
-   * @param skedder Command Scheduler executes the commands
-   * @param factory the CommandFactory for creating commands
-   * @param mac to receive all messages that go to the user
-   * 
-   */
-  public CommandParser(Scheduler skedder, CommandFactory factory)
-  {
-    _skedder = skedder;
-    _factory = factory;
-  }
+    // ============================================================
+    // Constructors and constructor helpers
+    // ============================================================
 
-  // ============================================================
-  // Public Methods
-  // ============================================================
-
-  /**
-   * Receives and holds the command string from the command window. It will be retrieved by the
-   * {@code Scheduler} when it is ready for another user command.<br>
-   * 
-   * @param textIn the input the user entered onto the command line
-   * @return true if the command is properly initialized
-   */
-  public boolean receiveCommand(String textIn)
-  {
-    CommandInput cmdInput = createCommandInput(textIn);
-    Command cmd = _factory.createCommand(cmdInput);
-
-    boolean isInit = cmd.isInitialized();
-    if (isInit) {
-      _skedder.sched(cmd);
-    }
-    return isInit;
-  }
-  
-  //TODO repair error display for bad commands 
-  //TODO fix command window not scrolling
-
-  public CommandInput createCommandInput(String textIn)
-  {
-    List<String> tokens = new ArrayList<String>(Arrays.asList(textIn.split(" ")));
-    String commandToken = null;
-
-    if (tokens.size() > 0) {
-      commandToken = tokens.remove(0).toUpperCase();
+    /**
+     * Creates the singleton CommandParser, and connects to the {@code CommandFactory} and the
+     * {@code MainframeCiv} for displaying parser output to {@code IOPanel}.
+     * 
+     * @param _fakeSkedder
+     * 
+     * @param skedder Command Scheduler executes the commands
+     * @param factory the CommandFactory for creating commands
+     * @param mac to receive all messages that go to the user
+     * 
+     */
+    public CommandParser(Scheduler skedder, CommandFactory factory, MainframeCiv mfCiv)
+    {
+        _skedder = skedder;
+        _factory = factory;
+        _mfCiv = mfCiv;
     }
 
-    return new CommandInput(commandToken, tokens);
-  }
+    // ============================================================
+    // Public Methods
+    // ============================================================
+
+    /**
+     * Receives and holds the command string from the command window. It will be retrieved by the
+     * {@code Scheduler} when it is ready for another user command.<br>
+     * 
+     * @param textIn the input the user entered onto the command line
+     * @return true if the command is properly initialized
+     */
+    public boolean receiveCommand(String textIn)
+    {
+        ArrayList<String> cmdList = new ArrayList<String>(Arrays.asList(textIn.split(" ")));
+        String cmdToken = cmdList.remove(0).toUpperCase();
+        Command cmd = _factory.createCommand(cmdToken);
+        if (cmd == null) {
+            _mfCiv.displayErrorText(BAD_TOKEN);
+            return false;
+        }
+
+        boolean isInitialized = cmd.init(cmdList);
+        if (isInitialized) {
+            _skedder.sched(cmd);
+        } else {
+            _mfCiv.displayErrorText(cmd.usage());
+        }
+
+        // boolean isInit = cmd.isInitialized();
+        // if (isInit) {
+        // _skedder.sched(cmd);
+        // }
+        return isInitialized;
+    }
+
+    // TODO repair error display for bad commands
+    // TODO fix command window not scrolling
+
+//    public ArrayList<String> parseTextInput(String textIn)
+//    {
+//        ArrayList<String> tokens = new ArrayList<String>(Arrays.asList(textIn.split(" ")));
+//        String commandToken = null;
+//
+//        if (tokens.size() > 0) {
+//            commandToken = tokens.remove(0).toUpperCase();
+//        }
+//        return tokens;
+//    }
 
 } // end of CommandParser class
 

@@ -14,6 +14,7 @@ import org.junit.runners.Suite;
 
 import test.pdc.character.TestHunger;
 import test.pdc.command.TestCmdEnter;
+import test.pdc.command.TestCmdInspect;
 import test.pdc.command.TestCmdLook;
 import test.pdc.command.TestCmdQuit;
 import test.pdc.command.TestCmdReturn;
@@ -43,6 +44,7 @@ import test.pdc.command.TestScheduler;
     /* PDC.Command test files */
     // TestCmdApproach.class,
     TestCmdEnter.class,
+    TestCmdInspect.class,
     TestCmdLook.class,
     TestCmdQuit.class,
     TestCmdReturn.class,

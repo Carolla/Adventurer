@@ -57,7 +57,6 @@ public class CmdInspect extends Command
         if (args.size() >= 1) {
             _targetNpcName = super.convertArgsToString(args).trim();
             retVal = !_targetNpcName.isEmpty();
-            _isInitialized = retVal;
         }
         return retVal;
     }

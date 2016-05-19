@@ -72,8 +72,8 @@ public class CmdLeave extends Command
     public boolean init(List<String> args) throws NullPointerException
     {
       // set good parms state
-      _isInitialized = _bldgCiv.isInside();
-      return _isInitialized;    
+      boolean isInitialized = _bldgCiv.isInside();
+      return isInitialized;    
     }
 
 

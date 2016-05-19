@@ -82,16 +82,16 @@ public class CmdQuit extends Command
   @Override
   public boolean init(List<String> args)
   {
-    if ((args.size() == 0) && (_bdCiv.isInside() == false)) {
-      _isInitialized = true;
-      return true;
-    } else if ((args.size() == 0) && (_bdCiv.isInside() == true)) {
+      boolean retVal = false;
+      boolean argSizeZero = (args.size() == 0);
+      boolean heroIsInside = _bdCiv.isInside();
+    if (argSizeZero && !heroIsInside) {
+        retVal = true;
+    } else if (argSizeZero && heroIsInside) {
       _mfCiv.displayErrorText(ERRMSG_IN_BLDG);
-      return false;
-    } else {
-      _mfCiv.displayErrorText(ERRMSG_OMIT_ARGS);
-      return false;
+      retVal = false;
     }
+    return retVal;
   }
 
   /**

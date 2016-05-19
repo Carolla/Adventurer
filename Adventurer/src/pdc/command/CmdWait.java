@@ -90,15 +90,17 @@ public class CmdWait extends Command
    */
   public boolean init(List<String> args)
   {
+      // true if initialized properly
+      boolean retVal = false;
     // Guard against incorrect parmlist
     int nbrParms = args.size();
     // Allow default condition to pass
     if (nbrParms == 0) {
-      _isInitialized = true;
+      return true;
     }
     // Non-default command has only two parms: Nbr and Units of time
     if (nbrParms != 2) {
-      usage();
+      return false;
     }
     // Validate the two parms and save valid data into Command
     try {
@@ -111,22 +113,22 @@ public class CmdWait extends Command
         if ((lag >= 0) && (lag < 25)) {
           // Convert hours to seconds and save in Command
           _delay = lag * 3600;
-          _isInitialized = true;
+          retVal = true;
         }
       } else if (unit.equalsIgnoreCase("M") || unit.equalsIgnoreCase("Min") || unit.equalsIgnoreCase("Minutes")) {
         // Convert minutes to seconds
         if ((lag >= 1) && (lag < 60)) {
           _delay = lag * 60;
-          _isInitialized = true;
+          retVal = true;
         }
       }
       // For whatever reason, the input line doesn't parse, so try again
     } catch (Exception e) {
       // fall through to usage() and false exit
-      usage();
+      retVal = false;
     }
     // Fall through due to bad parms
-    return _isInitialized;
+    return retVal;
   }
 
 

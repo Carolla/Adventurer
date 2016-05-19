@@ -82,7 +82,7 @@ public abstract class Command
     /** The syntax of the command, used in the {@code usage()} method. */
     protected final String _cmdfmt;
     /** Whether params are correct */
-    protected boolean _isInitialized = false;
+//    protected boolean _isInitialized = false;
 
     /** Every command sends user messages to this object */
     protected UserMsg _output;
@@ -242,13 +242,13 @@ public abstract class Command
         return msg;
     }
 
-    /**
-     * @return true if the parms are correct
-     */
-    public boolean isInitialized()
-    {
-        return _isInitialized;
-    }
+//    /**
+//     * @return true if the parms are correct
+//     */
+//    public boolean isInitialized()
+//    {
+//        return _isInitialized;
+//    }
 
   /**
    * By default, assume commands are UserInput.

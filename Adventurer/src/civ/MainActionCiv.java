@@ -121,7 +121,7 @@ public class MainActionCiv extends BaseCiv
 
     CommandFactory cmdFac = new CommandFactory(_mfCiv, bldgCiv);
     cmdFac.initMap();
-    CommandParser parser = new CommandParser(_skedder, cmdFac);
+    CommandParser parser = new CommandParser(_skedder, cmdFac, _mfCiv);
 
     IOPanel iop = new IOPanel(parser);
     _mfCiv.replaceLeftPanel(iop);

@@ -36,8 +36,7 @@ public class CmdLook extends Command
       _target += s + " ";
     }
     _target = _target.trim();
-    _isInitialized = true;
-    return _isInitialized;
+    return true;
   }
 
   @Override

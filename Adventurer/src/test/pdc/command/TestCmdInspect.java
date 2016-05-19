@@ -21,7 +21,6 @@ import mylib.MsgCtrl;
 import pdc.command.CmdInspect;
 import pdc.command.CmdInspect.MockCmdInspect;
 import pdc.command.CommandFactory;
-import pdc.command.CommandInput;
 
 public class TestCmdInspect
 {
@@ -61,7 +60,7 @@ public class TestCmdInspect
         _bank.add(_fred);
         
         // run
-        CommandInput ci = new CommandInput("INSPECT", _params);
+//        CommandInput ci = new CommandInput("INSPECT", _params);
 //        _inspect = (CmdInspect) _cf.createCommand(ci);
         _inspect = new CmdInspect(_bdCiv);
         _inspect.setOutput(new FakeMainframeCiv());

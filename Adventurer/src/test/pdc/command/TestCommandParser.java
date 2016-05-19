@@ -10,7 +10,6 @@ import org.junit.Test;
 
 import pdc.command.CmdReturn;
 import pdc.command.CommandFactory;
-import pdc.command.CommandInput;
 import chronos.pdc.command.Command;
 import chronos.pdc.command.NullCommand;
 import chronos.test.pdc.command.FakeScheduler;
@@ -26,56 +25,67 @@ public class TestCommandParser
     public void setup()
     {
         _fakeSkedder = new FakeScheduler();
-        _cp = new CommandParser(_fakeSkedder, new FakeCommandFactory());
+        _cp = new CommandParser(_fakeSkedder, new FakeCommandFactory(), new FakeMainframeCiv());
     }
     
-    @Test
-    public void FirstStringIsCommandTokenInCommandInput()
-    {
-        String firstWord = "Test";
-        String testCmd = firstWord + " command";
-        CommandInput ci = _cp.createCommandInput(testCmd);
-        assertTrue(firstWord.equalsIgnoreCase(ci.commandToken));
-    }
+    /*
+     * receiveCommand method
+     * null
+     * single-word
+     * bunch of spaces
+     * only space after first word
+     * bunch of spaces after first word
+     */
     
-    @Test
-    public void FirstStringIsInUpperCase()
-    {
-        String testCmd = "Test";
-        CommandInput ci = _cp.createCommandInput(testCmd);
-        assertEquals(testCmd.toUpperCase(), ci.commandToken);        
-    }
     
-    @Test
-    public void SecondStringIsInListOfParams()
-    {
-        String secondWord = "command";
-        String testCmd = "Test " + secondWord;
-        CommandInput ci = _cp.createCommandInput(testCmd);
-        assertTrue(ci.parameters.contains(secondWord));
-    }
+//    @Test
+//    public void FirstStringIsCommandTokenInCommandInput()
+//    {
+//        String firstWord = "Test";
+//        String testCmd = firstWord + " command";
+////        CommandInput ci = _cp.createCommandInput(testCmd);
+//      Command cmd = _cp.createCommand(testCmd);
+//        assertTrue(firstWord.equalsIgnoreCase(ci.commandToken));
+//    }
     
-    @Test
-    public void AllRemainingStringsAreInListOfParams()
-    {
-        Random rand = new Random(System.currentTimeMillis());
-        int numberOfWords = rand.nextInt(10);
-        String testCmd = "Test ";
-        for (int i = 0; i < numberOfWords; i++) {
-            testCmd += " word" + i;
-        }
-        CommandInput ci = _cp.createCommandInput(testCmd);
-        for (int i = 0; i < numberOfWords; i++) {
-            assertTrue(ci.parameters.contains("word" + i));
-        }
-    }
+//    @Test
+//    public void FirstStringIsInUpperCase()
+//    {
+//        String testCmd = "Test";
+//        CommandInput ci = _cp.createCommandInput(testCmd);
+//        assertEquals(testCmd.toUpperCase(), ci.commandToken);        
+//    }
+    
+//    @Test
+//    public void SecondStringIsInListOfParams()
+//    {
+//        String secondWord = "command";
+//        String testCmd = "Test " + secondWord;
+//        CommandInput ci = _cp.createCommandInput(testCmd);
+//        assertTrue(ci.parameters.contains(secondWord));
+//    }
+    
+//    @Test
+//    public void AllRemainingStringsAreInListOfParams()
+//    {
+//        Random rand = new Random(System.currentTimeMillis());
+//        int numberOfWords = rand.nextInt(10);
+//        String testCmd = "Test ";
+//        for (int i = 0; i < numberOfWords; i++) {
+//            testCmd += " word" + i;
+//        }
+//        CommandInput ci = _cp.createCommandInput(testCmd);
+//        for (int i = 0; i < numberOfWords; i++) {
+//            assertTrue(ci.parameters.contains("word" + i));
+//        }
+//    }
     
     @Test
     public void CommandIsScheduledWhenFound()
     {
         CommandFactory realCommandFactory = new CommandFactory(null, null);
         realCommandFactory.initMap();
-        _cp = new CommandParser(_fakeSkedder, realCommandFactory);
+        _cp = new CommandParser(_fakeSkedder, realCommandFactory, new FakeMainframeCiv());
         _cp.receiveCommand("Return");
         CmdReturn expectedCommand = new CmdReturn(new FakeBuildingDisplayCiv());
         assertEquals(expectedCommand.getName(), _fakeSkedder.command.getName());
@@ -97,7 +107,7 @@ public class TestCommandParser
         }
 
         @Override
-        public Command createCommand(CommandInput cmdInput)
+        public Command createCommand(String cmdToken)
         {
             Command command = new NullCommand();
             command.init(null);

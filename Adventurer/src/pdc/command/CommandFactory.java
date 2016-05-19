@@ -86,38 +86,35 @@ public class CommandFactory
    * Creates a user Command from its canonical name.<br>
    * NOTE: The subclass command must be in the same package as the Command class.
    * 
-   * @param cmdInput the name of the subclass to be created
+   * @param cmdToken the name of the subclass to be created
    * @return Command, the subclass Command created, but referenced polymorphically
    */
-  public Command createCommand(CommandInput cmdInput)
+  public Command createCommand(String cmdToken)
   {
     // If a good Command cannot be used, this dummy command is run
-    Command command = new NullCommand();
+      Command command = null;
+//    Command command = new NullCommand();
     // If the command cannot be found, then run the Null command
-    if (!canCreateCommand(cmdInput)) {
+    if (!canCreateCommand(cmdToken)) {
       return command;
     } else {
       // If map contains the command, Supplier<Command> will give new Instance of that
-      Supplier<Command> supplier = _commandMap.get(cmdInput.commandToken);
+      Supplier<Command> supplier = _commandMap.get(cmdToken);
       if (supplier != null) {
         command = supplier.get();
         command.setOutput(_mfCiv);
       }
       // Check that the parms are valid for this command
-      if (command.init(cmdInput.parameters) == false) {
-         _mfCiv.displayErrorText(command.usage());
-      }
+//      if (command.init(cmdInput.parameters) == false) {
+//         _mfCiv.displayErrorText(command.usage());
+//      }
       return command;
     }
   }
 
-  public boolean canCreateCommand(CommandInput ci)
+  public boolean canCreateCommand(String cToken)
   {
-    if (_commandMap.get(ci.commandToken) != null) {
-      return true;
-    } else {
-      return false;
-    }
+      return (_commandMap.get(cToken) == null) ? false : true;
   }
 
 } // end of CommandFactory class
