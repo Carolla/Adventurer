@@ -22,9 +22,7 @@ import javax.swing.JMenuItem;
 @SuppressWarnings("serial")
 public class Menubar extends JMenuBar
 {
-
   private MainframeInterface _mainframe;
-
 
   // ============================================================
   // Constructor and constructor helpers

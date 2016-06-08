@@ -63,4 +63,5 @@ public class ChronosPanel extends JPanel
     }
     _title = title;
   }
+  
 } // end of ChronosPanel

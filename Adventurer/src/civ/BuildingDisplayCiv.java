@@ -11,14 +11,15 @@
 
 package civ;
 
+import chronos.civ.UserMsgInterface;
 import chronos.pdc.Adventure;
 import chronos.pdc.buildings.Building;
 import chronos.pdc.registry.BuildingRegistry;
 
 /**
  * Manages the town and buildings displays and text descriptions, both interior and exterior.
- * {@code {@ImagePanel} manages the images, and {@code IOPanel} manages the user text
- * input and output.
+ * {@code {@ImagePanel} manages the images, and {@code IOPanel} manages the user text input and
+ * output.
  * 
  * @author Al Cline
  * @version Feb 20, 2015 // updated from earlier version by Tim Armstrong <br>
@@ -26,8 +27,8 @@ import chronos.pdc.registry.BuildingRegistry;
  */
 public class BuildingDisplayCiv extends BaseCiv
 {
-  
   protected MainframeCiv _mfCiv;
+  private UserMsgInterface _output;
   private BuildingRegistry _breg;
   private Adventure _adv;
 
@@ -50,8 +51,8 @@ public class BuildingDisplayCiv extends BaseCiv
       "You must leave this building before you approach another.";
 
   /** Default Buildings to initialize registry with */
-  public static final String[][] DEFAULT_BUILDINGS = { {"Ugly Ogre Inn", "Bork"},
-      {"Rat's Pack", "Dewey N. Howe"}, {"The Bank", "Ogden Moneypenny"},
+  public static final String[][] DEFAULT_BUILDINGS = {{"Ugly Ogre Inn", "Bork"},
+      {"Rat's Pack", "Dewey N. Howe"}, {"The Bank", "J. P. Pennypacker"},
       {"Stadium", "Aragon"}, {"Arcaneum", "Pendergast"}, {"Monastery", "Balthazar"},
       {"Rouge's Tavern", "Ripper"}, {"Jail", "The Sheriff"}};
 
@@ -61,8 +62,8 @@ public class BuildingDisplayCiv extends BaseCiv
 
   /**
    * This object takes a MainframeInterface GUI object to receive image and text output. It uses the
-   * command {@setOutput()} because not all callers of this object have or know which one it is. In
-   * almost all cases, the output GUI is {@code hic.Mainframe}, which implements
+   * command {@code setOutput()} because not all callers of this object have or know which one it
+   * is. In almost all cases, the output GUI is {@code hic.Mainframe}, which implements
    * {@code MainframeInterface}.
    * 
    * @param mainframeCiv handles things
@@ -80,31 +81,7 @@ public class BuildingDisplayCiv extends BaseCiv
   // Public methods
   // ======================================================================
 
-  public boolean canApproach(String bldgParm)
-  {
-    // The Hero cannot be inside a building already
-    if (isInside() == true) {
-      _mfCiv.displayErrorText(ERRMSG_JUMPBLDG);
-      return false;
-    }
 
-    // Case 1: Building name is given
-    if (!bldgParm.isEmpty()) {
-      Building b = _breg.getBuilding(bldgParm);
-
-      // Check that the building specified actually exists
-      if (b == null) {
-        _mfCiv.displayErrorText(ERRMSG_UNKNOWN_BLDG);
-        return false;
-      } else {
-        return true;
-      }
-    } else {
-      // Case 2: No building specified
-      _mfCiv.displayErrorText(ERRMSG_NOBLDG);
-      return false;
-    }
-  }
 
   // ======================================================================
   // Public methods
@@ -129,7 +106,41 @@ public class BuildingDisplayCiv extends BaseCiv
       displayBuildingExterior();
       return true;
     } else {
-      _mfCiv.displayText(ERRMSG_NOBLDG);
+//      _mfCiv.displayText(ERRMSG_NOBLDG);
+      _output.displayText(ERRMSG_NOBLDG);
+      return false;
+    }
+  }
+
+  // ======================================================================
+  // Public methods
+  // ======================================================================
+
+  public boolean canApproach(String bldgParm)
+  {
+    // The Hero cannot be inside a building already
+    if (isInside() == true) {
+//      _mfCiv.displayErrorText(ERRMSG_JUMPBLDG);
+      _output.displayErrorText(ERRMSG_JUMPBLDG);
+      return false;
+    }
+
+    // Case 1: Building name is given
+    if (!bldgParm.isEmpty()) {
+      Building b = _breg.getBuilding(bldgParm);
+
+      // Check that the building specified actually exists
+      if (b == null) {
+//        _mfCiv.displayErrorText(ERRMSG_UNKNOWN_BLDG);
+        _output.displayErrorText(ERRMSG_UNKNOWN_BLDG);
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      // Case 2: No building specified
+//      _mfCiv.displayErrorText(ERRMSG_NOBLDG);
+      _output.displayErrorText(ERRMSG_NOBLDG);
       return false;
     }
   }
@@ -138,7 +149,7 @@ public class BuildingDisplayCiv extends BaseCiv
   {
     // The Hero cannot be inside a building already
     if (isInside()) {
-      _mfCiv.displayErrorText(ERRMSG_JUMPBLDG);
+      _output.displayErrorText(ERRMSG_JUMPBLDG);
       return false;
     }
 
@@ -147,7 +158,7 @@ public class BuildingDisplayCiv extends BaseCiv
       // Check that the building specified actually exists
       Building b = _breg.getBuilding(bldgParm);
       if (b == null) {
-        _mfCiv.displayErrorText(ERRMSG_UNKNOWN_BLDG);
+        _output.displayErrorText(ERRMSG_UNKNOWN_BLDG);
         return false;
       } else {
         return true;
@@ -155,11 +166,22 @@ public class BuildingDisplayCiv extends BaseCiv
     } else {
       // Case 2: Building defaults to current building
       if (_currentBldg == null) {
-        _mfCiv.displayErrorText(ERRMSG_NOBLDG);
+        _output.displayErrorText(ERRMSG_NOBLDG);
         return false;
       } else {
         return true;
       }
+    }
+  }
+
+  /**
+   * Display the bulding's interior
+   */
+  public void displayBuildingInterior()
+  {
+    if (_currentBldg != null) {
+      _mfCiv.displayImage(_currentBldg.getName(), _currentBldg.getIntImagePath());
+      _output.displayText(_currentBldg.getInteriorDescription());
     }
   }
 
@@ -179,7 +201,7 @@ public class BuildingDisplayCiv extends BaseCiv
       _insideBldg = true;
       displayBuildingInterior();
     } else {
-      _mfCiv.displayErrorText(ERRMSG_NOBLDG);
+      _output.displayErrorText(ERRMSG_NOBLDG);
       System.err.println("error case of enterBuilding");
     }
   }
@@ -187,6 +209,13 @@ public class BuildingDisplayCiv extends BaseCiv
   public String getCurrentBuilding()
   {
     return (_currentBldg == null) ? "" : _currentBldg.getName();
+  }
+
+  public Building getBuildingObject()
+  {
+    String bldgName = getCurrentBuilding();
+    Building curBldg = _breg.getBuilding(bldgName);
+    return curBldg;
   }
 
   public boolean isOnTown()
@@ -214,7 +243,7 @@ public class BuildingDisplayCiv extends BaseCiv
   {
     returnToTown();
     _mfCiv.displayImage(TOWN_NAME_LEADER + _adv.getTownName(), TOWN_IMAGE);
-    _mfCiv.displayText(_adv.getOverview());
+    _output.displayText(_adv.getOverview());
   }
 
   /**
@@ -227,24 +256,13 @@ public class BuildingDisplayCiv extends BaseCiv
   }
 
   /**
-   * Display the bulding's interior
-   */
-  public void displayBuildingInterior()
-  {
-    if (_currentBldg != null) {
-      _mfCiv.displayImage(_currentBldg.getName(), _currentBldg.getIntImagePath());
-      _mfCiv.displayText(_currentBldg.getInteriorDescription());
-    }
-  }
-
-  /**
    * Display the bulding's image exterior
    */
   private void displayBuildingExterior()
   {
     if (_currentBldg != null) {
       _mfCiv.displayImage(_currentBldg.getName(), _currentBldg.getExtImagePath());
-      _mfCiv.displayText(_currentBldg.getExteriorDescription());
+      _output.displayText(_currentBldg.getExteriorDescription());
     }
   }
 
@@ -253,7 +271,7 @@ public class BuildingDisplayCiv extends BaseCiv
     String result = "";
     if (isInside()) {
       result = _currentBldg.inspect(target);
-      _mfCiv.displayText(result);
+      _output.displayText(result);
       return result;
     }
     return result;

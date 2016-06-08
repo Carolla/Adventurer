@@ -14,7 +14,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 /**
- * Base class for all Civs that monitor and manage the HIC wigets
+ * Base class for all Civs that monitor and manage the HIC widgets
  * 
  * @author Al Cline
  * @version Nov 18, 2015 // original <br>
@@ -33,24 +33,31 @@ public class BaseCiv implements MouseListener, MouseMotionListener
   // Mouse handler methods
   // ============================================================
 
+  @Override
   public void mouseClicked(MouseEvent e)
   {}
 
+  @Override
   public void mouseDragged(MouseEvent e)
   {}
 
+  @Override
   public void mouseEntered(MouseEvent e)
   {}
 
+  @Override
   public void mouseExited(MouseEvent e)
   {}
 
+  @Override
   public void mouseMoved(MouseEvent e)
   {}
 
+  @Override
   public void mousePressed(MouseEvent e)
   {}
 
+  @Override
   public void mouseReleased(MouseEvent e)
   {}
 

@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import chronos.civ.DefaultUserMsg;
 import chronos.pdc.command.Command.CommandStatus;
 import chronos.pdc.command.Scheduler;
 
@@ -19,7 +18,7 @@ public class TestScheduler
     @Before
     public void setup()
     {
-        _s = new Scheduler(new DefaultUserMsg());
+        _s = new Scheduler();
     }
     
     @Test

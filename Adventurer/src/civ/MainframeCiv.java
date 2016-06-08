@@ -9,12 +9,11 @@
 
 package civ;
 
+import chronos.civ.UserMsgInterface;
 import hic.ChronosPanel;
 import hic.IOPanel;
 import hic.ImagePanel;
-import hic.Mainframe;
 import hic.MainframeInterface;
-import chronos.civ.UserMsg;
 
 /**
  * The main civ behind the Adventurer program. It initializes the system and brings up the
@@ -28,7 +27,8 @@ import chronos.civ.UserMsg;
  *          Nov 7, 2015 // re-architected HIC.Mainframe to separate better CIV.MainframeCiv <br>
  *          Nov 13, 2015 // allow BuildingDisplayCiv to talk to this object. <br>
  */
-public class MainframeCiv extends BaseCiv implements UserMsg
+// public class MainframeCiv extends BaseCiv implements UserMsgInterface
+public class MainframeCiv extends BaseCiv
 {
   private MainframeInterface _mf;
   private IOPanel _ioPanel;
@@ -37,30 +37,35 @@ public class MainframeCiv extends BaseCiv implements UserMsg
   private static final String INITIAL_IMAGE = "ChronosLogo.jpg";
   private static final String INITIAL_IMAGE_TITLE = "Chronos Logo";
 
+  /** receives user input and command output messages */
+  private UserMsgInterface _output;
 
   // ============================================================
   // Constructors and constructor helpers
   // ============================================================
 
-  public MainframeCiv()
-  {
-    this(new Mainframe());
-  }
+  // public MainframeCiv()
+  // {
+  // this(new Mainframe());
+  // }
 
   public MainframeCiv(MainframeInterface mf)
   {
     _mf = mf;
-    _imagePanel = new ImagePanel();
     doConstructorWork();
   }
 
   protected void doConstructorWork()
   {
+    _imagePanel = new ImagePanel();
     _mf.setImagePanel(_imagePanel);
     displayImage(INITIAL_IMAGE_TITLE, INITIAL_IMAGE);
     _mf.replaceRightPanel(_imagePanel);
     new MainActionCiv(this);
   }
+
+  
+
 
   // ============================================================
   // Public methods
@@ -77,25 +82,46 @@ public class MainframeCiv extends BaseCiv implements UserMsg
     _mf.backToMain(newFrameTitle);
   }
 
-
-  @Override
-  public void displayErrorText(String msg)
-  {
-    _ioPanel.displayErrorText(msg);
-  }
-
-
+  // Removed from MainframeCiv because it is part of UserMsgInterface
+  // @Override
+  // public String displayErrorText(String msg)
+  // {
+  // _ioPanel.displayErrorText(msg);
+  // return msg;
+  // }
+  
+  
   public void displayImage(String title, String imageName)
   {
     _mf.displayImage(title, imageName);
   }
 
-
-  @Override
-  public void displayText(String result)
+  /** Returns the current output device, the IOPanel or a test proxy */
+  public UserMsgInterface getOutput()
   {
-    _ioPanel.displayText(result);
+    return _output;
   }
+
+
+  // Removed from MainframeCiv because it is part of UserMsgInterface
+  // @Override
+  // public String displayErrorText(String msg)
+  // {
+  // _ioPanel.displayErrorText(msg);
+  // return msg;
+  // }
+
+
+  
+
+
+  // Removed from MainframeCiv because it is part of UserMsgInterface
+  // @Override
+  // public String displayText(String result)
+  // {
+  // _ioPanel.displayText(result);
+  // return result;
+  // }
 
 
   /** Close down the application if user so specified */
@@ -125,6 +151,11 @@ public class MainframeCiv extends BaseCiv implements UserMsg
   public void setLeftPanelTitle(String title)
   {
     _mf.setLeftTitle(title);
+  }
+
+  public void setOutput(UserMsgInterface output)
+  {
+    _output = output;
   }
 
 

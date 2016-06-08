@@ -9,12 +9,13 @@
  * email: acline@carolla.com.
  */
 
-package chronos.pdc.command; // This package value is needed by the subcommands; see _cmdPackage field
+package chronos.pdc.command; // This package value is needed by the subcommands; see _cmdPackage
+                             // field
 
 import java.util.ArrayList;
 import java.util.List;
 
-import chronos.civ.UserMsg;
+import chronos.civ.UserMsgInterface;
 
 /**
  * An abstract base class from which all Commands originate. All abstract services must be defined
@@ -64,7 +65,10 @@ import chronos.civ.UserMsg;
  */
 public abstract class Command
 {
-  public enum CommandStatus { INTERNAL, USER };
+  public enum CommandStatus {
+    INTERNAL, USER
+  };
+
   /** The name of the command */
   protected String _name = null;
   /** The amount of time before the command is triggered */
@@ -72,202 +76,202 @@ public abstract class Command
   /** The amount of time that passes while the command is in effect */
   protected int _duration = 0;
 
-    /**
-     * The parameters that the subcommand needs must be wrapped in an ArrayList for the subcommand's
-     * {@code init} method.
-     */
-    protected final List<String> _parms;
-    /** A short description of the command, used in the general help method. */
-    protected final String _description;
-    /** The syntax of the command, used in the {@code usage()} method. */
-    protected final String _cmdfmt;
-    /** Whether params are correct */
-    protected boolean _isInitialized = false;
+  /**
+   * The parameters that the subcommand needs must be wrapped in an ArrayList for the subcommand's
+   * {@code init} method.
+   */
+  protected final List<String> _parms;
+  /** A short description of the command, used in the general help method. */
+  protected final String _description;
+  /** The syntax of the command, used in the {@code usage()} method. */
+  protected final String _cmdfmt;
+  /** Whether params are correct */
+  protected boolean _isInitialized = false;
 
-    /** Every command sends user messages to this object */
-    protected UserMsg _output;
-    
-    // ============================================================
-    // PUBLIC METHODS
-    // ============================================================
+  /** Every command sends user messages to this object */
+  protected UserMsgInterface _output;
 
-    /**
-     * Creates a Command based on its name, and assigns it a delay and duration of effect; also
-     * initializes a few common references that most subcommands use.
-     * 
-     * @param name command string to create (as found in the CommandParser table).
-     * @param delay the length of time before the command fires
-     * @param duration the length of time taken by executing the command
-     * @param desc a short explanation of the purpose of the command (for help).
-     * @param fmt command syntax for the {@code usage} error message; is null is no parms are needed
-     * @throws NullPointerException if the name or fmt parms are null
-     */
-    public Command(String name, int delay, int duration, String desc, String fmt)
-            throws NullPointerException
-    {
-        if (name == null) {
-            throw new NullPointerException("Invalid parms in Command constructor");
-        }
-        // Assign formal arg values
-        _name = name;
-        _delay = delay;
-        _duration = duration;
-        _description = desc;
-        _cmdfmt = fmt;
-        // Initialize internal attributes
-        _parms = new ArrayList<String>();
+  // ============================================================
+  // PUBLIC METHODS
+  // ============================================================
+
+  /**
+   * Creates a Command based on its name, and assigns it a delay and duration of effect; also
+   * initializes a few common references that most subcommands use.
+   * 
+   * @param name command string to create (as found in the CommandParser table).
+   * @param delay the length of time before the command fires
+   * @param duration the length of time taken by executing the command
+   * @param desc a short explanation of the purpose of the command (for help).
+   * @param fmt command syntax for the {@code usage} error message; is null is no parms are needed
+   * @throws NullPointerException if the name or fmt parms are null
+   */
+  public Command(String name, int delay, int duration, String desc, String fmt)
+      throws NullPointerException
+  {
+    if (name == null) {
+      throw new NullPointerException("Invalid parms in Command constructor");
     }
+    // Assign formal arg values
+    _name = name;
+    _delay = delay;
+    _duration = duration;
+    _description = desc;
+    _cmdfmt = fmt;
+    // Initialize internal attributes
+    _parms = new ArrayList<String>();
+  }
 
-    public void setOutput(UserMsg output) 
-    {
-      _output = output;
+  public void setOutput(UserMsgInterface output)
+  {
+    _output = output;
+  }
+
+
+  // ============================================================
+  // ABSTRACT METHODS IMPLEMENTED in SubClass
+  // ============================================================
+
+  /**
+   * This abstract method must be implemented by the subcommand to validate the parms that follow
+   * the command word. The non-default parameters to the subcommand are passed as an ArrayList in
+   * the order defined in the Format phrase of the subCommand. The arg list contains all words that
+   * follow the command name, so any words that must be combined, such as buildings with multi-word
+   * names, must be combined in this method.
+   * 
+   * @param args list of parms that apply to the Command
+   * @return true if the all parms are valid
+   */
+  public abstract boolean init(List<String> args);
+
+  /**
+   * This abstract method must be implemented by the subcommand to execute whatever specific action
+   * the subcommand needs to perform. It is called by the {@code Scheduler} polymorphically (for all
+   * subcommands).
+   * <P>
+   * Warning: Be careful that any data stored in the {@code init()} method is still valid by the
+   * time the {@code exec()} method is called. Defer collecting needed data as long as possible to
+   * avoid mismatching system state.
+   * 
+   * @return true if the subcomment executed correctly.
+   */
+  public abstract boolean exec();
+
+  // ============================================================
+  // PUBLIC METHODS
+  // ============================================================
+
+  /**
+   * Combine multiple args input to single-String parm
+   * 
+   * @param args words that follow the command token
+   * @return a single command parm string
+   */
+  public String convertArgsToString(List<String> args)
+  {
+    StringBuffer parmString = new StringBuffer();
+    for (int k = 0; k < args.size(); k++) {
+      parmString.append(args.get(k));
+      parmString.append(" ");
     }
-    
-    
-    // ============================================================
-    // ABSTRACT METHODS IMPLEMENTED in SubClass
-    // ============================================================
+    return parmString.toString().trim(); // removing enveloping space
+  }
 
-    /**
-     * This abstract method must be implemented by the subcommand to validate the parms that follow
-     * the command word. The non-default parameters to the subcommand are passed as an ArrayList in
-     * the order defined in the Format phrase of the subCommand. The arg list contains all words
-     * that follow the command name, so any words that must be combined, such as buildings with
-     * multi-word names, must be combined in this method.
-     * 
-     * @param args list of parms that apply to the Command
-     * @return true if the all parms are valid
-     */
-    public abstract boolean init(List<String> args);
+  /**
+   * Gets the command's delay before being triggered; used when converting to Event.
+   * 
+   * @return command's delay
+   */
+  public int getDelay()
+  {
+    return _delay;
+  }
 
-    /**
-     * This abstract method must be implemented by the subcommand to execute whatever specific
-     * action the subcommand needs to perform. It is called by the {@code Scheduler} polymorphically
-     * (for all subcommands).
-     * <P>
-     * Warning: Be careful that any data stored in the {@code init()} method is still valid by the
-     * time the {@code exec()} method is called. Defer collecting needed data as long as possible to
-     * avoid mismatching system state.
-     * 
-     * @return true if the subcomment executed correctly.
-     */
-    public abstract boolean exec();
-    
-    // ============================================================
-    // PUBLIC METHODS
-    // ============================================================
+  /**
+   * Gets short description of the command.
+   * 
+   * @return command description
+   */
+  public String getDescription()
+  {
+    return _description;
+  }
 
-    /**
-     * Combine multiple args input to single-String parm
-     * 
-     * @param args words that follow the command token
-     * @return a single command parm string
-     */
-    public String convertArgsToString(List<String> args)
-    {
-        StringBuffer parmString = new StringBuffer();
-        for (int k = 0; k < args.size(); k++) {
-            parmString.append(args.get(k));
-            parmString.append(" ");
-        }
-        return parmString.toString().trim(); // removing enveloping space
+  /**
+   * Gets the command's delay; used when converting to Event.
+   * 
+   * @return the command's delay
+   */
+  public int getDuration()
+  {
+    return _duration;
+  }
+
+  /**
+   * Gets the command's name.
+   * 
+   * @return the name.
+   */
+  public String getName()
+  {
+    return _name;
+  }
+
+
+  /**
+   * Resets the delay (when Patrons initialize in the Inn).
+   * 
+   * @param newDelay the time that will override the current delay
+   */
+  public void setDelay(int newDelay)
+  {
+    _delay = newDelay;
+  }
+
+  /**
+   * Return a generic error message if the Command itself has none. The message is displayed to the
+   * User in the user IOPanel
+   */
+  public String usage()
+  {
+    // Do not increment the game clock for this command
+    _delay = 0;
+    _duration = 0;
+    String msg = "";
+    if (_cmdfmt == null) {
+      msg = String.format("USAGE: %s command takes no parms", _name);
+    } else {
+      msg = String.format("USAGE: %s", _cmdfmt);
     }
+    return msg;
+  }
 
-    /**
-     * Gets the command's delay before being triggered; used when converting to Event.
-     * 
-     * @return command's delay
-     */
-    public int getDelay()
-    {
-        return _delay;
-    }
-
-    /**
-     * Gets short description of the command.
-     * 
-     * @return command description
-     */
-    public String getDescription()
-    {
-        return _description;
-    }
-
-    /**
-     * Gets the command's delay; used when converting to Event.
-     * 
-     * @return the command's delay
-     */
-    public int getDuration()
-    {
-        return _duration;
-    }
-
-    /**
-     * Gets the command's name.
-     * 
-     * @return the name.
-     */
-    public String getName()
-    {
-        return _name;
-    }
-
-
-    /**
-     * Resets the delay (when Patrons initialize in the Inn).
-     * 
-     * @param newDelay the time that will override the current delay
-     */
-    public void setDelay(int newDelay)
-    {
-        _delay = newDelay;
-    }
-    
-    /**
-     * Return a generic error message if the Command itself has none.
-     * The message is displayed to the User in the user IOPanel
-     */
-    public String usage()
-    {
-        // Do not increment the game clock for this command
-        _delay = 0;
-        _duration = 0;
-        String msg = "";
-        if (_cmdfmt == null) {
-            msg = String.format("USAGE: %s command takes no parms", _name);
-        } else {
-            msg = String.format("USAGE: %s",  _cmdfmt);
-        }
-        return msg;
-    }
-
-    /**
-     * @return true if the parms are correct
-     */
-    public boolean isInitialized()
-    {
-        return _isInitialized;
-    }
+  /**
+   * @return true if the parms are correct
+   */
+  public boolean isInitialized()
+  {
+    return _isInitialized;
+  }
 
   /**
    * By default, assume commands are UserInput.
    * 
    * @return whether command is input from user
    */
-    public boolean isUserInput()
-    {
-        return true;
-    }
+  public boolean isUserInput()
+  {
+    return true;
+  }
 
-    /**
-     * By default, assume commands are UserInput.
-     * 
-     * @return whether command is internal system commnad
-     */
-    public boolean isInternal()
-    {
-        return false;
-    }
+  /**
+   * By default, assume commands are UserInput.
+   * 
+   * @return whether command is internal system command
+   */
+  public boolean isInternal()
+  {
+    return false;
+  }
 } // end abstract Command class
 

@@ -12,6 +12,7 @@ package civ;
 import java.awt.EventQueue;
 
 import hic.Mainframe;
+import hic.MainframeInterface;
 
 /**
  * This Launcher class detects command line arguments, takes appropriate loading action, initializes
@@ -55,10 +56,12 @@ public class Adventurer
   {
     /** All Swing processing occurs from the single EventQueue thread. */
     EventQueue.invokeLater(new Runnable() {
+      @SuppressWarnings("unused")
+      @Override
       public void run()
       {
         try {
-          new MainframeCiv(new Mainframe());
+          new MainframeCiv((MainframeInterface) new Mainframe());
         } catch (Exception e) {
           e.printStackTrace();
           System.exit(-1);
@@ -110,6 +113,6 @@ public class Adventurer
   // System.out.println("\t" + reglist.toString());
   // }
   // }
-  
+
 } // end of Adventurer class
 

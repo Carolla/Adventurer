@@ -86,10 +86,10 @@ public class CmdQuit extends Command
       _isInitialized = true;
       return true;
     } else if ((args.size() == 0) && (_bdCiv.isInside() == true)) {
-      _mfCiv.displayErrorText(ERRMSG_IN_BLDG);
+      _output.displayErrorText(ERRMSG_IN_BLDG);
       return false;
     } else {
-      _mfCiv.displayErrorText(ERRMSG_OMIT_ARGS);
+      _output.displayErrorText(ERRMSG_OMIT_ARGS);
       return false;
     }
   }

@@ -16,10 +16,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import chronos.civ.UserMsgInterface;
 import chronos.pdc.command.Command;
 import chronos.pdc.command.NullCommand;
 import civ.BuildingDisplayCiv;
-import civ.MainframeCiv;
 
 
 /**
@@ -43,12 +43,14 @@ public class CommandFactory
   private Map<String, Supplier<Command>> _commandMap = new HashMap<String, Supplier<Command>>();
 
   private final BuildingDisplayCiv _bdCiv;
-  private final MainframeCiv _mfCiv;
+  private UserMsgInterface _output = null;
+//  private final MainframeCiv _mfCiv;
 
   /** Keep a table for command, as lambda functions */
-  public CommandFactory(MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
+  // public CommandFactory(MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
+  public CommandFactory(BuildingDisplayCiv bdCiv)
   {
-    _mfCiv = mfCiv;
+    // _output = output;
     _bdCiv = bdCiv;
   }
 
@@ -62,11 +64,13 @@ public class CommandFactory
     // Enter the interior of the Building
     _commandMap.put("ENTER", () -> new CmdEnter(_bdCiv));
     // Synonym for Leave and then Quit the program
-    _commandMap.put("EXIT", () -> new CmdExit(_mfCiv));
+    // _commandMap.put("EXIT", () -> new CmdExit(_mfCiv));
+    // Get the close-up description of the NPC requested
+    _commandMap.put("INSPECT", () -> new CmdInspect(_bdCiv));
     // Leave the inside of the Building and go outside
     _commandMap.put("LEAVE", () -> new CmdLeave(_bdCiv));
     // End the program.
-    _commandMap.put("QUIT", () -> new CmdQuit(_mfCiv, _bdCiv));
+    // _commandMap.put("QUIT", () -> new CmdQuit(_mfCiv, _bdCiv));
     // Return to town view
     _commandMap.put("RETURN", () -> new CmdReturn(_bdCiv));
     // Just sit there
@@ -76,6 +80,7 @@ public class CommandFactory
     // Locks the command map as read-only
     _commandMap = Collections.unmodifiableMap(_commandMap);
   }
+
 
   /**
    * Creates a user Command from its canonical name.<br>
@@ -88,25 +93,25 @@ public class CommandFactory
   {
     // If a good Command cannot be used, this dummy command is run
     Command command = new NullCommand();
+    command.setOutput(_output);
 
     // If the command cannot be found, then run the Null command
     if (!canCreateCommand(cmdInput)) {
       // Display the invalid command error to user
       // _output.errorOut(ERRMSG_UNKNOWN);
       return command;
-    } else {
-      // If map contains the command, Supplier<Command> will give new Instance of that
-      Supplier<Command> supplier = _commandMap.get(cmdInput.commandToken);
-      if (supplier != null) {
-        command = supplier.get();
-        command.setOutput(_mfCiv);
-      }
-      // Check that the parms are valid for this command
-      if (command.init(cmdInput.parameters) == false) {
-        // _output.errorOut(command.usage());
-      }
-      return command;
     }
+    // If map contains the command, Supplier<Command> will give new Instance of that
+    Supplier<Command> supplier = _commandMap.get(cmdInput.commandToken);
+    if (supplier != null) {
+      command = supplier.get();
+      // command.setOutput(_mfCiv);
+    }
+    // Check that the parms are valid for this command
+    if (command.init(cmdInput.parameters) == false) {
+      // _output.errorOut(command.usage());
+    }
+    return command;
   }
 
 
@@ -114,11 +119,16 @@ public class CommandFactory
   {
     if (_commandMap.get(ci.commandToken) != null) {
       return true;
-    } else {
-      System.out.println("Couldn't create command " + ci.commandToken);
-      return false;
     }
+    System.out.println("Couldn't create command " + ci.commandToken);
+    return false;
   }
+
+  public void setOutput(UserMsgInterface output)
+  {
+    _output = output;
+  }
+
 
 } // end of CommandFactory class
 

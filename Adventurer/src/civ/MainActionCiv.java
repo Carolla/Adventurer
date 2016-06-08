@@ -9,11 +9,6 @@
 
 package civ;
 
-import hic.ChronosPanel;
-import hic.IOPanel;
-import hic.Mainframe;
-import hic.NewHeroIPPanel;
-
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +17,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
-import mylib.Constants;
-import net.miginfocom.swing.MigLayout;
-import pdc.command.CommandFactory;
 import chronos.pdc.Adventure;
 import chronos.pdc.Chronos;
 import chronos.pdc.buildings.Inn;
@@ -35,6 +27,13 @@ import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.HeroRegistry;
 import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
+import hic.ChronosPanel;
+import hic.IOPanel;
+import hic.Mainframe;
+import hic.NewHeroIPPanel;
+import mylib.Constants;
+import net.miginfocom.swing.MigLayout;
+import pdc.command.CommandFactory;
 
 /**
  * The main civ behind the Mainframe screen. It creates the MainActionPanel consisting of the
@@ -83,22 +82,31 @@ public class MainActionCiv extends BaseCiv
   public MainActionCiv(MainframeCiv mfciv)
   {
     _mfCiv = mfciv;
-    _hdCiv = new HeroDisplayCiv(_mfCiv, new HeroRegistry());
     constructCoreMembers();
     _mfCiv.replaceLeftPanel(createActionPanel());
   }
 
   public void constructCoreMembers()
   {
-    _skedder = new Scheduler(_mfCiv); // Skedder first for injection
-
+    // Prepare the registries
     _rf = new RegistryFactory();
-    _rf.initRegistries(_skedder);
+    // _rf.initRegistries(_skedder);
+    _rf.initRegistries();
 
+    // Support Select Adventure button
+    _advReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
+    // Set up times for the patrons to visit the Inn
     ((Inn) ((BuildingRegistry) _rf.getRegistry(RegKey.BLDG)).getBuilding("Ugly Ogre Inn"))
         .initPatrons(_skedder);
-    _advReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
+
+    // Support Summon Heroes button
     _dorm = (HeroRegistry) _rf.getRegistry(RegKey.HERO);
+
+    // Support Create Hero button
+    _hdCiv = new HeroDisplayCiv(_mfCiv, new HeroRegistry());
+    // _skedder = new Scheduler(); // _mfCiv implemented UserMsgInterface
+    // _skedder = new Scheduler(_mfCiv); // _mfCiv implemented UserMsgInterface
+
   }
 
   // ============================================================
@@ -119,15 +127,25 @@ public class MainActionCiv extends BaseCiv
     BuildingDisplayCiv bldgCiv = new BuildingDisplayCiv(_mfCiv, adv,
         (BuildingRegistry) _rf.getRegistry(RegKey.BLDG));
 
-    CommandFactory cmdFac = new CommandFactory(_mfCiv, bldgCiv);
-    cmdFac.initMap();
-    CommandParser parser = new CommandParser(_skedder, cmdFac);
+    // Create the IOPanelCiv to handle the main user input and output
+    IOPanelCiv iopciv = new IOPanelCiv(_mfCiv, bldgCiv);
+    
+//    // Needs the OIPanel so commands can send messages to the user
+//    CommandFactory cmdFac = new CommandFactory(bldgCiv);
+//    cmdFac.initMap();
+//
+//    // To process user input from the IOPanel
+//    CommandParser parser = new CommandParser(_skedder, cmdFac);
+//
+//    // IOPanel needs the parser to send user input to
+//    IOPanel iop = new IOPanel(parser);
+//    _mfCiv.replaceLeftPanel(iop);
+//    iop.requestFocusInWindow();
+//
+//    // All command msgs to user goes through the same output device
+//    cmdFac.setOutput(iop);
 
-    IOPanel iop = new IOPanel(parser);
-    _mfCiv.replaceLeftPanel(iop);
-    iop.requestFocusInWindow();
-
-    // Wait until everything created to finally display the town
+    // Wait until everything is created to finally display the town
     bldgCiv.openTown();
   }
 
@@ -153,9 +171,8 @@ public class MainActionCiv extends BaseCiv
     // Align all buttons in a single column
     _actionPanel.setLayout(new MigLayout("wrap 1"));
     Dimension frame = Mainframe.getWindowSize();
-    _actionPanel
-        .setPreferredSize(new Dimension((int) (frame.width - FRAME_PADDING) / 2,
-            frame.height - FRAME_PADDING));
+    _actionPanel.setPreferredSize(new Dimension((frame.width - FRAME_PADDING) / 2,
+        frame.height - FRAME_PADDING));
     _actionPanel.setBackground(Constants.MY_BROWN);
 
     /** Buttons are at 25% to allow space for Command Line later */

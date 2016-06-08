@@ -28,12 +28,12 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
+import chronos.pdc.Chronos;
+import civ.Adventurer;
 import mylib.Constants;
 import mylib.hic.HelpDialog;
 import mylib.hic.IHelpText;
 import net.miginfocom.swing.MigLayout;
-import chronos.pdc.Chronos;
-import civ.Adventurer;
 
 /**
  * Initial frame displays three buttons and Chronos logo.<br>
@@ -56,7 +56,8 @@ import civ.Adventurer;
  *          program control <br>
  */
 @SuppressWarnings("serial")
-public class Mainframe extends JFrame implements MainframeInterface, IHelpText
+// public class Mainframe extends JFrame implements MainframeInterface, IHelpText
+public class Mainframe extends JFrame implements IHelpText
 {
   /** Width of the platform user's window frame */
   private static int USERWIN_WIDTH;
@@ -119,14 +120,9 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     // Create the one time help dialog
     prepareHelpDialog();
 
-    // Create the right side image panel and title
-    // _imagePanel = new ImagePanel();
-    // replaceRightPanel(_imagePanel);
-
     // Display the Mainframe and panels now
     setVisible(true);
     redraw();
-
   }
 
 
@@ -151,6 +147,7 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     }
   }
 
+
   /**
    * Remove the current panel and return to the main action panel, as many levels as it takes
    */
@@ -160,16 +157,27 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
       _leftPanelStack.pop();
     }
 
-    if (newFrameTitle == null)
-    {
+    if (newFrameTitle == null) {
       replaceLeftPanel(_leftPanelStack.pop());
     } else {
       ChronosPanel panel = _leftPanelStack.pop();
       panel.setTitle(newFrameTitle);
       replaceLeftPanel(panel);
     }
-
   }
+
+  /**
+   * Display an image into the right side panel
+   * 
+   * @param title to show above the image
+   * @param imageName filename of the image to display
+   */
+  public void displayImage(String title, String imageName)
+  {
+    _imagePanel.setTitle(title);
+    _imagePanel.setImageByName(imageName);
+  }
+
 
   /**
    * Display a prompt, asking a question of the user
@@ -177,7 +185,6 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
    * @param msg the question to be asked, must be yes or no
    * @return the answer to the prompt
    */
-  @Override
   public boolean displayPrompt(String msg)
   {
     int selection =
@@ -188,6 +195,7 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     }
     return false;
   }
+
 
   /**
    * Get the size of the main window being displayed, which is used as a standard for laying out
@@ -240,14 +248,11 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     redraw();
   }
 
-  /**
-   * Display the help text for this mainframe; implements {@code IHelpText}
-   */
-  public void showHelp()
+  public void setImagePanel(ImagePanel imagePanel)
   {
-    _helpdlg.setVisible(true);
-    _helpdlg.showHelp(_helpTitle, _helpText);
+    _imagePanel = imagePanel;
   }
+
 
   /**
    * Allows external setting of the title into the border of the left-side panel
@@ -259,6 +264,17 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     setPanelTitle(title);
     redraw();
   }
+
+
+  /**
+   * Display the help text for this mainframe; implements {@code IHelpText}
+   */
+  public void showHelp()
+  {
+    _helpdlg.setVisible(true);
+    _helpdlg.showHelp(_helpTitle, _helpText);
+  }
+
 
 
   // ============================================================
@@ -277,7 +293,7 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     addWindowListener(new Terminator());
 
     // Add menu
-    setJMenuBar(new Menubar(this));
+    setJMenuBar(new Menubar((MainframeInterface) this));
 
     // Define a left and right ChronosPanel to manage subordinate right- and left-side panels
     _leftHolder = new ChronosPanel(" ");
@@ -427,20 +443,5 @@ public class Mainframe extends JFrame implements MainframeInterface, IHelpText
     }
 
   } // end of Terminator inner class
-
-
-  @Override
-  public void setImagePanel(ImagePanel imagePanel)
-  {
-    _imagePanel = imagePanel;
-  }
-
-
-  @Override
-  public void displayImage(String title, String imageName)
-  {
-    _imagePanel.setTitle(title);
-    _imagePanel.setImageByName(imageName);
-  }
 
 } // end of Mainframe outer class

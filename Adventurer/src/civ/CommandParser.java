@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import chronos.pdc.command.Command;
-import chronos.pdc.command.Scheduler;
 import pdc.command.CommandFactory;
 import pdc.command.CommandInput;
 
@@ -41,10 +40,10 @@ public class CommandParser
   private final CommandFactory _factory;
 
   /** Start the Scheduler up when the CommandParser starts */
-  private final Scheduler _skedder;
+  // private final Scheduler _skedder;
 
-//  /** All commands and the Parser send error and user messages this "device" */
-//  private MainActionCiv _mainActionCiv;
+  // /** All commands and the Parser send error and user messages this "device" */
+  // private MainActionCiv _mainActionCiv;
 
   // ============================================================
   // Constructors and constructor helpers
@@ -53,17 +52,22 @@ public class CommandParser
   /**
    * Creates the singleton CommandParser, and connects to the {@code CommandFactory} and the
    * {@code MainframeCiv} for displaying parser output to {@code IOPanel}.
-   * @param _fakeSkedder 
+   * 
+   * @param _fakeSkedder
    * 
    * @param skedder Command Scheduler executes the commands
-   * @param factory the CommandFactory for creating commands
-   * @param mac to receive all messages that go to the user
+   * @param factory creates the various commands from the user
+   * @param output receiving object for displaying user messages
    * 
    */
-  public CommandParser(Scheduler skedder, CommandFactory factory)
+  // public CommandParser(Scheduler skedder, CommandFactory factory)
+  public CommandParser(CommandFactory factory)
   {
-    _skedder = skedder;
+    // _skedder = skedder;
     _factory = factory;
+    // _factory = new CommandFactory(output, bldgCiv);
+    // _factory.initMap();
+
   }
 
   // ============================================================
@@ -83,9 +87,9 @@ public class CommandParser
     Command cmd = _factory.createCommand(cmdInput);
 
     boolean isInit = cmd.isInitialized();
-    if (isInit) {
-      _skedder.sched(cmd);
-    }
+    // if (isInit) {
+    // _skedder.sched(cmd);
+    // }
     return isInit;
   }
 

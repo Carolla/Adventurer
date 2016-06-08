@@ -7,12 +7,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import mylib.MsgCtrl;
-
 import org.junit.BeforeClass;
 
-import pdc.command.CommandFactory;
-import chronos.civ.DefaultUserMsg;
 import chronos.pdc.Adventure;
 import chronos.pdc.buildings.Building;
 import chronos.pdc.buildings.Inn;
@@ -25,12 +21,14 @@ import civ.BuildingDisplayCiv;
 import civ.CommandParser;
 import civ.MainActionCiv;
 import civ.MainframeCiv;
+import mylib.MsgCtrl;
+import pdc.command.CommandFactory;
 
 public class IntegrationTest
 {
   /** List of valid Buildings that can be entered */
   protected static final List<String> _bldgs = new ArrayList<String>();
-  protected static final Scheduler _skedder = new Scheduler(new DefaultUserMsg());
+  protected static final Scheduler _skedder = new Scheduler();
   protected static final MainframeCiv _mfCiv = new MainframeCiv(new MainframeProxy());
   protected static final MainActionCiv _maCiv = new MainActionCiv(_mfCiv);
   protected static final RegistryFactory _regFactory = new RegistryFactory();
@@ -42,7 +40,7 @@ public class IntegrationTest
   @BeforeClass
   public static void setUpBeforeClass()
   {
-    _regFactory.initRegistries(_skedder);
+    _regFactory.initRegistries();
     
     BuildingRegistry bReg = (BuildingRegistry) _regFactory.getRegistry(RegKey.BLDG);
     ((Inn) bReg.getBuilding("Ugly Ogre Inn")).initPatrons(_skedder);
@@ -51,7 +49,7 @@ public class IntegrationTest
     
     _maCiv.loadSelectedAdventure(adv.getName());
     _bldgCiv = new BuildingDisplayCiv(_mfCiv, adv, bReg);
-    _cmdFac = new CommandFactory(_mfCiv, _bldgCiv);
+    _cmdFac = new CommandFactory(_bldgCiv);
     _cmdFac.initMap();
     _cp = new CommandParser(_skedder, _cmdFac);
 

@@ -29,10 +29,12 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-import mylib.Constants;
-import net.miginfocom.swing.MigLayout;
+import chronos.civ.UserMsgInterface;
 import chronos.pdc.Chronos;
 import civ.CommandParser;
+import civ.IOPanelCiv;
+import mylib.Constants;
+import net.miginfocom.swing.MigLayout;
 /**
  * This class serves as the text output and command line input after an Adventure is selected
  * 
@@ -48,7 +50,7 @@ import civ.CommandParser;
  *          instead of its own method <br>
  */
 @SuppressWarnings("serial")
-public class IOPanel extends ChronosPanel
+public class IOPanel extends ChronosPanel implements UserMsgInterface
 {
   private final StyledDocument _output;
   private final JTextPane _transcriptPane;
@@ -79,10 +81,12 @@ public class IOPanel extends ChronosPanel
    * @param bldgCiv manages the IOPanel and its input/output messages.
    * @param cp  handles all input commands from the user
    */
-  public IOPanel(CommandParser cp)
+//  public IOPanel(CommandParser cp)
+  public IOPanel(IOPanelCiv ioCiv)
   {
     super(IOPANEL_TITLE);
     _commandParser = cp;
+    _ioPanelCiv = ioCov;
 
     setLayout(new MigLayout("", "[grow]", "[][]"));
     _transcriptPane = new JTextPane();
@@ -111,10 +115,14 @@ public class IOPanel extends ChronosPanel
    * Display error text, using different Font and color, then return to standard font and color.
    * 
    * @param msg text block to display
+   * @return 
    */
-  public void displayErrorText(String msg)
+  @Override
+  public String displayErrorText(String msg)
   {
-    displayText(msg + Constants.NEWLINE, _errorAttributes);
+    String s = msg + Constants.NEWLINE;
+    displayText(s, _errorAttributes);
+    return s;
   }
 
 
@@ -124,11 +132,13 @@ public class IOPanel extends ChronosPanel
    * 
    * @param msg text block to display
    */
-  public void displayText(String msg)
+  public String displayText(String msg)
   {
     displayText(Constants.NEWLINE + msg, null);
+    return msg;
   }
 
+  
   @Override
   public boolean requestFocusInWindow()
   {

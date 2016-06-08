@@ -1,6 +1,5 @@
 package chronos.test.pdc.command;
 
-import chronos.civ.DefaultUserMsg;
 import chronos.pdc.command.Command;
 import chronos.pdc.command.Scheduler;
 
@@ -11,7 +10,7 @@ public class FakeScheduler extends Scheduler
 
     public FakeScheduler()
     {
-        super(new DefaultUserMsg());
+        super();
     }
     
     @Override
