@@ -9,8 +9,6 @@
 
 package chronos.test;
 
-import mylib.test.dmc.TestDbReadWriter;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -25,6 +23,7 @@ import chronos.test.pdc.character.CharacterTestSuite;
 import chronos.test.pdc.command.CommandTestSuite;
 import chronos.test.pdc.race.RaceTestSuite;
 import chronos.test.pdc.registry.RegistryTestSuite;
+import mylib.test.dmc.TestDbReadWriter;
 
 
 /**

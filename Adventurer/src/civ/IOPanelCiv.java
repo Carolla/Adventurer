@@ -36,14 +36,14 @@ public class IOPanelCiv
   private void buildIOPanel()
   {
     // Needs the OIPanel so commands can send messages to the user
-    CommandFactory cmdFac = new CommandFactory(bldgCiv);
+    CommandFactory cmdFac = new CommandFactory(_bldgCiv);
     cmdFac.initMap();
 
     // To process user input from the IOPanel
     CommandParser parser = new CommandParser(cmdFac);
 
     // IOPanel needs the parser to send user input to
-    IOPanel iop = new IOPanel(this);
+    IOPanel iop = new IOPanel(this, parser);
     _mfCiv.replaceLeftPanel(iop);
     iop.requestFocusInWindow();
 

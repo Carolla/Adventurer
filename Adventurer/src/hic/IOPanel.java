@@ -69,6 +69,7 @@ public class IOPanel extends ChronosPanel implements UserMsgInterface
   private final SimpleAttributeSet _errorAttributes;
   private CommandParser _commandParser;
 
+  private IOPanelCiv _ioPanelCiv;
 
   // ============================================================
   // Constructors and constructor helpers
@@ -82,11 +83,11 @@ public class IOPanel extends ChronosPanel implements UserMsgInterface
    * @param cp  handles all input commands from the user
    */
 //  public IOPanel(CommandParser cp)
-  public IOPanel(IOPanelCiv ioCiv)
+  public IOPanel(IOPanelCiv ioCiv, CommandParser cp)
   {
     super(IOPANEL_TITLE);
     _commandParser = cp;
-    _ioPanelCiv = ioCov;
+    _ioPanelCiv = ioCiv;
 
     setLayout(new MigLayout("", "[grow]", "[][]"));
     _transcriptPane = new JTextPane();

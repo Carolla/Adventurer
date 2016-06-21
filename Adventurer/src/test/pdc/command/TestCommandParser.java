@@ -27,7 +27,7 @@ public class TestCommandParser
   public void setup()
   {
     _fakeSkedder = new FakeScheduler();
-    _cp = new CommandParser(_fakeSkedder, new FakeCommandFactory());
+    _cp = new CommandParser(new FakeCommandFactory());
   }
 
   @Test
@@ -76,7 +76,7 @@ public class TestCommandParser
   {
     CommandFactory realCommandFactory = new CommandFactory(null);
     realCommandFactory.initMap();
-    _cp = new CommandParser(_fakeSkedder, realCommandFactory);
+    _cp = new CommandParser(realCommandFactory);
     _cp.receiveCommand("Return");
     CmdReturn expectedCommand = new CmdReturn(new FakeBuildingDisplayCiv());
     assertEquals(expectedCommand.getName(), _fakeSkedder.command.getName());
