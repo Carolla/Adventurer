@@ -144,6 +144,7 @@ public class SkillRegistry extends Registry<Skill>
           + "\n\t --Survive off the land"));
       add(new Skill("Woodworking", "Make/repair wooden items, e.g. repair xbows (not bows),"
           + "\n\t --Add secret compartments to chests"));
+      add(new Skill("No special skills", "Learned in life but without extra skills"));
   }};
 
   /*

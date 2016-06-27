@@ -9,6 +9,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
   TestCmdApproach.class,
   TestCmdEnter.class,
+  TestCmdInspect.class,
   TestCmdLook.class,
   TestCmdQuit.class,
   TestCmdReturn.class,

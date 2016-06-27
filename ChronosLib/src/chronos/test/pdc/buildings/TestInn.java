@@ -12,7 +12,6 @@ package chronos.test.pdc.buildings;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import mylib.ApplicationException;
 import mylib.MsgCtrl;
 
 import org.junit.After;
@@ -78,20 +77,6 @@ public class TestInn
   public void InnDoesntGetPatronsWithoutInit()
   {
     assertTrue(_inn.getPatrons().size() == 0);
-  }
-
-
-  /**
-   * Chronos.pdc.Inn
-   * 
-   * @Normal ensure that the default Inn has correct data
-   * @throws ApplicationException if unexpected ctor error occurs
-   */
-  @Test
-  public void testDefaultInn() throws ApplicationException
-  {
-    MsgCtrl.msgln(this, "\t testDefaultInn()");
-
   }
 
 

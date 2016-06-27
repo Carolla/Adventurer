@@ -127,25 +127,17 @@ public class MainActionCiv extends BaseCiv
     BuildingDisplayCiv bldgCiv = new BuildingDisplayCiv(_mfCiv, adv,
         (BuildingRegistry) _rf.getRegistry(RegKey.BLDG));
 
-    // Create the IOPanelCiv to handle the main user input and output
-    IOPanelCiv iopciv = new IOPanelCiv(_mfCiv, bldgCiv);
-    
-//    // Needs the OIPanel so commands can send messages to the user
-//    CommandFactory cmdFac = new CommandFactory(bldgCiv);
-//    cmdFac.initMap();
-//
-//    // To process user input from the IOPanel
-//    CommandParser parser = new CommandParser(_skedder, cmdFac);
-//
-//    // IOPanel needs the parser to send user input to
-//    IOPanel iop = new IOPanel(parser);
-//    _mfCiv.replaceLeftPanel(iop);
-//    iop.requestFocusInWindow();
-//
-//    // All command msgs to user goes through the same output device
-//    cmdFac.setOutput(iop);
+    // CommandFactory cmdFac = new CommandFactory(_mfCiv, bldgCiv);
+    CommandFactory cmdFac = new CommandFactory(bldgCiv);
+    cmdFac.initMap();
+    // CommandParser parser = new CommandParser(_skedder, cmdFac, _mfCiv);
+    CommandParser parser = new CommandParser(cmdFac);
 
-    // Wait until everything is created to finally display the town
+    IOPanel iop = new IOPanel(parser);
+    _mfCiv.replaceLeftPanel(iop);
+    iop.requestFocusInWindow();
+
+    // Wait until everything created to finally display the town
     bldgCiv.openTown();
   }
 

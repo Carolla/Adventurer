@@ -30,7 +30,7 @@ public class Bank extends Building
   /** Name of this fine establishment */
   public static final String DEFAULT_BANK_NAME = "The Bank";
   /** Owner of this fine establishment */
-  public static final String DEFAULT_OWNER = "J.P. Pennypacker";
+  public static final String DEFAULT_OWNER = "J. P. Pennypacker";
   /** What appears as one enters the building */
   public static final String DEFAULT_EXTERIOR =
       "The Bank is more stylish than the other buildings in this town.";

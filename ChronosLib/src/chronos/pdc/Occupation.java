@@ -32,7 +32,7 @@ public class Occupation implements IRegistryElement
 {
 
   // Various occupations (31) for random selection
-  private static final String[] _ocpTable = {
+  public static final String[] _ocpTable = {
       "Academic", "Acrobat", "Alchemist", "Apothecary", "Armorer", "Banker", "Bowyer",
       "Carpenter", "Farmer", "Fisher", "Forester", "Freighter", "Gambler", "Hunter",
       "Husbandman", "Innkeeper", "Jeweler", "Leatherworker", "Painter", "Mason",
@@ -40,7 +40,7 @@ public class Occupation implements IRegistryElement
       "Weaponsmith", "Weaver", "Woodworker", "Drifter"};
 
   private static final MetaDie md = new MetaDie();
-  
+
   /** The name of the occupation the player selected */
   private String _name = null;
   private String _description;
@@ -92,7 +92,7 @@ public class Occupation implements IRegistryElement
     _name = name;
     _description = description;
     _trait = trait;
-    
+
     SkillRegistry skReg = new SkillRegistry();
     for (String skill : arrayList) {
       _skills.add(skReg.getSkill(skill));

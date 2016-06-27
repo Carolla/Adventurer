@@ -13,11 +13,9 @@ package civ;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import chronos.pdc.command.Command;
 import pdc.command.CommandFactory;
-import pdc.command.CommandInput;
 
 /**
  * Receives a user input string from the command window and converts it to a command object, which
@@ -37,13 +35,17 @@ import pdc.command.CommandInput;
  */
 public class CommandParser
 {
-  private final CommandFactory _factory;
+    private final CommandFactory _factory;
 
-  /** Start the Scheduler up when the CommandParser starts */
-  // private final Scheduler _skedder;
+//    /** Start the Scheduler up when the CommandParser starts */
+//    private final Scheduler _skedder;
+//
+//    /** Needed for output messages */
+//    private MainframeCiv _mfCiv;
+//    
+    /** User Error message for entering a bad command token */
+    private final String BAD_TOKEN = "I don't know what you mean, perhaps you misspelled.";
 
-  // /** All commands and the Parser send error and user messages this "device" */
-  // private MainActionCiv _mainActionCiv;
 
   // ============================================================
   // Constructors and constructor helpers
@@ -70,41 +72,58 @@ public class CommandParser
 
   }
 
-  // ============================================================
-  // Public Methods
-  // ============================================================
-
-  /**
-   * Receives and holds the command string from the command window. It will be retrieved by the
-   * {@code Scheduler} when it is ready for another user command.<br>
-   * 
-   * @param textIn the input the user entered onto the command line
-   * @return true if the command is properly initialized
-   */
-  public boolean receiveCommand(String textIn)
-  {
-    CommandInput cmdInput = createCommandInput(textIn);
-    Command cmd = _factory.createCommand(cmdInput);
-
-    boolean isInit = cmd.isInitialized();
-    // if (isInit) {
-    // _skedder.sched(cmd);
-    // }
-    return isInit;
-  }
+    // ============================================================
+    // Constructors and constructor helpers
+    // ============================================================
 
 
-  public CommandInput createCommandInput(String textIn)
-  {
-    List<String> tokens = new ArrayList<String>(Arrays.asList(textIn.split(" ")));
-    String commandToken = null;
+    // ============================================================
+    // Public Methods
+    // ============================================================
 
-    if (tokens.size() > 0) {
-      commandToken = tokens.remove(0).toUpperCase();
+    /**
+     * Receives and holds the command string from the command window. It will be retrieved by the
+     * {@code Scheduler} when it is ready for another user command.<br>
+     * 
+     * @param textIn the input the user entered onto the command line
+     * @return true if the command is properly initialized
+     */
+    public boolean receiveCommand(String textIn)
+    {
+        ArrayList<String> cmdList = new ArrayList<String>(Arrays.asList(textIn.split(" ")));
+        String cmdToken = cmdList.remove(0).toUpperCase();
+        Command cmd = _factory.createCommand(cmdToken);
+        if (cmd == null) {
+//          _mfCiv.displayErrorText(BAD_TOKEN);
+            return false;
+        }
+//        boolean isInitialized = cmd.init(cmdList);
+//        if (isInitialized) {
+//            _skedder.sched(cmd);
+//        } else {
+//            _mfCiv.displayErrorText(cmd.usage());
+//        }
+
+        // boolean isInit = cmd.isInitialized();
+        // if (isInit) {
+        // _skedder.sched(cmd);
+        // }
+        return true;
     }
 
-    return new CommandInput(commandToken, tokens);
-  }
+    // TODO repair error display for bad commands
+    // TODO fix command window not scrolling
+
+//    public ArrayList<String> parseTextInput(String textIn)
+//    {
+//        ArrayList<String> tokens = new ArrayList<String>(Arrays.asList(textIn.split(" ")));
+//        String commandToken = null;
+//
+//        if (tokens.size() > 0) {
+//            commandToken = tokens.remove(0).toUpperCase();
+//        }
+//        return tokens;
+//    }
 
 } // end of CommandParser class
 

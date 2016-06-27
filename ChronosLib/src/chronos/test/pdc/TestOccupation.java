@@ -14,6 +14,7 @@ package chronos.test.pdc;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import chronos.pdc.Occupation;
+import chronos.pdc.registry.OccupationRegistry;
 
 
 /**
@@ -149,6 +151,18 @@ public class TestOccupation
     // Error  Pass null object; expect false
     assertFalse(_ocp.equals(null));
   }
+  
+  @Test
+  public void regressionAllOccupationsDontExplode()
+  {
+    OccupationRegistry occReg = new OccupationRegistry();
+    for (int i = 0; i < Occupation._ocpTable.length; i++) {
+      Occupation o = occReg.getOccupation(Occupation._ocpTable[i]);
+      for (String name : o.getSkillNames()) {
+        assertNotNull(o.getName() + " had null skill\n", name);
+      }
+    }
+  }
 
 
   /** Tests that are not implemented either because tests are not needed, or they haven't
@@ -161,11 +175,6 @@ public class TestOccupation
   @Test
   public void notNeeded()
   {}
-
-
-  /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++  
-   * 					PRIVATE METHODS 
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
 }
 // end of TestOccupation class

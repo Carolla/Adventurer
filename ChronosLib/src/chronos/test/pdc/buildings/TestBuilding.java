@@ -10,10 +10,13 @@
 
 package chronos.test.pdc.buildings;
 
+import static chronos.pdc.buildings.Building.DEFAULT_BUILDINGS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import mylib.ApplicationException;
+import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.Before;
@@ -24,14 +27,14 @@ import chronos.pdc.buildings.Bank;
 import chronos.pdc.buildings.Building;
 import chronos.pdc.buildings.ClericsGuild;
 import chronos.pdc.buildings.FightersGuild;
+import chronos.pdc.buildings.Inn;
 import chronos.pdc.buildings.Jail;
 import chronos.pdc.buildings.RoguesGuild;
 import chronos.pdc.buildings.Store;
 import chronos.pdc.buildings.WizardsGuild;
+import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.NPCRegistry;
 import chronos.test.pdc.buildings.ConcreteBuilding.MockConcreteBuilding;
-import mylib.ApplicationException;
-import mylib.MsgCtrl;
 
 
 /**
@@ -199,8 +202,10 @@ public class TestBuilding
 
     // NORMAL Compare two identical buildings but different instances (but both in NPC Registry)
     cb2 = new ConcreteBuilding(NAME, "Aragon", HOVERTEXT, INTRO, DESC);
-    MsgCtrl.msgln("\n\t" + _cb.getKey() + " has master " + _cb.getMaster());
-    MsgCtrl.msgln("\n\t" + _cb.getKey() + " has master " + cb2.getMaster());
+
+    MsgCtrl.msgln("\n\t" + _cb.getKey() + " has master " + _cb.getProprietor());
+    MsgCtrl.msgln("\n\t" + _cb.getKey() + " has master " + cb2.getProprietor());
+
     assertFalse(cb2.equals(_cb));
   }
 
@@ -305,10 +310,10 @@ public class TestBuilding
     dump(b);
     MsgCtrl.msgln("\n");
 
-//    b = new Inn();
-//    assertNotNull(b);
-//    dump(b);
-//    MsgCtrl.msgln("\n");
+    b = new Inn();
+    assertNotNull(b);
+    dump(b);
+    MsgCtrl.msgln("\n");
 
     b = new Jail();
     assertNotNull(b);
@@ -332,6 +337,17 @@ public class TestBuilding
 
   }
 
+  @Test
+  public void buildingAlwaysContainsMaster()
+  {
+    BuildingRegistry breg = new BuildingRegistry();
+    for (int i = 0; i < DEFAULT_BUILDINGS.length; i++) {
+      String buildingName = DEFAULT_BUILDINGS[i][0];
+      String buildingMaster = DEFAULT_BUILDINGS[i][1];
+      Building b = breg.getBuilding(buildingName);
+      assertTrue("Couldn't talk to " + buildingMaster + " in " + buildingName, b.contains(buildingMaster));
+    }
+  }
 
   /**
    * Chronos.pdc.Building
@@ -360,7 +376,9 @@ public class TestBuilding
   private void dump(Building bldg)
   {
     MsgCtrl.msg("\t Created: \t" + bldg.getName());
-    MsgCtrl.msgln("\t managed by " + bldg.getMaster());
+
+    MsgCtrl.msgln("\t managed by " + bldg.getProprietor());
+
     int[] hours = bldg.getBusinessHours();
     int oTime = hours[0];
     int cTime = hours[1];

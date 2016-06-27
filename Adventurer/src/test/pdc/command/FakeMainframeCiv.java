@@ -22,17 +22,17 @@ public class FakeMainframeCiv extends MainframeCiv
   }
   
 //  @Override
-//  public String displayErrorText(String msg)
+//  public void displayErrorText(String msg)
 //  {
 //    _errors.add(msg);
-//    return msg;
+//      System.err.println("User error message: " + msg);
 //  }
-
+//
 //  @Override
-//  public String displayText(String msg)
+//  public void displayText(String msg)
 //  {
 //    _text.add(msg);
-//    return msg;
+//    System.out.println("User message: " + msg);
 //  }
   
   @Override

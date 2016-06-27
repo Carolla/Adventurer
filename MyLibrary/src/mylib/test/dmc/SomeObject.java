@@ -125,6 +125,7 @@ public class SomeObject implements IRegistryElement
    * 
    * @return elements as a single string
    */
+  @Override
   public String toString()
   {
     String s = "num = " + _num;

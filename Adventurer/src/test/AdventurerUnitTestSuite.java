@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import test.civ.CivTestSuite;
+import test.dmc.DmcTestSuite;
 import test.pdc.PdcTestSuite;
 
 /**
@@ -30,11 +31,11 @@ import test.pdc.PdcTestSuite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 
-  // All MVP Component unit test suites
-  CivTestSuite.class,
-  PdcTestSuite.class,
-  // DmcTestSuite.class,
-  
+    // All MVP Component unit test suites
+    CivTestSuite.class,
+    PdcTestSuite.class,
+    DmcTestSuite.class,
+
 
 })
 

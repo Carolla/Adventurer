@@ -9,82 +9,109 @@
 
 package pdc.command;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import chronos.pdc.NPC;
 import chronos.pdc.buildings.Building;
 import chronos.pdc.command.Command;
 import civ.BuildingDisplayCiv;
-import civ.MainframeCiv;
 
-
-/**
- * @author Al Cline
- * @version Apr 29, 2016 // original <br>
- */
 public class CmdInspect extends Command
 {
-  // THESE CONSTANTS MUST BE STATIC BECAUSE THEY ARE CALLED IN THE CONSTRUCTOR
-  /** The description of what the command does, used in the {@code help()} method. */
-  static private final String CMD_DESCRIPTION = "Get a near description of a requested NPC.";
-  /** Format for this command */
-  static private final String CMDFMT = "INPSECT <NPC Name>";
-  /** This command starts immediately, requiring no delay. */
-  static private final int DELAY = 0;
-  /** This command takes so many seconds on the game clock. */
-  static private final int DURATION = 5;
+    // THESE CONSTANTS MUST BE STATIC BECAUSE THEY ARE CALLED IN THE CONSTRUCTOR
+    /** The name of the command, mostly for error messages */
+    static private final String CMD_NAME = "INSPECT";
+    /** The description of what the command does, used in the {@code help()} method. */
+    static private final String CMD_DESCRIPTION = "Get the near description of an npc.";
+    /** Format for this command */
+    static private final String CMDFMT = "INSPECT <NPC Name>";
+    /** This command starts immediately, requiring no delay. */
+    static private final int DELAY = 0;
+    /** This command takes this number of seconds on the game clock. */
+    static private final int DURATION = 5;
 
-  /** Building accesses and displays are controlled by the BuildingDisplayCiv */
-  private BuildingDisplayCiv _bldgCiv;
-  /** MainframeCiv controls outputs to the IOPanel */
-  private MainframeCiv _mfCiv;
+    /** NPC on which this command is run */
+    private NPC _npc;
+    /** Parm passed into init, can be multi-word. */
+    private String _targetNpcName;
+    /** Needed to get current building. */
+    private BuildingDisplayCiv _bdCiv;
 
-  /** Requested name of NPC to Inspect */
-  private String _npcName;
-
-  // ============================================================
-  // Constructors and constructor helpers
-  // ============================================================
-
-  /** Constructor called by the CommandFactory. */
-  public CmdInspect(BuildingDisplayCiv bdCiv)
-  {
-    super("CmdInspect", DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
-    _bldgCiv = bdCiv;
-    // _mfCiv = mfciv;
-  }
-
-
-  /*
-   * @see chronos.pdc.command.Command#init(java.util.List)
-   */
-  @Override
-  public boolean init(List<String> args)
-  {
-    // Stub for testing
-    _npcName = convertArgsToString(args);
-    _isInitialized = true;
-    return _isInitialized;
-  }
-
-  /*
-   * @see chronos.pdc.command.Command#exec()
-   */
-  @Override
-  public boolean exec()
-  {
-    Building curBldg = _bldgCiv.getBuildingObject();
-    ArrayList<NPC> npcList = (ArrayList<NPC>) curBldg.getPatrons();
-    for (NPC person : npcList) {
-      String personName = person.getName();
-      if (personName.equals(_npcName)) {
-        _output.displayText(person.getNearDescription());
-        break;
-      }
+    public CmdInspect(BuildingDisplayCiv bdc)
+            throws NullPointerException
+    {
+        super(CMD_NAME, DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
+        _bdCiv = bdc;
     }
 
-    return true;
-  }
+    /**
+     * Takes passed in NPC name tokens, combining them into a single token
+     *
+     * @return single-word String NPC name
+     */
+    @Override
+    public boolean init(List<String> args)
+    {
+        // Guard
+        if (args == null) {
+            return false;
+        }
+        boolean retVal = false;
+        if (args.size() >= 1) {
+            _targetNpcName = super.convertArgsToString(args).trim();
+            retVal = !_targetNpcName.isEmpty();
+        }
+        return retVal;
+    }
 
-}
+    @Override
+    public boolean exec()
+    {
+        boolean retVal = false;
+        Building cBuild = _bdCiv.getCurrBuilding();
+        if (cBuild == null) {
+            _output.displayErrorText("You need to go inside to inspect people.");
+            return retVal;
+        }
+        _npc = null;
+        
+        if (_targetNpcName.equalsIgnoreCase(cBuild.getProprietor())) {
+            _npc = cBuild.getProprietorNPC();
+            _output.displayText(_npc.getNearDescription());
+            retVal = true;
+        } else {
+            List<NPC> npcList = (List<NPC>) cBuild.getPatrons();
+            for (NPC anNpc : npcList) {
+                if (_targetNpcName.equalsIgnoreCase(anNpc.getName())) {
+                    _npc = anNpc;
+                    _output.displayText(_npc.getNearDescription());
+                    retVal = true;
+                    break;
+                }
+            }
+        }
+        if (retVal == false) {
+            _output.displayText("I don't see " + _targetNpcName
+                    + ".  Perhaps you should have yourself another look 'round to see who's here.");
+        }
+        return retVal;
+    }
+
+    public class MockCmdInspect
+    {
+
+        public MockCmdInspect()
+        {}
+
+        public String getNearDes()
+        {
+            return CmdInspect.this._npc.getNearDescription();
+        }
+
+        public void setNpcName(String name)
+        {
+            CmdInspect.this._targetNpcName = name;
+        }
+    }
+
+} // End CmdInspect

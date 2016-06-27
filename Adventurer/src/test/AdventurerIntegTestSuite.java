@@ -20,6 +20,7 @@ import test.integ.TA08_CmdEnter;
 import test.integ.TA09_CmdLeave;
 import test.integ.TA10_ReturnToTown;
 import test.integ.TA13_CmdInspect;
+import test.integ.TA14_TalkToPatron;
 
 /**
  * Regression test suite for all the {@code JUnit} unit and integration test cases for
@@ -47,7 +48,8 @@ import test.integ.TA13_CmdInspect;
     TA08_CmdEnter.class,
     TA09_CmdLeave.class,
     TA10_ReturnToTown.class,
-//    TA13_CmdInspect.class,
+    TA13_CmdInspect.class,
+    TA14_TalkToPatron.class,
 })
 public class AdventurerIntegTestSuite
 {

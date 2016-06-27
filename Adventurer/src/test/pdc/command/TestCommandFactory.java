@@ -1,11 +1,12 @@
 
 package test.pdc.command;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import org.junit.Before;
@@ -14,7 +15,6 @@ import org.junit.Test;
 import chronos.pdc.command.Command;
 import chronos.pdc.command.NullCommand;
 import pdc.command.CommandFactory;
-import pdc.command.CommandInput;
 
 public class TestCommandFactory
 {
@@ -33,53 +33,41 @@ public class TestCommandFactory
     _commandFactory.initMap();
   }
 
-  @Test
-  public void SomeCommandsAreFound()
-  {
-    Random r = new Random(System.currentTimeMillis());
-    int position = r.nextInt(commandNames.length);
-    CommandInput ci = new CommandInput(commandNames[position], new ArrayList<String>());
-    Command c = _commandFactory.createCommand(ci);
-    assertFalse(new NullCommand().getName() == c.getName());
-  }
-
-  @Test
-  public void FactoryKnowsWhichCommandCanBeCreated()
-  {
-    for (String name : commandNames) {
-      CommandInput ci = new CommandInput(name, null);
-      assertTrue(_commandFactory.canCreateCommand(ci));
+    @Test
+    public void SomeCommandsAreFound()
+    {
+        Random r = new Random(System.currentTimeMillis());
+        int position = r.nextInt(commandNames.length);
+        String cName = commandNames[position];
+        Command c = _commandFactory.createCommand(cName);
+        assertFalse(new NullCommand().getName() == c.getName());
+    }
+    
+    @Test
+    public void FactoryKnowsWhichCommandCanBeCreated()
+    {
+        for (String cName : commandNames) {
+            assertTrue(_commandFactory.canCreateCommand(cName));
+        }
+    }
+    
+    @Test
+    public void MadeUpCommandCreatesCommandThatIsNull()
+    {
+        String fakeName = "FakeCommand";
+        Command cmd = _commandFactory.createCommand(fakeName);
+        assertNull(cmd);
+    }
+    
+    @Test
+    public void RealCommandIsInitialized()
+    {
+//        CommandInput ci = new CommandInput("RETURN", new ArrayList<String>());
+        String cName = "RETURN";
+        Command c = _commandFactory.createCommand(cName);
+        List<String> argsForCmd = new ArrayList<String>();
+        argsForCmd.add("");
+        assertTrue(c.init(argsForCmd));   
     }
   }
 
-  @Test
-  public void MadeUpCommandCannotBeCreated()
-  {
-    CommandInput ci = new CommandInput("Fake", null);
-    assertFalse(_commandFactory.canCreateCommand(ci));
-  }
-
-  @Test
-  public void MadeUpCommandIsNotFound()
-  {
-    CommandInput ci = new CommandInput("Fake", new ArrayList<String>());
-    Command c = _commandFactory.createCommand(ci);
-    assertEquals(new NullCommand().getName(), c.getName());
-  }
-
-  @Test
-  public void FakeCommandIsNotInitialized()
-  {
-    CommandInput ci = new CommandInput("Fake", new ArrayList<String>());
-    NullCommand c = (NullCommand) _commandFactory.createCommand(ci);
-    assertFalse(c.isInitialized());
-  }
-
-  @Test
-  public void RealCommandIsInitialized()
-  {
-    CommandInput ci = new CommandInput("RETURN", new ArrayList<String>());
-    Command c = _commandFactory.createCommand(ci);
-    assertTrue(c.isInitialized());
-  }
-}

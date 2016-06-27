@@ -43,7 +43,8 @@ public class IOPanelCiv
     CommandParser parser = new CommandParser(cmdFac);
 
     // IOPanel needs the parser to send user input to
-    IOPanel iop = new IOPanel(this, parser);
+//    IOPanel iop = new IOPanel(this, parser);
+    IOPanel iop = new IOPanel(parser);
     _mfCiv.replaceLeftPanel(iop);
     iop.requestFocusInWindow();
 

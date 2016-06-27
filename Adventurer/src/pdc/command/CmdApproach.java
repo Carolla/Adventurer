@@ -82,8 +82,8 @@ public class CmdApproach extends Command
     public boolean init(List<String> args)
     {
       _targetBuilding = convertArgsToString(args);
-      _isInitialized = _bldgCiv.canApproach(_targetBuilding);
-      return _isInitialized;
+      boolean isInitialized = _bldgCiv.canApproach(_targetBuilding);
+      return isInitialized;
     }
 
     @Override

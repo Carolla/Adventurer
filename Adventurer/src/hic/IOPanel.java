@@ -82,12 +82,12 @@ public class IOPanel extends ChronosPanel implements UserMsgInterface
    * @param bldgCiv manages the IOPanel and its input/output messages.
    * @param cp  handles all input commands from the user
    */
-//  public IOPanel(CommandParser cp)
-  public IOPanel(IOPanelCiv ioCiv, CommandParser cp)
+  public IOPanel(CommandParser cp)
+//  public IOPanel(IOPanelCiv ioCiv, CommandParser cp)
   {
     super(IOPANEL_TITLE);
     _commandParser = cp;
-    _ioPanelCiv = ioCiv;
+//    _ioPanelCiv = ioCiv;
 
     setLayout(new MigLayout("", "[grow]", "[][]"));
     _transcriptPane = new JTextPane();

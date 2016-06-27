@@ -206,9 +206,20 @@ public class BuildingDisplayCiv extends BaseCiv
     }
   }
 
+  public boolean canTalkTo(String target)
+  {
+    return _currentBldg.contains(target);
+  }
+
   public String getCurrentBuilding()
   {
     return (_currentBldg == null) ? "" : _currentBldg.getName();
+  }
+  
+  /** This should replace "String getCurrentBuilding()" */
+  public Building getCurrBuilding()
+  {
+    return _currentBldg;
   }
 
   public Building getBuildingObject()
@@ -275,5 +286,15 @@ public class BuildingDisplayCiv extends BaseCiv
       return result;
     }
     return result;
+  }
+  
+  public class MockBuildingDisplayCiv {
+      
+      public MockBuildingDisplayCiv() {}
+      
+      public void setCurrentBuilding(Building bldg)
+      {
+          _currentBldg = bldg;
+      }
   }
 } // end of BuildingDisplayCiv class

@@ -76,17 +76,16 @@ public abstract class Command
   /** The amount of time that passes while the command is in effect */
   protected int _duration = 0;
 
-  /**
-   * The parameters that the subcommand needs must be wrapped in an ArrayList for the subcommand's
-   * {@code init} method.
-   */
-  protected final List<String> _parms;
-  /** A short description of the command, used in the general help method. */
-  protected final String _description;
-  /** The syntax of the command, used in the {@code usage()} method. */
-  protected final String _cmdfmt;
-  /** Whether params are correct */
-  protected boolean _isInitialized = false;
+    /**
+     * The parameters that the subcommand needs must be wrapped in an ArrayList for the subcommand's
+     * {@code init} method.
+     */
+    protected final List<String> _parms;
+    /** A short description of the command, used in the general help method. */
+    protected final String _description;
+    /** The syntax of the command, used in the {@code usage()} method. */
+    protected final String _cmdfmt;
+    /** Whether params are correct */
 
   /** Every command sends user messages to this object */
   protected UserMsgInterface _output;
@@ -246,13 +245,6 @@ public abstract class Command
     return msg;
   }
 
-  /**
-   * @return true if the parms are correct
-   */
-  public boolean isInitialized()
-  {
-    return _isInitialized;
-  }
 
   /**
    * By default, assume commands are UserInput.

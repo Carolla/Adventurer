@@ -36,9 +36,9 @@ import chronos.test.ChronosUnitTestSuite;
 @Suite.SuiteClasses({
 
     // All Unit Tests in Adventurer
-    AdventurerUnitTestSuite.class,
     MyLibraryUnitTestSuite.class,
     ChronosUnitTestSuite.class,
+    AdventurerUnitTestSuite.class,
 
     /* Adventurer integration test suite */
     AdventurerIntegTestSuite.class,

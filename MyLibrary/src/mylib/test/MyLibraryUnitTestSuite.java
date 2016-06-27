@@ -9,11 +9,12 @@
 
 package mylib.test;
 
-import mylib.test.pdc.TestMetaDie;
-import mylib.test.pdc.TestUtilities;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+
+import mylib.test.dmc.TestDbReadWriter;
+import mylib.test.pdc.TestMetaDie;
+import mylib.test.pdc.TestUtilities;
 
 /**
  * @author Alan Cline
@@ -29,7 +30,10 @@ import org.junit.runners.Suite;
     /** PDC Test files */
     TestMetaDie.class,
     TestUtilities.class,
-    
+
+    /** DMC Test files */
+    TestDbReadWriter.class,
+
 })
 
 public class MyLibraryUnitTestSuite

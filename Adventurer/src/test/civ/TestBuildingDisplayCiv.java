@@ -6,6 +6,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import static chronos.pdc.buildings.Building.DEFAULT_BUILDINGS;
+
 import java.util.Random;
 
 import org.junit.Before;
@@ -21,7 +23,7 @@ import civ.MainframeCiv;
 public class TestBuildingDisplayCiv
 {
   private static Random _rand;
-  private static final int numBuildings = BuildingDisplayCiv.DEFAULT_BUILDINGS.length;
+  private static final int numBuildings = DEFAULT_BUILDINGS.length;
   private BuildingDisplayCiv _bdCiv;
   private BuildingRegistry _breg = new BuildingRegistry();
   private MainframeCiv _mf = new FakeMainframeCiv();
@@ -44,8 +46,8 @@ public class TestBuildingDisplayCiv
   public void canApproachBuildingWhenOnTown()
   {
     assertTrue(_bdCiv.isOnTown());
-    for (int i = 0; i < BuildingDisplayCiv.DEFAULT_BUILDINGS.length; i++) {
-      String testName = BuildingDisplayCiv.DEFAULT_BUILDINGS[i][0];
+    for (int i = 0; i < DEFAULT_BUILDINGS.length; i++) {
+      String testName = DEFAULT_BUILDINGS[i][0];
       assertTrue(_bdCiv.canApproach(testName));
     }
   }
@@ -53,10 +55,10 @@ public class TestBuildingDisplayCiv
   @Test
   public void cannotApproachBuildingWhenNotOnTown()
   {
-    String sampleBuilding = BuildingDisplayCiv.DEFAULT_BUILDINGS[_rand.nextInt(numBuildings)][0];
+    String sampleBuilding = DEFAULT_BUILDINGS[_rand.nextInt(numBuildings)][0];
     _bdCiv.enterBuilding(sampleBuilding);
-    for (int i = 0; i < BuildingDisplayCiv.DEFAULT_BUILDINGS.length; i++) {
-      String testName = BuildingDisplayCiv.DEFAULT_BUILDINGS[i][0];
+    for (int i = 0; i < DEFAULT_BUILDINGS.length; i++) {
+      String testName = DEFAULT_BUILDINGS[i][0];
       assertFalse("Approaching " + testName, _bdCiv.canApproach(testName));
     }
   }
@@ -64,11 +66,11 @@ public class TestBuildingDisplayCiv
   @Test
   public void canApproachOtherBuildingWhenOutsideABuilding()
   {
-    for (int i = 0; i < BuildingDisplayCiv.DEFAULT_BUILDINGS.length; i++) {
-      String buildingApproached = BuildingDisplayCiv.DEFAULT_BUILDINGS[i][0];
+    for (int i = 0; i < DEFAULT_BUILDINGS.length; i++) {
+      String buildingApproached = DEFAULT_BUILDINGS[i][0];
       _bdCiv.approachBuilding(buildingApproached);
-      for (int j = i; j < BuildingDisplayCiv.DEFAULT_BUILDINGS.length; j++) {
-        String buildingNowApproaching = BuildingDisplayCiv.DEFAULT_BUILDINGS[j][0];
+      for (int j = i; j < DEFAULT_BUILDINGS.length; j++) {
+        String buildingNowApproaching = DEFAULT_BUILDINGS[j][0];
         assertTrue("Approaching " + buildingNowApproaching + " from " + buildingApproached,
             _bdCiv.canApproach(buildingNowApproaching));
       }
@@ -79,8 +81,8 @@ public class TestBuildingDisplayCiv
   public void canEnterBuildingWhenOnTown()
   {
     assertTrue(_bdCiv.isOnTown());
-    for (int i = 0; i < BuildingDisplayCiv.DEFAULT_BUILDINGS.length; i++) {
-      String testName = BuildingDisplayCiv.DEFAULT_BUILDINGS[i][0];
+    for (int i = 0; i < DEFAULT_BUILDINGS.length; i++) {
+      String testName = DEFAULT_BUILDINGS[i][0];
       assertTrue(_bdCiv.canEnter(testName));
     }
   }
@@ -88,8 +90,8 @@ public class TestBuildingDisplayCiv
   @Test
   public void canEnterBuildingWhenApproached()
   {
-    for (int i = 0; i < BuildingDisplayCiv.DEFAULT_BUILDINGS.length; i++) {
-      String buildingApproached = BuildingDisplayCiv.DEFAULT_BUILDINGS[i][0];
+    for (int i = 0; i < DEFAULT_BUILDINGS.length; i++) {
+      String buildingApproached = DEFAULT_BUILDINGS[i][0];
       _bdCiv.approachBuilding(buildingApproached);
       assertTrue(_bdCiv.canEnter(buildingApproached));
     }
@@ -98,11 +100,11 @@ public class TestBuildingDisplayCiv
   @Test
   public void cannotEnterDifferentBuildingWhenBuildingEntered()
   {
-    for (int i = 0; i < BuildingDisplayCiv.DEFAULT_BUILDINGS.length; i++) {
-      String buildingEntered = BuildingDisplayCiv.DEFAULT_BUILDINGS[i][0];
+    for (int i = 0; i < DEFAULT_BUILDINGS.length; i++) {
+      String buildingEntered = DEFAULT_BUILDINGS[i][0];
       _bdCiv.enterBuilding(buildingEntered);
-      for (int j = 0; j < BuildingDisplayCiv.DEFAULT_BUILDINGS.length; j++) {
-        String buildingNowEntering = BuildingDisplayCiv.DEFAULT_BUILDINGS[j][0];
+      for (int j = 0; j < DEFAULT_BUILDINGS.length; j++) {
+        String buildingNowEntering = DEFAULT_BUILDINGS[j][0];
         if (!buildingEntered.equals(buildingNowEntering)) {
           assertFalse("Trying to enter " + buildingNowEntering + " from " + buildingEntered,
               _bdCiv.canEnter(buildingNowEntering));
@@ -115,14 +117,14 @@ public class TestBuildingDisplayCiv
   @Test
   public void enterCausesBuildingToChange()
   {
-    for (int i = 0; i < BuildingDisplayCiv.DEFAULT_BUILDINGS.length; i++) {
+    for (int i = 0; i < DEFAULT_BUILDINGS.length; i++) {
       assertEquals(_bdCiv.getCurrentBuilding(), "");
-      
-      String buildingEntered = BuildingDisplayCiv.DEFAULT_BUILDINGS[i][0];
+
+      String buildingEntered = DEFAULT_BUILDINGS[i][0];
       _bdCiv.enterBuilding(buildingEntered);
 
       assertEquals(_bdCiv.getCurrentBuilding(), buildingEntered);
-      
+
       _bdCiv.returnToTown();
     }
   }
@@ -130,14 +132,14 @@ public class TestBuildingDisplayCiv
   @Test
   public void approachCausesBuildingToChange()
   {
-    for (int i = 0; i < BuildingDisplayCiv.DEFAULT_BUILDINGS.length; i++) {
+    for (int i = 0; i < DEFAULT_BUILDINGS.length; i++) {
       assertEquals(_bdCiv.getCurrentBuilding(), "");
-      
-      String buildingApproached = BuildingDisplayCiv.DEFAULT_BUILDINGS[i][0];
+
+      String buildingApproached = DEFAULT_BUILDINGS[i][0];
       _bdCiv.approachBuilding(buildingApproached);
 
       assertEquals(_bdCiv.getCurrentBuilding(), buildingApproached);
-      
+
       _bdCiv.returnToTown();
     }
   }
@@ -145,14 +147,25 @@ public class TestBuildingDisplayCiv
   @Test
   public void returnToTownResetsBuilding()
   {
-    for (int i = 0; i < BuildingDisplayCiv.DEFAULT_BUILDINGS.length; i++) {
-      String buildingApproached = BuildingDisplayCiv.DEFAULT_BUILDINGS[i][0];
+    for (int i = 0; i < DEFAULT_BUILDINGS.length; i++) {
+      String buildingApproached = DEFAULT_BUILDINGS[i][0];
       _bdCiv.approachBuilding(buildingApproached);
       assertEquals(_bdCiv.getCurrentBuilding(), buildingApproached);
-      
+
       _bdCiv.returnToTown();
       assertEquals(_bdCiv.getCurrentBuilding(), "");
-      
+
+    }
+  }
+
+  @Test
+  public void canTalkToPatronInBuilding()
+  {
+    for (int i = 0; i < DEFAULT_BUILDINGS.length; i++) {
+      String buildingName = DEFAULT_BUILDINGS[i][0];
+      String buildingMaster = DEFAULT_BUILDINGS[i][1];
+      _bdCiv.approachBuilding(buildingName);
+      assertTrue("Couldn't talk to " + buildingMaster + " in " + buildingName, _bdCiv.canTalkTo(buildingMaster));
     }
   }
 }

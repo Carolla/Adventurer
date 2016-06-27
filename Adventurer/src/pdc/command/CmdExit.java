@@ -73,7 +73,7 @@ public class CmdExit extends Command
   @Override
   public boolean init(List<String> args)
   {
-    _isInitialized = true;
+//    _isInitialized = true;
     return true;
   }
 

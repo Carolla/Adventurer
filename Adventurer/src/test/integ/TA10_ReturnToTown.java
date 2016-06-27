@@ -9,14 +9,13 @@
 
 package test.integ;
 
+import static chronos.pdc.buildings.Building.DEFAULT_BUILDINGS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import civ.BuildingDisplayCiv;
 
 /**
  * Leave the interior of a Building.
@@ -42,8 +41,8 @@ public class TA10_ReturnToTown extends IntegrationTest
   @Test
   public void TA10_LeaveFromInsideBuilding()
   {
-    for (int i = 0; i < BuildingDisplayCiv.DEFAULT_BUILDINGS.length - 1; i++) {
-      String building = BuildingDisplayCiv.DEFAULT_BUILDINGS[i][0];
+    for (int i = 0; i < DEFAULT_BUILDINGS.length - 1; i++) {
+      String building = DEFAULT_BUILDINGS[i][0];
       _cp.receiveCommand("Enter " + building);
 
       assertEquals(building, _bldgCiv.getCurrentBuilding());
@@ -64,8 +63,8 @@ public class TA10_ReturnToTown extends IntegrationTest
   @Test
   public void TA10_LeaveFromOutsideBuilding()
   {
-    for (int i = 0; i < BuildingDisplayCiv.DEFAULT_BUILDINGS.length - 1; i++) {
-      String building = BuildingDisplayCiv.DEFAULT_BUILDINGS[i][0];
+    for (int i = 0; i < DEFAULT_BUILDINGS.length - 1; i++) {
+      String building = DEFAULT_BUILDINGS[i][0];
       _cp.receiveCommand("Approach " + building);
 
       assertEquals(building, _bldgCiv.getCurrentBuilding());

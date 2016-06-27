@@ -58,18 +58,13 @@ public class CmdReturn extends Command
      */
 
     /**
-     * Enters the current building. There can be 0 or many args in the arglist. If an arg is not
-     * specified, then the current Building is assumed. If more than one argument is specified, then
-     * they are all assumed to be part of the name.
      * 
-     * @param args if empty, then use current Buiilding; otherwise gets Building specified
-     * @param mfCiv
-     * @return true if all worked, else returns false on input error
      */
     @Override
     public boolean init(List<String> args)
     {
-        _isInitialized = true;
+        // TODO enforce command format
+//        _isInitialized = true;
         return true;
     }
 

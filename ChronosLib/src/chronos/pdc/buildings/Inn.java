@@ -111,7 +111,10 @@ public class Inn extends Building
    */
   public void initPatrons(Scheduler skedder)
   {
-    List<NPC> patrons = new NPCRegistry().getAll();
+    NPCRegistry npcReg = new NPCRegistry();
+    List<NPC> patrons = npcReg.getAll();
+    patrons.remove(npcReg.getNPC(INNKEEPER)); // Bork is always here
+    
     // The starterList has no zero-delay intCmdEnter commands, each containing the
     // Patron who shall enter at the designated delay time.
     List<intCmdPatronEnter> starterList = createStarterList(patrons);
@@ -155,7 +158,6 @@ public class Inn extends Building
   @Override
   public boolean add(NPC npc)
   {
-    System.out.println(npc.getName() + " entered the Inn");
     boolean added = super.add(npc);
 
     if (_patrons.size() >= NBR_PATRONS_TO_BE_BUSY) {

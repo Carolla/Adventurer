@@ -2,9 +2,6 @@
 package test.pdc.command;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Random;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -15,11 +12,9 @@ import chronos.test.pdc.command.FakeScheduler;
 import civ.CommandParser;
 import pdc.command.CmdReturn;
 import pdc.command.CommandFactory;
-import pdc.command.CommandInput;
 
 public class TestCommandParser
 {
-
   private CommandParser _cp;
   private FakeScheduler _fakeSkedder;
 
@@ -30,46 +25,6 @@ public class TestCommandParser
     _cp = new CommandParser(new FakeCommandFactory());
   }
 
-  @Test
-  public void FirstStringIsCommandTokenInCommandInput()
-  {
-    String firstWord = "Test";
-    String testCmd = firstWord + " command";
-    CommandInput ci = _cp.createCommandInput(testCmd);
-    assertTrue(firstWord.equalsIgnoreCase(ci.commandToken));
-  }
-
-  @Test
-  public void FirstStringIsInUpperCase()
-  {
-    String testCmd = "Test";
-    CommandInput ci = _cp.createCommandInput(testCmd);
-    assertEquals(testCmd.toUpperCase(), ci.commandToken);
-  }
-
-  @Test
-  public void SecondStringIsInListOfParams()
-  {
-    String secondWord = "command";
-    String testCmd = "Test " + secondWord;
-    CommandInput ci = _cp.createCommandInput(testCmd);
-    assertTrue(ci.parameters.contains(secondWord));
-  }
-
-  @Test
-  public void AllRemainingStringsAreInListOfParams()
-  {
-    Random rand = new Random(System.currentTimeMillis());
-    int numberOfWords = rand.nextInt(10);
-    String testCmd = "Test ";
-    for (int i = 0; i < numberOfWords; i++) {
-      testCmd += " word" + i;
-    }
-    CommandInput ci = _cp.createCommandInput(testCmd);
-    for (int i = 0; i < numberOfWords; i++) {
-      assertTrue(ci.parameters.contains("word" + i));
-    }
-  }
 
   @Test
   public void CommandIsScheduledWhenFound()
@@ -97,13 +52,5 @@ public class TestCommandParser
       initMap();
     }
 
-    @Override
-    public Command createCommand(CommandInput cmdInput)
-    {
-      Command command = new NullCommand();
-      command.init(null);
-      return command;
-    }
   }
-
 }
