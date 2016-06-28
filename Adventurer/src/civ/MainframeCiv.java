@@ -31,7 +31,6 @@ import hic.MainframeInterface;
 public class MainframeCiv extends BaseCiv
 {
   private MainframeInterface _mf;
-  private IOPanel _ioPanel;
   private ImagePanel _imagePanel;
 
   private static final String INITIAL_IMAGE = "ChronosLogo.jpg";
@@ -102,28 +101,6 @@ public class MainframeCiv extends BaseCiv
     return _output;
   }
 
-
-  // Removed from MainframeCiv because it is part of UserMsgInterface
-  // @Override
-  // public String displayErrorText(String msg)
-  // {
-  // _ioPanel.displayErrorText(msg);
-  // return msg;
-  // }
-
-
-  
-
-
-  // Removed from MainframeCiv because it is part of UserMsgInterface
-  // @Override
-  // public String displayText(String result)
-  // {
-  // _ioPanel.displayText(result);
-  // return result;
-  // }
-
-
   /** Close down the application if user so specified */
   public void quit()
   {
@@ -139,7 +116,6 @@ public class MainframeCiv extends BaseCiv
 
   public void replaceLeftPanel(IOPanel panel)
   {
-    _ioPanel = panel;
     _mf.replaceLeftPanel(panel);
   }
 

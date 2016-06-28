@@ -14,7 +14,6 @@ import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 
-import chronos.pdc.command.Scheduler;
 import chronos.pdc.registry.RegistryFactory;
 
 
@@ -29,8 +28,7 @@ import chronos.pdc.registry.RegistryFactory;
  */
 public class TestRegistryFactory
 {
-  private RegistryFactory _rf = null;
-  private Scheduler skedder = null;
+  private RegistryFactory _rf;
 
   // ============================================================
   // Fixtures
@@ -39,7 +37,6 @@ public class TestRegistryFactory
   @Before
   public void setUp() throws Exception
   {
-    skedder = new Scheduler();
     _rf = new RegistryFactory();
     _rf.initRegistries();
   }

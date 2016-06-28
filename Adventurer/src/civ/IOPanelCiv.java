@@ -9,8 +9,6 @@
 
 package civ;
 
-import hic.IOPanel;
-import pdc.command.CommandFactory;
 
 /**
  * @author Al Cline
@@ -18,10 +16,10 @@ import pdc.command.CommandFactory;
  */
 public class IOPanelCiv
 {
-  private MainframeCiv _mfCiv;
-  
-  // Required for knowing the current context
-  private BuildingDisplayCiv _bldgCiv;
+//  private MainframeCiv _mfCiv;
+//  
+//  // Required for knowing the current context
+//  private BuildingDisplayCiv _bldgCiv;
   
   
   /**
@@ -29,28 +27,24 @@ public class IOPanelCiv
    */
   public IOPanelCiv(MainframeCiv mfciv, BuildingDisplayCiv bldgciv)
   {
-    _mfCiv = mfciv;
-    _bldgCiv = bldgciv;
+//    _mfCiv = mfciv;
+//    _bldgCiv = bldgciv;
   }
   
-  private void buildIOPanel()
-  {
-    // Needs the OIPanel so commands can send messages to the user
-    CommandFactory cmdFac = new CommandFactory(_bldgCiv);
-    cmdFac.initMap();
-
-    // To process user input from the IOPanel
-    CommandParser parser = new CommandParser(cmdFac);
-
-    // IOPanel needs the parser to send user input to
-//    IOPanel iop = new IOPanel(this, parser);
-    IOPanel iop = new IOPanel(parser);
-    _mfCiv.replaceLeftPanel(iop);
-    iop.requestFocusInWindow();
-
-    // All command msgs to user goes through the same output device
-    cmdFac.setOutput(iop);
-    
-  }
+//  private void buildIOPanel()
+//  {
+//    // Needs the OIPanel so commands can send messages to the user
+//    CommandFactory cmdFac = new CommandFactory(_bldgCiv);
+//    cmdFac.initMap();
+//
+//    // To process user input from the IOPanel
+//    CommandParser parser = new CommandParser(cmdFac);
+//
+//    // IOPanel needs the parser to send user input to
+////    IOPanel iop = new IOPanel(this, parser);
+//    IOPanel iop = new IOPanel(parser);
+//    _mfCiv.replaceLeftPanel(iop);
+//    iop.requestFocusInWindow();
+//  }
 
 }

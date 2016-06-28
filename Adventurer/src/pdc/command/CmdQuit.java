@@ -49,9 +49,6 @@ public class CmdQuit extends Command
   private final String ERRMSG_OMIT_ARGS =
       "If you want to exit the program, type \"Quit\" without any additional characters.";
 
-  /** Error message if hero inside when command initialized */
-  private final String ERRMSG_IN_BLDG = "To quit, you must be outside.";
-
   private final BuildingDisplayCiv _bdCiv;
   private final MainframeCiv _mfCiv;
 
@@ -89,7 +86,6 @@ public class CmdQuit extends Command
       retVal = true;
     } else if (argSizeZero && heroIsInside) {
       _output.displayErrorText(ERRMSG_OMIT_ARGS);
-      // _mfCiv.displayErrorText(ERRMSG_IN_BLDG);
       retVal = false;
     }
     return retVal;

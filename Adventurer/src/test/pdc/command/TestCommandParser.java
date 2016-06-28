@@ -6,12 +6,11 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import chronos.pdc.command.Command;
+import pdc.command.CmdReturn;
+import pdc.command.CommandFactory;
 import chronos.pdc.command.NullCommand;
 import chronos.test.pdc.command.FakeScheduler;
 import civ.CommandParser;
-import pdc.command.CmdReturn;
-import pdc.command.CommandFactory;
 
 public class TestCommandParser
 {

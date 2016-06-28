@@ -29,12 +29,11 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import mylib.Constants;
+import net.miginfocom.swing.MigLayout;
 import chronos.civ.UserMsgInterface;
 import chronos.pdc.Chronos;
 import civ.CommandParser;
-import civ.IOPanelCiv;
-import mylib.Constants;
-import net.miginfocom.swing.MigLayout;
 /**
  * This class serves as the text output and command line input after an Adventure is selected
  * 
@@ -68,8 +67,8 @@ public class IOPanel extends ChronosPanel implements UserMsgInterface
 
   private final SimpleAttributeSet _errorAttributes;
   private CommandParser _commandParser;
-
-  private IOPanelCiv _ioPanelCiv;
+//
+//  private IOPanelCiv _ioPanelCiv;
 
   // ============================================================
   // Constructors and constructor helpers

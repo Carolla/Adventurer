@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import chronos.civ.UserMsgInterface;
 import chronos.pdc.command.Command;
 import civ.BuildingDisplayCiv;
 
@@ -42,14 +41,10 @@ public class CommandFactory
   private Map<String, Supplier<Command>> _commandMap = new HashMap<String, Supplier<Command>>();
 
   private final BuildingDisplayCiv _bdCiv;
-  private UserMsgInterface _output = null;
-  // private final MainframeCiv _mfCiv;
 
   /** Keep a table for command, as lambda functions */
-  // public CommandFactory(MainframeCiv mfCiv, BuildingDisplayCiv bdCiv)
   public CommandFactory(BuildingDisplayCiv bdCiv)
   {
-    // _output = output;
     _bdCiv = bdCiv;
   }
 
@@ -95,7 +90,7 @@ public class CommandFactory
   {
     // If a good Command cannot be used, this dummy command is run
     Command command = null;
-    // Command command = new NullCommand();
+    
     // If the command cannot be found, then run the Null command
     if (!canCreateCommand(cmdToken)) {
       return command;
@@ -104,13 +99,7 @@ public class CommandFactory
     Supplier<Command> supplier = _commandMap.get(cmdToken);
       if (supplier != null) {
         command = supplier.get();
-        // command.setOutput(_mfCiv);
       }
-      // Check that the parms are valid for this command
-      // if (command.init(cmdInput.parameters) == false) {
-      // _mfCiv.displayErrorText(command.usage());
-      // }
-//      return command;
     return command;
   }
 
@@ -119,12 +108,6 @@ public class CommandFactory
   {
     return (_commandMap.get(cToken) == null) ? false : true;
   }
-
-  public void setOutput(UserMsgInterface output)
-  {
-    _output = output;
-  }
-
 
 } // end of CommandFactory class
 

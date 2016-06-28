@@ -56,7 +56,6 @@ public class Adventurer
   {
     /** All Swing processing occurs from the single EventQueue thread. */
     EventQueue.invokeLater(new Runnable() {
-      @SuppressWarnings("unused")
       @Override
       public void run()
       {
@@ -72,47 +71,11 @@ public class Adventurer
   } // end of static main()
 
 
-
-  // public static void main(String[] args)
-  // {
-  // /** All Swing processing occurs from the single EventQueue thread. */
-  // EventQueue.invokeLater(new Runnable() {
-  // public void run()
-  // {
-  // try {
-  // final Mainframe frame = new Mainframe();
-  // frame.setVisible(true);
-  // } catch (Exception e) {
-  // e.printStackTrace();
-  // System.exit(-1);
-  // }
-  // }
-  // });
-  //
-  // } // end of static main()
-
-
   /** Close all registries and shutdown the system */
   public static void approvedQuit()
   {
     System.exit(0);
   }
-
-
-  // /**
-  // * Dump the contents of all the registries for viewing
-  // */
-  // static private void dumpAllRegistries()
-  // {
-  // _rf = RegistryFactory.getInstance();
-  // for (RegKey key : RegKey.values()) {
-  // Registry reg = _rf.getRegistry(key);
-  // List<IRegistryElement> reglist = reg.getAll();
-  // System.out.print("Registry " + key.name());
-  // System.out.println("\t" + reglist.size() + " elements");
-  // System.out.println("\t" + reglist.toString());
-  // }
-  // }
 
 } // end of Adventurer class
 

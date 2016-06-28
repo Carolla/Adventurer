@@ -12,15 +12,14 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
+import pdc.command.CommandFactory;
 import chronos.pdc.command.Command;
 import chronos.pdc.command.NullCommand;
-import pdc.command.CommandFactory;
 
 public class TestCommandFactory
 {
   private CommandFactory _commandFactory;
   private FakeBuildingDisplayCiv _fakeBdCiv;
-  private FakeMainframeCiv _fakeMfCiv;
   private static final String[] commandNames =
       {"APPROACH", "ENTER", "LEAVE", "EXIT", "RETURN", "QUIT"};
 
@@ -28,7 +27,6 @@ public class TestCommandFactory
   public void setup()
   {
     _fakeBdCiv = new FakeBuildingDisplayCiv();
-    _fakeMfCiv = new FakeMainframeCiv();
     _commandFactory = new CommandFactory(_fakeBdCiv);
     _commandFactory.initMap();
   }

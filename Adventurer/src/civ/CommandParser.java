@@ -14,8 +14,8 @@ package civ;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import chronos.pdc.command.Command;
 import pdc.command.CommandFactory;
+import chronos.pdc.command.Command;
 
 /**
  * Receives a user input string from the command window and converts it to a command object, which
@@ -37,16 +37,6 @@ public class CommandParser
 {
     private final CommandFactory _factory;
 
-//    /** Start the Scheduler up when the CommandParser starts */
-//    private final Scheduler _skedder;
-//
-//    /** Needed for output messages */
-//    private MainframeCiv _mfCiv;
-//    
-    /** User Error message for entering a bad command token */
-    private final String BAD_TOKEN = "I don't know what you mean, perhaps you misspelled.";
-
-
   // ============================================================
   // Constructors and constructor helpers
   // ============================================================
@@ -55,28 +45,13 @@ public class CommandParser
    * Creates the singleton CommandParser, and connects to the {@code CommandFactory} and the
    * {@code MainframeCiv} for displaying parser output to {@code IOPanel}.
    * 
-   * @param _fakeSkedder
-   * 
-   * @param skedder Command Scheduler executes the commands
    * @param factory creates the various commands from the user
-   * @param output receiving object for displaying user messages
    * 
    */
-  // public CommandParser(Scheduler skedder, CommandFactory factory)
   public CommandParser(CommandFactory factory)
   {
-    // _skedder = skedder;
     _factory = factory;
-    // _factory = new CommandFactory(output, bldgCiv);
-    // _factory.initMap();
-
   }
-
-    // ============================================================
-    // Constructors and constructor helpers
-    // ============================================================
-
-
     // ============================================================
     // Public Methods
     // ============================================================
@@ -94,36 +69,10 @@ public class CommandParser
         String cmdToken = cmdList.remove(0).toUpperCase();
         Command cmd = _factory.createCommand(cmdToken);
         if (cmd == null) {
-//          _mfCiv.displayErrorText(BAD_TOKEN);
             return false;
         }
-//        boolean isInitialized = cmd.init(cmdList);
-//        if (isInitialized) {
-//            _skedder.sched(cmd);
-//        } else {
-//            _mfCiv.displayErrorText(cmd.usage());
-//        }
-
-        // boolean isInit = cmd.isInitialized();
-        // if (isInit) {
-        // _skedder.sched(cmd);
-        // }
         return true;
     }
-
-    // TODO repair error display for bad commands
-    // TODO fix command window not scrolling
-
-//    public ArrayList<String> parseTextInput(String textIn)
-//    {
-//        ArrayList<String> tokens = new ArrayList<String>(Arrays.asList(textIn.split(" ")));
-//        String commandToken = null;
-//
-//        if (tokens.size() > 0) {
-//            commandToken = tokens.remove(0).toUpperCase();
-//        }
-//        return tokens;
-//    }
 
 } // end of CommandParser class
 
