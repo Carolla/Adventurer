@@ -81,12 +81,6 @@ public class BuildingDisplayCiv extends BaseCiv
   // Public methods
   // ======================================================================
 
-
-
-  // ======================================================================
-  // Public methods
-  // ======================================================================
-
   /**
    * Show the exterior image and description of the Building
    * 

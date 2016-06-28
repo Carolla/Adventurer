@@ -40,15 +40,7 @@ public class TestCommandFactory
         Command c = _commandFactory.createCommand(cName);
         assertFalse(new NullCommand().getName() == c.getName());
     }
-    
-    @Test
-    public void FactoryKnowsWhichCommandCanBeCreated()
-    {
-        for (String cName : commandNames) {
-            assertTrue(_commandFactory.canCreateCommand(cName));
-        }
-    }
-    
+
     @Test
     public void MadeUpCommandCreatesCommandThatIsNull()
     {

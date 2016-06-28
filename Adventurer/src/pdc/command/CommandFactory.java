@@ -88,26 +88,13 @@ public class CommandFactory
    */
   public Command createCommand(String cmdToken)
   {
-    // If a good Command cannot be used, this dummy command is run
-    Command command = null;
-    
-    // If the command cannot be found, then run the Null command
-    if (!canCreateCommand(cmdToken)) {
-      return command;
-    } 
-    // If map contains the command, Supplier<Command> will give new Instance of that
     Supplier<Command> supplier = _commandMap.get(cmdToken);
-      if (supplier != null) {
-        command = supplier.get();
-      }
-    return command;
+    if (supplier != null) {
+      return supplier.get();
+    } else {
+      return null;
+    }
   }
-
   
-  public boolean canCreateCommand(String cToken)
-  {
-    return (_commandMap.get(cToken) == null) ? false : true;
-  }
-
 } // end of CommandFactory class
 
