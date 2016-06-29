@@ -13,7 +13,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import test.civ.CivTestSuite;
-import test.dmc.DmcTestSuite;
 import test.pdc.PdcTestSuite;
 
 /**
@@ -34,9 +33,6 @@ import test.pdc.PdcTestSuite;
     // All MVP Component unit test suites
     CivTestSuite.class,
     PdcTestSuite.class,
-    DmcTestSuite.class,
-
-
 })
 
 public class AdventurerUnitTestSuite

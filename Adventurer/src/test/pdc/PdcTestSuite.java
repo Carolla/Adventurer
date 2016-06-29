@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import test.pdc.character.TestHunger;
+import test.pdc.command.TestCmdApproach;
 import test.pdc.command.TestCmdEnter;
 import test.pdc.command.TestCmdInspect;
 import test.pdc.command.TestCmdLook;
@@ -42,7 +43,7 @@ import test.pdc.command.TestScheduler;
     TestHunger.class,
 
     /* PDC.Command test files */
-    // TestCmdApproach.class,
+    TestCmdApproach.class,
     TestCmdEnter.class,
     TestCmdInspect.class,
     TestCmdLook.class,
