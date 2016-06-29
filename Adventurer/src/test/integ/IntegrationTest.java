@@ -52,7 +52,7 @@ public class IntegrationTest
     _cmdFac = new CommandFactory(_bldgCiv, _mfCiv);
     _cmdFac.initMap();
     _cp = new CommandParser(_skedder, _cmdFac);
-    // Get list of names for all buildings
+
     for (Building b : bReg.getAll()) {
       _bldgs.add(b.getName());
     }

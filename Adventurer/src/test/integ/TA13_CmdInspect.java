@@ -96,17 +96,8 @@ public class TA13_CmdInspect extends IntegrationTest
   @Test
   public void testBuildingMaster()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
-    MsgCtrl.where(this);
-
-    // SETUP
-    MsgCtrl.msgln("\t Current building = " + _curBldg.getName());
-    MsgCtrl.msgln("\t Building master = " + _bldgMaster.getName());
-    MsgCtrl.msgln("");
-
     // RUN
-    String parm = "Inspect J.P. Pennypacker";
+    String parm = "Inspect J. P. Pennypacker";
     _cp.receiveCommand(parm);
     
     // VERIFY

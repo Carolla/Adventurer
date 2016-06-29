@@ -33,6 +33,7 @@ public class TestCmdQuit
     public void setUp() throws Exception
     {
         _cmdQuit = new CmdQuit(_mfCiv, _bdciv);
+        _cmdQuit.setOutput(_mfCiv.getOutput());
     }
 
     @After

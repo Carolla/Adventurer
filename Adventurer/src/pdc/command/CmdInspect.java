@@ -96,22 +96,4 @@ public class CmdInspect extends Command
         }
         return retVal;
     }
-
-    public class MockCmdInspect
-    {
-
-        public MockCmdInspect()
-        {}
-
-        public String getNearDes()
-        {
-            return CmdInspect.this._npc.getNearDescription();
-        }
-
-        public void setNpcName(String name)
-        {
-            CmdInspect.this._targetNpcName = name;
-        }
-    }
-
 } // End CmdInspect

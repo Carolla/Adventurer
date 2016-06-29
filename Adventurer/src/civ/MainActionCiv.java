@@ -93,20 +93,14 @@ public class MainActionCiv extends BaseCiv
     // _rf.initRegistries(_skedder);
     _rf.initRegistries();
 
-    // Support Select Adventure button
-    _advReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
+    _skedder = new Scheduler();
+
     // Set up times for the patrons to visit the Inn
     ((Inn) ((BuildingRegistry) _rf.getRegistry(RegKey.BLDG)).getBuilding("Ugly Ogre Inn"))
         .initPatrons(_skedder);
 
-    // Support Summon Heroes button
     _dorm = (HeroRegistry) _rf.getRegistry(RegKey.HERO);
-
-    // Support Create Hero button
     _hdCiv = new HeroDisplayCiv(_mfCiv, _dorm);
-    // _skedder = new Scheduler(); // _mfCiv implemented UserMsgInterface
-    // _skedder = new Scheduler(_mfCiv); // _mfCiv implemented UserMsgInterface
-
   }
 
   // ============================================================
@@ -121,6 +115,7 @@ public class MainActionCiv extends BaseCiv
    */
   public void loadSelectedAdventure(String adventureName)
   {
+    _advReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
     Adventure adv = _advReg.getAdventure(adventureName);
 
     // Create all the objects used in town

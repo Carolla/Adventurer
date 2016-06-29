@@ -45,7 +45,6 @@ public class TA08_CmdEnter extends IntegrationTest
   @After
   public void tearDown()
   {
-    // Set Hero back to town with no current Building
     resetBuildingState();
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
@@ -63,24 +62,16 @@ public class TA08_CmdEnter extends IntegrationTest
   @Test
   public void test_EnterBuildingFromTownOrExterior()
   {
-    MsgCtrl.where(this);
-
     for (int k = 0; k < _bldgs.size(); k++) {
-      // Setup: onTown must be true, and inBuilding flag must be false
       resetBuildingState();
       assertTrue(_bldgCiv.isOnTown());
       assertFalse(_bldgCiv.isInside());
 
-      // TEST
       _cp.receiveCommand("Enter " + _bldgs.get(k));
-      // User Cmd is executed automatically
-
-      // Confirm Hero is no longer on town, but is inside a building
       assertFalse(_bldgCiv.isOnTown());
       assertTrue(_bldgCiv.isInside());
 
       String bName = _bldgCiv.getCurrentBuilding();
-      MsgCtrl.msg("\tBuilding name = " + bName);
       assertTrue("Expected " + _bldgs.get(k) + ", got " + bName, bName.equals(_bldgs.get(k)));
     }
   }
@@ -92,9 +83,6 @@ public class TA08_CmdEnter extends IntegrationTest
   @Test
   public void test_EnterCurrentBuilding()
   {
-    MsgCtrl.where(this);
-
-    // Loop for each Building in the BuildingRegistry
     for (int k = 0; k < _bldgs.size(); k++) {
       resetBuildingState();
 
@@ -107,51 +95,38 @@ public class TA08_CmdEnter extends IntegrationTest
       _cp.receiveCommand("Enter");
 
       // VERIFY
-      // Confirm Hero is no longer on town, but is inside a building
       assertFalse(_bldgCiv.isOnTown());
       assertTrue(_bldgCiv.isInside());
 
-      // Hero is inside the correct building, now the current building
       String newCurrent = _bldgCiv.getCurrentBuilding();
-      MsgCtrl.msgln("\tCurrent Building = " + newCurrent);
       assertEquals("Expected " + _bldgs.get(k) + ", got " + newCurrent, bName, newCurrent);
-    } // end of loop
+    }
   }
 
 
   /**
    * Error case: Attempt to enter a building from inside another Building
-   * 
-   * @throws InterruptedException
    */
   @Test
   public void test_EnterFromInsideBuilding()
   {
-    MsgCtrl.where(this);
-
     String bName1 = "Ugly Ogre Inn";
     String bName2 = "Arcaneum";
 
-    // Setup: Enter a Building, and then try to enter same building
     _cp.receiveCommand("Enter " + bName1);
-    // User Cmd is executed automatically
 
     assertFalse(_bldgCiv.isOnTown());
     assertTrue(_bldgCiv.isInside());
     assertEquals(bName1, _bldgCiv.getCurrentBuilding());
 
-    // Test1: Try to enter the same building
     _cp.receiveCommand("Enter " + bName1);
 
-    // VERIFY that Hero is still inside building
     assertFalse(_bldgCiv.isOnTown());
     assertTrue(_bldgCiv.isInside());
     assertEquals(bName1, _bldgCiv.getCurrentBuilding());
 
-    // Test2: Try to enter a different building
     _cp.receiveCommand("Enter " + bName2);
 
-    // VERIFY Test 2 results
     assertFalse(_bldgCiv.isOnTown());
     assertTrue(_bldgCiv.isInside());
     assertEquals(bName1, _bldgCiv.getCurrentBuilding());
