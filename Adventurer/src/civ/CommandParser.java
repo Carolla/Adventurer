@@ -74,12 +74,14 @@ public class CommandParser
     ArrayList<String> cmdList = new ArrayList<String>(Arrays.asList(textIn.split(" ")));
     String cmdToken = cmdList.remove(0).toUpperCase();
     Command cmd = _factory.createCommand(cmdToken);
-    if (cmd == null) {
-      return false;
-    } else {
-      _skedder.sched(cmd);
-      return true;
+    if (cmd != null) {
+      if (cmd.init(cmdList))
+      {
+        _skedder.sched(cmd);
+        return true;
+      }
     }
+    return false;
   }
 
 } // end of CommandParser class

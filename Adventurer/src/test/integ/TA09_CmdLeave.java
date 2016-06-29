@@ -72,7 +72,6 @@ public class TA09_CmdLeave extends IntegrationTest
   @Test
   public void test_LeaveBuildingWhenOutside()
   {
-    // Setup: outside Building (onTown = false, currentBuilding !null; isInside = false)
     _cp.receiveCommand("Approach the Bank");
 
     assertFalse(_bldgCiv.isOnTown());
@@ -82,7 +81,6 @@ public class TA09_CmdLeave extends IntegrationTest
     // TEST
     assertFalse(_cp.receiveCommand("Leave "));
     
-    // Expected error message
     assertFalse(_bldgCiv.isOnTown());
     assertFalse(_bldgCiv.isInside());
 
