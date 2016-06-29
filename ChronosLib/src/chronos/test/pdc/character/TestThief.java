@@ -3,6 +3,7 @@ package chronos.test.pdc.character;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +27,7 @@ public class TestThief
   {
     int minGold = 120;
     int maxGold = 20;
-    for (int i = 0; i < 10000; i++) {
+    for (int i = 0; i < 1000; i++) {
       int gold = t.rollGold();
       if (gold > maxGold) {
         maxGold = gold;
@@ -34,8 +35,8 @@ public class TestThief
         minGold = gold;
       }
     }
-    assertEquals(120, maxGold);
-    assertEquals(20, minGold);
+    assertTrue(120 >= maxGold);
+    assertTrue(20 <= minGold);
   }
 
   @Test
@@ -43,7 +44,7 @@ public class TestThief
   {
     int maxHp = 0;
     int minHp = 10;
-    for (int i = 0; i < 10000; i++) {
+    for (int i = 0; i < 1000; i++) {
       int hp = t.rollHP();
       if (hp > maxHp) {
         maxHp = hp;
@@ -51,8 +52,8 @@ public class TestThief
         minHp = hp;
       }
     }
-    assertEquals(6, maxHp);
-    assertEquals(1, minHp);
+    assertTrue(6 >= maxHp);
+    assertTrue(1 <= minHp);
   }
 
   @Test

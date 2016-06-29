@@ -9,9 +9,14 @@
 
 package test;
 
+import mylib.test.dmc.TestDbReadWriter;
+import mylib.test.pdc.TestMetaDie;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import chronos.test.pdc.TestRegistry;
+import chronos.test.pdc.registry.TestRegistryFactory;
 import test.integ.TA00a_Initialize;
 import test.integ.TA00b_Quit;
 import test.integ.TA03a_SummonHeroes;
@@ -50,6 +55,12 @@ import test.integ.TA14_TalkToPatron;
     TA10_ReturnToTown.class,
     TA13_CmdInspect.class,
     TA14_TalkToPatron.class,
+
+    // Too slow to be unit test
+    TestDbReadWriter.class,
+    TestRegistry.class,
+    TestMetaDie.class,
+    TestRegistryFactory.class,
 })
 public class AdventurerIntegTestSuite
 {

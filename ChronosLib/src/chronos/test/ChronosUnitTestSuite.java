@@ -15,15 +15,12 @@ import org.junit.runners.Suite;
 import chronos.test.pdc.TestAdventure;
 import chronos.test.pdc.TestItem;
 import chronos.test.pdc.TestOccupation;
-import chronos.test.pdc.TestRegistry;
 import chronos.test.pdc.TestSkill;
 import chronos.test.pdc.TestTown;
 import chronos.test.pdc.buildings.BuildingsTestSuite;
 import chronos.test.pdc.character.CharacterTestSuite;
-import chronos.test.pdc.command.CommandTestSuite;
 import chronos.test.pdc.race.RaceTestSuite;
 import chronos.test.pdc.registry.RegistryTestSuite;
-import mylib.test.dmc.TestDbReadWriter;
 
 
 /**
@@ -52,7 +49,6 @@ import mylib.test.dmc.TestDbReadWriter;
     /* PDC test suite from subdirectories */
     BuildingsTestSuite.class,
     CharacterTestSuite.class,
-    CommandTestSuite.class,
     RaceTestSuite.class,
     RegistryTestSuite.class,
 
@@ -63,9 +59,6 @@ import mylib.test.dmc.TestDbReadWriter;
     TestSkill.class,
     TestTown.class,
 
-    /* DMC test files */
-    TestRegistry.class,
-    TestDbReadWriter.class
 
 })
 /** Compilation of all unit tests for regression and integration testing. */

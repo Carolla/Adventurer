@@ -26,7 +26,6 @@ import org.junit.runners.Suite;
   
     /* chronos.pdc.registry test files */
     TestAdventureRegistry.class,
-    TestRegistryFactory.class,
 
 })
 /** Compilation of all unit tests for regression and integration testing. */

@@ -20,11 +20,11 @@ public class RangedValueTest
   public void resultsCenterAroundAverage()
   {
     int total = 0;
-    for (int i = 0; i < 10000; i++) {
+    for (int i = 0; i < 5000; i++) {
       total += evenRangedValue.calcValue(); 
     }
     
-    assertEquals(100000, total, 2500);
+    assertEquals(50000, total, 1250);
   }
 
 }
