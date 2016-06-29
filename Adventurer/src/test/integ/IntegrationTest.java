@@ -49,9 +49,9 @@ public class IntegrationTest
     
     _maCiv.loadSelectedAdventure(adv.getName());
     _bldgCiv = new BuildingDisplayCiv(_mfCiv, adv, bReg);
-    _cmdFac = new CommandFactory(_bldgCiv);
+    _cmdFac = new CommandFactory(_bldgCiv, _mfCiv);
     _cmdFac.initMap();
-    _cp = new CommandParser(_cmdFac);
+    _cp = new CommandParser(_skedder, _cmdFac);
     // Get list of names for all buildings
     for (Building b : bReg.getAll()) {
       _bldgs.add(b.getName());

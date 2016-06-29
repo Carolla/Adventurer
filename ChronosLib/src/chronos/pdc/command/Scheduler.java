@@ -36,18 +36,15 @@ public class Scheduler
 {
     /** Internal references: command events are queued here */
     private DeltaCmdList _dq;
-//    private UserMsgInterface _output;
 
     /**
      * Creates the {@code Scheduler} and its components. However, if a {@code Scheduler} does not
      * exist, it cannot be created without a {@code CommandParser} (parm), so null is returned.
      * @param _mfCiv 
      */
-//    public Scheduler(UserMsgInterface output)
     public Scheduler()
     {
         _dq = new DeltaCmdList();
-//        _output = output;
     }
 
     /**
@@ -85,11 +82,4 @@ public class Scheduler
         clock.increment(cmdToDo.getDuration());
   //      _output.displayText("Time: " + clock.getFormattedTime());
     }
-
-
-    public boolean empty()
-    {
-        return _dq.isEmpty();
-    }
-
 } // end Scheduler class

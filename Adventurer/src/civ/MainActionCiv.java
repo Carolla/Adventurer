@@ -103,7 +103,7 @@ public class MainActionCiv extends BaseCiv
     _dorm = (HeroRegistry) _rf.getRegistry(RegKey.HERO);
 
     // Support Create Hero button
-    _hdCiv = new HeroDisplayCiv(_mfCiv, new HeroRegistry());
+    _hdCiv = new HeroDisplayCiv(_mfCiv, _dorm);
     // _skedder = new Scheduler(); // _mfCiv implemented UserMsgInterface
     // _skedder = new Scheduler(_mfCiv); // _mfCiv implemented UserMsgInterface
 
@@ -127,11 +127,11 @@ public class MainActionCiv extends BaseCiv
     BuildingDisplayCiv bldgCiv = new BuildingDisplayCiv(_mfCiv, adv,
         (BuildingRegistry) _rf.getRegistry(RegKey.BLDG));
 
-    // CommandFactory cmdFac = new CommandFactory(_mfCiv, bldgCiv);
-    CommandFactory cmdFac = new CommandFactory(bldgCiv);
+    CommandFactory cmdFac = new CommandFactory(bldgCiv, _mfCiv);
+    // CommandFactory cmdFac = new CommandFactory(bldgCiv);
     cmdFac.initMap();
     // CommandParser parser = new CommandParser(_skedder, cmdFac, _mfCiv);
-    CommandParser parser = new CommandParser(cmdFac);
+    CommandParser parser = new CommandParser(_skedder, cmdFac);
 
     IOPanel iop = new IOPanel(parser);
     _mfCiv.replaceLeftPanel(iop);

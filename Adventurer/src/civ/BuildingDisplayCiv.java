@@ -11,7 +11,6 @@
 
 package civ;
 
-import chronos.civ.UserMsgInterface;
 import chronos.pdc.Adventure;
 import chronos.pdc.buildings.Building;
 import chronos.pdc.registry.BuildingRegistry;
@@ -28,7 +27,7 @@ import chronos.pdc.registry.BuildingRegistry;
 public class BuildingDisplayCiv extends BaseCiv
 {
   protected MainframeCiv _mfCiv;
-  private UserMsgInterface _output;
+//  private UserMsgInterface _output;
   private BuildingRegistry _breg;
   private Adventure _adv;
 
@@ -100,8 +99,7 @@ public class BuildingDisplayCiv extends BaseCiv
       displayBuildingExterior();
       return true;
     } else {
-//      _mfCiv.displayText(ERRMSG_NOBLDG);
-      _output.displayText(ERRMSG_NOBLDG);
+      _mfCiv.displayText(ERRMSG_NOBLDG);
       return false;
     }
   }
@@ -114,8 +112,8 @@ public class BuildingDisplayCiv extends BaseCiv
   {
     // The Hero cannot be inside a building already
     if (isInside() == true) {
-//      _mfCiv.displayErrorText(ERRMSG_JUMPBLDG);
-      _output.displayErrorText(ERRMSG_JUMPBLDG);
+      _mfCiv.displayErrorText(ERRMSG_JUMPBLDG);
+//      _output.displayErrorText(ERRMSG_JUMPBLDG);
       return false;
     }
 
@@ -125,16 +123,16 @@ public class BuildingDisplayCiv extends BaseCiv
 
       // Check that the building specified actually exists
       if (b == null) {
-//        _mfCiv.displayErrorText(ERRMSG_UNKNOWN_BLDG);
-        _output.displayErrorText(ERRMSG_UNKNOWN_BLDG);
+        _mfCiv.displayErrorText(ERRMSG_UNKNOWN_BLDG);
+//        _output.displayErrorText(ERRMSG_UNKNOWN_BLDG);
         return false;
       } else {
         return true;
       }
     } else {
       // Case 2: No building specified
-//      _mfCiv.displayErrorText(ERRMSG_NOBLDG);
-      _output.displayErrorText(ERRMSG_NOBLDG);
+      _mfCiv.displayErrorText(ERRMSG_NOBLDG);
+//      _output.displayErrorText(ERRMSG_NOBLDG);
       return false;
     }
   }
@@ -143,7 +141,7 @@ public class BuildingDisplayCiv extends BaseCiv
   {
     // The Hero cannot be inside a building already
     if (isInside()) {
-      _output.displayErrorText(ERRMSG_JUMPBLDG);
+      _mfCiv.displayErrorText(ERRMSG_JUMPBLDG);
       return false;
     }
 
@@ -152,7 +150,7 @@ public class BuildingDisplayCiv extends BaseCiv
       // Check that the building specified actually exists
       Building b = _breg.getBuilding(bldgParm);
       if (b == null) {
-        _output.displayErrorText(ERRMSG_UNKNOWN_BLDG);
+        _mfCiv.displayErrorText(ERRMSG_UNKNOWN_BLDG);
         return false;
       } else {
         return true;
@@ -160,7 +158,7 @@ public class BuildingDisplayCiv extends BaseCiv
     } else {
       // Case 2: Building defaults to current building
       if (_currentBldg == null) {
-        _output.displayErrorText(ERRMSG_NOBLDG);
+        _mfCiv.displayErrorText(ERRMSG_NOBLDG);
         return false;
       } else {
         return true;
@@ -175,7 +173,7 @@ public class BuildingDisplayCiv extends BaseCiv
   {
     if (_currentBldg != null) {
       _mfCiv.displayImage(_currentBldg.getName(), _currentBldg.getIntImagePath());
-      _output.displayText(_currentBldg.getInteriorDescription());
+      _mfCiv.displayText(_currentBldg.getInteriorDescription());
     }
   }
 
@@ -195,7 +193,7 @@ public class BuildingDisplayCiv extends BaseCiv
       _insideBldg = true;
       displayBuildingInterior();
     } else {
-      _output.displayErrorText(ERRMSG_NOBLDG);
+      _mfCiv.displayErrorText(ERRMSG_NOBLDG);
       System.err.println("error case of enterBuilding");
     }
   }
@@ -248,7 +246,7 @@ public class BuildingDisplayCiv extends BaseCiv
   {
     returnToTown();
     _mfCiv.displayImage(TOWN_NAME_LEADER + _adv.getTownName(), TOWN_IMAGE);
-    _output.displayText(_adv.getOverview());
+    _mfCiv.displayText(_adv.getOverview());
   }
 
   /**
@@ -267,7 +265,7 @@ public class BuildingDisplayCiv extends BaseCiv
   {
     if (_currentBldg != null) {
       _mfCiv.displayImage(_currentBldg.getName(), _currentBldg.getExtImagePath());
-      _output.displayText(_currentBldg.getExteriorDescription());
+      _mfCiv.displayText(_currentBldg.getExteriorDescription());
     }
   }
 
@@ -276,19 +274,10 @@ public class BuildingDisplayCiv extends BaseCiv
     String result = "";
     if (isInside()) {
       result = _currentBldg.inspect(target);
-      _output.displayText(result);
+      _mfCiv.displayText(result);
       return result;
     }
     return result;
   }
-  
-  public class MockBuildingDisplayCiv {
-      
-      public MockBuildingDisplayCiv() {}
-      
-      public void setCurrentBuilding(Building bldg)
-      {
-          _currentBldg = bldg;
-      }
-  }
+
 } // end of BuildingDisplayCiv class

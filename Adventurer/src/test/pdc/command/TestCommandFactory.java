@@ -20,6 +20,7 @@ public class TestCommandFactory
 {
   private CommandFactory _commandFactory;
   private FakeBuildingDisplayCiv _fakeBdCiv;
+  private FakeMainframeCiv _fakeMfCiv;
   private static final String[] commandNames =
       {"APPROACH", "ENTER", "LEAVE", "EXIT", "RETURN", "QUIT"};
 
@@ -27,7 +28,8 @@ public class TestCommandFactory
   public void setup()
   {
     _fakeBdCiv = new FakeBuildingDisplayCiv();
-    _commandFactory = new CommandFactory(_fakeBdCiv);
+    _fakeMfCiv = new FakeMainframeCiv();
+    _commandFactory = new CommandFactory(_fakeBdCiv, _fakeMfCiv);
     _commandFactory.initMap();
   }
 

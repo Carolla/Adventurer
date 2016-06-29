@@ -16,8 +16,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import chronos.civ.UserMsgInterface;
 import chronos.pdc.command.Command;
 import civ.BuildingDisplayCiv;
+import civ.MainframeCiv;
 
 
 /**
@@ -41,11 +43,15 @@ public class CommandFactory
   private Map<String, Supplier<Command>> _commandMap = new HashMap<String, Supplier<Command>>();
 
   private final BuildingDisplayCiv _bdCiv;
+  private final MainframeCiv _mfCiv;
+  private final UserMsgInterface _output;
 
   /** Keep a table for command, as lambda functions */
-  public CommandFactory(BuildingDisplayCiv bdCiv)
+  public CommandFactory(BuildingDisplayCiv bdCiv, MainframeCiv mfCiv)
   {
     _bdCiv = bdCiv;
+    _mfCiv = mfCiv;
+    _output = _mfCiv.getOutput();
   }
 
   /**
@@ -66,7 +72,7 @@ public class CommandFactory
     // Get Room Description or Get NPC names
     _commandMap.put("LOOK", () -> new CmdLook(_bdCiv));
     // End the program.
-    // _commandMap.put("QUIT", () -> new CmdQuit(_mfCiv, _bdCiv));
+     _commandMap.put("QUIT", () -> new CmdQuit(_mfCiv, _bdCiv));
     // Return to town view
     _commandMap.put("RETURN", () -> new CmdReturn(_bdCiv));
     // Just sit there
@@ -90,7 +96,9 @@ public class CommandFactory
   {
     Supplier<Command> supplier = _commandMap.get(cmdToken);
     if (supplier != null) {
-      return supplier.get();
+      Command cmd = supplier.get();
+      cmd.setOutput(_output);
+      return cmd;
     } else {
       return null;
     }

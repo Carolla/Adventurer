@@ -9,11 +9,12 @@
 
 package civ;
 
-import chronos.civ.UserMsgInterface;
 import hic.ChronosPanel;
 import hic.IOPanel;
 import hic.ImagePanel;
 import hic.MainframeInterface;
+import chronos.civ.UserMsgInterface;
+import chronos.civ.UserMsgProxy;
 
 /**
  * The main civ behind the Adventurer program. It initializes the system and brings up the
@@ -37,16 +38,7 @@ public class MainframeCiv extends BaseCiv
   private static final String INITIAL_IMAGE_TITLE = "Chronos Logo";
 
   /** receives user input and command output messages */
-  private UserMsgInterface _output;
-
-  // ============================================================
-  // Constructors and constructor helpers
-  // ============================================================
-
-  // public MainframeCiv()
-  // {
-  // this(new Mainframe());
-  // }
+  private UserMsgInterface _output = new UserMsgProxy();
 
   public MainframeCiv(MainframeInterface mf)
   {
@@ -80,14 +72,18 @@ public class MainframeCiv extends BaseCiv
   {
     _mf.backToMain(newFrameTitle);
   }
-
-  // Removed from MainframeCiv because it is part of UserMsgInterface
-  // @Override
-  // public String displayErrorText(String msg)
-  // {
-  // _ioPanel.displayErrorText(msg);
-  // return msg;
-  // }
+  
+  public String displayText(String msg)
+  {
+    _output.displayText(msg);
+    return msg;
+  }
+  
+  public String displayErrorText(String msg)
+  {
+    _output.displayErrorText(msg);
+    return msg;
+  }
   
   
   public void displayImage(String title, String imageName)
