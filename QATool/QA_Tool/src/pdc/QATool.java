@@ -19,28 +19,34 @@ import java.util.Scanner;
 import mylib.Constants;
 
 /**
- * A collection of standalone applications to improve the quality of source code testing, and help
- * ensure that tests are not forgotten. It calls {@code Prototype}, a test class creater, and
- * {@code SuiteBuilder}, which automatically creates a {@code UnitTestSuite} from all test classes.
- * <br>
+ * A tool to improve the quality of source code testing, to help ensure that tests are not
+ * forgotten. {@code QATool} calls {@code Prototype}, which creates a test class from a source
+ * class; and {@code SuiteBuilder}, which automatically creates a {@code UnitTestSuite} from all
+ * test classes. <br>
  * <ul>
  * <li>{@code Prototype} verifies that a test class exists for a given source file, and creates the
  * test class if it doesn't. It populates the test file with test method stubs that correspond to
  * all {@code public} and {@code protected} source methods. Each stub method contains a {@code fail}
  * statement so it doesn't get pushed to Github without further work. {@code Prototype} can be
  * called as a standalone program by giving it a single source class.</li>
- * <li>{@code SuiteBulder} collects the names of all test classes in the test root,
+ * <li>{@code SuiteBulder} collects the names of all test classes in the test root, i.e.,
  * {@code "Project"/src/test}, and builds a test suite of those classes, organized by PDC, CIV, DMC,
  * or SIC subdirs. Test classes that are directly under the {@code /src/test} subdir are grouped
- * together as a Base grouping in the suite. {@code SuiteBuilder} can be called as a standalone
- * program by giving it a single {@code /src/test} root.</li>
+ * together in the suite. {@code SuiteBuilder} can be called as a standalone program by giving it a
+ * single {@code /src/test} root.</li>
  * </ul>
  * <P>
- * {@code QA Tool}, given a root source directory, e.g., {@code "Project"/src}, scans the source
- * tree, calling {@code Prototype} repeatedly to build new test classes or augment the methods in
- * existing test classes. All test classes are placed in a {@code /src/test} subdir corresponding to
- * its position in the {@code src} subdir. It then calls {@code SuiteBuilder} to build (and
- * overwrite) the existing {@code /src/test/UnitTestSuite.java} file.
+ * {@code QA Tool} uses the project's root source directory, e.g., {@code "Project Path"/src}, to
+ * scan the source tree, calling {@code Prototype} repeatedly to build new test classes or augment
+ * the methods in existing test classes. All test classes are placed in a {@code /src/test} subdir
+ * corresponding to the source file's position in the {@code src} subdir. It then calls
+ * {@code SuiteBuilder} to build (and overwrite) the existing {@code /src/test/UnitTestSuite.java}
+ * file.
+ * <P>
+ * {@code QA Tool} also allows a file as an optional second argument that contains directories and
+ * files to be skipped by {@code Prototype}, in case those directories or files should be be part of
+ * the unit test suite or regression test for some reason. The file must reside directly beneath the
+ * source root.
  * <P>
  * Within the {@code Adventurer} project, the regression test suite
  * {@code Adventurer/src/test/RegressionTestSuite.java} contains four line entries:
@@ -50,7 +56,10 @@ import mylib.Constants;
  * <li>{@code Adventurer/src/test/UnitTestSuite.class} and</li>
  * <li>{@code Adventurer/src/test/IntegTestSuite.class}</li>
  * </ul>
- * (There should never be a need to change the Regression Test Suite.)
+ * <p>
+ * There should never be a need to change the Regression Test Suite. Any test files created or
+ * changed are added or deleted from the particular {@code UnitTestSuite} contained with
+ * {@code RegressionTestSuite}.
  * <P>
  * As part of a Github prehook, each time someone does a {@code git push}, the {@code QA Tool} is
  * run to generate all unit test suites in the regression suite: {@code MyLibrary, ChronosLib,} and
@@ -59,7 +68,7 @@ import mylib.Constants;
  * {@code git push} succeed.
  * 
  * 
- * @author alancline
+ * @author Al Cline
  * @version Dec 30 2015 // original <br>
  *          Mar 23 2016 // link the component programs into a single pipeline <br>
  */
@@ -96,6 +105,12 @@ public class QATool
   static private int _filesWritten;
   static private int _dirsScanned;
 
+  static private final String ARGS_OK = "OK";
+  static private final String USAGE_MSG = "USAGE: QATool <root source path> <exclusion filename>.";
+  static private final String ERR_SRCDIR_MISSING = "Source directory null or not specified.";
+  static private final String ERR_EXCFILE_MISSING = "Exclusion file specified cannot be found.";
+    
+  
   // ======================================================================
   // Constructor and Helpers
   // ======================================================================
@@ -104,27 +119,23 @@ public class QATool
    * The launcher for the QA Tool.
    * 
    * @param args [1] contains the source root for the source file tree; <br>
-   *          [2] contains an optional file of directory and files to be excluded
+   *          [2] contains an optional file of directory and files to be excluded. It must be
+   *          immediately under the source root.
    */
   static public void main(String[] args)
   {
-    if ((args.length == 0) || (args.length > 2)) {
-      System.err.println("USAGE: QATool <root source path> <exclusion filename>");
+    String argMsg = verifyArgs(args);
+    if (!argMsg.equals(ARGS_OK)) {
+      System.err.println("QATool: " + argMsg);
       System.exit(-1);
     }
+
+    // Create the QA Tool to being processing
+    QATool qat = new QATool(args[0], args[1]);
+
     System.out.println("QA Tool starting scan of missing test classes: ");
+    qat.treeScan(_rootFile);
 
-    QATool qat = null;
-    try {
-      qat = new QATool(args[0], args[1]);
-    } catch (IllegalArgumentException ex) {
-      System.err.println(ex.getMessage());
-      System.err.println("USAGE: QATool <root source path> <exclusion filename>");
-      System.exit(-1);
-
-    }
-//    qat.treeScan(_rootFile);
-    
     System.out.println("Scanning complete: ");
     System.out.println("\t Directories scanned: " + _dirsScanned);
     System.out.println("\t Files scanned: " + _filesScanned);
@@ -133,43 +144,56 @@ public class QATool
     // Now run the suite builder to collect the test files created
     // Create proper arg type
     String[] testRootPath = new String[1];
-    testRootPath[0]= args[0] + Constants.FS + "test";
-    
+    testRootPath[0] = args[0] + Constants.FS + "test";
+
     SuiteBuilder.main(testRootPath);
-    
+
     System.exit(0);
   }
 
+  /** Verify that the input args are correct and reference real data.
+   * 
+   * @param args  passed from the command line: srcPath and optionla exclusion filemane
+   * @return ARG_OK or ERRMSG on failure 
+   */
+  static private String verifyArgs(String[] args) 
+  {
+    String srcPath = args[0];
+    String excFile = args[1];
+    String retval = ARGS_OK;
+    File someFile = null; 
+    
+    // Check for proper number of args
+    if ((args.length == 0) || (args.length > 2)) {
+      retval = USAGE_MSG;
+    }
+    // Guards against missing or bad arguments
+    someFile = new File(srcPath);
+    if ((srcPath == null) || (!someFile.isDirectory()))  {
+      retval = ERR_SRCDIR_MISSING;
+    }
+    // Check that exclusion file actually exists
+    someFile = new File(srcPath + Constants.FS + excFile);
+    if ((excFile == null) || (!someFile.isFile()))  {
+      retval = ERR_EXCFILE_MISSING;
+    }
+    return retval;
+  }
 
+  
   /**
    * Default constructor
    * 
-   * @param srcPath source directory from which to start
-   * @param exclusionPath source directory from which to start
+   * @param srcPath source directory from which to scan recursively
+   * @param exclusionFile text file containing directories and filenames to skip
    * @throws IllegalArgumentException if no path is specified, or is not a directory
    */
-  public QATool(String srcPath, String exclusionPath) throws IllegalArgumentException
+  public QATool(String srcPath, String exclusionFile) throws IllegalArgumentException
   {
-    // Guards against missing or bad arguments
-    if (srcPath == null) {
-      throw new IllegalArgumentException("QATool: Source directory null.");
-    }
-    _rootFile = new File(srcPath);
-    if (!_rootFile.isDirectory()) {
-      throw new IllegalArgumentException("QATool: Source directory not specified.");
-    }
-    if (exclusionPath == null) {
-      throw new IllegalArgumentException("QATool: Exclusion file null.");
-    }
-
-    _excludeFile = new File(srcPath + Constants.FS + exclusionPath);
-    if (!_excludeFile.isFile()) {
-      throw new IllegalArgumentException("QATool: Exclusions file not specified.");
-    }
+    _excludeFile = new File(srcPath + Constants.FS + exclusionFile);
     _rootFile = new File(srcPath);
     _proto = new Prototype();
     setExclusions(_excludeFile, _rootFile);
-
   }
 
 

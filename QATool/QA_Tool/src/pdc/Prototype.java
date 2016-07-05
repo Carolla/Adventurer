@@ -175,7 +175,7 @@ public class Prototype
     // Windoze
     className = className.replaceAll(Pattern.quote(Constants.FS), ".");
     // Remove any prefix that ends with "src/"
-    className = className.substring(className.lastIndexOf("src.") + 4);
+    className = className.substring(className.lastIndexOf("src.") + 2);
     // Replace src with bin
     Class<?> sourceClass = null;
     try {
