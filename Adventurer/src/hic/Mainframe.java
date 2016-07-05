@@ -28,12 +28,11 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
-import chronos.pdc.Chronos;
-import civ.Adventurer;
 import mylib.Constants;
 import mylib.hic.HelpDialog;
-import mylib.hic.IHelpText;
 import net.miginfocom.swing.MigLayout;
+import chronos.pdc.Chronos;
+import civ.Adventurer;
 
 /**
  * Initial frame displays three buttons and Chronos logo.<br>
@@ -57,7 +56,7 @@ import net.miginfocom.swing.MigLayout;
  */
 @SuppressWarnings("serial")
 // public class Mainframe extends JFrame implements MainframeInterface, IHelpText
-public class Mainframe extends JFrame implements IHelpText
+public class Mainframe extends JFrame
 {
   /** Width of the platform user's window frame */
   private static int USERWIN_WIDTH;

@@ -124,7 +124,7 @@ public class MetaDie
    * @throws NumberFormatException if notation cannot be numerically parsed
    * @throws ApplicationException if d20 format is invalid
    */
-  public int roll(String notation) throws ApplicationException
+  public int roll(String notation)
   {
     Pattern p = Pattern.compile("(?<A>\\d*)d(?<B>\\d+)(?>(?<ADD>[+-])(?<D>\\d+))?");
     Matcher matcher = p.matcher(notation);
