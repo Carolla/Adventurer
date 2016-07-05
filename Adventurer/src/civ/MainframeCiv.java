@@ -113,6 +113,7 @@ public class MainframeCiv extends BaseCiv
   public void replaceLeftPanel(IOPanel panel)
   {
     _mf.replaceLeftPanel(panel);
+    _output = panel;
   }
 
   /**
@@ -124,11 +125,4 @@ public class MainframeCiv extends BaseCiv
   {
     _mf.setLeftTitle(title);
   }
-
-  public void setOutput(UserMsgInterface output)
-  {
-    _output = output;
-  }
-
-
 } // end of MainframeCiv class

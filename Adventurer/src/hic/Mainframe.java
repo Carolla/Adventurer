@@ -56,7 +56,7 @@ import civ.Adventurer;
  */
 @SuppressWarnings("serial")
 // public class Mainframe extends JFrame implements MainframeInterface, IHelpText
-public class Mainframe extends JFrame
+public class Mainframe extends JFrame implements MainframeInterface
 {
   /** Width of the platform user's window frame */
   private static int USERWIN_WIDTH;
@@ -292,7 +292,7 @@ public class Mainframe extends JFrame
     addWindowListener(new Terminator());
 
     // Add menu
-    setJMenuBar(new Menubar((MainframeInterface) this));
+    setJMenuBar(new Menubar(this));
 
     // Define a left and right ChronosPanel to manage subordinate right- and left-side panels
     _leftHolder = new ChronosPanel(" ");

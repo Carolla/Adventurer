@@ -88,9 +88,7 @@ public class MainActionCiv extends BaseCiv
 
   public void constructCoreMembers()
   {
-    // Prepare the registries
     _rf = new RegistryFactory();
-    // _rf.initRegistries(_skedder);
     _rf.initRegistries();
 
     _skedder = new Scheduler();
@@ -101,6 +99,7 @@ public class MainActionCiv extends BaseCiv
 
     _dorm = (HeroRegistry) _rf.getRegistry(RegKey.HERO);
     _hdCiv = new HeroDisplayCiv(_mfCiv, _dorm);
+    _advReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
   }
 
   // ============================================================
@@ -115,7 +114,6 @@ public class MainActionCiv extends BaseCiv
    */
   public void loadSelectedAdventure(String adventureName)
   {
-    _advReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
     Adventure adv = _advReg.getAdventure(adventureName);
 
     // Create all the objects used in town
@@ -123,9 +121,8 @@ public class MainActionCiv extends BaseCiv
         (BuildingRegistry) _rf.getRegistry(RegKey.BLDG));
 
     CommandFactory cmdFac = new CommandFactory(bldgCiv, _mfCiv);
-    // CommandFactory cmdFac = new CommandFactory(bldgCiv);
     cmdFac.initMap();
-    // CommandParser parser = new CommandParser(_skedder, cmdFac, _mfCiv);
+
     CommandParser parser = new CommandParser(_skedder, cmdFac);
 
     IOPanel iop = new IOPanel(parser);
