@@ -15,13 +15,11 @@ import java.awt.event.ActionListener;
 import java.util.EnumMap;
 
 import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
@@ -108,19 +106,14 @@ public class NewHeroIPPanel extends ChronosPanel
    */
   private JTextField _nameField = null;
 
-  /** Associated validating CIV object */
-  private JRadioButton _maleButt;
-  private JRadioButton _femaleButt;
-  private ButtonGroup _groupSex;
   private JComboBox<String> _hairCombo;
   private JComboBox<String> _klassCombo;
   private JComboBox<String> _raceCombo;
 
-  private final String MALE = "Male";
-  private final String FEMALE = "Female";
   
   private HeroDisplayCiv _hdCiv;
   private NewHeroCiv _nhCiv;
+  private GenderPanel _genderPanel;
   
   // ============================================================
   // Constructors and constructor helpers
@@ -171,7 +164,8 @@ public class NewHeroIPPanel extends ChronosPanel
     add(new JLabel(HERO_HAIR_PROMPT), "push, align center, wrap");
 
     /* Gender radio buttons */
-    add(makeGenderPanel());
+    _genderPanel = new GenderPanel();
+    add(_genderPanel.toJPanel());
     /* Hair color drop-down box */
     add(makeHairCombo(), "wrap");
 
@@ -202,12 +196,6 @@ public class NewHeroIPPanel extends ChronosPanel
     _nameField.requestFocus();
   }
 
-  // TODO Make this MyLibrary utility to hide ugly implementation
-  private String getGender()
-  {
-    String cmdValue = _groupSex.getSelection().getActionCommand();
-    return (cmdValue.equals(MALE)) ? MALE : FEMALE;
-  }
 
   /**
    * Create a button panel containing Submit and Cancel buttons
@@ -254,46 +242,6 @@ public class NewHeroIPPanel extends ChronosPanel
     buttonPanel.add(space);
     buttonPanel.add(cancelButton);
     return buttonPanel;
-  }
-
-  /**
-   * Create the gender radiobuttons, bordered panel and associated action before placement
-   * 
-   * @return the JPanel of radiobuttons
-   */
-  private JPanel makeGenderPanel()
-  {
-    // Create the panel to contain the radio button group
-    JPanel radioPanel = new JPanel();
-    Border border = BorderFactory.createLineBorder(Color.WHITE);
-    radioPanel.setBorder(border);
-    radioPanel.setBackground(_backColor);
-
-    // Create the radio button group
-    _groupSex = new ButtonGroup();
-
-    /* Define the male radio button (default to Male button selected)
-     * Per Cay Horstman (Volume 1, p389) radioButton,actionCommand is always null, 
-     * so can be used as a default value setting for retrieving actual user selection
-     */
-    _maleButt = makeRadioButton("Male", true);
-    _femaleButt = makeRadioButton("Female", false);
-
-    // Buttons must be added to BOTH the group and the panel
-    _groupSex.add(_maleButt);
-    _groupSex.add(_femaleButt);
-    radioPanel.add(_maleButt);
-    radioPanel.add(_femaleButt);
-    return radioPanel;
-  }
-
-  private JRadioButton makeRadioButton(String label, boolean enabled)
-  {
-    JRadioButton button = new JRadioButton(label, enabled);
-    button.setActionCommand(label);
-    button.setBackground(_backColor);
-    button.setEnabled(enabled);
-    return button;
   }
 
   /**
@@ -410,7 +358,7 @@ public class NewHeroIPPanel extends ChronosPanel
       return null;
     }
     input.put(HeroInput.NAME, name);
-    input.put(HeroInput.GENDER, getGender());
+    input.put(HeroInput.GENDER, _genderPanel.getSelectedGender());
     input.put(HeroInput.HAIR, String.valueOf(_hairCombo.getSelectedItem()));
     input.put(HeroInput.RACE, String.valueOf(_raceCombo.getSelectedItem()));
     input.put(HeroInput.KLASS, String.valueOf(_klassCombo.getSelectedItem()));
