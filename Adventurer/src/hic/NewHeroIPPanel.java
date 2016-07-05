@@ -276,17 +276,8 @@ public class NewHeroIPPanel extends ChronosPanel
      * Per Cay Horstman (Volume 1, p389) radioButton,actionCommand is always null, 
      * so can be used as a default value setting for retrieving actual user selection
      */
-    // TODO Make radio button constructors as MyLibrary utility to hide ugly implementation
-    _maleButt = new JRadioButton("Male", true);
-    _maleButt.setActionCommand("Male");
-    _maleButt.setEnabled(true);
-    _maleButt.setBackground(_backColor);
-
-    // TODO Make radio button constructors as MyLibrary utility to hide ugly implementation
-    // Define the female radio button
-    _femaleButt = new JRadioButton("Female", false);
-    _femaleButt.setActionCommand("Female");
-    _femaleButt.setBackground(_backColor);
+    _maleButt = makeRadioButton("Male", true);
+    _femaleButt = makeRadioButton("Female", false);
 
     // Buttons must be added to BOTH the group and the panel
     _groupSex.add(_maleButt);
@@ -294,6 +285,15 @@ public class NewHeroIPPanel extends ChronosPanel
     radioPanel.add(_maleButt);
     radioPanel.add(_femaleButt);
     return radioPanel;
+  }
+
+  private JRadioButton makeRadioButton(String label, boolean enabled)
+  {
+    JRadioButton button = new JRadioButton(label, enabled);
+    button.setActionCommand(label);
+    button.setBackground(_backColor);
+    button.setEnabled(enabled);
+    return button;
   }
 
   /**
