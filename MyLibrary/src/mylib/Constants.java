@@ -23,14 +23,12 @@ import java.io.IOException;
  */
 public class Constants
 {
-  // Global constants
   public static final int OK = 0;
   public static final int ERROR = -1;
   public static final int NOT_FOUND = -1;
   public static final int UNASSIGNED = -99;
   public static final String SPACE = " ";
 
-  /** General directions, particular for left and right panels */
   public static enum Side {
     LEFT, RIGHT
   };
@@ -38,13 +36,11 @@ public class Constants
   /** Platform-dependent constants */
   public static final String NEWLINE = System.getProperty("line.separator");
   public static final String FS = System.getProperty("file.separator");
-  // Used for converting internal format to delimited strings
   public static final String DELIM = "|";
 
   public static final String LEFT_PAREN = "(";
   public static final String RIGHT_PAREN = ")";
 
-  /** Initializer for MYLIB_ROOT */
   private static String findMyLibRootDir()
   {
     String fileName = null;
@@ -72,28 +68,8 @@ public class Constants
    * directory is assigned by the user.
    */
   public static final String MYLIB_ROOT_DIR = Constants.findMyLibRootDir();
-  // public static final String ROOT_DIR = System.getProperty("user.dir");
-  // public static final String HOME_DIR = System.getProperty("user.home");
-  // public static final String USER_NAME = System.getProperty("user.name");
-  /* Platform-independent delimiter between file names. For Mac, it is "/" */
-  // public static final String FILE_SEPARATOR = System.getProperty("file.separator");
-  // public static final String WORKSPACE = new File(ROOT_DIR).getParent();
-  // public static final String WORKSPACE = HOME_DIR; // + FILE_SEPARATOR + USER_NAME;
-
-  /**
-   * Absolute root path to all resources, containing images, characters, and other non-source files
-   */
   public static final String MYLIB_RESOURCES = MYLIB_ROOT_DIR + FS + "resources" + FS;
-  /** Extension path to user-generating resources, such as the user characters */
-  // public static final String USER_RESOURCES = RESOURCES + "user" + FILE_SEPARATOR;
-
-  // LOG FOR TESTING
-  // static {
-  // System.out.println("MyLib.Constants Log: ");
-  // System.out.println("MYLIB_ROOT_DIR = " + MYLIB_ROOT_DIR);
-  // System.out.println("MYLIB_RESOURCES = " + MYLIB_RESOURCES);
-  // }
-
+  
   /**
    * Default package name for class files. Package names differ from the directories in that they
    * have a dot (.) separator instead of a slash (/) separator
@@ -107,28 +83,5 @@ public class Constants
 
   /** My own special version of Brown since there is not one for Color */
   static public final Color MY_BROWN = new Color(130, 100, 90).brighter();
-
-
-  /**
-   * Allow the base location of class files to be defined or redirected for testing
-   * 
-   * @return the current base directory, typically the source directory for the project
-   */
-  static public String getPackageName()
-  {
-    return DEFAULT_PKG;
-  }
-
-  /**
-   * Allow the base location of class files to be defined or redirected for testing
-   * 
-   * @param pkgName location of file wrto the Chronos root directory
-   */
-  static public void setPackageName(String pkgName)
-  {
-    DEFAULT_PKG = pkgName;
-  }
-
-
 } // end of common library Constants global class
 
