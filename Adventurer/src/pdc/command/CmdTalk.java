@@ -31,8 +31,7 @@ public class CmdTalk extends Command
     }
     _target = _target.replace("to",  "").trim();
     
-    boolean isInitialized = _bdciv.canTalkTo(_target);
-    return isInitialized;
+    return _bdciv.canTalkTo(_target);
   }
 
   @Override

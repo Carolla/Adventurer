@@ -14,10 +14,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import chronos.pdc.NPC;
 import chronos.pdc.buildings.Inn;
-import chronos.pdc.command.intCmdPatronEnter;
 import chronos.pdc.registry.BuildingRegistry;
-import chronos.pdc.registry.NPCRegistry;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 
 /**
@@ -28,10 +27,6 @@ import chronos.pdc.registry.RegistryFactory.RegKey;
  */
 public class TA14_TalkToPatron extends IntegrationTest
 {
-  private static final String[] _patronList = {"Sal", "Scruffy", "Boren", "Meladriel", "Aragon",
-      "Matilda", "Perrin", "Gorbal", "Balthazar", "Pendergast", "Ripper", "Loren", "Bork",
-      "J. P. Pennypacker", "Dewey N. Howe", "The Sheriff"};
-
   @Test
   public void talkToAllBuildingMasters()
   {
@@ -47,24 +42,16 @@ public class TA14_TalkToPatron extends IntegrationTest
     }
   }
 
-  //TODO talking to aragon is causing an error
   @Test
   public void canTalkToPatronsInInn()
   {
     BuildingRegistry bReg = (BuildingRegistry) _regFactory.getRegistry(RegKey.BLDG);
-    NPCRegistry npcReg = (NPCRegistry) _regFactory.getRegistry(RegKey.NPC);
     Inn inn = (Inn) bReg.getBuilding("Ugly Ogre Inn");
-
-    for (int i = 0; i < _patronList.length; i++) {
-      String target = _patronList[i];
-      _skedder.sched(new intCmdPatronEnter(0, 0, npcReg.get(target), inn));
-    }
 
     _cp.receiveCommand("Enter Ugly Ogre Inn");
 
-//    for (int i = 0; i < _patronList.length; i++) {
-//      String target = _patronList[i];
-//      assertTrue("Couldn't talk to " + target, _cp.receiveCommand("Talk to " + target));
-//    }
+    for (NPC npc : inn.getPatrons()) {
+      assertTrue("Couldn't talk to " + npc.getName(), _cp.receiveCommand("Talk to " + npc.getName()));
+    }
   }
 }

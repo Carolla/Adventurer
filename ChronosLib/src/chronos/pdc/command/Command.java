@@ -256,6 +256,11 @@ public abstract class Command
     return true;
   }
 
+  @Override
+  public String toString()
+  {
+    return _name + " " + _parms;
+  }
   /**
    * By default, assume commands are UserInput.
    * 

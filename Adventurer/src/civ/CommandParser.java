@@ -80,6 +80,10 @@ public class CommandParser
         _skedder.sched(cmd);
         return true;
       }
+      else
+      {
+        System.err.println("Couldn't schedule command " + cmd);
+      }
     }
     return false;
   }
