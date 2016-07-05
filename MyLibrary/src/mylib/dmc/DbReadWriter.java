@@ -342,36 +342,6 @@ public class DbReadWriter<E extends IRegistryElement>
     return names;
   }
   
-//	/**
-//	 * Helper method to get specific elements in the registry that match the
-//	 * Type of the object passed in. It opens the db and returns the elements,
-//	 * leaving the db open so that the resulting List is valid. This method
-//	 * avoids duplicating open/close code in other methods.
-//	 * <P>
-//	 * Warning: The List returned is an ObjectSetFacade, and is only available
-//	 * when the db is open. Trying to use the List after the db is closed will
-//	 * throw a DatabaseClosedException.
-//	 * @param <T>
-//	 * 
-//	 * @return the list for further action, leaving the db open
-//	 */
-//  @SuppressWarnings("serial")
-//  private <T> List<T> getAllOfType(Object obj)
-//  {
-//	;
-//    List<T> alist = new ArrayList<T>();
-//    _db = open();
-//    alist.addAll(_db.query(new Predicate<T>() {
-//      public boolean match(T candidate)
-//      {
-//    	  //TODO remove print stmt when done using
-//    	  System.out.println(candidate.toString());
-//        return true;
-//      }
-//    }));
-//    return alist;
-//  }
-
 
   private void handleDbException(Exception ex)
   {

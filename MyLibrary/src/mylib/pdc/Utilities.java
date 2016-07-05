@@ -299,34 +299,4 @@ public class Utilities
     return result;
   }
 
-
-  /**
-   * Formats a long text line into a left-aligned, ragged-right paragraph within a given width. See
-   * {@code Utilities.cropLine} for wrapping single lines
-   * 
-   * @param msg the string to insert the newline
-   * @param width the limit to crop the string; the remnant is not returned
-   * @return the new paragraph as a single string, but with inserted newlines
-   */
-  static public String wordWrap(String msg, int width)
-  {
-    // Normal single overly long line without internal newline, results in three formatted lines
-    StringBuilder finalPara = new StringBuilder(msg.length());
-    String result = Utilities.cropLine(msg, width);
-    String remStr = msg.substring(result.length());
-    finalPara.append(result);
-
-    // Put the remaining end part of the original string back in to crop more off
-    while (remStr.length() > 0) {
-      result = Utilities.cropLine(remStr, width);
-      finalPara.append(result);
-      remStr = remStr.substring(result.length());
-    }
-    // Conver the buffer back to a string
-    String finalString = new String(finalPara);
-    return finalString;
-  }
-
-
-
 } // end of Utilities class

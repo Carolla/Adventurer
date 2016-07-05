@@ -167,7 +167,6 @@ public class Inn extends Building
     return added;
   }
 
-  //TODO(timothyarm) When patrons leave, they should be rescheduled (if there is time?)
   @Override
   public boolean remove(NPC npc)
   {

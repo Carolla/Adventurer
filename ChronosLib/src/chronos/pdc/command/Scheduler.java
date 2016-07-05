@@ -78,8 +78,6 @@ public class Scheduler
             cmdToDo = _dq.getNextCmd();
         }
         cmdToDo.exec();
-        // TODO Move to command action, not scheduler action
         clock.increment(cmdToDo.getDuration());
-  //      _output.displayText("Time: " + clock.getFormattedTime());
     }
 } // end Scheduler class

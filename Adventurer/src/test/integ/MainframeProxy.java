@@ -99,8 +99,6 @@ public void displayImage(String title, String imageName) {
 @Override
 public void setLeftTitle(String title)
 {
-  // TODO Auto-generated method stub
-  
 }
 
 } // end of MainframeProxy class

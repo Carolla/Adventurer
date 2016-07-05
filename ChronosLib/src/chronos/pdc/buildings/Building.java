@@ -97,10 +97,6 @@ public abstract class Building implements IRegistryElement
         if (_proprietor == null) {
             throw new ApplicationException("Cannot find proprietor in registry.");
         }
-        
-        //TODO display proprietor's name and far description when entering building
-        //TODO needs to be created as npc instead of string
-        // _buildingOwner = masterName;
 
         _hoverText = hoverText;
         _extDesc = exterior;

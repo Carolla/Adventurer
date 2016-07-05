@@ -185,7 +185,6 @@ public class TestSkill // extends TestCase
     }
 
     
-    // TODO Test Skill.equals method
     /** List of Skill methods not yet implemented in this test class
      * @Not_Needed Skill.getDescription()             simple getter
      * @Not_Needed Skill.getName()                     simple getter

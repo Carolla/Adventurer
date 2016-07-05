@@ -42,7 +42,6 @@ public class Town implements IRegistryElement
   /**
    * Global clock time, in seconds, for the states of the city, arena, buildings, and Hero.
    */
-  // TODO: Make this clock an object later
   /*
    * TODO: The clock is triggered to start based on the Inn, which must always be open when the Hero
    * starts. The clock will start randomly between 1 hr after the Inn opens, and 1 hr before the Inn
