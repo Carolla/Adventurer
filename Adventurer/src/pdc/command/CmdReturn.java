@@ -63,9 +63,15 @@ public class CmdReturn extends Command
     @Override
     public boolean init(List<String> args)
     {
-        // TODO enforce command format
-//        _isInitialized = true;
+      if (args.isEmpty()) {
         return true;
+      } else if (args.size() > 1 &&
+                 args.get(0).equalsIgnoreCase("to") &&
+                 args.get(1).equalsIgnoreCase("town")) {
+        return true;
+      } else {
+        return false;
+      }
     }
 
     /**

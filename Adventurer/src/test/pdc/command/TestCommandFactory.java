@@ -56,7 +56,6 @@ public class TestCommandFactory
     String cName = "RETURN";
     Command c = _commandFactory.createCommand(cName);
     List<String> argsForCmd = new ArrayList<String>();
-    argsForCmd.add("");
     assertTrue(c.init(argsForCmd));
   }
 }

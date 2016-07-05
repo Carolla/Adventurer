@@ -88,9 +88,6 @@ public class NewHeroIPPanel extends ChronosPanel
   private final String ERRMSG_NAME_TOO_LONG =
       "Your Hero's name is too long (45 char limit). \nTry perhaps your Hero's nickname?";
 
-  // TODO: Constant.MY_BROWN needs to be brightened here for some reason.
-  // Perhaps a background panel
-  // is affecting it?
   /** Background color inherited from parent */
   private Color _backColor = Constants.MY_BROWN;
 
