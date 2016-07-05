@@ -402,7 +402,6 @@ public class Combatant implements CombatantInterface {
 
 	@Override
 	public String name() {
-		//TODO(tarmst03) need test for name
 		if (_name == null) {
 			int num = _typeCounts.containsKey(_type) ? _typeCounts.get(_type) : 0;
 			_typeCounts.put(_type, ++num);

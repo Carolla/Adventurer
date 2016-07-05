@@ -105,21 +105,6 @@ public class Constants
   /** The Random Access file mode for read-write files */
   public static final String READ_WRITE = "rw";
 
-  /* UNIVERSAL CONSTANTS */
-  /** Number of seconds in an hour */
-  static public final long SECS_PER_HOUR = 3600L;
-  /** Number of seconds in a day */
-  static public final long SECS_PER_DAY = 86400L;
-  /** Number of days in a year (12 months * 30 days per month) */
-  static public final long DAYS_PER_YEAR = 360L;
-  /** Number of seconds in a 360-day year */
-  static public final long SECS_PER_YEAR = SECS_PER_DAY * DAYS_PER_YEAR;
-  // TODO: These should move into the abtract CIV class
-  /** Conversion data for ounce to pounds */
-  static public final int OUNCES_PER_POUND = 16;
-  /** Conversion data for ounce to pounds */
-  static public final int INCHES_PER_FOOT = 12;
-
   /** My own special version of Brown since there is not one for Color */
   static public final Color MY_BROWN = new Color(130, 100, 90).brighter();
 

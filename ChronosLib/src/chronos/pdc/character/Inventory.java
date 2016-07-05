@@ -12,7 +12,6 @@ package chronos.pdc.character;
 import java.util.ArrayList;
 import java.util.List;
 
-import mylib.Constants;
 import chronos.pdc.Item;
 import chronos.pdc.Item.ItemCategory;
 import chronos.pdc.registry.ItemRegistry;
@@ -32,11 +31,6 @@ import chronos.pdc.registry.ItemRegistry;
  *          Oct 13, 2015 // updated for new Hero generation rules and categories <br>
  */
 public class Inventory {
-	// METADATA CONSTANTS
-	/** The weight increment (in ounces) to increase certain APMods */
-	static final int AP_INCREMENT = Constants.OUNCES_PER_POUND * 25;
-	/** Metal armor increases AP pummeling, decreases grappling */
-	static public final int AP_METAL_ADJ = 4;
 	/** Peasant must start less than any of the other Klasses */
 	static public final int SILVER_PER_GOLD = 10;
 

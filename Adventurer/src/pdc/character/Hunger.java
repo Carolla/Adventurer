@@ -9,10 +9,9 @@
 
 package pdc.character;
 
-import java.io.Serializable;
-
 import mylib.Constants;
 import mylib.MsgCtrl;
+import mylib.pdc.Utilities;
 
 /**
  * Hunger determines if the Person needs to eat or not, measured in satiety points to represent
@@ -43,8 +42,7 @@ import mylib.MsgCtrl;
  *          <DD>
  *          </DL>
  */
-@SuppressWarnings("serial")
-public class Hunger implements Serializable
+public class Hunger 
 {
   /** The satiety points needed per day for the Person */
   private double _maxSatiety = Constants.UNASSIGNED;
@@ -124,7 +122,7 @@ public class Hunger implements Serializable
 
     // Calc burn rate per second for the individual character (a
     // convenience attribute)
-    _personalBurnRate = dailyEnergy / Constants.SECS_PER_DAY;
+    _personalBurnRate = dailyEnergy / Utilities.SECONDS_PER_DAY;
 
     // The current SP is equal to the max at this point
     _curSatiety = _maxSatiety;

@@ -29,8 +29,16 @@ import mylib.Constants;
  */
 public class Utilities
 {
+  public static final int SECONDS_PER_HOUR = 3600;
+  public static final int SECONDS_PER_DAY = 86400;
+  public static final int DAYS_PER_YEAR = 360;
+  public static final long SECONDS_PER_YEAR = SECONDS_PER_DAY * DAYS_PER_YEAR;
+  public static final int OUNCES_PER_POUND = 16;
+  public static final int INCHES_PER_FOOT = 12;
+
+
   /** Convert a String[] to a ArrayList<String> for easier handling */
-  static public ArrayList<String> convertToArrayList(String[] strs)
+  public static ArrayList<String> convertToArrayList(String[] strs)
   {
     // Setup for arraylist
     ArrayList<String> alist = new ArrayList<String>();
@@ -49,7 +57,7 @@ public class Utilities
    * @param width the limit to crop the string; the remnant is not returned
    * @return the newly cropped string
    */
-  static public String cropLine(String msg, int width)
+  public static String cropLine(String msg, int width)
   {
     if (msg == null) {
       return null;
@@ -84,14 +92,14 @@ public class Utilities
     return result;
   }
 
-  
+
   /**
    * Formats a String representing height in feet to one representing feet and inches
    * 
    * @param strHeight to convert into feet and inches
    * @return the converted input; else null if empty
    */
-  static public String formatHeight(String strHeight)
+  public static String formatHeight(String strHeight)
   {
     // Guard: verify inut parm has data in it
     if (isEmptyString(strHeight)) {
@@ -103,39 +111,38 @@ public class Utilities
     if (total < 0) {
       return null;
     }
-    int feet = total / Constants.INCHES_PER_FOOT;
-    int inches = total % Constants.INCHES_PER_FOOT;
+    int feet = total / INCHES_PER_FOOT;
+    int inches = total % INCHES_PER_FOOT;
     String fullWt = String.format("%s' %s\"", feet, inches);
     return fullWt;
   }
-  
-  
+
+
   /**
    * Formats a double representing height in feet to one representing feet and inches
    * 
    * @param height to convert into feet and inches
    * @return the converted input; else null if empty
    */
-  static public double[] formatDistance(double heightInFeet)
+  public static double[] formatDistance(double heightInFeet)
   {
-    //initial values
+    // initial values
     double[] convertedHeight = {0.0, 0.0};
-    //calculate total number of inches
-    double totalInches = heightInFeet*Constants.INCHES_PER_FOOT;
-    //calculate feet
-    double feet = (int)(totalInches/Constants.INCHES_PER_FOOT);
-    //forces calculation to round up
+    // calculate total number of inches
+    double totalInches = heightInFeet * INCHES_PER_FOOT;
+    // calculate feet
+    double feet = (int) (totalInches / INCHES_PER_FOOT);
+    // forces calculation to round up
     double rounder = 0.5;
-    //calculate inches rounded up to the nearest whole number
-    double inches = (int)(totalInches + rounder) % 12;
-    //assign calculated values
+    // calculate inches rounded up to the nearest whole number
+    double inches = (int) (totalInches + rounder) % 12;
+    // assign calculated values
     convertedHeight[0] = feet;
     convertedHeight[1] = inches;
-    //return
+    // return
     return convertedHeight;
   }
-  
- 
+
 
   /**
    * Converts inches to feet and inches format
@@ -156,8 +163,8 @@ public class Utilities
       return null;
     }
     // Format line into something presentantable
-    int feet = total / Constants.INCHES_PER_FOOT;
-    int inches = total % Constants.INCHES_PER_FOOT;
+    int feet = total / INCHES_PER_FOOT;
+    int inches = total % INCHES_PER_FOOT;
     String result = String.format("%s' %s\"", feet, inches);
     return result;
   }
@@ -181,8 +188,8 @@ public class Utilities
     if (total < 0) {
       return null;
     }
-    int pounds = (int) total / Constants.OUNCES_PER_POUND;
-    int ounces = (int) total % Constants.OUNCES_PER_POUND;
+    int pounds = (int) total / OUNCES_PER_POUND;
+    int ounces = (int) total % OUNCES_PER_POUND;
     String fullWt = String.format("%s lb. %s oz.", pounds, ounces);
     return fullWt;
   }
@@ -202,8 +209,8 @@ public class Utilities
     }
 
     // Format line into something presentantable
-    // float total = Float.parseFloat(strSecs) / Constants.SECS_PER_YEAR;
-    double total = Double.parseDouble(strSecs) / Constants.SECS_PER_YEAR;
+    // float total = Float.parseFloat(strSecs) / SECS_PER_YEAR;
+    double total = Double.parseDouble(strSecs) / SECONDS_PER_YEAR;
     // Only positive numbers are returned
     if (total < 0) {
       return null;

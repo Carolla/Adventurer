@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mylib.ApplicationException;
-import mylib.Constants;
 import mylib.pdc.MetaDie;
+import mylib.pdc.Utilities;
 import chronos.pdc.NPC;
 import chronos.pdc.command.Scheduler;
 import chronos.pdc.command.intCmdPatronEnter;
@@ -65,12 +65,12 @@ public class Inn extends Building
   /** Patrons start entering right away */
   private final int MIN_DELAY = 1;
   /** Last Patron enters after no more than 6 hours */
-  private final int MAX_DELAY = (int) (6 * Constants.SECS_PER_HOUR);
+  private final int MAX_DELAY = 6 * Utilities.SECONDS_PER_HOUR;
 
   /** Patrons stay at least 10 minutes */
   private final int MIN_DURATION = 10 * 60;
   /** Patrons never stay longer than 2 hour*/
-  private final int MAX_DURATION = (int) (2 * Constants.SECS_PER_HOUR);
+  private final int MAX_DURATION = 2 * Utilities.SECONDS_PER_HOUR;
 
   /** Minimum number of patrons that indicate if the Inn is busy or not */
   private int NBR_PATRONS_TO_BE_BUSY = 3;
