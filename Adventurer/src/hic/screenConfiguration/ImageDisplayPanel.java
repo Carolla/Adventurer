@@ -27,7 +27,6 @@ public class ImageDisplayPanel extends JPanel
   // Private Constants
   private static final String IMAGE_PATH = Chronos.CHRONOS_LIB_RESOURCES_PATH + "images"
       + Constants.FS;
-  private static JFrame _frame;
 
   /**
    * Static singleton generator allows return of newly generated image panel
@@ -42,7 +41,6 @@ public class ImageDisplayPanel extends JPanel
    */
   public static final JPanel createImagePanel(String imageName, JPanel panel, JFrame frame)
   {
-    _frame = frame; // TODO: remove reference to frame ( change to MainFrame.getInstance()? )
     new ImageDisplayPanel(imageName, panel);
     return panel;
   }
@@ -139,8 +137,6 @@ public class ImageDisplayPanel extends JPanel
    */
   private void printJPanelInfo(String panelName, JComponent panel)
   {
-    _frame.revalidate(); // TODO: replace _frame.revalidate with
-                         // Mainframe.getInstance().revalidate()
     System.out.println(panelName + " Visible: " + panel.isVisible());
     System.out.println(panelName + " Size: " + panel.getSize() + "\n");
   }
