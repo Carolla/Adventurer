@@ -58,11 +58,6 @@ public class AugmentTFile
     if (!srcFile.exists()) {
       return;
     }
-    // It is possible the test file does not exist yet
-    File testFile = new File(testPath);
-    if (!testFile.exists()) {
-      _proto.writeFile(testFile, srcPath);
-    }
     // Find methods in source and existing test file
     else {
       Class<?> srcClass = _proto.convertSourceToClass(srcPath);

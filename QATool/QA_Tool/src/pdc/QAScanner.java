@@ -10,9 +10,13 @@
 package pdc;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import mylib.Constants;
 
@@ -22,187 +26,295 @@ import mylib.Constants;
  */
 public class QAScanner
 {
-  static final String USAGE_MSG = "USAGE: QA Scanner <src dir tree path> <exclusionsFile>.txt";
+   private final String COMMA = ",";
+   private final String DOT = ".";
+   private final String SPACE = " ";
+   private final String LEFT_PAREN = "(";
+   private final String RIGHT_PAREN = ")";
 
-  static private File _srcRoot;
-  static private File _testRoot;
-  static private File _exclusionsFile;
+   // True if verbose messages should be written (audit trail)
+   static private boolean _verbose;
 
-  // Exclusions lists
-  ArrayList<String> _excDirs = new ArrayList<String>();
-  ArrayList<String> _excFiles = new ArrayList<String>();
+   private File _srcRoot;
 
-  static private int _dirsScanned;
-  static private int _filesScanned;
-  static private int _filesWritten;
-  static private int _filesAugmented;
-
-  // Write original test files
-  Prototype _proto;
-  
-  
-  /**
-   * @param args
-   */
-  public static void main(String[] args)
-  {
-    if ((args.length != 2) || (!isValid(args[0], args[1]))) {
-      System.err.println(USAGE_MSG);
-      System.err.println("Received" + args[0] + " and " + args[1]);
-      System.exit(-1);;
-    }
-    System.out.println("Args valid");
-    QAScanner qas = new QAScanner();
-    qas.setExclusions(_exclusionsFile, _srcRoot);
-    qas.scan(_srcRoot, _srcRoot.getPath().length(), _exclusionsFile);
-
-    System.out.println("Source dirs  scanned = " + QAScanner._dirsScanned);
-    System.out.println("Source files scanned = " + QAScanner._filesScanned);
-    System.out.println("New test files written = " + QAScanner._filesWritten);
-    System.out.println("Existing test files expanded = " + QAScanner._filesAugmented);
-  }
+   private SrcReader _srcReader;
+   private TestWriter _testWriter;
 
 
-  // ================================================================================
-  // CONSTRUCTOR AND HELPER METHODS
-  // ================================================================================
+   // ================================================================================
+   // CONSTRUCTOR AND HELPER METHODS
+   // ================================================================================
 
-  public QAScanner()
-  {
-    _dirsScanned = 0;
-    _filesScanned = 0;
-    _filesWritten = 0;
-    _filesAugmented = 0;
-    
-    _proto = new Prototype();
-  }
+   public QAScanner(String[] args)
+   {
+      // Convenience variables
+      _srcRoot = new File(args[0]);
+      _verbose = (args.length == 3) ? true : false;
 
+      _testWriter = new TestWriter(_srcRoot, this);
+      _srcReader = new SrcReader(_srcRoot, args[1], _testWriter, this);
 
-  /**
-   * Checks that the path for the source directory exists as a directory, and the exclusion paths
-   * exists as a file
-   * 
-   * @param srcDirPath
-   * @param exclusionsFilePath
-   * @return true if both parms are valid
-   */
-  static private boolean isValid(String srcDirPath, String exclusionsFilePath)
-  {
-    _srcRoot = new File(srcDirPath);
-    boolean isSrcDir = _srcRoot.isDirectory();
-    _testRoot = new File(srcDirPath + Constants.FS + "test");
-    boolean isTestDir = _testRoot.isDirectory();
-    boolean isTxtFile = exclusionsFilePath.endsWith(".txt");
-    _exclusionsFile = new File(srcDirPath + Constants.FS + exclusionsFilePath);
-    boolean isExcFile = _exclusionsFile.isFile();
-    return isSrcDir && isTestDir && isTxtFile && isExcFile;
-  }
+   }
 
 
-  // ================================================================================
-  // PUBLIC METHODS
-  // ================================================================================
+   // ================================================================================
+   // PUBLIC METHODS
+   // ================================================================================
 
-  /**
-   * Traverse the source tree recursively, writing new test class files or augmenting existing test
-   * class files accordingly.
-   * 
-   * @param src starting directory for source files
-   * @param srcPathLen length of path prefix to control recursion
-   * @param excFile list of directories and files to exclude from test class generation
-   * @return true of all worked well
-   */
-  public boolean scan(File src, int srcPathLen, File excFile)
-  {
-    boolean retval = false;
-    // Retrieve all files and subdirs under dir
-    File[] allFiles = src.listFiles();
-    for (File f : allFiles) {
-      // Traverse the source tree until the test dir is found, then stop
-      if (f.equals(_testRoot)) {
-        break;
+   // Display number of dirs and files scanned
+   public void QAReport()
+   {
+      outMsg("\n\n");
+      _srcReader.scanResults();
+      _testWriter.writeResults();
+   }
+
+
+   /**
+    * Extracts public and protected methods from the source file, sorts each list
+    * 
+    * @param clazz target source file
+    * @return list of public and protected method signatures for the target
+    */
+   public ArrayList<String> collectMethods(String filePath)
+   {
+      ArrayList<String> mList = new ArrayList<String>();
+
+      Class<?> clazz = convertSourceToClass(filePath);
+      String clazzName = clazz.getSimpleName();
+
+      Method[] rawMethodList = clazz.getDeclaredMethods();
+      for (Method method : rawMethodList) {
+         int modifiers = method.getModifiers();
+         if (modifiers == 0) {
+            System.err.println("WARNING: " + method.getName()
+                  + "() has default access; should have a declared access");
+         }
+         if ((Modifier.isPublic(modifiers)) || (Modifier.isProtected(modifiers))) {
+            String mName = extractSignature(method, clazzName);
+            if (mName != null) {
+               mList.add(mName);
+            }
+         }
       }
-      // If file is a directory, recurse down one level
-      String s = f.getPath();
-      System.out.println("\tExamining " + s);
-      if (f.isDirectory()) {
-        _dirsScanned++;
-        // Skip excluded directories
-        if (_excDirs.contains(f)) {
-          System.out.println("\t\tSKIPPING directory " + s);
-          continue;
-        }
-        // Recursing one level down when subdirs are found
-        scan(f, srcPathLen, excFile);
-      } else {
-        // Skip non-source files, hic subdir, and any specifically-excluded files
-        _filesScanned++;
-        if ((!s.endsWith(".java")) || (s.contains("hic"))) {
-          continue;
-        } else if (_excFiles.contains(s)) {
-          System.out.println("\t\tSKIPPING file " + s);
-          continue;
-        } else {
-          String testName = _proto.makeTestFilename(s);
-          File testFile = new File(testName);
-          if (testFile.exists()) {
-            System.out.println("AUGEMENTING test file " + testName);
-            _proto.augmentFile(testFile, s);
-            retval = true;
-          } else {
-            System.out.println("WRITING test file " + testName);
-            _proto.writeFile(testFile, s);
-            retval = true;
-          }
-        }
+      // Sort methods to keep in sync with test methods later
+      sortSignatures(mList);
+      return mList;
+   }
+
+   
+   /**
+    * Sort first by method name, then by parm list number and value
+    * 
+    * @param sList collection of method signatures
+    */
+   private void sortSignatures(ArrayList<String> sList)
+   {
+      Collections.sort(sList, new Comparator<String>() {
+         @Override
+         public int compare(String sig1, String sig2)
+         {
+            // Tokenize into three parts: method name, parm list, return type
+            String name1 = sig1.substring(sig1.indexOf(SPACE) + 1, sig1.indexOf(LEFT_PAREN));
+            String name2 = sig2.substring(sig2.indexOf(SPACE) + 1, sig2.indexOf(LEFT_PAREN));
+            String parms1 = sig1.substring(sig1.indexOf(LEFT_PAREN), sig1.indexOf(RIGHT_PAREN) + 1);
+            String parms2 = sig2.substring(sig2.indexOf(LEFT_PAREN), sig2.indexOf(RIGHT_PAREN) + 1);
+            // System.err.println("\t\t sort loops = " + ++count);
+
+            // Compare method names
+            int retval = name1.compareTo(name2); // compare method names
+            // Compare number of parms and parms names
+            if (retval == 0) {
+               String[] nbrParms1 = parms1.split(COMMA);
+               String[] nbrParms2 = parms2.split(COMMA);
+               retval = nbrParms1.length - nbrParms2.length;
+               if (retval == 0) {
+                  retval = parms1.compareTo(parms2);
+               }
+            }
+            return retval;
+         }
+      });
+   }
+
+   
+   /**
+    * Return the {@code Class} for the given java file
+    * 
+    * @param path the fully-qualifed (with package name) {@code .java} source filename
+    * @param root the directory prefix to be removed to get the sourceText file
+    * @return the equivalent {@.class} file
+    */
+   public Class<?> convertSourceToClass(String path)
+   {
+      // Remove the file extension
+      String className = path.split(".java")[0];
+      // Convert the file path format to package format by replacing the "/" with "." or "\" with
+      // Windoze
+      className = className.replaceAll(Pattern.quote(Constants.FS), ".");
+      // Remove any prefix that ends with "src/"
+      className = className.substring(className.lastIndexOf("src.") + 4);
+      // Replace src with bin
+      Class<?> sourceClass = null;
+      try {
+         sourceClass = Class.forName(className);
+      } catch (ClassNotFoundException ex) {
+         System.err.println("\tconvertSourceToClass(): " + className + ".class file not found");
       }
-    }
-    return retval;
-  }
-
-  // ================================================================================
-  // PUBLIC METHODS
-  // ================================================================================
-
-
-
-
-  /**
-   * Read and build the list of directory and files that should be exluded when scanning the source
-   * file tree. Exclusions are saved as path names relative to source root directory
-   * 
-   * @param excFile contains files and directories to exclude from the search
-   * @param rootFile location of the exclusion file
-   */
-  private void setExclusions(File excFile, File rootFile)
-  {
-    Scanner in = null;
-    try {
-      in = new Scanner(excFile);
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    }
-    String s = in.nextLine();
-    if (!s.equals("DIRECTORIES")) {
-      System.err.println("\n setExclusions(): " + excFile.getName() + " has invalid format");
-    }
-    // Add excluded directories to list
-    while (in.hasNext()) {
-      s = in.nextLine().trim();
-      if (s.equals("FILES") || (s.length() == 0)) {
-        break;
+      if (sourceClass == null) {
+         System.err.println(
+               "\tEnsure that " + path + " has been compiled and exists in the bin directory");
       }
-      _excDirs.add(rootFile.getPath() + Constants.FS + s);
-    }
-    // Add excluded files to list
-    while (in.hasNext()) {
-      s = in.nextLine().trim();
-      if (s.equals("FILES") || (s.length() == 0)) {
-        continue;
+      return sourceClass;
+   }
+
+
+   // ================================================================================
+   // PROTECTED METHODS
+   // ================================================================================
+
+   /**
+    * Return the class method signature without package context or throws clauses, but with its
+    * return type, formatted as: <br>
+    * {@code  methodName(argType, argType) : returnType} <br>
+    * where each of the Types are their simple names.
+    * 
+    * @param m the Method object to get full path and properties returned by Class.getMethod()
+    * @param anchorName simple name of the class under reflection
+    * @return the method signature, e.g. as is used in the test method comment
+    */
+   public String extractSignature(Method m, String anchorName)
+   {
+      String s = m.toString();
+      // Skip any method names that do not have the anchorName in it (synthetic classes) and a
+      // 'main'
+      if ((!s.contains(anchorName)) || (s.contains("main("))) {
+         return null;
       }
-      _excFiles.add(rootFile.getPath() + Constants.FS + s);
-    }
-  }
+      // Remove any throws clauses
+      if (s.contains("throws")) {
+         s = s.substring(0, s.indexOf("throws"));
+      }
+
+      // Remove the modifer
+      s = s.substring(s.indexOf(SPACE) + 1);
+      String retType = simplifyReturnType(s);
+      String methodDecl = simplifyDeclaration(s);
+      return (retType + " " + methodDecl);
+   }
+
+
+   // ================================================================================
+   // public METHODS
+   // ================================================================================
+
+   /**
+    * Display a list to the console if the verbose flag is set
+    * 
+    * @param msg message to display
+    */
+   public void outList(String msg, List<String> aList)
+   {
+      if (_verbose) {
+         for (String s : aList) {
+            System.out.println("\t\t" + s);
+         }
+      }
+   }
+
+
+   /**
+    * Display a message to the console if the verbose flag is set
+    * 
+    * @param msg message to display
+    */
+   public void outMsg(String msg)
+   {
+      if (_verbose) {
+         System.out.println(msg);
+      }
+   }
+
+   /**
+    * Reduce a fully qualified class name to it simplified name by removing the dot-delimited full
+    * name to yield the suffix, the simple name. This is used for return types and argument types
+    * that occur in the method declaration.<br>
+    * The method declaration has format, where each type is a fully qualified type: <br>
+    * {@code return-type methodName(argType, argType,...) <br>
+    * For example, {@code java.lang.String extractSignature(java.io.File, java.lang.String)} becomes
+    * {@code String extractSignature(File, String)}.<br>
+    * Note: The ellipsis in the signature example refers to a fixed but indefinite number of
+    * arguments, not to a varargs set.
+    * 
+    * @param decl the fully-qualified method declaration
+    * @return the method name and simple argname list
+    */
+   public String simplifyDeclaration(String decl)
+   {
+      // Discard the the return type
+      decl = decl.trim();
+      int rtNdx = decl.indexOf(SPACE);
+      decl = decl.substring(rtNdx + 1);
+
+      // Setup buffers to allow characer movement
+      StringBuilder sbIn = new StringBuilder(decl);
+      StringBuilder sbOut = new StringBuilder();
+
+      // To simplify arguments, walk backwards from the right paren, removing prefixes
+      boolean skip = false;
+      int in = sbIn.length() - 1;
+      for (; in >= 0; in--) {
+         char ch = sbIn.charAt(in);
+         // Add space character to follow each comma
+         if (ch == ',') {
+            sbOut.insert(0, SPACE); // new char is placed in front of existing chars
+            skip = false;
+         } else if (ch == '(') {
+            skip = false;
+         }
+         // Skip all characters between previous comma or left paren and the dot
+         else if ((ch == '.') || (skip == true)) {
+            skip = true;
+            continue;
+         }
+         sbOut.insert(0, ch);
+         // System.out.println(String.format("\tCharacter written: %c", sbOut.charAt(0)));
+      }
+      String result = sbOut.toString().trim();
+      return result;
+   }
+
+
+   /**
+    * Convert the fully qualifed return type of a signature into its simple type. Also removes the
+    * method modifier (public, private, static, protected).
+    * 
+    * @param decl fully qualifed method signature, with parm types and return type
+    * @return only the simple return type
+    */
+   public String simplifyReturnType(String decl)
+   {
+      // Remove trailing and leading white space then make a destination String
+      decl = decl.trim();
+      String dest = new String(decl);
+
+      int retNdx = decl.indexOf(SPACE); // return type
+      String retSig = decl.substring(0, retNdx);
+      int lastDot = retSig.lastIndexOf(DOT);
+      dest = decl.substring(lastDot + 1, retNdx);
+
+      return dest;
+   }
+
+   public void treeScan()
+   {
+      _srcReader.scan(_srcRoot);
+   }
+
+
+   // ================================================================================
+   // PRIVATE METHODS
+   // ================================================================================
 
 
 } // end of QAScanner class
