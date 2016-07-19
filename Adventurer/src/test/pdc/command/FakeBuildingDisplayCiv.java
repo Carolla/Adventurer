@@ -29,6 +29,7 @@ public class FakeBuildingDisplayCiv extends BuildingDisplayCiv
   {
     _currentBldg = bldg;
     _currentBuildingName = bldg.getName();
+    enterBuilding(_currentBuildingName);
   }
 
   @Override

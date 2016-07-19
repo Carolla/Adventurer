@@ -26,6 +26,8 @@ import mylib.dmc.IRegistryElement;
  */
 public class NPC implements IRegistryElement
 {
+  private static final String NO_MORE_RESPONSES = "No more responses";
+
   /** Name of the Patron */
   private String _name;
 
@@ -57,6 +59,9 @@ public class NPC implements IRegistryElement
   /** Max range for affinity; each point represents 5% more less chance of success */
   private final int MAX_AFFINITY = 5;
 
+  private int _rumorIndex = 0;
+  private int _retortIndex = 0;
+
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
@@ -76,12 +81,13 @@ public class NPC implements IRegistryElement
    * @param name of this Patron
    * @param farDesc appearance when far from Patron; cannot be empty or null
    * @param nearDesc appearance when up close and personal, can include smells; cannot be empty or
-   *        null
+   *          null
    * @param affinity must be within range [-5,+5]
    * @param peaceflag true if Patron will fight in bar brawl
    * @param note profession of the NPC, as a note (unused in game)
    */
-  public NPC(String name, String note, int affinity, String farDesc, String nearDesc, List<String> replies, List<String> retorts) throws NullPointerException
+  public NPC(String name, String note, int affinity, String farDesc, String nearDesc,
+      List<String> replies, List<String> retorts) throws NullPointerException
   {
     // Guard conditions
 
@@ -94,13 +100,13 @@ public class NPC implements IRegistryElement
     if ((nearDesc == null) || (nearDesc.trim().length() == 0)) {
       throw new NullPointerException("Patron(): Near Description cannot be null or empty");
     }
-    
+
     if (affinity < MIN_AFFINITY) {
       affinity = MIN_AFFINITY;
     } else if (affinity > MAX_AFFINITY) {
       affinity = MAX_AFFINITY;
     }
-    
+
     _name = name;
     _farDescription = farDesc;
     _nearDescription = nearDesc;
@@ -194,5 +200,23 @@ public class NPC implements IRegistryElement
   public String toString()
   {
     return _name + " (" + _note + ")";
+  }
+
+  public String talk()
+  {
+    String result = NO_MORE_RESPONSES;
+    if (_affinity > 0) {
+      if (_rumorIndex < _rumors.size()) {
+        result = _rumors.get(_rumorIndex);
+        _rumorIndex++;
+      }
+    } else {
+      if (_retortIndex < _retorts.size()) {
+        result = _retorts.get(_retortIndex);
+        _retortIndex++;
+      }
+    }
+
+    return result;
   }
 } // end of NPC class

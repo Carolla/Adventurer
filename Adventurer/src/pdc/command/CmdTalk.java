@@ -37,12 +37,7 @@ public class CmdTalk extends Command
   @Override
   public boolean exec()
   {
-    if (_target.isEmpty()) {
-      _bdciv.displayBuildingInterior();
-    } else {
-      _bdciv.inspectTarget(_target);
-    }
-    return true;
+    return _bdciv.talkToTarget(_target);
   }
 
 }

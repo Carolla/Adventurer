@@ -12,13 +12,14 @@
 package civ;
 
 import chronos.pdc.Adventure;
+import chronos.pdc.NPC;
 import chronos.pdc.buildings.Building;
 import chronos.pdc.registry.BuildingRegistry;
 
 /**
  * Manages the town and buildings displays and text descriptions, both interior and exterior.
- * {@code {@ImagePanel} manages the images, and {@code IOPanel} manages the user text input and
- * output.
+ * {@code {@ImagePanel} manages the images, and {@code IOPanel} manages the user text
+ * input and output.
  * 
  * @author Al Cline
  * @version Feb 20, 2015 // updated from earlier version by Tim Armstrong <br>
@@ -27,7 +28,7 @@ import chronos.pdc.registry.BuildingRegistry;
 public class BuildingDisplayCiv extends BaseCiv
 {
   protected MainframeCiv _mfCiv;
-//  private UserMsgInterface _output;
+  // private UserMsgInterface _output;
   private BuildingRegistry _breg;
   private Adventure _adv;
 
@@ -50,7 +51,7 @@ public class BuildingDisplayCiv extends BaseCiv
       "You must leave this building before you approach another.";
 
   /** Default Buildings to initialize registry with */
-  public static final String[][] DEFAULT_BUILDINGS = {{"Ugly Ogre Inn", "Bork"},
+  public static final String[][] DEFAULT_BUILDINGS = { {"Ugly Ogre Inn", "Bork"},
       {"Rat's Pack", "Dewey N. Howe"}, {"The Bank", "J. P. Pennypacker"},
       {"Stadium", "Aragon"}, {"Arcaneum", "Pendergast"}, {"Monastery", "Balthazar"},
       {"Rouge's Tavern", "Ripper"}, {"Jail", "The Sheriff"}};
@@ -113,7 +114,7 @@ public class BuildingDisplayCiv extends BaseCiv
     // The Hero cannot be inside a building already
     if (isInside() == true) {
       _mfCiv.displayErrorText(ERRMSG_JUMPBLDG);
-//      _output.displayErrorText(ERRMSG_JUMPBLDG);
+      // _output.displayErrorText(ERRMSG_JUMPBLDG);
       return false;
     }
 
@@ -124,7 +125,7 @@ public class BuildingDisplayCiv extends BaseCiv
       // Check that the building specified actually exists
       if (b == null) {
         _mfCiv.displayErrorText(ERRMSG_UNKNOWN_BLDG);
-//        _output.displayErrorText(ERRMSG_UNKNOWN_BLDG);
+        // _output.displayErrorText(ERRMSG_UNKNOWN_BLDG);
         return false;
       } else {
         return true;
@@ -132,7 +133,7 @@ public class BuildingDisplayCiv extends BaseCiv
     } else {
       // Case 2: No building specified
       _mfCiv.displayErrorText(ERRMSG_NOBLDG);
-//      _output.displayErrorText(ERRMSG_NOBLDG);
+      // _output.displayErrorText(ERRMSG_NOBLDG);
       return false;
     }
   }
@@ -207,7 +208,7 @@ public class BuildingDisplayCiv extends BaseCiv
   {
     return (_currentBldg == null) ? "" : _currentBldg.getName();
   }
-  
+
   /** This should replace "String getCurrentBuilding()" */
   public Building getCurrBuilding()
   {
@@ -278,6 +279,20 @@ public class BuildingDisplayCiv extends BaseCiv
       return result;
     }
     return result;
+  }
+
+  public boolean talkToTarget(String target)
+  {
+    if (isInside()) {
+      for (NPC npc : _currentBldg.getPatrons()) {
+        if (npc.getName().equalsIgnoreCase(target)) {
+          String answer = npc.talk();
+          _mfCiv.displayText(answer);
+          return true;
+        }        
+      }
+    }
+    return false;
   }
 
 } // end of BuildingDisplayCiv class
