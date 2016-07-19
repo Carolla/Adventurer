@@ -35,9 +35,9 @@ public class AugmentTFile
   // CONSTRUCTOR
   // ======================================================================
 
-  public AugmentTFile()
+  public AugmentTFile(QAScanner qas)
   {
-    _proto = new Prototype();
+    _proto = new Prototype(qas);
     _srcMethods = new ArrayList<String>();
     _testMethods = new ArrayList<String>();
   }

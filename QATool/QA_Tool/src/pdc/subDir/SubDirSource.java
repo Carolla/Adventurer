@@ -56,4 +56,10 @@ public class SubDirSource
     return null;
   }
 
+
+  /** Added to test augmentation function */
+  protected File augFile(File x)
+  {
+    return null;
+  }
 }

@@ -61,15 +61,6 @@ public class QAScanner
    // PUBLIC METHODS
    // ================================================================================
 
-   // Display number of dirs and files scanned
-   public void QAReport()
-   {
-      outMsg("\n\n");
-      _srcReader.scanResults();
-      _testWriter.writeResults();
-   }
-
-
    /**
     * Extracts public and protected methods from the source file, sorts each list
     * 
@@ -100,41 +91,6 @@ public class QAScanner
       // Sort methods to keep in sync with test methods later
       sortSignatures(mList);
       return mList;
-   }
-
-   
-   /**
-    * Sort first by method name, then by parm list number and value
-    * 
-    * @param sList collection of method signatures
-    */
-   private void sortSignatures(ArrayList<String> sList)
-   {
-      Collections.sort(sList, new Comparator<String>() {
-         @Override
-         public int compare(String sig1, String sig2)
-         {
-            // Tokenize into three parts: method name, parm list, return type
-            String name1 = sig1.substring(sig1.indexOf(SPACE) + 1, sig1.indexOf(LEFT_PAREN));
-            String name2 = sig2.substring(sig2.indexOf(SPACE) + 1, sig2.indexOf(LEFT_PAREN));
-            String parms1 = sig1.substring(sig1.indexOf(LEFT_PAREN), sig1.indexOf(RIGHT_PAREN) + 1);
-            String parms2 = sig2.substring(sig2.indexOf(LEFT_PAREN), sig2.indexOf(RIGHT_PAREN) + 1);
-            // System.err.println("\t\t sort loops = " + ++count);
-
-            // Compare method names
-            int retval = name1.compareTo(name2); // compare method names
-            // Compare number of parms and parms names
-            if (retval == 0) {
-               String[] nbrParms1 = parms1.split(COMMA);
-               String[] nbrParms2 = parms2.split(COMMA);
-               retval = nbrParms1.length - nbrParms2.length;
-               if (retval == 0) {
-                  retval = parms1.compareTo(parms2);
-               }
-            }
-            return retval;
-         }
-      });
    }
 
    
@@ -216,6 +172,7 @@ public class QAScanner
    public void outList(String msg, List<String> aList)
    {
       if (_verbose) {
+         System.out.println(msg);
          for (String s : aList) {
             System.out.println("\t\t" + s);
          }
@@ -234,6 +191,19 @@ public class QAScanner
          System.out.println(msg);
       }
    }
+
+   // ================================================================================
+   // PUBLIC METHODS
+   // ================================================================================
+   
+   // Display number of dirs and files scanned
+   public void qaReport()
+   {
+      outMsg("\n\n");
+      _srcReader.scanResults();
+      _testWriter.writeResults();
+   }
+
 
    /**
     * Reduce a fully qualified class name to it simplified name by removing the dot-delimited full
@@ -309,6 +279,41 @@ public class QAScanner
    public void treeScan()
    {
       _srcReader.scan(_srcRoot);
+   }
+
+
+   /**
+    * Sort first by method name, then by parm list number and value
+    * 
+    * @param sList collection of method signatures
+    */
+   private void sortSignatures(ArrayList<String> sList)
+   {
+      Collections.sort(sList, new Comparator<String>() {
+         @Override
+         public int compare(String sig1, String sig2)
+         {
+            // Tokenize into three parts: method name, parm list, return type
+            String name1 = sig1.substring(sig1.indexOf(SPACE) + 1, sig1.indexOf(LEFT_PAREN));
+            String name2 = sig2.substring(sig2.indexOf(SPACE) + 1, sig2.indexOf(LEFT_PAREN));
+            String parms1 = sig1.substring(sig1.indexOf(LEFT_PAREN), sig1.indexOf(RIGHT_PAREN) + 1);
+            String parms2 = sig2.substring(sig2.indexOf(LEFT_PAREN), sig2.indexOf(RIGHT_PAREN) + 1);
+            // System.err.println("\t\t sort loops = " + ++count);
+   
+            // Compare method names
+            int retval = name1.compareTo(name2); // compare method names
+            // Compare number of parms and parms names
+            if (retval == 0) {
+               String[] nbrParms1 = parms1.split(COMMA);
+               String[] nbrParms2 = parms2.split(COMMA);
+               retval = nbrParms1.length - nbrParms2.length;
+               if (retval == 0) {
+                  retval = parms1.compareTo(parms2);
+               }
+            }
+            return retval;
+         }
+      });
    }
 
 

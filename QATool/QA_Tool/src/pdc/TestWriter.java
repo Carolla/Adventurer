@@ -59,25 +59,25 @@ public class TestWriter
    // PUBLIC METHODS
    // ================================================================================
 
-//   /**
-//    * Write new methods to an existing test class
-//    * 
-//    * @param target test file to augment
-//    * @param augList method to add to existing test file
-//    * @return the test file written
-//    */
-//   public File augmentTestFile(File target, ArrayList<String> augList)
-//   {
-//      _proto = new Prototype();
-//      _proto.augmentFile(target, augList);
-//      return target;
-//   }
+   // /**
+   // * Write new methods to an existing test class
+   // *
+   // * @param target test file to augment
+   // * @param augList method to add to existing test file
+   // * @return the test file written
+   // */
+   // public File augmentTestFile(File target, ArrayList<String> augList)
+   // {
+   // _proto = new Prototype();
+   // _proto.augmentFile(target, augList);
+   // return target;
+   // }
 
 
    // ================================================================================
    // PUBLIC METHODS
    // ================================================================================
-   
+
    /**
     * Convert a source method name to a test method name. Insert "test" in front the of method name
     * of the signature, and ensure that overloaded method names are enumerated to distinguish them
@@ -89,7 +89,7 @@ public class TestWriter
    public ArrayList<String> convertToTestNames(ArrayList<String> srcList)
    {
       ArrayList<String> tstList = new ArrayList<String>();
-   
+
       // For each method name, capitalize the name and insert the word "test" in front of it
       for (String sName : srcList) {
          String tName = makeTestName(sName);
@@ -110,7 +110,7 @@ public class TestWriter
    // public int getNewMethods(File target, ArrayList<String> mlist)
    public ArrayList<String> getNewMethods(ArrayList<String> oldlist, ArrayList<String> newlist)
    {
-      _proto = new Prototype();
+      _proto = new Prototype(_qas);
 
       // // Collect existing test methods for comparison
       // ArrayList<String> tmplist = _qas.collectMethods(target.getPath());
@@ -131,7 +131,7 @@ public class TestWriter
    // ================================================================================
    // PUBLIC METHODS
    // ================================================================================
-   
+
    /**
     * Get a corresponding test file to write into, either an existing file to be checked and
     * augmented, or an new file to be written into fresh
@@ -142,7 +142,7 @@ public class TestWriter
    public File getTargetTestFile(String srcPath)
    {
       PrintWriter out = null;
-   
+
       String testPath = makeTestFilename(srcPath);
       File target = new File(testPath);
       if (!target.exists()) {
@@ -187,7 +187,7 @@ public class TestWriter
    // ================================================================================
    // PUBLIC METHODS
    // ================================================================================
-   
+
    /**
     * Convert the src method name to a test method name
     * 
@@ -200,12 +200,11 @@ public class TestWriter
       int endNdx = srcName.indexOf("(");
       int startNdx = srcName.indexOf(" ");
       sb.append(srcName.substring(startNdx + 1, endNdx));
-      // TODO not yet, this must come later when writing
       // Uppercase the first letter of the method name for the decl
-      // String ch = sb.substring(0, 1);
-      // sb.replace(0, 1, ch.toUpperCase());
-      // Add the void test prefix
-      // sb.insert(0, "void test");
+      String ch = sb.substring(0, 1);
+      sb.replace(0, 1, ch.toUpperCase());
+      // Add the test prefix
+      sb.insert(0, "test");
       sb.append("()");
       return sb.toString();
    }
@@ -232,7 +231,7 @@ public class TestWriter
    // ================================================================================
    // PUBLIC METHODS
    // ================================================================================
-   
+
    public void writeResults()
    {
       _qas.outMsg("Writing complete: ");
@@ -252,19 +251,76 @@ public class TestWriter
     */
    public File writeTestFile(File testTarget, ArrayList<String> srcList)
    {
-      _proto = new Prototype();
+      _proto = new Prototype(_qas);
+      
       long fileLen = testTarget.length();
+      ArrayList<String> convSrcList = convertToTestNames(srcList);
+      _qas.outList("\tConverted source methods: ", convSrcList);
+
       _qas.outMsg("\t" + testTarget + " contains " + fileLen + " characters");
       if (fileLen == 0L) {
-         ArrayList<String> tstList = convertToTestNames(srcList);
-         _proto.writeNewTestFile(testTarget, srcList, tstList);
+         _proto.writeNewTestFile(testTarget, srcList, convSrcList);
          _filesWritten++;
       } else {
-         // _proto.augmentTestFile(testTarget, srcList);
-         _filesUnchanged++;
+         ArrayList<String> testFileList = collectTestMethods(testTarget.getPath());
+         _qas.outList("\tTest file methods: ", testFileList);
+         ArrayList<String> augList = (ArrayList<String>) compareLists(convSrcList, testFileList);
+         _qas.outList("\tMethods in missing from test file: ", augList);
+          _proto.augmentTestFile(testTarget, srcList, augList);
+         if (augList.size() == 0) {
+            _filesUnchanged++;
+         }
       }
       return testTarget;
    }
+
+
+   /**
+    * Compare list1 with list2, identifying all entries in list2 that is not in list2. Entries in
+    * list2 that are not in list1 are ignored. If an entry exists in list1 that is not in list2,
+    * then it is added to the output list and returned.
+    * 
+    * @param list1 authority list for comparison
+    * @param list2 contains entries not in list1
+    * @return Entries that are missing from list2.
+    */
+   private ArrayList<String> compareLists(ArrayList<String> list1, ArrayList<String> list2)
+   {
+      ArrayList<String> augList = new ArrayList<String>();
+
+      // Search in list2 for every entry in list1
+      int srcLen = list1.size();
+      for (int s=0; s < srcLen; s++) {
+         String name = list1.get(s);
+         if (!list2.contains(name)) {
+            augList.add(name);
+         }
+      }         
+      return augList;
+   }
+
+
+   /**
+    * Collect the methods of the test file, then remove the JUnit prep methods and the void prefix
+    * 
+    * @param filePath of the target test file to extract methods from
+    */
+   private ArrayList<String> collectTestMethods(String filePath)
+   {
+      ArrayList<String> finalList = new ArrayList<String>();
+      String unwanted = "void ";
+
+      ArrayList<String> testMethods = _qas.collectMethods(filePath);
+      for (String s : testMethods) {
+         if (!isPrepMethod(s)) {
+            int start = s.indexOf(unwanted);
+            String name = s.substring(start + unwanted.length());
+            finalList.add(name);
+         }
+      }
+      return finalList;
+   }
+
 
    // ================================================================================
    // PUBLIC METHODS

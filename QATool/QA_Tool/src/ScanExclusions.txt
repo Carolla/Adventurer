@@ -1,15 +1,6 @@
 DIRECTORIES
-test
 
 FILES
 ing_Testing.java
-pdc/AugmentTFile.java
 pdc/Fakeroonie.java
-pdc/FileMap.java
-pdc/Prototype.java
-pdc/QAScanner.java
-pdc/QATool.java
-pdc/SrcReader.java
-pdc/SuiteBuilder.java
 pdc/TestTemplate.java
-pdc/TestWriter.java
