@@ -148,30 +148,5 @@ public class TestQAScanner
 		fail("\t\tNot yet implemented");
 	}
 
-	/**
- 	 * @NORMAL_TEST String simplifyReturnType(String)
-	 */
-	@Test
-	public void testSimplifyReturnType()
-	{
-		MsgCtrl.auditMsgsOn(false);
-		MsgCtrl.errorMsgsOn(false);
-		MsgCtrl.where(this);
-
-		fail("\t\tNot yet implemented");
-	}
-
-	/**
- 	 * @NORMAL_TEST void treeScan()
-	 */
-	@Test
-	public void testTreeScan()
-	{
-		MsgCtrl.auditMsgsOn(false);
-		MsgCtrl.errorMsgsOn(false);
-		MsgCtrl.where(this);
-
-		fail("\t\tNot yet implemented");
-	}
 
 } 	// end of TestQAScanner.java class
