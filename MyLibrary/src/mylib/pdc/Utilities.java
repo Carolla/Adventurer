@@ -38,7 +38,7 @@ public class Utilities
 
 
   /** Convert a String[] to a ArrayList<String> for easier handling */
-  public static ArrayList<String> convertToArrayList(String[] strs)
+   public static ArrayList<String> convertToArrayList(String[] strs)
   {
     // Setup for arraylist
     ArrayList<String> alist = new ArrayList<String>();

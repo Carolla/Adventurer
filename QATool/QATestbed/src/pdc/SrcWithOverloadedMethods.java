@@ -7,7 +7,7 @@
  * by email: acline@carolla.com
  */
 
-package pdc.subDir;
+package pdc;
 
 import java.io.File;
 
@@ -17,7 +17,7 @@ import java.io.File;
  * @author Alan Cline
  * @version Feb 5, 2016 // original <br>
  */
-public class SubDirSource
+public class SrcWithOverloadedMethods
 {
   
   static public void main(String[] args)
@@ -25,7 +25,7 @@ public class SubDirSource
     System.out.println("SubDirSource has compiled and created a .class file");
   }
   
-  public SubDirSource()
+  public SrcWithOverloadedMethods()
   {}
 
   public String getTestFilename(String s1, String s2)
@@ -39,11 +39,6 @@ public class SubDirSource
   public File m(String s, int x)
   {
     return null;
-  }
-
-  public String m(String s, int x, long k)
-  {
-    return "x";
   }
 
   protected File createFile(File x, File y, String s)

@@ -84,19 +84,14 @@ public class Prototype
    // ArrayList<String> _publics = new ArrayList<String>();
    // ArrayList<String> _protecteds = new ArrayList<String>();
 
-   // Reference to the coordinating object for writing audit messages
-   private QAScanner _qas;
-
 
    // ======================================================================
    // CONSTRUCTOR
    // ======================================================================
 
    // Default constructor
-   public Prototype(QAScanner qas)
-   {
-      _qas = qas;
-   }
+   public Prototype()
+   {}
 
    // ======================================================================
    // PUBLIC METHODS
@@ -104,8 +99,8 @@ public class Prototype
 
 
    /**
-    * Adds missing test methods (that fail) to a test file corresponding to the source file it is
-    * testing.
+    * Copy an existing test file, adding missing test methods (that fail) from its corresponding
+    * source file.
     * 
     * @param target existing test file to update
     * @param srcList signatures of source method names used in test file comments
@@ -141,14 +136,19 @@ public class Prototype
 
       // Copy out the class-end and close the file
       auditPrint(out, line);
-      
+
       in.close();
       out.close();
 
-      return target;
+      // Replace the old test file with the new test file
+      target.delete();
+      tmpName = tmpName.replace(".tmp", ".java");
+      tmpFile.renameTo(new File(tmpName));
+  
+      return tmpFile;
    }
 
-   
+
    /**
     * Return the source {@code Class} for the given source java file
     * 
@@ -367,7 +367,7 @@ public class Prototype
    private void auditPrint(PrintWriter out, String msg)
    {
       out.println(msg);
-      _qas.outMsg(msg);
+      QAUtils.outMsg(true, msg);
    }
 
    /**
@@ -432,11 +432,11 @@ public class Prototype
    private ArrayList<String> buildTestMethods(ArrayList<String> srcList,
          ArrayList<String> tstList)
    {
-//      // Guard against the source and test methods not the same size list
-//      if (srcList.size() != tstList.size()) {
-//         System.err.println("Source messages and test messages out of sync.");
-//         return null;
-//      }
+      // // Guard against the source and test methods not the same size list
+      // if (srcList.size() != tstList.size()) {
+      // System.err.println("Source messages and test messages out of sync.");
+      // return null;
+      // }
 
       // List to return
       ArrayList<String> codeBlock = new ArrayList<String>();
@@ -450,13 +450,13 @@ public class Prototype
 
          // ADD THE TEST DECLARATIAON
          String m = tstList.get(k);
-//         StringBuilder mName = new StringBuilder();
-//         int startNdx = m.indexOf(" ");
-//         int endNdx = m.indexOf("(");
-//         mName.append(m.substring(startNdx + 1, endNdx));
-//         // Uppercase the first letter of the method name for the decl
-//         String ch = mName.substring(0, 1);
-//         mName.replace(0, 1, ch.toUpperCase());
+         // StringBuilder mName = new StringBuilder();
+         // int startNdx = m.indexOf(" ");
+         // int endNdx = m.indexOf("(");
+         // mName.append(m.substring(startNdx + 1, endNdx));
+         // // Uppercase the first letter of the method name for the decl
+         // String ch = mName.substring(0, 1);
+         // mName.replace(0, 1, ch.toUpperCase());
          // Pull off the method name only, which is between the first space and the first '('
          String decl = String.format(M_DECLARATION, m);
          comment.append(decl);
@@ -607,7 +607,7 @@ public class Prototype
 
 
    /**
-    * Find the closing brace at the end of the class so that new methods can be inserted. 
+    * Find the closing brace at the end of the class so that new methods can be inserted.
     * 
     * @param in scanner for reading original file
     * @param out output file for receiving new version
@@ -617,7 +617,7 @@ public class Prototype
    {
       int delimCnt = 0;
       String line = null;
-   
+
       while (in.hasNextLine()) {
          line = in.nextLine();
          if (line.contains(LEFT_BRACE)) {
@@ -629,8 +629,7 @@ public class Prototype
          // If end of class reached
          if ((line.contains(RIGHT_BRACE)) && (delimCnt == 0)) {
             break;
-         }
-         else {
+         } else {
             auditPrint(out, line);
          }
       }

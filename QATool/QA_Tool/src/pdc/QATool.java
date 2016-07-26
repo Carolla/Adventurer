@@ -137,8 +137,9 @@ public class QATool
 
       // Two args are required; verbose flag is optional
       if ((args.length < 2) || (args.length > 3)) {
-         retval = USAGE_MSG;
+         return USAGE_MSG;
       }
+      
       String srcPath = args[0];
       String excFile = args[1];
 

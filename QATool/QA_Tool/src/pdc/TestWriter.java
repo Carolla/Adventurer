@@ -13,10 +13,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
 
 import mylib.Constants;
+import pdc.QAUtils.FileType;
 
 /**
  * Traverses corresponding test root tree to match files and methods with source files provided by
@@ -31,8 +30,8 @@ public class TestWriter
    private int _filesWritten;
    private int _filesAugmented;
    private int _filesUnchanged;
-
-   private QAScanner _qas;
+   private boolean _verbose;
+   
    private Prototype _proto;
 
    // Skip over testing prep methods
@@ -43,35 +42,16 @@ public class TestWriter
    // ================================================================================
    // CONSTRUCTOR and HELPERS
    // ================================================================================
-
-   public TestWriter(File srcRoot, QAScanner qas)
+ 
+   public TestWriter(File srcRoot, boolean verbose)
    {
       _testRoot = makeTestPath(srcRoot);
-      _qas = qas;
-
+      _verbose = verbose;
+      
       _filesWritten = 0;
       _filesAugmented = 0;
       _filesUnchanged = 0;
    }
-
-
-   // ================================================================================
-   // PUBLIC METHODS
-   // ================================================================================
-
-   // /**
-   // * Write new methods to an existing test class
-   // *
-   // * @param target test file to augment
-   // * @param augList method to add to existing test file
-   // * @return the test file written
-   // */
-   // public File augmentTestFile(File target, ArrayList<String> augList)
-   // {
-   // _proto = new Prototype();
-   // _proto.augmentFile(target, augList);
-   // return target;
-   // }
 
 
    // ================================================================================
@@ -97,34 +77,6 @@ public class TestWriter
       }
       _proto.forceUnique(tstList);
       return tstList;
-   }
-
-
-   /**
-    * Return the number of new methods that shold be added to an existing test file
-    * 
-    * @param oldList test methods to augment
-    * @param newList all methods, both old and new, in existing test file
-    * @return the methods to add to the existing test file
-    */
-   // public int getNewMethods(File target, ArrayList<String> mlist)
-   public ArrayList<String> getNewMethods(ArrayList<String> oldlist, ArrayList<String> newlist)
-   {
-      _proto = new Prototype(_qas);
-
-      // // Collect existing test methods for comparison
-      // ArrayList<String> tmplist = _qas.collectMethods(target.getPath());
-
-      // Remove the standard JUnit prep methods from the list;
-      // A copy operation is required to avoid self-modificaiton of the parm
-      // for (String m : tmplist) {
-      // if (!isPrepMethod(m)) {
-      // tlist.add(m);
-      // }
-      // }
-      // Get the new methods that need to be added to the test file
-      ArrayList<String> augList = (ArrayList<String>) compareMethods(oldlist, newlist);
-      return augList;
    }
 
 
@@ -211,7 +163,7 @@ public class TestWriter
 
 
    /**
-    * Traverse the root dir and return the test subdir beneath it
+    * Test directory is required to be directly beneath src root
     * 
     * @param root the directory for all source files
     * @return the test directory
@@ -219,12 +171,21 @@ public class TestWriter
    public File makeTestPath(File root)
    {
       File testDir = null;
-      String dirPath = root.getAbsolutePath() + Constants.FS + "test";
+      String dirPath = root.getAbsolutePath();
+      dirPath = dirPath.replace("src", "src" + Constants.FS + "test");
       File dir = new File(dirPath);
       if (dir.isDirectory()) {
          testDir = dir;
       }
       return testDir;
+
+//      File testDir = null;
+//      String dirPath = root.getAbsolutePath() + Constants.FS + "test";
+//      File dir = new File(dirPath);
+//      if (dir.isDirectory()) {
+//         testDir = dir;
+//      }
+//      return testDir;
    }
 
 
@@ -234,10 +195,10 @@ public class TestWriter
 
    public void writeResults()
    {
-      _qas.outMsg("Writing complete: ");
-      _qas.outMsg("\t Files written: " + _filesWritten);
-      _qas.outMsg("\t Files augmented: " + _filesAugmented);
-      _qas.outMsg("\t Files unchanged: " + _filesUnchanged);
+      QAUtils.outMsg(_verbose, "Writing complete: ");
+      QAUtils.outMsg(_verbose, "\t Files written: " + _filesWritten);
+      QAUtils.outMsg(_verbose, "\t Files augmented: " + _filesAugmented);
+      QAUtils.outMsg(_verbose, "\t Files unchanged: " + _filesUnchanged);
    }
 
 
@@ -251,21 +212,21 @@ public class TestWriter
     */
    public File writeTestFile(File testTarget, ArrayList<String> srcList)
    {
-      _proto = new Prototype(_qas);
+      _proto = new Prototype();
       
       long fileLen = testTarget.length();
       ArrayList<String> convSrcList = convertToTestNames(srcList);
-      _qas.outList("\tConverted source methods: ", convSrcList);
+      QAUtils.outList(_verbose, "\tConverted source methods: ", convSrcList);
 
-      _qas.outMsg("\t" + testTarget + " contains " + fileLen + " characters");
+      QAUtils.outMsg(_verbose, "\t" + testTarget + " contains " + fileLen + " characters");
       if (fileLen == 0L) {
          _proto.writeNewTestFile(testTarget, srcList, convSrcList);
          _filesWritten++;
       } else {
          ArrayList<String> testFileList = collectTestMethods(testTarget.getPath());
-         _qas.outList("\tTest file methods: ", testFileList);
+         QAUtils.outList(_verbose, "\tTest file methods: ", testFileList);
          ArrayList<String> augList = (ArrayList<String>) compareLists(convSrcList, testFileList);
-         _qas.outList("\tMethods in missing from test file: ", augList);
+         QAUtils.outList(_verbose, "\tMethods missing from test file: ", augList);
           _proto.augmentTestFile(testTarget, srcList, augList);
          if (augList.size() == 0) {
             _filesUnchanged++;
@@ -310,7 +271,7 @@ public class TestWriter
       ArrayList<String> finalList = new ArrayList<String>();
       String unwanted = "void ";
 
-      ArrayList<String> testMethods = _qas.collectMethods(filePath);
+      ArrayList<String> testMethods = QAUtils.collectMethods(filePath, FileType.TEST);
       for (String s : testMethods) {
          if (!isPrepMethod(s)) {
             int start = s.indexOf(unwanted);
@@ -338,54 +299,6 @@ public class TestWriter
       File subtree = target.getParentFile();
       subtree.mkdirs();
       return subtree.getName();
-   }
-
-
-   /**
-    * Compare two lists, and returns those that are in list1 but not in list 2. It assumes that
-    * list2 is a superset of list1. Entries in list1 that are not in list2 are ignored.
-    * 
-    * @param list1 the original list of entries
-    * @param list2 new entries to compare against the old list
-    * @return a list of entries that exist in list2 but not in list1
-    */
-   private List<String> compareMethods(List<String> list1, List<String> list2)
-   {
-      ArrayList<String> diffList = new ArrayList<String>();
-
-      // Sort both lists using the default Comparator
-      if (list1.size() > 1) {
-         list1.sort(null);
-      }
-      if (list2.size() > 1) {
-         list2.sort(null);
-      }
-      // For each entry in list2 not in list 1, add to the diffList
-      for (String s : list2) {
-         if (!list1.contains(s)) {
-            diffList.add(s);
-         }
-      }
-
-      return diffList;
-   }
-
-
-   /**
-    * Return the package statement for the given source file
-    * 
-    * @param target test file to write out
-    * @return the package statement path
-    */
-   private String convertSourceToPackage(File target)
-   {
-      String s = target.getParentFile().getAbsolutePath();
-      s = s.substring(s.lastIndexOf("src" + Constants.FS));
-      s = s.substring(4); // remove the src/
-      String pathName = s.replaceAll(Pattern.quote(Constants.FS), ".");
-      String pkgStatement = String.format("\npackage %s;\n", pathName);
-
-      return pkgStatement;
    }
 
 

@@ -2,38 +2,32 @@
  * FileMap.java
  */
 
+
 package pdc;
 
 import java.io.File;
 import java.util.List;
 import java.util.Vector;
 
+
+
 /**
- * Shows file system as map.
- * 
- * @author sudhakar
- * @version Dec 31 2015 // downloaded from
- * 
- *          <pre>
- *  http://bethecoder.com/applications/tutorials/showTutorials.action?tutorialId=Java_Core_General_FileMap
- *          </pre>
- * 
- *          <br>
- *          Jan 1 2016 // abc modified for eChronos utility <br>
+ * Target file for QA Tool
  */
-public class FileMap
+public class SrcMissingAllTests
 {
   private static final int INITIAL_DEPTH = 1;
   private static final String DEFAULT_SEP_WIDTH = "    ";
   private static final String FILE_PREFIX = "---";
 
+  
   public static void main(String args[]) throws Exception
   {
-    displayFiles(new File(args[0]));
-  } /* end main */
+     System.out.println("Running SrcMissingAllTests.java");
+  } 
 
-
-  public static void displayFiles(File file)
+  
+  public void showFiles(File file)
   {
     System.out.print(file);
     List<Integer> depthList = new Vector<Integer>();
@@ -41,7 +35,7 @@ public class FileMap
     displayFiles(file.listFiles(), INITIAL_DEPTH, depthList);
   }
 
-  public static void displayFiles(File[] files, int depth, List<Integer> parentDepths)
+  public void displayFiles(File[] files, int depth, List<Integer> parentDepths)
   {
     Integer maxDepth = (Integer) parentDepths.get(parentDepths.size() - 1);
     String hline = "";
@@ -97,4 +91,4 @@ public class FileMap
   } /* end of displayFiles method */
 
 
-}/* end of FileMap class */
+}/* end of SrcMissingAllTest class */
