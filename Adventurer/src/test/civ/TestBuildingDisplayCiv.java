@@ -159,13 +159,34 @@ public class TestBuildingDisplayCiv
   }
 
   @Test
-  public void canTalkToPatronInBuilding()
+  public void cannotTalkToPatronOutsideOfBuilding()
   {
     for (int i = 0; i < DEFAULT_BUILDINGS.length; i++) {
       String buildingName = DEFAULT_BUILDINGS[i][0];
       String buildingMaster = DEFAULT_BUILDINGS[i][1];
       _bdCiv.approachBuilding(buildingName);
+      assertTrue("Could talk to " + buildingMaster + " near " + buildingName, !_bdCiv.canTalkTo(buildingMaster));
+    }
+  }
+  
+  
+  @Test
+  public void canTalkToPatronInBuilding()
+  {
+    for (int i = 0; i < DEFAULT_BUILDINGS.length; i++) {
+      String buildingName = DEFAULT_BUILDINGS[i][0];
+      String buildingMaster = DEFAULT_BUILDINGS[i][1];
+      _bdCiv.enterBuilding(buildingName);
       assertTrue("Couldn't talk to " + buildingMaster + " in " + buildingName, _bdCiv.canTalkTo(buildingMaster));
+    }
+  }
+  
+  @Test
+  public void cannotTalkWithAnyoneOnTown()
+  {
+    for (int i = 0; i < DEFAULT_BUILDINGS.length; i++) {
+      String buildingMaster = DEFAULT_BUILDINGS[i][1];
+      assertTrue("Able to talk to " + buildingMaster + " in town", !_bdCiv.canTalkTo(buildingMaster));
     }
   }
 }

@@ -201,7 +201,11 @@ public class BuildingDisplayCiv extends BaseCiv
 
   public boolean canTalkTo(String target)
   {
-    return _currentBldg.contains(target);
+    if (_currentBldg == null || !isInside()) {
+      return false;
+    } else {
+      return _currentBldg.contains(target);
+    }    
   }
 
   public String getCurrentBuilding()
@@ -289,7 +293,7 @@ public class BuildingDisplayCiv extends BaseCiv
           String answer = npc.talk();
           _mfCiv.displayText(answer);
           return true;
-        }        
+        }
       }
     }
     return false;
