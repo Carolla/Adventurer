@@ -14,9 +14,9 @@ public class FakeBuildingDisplayCiv extends BuildingDisplayCiv
   private String _currentBuildingName = "";
   public boolean _canApproach = true;
   public boolean _canEnter = true;
-  public String _displayedBldg;
-  public String _displayedImg;
-  public String _displayedText;
+  public String _displayedBldg = "";
+  public String _displayedImg = "";
+  public String _displayedText = "";
 
   @Override
   public void enterBuilding(String name)
@@ -37,9 +37,11 @@ public class FakeBuildingDisplayCiv extends BuildingDisplayCiv
   {
     if (_currentBuildingName.isEmpty()) {
       _currentBuildingName = bldg;
+      _insideBldg = false;
       return true;
     } else {
       _currentBuildingName = bldg;
+      _insideBldg = false;
       return _currentBuildingName.equals(bldg);
     }
   }
@@ -89,7 +91,18 @@ public class FakeBuildingDisplayCiv extends BuildingDisplayCiv
     super.displayBuildingInterior();
     _displayedText = ((FakeMainframeCiv) _mfCiv)._text.get(0);
   }
-  
+
+  @Override
+  public boolean talkToTarget(String target)
+  {
+    if (super.talkToTarget(target)) {
+      _displayedText = ((FakeMainframeCiv) _mfCiv)._text.get(0);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   @Override
   public void openTown()
   {

@@ -76,6 +76,6 @@ public class TestCmdTalk
     _cmdTalk.init(bobList);
 
     _cmdTalk.exec();
-    assertTrue(_bdciv._displayedText.length() > 0);
+    assertTrue("Saw \"" + _bdciv._displayedText + "\" instead of text", _bdciv._displayedText.length() > 0);
   }
 }
