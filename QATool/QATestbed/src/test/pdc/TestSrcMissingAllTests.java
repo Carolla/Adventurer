@@ -59,10 +59,10 @@ public class TestSrcMissingAllTests
 	}
 
 	/**
- 	 * @NORMAL_TEST void showFiles(File)
+ 	 * @NORMAL_TEST void displayFiles(File[], int, List)
 	 */
 	@Test
-	public void testShowFiles()
+	public void testDisplayFiles()
 	{
 		MsgCtrl.auditMsgsOn(false);
 		MsgCtrl.errorMsgsOn(false);
@@ -72,10 +72,10 @@ public class TestSrcMissingAllTests
 	}
 
 	/**
- 	 * @NORMAL_TEST void displayFiles(File[], int, List)
+ 	 * @NORMAL_TEST void showFiles(File)
 	 */
 	@Test
-	public void testDisplayFiles()
+	public void testShowFiles()
 	{
 		MsgCtrl.auditMsgsOn(false);
 		MsgCtrl.errorMsgsOn(false);

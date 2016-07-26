@@ -85,20 +85,7 @@ public class TestSubDirSource
 	}
 
 	/**
- 	 * @NORMAL_TEST File writeFile(File, String)
-	 */
-	@Test
-	public void testWriteFile()
-	{
-		MsgCtrl.auditMsgsOn(false);
-		MsgCtrl.errorMsgsOn(false);
-		MsgCtrl.where(this);
-
-		fail("\t\tNot yet implemented");
-	}
-
-	/**
- 	 * @NORMAL_TEST File augFile(File)
+ 	 * @NORMAL_TEST String getTestFilename(String, String)
 	 */
 	@Test
 	public void testGetTestFilename()
@@ -111,10 +98,23 @@ public class TestSubDirSource
 	}
 
 	/**
- 	 * @NORMAL_TEST File createFile(File, File, String)
+ 	 * @NORMAL_TEST String m(String, int, long)
 	 */
 	@Test
 	public void testM()
+	{
+		MsgCtrl.auditMsgsOn(false);
+		MsgCtrl.errorMsgsOn(false);
+		MsgCtrl.where(this);
+
+		fail("\t\tNot yet implemented");
+	}
+
+	/**
+ 	 * @NORMAL_TEST File writeFile(File, String)
+	 */
+	@Test
+	public void testWriteFile()
 	{
 		MsgCtrl.auditMsgsOn(false);
 		MsgCtrl.errorMsgsOn(false);
