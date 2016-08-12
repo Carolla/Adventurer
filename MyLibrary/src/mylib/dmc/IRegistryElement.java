@@ -42,23 +42,6 @@ package mylib.dmc;
  */
 public interface IRegistryElement
 {
-  /**
-   * Compare two {@code IRegistryElement}s objects, usually by comparing select fields. The
-   * implementation of this method should not override, or default to, the Object {@code equals}
-   * method.
-   * 
-   * @param target to check for equality
-   * @return true if the 'this' object and the target are equal; else false
-   */
-    abstract public boolean equals(IRegistryElement target);
-
-  /**
-   * Return a unique field of the element to act as a search key. This method allows a retrieval by
-   * name of the object.
-   * 
-   * @return the field key of the element
-   */
   abstract public String getKey();
-
-} // end of IRegisterElement interface
+}
 

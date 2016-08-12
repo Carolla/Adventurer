@@ -99,18 +99,6 @@ public abstract class Race
       magicAttackMod += _racialPoisonResist;
     }
   }
-  
-  // Assign the chances for thief skills for level 1 by race
-  public String[][] adjustRacialThiefSkills(String[][] skills) 
-  {
-    // Adjust the thief skills by the racial mods
-    for (int k=0; k < skills.length; k++) {
-      int oldChance = Integer.parseInt(skills[k][1]);
-      int newChance = oldChance + _racialThiefMods[k];
-      skills[k][1] = String.format("%s",  newChance);     
-    }
-    return skills;
-  }
 
   /**
    * Return the language specific to the race, or null. Half-breed races have a 50% chance of

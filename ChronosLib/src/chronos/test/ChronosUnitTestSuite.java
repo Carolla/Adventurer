@@ -14,6 +14,7 @@ import org.junit.runners.Suite;
 
 import chronos.test.pdc.TestAdventure;
 import chronos.test.pdc.TestItem;
+import chronos.test.pdc.TestNPC;
 import chronos.test.pdc.TestOccupation;
 import chronos.test.pdc.TestSkill;
 import chronos.test.pdc.TestTown;
@@ -54,6 +55,7 @@ import chronos.test.pdc.race.RaceTestSuite;
     TestAdventure.class,
     TestItem.class,
     TestOccupation.class,
+    TestNPC.class,
     TestSkill.class,
     TestTown.class,
 

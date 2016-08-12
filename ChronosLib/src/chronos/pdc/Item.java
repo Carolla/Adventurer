@@ -20,176 +20,168 @@ import mylib.dmc.IRegistryElement;
  *          Apr 11 2011 // TAA changed visibiltiy of attributes to protected <br>
  *          Oct 13, 2015 // revised for new Hero gerneration rules <br>
  */
-public class Item implements IRegistryElement {
-	/** Enum of various category of Inventory Items */
-	public enum ItemCategory {
-		ARMS,
-		ARMOR,
-		CLOTHING,
-		EQUIPMENT,
-		MAGIC,
-		PROVISION,
-		SPELL_MATERIAL,
-		VALUABLES;
-	}
+public class Item implements IRegistryElement
+{
+  /** Enum of various category of Inventory Items */
+  public enum ItemCategory {
+    ARMS, ARMOR, CLOTHING, EQUIPMENT, MAGIC, PROVISION, SPELL_MATERIAL, VALUABLES;
+  }
 
-	/** Category for easier grouping */
-	private ItemCategory _category;
-	/** Name of this Item */
-	private String _name;
-	/** Weight of a single Item in ounces (qty = 1) */
-	private double _weight;
-	/** Number of the kinds of items (quantity) */
-	private int _qty;
+  /** Category for easier grouping */
+  private ItemCategory _category;
+  /** Name of this Item */
+  private String _name;
+  /** Weight of a single Item in ounces (qty = 1) */
+  private double _weight;
+  /** Number of the kinds of items (quantity) */
+  private int _qty;
 
-	/*
-	 * CONSTRUCTOR(S) AND RELATED METHODS
-	 */
+  /*
+   * CONSTRUCTOR(S) AND RELATED METHODS
+   */
 
-	/**
-	 * Construct an Item from its name and weight descriptor
-	 * 
-	 * @param type
-	 *            one of enum ItemCategory
-	 * @param name
-	 *            of the Item
-	 * @param weight
-	 *            weight of item in lbs.ounces
-	 * @param initialQty
-	 *            the number of these Items being constructed
-	 */
-	public Item(ItemCategory cat, String name, double weight) {
-		if (weight <= 0.0) {
-			weight = 0.0;
-		}
+  /**
+   * Construct an Item from its name and weight descriptor
+   * 
+   * @param type one of enum ItemCategory
+   * @param name of the Item
+   * @param weight weight of item in lbs.ounces
+   * @param initialQty the number of these Items being constructed
+   */
+  public Item(ItemCategory cat, String name, double weight)
+  {
+    if (weight <= 0.0) {
+      weight = 0.0;
+    }
 
-		_category = cat;
-		_name = name;
-		_weight = weight;
-		_qty = 1;
-	}
+    _category = cat;
+    _name = name;
+    _weight = weight;
+    _qty = 1;
+  }
 
-	/*
-	 * PUBLIC METHODS
-	 */
+  /*
+   * PUBLIC METHODS
+   */
 
-	/**
-	 * Increment the number of these kinds of Items in addition to it's current
-	 * quanity. Negative values are allowed for dropping one or more of these
-	 * Items
-	 * 
-	 * @param delta
-	 *            the <i>increase or decrease</i> in quantity for this Item
-	 * @return the final quantity for the Item
-	 */
-	public int adjustQuantity(int delta) {
-		if (delta + _qty < 0) {
-			_qty = 0;
-		} else {
-			_qty += delta;
-		}
+  /**
+   * Increment the number of these kinds of Items in addition to it's current quanity. Negative
+   * values are allowed for dropping one or more of these Items
+   * 
+   * @param delta the <i>increase or decrease</i> in quantity for this Item
+   * @return the final quantity for the Item
+   */
+  public int adjustQuantity(int delta)
+  {
+    if (delta + _qty < 0) {
+      _qty = 0;
+    } else {
+      _qty += delta;
+    }
 
-		return _qty;
-	}
+    return _qty;
+  }
 
-	@Override
-	public String getKey() {
-		return _name;
-	}
+  @Override
+  public String getKey()
+  {
+    return _name;
+  }
 
-	/**
-	 * Get the category of the particular item
-	 * 
-	 * @return one of the Categories
-	 */
-	public ItemCategory getCategory() {
-		return _category;
-	}
+  /**
+   * Get the category of the particular item
+   * 
+   * @return one of the Categories
+   */
+  public ItemCategory getCategory()
+  {
+    return _category;
+  }
 
-	/**
-	 * Get the name of this Item
-	 * 
-	 * @return the Item name
-	 */
-	public String getName() {
-		return _name;
-	}
+  /**
+   * Get the name of this Item
+   * 
+   * @return the Item name
+   */
+  public String getName()
+  {
+    return _name;
+  }
 
-	/**
-	 * Get the quantity attribute of all Items of this type
-	 * 
-	 * @return the Item name
-	 */
-	public int getQuantity() {
-		return _qty;
-	}
+  /**
+   * Get the quantity attribute of all Items of this type
+   * 
+   * @return the Item name
+   */
+  public int getQuantity()
+  {
+    return _qty;
+  }
 
-	/**
-	 * Get the weight of this Item
-	 * 
-	 * @return the weight in ounces
-	 */
-	public double getWeight() {
-		return _weight;
-	}
+  /**
+   * Get the weight of this Item
+   * 
+   * @return the weight in ounces
+   */
+  public double getWeight()
+  {
+    return _weight;
+  }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((_category == null) ? 0 : _category.hashCode());
-		result = prime * result + ((_name == null) ? 0 : _name.hashCode());
-		result = prime * result + _qty;
-		long temp;
-		temp = Double.doubleToLongBits(_weight);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		return result;
-	}
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result
+        + ((_category == null) ? 0 : _category.hashCode());
+    result = prime * result + ((_name == null) ? 0 : _name.hashCode());
+    result = prime * result + _qty;
+    long temp;
+    temp = Double.doubleToLongBits(_weight);
+    result = prime * result + (int) (temp ^ (temp >>> 32));
+    return result;
+  }
 
-	@Override
-	public boolean equals(IRegistryElement target) {
-		return equals((Object) target);
-	}
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Item other = (Item) obj;
+    if (_category != other._category)
+      return false;
+    if (_name == null) {
+      if (other._name != null)
+        return false;
+    } else if (!_name.equals(other._name))
+      return false;
+    if (_qty != other._qty)
+      return false;
+    if (Double.doubleToLongBits(_weight) != Double
+        .doubleToLongBits(other._weight))
+      return false;
+    return true;
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Item other = (Item) obj;
-		if (_category != other._category)
-			return false;
-		if (_name == null) {
-			if (other._name != null)
-				return false;
-		} else if (!_name.equals(other._name))
-			return false;
-		if (_qty != other._qty)
-			return false;
-		if (Double.doubleToLongBits(_weight) != Double
-				.doubleToLongBits(other._weight))
-			return false;
-		return true;
-	}
-
-	/**
-	 * Convert Item to string: name (category), qty = ?, weight = ?
-	 * 
-	 * @param item
-	 *            that is converted to a record for saving
-	 * @return record of the item passed in
-	 */
-	@Override
-	public String toString() {
-		String catStr = null;
-		if (_category != null) {
-			catStr = _category.toString();
-		}
-		return (_name + " (" + catStr + ")");
-	}
+  /**
+   * Convert Item to string: name (category), qty = ?, weight = ?
+   * 
+   * @param item that is converted to a record for saving
+   * @return record of the item passed in
+   */
+  @Override
+  public String toString()
+  {
+    String catStr = null;
+    if (_category != null) {
+      catStr = _category.toString();
+    }
+    return (_name + " (" + catStr + ")");
+  }
 } // end of Item class
 

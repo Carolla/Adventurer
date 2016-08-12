@@ -64,19 +64,6 @@ public class Adventure implements IRegistryElement
   // PUBLIC METHODS
   // ============================================================
 
-  /**
-   * Two Adventures are equal if all the adventure name, Town name, and Arena name are equal
-   * 
-   * @param otherThing the Adventures to be considered
-   * @return true if all elements are equal
-   */
-  @Override
-  public boolean equals(IRegistryElement otherThing)
-  {
-    return equals((Object) otherThing);
-  }
-
-
   @Override
   public int hashCode()
   {

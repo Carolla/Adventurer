@@ -126,21 +126,6 @@ public class Occupation implements IRegistryElement
     return true;
   }
 
-  /*
-   * Two Occupations are considered equal if their name and associated Skill are equal
-   * 
-   * @param otherThing the Skill to be considered
-   * 
-   * @return true if the Skill has the same name and description as this object
-   * 
-   * @see mylib.dmc.IRegistryElement#equals(mylib.dmc.IRegistryElement)
-   */
-  @Override
-  public boolean equals(IRegistryElement otherThing)
-  {
-    return equals((Object) otherThing);
-  }
-
 
   /*
    * Returns the field used for registry retrieval

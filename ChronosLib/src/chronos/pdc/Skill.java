@@ -80,19 +80,6 @@ public class Skill implements IRegistryElement
         _description = desc;
     }
 
-
-    /**
-     * Two Skills are considered equal if their names and description are equal.
-     * 
-     * @param otherThing the Skill to be considered
-     * @return true if the Skill has the same name as this object
-     */
-    @Override
-    public boolean equals(IRegistryElement otherThing)
-    {
-      return equals((Object) otherThing);
-    }
-
     @Override
     public int hashCode()
     {
