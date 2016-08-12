@@ -24,11 +24,6 @@ package chronos.pdc;
  */
 public class GameClock
 {
-	/** Conversion constant */
-	private final long NBR_SECS_PER_HOUR = 3600L;
-	/** Conversion constant */
-	private final long NBR_SECS_PER_MINUTE = 60L;
-
 	/** Set the default game clock time to 6am.*/
     final long START_HOUR = 6 * 3600;
 	/** Internal: init the game clock */

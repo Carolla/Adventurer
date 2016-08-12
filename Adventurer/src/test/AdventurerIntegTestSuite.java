@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import chronos.test.pdc.TestRegistry;
+import chronos.test.pdc.registry.RegistryTestSuite;
 import chronos.test.pdc.registry.TestRegistryFactory;
 import test.integ.TA00a_Initialize;
 import test.integ.TA00b_Quit;
@@ -61,6 +62,7 @@ import test.integ.TA14_TalkToPatron;
     TestRegistry.class,
     TestMetaDie.class,
     TestRegistryFactory.class,
+    RegistryTestSuite.class,
 })
 public class AdventurerIntegTestSuite
 {

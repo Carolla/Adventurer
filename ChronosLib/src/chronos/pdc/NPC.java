@@ -66,15 +66,6 @@ public class NPC implements IRegistryElement
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
-  /** Default constructor */
-  public NPC()
-  {
-    _name = "NPC";
-    _note = "new";
-    _nearDescription = "default NPC's near description";
-    _farDescription = "default NPC's far description";
-  }
-
   /**
    * Normal constructor: no parm can be empty or null except the note
    * 

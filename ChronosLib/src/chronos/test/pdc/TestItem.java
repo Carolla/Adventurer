@@ -10,6 +10,7 @@
 package chronos.test.pdc;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +22,8 @@ import chronos.pdc.Item.ItemCategory;
  * Tests the Item class
  *
  * @author Alan Cline
- * @version <DL>
+ * @version
+ *          <DL>
  *          <DT>Build 1.0 Feb 11, 2013 // original
  *          <DD>
  *          </DL>
@@ -82,6 +84,21 @@ public class TestItem
   {
     item.adjustQuantity(Integer.MIN_VALUE);
     assertEquals(0, item.getQuantity());
+  }
+
+  @Test
+  public void defaultObjectsEqual()
+  {
+    Item item2 = new Item(ItemCategory.VALUABLES, "FakeItem", 0);
+    assertEquals(item, item2);
+  }
+
+  @Test
+  public void differentObjectsNotEqual()
+  {
+    Item item2 = new Item(ItemCategory.ARMS, "FakeItem", 0);
+    assertFalse(item.equals(item2));
+    assertFalse(item2.equals(item));
   }
 }
 // end of TestItem class

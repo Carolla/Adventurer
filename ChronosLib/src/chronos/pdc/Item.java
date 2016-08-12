@@ -23,7 +23,14 @@ import mylib.dmc.IRegistryElement;
 public class Item implements IRegistryElement {
 	/** Enum of various category of Inventory Items */
 	public enum ItemCategory {
-		ARMS, ARMOR, CLOTHING, EQUIPMENT, MAGIC, PROVISION, SPELL_MATERIAL, VALUABLES;
+		ARMS,
+		ARMOR,
+		CLOTHING,
+		EQUIPMENT,
+		MAGIC,
+		PROVISION,
+		SPELL_MATERIAL,
+		VALUABLES;
 	}
 
 	/** Category for easier grouping */
@@ -52,9 +59,6 @@ public class Item implements IRegistryElement {
 	 *            the number of these Items being constructed
 	 */
 	public Item(ItemCategory cat, String name, double weight) {
-		name = name.trim(); // trigger NPE if null passed
-		assert (name.length() > 0);
-
 		if (weight <= 0.0) {
 			weight = 0.0;
 		}
@@ -79,13 +83,13 @@ public class Item implements IRegistryElement {
 	 * @return the final quantity for the Item
 	 */
 	public int adjustQuantity(int delta) {
-		if (delta < 0 && (delta + _qty < 0)) {
+		if (delta + _qty < 0) {
 			_qty = 0;
 		} else {
 			_qty += delta;
 		}
 
-		return _qty; // either to updated value or the original
+		return _qty;
 	}
 
 	@Override

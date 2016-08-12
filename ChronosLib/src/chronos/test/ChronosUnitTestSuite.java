@@ -20,7 +20,6 @@ import chronos.test.pdc.TestTown;
 import chronos.test.pdc.buildings.BuildingsTestSuite;
 import chronos.test.pdc.character.CharacterTestSuite;
 import chronos.test.pdc.race.RaceTestSuite;
-import chronos.test.pdc.registry.RegistryTestSuite;
 
 
 /**
@@ -50,7 +49,6 @@ import chronos.test.pdc.registry.RegistryTestSuite;
     BuildingsTestSuite.class,
     CharacterTestSuite.class,
     RaceTestSuite.class,
-    RegistryTestSuite.class,
 
     /* PDC test files */
     TestAdventure.class,

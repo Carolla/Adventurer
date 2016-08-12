@@ -109,7 +109,7 @@ public class TestHeroRegistry
   @Test
   public void testGetNamePlates()
   {
-    String[] expNamePlates = {"Falsoon: Male Human Fighter", "Blythe: Female Elf Druid",
+    String[] expNamePlates = {"Falsoon: Male Human Fighter", "Blythe: Female Elf Wizard",
         "Balthazar: Male Human Cleric"};
 
     List<Hero> list = _heroReg.getAll();
@@ -120,7 +120,7 @@ public class TestHeroRegistry
     
     String fullList = plateList.toString();
     for (int k = 0; k < expNamePlates.length; k++) {
-      assertTrue(fullList.contains(expNamePlates[k]));
+      assertTrue("Didn't find " + expNamePlates[k] + " in " + fullList, fullList.contains(expNamePlates[k]));
     }
   }
 
