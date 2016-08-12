@@ -13,17 +13,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import test.pdc.character.TestHunger;
-import test.pdc.command.TestCmdApproach;
-import test.pdc.command.TestCmdEnter;
-import test.pdc.command.TestCmdInspect;
-import test.pdc.command.TestCmdLook;
-import test.pdc.command.TestCmdQuit;
-import test.pdc.command.TestCmdReturn;
-import test.pdc.command.TestCommandFactory;
-import test.pdc.command.TestCommandParser;
-import test.pdc.command.TestDeltaCmdList;
-import test.pdc.command.TestEvent;
-import test.pdc.command.TestScheduler;
+import test.pdc.command.CommandSuite;
 
 
 /**
@@ -43,17 +33,7 @@ import test.pdc.command.TestScheduler;
     TestHunger.class,
 
     /* PDC.Command test files */
-    TestCmdApproach.class,
-    TestCmdEnter.class,
-    TestCmdInspect.class,
-    TestCmdLook.class,
-    TestCmdQuit.class,
-    TestCmdReturn.class,
-    TestCommandFactory.class,
-    TestCommandParser.class,
-    TestDeltaCmdList.class,
-    TestEvent.class,
-    TestScheduler.class
+    CommandSuite.class,
 
 })
 /** Compilation of all unit tests for regression and integration testing. */
