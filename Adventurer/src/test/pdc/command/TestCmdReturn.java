@@ -6,6 +6,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -43,6 +44,13 @@ public class TestCmdReturn
     
     assertTrue(_bdCiv.isOnTown());
     assertEquals("", _bdCiv.getCurrentBuilding());
+  }
+  
+  @Test
+  public void testExtendedSyntax()
+  {
+    String[] extendedSyntax = {"to", "town"};
+    assertTrue(_cmdReturn.init(Arrays.asList(extendedSyntax)));
   }
 
 }
