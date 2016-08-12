@@ -189,46 +189,6 @@ public class Chronos
   static public final int SPW = GPW / 2;
 
   /**
-   * Race and Person constants that should not be defined in one project when needed in a library
-   */
-  public static enum ATTRIBUTE {
-    /**
-     * Strength: Physical muscle for fighting and lifting; STR is the prime requisite for a Fighter.
-     */
-    STR(),
-
-    /**
-     * Dexterity: Ability to pick locks, detect and set traps, climb walls, and gives advantage for
-     * quiet attacks in battle; DEX is the prime requisite for a Rogue.
-     */
-    DEX(),
-
-    /**
-     * Intelligence: Ability to identify items, magical or otherwise, learn and cast arcane spells;
-     * INT is the prime requsite for a Wizard.
-     */
-    INT(),
-
-    /**
-     * Wisdom: Application of knowledge, ability to cast clerical spells, works against undead
-     * creatures and to protect against magical attacks; WIS is the prime requisite for a Cleric.
-     */
-    WIS(),
-
-    /**
-     * Constitution: Physical stamina and ability to resist phsycial trauma, such as resisting
-     * poison, or cramping up ice cold water.
-     */
-    CON(),
-
-    /**
-     * Charisma: Ability to work with people, negotiate better deals, and partially reflects the
-     * appearance of the Person.
-     */
-    CHR();
-  }
-
-  /**
    * Allow the base location of class files to be defined or redirected for testing
    * 
    * @return the current base directory, typically the source directory for the project

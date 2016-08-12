@@ -34,20 +34,6 @@ public class Inventory {
 	/** Peasant must start less than any of the other Klasses */
 	static public final int SILVER_PER_GOLD = 10;
 
-	// Keys to all occupational kits
-	public enum KitNdx {
-		ALCHEMIST, LEATHER, METAL, SEWING, WOOD, THIEVES
-	};
-
-	// Name (value) | wt (gpw) ...(8 gp = 1 lb)
-	final String[] kits = { "Alchemists Kit (100 gp) | 40", // 5 lb
-			"Leatherworking Kit (50 gp) | 64", // 8 lb
-			"Metalsmith Kit (50 gp) | 80", // 10 lb
-			"Sewing Kit (30 gp) | 16", // 2 lb
-			"Woodworking Kit (50 gp) | 64", // 8 lb
-			"Thieves Kit (50 gp) | 8" // 1 lb
-	};
-
 	// Holds all inventory items
 	private List<Item> _itemList;
 	private static ItemRegistry _itemRegistry = new ItemRegistry();
