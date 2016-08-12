@@ -206,7 +206,7 @@ public class NewHeroIPPanel extends ChronosPanel
     JButton cancelButton = new JButton("CANCEL");
     // Clear editFlag and data, then return back to main action panel if
     // Cancel is pressed
-    cancelButton.addActionListener((a) -> _nhCiv.back());
+    cancelButton.addActionListener((a) -> _hdCiv.back());
 
     // Create the SUBMIT button
     JButton submitButton = new JButton("SUBMIT");
@@ -223,8 +223,7 @@ public class NewHeroIPPanel extends ChronosPanel
           // Create the new Hero and display it
           Hero hero = _nhCiv.createHero(input);
           _hdCiv.displayHero(hero, true); // initial Hero needs true
-          // arg to check
-          // overwriting
+          // arg to check overwriting
         }
       }
     });

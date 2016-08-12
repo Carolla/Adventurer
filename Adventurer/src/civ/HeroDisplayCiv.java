@@ -33,7 +33,7 @@ import chronos.pdc.registry.HeroRegistry;
  *          Nov 6, 2015 // revised to be called by NewHeroCiv <br>
  *          Nov 21, 2015 // updated JPanel to ChronosPanel and edited accordingly <br>
  */
-public class HeroDisplayCiv extends BaseCiv
+public class HeroDisplayCiv
 {
   /** Associated Hero */
   private Hero _hero = null;

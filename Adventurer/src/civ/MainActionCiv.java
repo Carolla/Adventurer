@@ -43,7 +43,7 @@ import pdc.command.CommandFactory;
  * @version Nov 7, 2015 // original <br>
  */
 
-public class MainActionCiv extends BaseCiv
+public class MainActionCiv
 {
   private AdventureRegistry _advReg;
   private HeroRegistry _dorm;
@@ -135,7 +135,7 @@ public class MainActionCiv extends BaseCiv
 
   private void createHero()
   {
-    NewHeroCiv nhCiv = new NewHeroCiv(_mfCiv, _dorm);
+    NewHeroCiv nhCiv = new NewHeroCiv();
     NewHeroIPPanel ipPanel = new NewHeroIPPanel(nhCiv, _hdCiv);
     _mfCiv.replaceLeftPanel(ipPanel);
     ipPanel.setDefaultFocus(); // only works after panel is displayed

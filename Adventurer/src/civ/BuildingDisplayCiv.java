@@ -25,7 +25,7 @@ import chronos.pdc.registry.BuildingRegistry;
  * @version Feb 20, 2015 // updated from earlier version by Tim Armstrong <br>
  *          Nov 18 2015 // Moved building stuff from Mainframe into BuildingDisplayCiv <br>
  */
-public class BuildingDisplayCiv extends BaseCiv
+public class BuildingDisplayCiv
 {
   protected MainframeCiv _mfCiv;
   // private UserMsgInterface _output;
