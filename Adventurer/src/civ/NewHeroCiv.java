@@ -33,13 +33,6 @@ public class NewHeroCiv extends BaseCiv
 
 
   public static final String[] KLASS_LIST = Klass.KLASS_LIST;
-
-
-  /** ErrorCode for type of error encountered on input */
-  public enum ErrorCode {
-    NO_ERROR, NAME_MISSING, NAME_TOO_LONG, NAME_NOT_UNIQUE, HERO_NOT_CREATED
-  };
-
   private MainframeCiv _mfCiv;
 
   // ===========================================================================
@@ -71,7 +64,6 @@ public class NewHeroCiv extends BaseCiv
    * Create the new Hero from the user's input data
    * 
    * @param inputMap of user fields: name, gender, hairColor, race, and Klass
-   * @param ErrorCode of NO_ERROR, or some ErrorCode value if a problem occured
    */
   public Hero createHero(EnumMap<HeroInput, String> inputMap)
   {
