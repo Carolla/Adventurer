@@ -34,16 +34,24 @@ public class QAUtils
    static private final String LEFT_PAREN = "(";
    static private final String RIGHT_PAREN = ")";
 
-   public enum FileType {SOURCE, TEST};
+   public enum FileType {
+      SOURCE, TEST
+   };
+
    static private final String SRC_PREFIX = "src" + Constants.FS;
    static private final String TEST_PREFIX = "test" + Constants.FS;
 
-   
+   // Skip over testing prep methods
+   static final String[] PREP_METHOD =
+         {"setUpBeforeClass", "tearDownAfterClass", "setUp", "tearDown"};
+
+
    /**
-    * Extracts public and protected methods from the source file, sorts each list
+    * Extracts public and protected methods from a source or test file, then sorts each list.
+    * Void return types are removed the test signatures
     * 
     * @param clazz target source file
-    * @param fileType   true if source file; false if test file
+    * @param ft enum FileType.SOURCE or FileType.TEST to know more about the file being examined
     * @return list of public and protected method signatures for the target
     */
    static public ArrayList<String> collectMethods(String filePath, FileType ft)
@@ -62,11 +70,12 @@ public class QAUtils
          }
          if ((Modifier.isPublic(modifiers)) || (Modifier.isProtected(modifiers))) {
             String mName = extractSignature(method, clazzName);
-            if (mName != null) {
+            if ((mName != null) && (!isPrepMethod(mName))) {
                mList.add(mName);
             }
          }
       }
+
       // Sort methods to keep in sync with test methods later
       sortSignatures(mList);
       return mList;
@@ -77,24 +86,23 @@ public class QAUtils
     * Return the {@code Class} for the given java file
     * 
     * @param path the fully-qualifed (with package name) {@code .java} source filename
-    * @param ft   indentify where SOURCE or TEST file is located
+    * @param ft indentify where SOURCE or TEST file is located
     * @return the equivalent {@.class} file
     */
    static public Class<?> convertFileToClass(String path, FileType ft)
    {
-      // Seperate the file and the root part from the path 
+      // Seperate the file and the root part from the path
       String fname = null;
-      String root = null;
-      String cutPoint = (ft == FileType.SOURCE) ? SRC_PREFIX : TEST_PREFIX;
+      // String cutPoint = (ft == FileType.SOURCE) ? SRC_PREFIX : TEST_PREFIX;
       String[] parts = path.split(SRC_PREFIX);
-      root = parts[0];
+      // String root = parts[0];
       fname = parts[1];
-      // Pull of the java suffix   
+      // Pull of the java suffix
       fname = fname.split(".java")[0];
       // Convert file separators to package format
       fname = fname.replaceAll(Pattern.quote(Constants.FS), ".");
       String className = fname;
-      
+
       // Fixed for testing: "Projects.eChronos.QATool.QATestbed.bin.pdc.SrcMissingAllTests";
       // THIS WORKED: className = "pdc.SrcMissingAllTests";
       Class<?> sourceClass = null;
@@ -121,8 +129,7 @@ public class QAUtils
    static public String extractSignature(Method m, String anchorName)
    {
       String s = m.toString();
-      // Skip any method names that do not have the anchorName in it (synthetic classes) and a
-      // 'main'
+      // Skip any method name without an anchorName in it (synthetic classes) and a 'main()'
       if ((!s.contains(anchorName)) || (s.contains("main("))) {
          return null;
       }
@@ -138,19 +145,50 @@ public class QAUtils
       return (retType + " " + methodDecl);
    }
 
+
    /**
-    * Display a list to the console if the verbose flag is set
+    * Is the method name a standard JUnit test prep methods?
     * 
-    * @param verbose display msg and list only if this param is true
-    * @param msg message to display
+    * @param name method name to test
+    * @return true if the name is one of the skippable names
     */
-   static public void outList(boolean verbose, String msg, List<String> aList)
+   static public boolean isPrepMethod(String name)
    {
-      if (verbose) {
-         System.out.println(msg);
-         for (String s : aList) {
-            System.out.println("\t\t" + s);
+      boolean retval = false;
+      for (int k = 0; k < PREP_METHOD.length; k++) {
+         if (name.contains(PREP_METHOD[k])) {
+            retval = true;
+            break;
          }
+      }
+      return retval;
+   }
+
+
+   /**
+    * Display a method list. Set the return type on the other side of the signature to easier read
+    * the method name: <br>
+    * <code> "returnType methodName(parms...)"</code> becomes
+    * <code> "methodName(parms...) -> ReturnType"</code>.
+    * 
+    * @param msg message to display
+    * @param aList of method signatures to reformat and display
+    */
+   static public void outList(String msg, List<String> aList)
+   {
+      System.out.println(msg);
+      // Extract the return type
+      String returnType = "void";
+      for (String s : aList) {
+         int wsChar = s.indexOf(" ");
+         if (wsChar == -1) {
+            wsChar = 0;
+         }
+         else {
+            returnType = s.substring(0, wsChar);
+         }
+         String methodSig = s.substring(wsChar);
+         System.out.println("\t\t" + methodSig + " -> " + returnType);
       }
    }
 

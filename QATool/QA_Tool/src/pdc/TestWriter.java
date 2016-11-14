@@ -31,23 +31,32 @@ public class TestWriter
    private int _filesAugmented;
    private int _filesUnchanged;
    private boolean _verbose;
-   
+   private boolean _nofail;
+
    private Prototype _proto;
 
-   // Skip over testing prep methods
-   static final String[] PREP_METHOD =
-         {"setUpBeforeClass", "tearDownAfterClass", "setUp", "tearDown"};
+   // // Skip over testing prep methods
+   // static final String[] PREP_METHOD =
+   // {"setUpBeforeClass", "tearDownAfterClass", "setUp", "tearDown"};
 
 
    // ================================================================================
    // CONSTRUCTOR and HELPERS
    // ================================================================================
- 
-   public TestWriter(File srcRoot, boolean verbose)
+
+   /**
+    * Create a writer to create or augment test cases
+    * 
+    * @param srcRoot root of source tree from which to derive test classes and methods
+    * @param verbose if true, writes audit messages to console
+    * @param nofail if true, writes Not Implemented test stubs instead of failing test stubs
+    */
+   public TestWriter(File srcRoot, boolean verbose, boolean nofail)
    {
       _testRoot = makeTestPath(srcRoot);
       _verbose = verbose;
-      
+      _nofail = nofail;
+
       _filesWritten = 0;
       _filesAugmented = 0;
       _filesUnchanged = 0;
@@ -178,14 +187,6 @@ public class TestWriter
          testDir = dir;
       }
       return testDir;
-
-//      File testDir = null;
-//      String dirPath = root.getAbsolutePath() + Constants.FS + "test";
-//      File dir = new File(dirPath);
-//      if (dir.isDirectory()) {
-//         testDir = dir;
-//      }
-//      return testDir;
    }
 
 
@@ -206,28 +207,47 @@ public class TestWriter
     * Writes to an empty test class if it doesn't exist, or augment an existing test class with new
     * test methods
     * 
-    * @param target test file has been created but is empty
+    * @param target test file to write to
     * @param srcList list of source file methods to mirror in the test file
     * @return the test file written
     */
    public File writeTestFile(File testTarget, ArrayList<String> srcList)
    {
       _proto = new Prototype();
-      
+
       long fileLen = testTarget.length();
       ArrayList<String> convSrcList = convertToTestNames(srcList);
-      QAUtils.outList(_verbose, "\tConverted source methods: ", convSrcList);
 
-      QAUtils.outMsg(_verbose, "\t" + testTarget + " contains " + fileLen + " characters");
       if (fileLen == 0L) {
+         QAUtils.outMsg(_verbose, "\n\tCreating new test file " + testTarget);
+         QAUtils.outList("\tConverted source methods: ", convSrcList);
          _proto.writeNewTestFile(testTarget, srcList, convSrcList);
          _filesWritten++;
       } else {
-         ArrayList<String> testFileList = collectTestMethods(testTarget.getPath());
-         QAUtils.outList(_verbose, "\tTest file methods: ", testFileList);
-         ArrayList<String> augList = (ArrayList<String>) compareLists(convSrcList, testFileList);
-         QAUtils.outList(_verbose, "\tMethods missing from test file: ", augList);
-          _proto.augmentTestFile(testTarget, srcList, augList);
+         QAUtils.outMsg(_verbose,
+               "\n\tExisting file " + testTarget + " contains " + fileLen + " characters");
+         // Find list of existing test methods
+         ArrayList<String> existingTestMethods =
+               QAUtils.collectMethods(testTarget.getPath(), FileType.TEST);
+         if (_verbose) {
+            QAUtils.outList("\tExisting test file methods: ", existingTestMethods);
+         }
+
+         // Compare with existing source methods to determine test methods to add to test file
+         // Remove the void returnType on all test methods for a better compare
+         for (int k = 0; k < existingTestMethods.size(); k++) {
+            String sig = existingTestMethods.get(k);
+            String nm = sig.substring(sig.indexOf(" ") + 1);
+            existingTestMethods.set(k, nm);
+         }
+         ArrayList<String> augList =
+               (ArrayList<String>) compareLists(convSrcList, existingTestMethods);
+         if (_verbose) {
+            QAUtils.outList("\tMethods missing from test file: ", augList);
+         }
+
+         // Update the existing test file
+         _proto.augmentTestFile(testTarget, srcList, augList);
          if (augList.size() == 0) {
             _filesUnchanged++;
          }
@@ -237,49 +257,28 @@ public class TestWriter
 
 
    /**
-    * Compare list1 with list2, identifying all entries in list2 that is not in list2. Entries in
-    * list2 that are not in list1 are ignored. If an entry exists in list1 that is not in list2,
-    * then it is added to the output list and returned.
+    * Identifies each entry in <code>newList</code> that is not in <code>existingList</code>. If an
+    * entry exists in <code>newList</code> that is not in <code>authList</code>, then it is added to
+    * the output list (a new <code>authList</code>) and returned. Entries in <code>authList</code>
+    * that are not in <code>newList</code> are ignored.
     * 
-    * @param list1 authority list for comparison
-    * @param list2 contains entries not in list1
-    * @return Entries that are missing from list2.
+    * @param newList contains entries not in authList
+    * @param authList authority list for comparison
+    * @return Entries that are missing from authList.
     */
-   private ArrayList<String> compareLists(ArrayList<String> list1, ArrayList<String> list2)
+   private ArrayList<String> compareLists(ArrayList<String> newList, ArrayList<String> authList)
    {
       ArrayList<String> augList = new ArrayList<String>();
 
-      // Search in list2 for every entry in list1
-      int srcLen = list1.size();
-      for (int s=0; s < srcLen; s++) {
-         String name = list1.get(s);
-         if (!list2.contains(name)) {
+      // Search in authList for every entry in newList
+      int srcLen = authList.size();
+      for (int s = 0; s < srcLen; s++) {
+         String name = newList.get(s);
+         if (!authList.contains(name)) {
             augList.add(name);
          }
-      }         
-      return augList;
-   }
-
-
-   /**
-    * Collect the methods of the test file, then remove the JUnit prep methods and the void prefix
-    * 
-    * @param filePath of the target test file to extract methods from
-    */
-   private ArrayList<String> collectTestMethods(String filePath)
-   {
-      ArrayList<String> finalList = new ArrayList<String>();
-      String unwanted = "void ";
-
-      ArrayList<String> testMethods = QAUtils.collectMethods(filePath, FileType.TEST);
-      for (String s : testMethods) {
-         if (!isPrepMethod(s)) {
-            int start = s.indexOf(unwanted);
-            String name = s.substring(start + unwanted.length());
-            finalList.add(name);
-         }
       }
-      return finalList;
+      return augList;
    }
 
 
@@ -302,22 +301,22 @@ public class TestWriter
    }
 
 
-   /**
-    * Is the method name a standard JUnit test prep methods?
-    * 
-    * @param name method name to test
-    * @return true if the name is one of the skippable names
-    */
-   private boolean isPrepMethod(String name)
-   {
-      boolean retval = false;
-      for (int k = 0; k < PREP_METHOD.length; k++) {
-         if (name.contains(PREP_METHOD[k])) {
-            retval = true;
-            break;
-         }
-      }
-      return retval;
-   }
+   // /**
+   // * Is the method name a standard JUnit test prep methods?
+   // *
+   // * @param name method name to test
+   // * @return true if the name is one of the skippable names
+   // */
+   // private boolean isPrepMethod(String name)
+   // {
+   // boolean retval = false;
+   // for (int k = 0; k < PREP_METHOD.length; k++) {
+   // if (name.contains(PREP_METHOD[k])) {
+   // retval = true;
+   // break;
+   // }
+   // }
+   // return retval;
+   // }
 
 }

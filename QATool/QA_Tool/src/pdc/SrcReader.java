@@ -50,7 +50,7 @@ public class SrcReader
    ArrayList<String> _excFiles;
 
    // length of path prefix to control recursion
-   private int _srcPathLen;
+//   private int _srcPathLen;
 
    // ================================================================================
    // CONSTRUCTOR and HELPER METHODS
@@ -59,7 +59,7 @@ public class SrcReader
    public SrcReader(File srcRoot, TestWriter testWriter, boolean verbose)
    {
       _srcRoot = srcRoot;
-      _srcPathLen = _srcRoot.getPath().length();
+//      _srcPathLen = _srcRoot.getPath().length();
       _testWriter = testWriter;
       _verbose = verbose;
    }
@@ -73,16 +73,15 @@ public class SrcReader
     *           to scan
     * @param qaScanner contains common utility methods
     */
-   public SrcReader(File srcRoot, String excludeFilename, TestWriter testWriter, boolean verbose)
+   public SrcReader(File srcRoot, File excFile, TestWriter testWriter, boolean verbose)
    {
       _srcRoot = srcRoot;
-      _srcPathLen = _srcRoot.getPath().length();
+//      _srcPathLen = _srcRoot.getPath().length();
       _testWriter = testWriter;
       _verbose = verbose;
 
       // Set the exclusion files and folders
-      File excludeFile = new File(_srcRoot + Constants.FS + excludeFilename);
-      setExclusions(excludeFile, srcRoot);
+      setExclusions(excFile, srcRoot);
 
       _dirsScanned = 0;
       _filesScanned = 0;
@@ -94,81 +93,6 @@ public class SrcReader
    // ================================================================================
    // PUBLIC METHODS
    // ================================================================================
-
-//   /**
-//    * Extracts public and protected methods from the source file, sorts each list
-//    * 
-//    * @param clazz target source file
-//    * @return list of public and protected method signatures for the target
-//    */
-//   public ArrayList<String> collectMethods(String filePath)
-//   {
-//      ArrayList<String> mList = new ArrayList<String>();
-//
-//      Class<?> clazz = convertSourceToClass(filePath);
-//      String clazzName = clazz.getSimpleName();
-//
-//      Method[] rawMethodList = clazz.getDeclaredMethods();
-//      for (Method method : rawMethodList) {
-//         int modifiers = method.getModifiers();
-//         if (modifiers == 0) {
-//            System.err.println("WARNING: " + method.getName()
-//                  + "() has default access; should have a declared access");
-//         }
-//         if ((Modifier.isPublic(modifiers)) || (Modifier.isProtected(modifiers))) {
-//            String mName = extractSignature(method, clazzName);
-//            if (mName != null) {
-//               mList.add(mName);
-//            }
-//         }
-//      }
-//      // Sort methods to keep in sync with test methods later
-//      sortSignatures(mList);
-//      return mList;
-//   }
-
-//   /**
-//    * Return the {@code Class} for the given java file. A URL resource located is used because the
-//    * class will be in a different bin than the QATool itself.
-//    *
-//    * @param path the fully-qualifed (with package name) {@code .java} source filename to split into
-//    *           a file path and a file name for searching
-//    * @return the equivalent {@.class} file
-//    */
-//   public Class<?> convertSourceToClass(String path)
-//   {
-//      // Extract the filename from the path as a qualified package name
-//      String[] parts = path.split("src/");
-//      String fname = parts[1];
-//      fname = fname.split(".java")[0];
-//      fname = fname.replaceAll(Pattern.quote(Constants.FS), ".");
-//      String className = fname;
-//
-//      // Fixed for testing: "Projects.eChronos.QATool.QATestbed.bin.pdc.SrcMissingAllTests";
-//      // THIS WORKED: className = "pdc.SrcMissingAllTests";
-//      Class<?> sourceClass = null;
-//      try {
-//         sourceClass = Class.forName(className);
-//      } catch (ClassNotFoundException ex) {
-//         ex.printStackTrace();
-//         System.err.println("\tconvertSourceToClass(): " + className + ".class file not found");
-//      }
-//      return sourceClass;
-//   }
-
-   // public class InspectClass {
-   // @SuppressWarnings("unchecked")
-   // public static void main(String[] args) throws ClassNotFoundException, MalformedURLException {
-   // URL classUrl;
-   // classUrl = new URL("file:///home/kent/eclipsews/SmallExample/bin/IndependentClass.class");
-   // URL[] classUrls = { classUrl };
-   // URLClassLoader ucl = new URLClassLoader(classUrls);
-   // Class c = ucl.loadClass("IndependentClass"); // LINE 14
-   // for(Field f: c.getDeclaredFields()) {
-   // System.out.println("Field name" + f.getName());
-   // }
-   // }
-   // }
 
    /**
     * Return the class method signature without package context or throws clauses, but with its
@@ -204,10 +128,6 @@ public class SrcReader
    // PUBLIC METHODS
    // ================================================================================
 
-   // ================================================================================
-   // PUBLIC METHODS
-   // ================================================================================
-
    /**
     * Scan a particular file and write (or augment) a test file for it
     * 
@@ -220,12 +140,13 @@ public class SrcReader
       String srcPath = f.getPath();
       srcList = QAUtils.collectMethods(srcPath, FileType.SOURCE);
       QAUtils.outMsg(_verbose,
-            "\n\tEligible source file " + srcPath + " contains " + srcList.size() + " methods.");
-      QAUtils.outList(_verbose, "\t\t", srcList);
+            "\n\tSource file " + srcPath + " contains " + srcList.size() + " eligible methods:");
+      if (_verbose) {
+         QAUtils.outList("\t\t", srcList);
+      }
 
       // Get corresponding test file
-      File testFile = _testWriter.getTargetTestFile(f.getPath());
-      QAUtils.outMsg(_verbose, "\tCorresponding test file: " + testFile.getPath());
+      File testFile = _testWriter.getTargetTestFile(srcPath);
 
       // Write the test file using src names as a reference to build test names
       _testWriter.writeTestFile(testFile, srcList);

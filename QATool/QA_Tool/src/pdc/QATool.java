@@ -74,13 +74,27 @@ public class QATool
    private ArrayList<String> _testPaths = new ArrayList<String>();
 
    static private final String VERBOSE_FLAG = "-v";
+   static private final String NOFAIL_FLAG = "-nofail";
 
    static private final String ARGS_OK = "OK";
    static private final String USAGE_MSG =
-         "USAGE: QATool <source tree root path> <exclusion filename> [-v]erbose";
+         "USAGE: QATool <source tree root path> [exclusion filename] [-v] [-nofail]";
    static private final String ERR_SRCDIR_MISSING = "Source directory null or not specified.";
    static private final String ERR_EXCFILE_MISSING = "Exclusion file specified cannot be found.";
    static private final String ERR_VERBOSE_INVALID = "Extra argument or verbose flag incorrect";
+
+   static private final String ROOT_MSG = "Scanning through root tree at %s";
+   static private final String NO_EXCLUDE_FILE_MSG = "No exclude file given";
+   static private final String EXCLUDE_FILE_MSG = "Using exclude file %s";
+   static private final String VERBOSE_MSG = "Writing audit messages to console";
+   static private final String NO_VERBOSE_MSG = "Audit messages OFF";
+   static private final String NOFAIL_MSG = "Writing test stubs with Not-Implemented statement";
+   static private final String FAIL_MSG = "Writing test stubs with fail() statement";
+
+   static private File _root;
+   static private File _excFile;
+   static private boolean _verbose;
+   static private boolean _nofail;
 
 
    // ======================================================================
@@ -93,11 +107,13 @@ public class QATool
     * @param args <br>
     *           <ol>
     *           <li>args[1] contains the source root for the source file tree;</li>
-    *           <li>args[2] contains an optional file (default filename {@code ScanExclusions.txt})
-    *           containing directory and file names to be excluded. The exclusions file must be
-    *           immediately under the source root.</li>
-    *           <li>args[3] is the optional flag "-v" to turn on verbose mode, which sends audit
+    *           <li>args[2] contains an optional {@code .txt} file containing directory and file
+    *           names to be excluded. The exclusions file must be immediately under the source root
+    *           in the file system.</li>
+    *           <li>args[3] is an optional flag "-v" turns on verbose mode, which sends audit
     *           messages to the console.</li>
+    *           <li>args[4] is an optional flag "-nofail" to turn on an "Not Implemetned" message in
+    *           the test method stub, intead of writing failing test stubs</li>
     *           </ol>
     */
    static public void main(String[] args)
@@ -108,8 +124,21 @@ public class QATool
          System.err.println("QATool: " + argMsg);
          System.exit(-1);
       }
+      String msg = String.format(ROOT_MSG, _root.getAbsolutePath());
+      System.out.println(msg);
+
+      msg = (_excFile == null) ? NO_EXCLUDE_FILE_MSG : EXCLUDE_FILE_MSG;
+      msg = String.format(EXCLUDE_FILE_MSG, _excFile.getAbsolutePath());
+      System.out.println(msg);
+
+      msg = (_verbose) ? VERBOSE_MSG : NO_VERBOSE_MSG;
+      System.out.println(msg);
+      msg = (_nofail) ? NOFAIL_MSG : FAIL_MSG;
+      System.out.println(msg);
+      System.out.println("\n\n");
+
       // Create the scanner and begin scanning through source files
-      QAScanner qas = new QAScanner(args);
+      QAScanner qas = new QAScanner(_root, _excFile, _verbose, _nofail);
       qas.treeScan();
 
       // Produce an report of files found and written
@@ -126,40 +155,48 @@ public class QATool
    /**
     * Verify that the input args are correct and reference real data.
     * 
-    * @param args passed from the command line: srcPath, the exclusion filenane, optional verbose
-    *           flag "-v"
+    * @param args passed from the command line: srcPath, [the exclusion filenane], [-v], [-nofail]
     * @return ARG_OK or ERRMSG on failure
     */
    static private String verifyArgs(String[] args)
    {
-      String retval = ARGS_OK;
-      File someFile = null;
+      String retmsg = ARGS_OK;
 
-      // Two args are required; verbose flag is optional
-      if ((args.length < 2) || (args.length > 3)) {
+      // One arg is required; the other three are optional
+      if ((args.length < 1) || (args.length > 4)) {
          return USAGE_MSG;
       }
-      
+      // Check for legit directory
       String srcPath = args[0];
-      String excFile = args[1];
-
-      // Guards against missing or bad arguments
-      someFile = new File(srcPath);
-      if ((srcPath == null) || (!someFile.isDirectory())) {
-         retval = ERR_SRCDIR_MISSING;
+      File root = new File(srcPath);
+      if ((root == null) || (!root.isDirectory())) {
+         retmsg = ERR_SRCDIR_MISSING;
+      } else {
+         _root = root;
       }
-      // Check that exclusion file actually exists
-      someFile = new File(srcPath + Constants.FS + excFile);
-      if ((excFile == null) || (!someFile.isFile())) {
-         retval = ERR_EXCFILE_MISSING;
-      }
-      // Check for verbose flag arg
-      if (args.length == 3) {
-         if (!args[2].equalsIgnoreCase(VERBOSE_FLAG)) {
-            retval = ERR_VERBOSE_INVALID;
+      // Check for exclusions text file
+      for (String s : args) {
+         if (s.endsWith(".txt")) {
+            File excFile = new File(srcPath + Constants.FS + s);
+            if (!excFile.isFile()) {
+               retmsg = ERR_EXCFILE_MISSING;
+            } else {
+               _excFile = excFile;
+            }
          }
       }
-      return retval;
+      // Check for flags
+      for (String s : args) {
+         if (s.equals(VERBOSE_FLAG)) {
+            _verbose = true;
+            continue;
+         }
+         if (s.equals(NOFAIL_FLAG)) {
+            _nofail = true;
+            continue;
+         }
+      }
+      return retmsg;
    }
 
 

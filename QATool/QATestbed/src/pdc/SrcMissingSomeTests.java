@@ -27,6 +27,7 @@ import mylib.pdc.Utilities;
  * 
  * @author Alan Cline
  * @version Jan 22, 2016 // original <br>
+ *          August 3, 2016 	// autogen: QA Tool added missing test methods <br>
  */
 public class SrcMissingSomeTests
 {
@@ -207,4 +208,3 @@ public class SrcMissingSomeTests
 
 
 } // end of MakeTestTemplate class
-

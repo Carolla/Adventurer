@@ -17,17 +17,7 @@ import java.io.File;
  */
 public class QAScanner
 {
-//   private final String COMMA = ",";
-//   private final String DOT = ".";
-//   private final String SPACE = " ";
-//   private final String LEFT_PAREN = "(";
-//   private final String RIGHT_PAREN = ")";
-
-   // True if verbose messages should be written (audit trail)
-//   static private boolean _verbose;
-
    private File _srcRoot;
-
    private SrcReader _srcReader;
    private TestWriter _testWriter;
 
@@ -36,14 +26,12 @@ public class QAScanner
    // CONSTRUCTOR AND HELPER METHODS
    // ================================================================================
 
-   public QAScanner(String[] args)
+   public QAScanner(File root, File excFile, boolean verbose, boolean nofail)
    {
-      // Convenience variables
-      _srcRoot = new File(args[0]);
-      boolean verbose = (args.length == 3) ? true : false;
-
-      _testWriter = new TestWriter(_srcRoot, verbose);
-      _srcReader = new SrcReader(_srcRoot, args[1], _testWriter, verbose);
+      _srcRoot = root;
+      
+      _testWriter = new TestWriter(root, verbose, nofail);
+      _srcReader = new SrcReader(root, excFile, _testWriter, verbose);
 
    }
 
