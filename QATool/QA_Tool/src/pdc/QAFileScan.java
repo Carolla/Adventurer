@@ -21,38 +21,39 @@ import java.io.File;
  * @author Alan Cline
  * @version Jul 21, 2016 // original <br>
  *          Aug 2 2016 // slight changes as test cases were added <br>
- *          Nov 13 2017 // better command line arg checking
+ *          Nov 13 2016 // better command line arg checking <br>
+ *          Nov 16 2016 Nov // modifiecation to align with test cases <br>
  */
 public class QAFileScan
 {
    static private final String USAGE_MSG = "USAGE: QAFileScan <filepath>.java [-v]";
    static private final String BADFILE_MSG = "Cannot find proper .java file by that name";
 
+   // Command line args to turn on audit trail or file write trail
+   static private final String VERBOSE_ARG = "-verbose";
+   static private final String DEBUG_ARG = "-debug";
+
    /** Audit trail of execution created */
-   static public boolean _verbose = false;         
-   /** <code>_verbose</code> turned on and copy of files writes displayed in console */
-   static public boolean _debugOn = true;         
+   static public boolean _verbose = false;
+   /** Echoes the file writes to the console */
+   static public boolean _debug = false;
 
    /**
     * Scan an individual file for missing test methods, and write a corresponding test file with the
     * omitted test methods supplied as failing stubs.
     * 
     * @param args[0] contains the file path to be examined; <br>
-    *           optional args[1] contains "-v" verbose flag
+    *           optional args contains "-verbose" or "-debug" in any order. The flag "-verbose"
+    *           turns on auditing messages for execution. The flag "-debug" turns on "-verbose" and
+    *           echoes all files writes too.
     */
    static public void main(String[] args)
    {
-      // Guard: Check that valid and correct number of args are entered
-      int errorCode = verifyArgs(args);
-      boolean verbose = false;
-      String srcPath = null;
-      if (errorCode == 1) {
-         verbose = true;
-      }
-      if (errorCode >= 0) {
-         srcPath = args[0];
-      }
+      // Guard: Check that valid and correct number of args are entered, and activates flags;
+      // else calls System exists
+      verifyArgs(args);
 
+      String srcPath = args[0];
       File srcFile = null;
       try {
          srcFile = new File(srcPath);
@@ -63,26 +64,25 @@ public class QAFileScan
       }
 
       // Create TestWriter and SrcReader
-      TestWriter tw = new TestWriter(srcFile, verbose, true);
-      SrcReader sr = new SrcReader(srcFile, tw, verbose);
+      TestWriter tw = new TestWriter(srcFile, _verbose, true);
+      SrcReader sr = new SrcReader(srcFile, tw, _verbose);
       sr.fileScan(srcFile);
    }
 
 
    /**
-    * Validate command line arguments.
+    * Validate and activate command line arguments.
     * 
-    * @param args[0] existing and valid <code>.java</code> file path; <br>
-    *           args[1] optional verbose "-v" flag
+    * @param args[0] existing and valid <code>.java</code> file path; -verbose and -debug flags are
+    *           set for corresponding args
     * 
-    * @return 0 if all args good, 1 if all args are good and the verbose flag was set; else method
-    *         kicks out an <code>System.exit()<.code> with an error code
+    * @return true if all args are valid; else method kicks out an <code>System.exit()<.code> with
+    *         an error code
     */
-   static private int verifyArgs(String[] args)
+   static private void verifyArgs(String[] args)
    {
-      int retval = 0;
       // Check that correct number of args are entered
-      if ((args.length < 1) || (args.length > 2)) {
+      if ((args.length < 1) || (args.length > 3)) {
          System.err.println(USAGE_MSG);
          System.exit(-1);
       }
@@ -92,11 +92,15 @@ public class QAFileScan
          System.err.println(USAGE_MSG);
          System.exit(-2);
       }
-      // Set verbose flag if present
-      if ((args.length == 2) && (args[1].equals("-v"))) {
-         retval++;
+      // Set the internal flags for command line args that are set
+      for (int k = 1; k < args.length; k++) {
+         if (args[k].equals(VERBOSE_ARG)) {
+            _verbose = true;
+         }
+         if (args[k].equals(DEBUG_ARG)) {
+            _debug = true;
+         }
       }
-      return retval;
    }
 
 

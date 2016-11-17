@@ -25,6 +25,7 @@ import mylib.Constants;
  * 
  * @author Alan Cline
  * @version Jul 21, 2016 // original <br>
+ *          Nov 15, 2016 // modified as test cases were added <br>
  */
 public class QAUtils
 {
@@ -47,8 +48,8 @@ public class QAUtils
 
 
    /**
-    * Extracts public and protected methods from a source or test file, then sorts each list.
-    * Void return types are removed the test signatures
+    * Extracts public and protected methods from a source or test file, then sorts each list. Void
+    * return types are removed the test signatures
     * 
     * @param clazz target source file
     * @param ft enum FileType.SOURCE or FileType.TEST to know more about the file being examined
@@ -103,8 +104,6 @@ public class QAUtils
       fname = fname.replaceAll(Pattern.quote(Constants.FS), ".");
       String className = fname;
 
-      // Fixed for testing: "Projects.eChronos.QATool.QATestbed.bin.pdc.SrcMissingAllTests";
-      // THIS WORKED: className = "pdc.SrcMissingAllTests";
       Class<?> sourceClass = null;
       try {
          sourceClass = Class.forName(className);
@@ -183,8 +182,7 @@ public class QAUtils
          int wsChar = s.indexOf(" ");
          if (wsChar == -1) {
             wsChar = 0;
-         }
-         else {
+         } else {
             returnType = s.substring(0, wsChar);
          }
          String methodSig = s.substring(wsChar);

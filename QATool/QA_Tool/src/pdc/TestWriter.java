@@ -35,10 +35,6 @@ public class TestWriter
 
    private Prototype _proto;
 
-   // // Skip over testing prep methods
-   // static final String[] PREP_METHOD =
-   // {"setUpBeforeClass", "tearDownAfterClass", "setUp", "tearDown"};
-
 
    // ================================================================================
    // CONSTRUCTOR and HELPERS
@@ -226,6 +222,10 @@ public class TestWriter
       } else {
          QAUtils.outMsg(_verbose,
                "\n\tExisting file " + testTarget + " contains " + fileLen + " characters");
+         // If the latest test file class is not used, duplicates will occur.
+         // Recompile the test file to get the latest test class file
+         // updateTestFileClass(testTarget.getPath());
+         
          // Find list of existing test methods
          ArrayList<String> existingTestMethods =
                QAUtils.collectMethods(testTarget.getPath(), FileType.TEST);
@@ -235,11 +235,14 @@ public class TestWriter
 
          // Compare with existing source methods to determine test methods to add to test file
          // Remove the void returnType on all test methods for a better compare
+         // TODO Remove this into its own method, or separate QAUtils.collectMethods() into src and
+         // test versions
          for (int k = 0; k < existingTestMethods.size(); k++) {
             String sig = existingTestMethods.get(k);
             String nm = sig.substring(sig.indexOf(" ") + 1);
             existingTestMethods.set(k, nm);
          }
+
          ArrayList<String> augList =
                (ArrayList<String>) compareLists(convSrcList, existingTestMethods);
          if (_verbose) {
@@ -257,24 +260,44 @@ public class TestWriter
 
 
    /**
-    * Identifies each entry in <code>newList</code> that is not in <code>existingList</code>. If an
-    * entry exists in <code>newList</code> that is not in <code>authList</code>, then it is added to
-    * the output list (a new <code>authList</code>) and returned. Entries in <code>authList</code>
-    * that are not in <code>newList</code> are ignored.
+    * Compile a file so that the latest class file is available
     * 
-    * @param newList contains entries not in authList
-    * @param authList authority list for comparison
-    * @return Entries that are missing from authList.
+    * @param filePath file to be compiled
     */
-   private ArrayList<String> compareLists(ArrayList<String> newList, ArrayList<String> authList)
+   private void updateTestFileClass(String filePath)
+   {
+      try {
+         Process pro1 = Runtime.getRuntime().exec("javac " + filePath);
+         pro1.waitFor();
+      } catch (Exception ex) {
+         System.err.println(ex.getMessage());
+      }
+   }
+
+
+   /**
+    * Identifies each entry in a <code>srcList</code> that is not in a <code>testList</code>, and
+    * adds it to a third list, which is returned. Entries in the <code>testList</code> that are not
+    * in the <code>srcList</code> are ignored. Another way of saying this is <br>
+    * <code>
+    * if (!testList[k].contains(srcList[k]) {
+    *    augList[j] = srcList[k]; 
+    * }
+    * </code>
+    * 
+    * @param srcList contains entries to find and add to the augList
+    * @param testList contains the entries by which to filter the src list
+    * @return aguList which contains <code>srcList</code> elements not in the <code>testList</code>
+    */
+   private ArrayList<String> compareLists(ArrayList<String> srcList, ArrayList<String> testList)
    {
       ArrayList<String> augList = new ArrayList<String>();
 
       // Search in authList for every entry in newList
-      int srcLen = authList.size();
+      int srcLen = srcList.size();
       for (int s = 0; s < srcLen; s++) {
-         String name = newList.get(s);
-         if (!authList.contains(name)) {
+         String name = srcList.get(s);
+         if (!testList.contains(name)) {
             augList.add(name);
          }
       }

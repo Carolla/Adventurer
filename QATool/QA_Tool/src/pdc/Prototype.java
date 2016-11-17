@@ -191,6 +191,10 @@ public class Prototype
    }
 
 
+   // ======================================================================
+   // PRIVATE HELPER METHODS
+   // ======================================================================
+   
    /**
     * Writes a prototype test template with JUnit test stubs and Chronos-specific data
     * 
@@ -518,6 +522,17 @@ public class Prototype
    }
 
 
+   
+
+
+   // ======================================================================
+   // INNER CLASS FOR TESTING
+   // ======================================================================
+
+   // ======================================================================
+   // PRIVATE HELPER METHODS
+   // ======================================================================
+   
    /**
     * Writes the list of methods into file
     * 
@@ -525,7 +540,7 @@ public class Prototype
     * @param srcList source method signatures for test file comments
     * @param tstList of all methods to write to the test file
     */
-   public void writeCodeBlocks(PrintWriter op, ArrayList<String> srcList,
+   private void writeCodeBlocks(PrintWriter op, ArrayList<String> srcList,
          ArrayList<String> tstList)
    {
       if (tstList.size() == 0) {
@@ -539,9 +554,8 @@ public class Prototype
    }
 
 
-   // ======================================================================
-   // INNER CLASS FOR TESTING
-   // ======================================================================
+
+
 
    public class MockPrototype
    {
