@@ -13,6 +13,8 @@ import org.junit.runners.Suite.SuiteClasses;
   TestCmdLook.class,
   TestCmdQuit.class,
   TestCmdReturn.class,
+  TestCmdTalk.class,
+  TestCmdWait.class,
   TestCommandFactory.class,
   TestCommandParser.class,
   TestDeltaCmdList.class,

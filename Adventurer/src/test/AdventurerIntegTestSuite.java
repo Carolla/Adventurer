@@ -9,14 +9,14 @@
 
 package test;
 
-import mylib.test.dmc.TestDbReadWriter;
-import mylib.test.pdc.TestMetaDie;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import chronos.test.pdc.TestRegistry;
+import chronos.test.pdc.registry.RegistryTestSuite;
 import chronos.test.pdc.registry.TestRegistryFactory;
+import mylib.test.dmc.TestDbReadWriter;
+import mylib.test.pdc.TestMetaDie;
 import test.integ.TA00a_Initialize;
 import test.integ.TA00b_Quit;
 import test.integ.TA03a_SummonHeroes;
@@ -26,6 +26,7 @@ import test.integ.TA09_CmdLeave;
 import test.integ.TA10_ReturnToTown;
 import test.integ.TA13_CmdInspect;
 import test.integ.TA14_TalkToPatron;
+import test.pdc.character.SampleHeroGenerator;
 
 /**
  * Regression test suite for all the {@code JUnit} unit and integration test cases for
@@ -61,6 +62,9 @@ import test.integ.TA14_TalkToPatron;
     TestRegistry.class,
     TestMetaDie.class,
     TestRegistryFactory.class,
+    RegistryTestSuite.class,
+    
+    SampleHeroGenerator.class,
 })
 public class AdventurerIntegTestSuite
 {

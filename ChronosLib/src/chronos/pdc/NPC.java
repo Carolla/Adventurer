@@ -26,7 +26,7 @@ import mylib.dmc.IRegistryElement;
  */
 public class NPC implements IRegistryElement
 {
-  private static final String NO_MORE_RESPONSES = "No more responses";
+  public static final String NO_MORE_RESPONSES = "No more responses";
 
   /** Name of the Patron */
   private String _name;
@@ -44,9 +44,6 @@ public class NPC implements IRegistryElement
 
   /** If Peacekeeper flag is set, then patron will attack Hero in a bar brawl once. */
   private boolean _peacekeeper;
-
-  /** Word or phrase about the profession of this NPC, used as note to the author */
-  private String _note;
 
   /** List of helpful friendly responses to the Hero (rumors) */
   private List<String> _rumors = new ArrayList<String>();
@@ -66,15 +63,6 @@ public class NPC implements IRegistryElement
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
-  /** Default constructor */
-  public NPC()
-  {
-    _name = "NPC";
-    _note = "new";
-    _nearDescription = "default NPC's near description";
-    _farDescription = "default NPC's far description";
-  }
-
   /**
    * Normal constructor: no parm can be empty or null except the note
    * 
@@ -84,23 +72,10 @@ public class NPC implements IRegistryElement
    *          null
    * @param affinity must be within range [-5,+5]
    * @param peaceflag true if Patron will fight in bar brawl
-   * @param note profession of the NPC, as a note (unused in game)
    */
-  public NPC(String name, String note, int affinity, String farDesc, String nearDesc,
+  public NPC(String name, int affinity, String farDesc, String nearDesc,
       List<String> replies, List<String> retorts) throws NullPointerException
   {
-    // Guard conditions
-
-    if ((name == null) || (name.trim().length() == 0)) {
-      throw new NullPointerException("Patron(): Name cannot be null or empty");
-    }
-    if ((farDesc == null) || (farDesc.trim().length() == 0)) {
-      throw new NullPointerException("Patron(): Far Description cannot be null or empty");
-    }
-    if ((nearDesc == null) || (nearDesc.trim().length() == 0)) {
-      throw new NullPointerException("Patron(): Near Description cannot be null or empty");
-    }
-
     if (affinity < MIN_AFFINITY) {
       affinity = MIN_AFFINITY;
     } else if (affinity > MAX_AFFINITY) {
@@ -111,7 +86,6 @@ public class NPC implements IRegistryElement
     _farDescription = farDesc;
     _nearDescription = nearDesc;
     _affinity = affinity;
-    _note = note;
     _rumors.addAll(replies);
     _retorts.addAll(retorts);
   }
@@ -131,32 +105,14 @@ public class NPC implements IRegistryElement
    */
 
   /*
-   * NPCs are equals if they have the same name, near- and far-descriptions, affinity, and
-   * peacekeeper status
+   * (non-Javadoc)
    * 
-   * @see mylib.dmc.IRegistryElement#equals(mylib.dmc.IRegistryElement)
+   * @see mylib.dmc.IRegistryElement#getKey()
    */
   @Override
-  public boolean equals(IRegistryElement target)
+  public String getKey()
   {
-    NPC p = (NPC) target;
-    boolean bName = _name.equals(p._name);
-    boolean bFarDesc = _farDescription.equals(p._farDescription);
-    boolean bNearDesc = _nearDescription.equals(p._nearDescription);
-    boolean bfriend = (_affinity == p._affinity) && (_peacekeeper == p._peacekeeper);
-    return (bName && bFarDesc && bNearDesc && bfriend);
-  }
-
-  @Override
-  public boolean equals(Object obj)
-  {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    return equals((IRegistryElement) obj);
+    return _name;
   }
 
   @Override
@@ -171,35 +127,44 @@ public class NPC implements IRegistryElement
     return result;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see mylib.dmc.IRegistryElement#getKey()
-   */
   @Override
-  public String getKey()
+  public boolean equals(Object obj)
   {
-    return _name;
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    NPC other = (NPC) obj;
+    if (_farDescription == null) {
+      if (other._farDescription != null)
+        return false;
+    } else if (!_farDescription.equals(other._farDescription))
+      return false;
+    if (_name == null) {
+      if (other._name != null)
+        return false;
+    } else if (!_name.equals(other._name))
+      return false;
+    if (_nearDescription == null) {
+      if (other._nearDescription != null)
+        return false;
+    } else if (!_nearDescription.equals(other._nearDescription))
+      return false;
+    if (_peacekeeper != other._peacekeeper)
+      return false;
+    return true;
   }
 
-  /**
-   * Getter for name
-   * 
-   * @return name
-   */
   public String getName()
   {
     return _name;
   }
 
-  /**
-   * Convert the NPC attributes to a string for display in library tree
-   * 
-   * @return single string for NPC
-   */
   public String toString()
   {
-    return _name + " (" + _note + ")";
+    return _name;
   }
 
   public String talk()

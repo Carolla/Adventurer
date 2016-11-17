@@ -49,14 +49,6 @@ public class SomeObject implements IRegistryElement
     this(0, string);
   }
 
-
-  @Override
-  public boolean equals(IRegistryElement target)
-  {
-    return this.equals((Object) target);
-  }
-
-
   @Override
   public int hashCode()
   {

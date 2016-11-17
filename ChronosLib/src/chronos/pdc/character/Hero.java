@@ -265,15 +265,6 @@ public class Hero implements IRegistryElement
   {
     return toNamePlate() + ". " + _traits;
   }
-  // ====================================================
-  // Private helper methods
-  // ====================================================
-
-  @Override
-  public boolean equals(IRegistryElement target)
-  {
-    return equals((Object) target);
-  }
 
   @Override
   public boolean equals(Object obj)

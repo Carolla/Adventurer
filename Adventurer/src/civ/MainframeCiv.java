@@ -28,8 +28,7 @@ import chronos.civ.UserMsgProxy;
  *          Nov 7, 2015 // re-architected HIC.Mainframe to separate better CIV.MainframeCiv <br>
  *          Nov 13, 2015 // allow BuildingDisplayCiv to talk to this object. <br>
  */
-// public class MainframeCiv extends BaseCiv implements UserMsgInterface
-public class MainframeCiv extends BaseCiv
+public class MainframeCiv
 {
   private MainframeInterface _mf;
   private ImagePanel _imagePanel;

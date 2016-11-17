@@ -14,13 +14,13 @@ import org.junit.runners.Suite;
 
 import chronos.test.pdc.TestAdventure;
 import chronos.test.pdc.TestItem;
+import chronos.test.pdc.TestNPC;
 import chronos.test.pdc.TestOccupation;
 import chronos.test.pdc.TestSkill;
 import chronos.test.pdc.TestTown;
 import chronos.test.pdc.buildings.BuildingsTestSuite;
 import chronos.test.pdc.character.CharacterTestSuite;
 import chronos.test.pdc.race.RaceTestSuite;
-import chronos.test.pdc.registry.RegistryTestSuite;
 
 
 /**
@@ -50,12 +50,12 @@ import chronos.test.pdc.registry.RegistryTestSuite;
     BuildingsTestSuite.class,
     CharacterTestSuite.class,
     RaceTestSuite.class,
-    RegistryTestSuite.class,
 
     /* PDC test files */
     TestAdventure.class,
     TestItem.class,
     TestOccupation.class,
+    TestNPC.class,
     TestSkill.class,
     TestTown.class,
 

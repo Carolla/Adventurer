@@ -14,7 +14,6 @@ import java.util.EnumMap;
 import chronos.pdc.character.Hero;
 import chronos.pdc.character.Hero.HeroInput;
 import chronos.pdc.character.Klass;
-import chronos.pdc.registry.HeroRegistry;
 
 /**
  * Input CIV: Allows the user to enter input data, validates it and creates a new Hero.
@@ -22,7 +21,7 @@ import chronos.pdc.registry.HeroRegistry;
  * @author Al Cline
  * @version Sep 20, 2015 // rewrite of more complicated {@code NewHeroCiv} class <br>
  */
-public class NewHeroCiv extends BaseCiv
+public class NewHeroCiv
 {
   /** Max length of name for Hero */
   public final static int MAX_NAMELEN = 45;
@@ -34,44 +33,14 @@ public class NewHeroCiv extends BaseCiv
 
   public static final String[] KLASS_LIST = Klass.KLASS_LIST;
 
-
-  /** ErrorCode for type of error encountered on input */
-  public enum ErrorCode {
-    NO_ERROR, NAME_MISSING, NAME_TOO_LONG, NAME_NOT_UNIQUE, HERO_NOT_CREATED
-  };
-
-  private MainframeCiv _mfCiv;
-
   // ===========================================================================
   // CONSTRUCTOR
   // ===========================================================================
 
   /**
-   * Controls the creation of the new Hero input panel, data validation, and displaying the new Hero
-   * stats
-   * 
-   * @param mf to callback for placing created panels, and relinquishing final control
-   */
-  public NewHeroCiv(MainframeCiv mfCiv, HeroRegistry heroReg)
-  {
-    _mfCiv = mfCiv;
-  }
-
-  // ===========================================================================
-  // PUBLIC METHODS
-  // ===========================================================================
-
-  // Return the current state to the previous state
-  public void back()
-  {
-    _mfCiv.back();
-  }
-
-  /**
    * Create the new Hero from the user's input data
    * 
    * @param inputMap of user fields: name, gender, hairColor, race, and Klass
-   * @param ErrorCode of NO_ERROR, or some ErrorCode value if a problem occured
    */
   public Hero createHero(EnumMap<HeroInput, String> inputMap)
   {

@@ -10,6 +10,7 @@
 package chronos.test.pdc;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +22,8 @@ import chronos.pdc.Item.ItemCategory;
  * Tests the Item class
  *
  * @author Alan Cline
- * @version <DL>
+ * @version
+ *          <DL>
  *          <DT>Build 1.0 Feb 11, 2013 // original
  *          <DD>
  *          </DL>
@@ -36,22 +38,6 @@ public class TestItem
     item = new Item(ItemCategory.VALUABLES, "FakeItem", 0);
   }
 
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ TESTS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
-
-  /**
-   * Create one of each Item and confirm
-   * 
-   * @Error null parms in ctor
-   * @Error invalid parms in ctor
-   */
-  @Test(expected = NullPointerException.class)
-  public void nullNameIsInvalid()
-  {
-    new Item(null, null, 0);
-  }
 
   /**
    * Create one of each Item and confirm
@@ -82,6 +68,33 @@ public class TestItem
   {
     item.adjustQuantity(Integer.MIN_VALUE);
     assertEquals(0, item.getQuantity());
+  }
+
+  @Test
+  public void defaultObjectsEqual()
+  {
+    Item item2 = new Item(ItemCategory.VALUABLES, "FakeItem", 0);
+    assertEquals(item, item2);
+    assertEquals(item.toString(), item2.toString());
+    assertEquals(item.hashCode(), item.hashCode());
+  }
+
+  @Test
+  public void differentObjectsNotEqual()
+  {
+    Item item2 = new Item(ItemCategory.ARMS, "FakeItem", 0);
+    assertFalse(item.equals(item2));
+    assertFalse(item2.equals(item));
+    assertFalse(item.hashCode() == item2.hashCode());
+    assertFalse(item.toString().equals(item2.toString()));
+  }
+  
+  @Test
+  public void hashEqualsSelf()
+  {
+    assertEquals(item, item);
+    assertEquals(item.toString(), item.toString());
+    assertEquals(item.hashCode(), item.hashCode());
   }
 }
 // end of TestItem class

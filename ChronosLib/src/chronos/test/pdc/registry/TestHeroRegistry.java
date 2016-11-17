@@ -16,8 +16,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.pdc.character.Hero;
@@ -29,14 +29,14 @@ import chronos.pdc.registry.HeroRegistry;
  */
 public class TestHeroRegistry
 {
-  private HeroRegistry _heroReg;
+  private static HeroRegistry _heroReg;
 
   static private Hero _hero1 = new Hero("Falsoon", "Male", "Brown", "Human", "Fighter");
   static private Hero _hero2 = new Hero("Blythe", "Female", "Red", "Elf", "Wizard");
   static private Hero _hero3 = new Hero("Balthazar", "Male", "Bald", "Human", "Cleric");
 
-  @Before
-  public void setUp() 
+  @BeforeClass
+  public static void setUp() 
   {
     _heroReg = new HeroRegistry();
 
@@ -45,8 +45,8 @@ public class TestHeroRegistry
     assertTrue(_heroReg.add(_hero3));
   }
 
-  @After
-  public void tearDown() 
+  @AfterClass
+  public static void tearDown() 
   {
     _heroReg.delete(_hero1);
     _heroReg.delete(_hero2);
@@ -109,7 +109,7 @@ public class TestHeroRegistry
   @Test
   public void testGetNamePlates()
   {
-    String[] expNamePlates = {"Falsoon: Male Human Fighter", "Blythe: Female Elf Druid",
+    String[] expNamePlates = {"Falsoon: Male Human Fighter", "Blythe: Female Elf Wizard",
         "Balthazar: Male Human Cleric"};
 
     List<Hero> list = _heroReg.getAll();
@@ -120,7 +120,7 @@ public class TestHeroRegistry
     
     String fullList = plateList.toString();
     for (int k = 0; k < expNamePlates.length; k++) {
-      assertTrue(fullList.contains(expNamePlates[k]));
+      assertTrue("Didn't find " + expNamePlates[k] + " in " + fullList, fullList.contains(expNamePlates[k]));
     }
   }
 

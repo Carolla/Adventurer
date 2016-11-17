@@ -25,7 +25,9 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
   
     /* chronos.pdc.registry test files */
-    TestAdventureRegistry.class,
+  TestAdventureRegistry.class,
+  TestHeroRegistry.class,
+  TestSkillRegistry.class,
 
 })
 /** Compilation of all unit tests for regression and integration testing. */

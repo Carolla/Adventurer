@@ -25,15 +25,14 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.AbstractDocument;
 
-import mylib.Constants;
-import net.miginfocom.swing.MigLayout;
 import chronos.hic.NameFieldLimiter;
 import chronos.pdc.character.Hero;
 import chronos.pdc.character.Hero.HeroInput;
 import chronos.pdc.race.Race;
 import civ.HeroDisplayCiv;
 import civ.NewHeroCiv;
-import civ.NewHeroCiv.ErrorCode;
+import mylib.Constants;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Allows the author to input a few key attributes of their Hero. A CIV object is called to validate
@@ -85,8 +84,6 @@ public class NewHeroIPPanel extends ChronosPanel
   /** Error message when name (required field) is omitted */
   private final String ERRMSG_NAME_MISSING = "Your Hero must have a name!";
   /** Error message when namefield is too long */
-  private final String ERRMSG_NAME_TOO_LONG =
-      "Your Hero's name is too long (45 char limit). \nTry perhaps your Hero's nickname?";
 
   /** Background color inherited from parent */
   private Color _backColor = Constants.MY_BROWN;
@@ -107,11 +104,11 @@ public class NewHeroIPPanel extends ChronosPanel
   private JComboBox<String> _klassCombo;
   private JComboBox<String> _raceCombo;
 
-  
+
   private HeroDisplayCiv _hdCiv;
   private NewHeroCiv _nhCiv;
   private GenderPanel _genderPanel;
-  
+
   // ============================================================
   // Constructors and constructor helpers
   // ============================================================
@@ -123,7 +120,7 @@ public class NewHeroIPPanel extends ChronosPanel
    * 
    * @param nhCiv controls this ChronosPanel
    * @param mfCiv mainframeCiv needed for displaying the panel
- * @param maCiv 
+   * @param maCiv
    */
   public NewHeroIPPanel(NewHeroCiv nhCiv, HeroDisplayCiv hdCiv)
   {
@@ -209,7 +206,7 @@ public class NewHeroIPPanel extends ChronosPanel
     JButton cancelButton = new JButton("CANCEL");
     // Clear editFlag and data, then return back to main action panel if
     // Cancel is pressed
-    cancelButton.addActionListener((a) -> _nhCiv.back());
+    cancelButton.addActionListener((a) -> _hdCiv.back());
 
     // Create the SUBMIT button
     JButton submitButton = new JButton("SUBMIT");
@@ -226,8 +223,7 @@ public class NewHeroIPPanel extends ChronosPanel
           // Create the new Hero and display it
           Hero hero = _nhCiv.createHero(input);
           _hdCiv.displayHero(hero, true); // initial Hero needs true
-          // arg to check
-          // overwriting
+          // arg to check overwriting
         }
       }
     });
@@ -321,20 +317,11 @@ public class NewHeroIPPanel extends ChronosPanel
   /**
    * Display the error message received after submitting a new Hero.
    */
-  private void showErrorMessage(ErrorCode error)
+  private void showErrorMessage(String errorMessage)
   {
-    // Display missing name error, then set control to name field
-    if (error == ErrorCode.NAME_MISSING) {
-      JOptionPane.showMessageDialog(null, ERRMSG_NAME_MISSING,
-          HERO_ERROR_TITLE, JOptionPane.ERROR_MESSAGE);
-    }
-    // Display overly long name error, then set control to name field
-    else if (error == ErrorCode.NAME_TOO_LONG) {
-      JOptionPane.showMessageDialog(null, ERRMSG_NAME_TOO_LONG,
-          HERO_ERROR_TITLE, JOptionPane.ERROR_MESSAGE);
-    }
+    JOptionPane.showMessageDialog(null, ERRMSG_NAME_MISSING,
+        HERO_ERROR_TITLE, JOptionPane.ERROR_MESSAGE);
     _nameField.requestFocusInWindow();
-
   }
 
   /**
@@ -346,12 +333,12 @@ public class NewHeroIPPanel extends ChronosPanel
   {
     EnumMap<HeroInput, String> input = new EnumMap<HeroInput, String>(
         HeroInput.class);
-    
+
     // Name is mandatory user input
     String name = (_nameField.getText()).trim();
     if (name == null || name.isEmpty()) {
       input.clear(); // empty input is a failure
-      showErrorMessage(ErrorCode.NAME_MISSING);
+      showErrorMessage(ERRMSG_NAME_MISSING);
       return null;
     }
     input.put(HeroInput.NAME, name);

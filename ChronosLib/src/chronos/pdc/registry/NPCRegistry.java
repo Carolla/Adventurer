@@ -34,7 +34,6 @@ public class NPCRegistry extends Registry<NPC>
       // Sal the cobbler
       add(new NPC(
           "Sal",
-          "cobbler",
           1,
           "A tiny man, wearing stained clothes, carries a huge burlap sack bulging with lumps.",
           "He is perpetually hunched over from his large sack. Looking at your feet, he smiles "
@@ -58,7 +57,6 @@ public class NPCRegistry extends Registry<NPC>
       // Scruffy the hermit
       add(new NPC(
           "Scruffy",
-          "hermit",
           -5,
           "A scruffy-looking old man with a grizzled chin looks around warily.",
           "Close up, this old geezer is a mess. His hair is uncombed, his beard is gnarled, "
@@ -84,7 +82,6 @@ public class NPCRegistry extends Registry<NPC>
       // Boren the blacksmith
       add(new NPC(
           "Boren",
-          "blacksmith",
           0,
           "A large man sits astride his bench, sipping on a stein of ale.",
           "Although his face is ruddy and his hands are clean, his leather overalls are covered "
@@ -109,7 +106,6 @@ public class NPCRegistry extends Registry<NPC>
       // Meladriel the courtesan
       add(new NPC(
           "Meladriel",
-          "courtesan",
           5,
           "A beautiful young lady, in a low-cut purple dress, eyes you expectantly and smiles.",
           "The young lady turns slightly in her chair toward you. Her dress rises as she does so, "
@@ -135,7 +131,6 @@ public class NPCRegistry extends Registry<NPC>
       // Aragon, captain of the guard
       add(new NPC(
           "Aragon",
-          "Captain of the Guard",
           -3,
           "A well-to-do gentleman in chainmail armor is busy eating a large dinner.",
           "As you approach, the barrel-chested man notices you from the corner of his eye. " +
@@ -162,7 +157,6 @@ public class NPCRegistry extends Registry<NPC>
       // Matilda the matron
       add(new NPC(
           "Matilda",
-          "matron",
           2,
           "A plump woman in dusty traveling clothes eats noisily and alone at a table.",
           "She continues to look at you and tears into a cooked chicken, spattering little bits "
@@ -191,7 +185,6 @@ public class NPCRegistry extends Registry<NPC>
       // Perrin the archer
       add(new NPC(
           "Perrin",
-          "archer",
           1,
           "A slim man, with a bow and quiver at his side, chews slowly and eyes you from a distance.",
           "He seems to have traveled many miles, but his worn pack, placed carefully on the " +
@@ -217,7 +210,6 @@ public class NPCRegistry extends Registry<NPC>
       // Gorbal the thief
       add(new NPC(
           "Gorbal",
-          "thief",
           2,
           "A narrow-eyed gnome sits quietly in the corner trying not to appear like he's watching you.",
           "He is nervous, and clutches his weather-beaten bag. His hand drops slowly beneath " +
@@ -246,7 +238,6 @@ public class NPCRegistry extends Registry<NPC>
       // Balthazar the Cleric, Monastery Building Master
       add(new NPC(
           "Balthazar",
-          "Monastery Master",
           3,
           "A tall man in long brown robes is talking quietly to another man at the table.",
           "The tall man stops talking and turns slowly to face you. \"Yes, may I help you?\"",
@@ -275,7 +266,6 @@ public class NPCRegistry extends Registry<NPC>
       // Pendergast the Wizard, Arcaneum Building Master
       add(new NPC(
           "Pendergast",
-          "Arcaneum Master",
           0,
           "A thin man in dirty maroon robes is talking quietly to another man at the table.",
           "He stops talking and turns to face you. \"Can I help you?\" he says sternly.",
@@ -303,7 +293,6 @@ public class NPCRegistry extends Registry<NPC>
       // Ripper, master thief, Rogues' Den Building Master
       add(new NPC(
           "Ripper",
-          "Rogues' Den Master",
           0,
           "A large man with a bulging belly and grease stains on his clothes and beard, is rolling "
               + "dice quietly by himself at a table. ",
@@ -334,7 +323,6 @@ public class NPCRegistry extends Registry<NPC>
       // Loren, fighter, Stadium Building Master
       add(new NPC(
           "Loren",
-          "Stadium Master",
           1,
           "A musclular man in chain armor sprawls in a chair that seems too small for him. ",
           "He takes a big swig of frothy ale from his beer mug. \"Aahhh!\" he breathes in obvious "
@@ -364,7 +352,6 @@ public class NPCRegistry extends Registry<NPC>
       // Bork, Innkeeper for Ugly Ogre Inn
       add(new NPC(
           "Bork",
-          "Innkeeper for Ugly Ogre Inn",
           1,
           "The bulky Innkeeper stands near the bar cleaning mugs. He seems to see everything " +
               "that happens in his place.",
@@ -391,7 +378,6 @@ public class NPCRegistry extends Registry<NPC>
           // J. P. Pennypacker, the Bank manager
           add(new NPC(
               "J. P. Pennypacker",
-              "Bank manager",
               0,
               "A slightly-overweight and balding man stands near the bar talking to the Innkeeper. "
                   + "He is well-dressed, and seems out of place in the tavern.",
@@ -422,7 +408,6 @@ public class NPCRegistry extends Registry<NPC>
       // Dewey N. Howe, general store owner
       add(new NPC(
           "Dewey N. Howe",
-          "General Store Owner",
           3,
           "A paunchy man with thin balding brown hair. He seems meek as a mouse.",
           "He sits alone in the corner, watcing the patrons move about.",
@@ -446,7 +431,6 @@ public class NPCRegistry extends Registry<NPC>
       // The Sheriff, keeper of the Jail
       add(new NPC(
           "The Sheriff",
-          "Jail Master",
           2,
           "A brawny man with a permanent scowl on his face sits with his back to the wall. He "
               + "eyes everyone suspiciously.",
