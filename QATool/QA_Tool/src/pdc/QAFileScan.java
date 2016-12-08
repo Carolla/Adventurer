@@ -22,7 +22,8 @@ import java.io.File;
  * @version Jul 21, 2016 // original <br>
  *          Aug 2 2016 // slight changes as test cases were added <br>
  *          Nov 13 2016 // better command line arg checking <br>
- *          Nov 16 2016 Nov // modifiecation to align with test cases <br>
+ *          Nov 16 2016 Nov // modification to align with test cases <br>
+ *          Nov 24 2016 Nov // clarify proper -verbose and -fileaudit flags <br>
  */
 public class QAFileScan
 {
@@ -31,12 +32,15 @@ public class QAFileScan
 
    // Command line args to turn on audit trail or file write trail
    static private final String VERBOSE_ARG = "-verbose";
-   static private final String DEBUG_ARG = "-debug";
+   static private final String FILEECHO_ARG = "-fileEcho";
+   static private final String STUB_ARG = "-stubFail";
 
    /** Audit trail of execution created */
    static public boolean _verbose = false;
    /** Echoes the file writes to the console */
-   static public boolean _debug = false;
+   static public boolean _fileEcho = false;
+   /** If false, write test method stubs that print a message instead of failing */
+   static public boolean _stubFail = false;
 
    /**
     * Scan an individual file for missing test methods, and write a corresponding test file with the
@@ -64,8 +68,8 @@ public class QAFileScan
       }
 
       // Create TestWriter and SrcReader
-      TestWriter tw = new TestWriter(srcFile, _verbose, true);
-      SrcReader sr = new SrcReader(srcFile, tw, _verbose);
+      TestWriter tw = new TestWriter(srcFile);
+      SrcReader sr = new SrcReader(srcFile, tw);
       sr.fileScan(srcFile);
    }
 
@@ -79,7 +83,7 @@ public class QAFileScan
     * @return true if all args are valid; else method kicks out an <code>System.exit()<.code> with
     *         an error code
     */
-   static private void verifyArgs(String[] args)
+   static public void verifyArgs(String[] args)
    {
       // Check that correct number of args are entered
       if ((args.length < 1) || (args.length > 3)) {
@@ -97,11 +101,12 @@ public class QAFileScan
          if (args[k].equals(VERBOSE_ARG)) {
             _verbose = true;
          }
-         if (args[k].equals(DEBUG_ARG)) {
-            _debug = true;
+         if (args[k].equals(FILEECHO_ARG)) {
+            _fileEcho = true;
          }
       }
    }
 
+   
 
 }  // end of QAFileScan class

@@ -197,9 +197,9 @@ public class QAUtils
     * @param verbose only display the msg if this param is true
     * @param msg message to display
     */
-   static public void outMsg(boolean verbose, String msg)
+   static public void verboseMsg(String msg)
    {
-      if (verbose) {
+      if (QAFileScan._verbose) {
          System.out.println(msg);
       }
    }

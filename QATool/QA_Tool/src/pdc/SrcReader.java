@@ -36,9 +36,9 @@ public class SrcReader
    private final String LEFT_PAREN = "(";
    private final String RIGHT_PAREN = ")";
 
-   private File _srcRoot;
+   // private File _srcRoot;
    private TestWriter _testWriter;
-   private boolean _verbose;
+   // private boolean _verbose;
 
    private int _dirsScanned;
    private int _filesScanned;
@@ -49,19 +49,17 @@ public class SrcReader
    ArrayList<String> _excDirs;
    ArrayList<String> _excFiles;
 
-   // length of path prefix to control recursion
-//   private int _srcPathLen;
 
    // ================================================================================
    // CONSTRUCTOR and HELPER METHODS
    // ================================================================================
 
-   public SrcReader(File srcRoot, TestWriter testWriter, boolean verbose)
+   public SrcReader(File srcRoot, TestWriter testWriter)
    {
-      _srcRoot = srcRoot;
-//      _srcPathLen = _srcRoot.getPath().length();
+      // _srcRoot = srcRoot;
+      // _srcPathLen = _srcRoot.getPath().length();
       _testWriter = testWriter;
-      _verbose = verbose;
+      // _verbose = verbose;
    }
 
 
@@ -73,12 +71,12 @@ public class SrcReader
     *           to scan
     * @param qaScanner contains common utility methods
     */
-   public SrcReader(File srcRoot, File excFile, TestWriter testWriter, boolean verbose)
+   public SrcReader(File srcRoot, File excFile, TestWriter testWriter)
    {
-      _srcRoot = srcRoot;
-//      _srcPathLen = _srcRoot.getPath().length();
+      // _srcRoot = srcRoot;
+      // _srcPathLen = _srcRoot.getPath().length();
       _testWriter = testWriter;
-      _verbose = verbose;
+      // _verbose = verbose;
 
       // Set the exclusion files and folders
       setExclusions(excFile, srcRoot);
@@ -139,9 +137,9 @@ public class SrcReader
 
       String srcPath = f.getPath();
       srcList = QAUtils.collectMethods(srcPath, FileType.SOURCE);
-      QAUtils.outMsg(_verbose,
+      QAUtils.verboseMsg(
             "\n\tSource file " + srcPath + " contains " + srcList.size() + " eligible methods:");
-      if (_verbose) {
+      if (QAFileScan._verbose) {
          QAUtils.outList("\t\t", srcList);
       }
 
@@ -177,11 +175,11 @@ public class SrcReader
 
    public void scanResults()
    {
-      QAUtils.outMsg(_verbose, "Scanning complete: ");
-      QAUtils.outMsg(_verbose, "\t Directories scanned: " + _dirsScanned);
-      QAUtils.outMsg(_verbose, "\t Files scanned: " + _filesScanned);
-      QAUtils.outMsg(_verbose, "\t Directories skipped per exclusion file: " + _dirsSkipped);
-      QAUtils.outMsg(_verbose, "\t Files skipped per exclusion file: " + _filesSkipped);
+      QAUtils.verboseMsg("Scanning complete: ");
+      QAUtils.verboseMsg("\t Directories scanned: " + _dirsScanned);
+      QAUtils.verboseMsg("\t Files scanned: " + _filesScanned);
+      QAUtils.verboseMsg("\t Directories skipped per exclusion file: " + _dirsSkipped);
+      QAUtils.verboseMsg("\t Files skipped per exclusion file: " + _filesSkipped);
    }
 
 
@@ -301,7 +299,7 @@ public class SrcReader
 
       boolean retval = false;
       if (!_excDirs.contains(f.getPath())) {
-         QAUtils.outMsg(_verbose, "\tRECURSING into directory " + f.getPath() + "\n");
+         QAUtils.verboseMsg("\tRECURSING into directory " + f.getPath() + "\n");
          _dirsScanned++;
          retval = true;
       } else {

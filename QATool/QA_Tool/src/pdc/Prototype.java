@@ -29,20 +29,17 @@ import mylib.Constants;
  * 
  * @author Alan Cline
  * @version Jan 29, 2016 // original <br>
+ *          Dec 7, 2016 // revised per integration tests <br>
  */
 public class Prototype
 {
    private final String COMMA = ",";
-   private final String DOT = ".";
    private final String SPACE = " ";
    private final String LEFT_PAREN = "(";
    private final String RIGHT_PAREN = ")";
    private final String LEFT_BRACE = "{";
    private final String RIGHT_BRACE = "}";
    private final String END_CMT = " */";
-
-   // Latest version of the file being augmented
-   private String _latestVersion = null;
 
    /** Set of JUnit import statements */
    private final String JUNIT_IMPORTS =
@@ -86,9 +83,6 @@ public class Prototype
          "\t\tMsgCtrl.where(this);\n\n" +
          "\t\tMsgCtrl.errMsgln(\"\\t\\t TEST METHOD NOT YET IMPLEMENTED\");";
 
-   private final String RENAME_FILE_FAILURE =
-         "Could not replace the original test file with the augmented test file name";
-
 
    // ======================================================================
    // CONSTRUCTOR
@@ -110,7 +104,7 @@ public class Prototype
     * 
     * @param originalTestFile existing test file to update
     * @param srcList signatures of source method names used in test file comments
-    * @param auglist new methods to write to the existing test file (output)
+    * @param augList new methods to write to the existing test file (output)
     * @return the test file written
     */
    public File augmentTestFile(File originalTestFile, ArrayList<String> srcList,
@@ -144,14 +138,14 @@ public class Prototype
       }
 
       // Add a new version line to the existing file and keep it
-      _latestVersion = addVersionLine(in, out, AUGMENT_VERSION);
+      addVersionLine(in, out, AUGMENT_VERSION);
 
       // Go to the end of class to insert new methods
       String line = findClassEnd(in, out);
       writeCodeBlocks(out, srcList, augList);
       // Now close class with end brace
       out.println(line);
-      auditPrint(line);
+      fileEcho(line);
 
       // Copy out the class-end and close the file
       in.close();
@@ -162,31 +156,14 @@ public class Prototype
       return outFile;
    }
 
-   /** Rename a file as a temp file 
-    * 
-    * @param targetFile the file to rename
-    * @return
-    */
-   private File setAsTmpFile(File targetFile)
-   {
-      final String TMP_SUFFIX = ".tmp99";
-      String targetName = targetFile.getPath();
-      String tmpName = targetName.replace(".java", TMP_SUFFIX);
-      File tmpFile = new File(tmpName);
-      boolean fileSwap = targetFile.renameTo(tmpFile);
-      if (!fileSwap) {
-         System.err.println("Prototype.setAsTmpFile(): Error trying to rename input filename");
-         return null;
-      }
-      return tmpFile;
-   }
 
    /**
-    * Sort all method names and number overloaded methods. The Methods are not in any particular
-    * order, so the bare method name must be sorted a little first.
+    * Sort all method names and number any overloaded methods. The methods are not in any particular
+    * order, so the bare method name must be sorted a little first. Duplicate method names are
+    * renamed to start with 1, 2, etc.
     * 
     * @param mList list of method names to check
-    * @param mSig signature to check for uniqueness, and possibly increment for number
+    * @return the sorted list
     */
    public ArrayList<String> forceUnique(ArrayList<String> mList)
    {
@@ -218,19 +195,13 @@ public class Prototype
       return mList;
    }
 
-   // Get the latest version of the file being augmented
-   public String getLatestVersion()
-   {
-      return _latestVersion;
-   }
-
 
    /**
     * Writes a prototype test template with JUnit test stubs and Chronos-specific data
     * 
     * @param target prototype test file to write into
     * @param srcList signatures of source method names used in test file comments
-    * @param tstlist test method names to write to the output file
+    * @param tstList test method names to write to the output file
     * @return the test file written
     */
    public File writeNewTestFile(File target, ArrayList<String> srcList, ArrayList<String> tstList)
@@ -270,7 +241,7 @@ public class Prototype
       out.println(buildPrepMethods());
 
       // 6. Write the public methods beneath a public banner
-      auditPrint("\n\n");   // give a little space in the audit trail
+      fileEcho("\n\n");   // give a little space in the audit trail
       writeTestBanner(out);
       writeCodeBlocks(out, srcList, tstList);
 
@@ -280,6 +251,28 @@ public class Prototype
 
       return target;
    }
+
+
+   /**
+    * Rename a file as a temp file
+    * 
+    * @param targetFile the file to rename
+    * @return the file to rename from its tmp name
+    */
+   private File setAsTmpFile(File targetFile)
+   {
+      final String TMP_SUFFIX = ".tmp99";
+      String targetName = targetFile.getPath();
+      String tmpName = targetName.replace(".java", TMP_SUFFIX);
+      File tmpFile = new File(tmpName);
+      boolean fileSwap = targetFile.renameTo(tmpFile);
+      if (!fileSwap) {
+         System.err.println("Prototype.setAsTmpFile(): Error trying to rename input filename");
+         return null;
+      }
+      return tmpFile;
+   }
+
 
    // ======================================================================
    // PRIVATE HELPER METHODS
@@ -296,6 +289,7 @@ public class Prototype
       out.println(BANNER);
       out.println(DBL_HRULE);
    }
+
 
    /**
     * Add a new version after the last version line in the class comment block if it is not
@@ -316,61 +310,38 @@ public class Prototype
       String lineAhead = in.nextLine();
       while (!lineAhead.equals(END_CMT)) {
          out.println(currentLine);
-         auditPrint(currentLine);
+         fileEcho(currentLine);
          currentLine = lineAhead;
          lineAhead = in.nextLine();
       }
       // Current line now holds the latest version
       out.println(currentLine);
-      auditPrint(currentLine);
+      fileEcho(currentLine);
       // If the latest version is not today's version, add it
       if (!currentLine.equals(todaysVersion)) {
          out.println(todaysVersion);
-         auditPrint(todaysVersion);
+         fileEcho(todaysVersion);
       }
       // Write out the latest version and closing comment line
       out.println(lineAhead);
-      auditPrint(lineAhead);
+      fileEcho(lineAhead);
       return todaysVersion;
    }
 
 
-   // THIS METHOD IS FOR TESTING THE ALGORITHM, AND DISCONNECTS FROM ANY FILE I/O
-   // /**
-   // * Add a new version after the last version line in the class comment block if it is not
-   // * "today's" date (which could cause many duplicate version lines during testing).
-   // *
-   // * @param in scanner for reading original file
-   // * @param out output file for receiving new version
-   // * @param versionLine to insert in the class comment block
-   // * @return the version line being added, for subsequent date of file length change checks
-   // */
-   // public String[] addVLine(String[] in, String[] out, String versionLine)
-   // {
-   // // Read through the version block until the last @version has been read, then add today's
-   // // version line if it is not already there
-   // for (int index = 0, outdex = 0; index < in.length; index++, outdex++) {
-   // if (in[index].equals(END_CMT)) {
-   // if (!out[outdex - 1].equals(versionLine)) {
-   // out[outdex] = versionLine;
-   // auditPrint(out[outdex]);
-   // outdex++;
-   // }
-   // }
-   // out[outdex] = in[index];
-   // auditPrint(out[outdex]);
-   // }
-   // return out;
-   // }
-
-
-   private void auditPrint(String msg)
+   private void fileEcho(String msg)
    {
-      QAUtils.outMsg(true, msg);
+      if (QAFileScan._fileEcho) {
+         QAUtils.verboseMsg(msg);
+      }
    }
 
 
-   /** Writes the setUp and tearDown methods at the method and class level */
+   /**
+    * Writes the setUp and tearDown methods at the method and class level
+    * 
+    * @return a long string containing the method block written
+    */
    private String buildPrepMethods()
    {
       String staticStr = "static ";
@@ -465,7 +436,7 @@ public class Prototype
             break;
          } else {
             out.println(line);
-            auditPrint(line);
+            fileEcho(line);
          }
       }
       return line;
@@ -518,7 +489,7 @@ public class Prototype
             break;
          } else {
             out.println(line);
-            auditPrint(line);
+            fileEcho(line);
          }
       }
       // Return the line that contains the class closing brace.
@@ -541,7 +512,9 @@ public class Prototype
    /**
     * Number two sorted signatures, then give the second a higher numerical suffix than the first
     * 
-    * @Return the numbered signatures first, then the new one, made unique, to add
+    * @param firstName method name for the first of a set of duplicates
+    * @param secondName method name for the second of a set of duplicates
+    * @return the numbered signatures first, then the new one, made unique, to add
     */
    private String[] numerateNames(String firstName, String secondName)
    {
@@ -618,7 +591,7 @@ public class Prototype
       ArrayList<String> codeBlock = buildTestMethods(srcList, tstList);
       for (String s : codeBlock) {
          op.println(s);
-         auditPrint(s);
+         fileEcho(s);
       }
    }
 

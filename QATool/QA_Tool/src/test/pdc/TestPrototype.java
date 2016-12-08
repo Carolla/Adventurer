@@ -31,6 +31,8 @@ import pdc.Prototype;
 /**
  * @author Al Cline
  * @version November 16, 2016 // original <br>
+ *          November 24, 2016    // added all test methods but <code>forceUnique</code>  <br>
+ *          November 24, 2016    // autogen: QA Tool added missing test methods <br>
  */
 public class TestPrototype
 {
@@ -43,9 +45,6 @@ public class TestPrototype
    static private final String TARGET_PATHNAME =
          "/Projects/eChronos/QATool/QA_Tool/src/test/pdc/TestTargetSrcFile.java";
 
-   // Each method block has the same length
-   private final long METHOD_BLOCK_LEN = 230L;
-
    // Define the src method names for the comment line
    static ArrayList<String> _origSrcList = new ArrayList<String>();
    static ArrayList<String> _origTestList = new ArrayList<String>();
@@ -57,8 +56,8 @@ public class TestPrototype
    static String[] _augTestMethods = {"void testDelta()", "void testGamma()"};
 
    // File size for the the file containing the above methods
-   private final long TARGET_FILELEN = 1970L;
-   private final long AUGTARGET_FILELEN = 2507L;
+   private final long TARGET_FILELEN = 1969L;
+   private final long AUGTARGET_FILELEN = 2505L;
 
 
    /**
@@ -179,9 +178,10 @@ public class TestPrototype
 
    /**
     * @NORMAL_TEST File augmentTestFile(File, ArrayList, ArrayList)
+    * Add two methods to the existing test file
     */
    @Test
-   public void testAugmentTwoNewMethods()
+   public void testAugmentTestFile()
    {
       MsgCtrl.auditMsgsOn(false);
       MsgCtrl.errorMsgsOn(false);
@@ -215,7 +215,7 @@ public class TestPrototype
    /**
     * @NORMAL_TEST ArrayList<String> forceUnique(ArrayList)
     */
-//   @Test
+   @Test
    public void testForceUnique()
    {
       MsgCtrl.auditMsgsOn(false);
@@ -223,6 +223,13 @@ public class TestPrototype
       MsgCtrl.where(this);
 
       // SETUP
+      // Put the expected results into an arraylist
+      String[] expMethods = {"File alpha1(String)", "File alpha2(String)", "String beta1(File)", 
+            "String beta2(File)"};
+      ArrayList<String> expList = new ArrayList<String>();
+      for (int k=0; k < expMethods.length; k++) {
+         expList.add(expMethods[k]);
+      }
       // Put two copies of srclist into the forceUnique method
       ArrayList<String> dupList = new ArrayList<String>();
       for (String s : _origSrcList) {
@@ -237,6 +244,10 @@ public class TestPrototype
 
       // VERIFY
       displayList("Output list", uniqSrcList);
+      assertTrue(uniqSrcList.size() == expList.size());
+      for (int k=0, j=0; k < uniqSrcList.size(); k++, j++) {
+         assertTrue(uniqSrcList.get(k).equals(expList.get(k)));
+      }
    }
 
 

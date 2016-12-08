@@ -30,8 +30,8 @@ public class TestWriter
    private int _filesWritten;
    private int _filesAugmented;
    private int _filesUnchanged;
-   private boolean _verbose;
-   private boolean _nofail;
+   // private boolean _verbose;
+   // private boolean _nofail;
 
    private Prototype _proto;
 
@@ -47,11 +47,12 @@ public class TestWriter
     * @param verbose if true, writes audit messages to console
     * @param nofail if true, writes Not Implemented test stubs instead of failing test stubs
     */
-   public TestWriter(File srcRoot, boolean verbose, boolean nofail)
+   // public TestWriter(File srcRoot, boolean verbose, boolean nofail)
+   public TestWriter(File srcRoot)
    {
       _testRoot = makeTestPath(srcRoot);
-      _verbose = verbose;
-      _nofail = nofail;
+      // _verbose = verbose;
+      // _nofail = nofail;
 
       _filesWritten = 0;
       _filesAugmented = 0;
@@ -190,12 +191,13 @@ public class TestWriter
    // PUBLIC METHODS
    // ================================================================================
 
+   /** Write messages to console. outMsg checks the globl verbose flag */
    public void writeResults()
    {
-      QAUtils.outMsg(_verbose, "Writing complete: ");
-      QAUtils.outMsg(_verbose, "\t Files written: " + _filesWritten);
-      QAUtils.outMsg(_verbose, "\t Files augmented: " + _filesAugmented);
-      QAUtils.outMsg(_verbose, "\t Files unchanged: " + _filesUnchanged);
+      QAUtils.verboseMsg("Writing complete: ");
+      QAUtils.verboseMsg("\t Files written: " + _filesWritten);
+      QAUtils.verboseMsg("\t Files augmented: " + _filesAugmented);
+      QAUtils.verboseMsg("\t Files unchanged: " + _filesUnchanged);
    }
 
 
@@ -215,21 +217,20 @@ public class TestWriter
       ArrayList<String> convSrcList = convertToTestNames(srcList);
 
       if (fileLen == 0L) {
-         QAUtils.outMsg(_verbose, "\n\tCreating new test file " + testTarget);
+         QAUtils.verboseMsg("\n\tCreating new test file " + testTarget);
          QAUtils.outList("\tConverted source methods: ", convSrcList);
          _proto.writeNewTestFile(testTarget, srcList, convSrcList);
          _filesWritten++;
       } else {
-         QAUtils.outMsg(_verbose,
-               "\n\tExisting file " + testTarget + " contains " + fileLen + " characters");
+         QAUtils.verboseMsg("\n\tExisting file " + testTarget + " contains " + fileLen + " characters");
          // If the latest test file class is not used, duplicates will occur.
          // Recompile the test file to get the latest test class file
          // updateTestFileClass(testTarget.getPath());
-         
+
          // Find list of existing test methods
          ArrayList<String> existingTestMethods =
                QAUtils.collectMethods(testTarget.getPath(), FileType.TEST);
-         if (_verbose) {
+         if (QAFileScan._verbose) {
             QAUtils.outList("\tExisting test file methods: ", existingTestMethods);
          }
 
@@ -245,7 +246,7 @@ public class TestWriter
 
          ArrayList<String> augList =
                (ArrayList<String>) compareLists(convSrcList, existingTestMethods);
-         if (_verbose) {
+         if (QAFileScan._verbose) {
             QAUtils.outList("\tMethods missing from test file: ", augList);
          }
 
@@ -259,20 +260,20 @@ public class TestWriter
    }
 
 
-   /**
-    * Compile a file so that the latest class file is available
-    * 
-    * @param filePath file to be compiled
-    */
-   private void updateTestFileClass(String filePath)
-   {
-      try {
-         Process pro1 = Runtime.getRuntime().exec("javac " + filePath);
-         pro1.waitFor();
-      } catch (Exception ex) {
-         System.err.println(ex.getMessage());
-      }
-   }
+//   /**
+//    * Compile a file so that the latest class file is available
+//    * 
+//    * @param filePath file to be compiled
+//    */
+//   private void updateTestFileClass(String filePath)
+//   {
+//      try {
+//         Process pro1 = Runtime.getRuntime().exec("javac " + filePath);
+//         pro1.waitFor();
+//      } catch (Exception ex) {
+//         System.err.println(ex.getMessage());
+//      }
+//   }
 
 
    /**
