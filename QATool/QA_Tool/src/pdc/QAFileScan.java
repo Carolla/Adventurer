@@ -14,88 +14,102 @@ import java.io.File;
 
 /**
  * Searches a single source file for its methods and compares them against the source file's
- * corresponding test case and methods. It is the similar to calling {@code QATool} with a single
- * file instead of a root tree and no exclusions file. {@code QAFileScan} still takes the {@code -v}
- * flag, but automatically sets the {@code -nofail} flag.
+ * corresponding test case and methods. It is similar to calling {@code QATool} with a single file
+ * instead of a root tree and no exclusions file. {@code QAFileScan} takes the flags <br>
+ * {@code -v :} turns on auditing messages <br>
+ * {@code -e :} all file writes are echoed to the console <br>
+ * {@code -f :} all testfile stubs will be set to fail instead of printing a safe
+ * {@code Not_Implemented} message <br>
  * 
  * @author Alan Cline
  * @version Jul 21, 2016 // original <br>
  *          Aug 2 2016 // slight changes as test cases were added <br>
  *          Nov 13 2016 // better command line arg checking <br>
- *          Nov 16 2016 Nov // modification to align with test cases <br>
- *          Nov 24 2016 Nov // clarify proper -verbose and -fileaudit flags <br>
+ *          Nov 16 2016 // modification to align with test cases <br>
+ *          Nov 24 2016 // clarify proper -verbose and -fileaudit flags <br>
+ *          Dec 11 2016 // refactored and tested verifyArgs <br>
  */
 public class QAFileScan
 {
-   static private final String USAGE_MSG = "USAGE: QAFileScan <filepath>.java [-v]";
-   static private final String BADFILE_MSG = "Cannot find proper .java file by that name";
+   /** Usage message displayed with command line error */
+   static private final String USAGE_MSG =
+         "USAGE: QAFileScan <filepath>.java [-v] [-e [-f]";
+
+   // Error messages for various command line errors
+   static public final String ERRMSG_OK = "Command line OK";
+   static public final String ERRMSG_NOCMDLINE = "Missing command line for QAFileScan";
+   static public final String ERRMSG_BADFILE = "Cannot find proper .java file by that name";
+   static public final String ERRMSG_ARGNUMBER = "Too many arguments in command line";
+   static public final String ERRMSG_FILE_NOTFOUND = "Cannot find file specified in command line";
 
    // Command line args to turn on audit trail or file write trail
    static private final String VERBOSE_ARG = "-verbose";
    static private final String FILEECHO_ARG = "-fileEcho";
-   static private final String STUB_ARG = "-stubFail";
+   static private final String STUBFAIL_ARG = "-stubFail";
 
-   /** Audit trail of execution created */
+   /** If true, turns on audit trail while executing */
    static public boolean _verbose = false;
-   /** Echoes the file writes to the console */
+   /** If true, echoes all file writes to the console */
    static public boolean _fileEcho = false;
-   /** If false, write test method stubs that print a message instead of failing */
+   /** If true, write test method stubs that fail instead of printing a message */
    static public boolean _stubFail = false;
+
+   /** Target file from which to check source for missing test methods */
+   static private File _srcFile = null;
+
 
    /**
     * Scan an individual file for missing test methods, and write a corresponding test file with the
-    * omitted test methods supplied as failing stubs.
+    * omitted test methods supplied as stubs. See class description for flags available.
     * 
-    * @param args[0] contains the file path to be examined; <br>
-    *           optional args contains "-verbose" or "-debug" in any order. The flag "-verbose"
-    *           turns on auditing messages for execution. The flag "-debug" turns on "-verbose" and
-    *           echoes all files writes too.
+    * @param args list of args for the command line. First arg is the filepath of the source file to
+    *           examine; remaining args are described in the {@code QAFileScan} class description
     */
    static public void main(String[] args)
    {
       // Guard: Check that valid and correct number of args are entered, and activates flags;
       // else calls System exists
-      verifyArgs(args);
-
-      String srcPath = args[0];
-      File srcFile = null;
-      try {
-         srcFile = new File(srcPath);
-      } catch (NullPointerException ex) {
-         System.err.println(BADFILE_MSG);
+      String errorMsg = verifyArgs(args);
+      if (!errorMsg.equals(ERRMSG_OK)) {
+         System.err.println(errorMsg);
          System.err.println(USAGE_MSG);
-         System.exit(-3);
+         System.exit(-1);
       }
 
       // Create TestWriter and SrcReader
-      TestWriter tw = new TestWriter(srcFile);
-      SrcReader sr = new SrcReader(srcFile, tw);
-      sr.fileScan(srcFile);
+      TestWriter tw = new TestWriter(_srcFile);
+      SrcReader sr = new SrcReader(_srcFile, tw);
+      sr.fileScan(_srcFile);
    }
 
 
    /**
-    * Validate and activate command line arguments.
+    * Validates and activates command line arguments, including the filepath.
     * 
-    * @param args[0] existing and valid <code>.java</code> file path; -verbose and -debug flags are
-    *           set for corresponding args
+    * @param args command line as presented by operating system
     * 
-    * @return true if all args are valid; else method kicks out an <code>System.exit()<.code> with
-    *         an error code
+    * @return OK message if command Line is valid, else error message related to kind of error
     */
-   static public void verifyArgs(String[] args)
+   static public String verifyArgs(String[] args)
    {
+      if ((args == null) || (args.length == 0)) {
+         return ERRMSG_NOCMDLINE;
+      }
       // Check that correct number of args are entered
-      if ((args.length < 1) || (args.length > 3)) {
-         System.err.println(USAGE_MSG);
-         System.exit(-1);
+      if ((args.length < 1) || (args.length > 4)) {
+         return ERRMSG_ARGNUMBER;
       }
       // Check for valid source file path
       if (!args[0].endsWith(".java")) {
-         System.err.println(BADFILE_MSG);
-         System.err.println(USAGE_MSG);
-         System.exit(-2);
+         return ERRMSG_BADFILE;
       }
+      // Verify file exists
+      File tmp = new File(args[0]);
+      if (!tmp.exists()) {
+         return ERRMSG_FILE_NOTFOUND;
+      }
+      _srcFile = tmp;
+
       // Set the internal flags for command line args that are set
       for (int k = 1; k < args.length; k++) {
          if (args[k].equals(VERBOSE_ARG)) {
@@ -104,9 +118,12 @@ public class QAFileScan
          if (args[k].equals(FILEECHO_ARG)) {
             _fileEcho = true;
          }
+         if (args[k].equals(STUBFAIL_ARG)) {
+            _stubFail = true;
+         }
       }
+      return ERRMSG_OK;
    }
 
-   
 
 }  // end of QAFileScan class

@@ -10,7 +10,8 @@
 
 package test.pdc;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -27,10 +28,10 @@ import pdc.QAFileScan;
  *          July 26, 2016 // autogen: QA Tool added missing test methods <br>
  *          August 1, 2016 // autogen: QA Tool added missing test methods <br>
  *          Nov 24, 2016 // tested flag args <br>
+ *          Dec 11, 2016 // furthet testing of commandLine flags <br>
  */
 public class TestQAFileScan
 {
-
    // Use this file, which has passed it tests, to check the audit flags
    private final String _targetFilepath =
          "/Projects/eChronos/QATool/QA_Tool/src/pdc/Prototype.java";
@@ -71,6 +72,64 @@ public class TestQAFileScan
    // BEGIN TESTING
    // ========================================================================
 
+   /**
+    * @ERROR_TEST boolean verifyArgs(String[]) Too many args
+    */
+   @Test
+   public void testVerifyArgs_BadArgCount()
+   {
+      MsgCtrl.auditMsgsOn(true);
+      MsgCtrl.errorMsgsOn(true);
+      MsgCtrl.where(this);
+
+      String[] cmdArgs = {"-verbose", "-fileEcho", "-stubFail"};
+      String[] cmdLine = new String[5];
+      cmdLine[0] = _targetFilepath;
+      cmdLine[1] = cmdArgs[0];
+      cmdLine[2] = cmdArgs[1];
+      cmdLine[3] = cmdArgs[2];
+      cmdLine[4] = "Stuffing";
+      // Run test too many args
+      String errorMsg = QAFileScan.verifyArgs(cmdLine);
+      assertTrue(errorMsg.equals(QAFileScan.ERRMSG_ARGNUMBER));
+   }
+
+   
+   /**
+    * @ERROR_TEST boolean verifyArgs(String[]) Null command line
+    * @ERROR_TEST boolean verifyArgs(String[]) Empty command line
+    * @ERROR_TEST boolean verifyArgs(String[]) Invalid filename
+    * @ERROR_TEST boolean verifyArgs(String[]) File doesn't exist
+    */
+   @Test
+   public void testVerifyArgsFileErrors()
+   {
+      MsgCtrl.auditMsgsOn(true);
+      MsgCtrl.errorMsgsOn(true);
+      MsgCtrl.where(this);
+
+      // Run test with no command line
+      String errorMsg = QAFileScan.verifyArgs(null);
+      assertTrue(errorMsg.equals(QAFileScan.ERRMSG_NOCMDLINE));
+
+      // Run test with no command line
+      String[] args = {};
+      errorMsg = QAFileScan.verifyArgs(args);
+      assertTrue(errorMsg.equals(QAFileScan.ERRMSG_NOCMDLINE));
+
+      // Run test with non-java file name
+      String[] cmdLine = new String[1];
+      cmdLine[0] = "/Projects/eChronos/QATool/QA_Tool/src/pdc/Prototype";
+      errorMsg = QAFileScan.verifyArgs(cmdLine);
+      assertTrue(errorMsg.equals(QAFileScan.ERRMSG_BADFILE));
+
+      // Run test with java file name that cannot be found
+      cmdLine = new String[1];
+      cmdLine[0] = "/Projects/eChronos/QATool/QA_Tool/src/pdc/Protype.java";
+      errorMsg = QAFileScan.verifyArgs(cmdLine);
+      assertTrue(errorMsg.equals(QAFileScan.ERRMSG_FILE_NOTFOUND));
+   }
+
 
    /**
     * @NORMAL_TEST boolean verifyArgs(String[]) Verify that no flags will set all flags to false
@@ -82,13 +141,81 @@ public class TestQAFileScan
       MsgCtrl.errorMsgsOn(true);
       MsgCtrl.where(this);
 
-      String[] cmdArgs = new String[1];
-      cmdArgs[0] = _targetFilepath;
+      String[] cmdArgs = {"-verbose", "-fileEcho", "-stubFail"};
 
-      QAFileScan.verifyArgs(cmdArgs);
+      // Run test with no args in command line
+      String[] cmdLine = new String[1];
+      cmdLine[0] = _targetFilepath;
+      QAFileScan.verifyArgs(cmdLine);
       assertFalse(QAFileScan._verbose);
       assertFalse(QAFileScan._fileEcho);
       assertFalse(QAFileScan._stubFail);
+
+      // Run test with -verbose flag
+      cmdLine = new String[2];
+      cmdLine[0] = _targetFilepath;
+      cmdLine[1] = cmdArgs[0];
+      QAFileScan.verifyArgs(cmdLine);
+      assertTrue(QAFileScan._verbose);
+      assertFalse(QAFileScan._fileEcho);
+      assertFalse(QAFileScan._stubFail);
+      clearFlags();
+
+      // Run test with -fileEcho flag
+      cmdLine = new String[2];
+      cmdLine[0] = _targetFilepath;
+      cmdLine[1] = cmdArgs[1];
+      QAFileScan.verifyArgs(cmdLine);
+      assertFalse(QAFileScan._verbose);
+      assertTrue(QAFileScan._fileEcho);
+      assertFalse(QAFileScan._stubFail);
+      clearFlags();
+
+      // Run test with -stubFail flag
+      cmdLine = new String[2];
+      cmdLine[0] = _targetFilepath;
+      cmdLine[1] = cmdArgs[2];
+      QAFileScan.verifyArgs(cmdLine);
+      assertFalse(QAFileScan._verbose);
+      assertFalse(QAFileScan._fileEcho);
+      assertTrue(QAFileScan._stubFail);
+      clearFlags();
+
+      // Run test with -verbose and -fileEcho flag in reverse order
+      cmdLine = new String[3];
+      cmdLine[0] = _targetFilepath;
+      cmdLine[1] = cmdArgs[1];
+      cmdLine[2] = cmdArgs[0];
+      QAFileScan.verifyArgs(cmdLine);
+      assertTrue(QAFileScan._verbose);
+      assertTrue(QAFileScan._fileEcho);
+      assertFalse(QAFileScan._stubFail);
+      clearFlags();
+
+      // Run test with all flags set in non-alphabetical order
+      cmdLine = new String[4];
+      cmdLine[0] = _targetFilepath;
+      cmdLine[1] = cmdArgs[1];
+      cmdLine[2] = cmdArgs[2];
+      cmdLine[3] = cmdArgs[0];
+      QAFileScan.verifyArgs(cmdLine);
+      assertTrue(QAFileScan._verbose);
+      assertTrue(QAFileScan._fileEcho);
+      assertTrue(QAFileScan._stubFail);
+      clearFlags();
+   }
+
+
+   // ========================================================================
+   // Private Helper Methods
+   // ========================================================================
+
+   // Clear the flags set during testing
+   private void clearFlags()
+   {
+      QAFileScan._verbose = false;
+      QAFileScan._fileEcho = false;
+      QAFileScan._stubFail = false;
    }
 
 
