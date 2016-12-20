@@ -1,11 +1,11 @@
 /**
- * QAUtils.java Copyright (c) 2016, Carolla Development, Inc. All Rights Reserved
+ * QAUtils.java Copyright (c) 2016, Alan Cline All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
- * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
- * by email: acline@carolla.com
+ * prior specific permission and/or a fee. Request permission to use from acline@carolla.com
  */
+
 
 package pdc;
 
@@ -35,6 +35,11 @@ public class QAUtils
    static private final String LEFT_PAREN = "(";
    static private final String RIGHT_PAREN = ")";
 
+   /** All compiled classes are stored in this bin directory */
+   static private final String _srcBin = "/Projects/eChronos/QATool/QA_Tool/bin";
+   static private final String _testBin = "/Projects/eChronos/QATool/QA_Tool/bin/test";
+   static private final String _compileLine = "javac -d ";
+
    public enum FileType {
       SOURCE, TEST
    };
@@ -48,8 +53,7 @@ public class QAUtils
 
 
    /**
-    * Extracts public and protected methods from a source or test file, then sorts each list. Void
-    * return types are removed the test signatures
+    * Extracts public and protected methods from a source or test file, then sorts each list.
     * 
     * @param clazz target source file
     * @param ft enum FileType.SOURCE or FileType.TEST to know more about the file being examined
@@ -59,9 +63,14 @@ public class QAUtils
    {
       ArrayList<String> mList = new ArrayList<String>();
 
-      Class<?> clazz = convertFileToClass(filePath, ft);
-      String clazzName = clazz.getSimpleName();
+      Class<?> clazz = null;
+      try {
+         clazz = convertFileToClass(filePath, ft);
+      } catch (ClassNotFoundException ex) {
+         System.err.println("QAUtils.collectMethods() " + ex.getMessage());
+      }
 
+      String clazzName = clazz.getSimpleName();
       Method[] rawMethodList = clazz.getDeclaredMethods();
       for (Method method : rawMethodList) {
          int modifiers = method.getModifiers();
@@ -84,13 +93,15 @@ public class QAUtils
 
 
    /**
-    * Return the {@code Class} for the given java file
+    * Return the {@code Class} for the given java file. If the .class file is not found, recovery
+    * code wil compile it into a predefined bin directory.
     * 
     * @param path the fully-qualifed (with package name) {@code .java} source filename
     * @param ft indentify where SOURCE or TEST file is located
     * @return the equivalent {@.class} file
+    * @throws ClassNotFoundException if the compile target cannot be found
     */
-   static public Class<?> convertFileToClass(String path, FileType ft)
+   static public Class<?> convertFileToClass(String path, FileType ft) throws ClassNotFoundException
    {
       // Seperate the file and the root part from the path
       String fname = null;
@@ -108,8 +119,14 @@ public class QAUtils
       try {
          sourceClass = Class.forName(className);
       } catch (ClassNotFoundException ex) {
-         ex.printStackTrace();
-         System.err.println("\tconvertTestToClass(): " + className + ".class file not found");
+         // If class cannot be found, compile a new one and try again
+         compileFileClass(path, ft);
+         try {
+            sourceClass = Class.forName(className);
+         } catch (ClassNotFoundException ex2) {
+            throw new ClassNotFoundException(
+                  "convertFileToClass() could not find java file to compile: " + path);
+         }
       }
       return sourceClass;
    }
@@ -311,5 +328,32 @@ public class QAUtils
          }
       });
    }
+
+
+   // ===============================================================================
+   // Private Helper Methods
+   // ===============================================================================
+
+   /**
+    * Compile a file so that its latest class file is available. This is a recovery method, so if it
+    * fails, nothing to do but printStackTrace
+    * 
+    * @param filePath file to be compiled
+    * @param ft source or test determines into which bin file the compiler class is stored
+    */
+   static private void compileFileClass(String filePath, QAUtils.FileType ft)
+   {
+      // Determine where compiler output (.class file) will be stored
+      String binPath = (ft == QAUtils.FileType.SOURCE) ? QAUtils._srcBin : QAUtils._testBin;
+      String compileLine = _compileLine + SPACE + binPath + SPACE + filePath;
+      try {
+         Process pro1 = Runtime.getRuntime().exec(compileLine);
+         pro1.waitFor();
+      } catch (Exception ex) {
+         ex.printStackTrace();
+         System.err.println(ex.getMessage());
+      }
+   }
+
 
 }
