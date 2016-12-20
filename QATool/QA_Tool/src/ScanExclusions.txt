@@ -4,3 +4,5 @@ FILES
 ing_Testing.java
 pdc/Fakeroonie.java
 pdc/TestTemplate.java
+test/pdc/UnitTestSuite.java
+
