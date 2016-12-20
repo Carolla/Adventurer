@@ -43,22 +43,21 @@ import chronos.test.pdc.race.RaceTestSuite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 
-    /* CIV test files */
-    // None
+      /* CIV test files */
+      // None
 
-    /* PDC test suite from subdirectories */
-    BuildingsTestSuite.class,
-    CharacterTestSuite.class,
-    RaceTestSuite.class,
+      /* PDC test suite from subdirectories */
+      BuildingsTestSuite.class,
+      CharacterTestSuite.class,
+      RaceTestSuite.class,
 
-    /* PDC test files */
-    TestAdventure.class,
-    TestItem.class,
-    TestOccupation.class,
-    TestNPC.class,
-    TestSkill.class,
-    TestTown.class,
-
+      /* PDC test files */
+      TestAdventure.class,
+      TestItem.class,
+      TestOccupation.class,
+      TestNPC.class,
+      TestSkill.class,
+      TestTown.class,
 
 })
 /** Compilation of all unit tests for regression and integration testing. */
