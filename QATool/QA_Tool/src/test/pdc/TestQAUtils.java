@@ -9,11 +9,8 @@
 
 package test.pdc;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import org.junit.After;
@@ -28,7 +25,7 @@ import pdc.QAUtils;
 /**
  * @author Al Cline
  * @version December 13, 2016 // original <br>
- *          December 20, 2016    // autogen: QA Tool added missing test methods <br>
+ *          December 20, 2016 // autogen: QA Tool added missing test methods <br>
  */
 public class TestQAUtils
 {
@@ -45,8 +42,7 @@ public class TestQAUtils
     */
    @BeforeClass
    public static void setUpBeforeClass() throws Exception
-   {
-   }
+   {}
 
    /**
     * @throws java.lang.Exception
@@ -77,63 +73,20 @@ public class TestQAUtils
    // BEGIN TESTING
    // ===============================================================================
 
+
    /**
-    * @NORMAL_TEST static convertFileToClass(String, QAUtils$FileType)
+    * @NORMAL_TEST static collectMethods(String, QAUtils$FileType)
     */
    @Test
-   public void testConvertSrcFileToClass()
+   public void testCollectMethods()
    {
-      MsgCtrl.auditMsgsOn(true);
-      MsgCtrl.errorMsgsOn(true);
+      MsgCtrl.auditMsgsOn(false);
+      MsgCtrl.errorMsgsOn(false);
       MsgCtrl.where(this);
 
-      // SETUP for Source path
-      // Expected class path
-      String expPath = "pdc.TargetSrcFile";
-      // RUN a source path to find a corresponding class file
-      Class<?> clazz = null;
-      try {
-         clazz = QAUtils.convertFileToClass(SRC_PATHNAME, QAUtils.FileType.SOURCE);
-      } catch (ClassNotFoundException ex) {
-         MsgCtrl.errMsgln("\t not expecting unfound class");
-      }
-      
-      // VERIFY
-      assertNotNull(clazz);
-      String clzName = clazz.getName();
-      MsgCtrl.msgln("\t .class file created: " + clzName);
-      assertTrue(clzName.equals(expPath));
+      MsgCtrl.errMsgln("\t\t Test method implemented elsewhere in variation.");
    }
 
-   
-   /**
-    * @NORMAL_TEST static convertFileToClass(String, QAUtils$FileType)
-    */
-   @Test
-   public void testConvertTestFileToClass()
-   {
-      MsgCtrl.auditMsgsOn(true);
-      MsgCtrl.errorMsgsOn(true);
-      MsgCtrl.where(this);
-      
-      // SETUP for Test path
-      // Expected class path
-      String expPath = "test.pdc.TestTargetSrcFile";
-      // RUN a source path to find a corresponding class file
-      Class<?> clazz = null;
-      try {
-         clazz = QAUtils.convertFileToClass(TEST_PATHNAME, QAUtils.FileType.TEST);
-      } catch (ClassNotFoundException ex) {
-         MsgCtrl.errMsgln("\t Not expecting unfound class");
-      }
-      
-      // VERIFY
-      assertNotNull(clazz);
-      String clzName = clazz.getName();
-      MsgCtrl.msgln("\t .class file created: " + clzName);
-      assertTrue(clzName.equals(expPath));
-   }
-   
 
    /**
     * @NORMAL_TEST static collectMethods(String, QAUtils$FileType)
@@ -159,7 +112,7 @@ public class TestQAUtils
    /**
     * @NORMAL_TEST static collectMethods(String, QAUtils$FileType)
     */
-//   @Test
+   @Test
    public void testCollectMethodsAsTest()
    {
       MsgCtrl.auditMsgsOn(false);
@@ -174,66 +127,6 @@ public class TestQAUtils
       displayList("Test methods found", mList);
       assertTrue(expList[0].equals(mList.get(0)));
       assertTrue(expList[1].equals(mList.get(1)));
-
-   }
-
-   /**
-    * @ERROR_TEST static collectMethods(String, QAUtils$FileType)
-    */
-   @Test
-   public void testCollectFileToClass_NoClassFileFound()
-   {
-      MsgCtrl.auditMsgsOn(false);
-      MsgCtrl.errorMsgsOn(false);
-      MsgCtrl.where(this);
-
-      // SETUP Delete existing src file
-      String clazzPath = "/Projects/eChronos/QATool/QA_Tool/bin/pdc/TargetSrcFile.class";
-      File tmp = new File(clazzPath);
-      if (tmp.exists()) {
-         tmp.delete();
-      }
-      assertFalse(tmp.exists());
-
-      // Create a Class file from a given pathname
-      Class<?> newClass = null;
-      try {
-         newClass = QAUtils.convertFileToClass(SRC_PATHNAME, QAUtils.FileType.SOURCE);
-      } catch (ClassNotFoundException ex) {
-         MsgCtrl.errMsgln("\t Unexpected exception; expected recovery ");
-      }
-
-      // VERIFY New class file created
-      assertNotNull(newClass);
-      
-   }
-
-
-   /**
-    * @NORMAL_TEST static extractSignature(Method, String)
-    */
-   @Test
-   public void testExtractSignature()
-   {
-      MsgCtrl.auditMsgsOn(false);
-      MsgCtrl.errorMsgsOn(false);
-      MsgCtrl.where(this);
-
-      MsgCtrl.errMsgln("\t\t TEST METHOD NOT YET IMPLEMENTED");
-   }
-
-
-   /**
-    * @NORMAL_TEST static isPrepMethod(String)
-    */
-   @Test
-   public void testIsPrepMethod()
-   {
-      MsgCtrl.auditMsgsOn(false);
-      MsgCtrl.errorMsgsOn(false);
-      MsgCtrl.where(this);
-
-      MsgCtrl.errMsgln("\t\t TEST METHOD NOT YET IMPLEMENTED");
    }
 
 
@@ -247,49 +140,53 @@ public class TestQAUtils
       MsgCtrl.errorMsgsOn(false);
       MsgCtrl.where(this);
 
-      MsgCtrl.errMsgln("\t\t TEST METHOD NOT YET IMPLEMENTED");
+      // SETUP
+      // Methods names to convert to outList
+      String[] inMethods = {"File alpha()", "String beta(File x)", "void gamma(int y)",
+            "ArrayList<String> delta(String msg, ArrayList<String> alist)"};
+      String[] expMethods = {"alpha() -> File", "beta(File x) -> String", "gamma(int y) -> void",
+            "delta(String msg, ArrayList<String> alist) -> ArrayList<String>"};
+      // Push the string elements into a list to use as parm
+      ArrayList<String> inList = new ArrayList<String>();
+      for (int k = 0; k < inMethods.length; k++) {
+         inList.add(inMethods[k]);
+      }
+      ArrayList<String> expList = new ArrayList<String>();
+      for (int k = 0; k < expMethods.length; k++) {
+         expList.add(expMethods[k]);
+      }
+
+      // RUN
+      ArrayList<String> returnList = new ArrayList<String>(inList.size());
+      returnList = (ArrayList<String>) QAUtils.outList("\tTesting QAUtils.outList()", inList);
+
+      // VERIFY
+      for (int k = 0; k < expList.size(); k++) {
+         String retSig = returnList.get(k);
+         String inSig = inList.get(k);
+         MsgCtrl.msgln("\t" + inSig + ": \t" + retSig);
+         assertTrue(retSig.equals(expList.get(k)));
+      }
    }
 
-
    /**
-    * @NORMAL_TEST static simplifyDeclaration(String)
+    * @ERROR_TEST static outList(String, List)
     */
    @Test
-   public void testSimplifyDeclaration()
+   public void testOutList_EmptyList()
    {
       MsgCtrl.auditMsgsOn(false);
       MsgCtrl.errorMsgsOn(false);
       MsgCtrl.where(this);
 
-      MsgCtrl.errMsgln("\t\t TEST METHOD NOT YET IMPLEMENTED");
-   }
+      // RUN
+      ArrayList<String> inList = new ArrayList<String>();
+      ArrayList<String> returnList = new ArrayList<String>();
+      returnList = (ArrayList<String>) QAUtils
+            .outList("\tTesting QAUtils.outList() with empty inList", inList);
 
-
-   /**
-    * @NORMAL_TEST static simplifyReturnType(String)
-    */
-   @Test
-   public void testSimplifyReturnType()
-   {
-      MsgCtrl.auditMsgsOn(false);
-      MsgCtrl.errorMsgsOn(false);
-      MsgCtrl.where(this);
-
-      MsgCtrl.errMsgln("\t\t TEST METHOD NOT YET IMPLEMENTED");
-   }
-
-
-   /**
-    * @NORMAL_TEST static sortSignatures(ArrayList)
-    */
-   @Test
-   public void testSortSignatures()
-   {
-      MsgCtrl.auditMsgsOn(false);
-      MsgCtrl.errorMsgsOn(false);
-      MsgCtrl.where(this);
-
-      MsgCtrl.errMsgln("\t\t TEST METHOD NOT YET IMPLEMENTED");
+      // VERIFY
+      assertEquals(0, returnList.size());
    }
 
 
@@ -303,7 +200,7 @@ public class TestQAUtils
       MsgCtrl.errorMsgsOn(false);
       MsgCtrl.where(this);
 
-      MsgCtrl.errMsgln("\t\t TEST METHOD NOT YET IMPLEMENTED");
+      MsgCtrl.msgln("\t Too trivial to test");
    }
 
 
@@ -324,34 +221,6 @@ public class TestQAUtils
          MsgCtrl.msgln("\t " + s);
       }
    }
-
-
-	/**
- 	 * @NORMAL_TEST static collectMethods(String, QAUtils$FileType)
-	 */
-	@Test
-	public void testCollectMethods()
-	{
-		MsgCtrl.auditMsgsOn(true);
-		MsgCtrl.errorMsgsOn(true);
-		MsgCtrl.where(this);
-
-		MsgCtrl.errMsgln("\t\t TEST METHOD NOT YET IMPLEMENTED");
-	}
-
-
-	/**
- 	 * @NORMAL_TEST static convertFileToClass(String, QAUtils$FileType)
-	 */
-	@Test
-	public void testConvertFileToClass()
-	{
-		MsgCtrl.auditMsgsOn(true);
-		MsgCtrl.errorMsgsOn(true);
-		MsgCtrl.where(this);
-
-		MsgCtrl.errMsgln("\t\t TEST METHOD NOT YET IMPLEMENTED");
-	}
 
 
 } 	// end of TestQAUtils.java class

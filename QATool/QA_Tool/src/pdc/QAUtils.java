@@ -93,6 +93,78 @@ public class QAUtils
 
 
    /**
+    * Display a method list. Set the return type on the other side of the signature to easier read
+    * the method name: <br>
+    * <code> "returnType methodName(parms...)"</code> becomes
+    * <code> "methodName(parms...) -> returnType"</code>.
+    * 
+    * @param msg message to display
+    * @param aList of method signatures to reformat and display
+    * @return list of reformatted method names that were displayed
+    */
+   static public List<String> outList(String msg, List<String> aList)
+   {
+      ArrayList<String> outList = new ArrayList<String>(aList.size());
+      verboseMsg(msg);
+      // Extract the return type
+      String returnType = null;
+      for (String s : aList) {
+         int wsChar = s.indexOf(" ");
+         if (wsChar == -1) {
+            wsChar = 0;
+         } else {
+            returnType = s.substring(0, wsChar);
+         }
+         String methodSig = s.substring(wsChar+1);
+         String outFmt = methodSig + " -> " + returnType;
+         outList.add(outFmt);
+         verboseMsg("\t\t" + outFmt);
+      }
+      return outList;
+   }
+
+
+   /**
+    * Display a message to the console if the verbose flag is set
+    * 
+    * @param verbose only display the msg if this param is true
+    * @param msg message to display
+    */
+   static public void verboseMsg(String msg)
+   {
+      if (QAFileScan._verbose) {
+         System.out.println(msg);
+      }
+   }
+
+
+   // ===============================================================================
+   // Private Helper Methods
+   // ===============================================================================
+   
+   /**
+    * Compile a file so that its latest class file is available. This is a recovery method, so if it
+    * fails, nothing to do but printStackTrace
+    * 
+    * @param filePath file to be compiled
+    * @param ft source or test determines into which bin file the compiler class is stored
+    */
+   static private void compileFileClass(String filePath, QAUtils.FileType ft)
+   {
+      // Determine where compiler output (.class file) will be stored
+      String binPath = (ft == QAUtils.FileType.SOURCE) ? QAUtils._srcBin : QAUtils._testBin;
+      String compileLine = _compileLine + SPACE + binPath + SPACE + filePath;
+      try {
+         Process pro1 = Runtime.getRuntime().exec(compileLine);
+         pro1.waitFor();
+      } catch (Exception ex) {
+         ex.printStackTrace();
+         System.err.println(ex.getMessage());
+      }
+   }
+
+
+   /**
     * Return the {@code Class} for the given java file. If the .class file is not found, recovery
     * code wil compile it into a predefined bin directory.
     * 
@@ -101,7 +173,7 @@ public class QAUtils
     * @return the equivalent {@.class} file
     * @throws ClassNotFoundException if the compile target cannot be found
     */
-   static public Class<?> convertFileToClass(String path, FileType ft) throws ClassNotFoundException
+   static private Class<?> convertFileToClass(String path, FileType ft) throws ClassNotFoundException
    {
       // Seperate the file and the root part from the path
       String fname = null;
@@ -142,7 +214,7 @@ public class QAUtils
     * @param anchorName simple name of the class under reflection
     * @return the method signature, e.g. as is used in the test method comment
     */
-   static public String extractSignature(Method m, String anchorName)
+   static private String extractSignature(Method m, String anchorName)
    {
       String s = m.toString();
       // Skip any method name without an anchorName in it (synthetic classes) and a 'main()'
@@ -168,7 +240,7 @@ public class QAUtils
     * @param name method name to test
     * @return true if the name is one of the skippable names
     */
-   static public boolean isPrepMethod(String name)
+   static private boolean isPrepMethod(String name)
    {
       boolean retval = false;
       for (int k = 0; k < PREP_METHOD.length; k++) {
@@ -178,47 +250,6 @@ public class QAUtils
          }
       }
       return retval;
-   }
-
-
-   /**
-    * Display a method list. Set the return type on the other side of the signature to easier read
-    * the method name: <br>
-    * <code> "returnType methodName(parms...)"</code> becomes
-    * <code> "methodName(parms...) -> ReturnType"</code>.
-    * 
-    * @param msg message to display
-    * @param aList of method signatures to reformat and display
-    */
-   static public void outList(String msg, List<String> aList)
-   {
-      System.out.println(msg);
-      // Extract the return type
-      String returnType = "void";
-      for (String s : aList) {
-         int wsChar = s.indexOf(" ");
-         if (wsChar == -1) {
-            wsChar = 0;
-         } else {
-            returnType = s.substring(0, wsChar);
-         }
-         String methodSig = s.substring(wsChar);
-         System.out.println("\t\t" + methodSig + " -> " + returnType);
-      }
-   }
-
-
-   /**
-    * Display a message to the console if the verbose flag is set
-    * 
-    * @param verbose only display the msg if this param is true
-    * @param msg message to display
-    */
-   static public void verboseMsg(String msg)
-   {
-      if (QAFileScan._verbose) {
-         System.out.println(msg);
-      }
    }
 
 
@@ -236,7 +267,7 @@ public class QAUtils
     * @param decl the fully-qualified method declaration
     * @return the method name and simple argname list
     */
-   static public String simplifyDeclaration(String decl)
+   static private String simplifyDeclaration(String decl)
    {
 
       // Discard the the return type
@@ -280,7 +311,7 @@ public class QAUtils
     * @param decl fully qualifed method signature, with parm types and return type
     * @return only the simple return type
     */
-   static public String simplifyReturnType(String decl)
+   static private String simplifyReturnType(String decl)
    {
       // Remove trailing and leading white space then make a destination String
       decl = decl.trim();
@@ -300,7 +331,7 @@ public class QAUtils
     * 
     * @param sList collection of method signatures
     */
-   static public void sortSignatures(ArrayList<String> sList)
+   static private void sortSignatures(ArrayList<String> sList)
    {
       Collections.sort(sList, new Comparator<String>() {
          @Override
@@ -330,30 +361,4 @@ public class QAUtils
    }
 
 
-   // ===============================================================================
-   // Private Helper Methods
-   // ===============================================================================
-
-   /**
-    * Compile a file so that its latest class file is available. This is a recovery method, so if it
-    * fails, nothing to do but printStackTrace
-    * 
-    * @param filePath file to be compiled
-    * @param ft source or test determines into which bin file the compiler class is stored
-    */
-   static private void compileFileClass(String filePath, QAUtils.FileType ft)
-   {
-      // Determine where compiler output (.class file) will be stored
-      String binPath = (ft == QAUtils.FileType.SOURCE) ? QAUtils._srcBin : QAUtils._testBin;
-      String compileLine = _compileLine + SPACE + binPath + SPACE + filePath;
-      try {
-         Process pro1 = Runtime.getRuntime().exec(compileLine);
-         pro1.waitFor();
-      } catch (Exception ex) {
-         ex.printStackTrace();
-         System.err.println(ex.getMessage());
-      }
-   }
-
-
-}
+}     // end QAUtils class
