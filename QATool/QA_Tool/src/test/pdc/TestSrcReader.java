@@ -26,6 +26,7 @@ import mylib.MsgCtrl;
  *          July 26, 2016 // autogen: QA Tool added missing test methods <br>
  *          August 1, 2016 // autogen: QA Tool added missing test methods <br>
  *          August 3, 2016 // autogen: QA Tool added missing test methods <br>
+ *          December 20, 2016    // autogen: QA Tool added missing test methods <br>
  */
 public class TestSrcReader
 {
@@ -85,6 +86,62 @@ public class TestSrcReader
 
       fail("\t\tNot yet implemented");
    }
+
+
+	/**
+ 	 * @NORMAL_TEST String extractSignature(Method, String)
+	 */
+	@Test
+	public void testExtractSignature()
+	{
+		MsgCtrl.auditMsgsOn(true);
+		MsgCtrl.errorMsgsOn(true);
+		MsgCtrl.where(this);
+
+		MsgCtrl.errMsgln("\t\t TEST METHOD NOT YET IMPLEMENTED");
+	}
+
+
+	/**
+ 	 * @NORMAL_TEST void fileScan(File)
+	 */
+	@Test
+	public void testFileScan()
+	{
+		MsgCtrl.auditMsgsOn(true);
+		MsgCtrl.errorMsgsOn(true);
+		MsgCtrl.where(this);
+
+		MsgCtrl.errMsgln("\t\t TEST METHOD NOT YET IMPLEMENTED");
+	}
+
+
+	/**
+ 	 * @NORMAL_TEST void scan(File)
+	 */
+	@Test
+	public void testSimplifyDeclaration()
+	{
+		MsgCtrl.auditMsgsOn(true);
+		MsgCtrl.errorMsgsOn(true);
+		MsgCtrl.where(this);
+
+		MsgCtrl.errMsgln("\t\t TEST METHOD NOT YET IMPLEMENTED");
+	}
+
+
+	/**
+ 	 * @NORMAL_TEST void scanResults()
+	 */
+	@Test
+	public void testSimplifyReturnType()
+	{
+		MsgCtrl.auditMsgsOn(true);
+		MsgCtrl.errorMsgsOn(true);
+		MsgCtrl.where(this);
+
+		MsgCtrl.errMsgln("\t\t TEST METHOD NOT YET IMPLEMENTED");
+	}
 
 
 } 	// end of TestSrcReader.java class

@@ -1,10 +1,9 @@
 /**
- * Constants.java Copyright (c) 2010, Carolla Development, Inc. All Rights Reserved
+ * Constants.java Copyright (c) 2010, Alan Cline. All Rights Reserved.
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
- * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
- * by email: acline@carolla.com
+ * prior specific permission and/or a fee. Request permission to use from acline@carolla.com
  */
 
 package mylib;
@@ -55,12 +54,11 @@ public class Constants
 
   /** Copyright notice placed on all files, either manually or by autogen */
   public static final String COPYRIGHT =
-      "/** \n * %s Copyright (c) %s, Carolla Development, Inc. All Rights Reserved \n * \n" +
+      "/** \n * %s Copyright (c) %s, Alan Cline. All Rights Reserved. \n * \n" +
           " * Permission to make digital or hard copies of all or parts of this work for \n" +
           " * commercial use is prohibited. To republish, to post on servers, to reuse, \n" +
           " * or to redistribute to lists, requires prior specific permission and/or a fee. \n" +
-          " * Request permission to use from Carolla Development, Inc. by email: \n" +
-          " * acline@carolla.com \n */\n";
+          " * Request permission to use from acline@carolla.com. \n */";
 
   /**
    * Current working directory of the user; assumes program is running here. Contains source files

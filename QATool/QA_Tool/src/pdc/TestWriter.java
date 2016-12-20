@@ -1,10 +1,9 @@
 /**
- * TestWriter.java Copyright (c) 2016, Carolla Development, Inc. All Rights Reserved
+ * TestWriter.java Copyright (c) 2016, Alan Cline. All Rights Reserved.
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
- * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
- * by email: acline@carolla.com
+ * prior specific permission and/or a fee. Request permission to use from acline@carolla.com
  */
 
 package pdc;
@@ -26,12 +25,10 @@ import pdc.QAUtils.FileType;
  */
 public class TestWriter
 {
-   private File _testRoot;
+//   private File _testRoot;
    private int _filesWritten;
    private int _filesAugmented;
    private int _filesUnchanged;
-   // private boolean _verbose;
-   // private boolean _nofail;
 
    private Prototype _proto;
 
@@ -50,7 +47,7 @@ public class TestWriter
    // public TestWriter(File srcRoot, boolean verbose, boolean nofail)
    public TestWriter(File srcRoot)
    {
-      _testRoot = makeTestPath(srcRoot);
+//      _testRoot = makeTestPath(srcRoot);
       // _verbose = verbose;
       // _nofail = nofail;
 

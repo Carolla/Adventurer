@@ -1,10 +1,9 @@
 /**
- * Prototype.java Copyright (c) 2016, Carolla Development, Inc. All Rights Reserved
+ * Prototype.java Copyright (c) 2016, Alan Cline. All Rights Reserved.
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
- * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
- * by email: acline@carolla.com
+ * prior specific permission and/or a fee. Request permission to use from acline@carolla.com
  */
 
 package pdc;
@@ -77,7 +76,7 @@ public class Prototype
     */
    private final String NORMAL_CMT = "\t/**\n \t * @NORMAL_TEST %s\n\t */";
    private final String TEST_ANNOT = "\n\t@Test\n";
-   private final String M_DECLARATION = "\tpublic %s\n\t{\n";
+   private final String M_DECLARATION = "\tpublic void %s\n\t{\n";
    private final String MSGCTRL_BLOCK = "\t\tMsgCtrl.auditMsgsOn(true);\n" +
          "\t\tMsgCtrl.errorMsgsOn(true);\n" +
          "\t\tMsgCtrl.where(this);\n\n" +
