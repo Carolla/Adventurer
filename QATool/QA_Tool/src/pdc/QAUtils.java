@@ -58,9 +58,19 @@ public class QAUtils
     * @param clazz target source file
     * @param ft enum FileType.SOURCE or FileType.TEST to know more about the file being examined
     * @return list of public and protected method signatures for the target
+    * @throws IllegalArgumentException if the file type doesn't match the actual file type:
+    *            test files must be {@code /test/} directories, and source files cannot. 
     */
    static public ArrayList<String> collectMethods(String filePath, FileType ft)
+         throws IllegalArgumentException
    {
+      // Source files are not in test directories
+      if (filePath.contains(Constants.FS + "test" + Constants.FS)
+            && (ft == QAUtils.FileType.SOURCE)) {
+         throw new IllegalArgumentException(
+               "QAUtils.collectMethods(): file doesn't match file type expected");
+      }
+
       ArrayList<String> mList = new ArrayList<String>();
 
       Class<?> clazz = null;
@@ -68,6 +78,7 @@ public class QAUtils
          clazz = convertFileToClass(filePath, ft);
       } catch (ClassNotFoundException ex) {
          System.err.println("QAUtils.collectMethods() " + ex.getMessage());
+         return null;
       }
 
       String clazzName = clazz.getSimpleName();
@@ -116,7 +127,7 @@ public class QAUtils
          } else {
             returnType = s.substring(0, wsChar);
          }
-         methodSig = s.substring(wsChar+1);
+         methodSig = s.substring(wsChar + 1);
          String outFmt = methodSig + " -> " + returnType;
          outList.add(outFmt);
          verboseMsg("\t\t" + outFmt);
@@ -142,7 +153,7 @@ public class QAUtils
    // ===============================================================================
    // Private Helper Methods
    // ===============================================================================
-   
+
    /**
     * Compile a file so that its latest class file is available. This is a recovery method, so if it
     * fails, nothing to do but printStackTrace
@@ -174,7 +185,8 @@ public class QAUtils
     * @return the equivalent {@.class} file
     * @throws ClassNotFoundException if the compile target cannot be found
     */
-   static private Class<?> convertFileToClass(String path, FileType ft) throws ClassNotFoundException
+   static private Class<?> convertFileToClass(String path, FileType ft)
+         throws ClassNotFoundException
    {
       // Seperate the file and the root part from the path
       String fname = null;

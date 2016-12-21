@@ -45,7 +45,8 @@ public class TestWriter
     * @param nofail if true, writes Not Implemented test stubs instead of failing test stubs
     */
    // public TestWriter(File srcRoot, boolean verbose, boolean nofail)
-   public TestWriter(File srcRoot)
+   // public TestWriter(File srcRoot)
+   public TestWriter()
    {
       // _testRoot = makeTestPath(srcRoot);
       // _verbose = verbose;
@@ -203,7 +204,7 @@ public class TestWriter
     * test methods
     * 
     * @param target test file to write to
-    * @param srcList list of source file methods to mirror in the test file
+    * @param srcList list of source file methods to mirror in the test file (if not already there)
     * @return the test file written
     */
    public File writeTestFile(File testTarget, ArrayList<String> srcList)
@@ -219,40 +220,25 @@ public class TestWriter
          _proto.writeNewTestFile(testTarget, srcList, convSrcList);
          _filesWritten++;
       } else {
-         QAUtils.verboseMsg(
-               "\n\tExisting file " + testTarget + " contains " + fileLen + " characters");
-         // If the latest test file class is not used, duplicates will occur.
-         // Recompile the test file to get the latest test class file
-         // updateTestFileClass(testTarget.getPath());
-
          // Find list of existing test methods
          ArrayList<String> existingTestMethods =
                QAUtils.collectMethods(testTarget.getPath(), FileType.TEST);
          if (QAFileScan._verbose) {
             QAUtils.outList("\tExisting test file methods: ", existingTestMethods);
          }
-
-         // Compare with existing source methods to determine test methods to add to test file
-         // Remove the void returnType on all test methods for a better compare
-         // TODO Remove this into its own method, or separate QAUtils.collectMethods() into src and
-         // test versions
-         for (int k = 0; k < existingTestMethods.size(); k++) {
-            String sig = existingTestMethods.get(k);
-            String nm = sig.substring(sig.indexOf(" ") + 1);
-            existingTestMethods.set(k, nm);
-         }
-
+         // Check if any methods are missing from the test list
          ArrayList<String> augList =
                (ArrayList<String>) compareLists(convSrcList, existingTestMethods);
          if (QAFileScan._verbose) {
-            QAUtils.outList("\tMethods missing from test file: ", augList);
+            if (augList.size() == 0) {
+               QAUtils.verboseMsg("\t-- No methods missing from test file -- ");
+               _filesUnchanged++;
+            } else {
+               QAUtils.outList("\tMethods missing from test file: ", augList);
+            }
          }
-
          // Update the existing test file
          _proto.augmentTestFile(testTarget, srcList, augList);
-         if (augList.size() == 0) {
-            _filesUnchanged++;
-         }
       }
       return testTarget;
    }

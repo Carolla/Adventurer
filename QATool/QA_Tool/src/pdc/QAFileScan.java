@@ -10,6 +10,7 @@
 package pdc;
 
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Searches a single source file for its methods and compares them against the source file's
@@ -79,10 +80,14 @@ public class QAFileScan
       }
 
       // Create TestWriter and SrcReader
-      TestWriter tw = new TestWriter(_srcFile);
+//      TestWriter tw = new TestWriter(_srcFile);
+      TestWriter tw = new TestWriter();
+      SrcReader sr = new SrcReader();
       // A single file scan does not use an exclusions file 
-      SrcReader sr = new SrcReader(_srcFile, null, tw);
-      sr.fileScan(_srcFile);
+//      SrcReader sr = new SrcReader(_srcFile, null, tw);
+      ArrayList<String> srcList = sr.fileScan(_srcFile);
+      String testTarget = tw.makeTestFilename(_srcFile.getPath());
+      tw.writeTestFile(new File(testTarget), srcList);
    }
 
 
@@ -131,5 +136,14 @@ public class QAFileScan
       return ERRMSG_OK;
    }
 
+   
+   // ===============================================================================
+   // Private Helper Methods
+   // ===============================================================================
 
+   /** Scans one source file for methods, finds its equivalent test file name, and writes
+    * or augments that test file with missing test methods
+    */
+   
+   
 }  // end of QAFileScan class

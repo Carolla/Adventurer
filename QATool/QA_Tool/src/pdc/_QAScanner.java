@@ -14,7 +14,7 @@ import java.io.File;
  * @author Alan Cline
  * @version Apr 11, 2016 // original <br>
  */
-public class QAScanner
+public class _QAScanner
 {
    private File _srcRoot;
    private SrcReader _srcReader;
@@ -25,7 +25,7 @@ public class QAScanner
    // CONSTRUCTOR AND HELPER METHODS
    // ================================================================================
 
-   public QAScanner(File root, File excFile, boolean verbose, boolean nofail)
+   public _QAScanner(File root, File excFile, boolean verbose, boolean nofail)
    {
       _srcRoot = root;
       _testWriter = new TestWriter(root);
