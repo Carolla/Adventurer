@@ -108,6 +108,7 @@ public class QAUtils
       verboseMsg(msg);
       // Extract the return type
       String returnType = null;
+      String methodSig = null;
       for (String s : aList) {
          int wsChar = s.indexOf(" ");
          if (wsChar == -1) {
@@ -115,7 +116,7 @@ public class QAUtils
          } else {
             returnType = s.substring(0, wsChar);
          }
-         String methodSig = s.substring(wsChar+1);
+         methodSig = s.substring(wsChar+1);
          String outFmt = methodSig + " -> " + returnType;
          outList.add(outFmt);
          verboseMsg("\t\t" + outFmt);

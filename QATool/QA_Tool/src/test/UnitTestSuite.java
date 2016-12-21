@@ -13,6 +13,7 @@ import org.junit.runners.Suite;
 
 import test.pdc.TestPrototype;
 import test.pdc.TestQAFileScan;
+import test.pdc.TestQAScanner;
 import test.pdc.TestQAUtils;
 
 /**
@@ -31,7 +32,7 @@ import test.pdc.TestQAUtils;
       /** PDC Test Files */
       TestPrototype.class,
       TestQAFileScan.class,
-      // TestQAScanner.class,
+      TestQAScanner.class,
       // TestQATool.class,
       // TestSrcReader.class,
       // TestTestWriter.class

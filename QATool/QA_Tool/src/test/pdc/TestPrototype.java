@@ -31,7 +31,7 @@ import pdc.Prototype;
  * @author Al Cline
  * @version November 16, 2016 // original <br>
  *          November 24, 2016    // added all test methods but <code>forceUnique</code>  <br>
- *          November 24, 2016    // autogen: QA Tool added missing test methods <br>
+ *          Dec 20, 2016    // refactored after some minor changes in other files <br>
  */
 public class TestPrototype
 {
@@ -55,8 +55,8 @@ public class TestPrototype
    static String[] _augTestMethods = {"void testDelta()", "void testGamma()"};
 
    // File size for the the file containing the above methods
-   private final long TARGET_FILELEN = 1969L;
-   private final long AUGTARGET_FILELEN = 2505L;
+   private final long TARGET_FILELEN = 1917L;
+   private final long AUGTARGET_FILELEN = 2454L;
 
 
    /**
@@ -191,7 +191,6 @@ public class TestPrototype
       assertTrue(newTargetFile.exists());
 
       // The version of the file will change by two method blocks and a version line
-      long oldTargetLen = _targetFile.length();
       // These are the source signature
       displayList("Original Source methods:", _origSrcList);
       displayList("Original Test methods:", _origTestList);
@@ -244,7 +243,7 @@ public class TestPrototype
       // VERIFY
       displayList("Output list", uniqSrcList);
       assertTrue(uniqSrcList.size() == expList.size());
-      for (int k=0, j=0; k < uniqSrcList.size(); k++, j++) {
+      for (int k=0; k < uniqSrcList.size(); k++) {
          assertTrue(uniqSrcList.get(k).equals(expList.get(k)));
       }
    }

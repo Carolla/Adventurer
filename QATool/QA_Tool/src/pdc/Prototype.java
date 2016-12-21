@@ -76,7 +76,7 @@ public class Prototype
     */
    private final String NORMAL_CMT = "\t/**\n \t * @NORMAL_TEST %s\n\t */";
    private final String TEST_ANNOT = "\n\t@Test\n";
-   private final String M_DECLARATION = "\tpublic void %s\n\t{\n";
+   private final String M_DECLARATION = "\tpublic %s\n\t{\n";
    private final String MSGCTRL_BLOCK = "\t\tMsgCtrl.auditMsgsOn(true);\n" +
          "\t\tMsgCtrl.errorMsgsOn(true);\n" +
          "\t\tMsgCtrl.where(this);\n\n" +

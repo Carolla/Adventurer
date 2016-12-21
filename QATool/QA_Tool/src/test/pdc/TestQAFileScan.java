@@ -27,7 +27,7 @@ import pdc.QAFileScan;
  *          July 26, 2016 // autogen: QA Tool added missing test methods <br>
  *          August 1, 2016 // autogen: QA Tool added missing test methods <br>
  *          Nov 24, 2016 // tested flag args <br>
- *          Dec 11, 2016 // furthet testing of commandLine flags <br>
+ *          Dec 11, 2016 // further testing of commandLine flags <br>
  */
 public class TestQAFileScan
 {

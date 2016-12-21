@@ -136,16 +136,18 @@ public class TestQAUtils
    @Test
    public void testOutList()
    {
-      MsgCtrl.auditMsgsOn(false);
-      MsgCtrl.errorMsgsOn(false);
+      MsgCtrl.auditMsgsOn(true);
+      MsgCtrl.errorMsgsOn(true);
       MsgCtrl.where(this);
 
       // SETUP
       // Methods names to convert to outList
-      String[] inMethods = {"File alpha()", "String beta(File x)", "void gamma(int y)",
-            "ArrayList<String> delta(String msg, ArrayList<String> alist)"};
-      String[] expMethods = {"alpha() -> File", "beta(File x) -> String", "gamma(int y) -> void",
-            "delta(String msg, ArrayList<String> alist) -> ArrayList<String>"};
+      String[] inMethods =
+            {"void zeta()", "File alpha()", "String beta(File x)", "void gamma(int y)",
+                  "ArrayList<String> delta(String msg, ArrayList<String> alist)"};
+      String[] expMethods =
+            {"zeta() -> void", "alpha() -> File", "beta(File x) -> String", "gamma(int y) -> void",
+                  "delta(String msg, ArrayList<String> alist) -> ArrayList<String>"};
       // Push the string elements into a list to use as parm
       ArrayList<String> inList = new ArrayList<String>();
       for (int k = 0; k < inMethods.length; k++) {
@@ -168,6 +170,7 @@ public class TestQAUtils
          assertTrue(retSig.equals(expList.get(k)));
       }
    }
+
 
    /**
     * @ERROR_TEST static outList(String, List)

@@ -25,7 +25,7 @@ import pdc.QAUtils.FileType;
  */
 public class TestWriter
 {
-//   private File _testRoot;
+   // private File _testRoot;
    private int _filesWritten;
    private int _filesAugmented;
    private int _filesUnchanged;
@@ -47,7 +47,7 @@ public class TestWriter
    // public TestWriter(File srcRoot, boolean verbose, boolean nofail)
    public TestWriter(File srcRoot)
    {
-//      _testRoot = makeTestPath(srcRoot);
+      // _testRoot = makeTestPath(srcRoot);
       // _verbose = verbose;
       // _nofail = nofail;
 
@@ -73,9 +73,9 @@ public class TestWriter
    {
       ArrayList<String> tstList = new ArrayList<String>();
 
-      // For each method name, capitalize the name and insert the word "test" in front of it
+      // For each method name, capitalize the name and insert the word "void test" in front of it
       for (String sName : srcList) {
-         String tName = makeTestName(sName);
+         String tName = makeTestMethodName(sName);
          tstList.add(tName);
       }
       _proto.forceUnique(tstList);
@@ -149,7 +149,7 @@ public class TestWriter
     * @param srcMethodName name of the method to convert to a test method signature
     * @return the test method signature
     */
-   public String makeTestName(String srcName)
+   public String makeTestMethodName(String srcName)
    {
       StringBuilder sb = new StringBuilder();
       int endNdx = srcName.indexOf("(");
@@ -159,7 +159,7 @@ public class TestWriter
       String ch = sb.substring(0, 1);
       sb.replace(0, 1, ch.toUpperCase());
       // Add the test prefix
-      sb.insert(0, "test");
+      sb.insert(0, "void test");
       sb.append("()");
       return sb.toString();
    }
@@ -219,7 +219,8 @@ public class TestWriter
          _proto.writeNewTestFile(testTarget, srcList, convSrcList);
          _filesWritten++;
       } else {
-         QAUtils.verboseMsg("\n\tExisting file " + testTarget + " contains " + fileLen + " characters");
+         QAUtils.verboseMsg(
+               "\n\tExisting file " + testTarget + " contains " + fileLen + " characters");
          // If the latest test file class is not used, duplicates will occur.
          // Recompile the test file to get the latest test class file
          // updateTestFileClass(testTarget.getPath());
@@ -257,20 +258,20 @@ public class TestWriter
    }
 
 
-//   /**
-//    * Compile a file so that the latest class file is available
-//    * 
-//    * @param filePath file to be compiled
-//    */
-//   private void updateTestFileClass(String filePath)
-//   {
-//      try {
-//         Process pro1 = Runtime.getRuntime().exec("javac " + filePath);
-//         pro1.waitFor();
-//      } catch (Exception ex) {
-//         System.err.println(ex.getMessage());
-//      }
-//   }
+   // /**
+   // * Compile a file so that the latest class file is available
+   // *
+   // * @param filePath file to be compiled
+   // */
+   // private void updateTestFileClass(String filePath)
+   // {
+   // try {
+   // Process pro1 = Runtime.getRuntime().exec("javac " + filePath);
+   // pro1.waitFor();
+   // } catch (Exception ex) {
+   // System.err.println(ex.getMessage());
+   // }
+   // }
 
 
    /**
