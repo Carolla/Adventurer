@@ -15,9 +15,9 @@ import java.io.File;
  * Searches a single source file for its methods and compares them against the source file's
  * corresponding test case and methods. It is similar to calling {@code QATool} with a single file
  * instead of a root tree and no exclusions file. {@code QAFileScan} takes the flags <br>
- * {@code -v :} turns on auditing messages <br>
- * {@code -e :} all file writes are echoed to the console <br>
- * {@code -f :} all testfile stubs will be set to fail instead of printing a safe
+ * {@code -verbose :} turns on auditing messages <br>
+ * {@code -echoFile :} all file writes are echoed to the console <br>
+ * {@code -failStubs :} all testfile stubs will be set to fail instead of printing a safe
  * {@code Not_Implemented} message <br>
  * 
  * @author Alan Cline
@@ -27,12 +27,13 @@ import java.io.File;
  *          Nov 16 2016 // modification to align with test cases <br>
  *          Nov 24 2016 // clarify proper -verbose and -fileaudit flags <br>
  *          Dec 11 2016 // refactored and tested verifyArgs <br>
+ *          Dec 21 2016 // refactored QAScanner into QAFileScan <br>
  */
 public class QAFileScan
 {
    /** Usage message displayed with command line error */
    static private final String USAGE_MSG =
-         "USAGE: QAFileScan <filepath>.java [-v] [-e [-f]";
+         "USAGE: QAFileScan <filepath>.java [-verbose] [-fileEcho] [-failStubs]";
 
    // Error messages for various command line errors
    static public final String ERRMSG_OK = "Command line OK";
@@ -40,22 +41,24 @@ public class QAFileScan
    static public final String ERRMSG_BADFILE = "Cannot find proper .java file by that name";
    static public final String ERRMSG_ARGNUMBER = "Too many arguments in command line";
    static public final String ERRMSG_FILE_NOTFOUND = "Cannot find file specified in command line";
+   static public final String ERRMSG_INVALID_ARG = "Invalid arg entered in command line";
 
    // Command line args to turn on audit trail or file write trail
-   static private final String VERBOSE_ARG = "-verbose";
-   static private final String FILEECHO_ARG = "-fileEcho";
-   static private final String STUBFAIL_ARG = "-stubFail";
+   static public final String VERBOSE_ARG = "-verbose";
+   static public final String FILEECHO_ARG = "-fileEcho";
+   static public final String FAILSTUBS_ARG = "-failStubs";
 
    /** If true, turns on audit trail while executing */
    static public boolean _verbose = false;
    /** If true, echoes all file writes to the console */
    static public boolean _fileEcho = false;
    /** If true, write test method stubs that fail instead of printing a message */
-   static public boolean _stubFail = false;
+   static public boolean _failStubs = false;
 
    /** Target file from which to check source for missing test methods */
    static private File _srcFile = null;
 
+//   private enum ErrCode { OK, NOCMDLINE, BADFILE, ARGNUMBER, FILE_NOTFOUND, INVALID_ARG };  
 
    /**
     * Scan an individual file for missing test methods, and write a corresponding test file with the
@@ -77,7 +80,8 @@ public class QAFileScan
 
       // Create TestWriter and SrcReader
       TestWriter tw = new TestWriter(_srcFile);
-      SrcReader sr = new SrcReader(_srcFile, tw);
+      // A single file scan does not use an exclusions file 
+      SrcReader sr = new SrcReader(_srcFile, null, tw);
       sr.fileScan(_srcFile);
    }
 
@@ -114,11 +118,14 @@ public class QAFileScan
          if (args[k].equals(VERBOSE_ARG)) {
             _verbose = true;
          }
-         if (args[k].equals(FILEECHO_ARG)) {
+         else if (args[k].equals(FILEECHO_ARG)) {
             _fileEcho = true;
          }
-         if (args[k].equals(STUBFAIL_ARG)) {
-            _stubFail = true;
+         else if (args[k].equals(FAILSTUBS_ARG)) {
+            _failStubs = true;
+         }
+         else {
+            return ERRMSG_INVALID_ARG;
          }
       }
       return ERRMSG_OK;

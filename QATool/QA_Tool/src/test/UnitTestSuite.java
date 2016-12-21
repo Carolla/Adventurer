@@ -15,6 +15,7 @@ import test.pdc.TestPrototype;
 import test.pdc.TestQAFileScan;
 import test.pdc.TestQAScanner;
 import test.pdc.TestQAUtils;
+import test.pdc.TestSrcReader;
 
 /**
  * Run all unit tests for the project.
@@ -33,8 +34,7 @@ import test.pdc.TestQAUtils;
       TestPrototype.class,
       TestQAFileScan.class,
       TestQAScanner.class,
-      // TestQATool.class,
-      // TestSrcReader.class,
+      TestSrcReader.class,
       // TestTestWriter.class
 
       /** CIV Test Files */

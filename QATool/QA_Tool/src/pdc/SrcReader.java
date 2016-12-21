@@ -11,7 +11,6 @@ package pdc;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -37,7 +36,6 @@ public class SrcReader
 
    // private File _srcRoot;
    private TestWriter _testWriter;
-   // private boolean _verbose;
 
    private int _dirsScanned;
    private int _filesScanned;
@@ -53,13 +51,13 @@ public class SrcReader
    // CONSTRUCTOR and HELPER METHODS
    // ================================================================================
 
-   public SrcReader(File srcRoot, TestWriter testWriter)
-   {
-      // _srcRoot = srcRoot;
-      // _srcPathLen = _srcRoot.getPath().length();
-      _testWriter = testWriter;
-      // _verbose = verbose;
-   }
+//   public SrcReader(File srcRoot, TestWriter testWriter)
+//   {
+//      // _srcRoot = srcRoot;
+//      // _srcPathLen = _srcRoot.getPath().length();
+//      _testWriter = testWriter;
+//      // _verbose = verbose;
+//   }
 
 
    /**
@@ -68,17 +66,16 @@ public class SrcReader
     * @param srcRoot path of the tree which contains source files to scan
     * @param excludeFile file directly beneath the src root that contains directories and files not
     *           to scan
-    * @param qaScanner contains common utility methods
+    * @param testWriter 
     */
    public SrcReader(File srcRoot, File excFile, TestWriter testWriter)
    {
-      // _srcRoot = srcRoot;
-      // _srcPathLen = _srcRoot.getPath().length();
       _testWriter = testWriter;
-      // _verbose = verbose;
 
       // Set the exclusion files and folders
-      setExclusions(excFile, srcRoot);
+      if (excFile != null) {
+         setExclusions(excFile, srcRoot);
+      }
 
       _dirsScanned = 0;
       _filesScanned = 0;
@@ -91,35 +88,35 @@ public class SrcReader
    // PUBLIC METHODS
    // ================================================================================
 
-   /**
-    * Return the class method signature without package context or throws clauses, but with its
-    * return type, formatted as: <br>
-    * {@code  methodName(argType, argType) : returnType} <br>
-    * where each of the Types are their simple names.
-    * 
-    * @param m the Method object to get full path and properties returned by Class.getMethod()
-    * @param anchorName simple name of the class under reflection
-    * @return the method signature, e.g. as is used in the test method comment
-    */
-   public String extractSignature(Method m, String anchorName)
-   {
-      String s = m.toString();
-      // Skip any method names that do not have the anchorName in it (synthetic classes) and a
-      // 'main'
-      if ((!s.contains(anchorName)) || (s.contains("main("))) {
-         return null;
-      }
-      // Remove any throws clauses
-      if (s.contains("throws")) {
-         s = s.substring(0, s.indexOf("throws"));
-      }
-
-      // Remove the modifer
-      s = s.substring(s.indexOf(SPACE) + 1);
-      String retType = simplifyReturnType(s);
-      String methodDecl = simplifyDeclaration(s);
-      return (retType + " " + methodDecl);
-   }
+//   /**
+//    * Return the class method signature without package context or throws clauses, but with its
+//    * return type, formatted as: <br>
+//    * {@code  methodName(argType, argType) : returnType} <br>
+//    * where each of the Types are their simple names.
+//    * 
+//    * @param m the Method object to get full path and properties returned by Class.getMethod()
+//    * @param anchorName simple name of the class under reflection
+//    * @return the method signature, e.g. as is used in the test method comment
+//    */
+//   public String extractSignature(Method m, String anchorName)
+//   {
+//      String s = m.toString();
+//      // Skip any method names that do not have the anchorName in it (synthetic classes) and a
+//      // 'main'
+//      if ((!s.contains(anchorName)) || (s.contains("main("))) {
+//         return null;
+//      }
+//      // Remove any throws clauses
+//      if (s.contains("throws")) {
+//         s = s.substring(0, s.indexOf("throws"));
+//      }
+//
+//      // Remove the modifer
+//      s = s.substring(s.indexOf(SPACE) + 1);
+//      String retType = simplifyReturnType(s);
+//      String methodDecl = simplifyDeclaration(s);
+//      return (retType + " " + methodDecl);
+//   }
 
    // ================================================================================
    // PUBLIC METHODS
@@ -172,6 +169,7 @@ public class SrcReader
    }
 
 
+   /** Display a report of the directories and files scanned or skipped */
    public void scanResults()
    {
       QAUtils.verboseMsg("Scanning complete: ");
@@ -182,76 +180,76 @@ public class SrcReader
    }
 
 
-   /**
-    * Reduce a fully qualified class name to it simplified name by removing the dot-delimited full
-    * name to yield the suffix, the simple name. This is used for return types and argument types
-    * that occur in the method declaration.<br>
-    * The method declaration has format, where each type is a fully qualified type: <br>
-    * {@code return-type methodName(argType, argType,...) <br>
-    * For example, {@code java.lang.String extractSignature(java.io.File, java.lang.String)} becomes
-    * {@code String extractSignature(File, String)}.<br>
-    * Note: The ellipsis in the signature example refers to a fixed but indefinite number of
-    * arguments, not to a varargs set.
-    * 
-    * @param decl the fully-qualified method declaration
-    * @return the method name and simple argname list
-    */
-   public String simplifyDeclaration(String decl)
-   {
-      // Discard the the return type
-      decl = decl.trim();
-      int rtNdx = decl.indexOf(SPACE);
-      decl = decl.substring(rtNdx + 1);
+//   /**
+//    * Reduce a fully qualified class name to it simplified name by removing the dot-delimited full
+//    * name to yield the suffix, the simple name. This is used for return types and argument types
+//    * that occur in the method declaration.<br>
+//    * The method declaration has format, where each type is a fully qualified type: <br>
+//    * {@code return-type methodName(argType, argType,...) <br>
+//    * For example, {@code java.lang.String extractSignature(java.io.File, java.lang.String)} becomes
+//    * {@code String extractSignature(File, String)}.<br>
+//    * Note: The ellipsis in the signature example refers to a fixed but indefinite number of
+//    * arguments, not to a varargs set.
+//    * 
+//    * @param decl the fully-qualified method declaration
+//    * @return the method name and simple argname list
+//    */
+//   public String simplifyDeclaration(String decl)
+//   {
+//      // Discard the the return type
+//      decl = decl.trim();
+//      int rtNdx = decl.indexOf(SPACE);
+//      decl = decl.substring(rtNdx + 1);
+//
+//      // Setup buffers to allow characer movement
+//      StringBuilder sbIn = new StringBuilder(decl);
+//      StringBuilder sbOut = new StringBuilder();
+//
+//      // To simplify arguments, walk backwards from the right paren, removing prefixes
+//      boolean skip = false;
+//      int in = sbIn.length() - 1;
+//      for (; in >= 0; in--) {
+//         char ch = sbIn.charAt(in);
+//         // Add space character to follow each comma
+//         if (ch == ',') {
+//            sbOut.insert(0, SPACE); // new char is placed in front of existing chars
+//            skip = false;
+//         } else if (ch == '(') {
+//            skip = false;
+//         }
+//         // Skip all characters between previous comma or left paren and the dot
+//         else if ((ch == '.') || (skip == true)) {
+//            skip = true;
+//            continue;
+//         }
+//         sbOut.insert(0, ch);
+//         // System.out.println(String.format("\tCharacter written: %c", sbOut.charAt(0)));
+//      }
+//      String result = sbOut.toString().trim();
+//      return result;
+//   }
 
-      // Setup buffers to allow characer movement
-      StringBuilder sbIn = new StringBuilder(decl);
-      StringBuilder sbOut = new StringBuilder();
 
-      // To simplify arguments, walk backwards from the right paren, removing prefixes
-      boolean skip = false;
-      int in = sbIn.length() - 1;
-      for (; in >= 0; in--) {
-         char ch = sbIn.charAt(in);
-         // Add space character to follow each comma
-         if (ch == ',') {
-            sbOut.insert(0, SPACE); // new char is placed in front of existing chars
-            skip = false;
-         } else if (ch == '(') {
-            skip = false;
-         }
-         // Skip all characters between previous comma or left paren and the dot
-         else if ((ch == '.') || (skip == true)) {
-            skip = true;
-            continue;
-         }
-         sbOut.insert(0, ch);
-         // System.out.println(String.format("\tCharacter written: %c", sbOut.charAt(0)));
-      }
-      String result = sbOut.toString().trim();
-      return result;
-   }
-
-
-   /**
-    * Convert the fully qualifed return type of a signature into its simple type. Also removes the
-    * method modifier (public, private, static, protected).
-    * 
-    * @param decl fully qualifed method signature, with parm types and return type
-    * @return only the simple return type
-    */
-   public String simplifyReturnType(String decl)
-   {
-      // Remove trailing and leading white space then make a destination String
-      decl = decl.trim();
-      String dest = new String(decl);
-
-      int retNdx = decl.indexOf(SPACE); // return type
-      String retSig = decl.substring(0, retNdx);
-      int lastDot = retSig.lastIndexOf(DOT);
-      dest = decl.substring(lastDot + 1, retNdx);
-
-      return dest;
-   }
+//   /**
+//    * Convert the fully qualifed return type of a signature into its simple type. Also removes the
+//    * method modifier (public, private, static, protected).
+//    * 
+//    * @param decl fully qualifed method signature, with parm types and return type
+//    * @return only the simple return type
+//    */
+//   public String simplifyReturnType(String decl)
+//   {
+//      // Remove trailing and leading white space then make a destination String
+//      decl = decl.trim();
+//      String dest = new String(decl);
+//
+//      int retNdx = decl.indexOf(SPACE); // return type
+//      String retSig = decl.substring(0, retNdx);
+//      int lastDot = retSig.lastIndexOf(DOT);
+//      dest = decl.substring(lastDot + 1, retNdx);
+//
+//      return dest;
+//   }
 
 
    // ================================================================================

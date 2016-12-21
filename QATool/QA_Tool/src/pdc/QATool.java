@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import mylib.Constants;
 
 /**
- * A utility tool to improve the quality of source code testing by ensuring that tests are not
- * forgotten. {@code QATool} takes the root of all source files to be examined, a file containing
+ * Recursively reads through source directories and finds their missing test files. 
+ * {@code QATool} takes the root of all source files to be examined, a file containing
  * directories and folders to exclude from scanning, and an optional verbose flag for audit
  * messages. See the {@code main()} method for details.
  * <p>
@@ -137,13 +137,12 @@ public class QATool
       System.out.println("\n\n");
 
       // Create the scanner and begin scanning through source files
-      QAScanner qas = new QAScanner(_root, _excFile, _verbose, _nofail);
-      qas.treeScan();
+//      QAScanner qas = new QAScanner(_root, _excFile, _verbose, _nofail);
+//      qas.treeScan();
 
       // Produce an report of files found and written
-      qas.qaReport();
-
-      System.exit(0);
+//      qas.qaReport();
+//      System.exit(0);
    }
 
 

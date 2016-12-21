@@ -28,12 +28,13 @@ import pdc.QAFileScan;
  *          August 1, 2016 // autogen: QA Tool added missing test methods <br>
  *          Nov 24, 2016 // tested flag args <br>
  *          Dec 11, 2016 // further testing of commandLine flags <br>
+ *          Dec 21, 2016 // added invalid arg check for commandLine flags <br>
  */
 public class TestQAFileScan
 {
    // Use this file, which has passed it tests, to check the audit flags
    private final String _targetFilepath =
-         "/Projects/eChronos/QATool/QA_Tool/src/pdc/Prototype.java";
+         "/Projects/eChronos/QATool/QA_Tool/src/pdc/TargetSrcFile.java";
 
 
    /**
@@ -72,13 +73,34 @@ public class TestQAFileScan
    // ========================================================================
 
    /**
+    * @ERROR_TEST boolean verifyArgs(String[]) 
+    */
+   @Test
+   public void testVerifyArgs_InvalidArg()
+   {
+      MsgCtrl.auditMsgsOn(false);
+      MsgCtrl.errorMsgsOn(false);
+      MsgCtrl.where(this);
+
+      String[] cmdArgs = {"-verbose", "-invalid"};
+      String[] cmdLine = new String[3];
+      cmdLine[0] = _targetFilepath;
+      cmdLine[1] = cmdArgs[0];
+      cmdLine[2] = cmdArgs[1];
+      // Run test for invalid arg
+      String errorMsg = QAFileScan.verifyArgs(cmdLine);
+      assertTrue(errorMsg.equals(QAFileScan.ERRMSG_INVALID_ARG));
+   }
+
+   
+   /**
     * @ERROR_TEST boolean verifyArgs(String[]) Too many args
     */
    @Test
    public void testVerifyArgs_BadArgCount()
    {
-      MsgCtrl.auditMsgsOn(true);
-      MsgCtrl.errorMsgsOn(true);
+      MsgCtrl.auditMsgsOn(false);
+      MsgCtrl.errorMsgsOn(false);
       MsgCtrl.where(this);
 
       String[] cmdArgs = {"-verbose", "-fileEcho", "-stubFail"};
@@ -103,8 +125,8 @@ public class TestQAFileScan
    @Test
    public void testVerifyArgs_FileErrors()
    {
-      MsgCtrl.auditMsgsOn(true);
-      MsgCtrl.errorMsgsOn(true);
+      MsgCtrl.auditMsgsOn(false);
+      MsgCtrl.errorMsgsOn(false);
       MsgCtrl.where(this);
 
       // Run test with no command line
@@ -136,11 +158,11 @@ public class TestQAFileScan
    @Test
    public void testVerifyArgs()
    {
-      MsgCtrl.auditMsgsOn(true);
-      MsgCtrl.errorMsgsOn(true);
+      MsgCtrl.auditMsgsOn(false);
+      MsgCtrl.errorMsgsOn(false);
       MsgCtrl.where(this);
 
-      String[] cmdArgs = {"-verbose", "-fileEcho", "-stubFail"};
+      String[] cmdArgs = {"-verbose", "-fileEcho", "-failStubs"};
 
       // Run test with no args in command line
       String[] cmdLine = new String[1];
@@ -148,7 +170,7 @@ public class TestQAFileScan
       QAFileScan.verifyArgs(cmdLine);
       assertFalse(QAFileScan._verbose);
       assertFalse(QAFileScan._fileEcho);
-      assertFalse(QAFileScan._stubFail);
+      assertFalse(QAFileScan._failStubs);
 
       // Run test with -verbose flag
       cmdLine = new String[2];
@@ -157,7 +179,7 @@ public class TestQAFileScan
       QAFileScan.verifyArgs(cmdLine);
       assertTrue(QAFileScan._verbose);
       assertFalse(QAFileScan._fileEcho);
-      assertFalse(QAFileScan._stubFail);
+      assertFalse(QAFileScan._failStubs);
       clearFlags();
 
       // Run test with -fileEcho flag
@@ -167,7 +189,7 @@ public class TestQAFileScan
       QAFileScan.verifyArgs(cmdLine);
       assertFalse(QAFileScan._verbose);
       assertTrue(QAFileScan._fileEcho);
-      assertFalse(QAFileScan._stubFail);
+      assertFalse(QAFileScan._failStubs);
       clearFlags();
 
       // Run test with -stubFail flag
@@ -177,7 +199,7 @@ public class TestQAFileScan
       QAFileScan.verifyArgs(cmdLine);
       assertFalse(QAFileScan._verbose);
       assertFalse(QAFileScan._fileEcho);
-      assertTrue(QAFileScan._stubFail);
+      assertTrue(QAFileScan._failStubs);
       clearFlags();
 
       // Run test with -verbose and -fileEcho flag in reverse order
@@ -188,7 +210,7 @@ public class TestQAFileScan
       QAFileScan.verifyArgs(cmdLine);
       assertTrue(QAFileScan._verbose);
       assertTrue(QAFileScan._fileEcho);
-      assertFalse(QAFileScan._stubFail);
+      assertFalse(QAFileScan._failStubs);
       clearFlags();
 
       // Run test with all flags set in non-alphabetical order
@@ -200,7 +222,7 @@ public class TestQAFileScan
       QAFileScan.verifyArgs(cmdLine);
       assertTrue(QAFileScan._verbose);
       assertTrue(QAFileScan._fileEcho);
-      assertTrue(QAFileScan._stubFail);
+      assertTrue(QAFileScan._failStubs);
       clearFlags();
    }
 
@@ -214,7 +236,7 @@ public class TestQAFileScan
    {
       QAFileScan._verbose = false;
       QAFileScan._fileEcho = false;
-      QAFileScan._stubFail = false;
+      QAFileScan._failStubs = false;
    }
 
 

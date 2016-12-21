@@ -131,8 +131,8 @@ public class TestPrototype
    @Test
    public void testAugmentWithoutNewMethods()
    {
-      MsgCtrl.auditMsgsOn(false);
-      MsgCtrl.errorMsgsOn(false);
+      MsgCtrl.auditMsgsOn(true);
+      MsgCtrl.errorMsgsOn(true);
       MsgCtrl.where(this);
 
       // SETUP
