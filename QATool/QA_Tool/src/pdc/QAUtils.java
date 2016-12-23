@@ -58,27 +58,26 @@ public class QAUtils
     * @param clazz target source file
     * @param ft enum FileType.SOURCE or FileType.TEST to know more about the file being examined
     * @return list of public and protected method signatures for the target
-    * @throws IllegalArgumentException if the file type doesn't match the actual file type:
-    *            test files must be {@code /test/} directories, and source files cannot. 
+    * @throws IllegalArgumentException if the file type doesn't match the actual file type: test
+    *            files must be {@code /test/} directories, and source files cannot.
     */
    static public ArrayList<String> collectMethods(String filePath, FileType ft)
-         throws IllegalArgumentException
+         throws IllegalArgumentException, ClassNotFoundException
    {
-      // Source files are not in test directories
+      // Guard: Source files are not in test directories
       if (filePath.contains(Constants.FS + "test" + Constants.FS)
             && (ft == QAUtils.FileType.SOURCE)) {
-         throw new IllegalArgumentException(
-               "QAUtils.collectMethods(): file doesn't match file type expected");
+         throw new IllegalArgumentException("File doesn't match file type expected");
       }
 
       ArrayList<String> mList = new ArrayList<String>();
-
       Class<?> clazz = null;
       try {
          clazz = convertFileToClass(filePath, ft);
       } catch (ClassNotFoundException ex) {
-         System.err.println("QAUtils.collectMethods() " + ex.getMessage());
-         return null;
+         throw ex;
+//         System.err.println("QAUtils.collectMethods(): " + ex.getMessage());
+//         return mList;
       }
 
       String clazzName = clazz.getSimpleName();
@@ -86,7 +85,7 @@ public class QAUtils
       for (Method method : rawMethodList) {
          int modifiers = method.getModifiers();
          if (modifiers == 0) {
-            System.err.println("WARNING: " + method.getName()
+            QAUtils.verboseMsg("WARNING: " + method.getName()
                   + "() has default access; should have a declared access");
          }
          if ((Modifier.isPublic(modifiers)) || (Modifier.isProtected(modifiers))) {
@@ -116,7 +115,9 @@ public class QAUtils
    static public List<String> outList(String msg, List<String> aList)
    {
       ArrayList<String> outList = new ArrayList<String>(aList.size());
-      verboseMsg(msg);
+      if (msg != null) {
+         verboseMsg(msg);
+      }
       // Extract the return type
       String returnType = null;
       String methodSig = null;
@@ -182,7 +183,7 @@ public class QAUtils
     * 
     * @param path the fully-qualifed (with package name) {@code .java} source filename
     * @param ft indentify where SOURCE or TEST file is located
-    * @return the equivalent {@.class} file
+    * @return the equivalent {@.class} file, or null if .class file could not be found
     * @throws ClassNotFoundException if the compile target cannot be found
     */
    static private Class<?> convertFileToClass(String path, FileType ft)
@@ -190,11 +191,10 @@ public class QAUtils
    {
       // Seperate the file and the root part from the path
       String fname = null;
-      // String cutPoint = (ft == FileType.SOURCE) ? SRC_PREFIX : TEST_PREFIX;
       String[] parts = path.split(SRC_PREFIX);
       // String root = parts[0];
       fname = parts[1];
-      // Pull of the java suffix
+      // Pull off the java suffix
       fname = fname.split(".java")[0];
       // Convert file separators to package format
       fname = fname.replaceAll(Pattern.quote(Constants.FS), ".");
@@ -209,8 +209,7 @@ public class QAUtils
          try {
             sourceClass = Class.forName(className);
          } catch (ClassNotFoundException ex2) {
-            throw new ClassNotFoundException(
-                  "convertFileToClass() could not find java file to compile: " + path);
+            throw ex2;
          }
       }
       return sourceClass;
@@ -326,16 +325,23 @@ public class QAUtils
     */
    static private String simplifyReturnType(String decl)
    {
+      final int NOT_FOUND = -1;
       // Remove trailing and leading white space then make a destination String
       decl = decl.trim();
       String dest = new String(decl);
 
-      int retNdx = decl.indexOf(SPACE); // return type
-      String retSig = decl.substring(0, retNdx);
+      // Remove 'static' keyword if it exists
+      dest = dest.replace("static ", "");
+      int retNdx = dest.indexOf(SPACE); // return type
+      String retSig = dest.substring(0, retNdx);
       int lastDot = retSig.lastIndexOf(DOT);
-      dest = decl.substring(lastDot + 1, retNdx);
+      retSig = retSig.substring(lastDot + 1, retNdx);
+//      int retNdx = decl.indexOf(SPACE); // return type
+//      String retSig = decl.substring(0, retNdx);
+//      int lastDot = retSig.lastIndexOf(DOT);
+//      dest = decl.substring(lastDot + 1, retNdx);
 
-      return dest;
+      return retSig;
    }
 
 

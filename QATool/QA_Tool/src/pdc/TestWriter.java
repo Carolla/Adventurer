@@ -220,9 +220,16 @@ public class TestWriter
          _proto.writeNewTestFile(testTarget, srcList, convSrcList);
          _filesWritten++;
       } else {
+         ArrayList<String> existingTestMethods = null;
          // Find list of existing test methods
-         ArrayList<String> existingTestMethods =
-               QAUtils.collectMethods(testTarget.getPath(), FileType.TEST);
+         try {
+//            existingTestMethods = QAUtils.collectMethods(testTarget.getPath(), FileType.TEST);
+         } catch (IllegalArgumentException ex) {
+            // TODO Fix after SrcRdr tests succeed
+//            QAUtils.verboseMsg("\t-- No methods missing from test file -- ");
+            System.err.println("TestWriter.writeTestFile():\t" + ex);
+            return null;
+         }
          if (QAFileScan._verbose) {
             QAUtils.outList("\tExisting test file methods: ", existingTestMethods);
          }

@@ -27,11 +27,11 @@ import test.pdc.TestSrcReader;
 @Suite.SuiteClasses({
 
       /** Base Test Files */
-      TestQAUtils.class,
 
       /** PDC Test Files */
       TestPrototype.class,
       TestQAFileScan.class,
+      TestQAUtils.class,
       TestSrcReader.class,
       // TestTestWriter.class
 

@@ -59,7 +59,6 @@ public class QAFileScan
    /** Target file from which to check source for missing test methods */
    static private File _srcFile = null;
 
-//   private enum ErrCode { OK, NOCMDLINE, BADFILE, ARGNUMBER, FILE_NOTFOUND, INVALID_ARG };  
 
    /**
     * Scan an individual file for missing test methods, and write a corresponding test file with the
@@ -78,16 +77,24 @@ public class QAFileScan
          System.err.println(USAGE_MSG);
          System.exit(-1);
       }
-
       // Create TestWriter and SrcReader
-//      TestWriter tw = new TestWriter(_srcFile);
+      // TestWriter tw = new TestWriter(_srcFile);
       TestWriter tw = new TestWriter();
-      SrcReader sr = new SrcReader();
-      // A single file scan does not use an exclusions file 
-//      SrcReader sr = new SrcReader(_srcFile, null, tw);
-      ArrayList<String> srcList = sr.fileScan(_srcFile);
-      String testTarget = tw.makeTestFilename(_srcFile.getPath());
-      tw.writeTestFile(new File(testTarget), srcList);
+      // A single file scan does not use an exclusions file
+      SrcReader sr = new SrcReader(new File(args[0]), null);
+      // SrcReader sr = new SrcReader(_srcFile, null, tw);
+      if (!sr.isValidFile(_srcFile)) {
+         QAUtils.verboseMsg("Invalid source file " + _srcFile);
+         System.exit(-1);
+      }
+      try {
+         ArrayList<String> srcList = sr.fileScan(_srcFile);
+      } catch (ClassNotFoundException ex) {
+         QAUtils.verboseMsg("Cannot find .class file for " + _srcFile);
+         System.exit(-1);
+      }
+//      String testTarget = tw.makeTestFilename(_srcFile.getPath());
+//      tw.writeTestFile(new File(testTarget), srcList);
    }
 
 
@@ -122,28 +129,43 @@ public class QAFileScan
       for (int k = 1; k < args.length; k++) {
          if (args[k].equals(VERBOSE_ARG)) {
             _verbose = true;
-         }
-         else if (args[k].equals(FILEECHO_ARG)) {
+         } else if (args[k].equals(FILEECHO_ARG)) {
             _fileEcho = true;
-         }
-         else if (args[k].equals(FAILSTUBS_ARG)) {
+         } else if (args[k].equals(FAILSTUBS_ARG)) {
             _failStubs = true;
-         }
-         else {
+         } else {
             return ERRMSG_INVALID_ARG;
          }
       }
       return ERRMSG_OK;
    }
 
-   
+
    // ===============================================================================
    // Private Helper Methods
    // ===============================================================================
 
-   /** Scans one source file for methods, finds its equivalent test file name, and writes
-    * or augments that test file with missing test methods
-    */
-   
-   
+
+//   // ===============================================================================
+//   // Mock_QAFileScan
+//   // ===============================================================================
+//
+//   public class Mock_QAFileScan
+//   {
+//      public Mock_QAFileScan()
+//      {};
+//
+//      /**
+//       * Set the verbose flag for testing purposes
+//       * 
+//       * @param state true or false
+//       */
+//      public void setVerboseFlag(boolean state)
+//      {
+//         QAFileScan.this._verbose = state;
+//      }
+//
+//   }
+
+
 }  // end of QAFileScan class

@@ -35,8 +35,14 @@ public class SrcReader
    private final String LEFT_PAREN = "(";
    private final String RIGHT_PAREN = ")";
 
-   // private File _srcRoot;
-   private TestWriter _testWriter;
+   // Path of the tree folder being scanned, used for finding relative paths
+   private String _rootPath;
+   // private TestWriter _testWriter;
+
+   // private ArrayList<String> _dirsScanned;
+   // private ArrayList<String> _filesScanned;
+   // private ArrayList<String> _dirsSkipped;
+   // private ArrayList<String> _filesSkipped;
 
    private int _dirsScanned;
    private int _filesScanned;
@@ -44,8 +50,8 @@ public class SrcReader
    private int _filesSkipped;
 
    // Exclusions lists
-   ArrayList<String> _excDirs;
-   ArrayList<String> _excFiles;
+   ArrayList<String> _excDirs = null;
+   ArrayList<String> _excFiles = null;
 
 
    // ================================================================================
@@ -70,15 +76,18 @@ public class SrcReader
     * @param testWriter
     */
    // public SrcReader(File srcRoot, File excFile, TestWriter testWriter)
-   public SrcReader()
+   public SrcReader(File srcRoot, File excFile)
    {
       // _testWriter = testWriter;
 
-      // // Set the exclusion files and folders
-      // if (excFile != null) {
-      // setExclusions(excFile, srcRoot);
-      // }
+      // Parse the exclusion file and save the designated exclusion files and directories
+      if (excFile != null) {
+         setExclusions(excFile, srcRoot);
+      }
 
+      _rootPath = srcRoot.getPath();
+
+      // Collections of files and directories and their scanning results
       _dirsScanned = 0;
       _filesScanned = 0;
       _dirsSkipped = 0;
@@ -128,8 +137,9 @@ public class SrcReader
     * Scans a particular file and returns a list of src methods
     * 
     * @param f File to examine for methods
+    * @throws ClassNotFoundException if .class file not found
     */
-   public ArrayList<String> fileScan(File f)
+   public ArrayList<String> fileScan(File f) throws ClassNotFoundException
    {
       // Guard against missing file
       if ((f == null) || (!f.exists())) {
@@ -137,17 +147,22 @@ public class SrcReader
       }
       ArrayList<String> srcList = new ArrayList<String>();
       String srcPath = f.getPath();
+      // String relName = getRelative(srcPath);
       try {
          srcList = QAUtils.collectMethods(srcPath, FileType.SOURCE);
-      } catch (IllegalArgumentException ex) {
-         System.err.println("SrcReader.fileScan(): Wrong file type. Source file expected");
-         // Turn on true for 
-         QAFileScan._verbose = true;
+      } catch (IllegalArgumentException ex1) {
+         QAUtils.verboseMsg("Wrong file type. Source file expected");
+         return null;
+      } catch (ClassNotFoundException ex2) {
+         QAUtils.verboseMsg("Could not find .class file to compile: " + srcPath);
+         throw ex2;
       }
       if (QAFileScan._verbose) {
-         QAUtils.verboseMsg(
-               "\n\tFile " + srcPath + " contains " + srcList.size() + " eligible methods:");
-         QAUtils.outList("\t\t", srcList);
+         if (srcList.size() != 0) {
+            QAUtils.outList(null, srcList);
+         } else {
+            QAUtils.verboseMsg("\tNo eligible methods.");
+         }
       }
       return srcList;
    }
@@ -158,7 +173,6 @@ public class SrcReader
     * Directories encountered drops to subdirectory recursively.
     * 
     * @param srcRoot starting directory for source files
-    * @param excFile list of directories and files to exclude from test class generation
     * @return source file that meets all criteria
     */
    public void scan(File srcRoot)
@@ -166,12 +180,28 @@ public class SrcReader
       // Retrieve all files and subdirs under dir
       File[] allFiles = srcRoot.listFiles();
       for (File f : allFiles) {
+         QAUtils.verboseMsg("\n\t" + f.getName());
+         // Validate directories for scanning
          if (isValidDirectory(f)) {
             scan(f);
-         } else if (isValidFile(f)) {
-            fileScan(f);
+            _dirsScanned++;
+         } else if (f.isDirectory()) {
+            _dirsSkipped++;
+         }
+         // Validate files for scanning
+         if (isValidFile(f)) {
+            QAUtils.verboseMsg("\tScanning file " + f.getName());
+            try {
+               fileScan(f);
+               _filesScanned++;
+            } catch (ClassNotFoundException ex) {
+               _filesSkipped++;
+            }
+         } else if (f.isFile()) {
+            _filesSkipped++;
          }
       }
+
    }
 
 
@@ -181,8 +211,24 @@ public class SrcReader
       QAUtils.verboseMsg("Scanning complete: ");
       QAUtils.verboseMsg("\t Directories scanned: " + _dirsScanned);
       QAUtils.verboseMsg("\t Files scanned: " + _filesScanned);
-      QAUtils.verboseMsg("\t Directories skipped per exclusion file: " + _dirsSkipped);
-      QAUtils.verboseMsg("\t Files skipped per exclusion file: " + _filesSkipped);
+      QAUtils.verboseMsg("\t Directories skipped: " + _dirsSkipped);
+      QAUtils.verboseMsg("\t Files skipped: " + _filesSkipped);
+   }
+
+
+   /**
+    * Shorten a long pathname by replacing the root path name with a tilde, Unix style. For example,
+    * for a root path of {@code /Projects/eChronos/QATool/src}, and long path of
+    * {@code /Projects/eChronos/QATool/src/pdc/SrcReader.java} will be shortened to
+    * {@code ~/pdc/SrcReader.java}.
+    * 
+    * @param longPath the absolute path of a file or directory
+    * @return the shortened relative path name
+    */
+   private String getRelative(String longPath)
+   {
+      String s = longPath.replace(_rootPath, "~");
+      return s;
    }
 
 
@@ -264,21 +310,41 @@ public class SrcReader
    // ================================================================================
 
    /**
-    * Checks if file is a non-excluded java source file and not in the HIC directory
+    * Checks if file is a non-excluded java source file or directory
     * 
     * @param f file under examination
     * @return true if file is a valid source file
     */
-   private boolean isValidFile(File f)
+   public boolean isValidFile(File f)
    {
       boolean retval = false;
       String s = f.getPath();
-      if (_excFiles.contains(s)) {
-         // _qas.outMsg("\tSKIPPING file " + s + "\n");
-         _filesSkipped++;
-      } else if ((s.endsWith(".java")) && (!s.contains("hic"))) {
-         _filesScanned++;
+      String relName = getRelative(s);
+
+      // Guard: Skip non-files
+      if (!f.isFile()) {
+         return false;
+      }
+      // Audit trail for files in the exclusion file (if there is one)
+      if ((_excFiles != null) && (_excFiles.contains(s))) {
+         // QAUtils.verboseMsg("Skipping excluded file" + relName);
+         // _filesSkipped.add(relName);
+         // _filesSkipped++;
+         retval = false;
+      }
+      // Count and audit trail for java files
+      if (relName.endsWith(".java")) {
+         // QAUtils.verboseMsg("\n\t\tScanning " + relName);
+         // _filesScanned.add(relName);
+         // _filesScanned++;
          retval = true;
+      }
+      // Count and audit trail for non-java files
+      else {
+         QAUtils.verboseMsg("Skipping ineligible file: " + relName);
+         // _filesSkipped.add(relName);
+         // _filesSkipped++;
+         retval = false;
       }
       return retval;
    }
@@ -292,32 +358,45 @@ public class SrcReader
     */
    private boolean isValidDirectory(File f)
    {
-      // Guards: do not step into, or count, the "test" subdir
+      // Guard: Skip non-directory files
       if (!f.isDirectory()) {
          return false;
       }
+      // Guard: do not step into, or count, the "test" subdir
       String s = f.getPath();
-      if (s.contains("src" + Constants.FS + "test")) {
+      String relName = getRelative(s);
+      // if (s.contains("src" + Constants.FS + "test")) {
+      if (s.contains(Constants.FS + "test")) {
+         QAUtils.verboseMsg("Skipping test directory: " + relName);
          return false;
       }
-
+      // Scan all directories except those in the optional exclude directory
       boolean retval = false;
-      if (!_excDirs.contains(f.getPath())) {
-         QAUtils.verboseMsg("\tRECURSING into directory " + f.getPath() + "\n");
-         _dirsScanned++;
+
+      // Audit trail for directories in the exclusion file (if there is one)
+      if ((_excDirs != null) && (_excDirs.contains(s))) {
+         // QAUtils.verboseMsg("Skipping excluded directory: " + relName);
+         // _dirsSkipped++;
+         QAUtils.verboseMsg("Skipping excluded directory: " + relName);
+         retval = false;
+      }
+      // Count and audit trail for non-java files
+      else {
+         // QAUtils.verboseMsg("\tDirectory " + relName + ":");
+         // _dirsScanned.add(relName);
+         // _dirsScanned++;
+         QAUtils.verboseMsg("\tScanning directory: " + relName);
          retval = true;
-      } else {
-         _dirsSkipped++;
       }
       return retval;
    }
 
 
    /**
-    * Read and build the list of directory and files that should be exluded when scanning the source
-    * file tree. Exclusions are saved as path names relative to source root directory
+    * Read and build the list of directories and files that should be excluded when scanning the
+    * source file tree. Exclusions are saved as path names relative to source root directory
     * 
-    * @param excFile contains files and directories to exclude from the search
+    * @param excFile contains text names of files and directories to exclude from the search
     * @param rootFile location of the exclusion file
     */
    private void setExclusions(File excFile, File rootFile)
@@ -354,6 +433,7 @@ public class SrcReader
       }
    }
 
+
    /**
     * Sort first by method name, then by parm list number and value
     * 
@@ -387,5 +467,28 @@ public class SrcReader
          }
       });
    }
+
+
+   // ================================================================================
+   // MockSrcReader
+   // ================================================================================
+
+   public class MockSrcReader
+   {
+      public MockSrcReader()
+      {}
+
+      public int[] getScanResults()
+      {
+         int[] results = new int[4];
+         results[0] = SrcReader.this._dirsScanned;
+         results[1] = SrcReader.this._filesScanned;
+         results[2] = SrcReader.this._dirsSkipped;
+         results[3] = SrcReader.this._filesSkipped;
+         return results;
+      }
+
+   }
+
 
 } // end of SrcReader class

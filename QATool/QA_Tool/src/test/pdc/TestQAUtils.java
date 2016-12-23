@@ -102,7 +102,12 @@ public class TestQAUtils
       String[] expList = {"File alpha(String)", "String beta(File)"};
 
       // Extract methods from a source file
-      ArrayList<String> srcList = QAUtils.collectMethods(SRC_PATHNAME, QAUtils.FileType.SOURCE);
+      ArrayList<String> srcList = null;
+      try {
+         srcList = QAUtils.collectMethods(SRC_PATHNAME, QAUtils.FileType.SOURCE);
+      } catch (ClassNotFoundException ex) {
+         fail("\tUnexpected exception thrown");
+      }
       displayList("Source methods found", srcList);
       assertTrue(expList[0].equals(srcList.get(0)));
       assertTrue(expList[1].equals(srcList.get(1)));
@@ -123,7 +128,12 @@ public class TestQAUtils
       String[] expList = {"void testAlpha()", "void testBeta()"};
 
       // Extract methods from a test file
-      ArrayList<String> mList = QAUtils.collectMethods(TEST_PATHNAME, QAUtils.FileType.TEST);
+      ArrayList<String> mList = null;
+      try {
+         mList = QAUtils.collectMethods(TEST_PATHNAME, QAUtils.FileType.TEST);
+      } catch (ClassNotFoundException ex) {
+         fail("\tUnexpected exception thrown");
+      }
       displayList("Test methods found", mList);
       assertTrue(expList[0].equals(mList.get(0)));
       assertTrue(expList[1].equals(mList.get(1)));
