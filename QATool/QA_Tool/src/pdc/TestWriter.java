@@ -14,7 +14,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import mylib.Constants;
-import pdc.QAUtils.FileType;
 
 /**
  * Traverses corresponding test root tree to match files and methods with source files provided by
@@ -52,6 +51,9 @@ public class TestWriter
       // _verbose = verbose;
       // _nofail = nofail;
 
+      // TestWriter needs a Prototype object to create the test file
+      _proto = new Prototype();
+
       _filesWritten = 0;
       _filesAugmented = 0;
       _filesUnchanged = 0;
@@ -61,27 +63,6 @@ public class TestWriter
    // ================================================================================
    // PUBLIC METHODS
    // ================================================================================
-
-   /**
-    * Convert a source method name to a test method name. Insert "test" in front the of method name
-    * of the signature, and ensure that overloaded method names are enumerated to distinguish them
-    * and enforce uniqueness.
-    * 
-    * @param srcList list of all method names in source file
-    * @return the list of unique test names generated from the srcList
-    */
-   public ArrayList<String> convertToTestNames(ArrayList<String> srcList)
-   {
-      ArrayList<String> tstList = new ArrayList<String>();
-
-      // For each method name, capitalize the name and insert the word "void test" in front of it
-      for (String sName : srcList) {
-         String tName = makeTestMethodName(sName);
-         tstList.add(tName);
-      }
-      _proto.forceUnique(tstList);
-      return tstList;
-   }
 
 
    // ================================================================================
@@ -140,32 +121,6 @@ public class TestWriter
    }
 
 
-   // ================================================================================
-   // PUBLIC METHODS
-   // ================================================================================
-
-   /**
-    * Convert the src method name to a test method name
-    * 
-    * @param srcMethodName name of the method to convert to a test method signature
-    * @return the test method signature
-    */
-   public String makeTestMethodName(String srcName)
-   {
-      StringBuilder sb = new StringBuilder();
-      int endNdx = srcName.indexOf("(");
-      int startNdx = srcName.indexOf(" ");
-      sb.append(srcName.substring(startNdx + 1, endNdx));
-      // Uppercase the first letter of the method name for the decl
-      String ch = sb.substring(0, 1);
-      sb.replace(0, 1, ch.toUpperCase());
-      // Add the test prefix
-      sb.insert(0, "void test");
-      sb.append("()");
-      return sb.toString();
-   }
-
-
    /**
     * Test directory is required to be directly beneath src root
     * 
@@ -185,10 +140,6 @@ public class TestWriter
    }
 
 
-   // ================================================================================
-   // PUBLIC METHODS
-   // ================================================================================
-
    /** Write messages to console. outMsg checks the globl verbose flag */
    public void writeResults()
    {
@@ -206,36 +157,44 @@ public class TestWriter
     * @param target test file to write to
     * @param srcList list of source file methods to mirror in the test file (if not already there)
     * @return the test file written
+    * @throws ClassNotFoundException if test file cannot be compiled to get .class file
     */
-   public File writeTestFile(File testTarget, ArrayList<String> srcList)
+   public File writeTestFile(File testTarget, ArrayList<String> srcList, ArrayList<String> testList)
+      throws ClassNotFoundException
    {
-      _proto = new Prototype();
+      // _proto = new Prototype();
 
       long fileLen = testTarget.length();
-      ArrayList<String> convSrcList = convertToTestNames(srcList);
+      String testPath = testTarget.getPath();
+      // ArrayList<String> convSrcList = convertToTestNames(srcList);
 
       if (fileLen == 0L) {
          QAUtils.verboseMsg("\n\tCreating new test file " + testTarget);
-         QAUtils.outList("\tConverted source methods: ", convSrcList);
-         _proto.writeNewTestFile(testTarget, srcList, convSrcList);
+         QAUtils.outList("\tConverted source methods: ", testList);
+         _proto.writeNewTestFile(testTarget, srcList, testList);
+         // QAUtils.outList("\tConverted source methods: ", convSrcList);
+         // _proto.writeNewTestFile(testTarget, srcList, convSrcList);
          _filesWritten++;
       } else {
          ArrayList<String> existingTestMethods = null;
          // Find list of existing test methods
          try {
-//            existingTestMethods = QAUtils.collectMethods(testTarget.getPath(), FileType.TEST);
-         } catch (IllegalArgumentException ex) {
-            // TODO Fix after SrcRdr tests succeed
-//            QAUtils.verboseMsg("\t-- No methods missing from test file -- ");
-            System.err.println("TestWriter.writeTestFile():\t" + ex);
+            existingTestMethods =
+                  QAUtils.collectMethods(testPath, QAUtils.FileType.TEST);
+         } catch (IllegalArgumentException ex1) {
+            QAUtils.verboseMsg("Wrong file type. Source file expected");
             return null;
+         } catch (ClassNotFoundException ex2) {
+            QAUtils.verboseMsg("Could not find .class file to compile: " + testPath);
+            throw ex2;
          }
+
          if (QAFileScan._verbose) {
             QAUtils.outList("\tExisting test file methods: ", existingTestMethods);
          }
          // Check if any methods are missing from the test list
          ArrayList<String> augList =
-               (ArrayList<String>) compareLists(convSrcList, existingTestMethods);
+               (ArrayList<String>) compareLists(testList, existingTestMethods);
          if (QAFileScan._verbose) {
             if (augList.size() == 0) {
                QAUtils.verboseMsg("\t-- No methods missing from test file -- ");
@@ -245,27 +204,15 @@ public class TestWriter
             }
          }
          // Update the existing test file
-         _proto.augmentTestFile(testTarget, srcList, augList);
+         testTarget = _proto.augmentTestFile(testTarget, srcList, augList);
       }
       return testTarget;
    }
 
 
-   // /**
-   // * Compile a file so that the latest class file is available
-   // *
-   // * @param filePath file to be compiled
-   // */
-   // private void updateTestFileClass(String filePath)
-   // {
-   // try {
-   // Process pro1 = Runtime.getRuntime().exec("javac " + filePath);
-   // pro1.waitFor();
-   // } catch (Exception ex) {
-   // System.err.println(ex.getMessage());
-   // }
-   // }
-
+   // ================================================================================
+   // PUBLIC METHODS
+   // ================================================================================
 
    /**
     * Identifies each entry in a <code>srcList</code> that is not in a <code>testList</code>, and
@@ -298,21 +245,28 @@ public class TestWriter
 
 
    // ================================================================================
-   // PUBLIC METHODS
+   // Private Methods
    // ================================================================================
 
    /**
-    * Ensure that all subdirs in the long path exist
+    * Convert a source method name to a test method name. Insert "test" in front the of method name
+    * of the signature, and ensure that overloaded method names are enumerated to distinguish them
+    * and enforce uniqueness.
     * 
-    * @param target long path of a file to be created
-    * @return the short file name
+    * @param srcList list of all method names in source file
+    * @return the list of unique test names generated from the srcList
     */
-   private String makeSubtree(File target)
+   public ArrayList<String> convertToTestNames(ArrayList<String> srcList)
    {
-      // Remove filename from end of path
-      File subtree = target.getParentFile();
-      subtree.mkdirs();
-      return subtree.getName();
+      ArrayList<String> tstList = new ArrayList<String>();
+
+      // For each method name, capitalize the name and insert the word "void test" in front of it
+      for (String sName : srcList) {
+         String tName = makeTestMethodName(sName);
+         tstList.add(tName);
+      }
+      _proto.forceUnique(tstList);
+      return tstList;
    }
 
 
@@ -334,4 +288,62 @@ public class TestWriter
    // return retval;
    // }
 
-}
+
+   /**
+    * Ensure that all subdirs in the long path exist
+    * 
+    * @param target long path of a file to be created
+    * @return the short file name
+    */
+   private String makeSubtree(File target)
+   {
+      // Remove filename from end of path
+      File subtree = target.getParentFile();
+      subtree.mkdirs();
+      return subtree.getName();
+   }
+
+
+   // ================================================================================
+   // PUBLIC METHODS
+   // ================================================================================
+
+   /**
+    * Convert the src method name to a test method name
+    * 
+    * @param srcMethodName name of the method to convert to a test method signature
+    * @return the test method signature
+    */
+   private String makeTestMethodName(String srcName)
+   {
+      StringBuilder sb = new StringBuilder();
+      int endNdx = srcName.indexOf("(");
+      int startNdx = srcName.indexOf(" ");
+      sb.append(srcName.substring(startNdx + 1, endNdx));
+      // Uppercase the first letter of the method name for the decl
+      String ch = sb.substring(0, 1);
+      sb.replace(0, 1, ch.toUpperCase());
+      // Add the test prefix
+      sb.insert(0, "void test");
+      sb.append("()");
+      return sb.toString();
+   }
+
+
+   /**
+    * Compile a file so that the latest class file is available
+    *
+    * @param filePath file to be compiled
+    */
+   private void updateTestFileClass(String filePath)
+   {
+      try {
+         Process pro1 = Runtime.getRuntime().exec("javac " + filePath);
+         pro1.waitFor();
+      } catch (Exception ex) {
+         System.err.println(ex.getMessage());
+      }
+   }
+
+
+}  // end of TestWriter class

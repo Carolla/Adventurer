@@ -76,8 +76,6 @@ public class QAUtils
          clazz = convertFileToClass(filePath, ft);
       } catch (ClassNotFoundException ex) {
          throw ex;
-//         System.err.println("QAUtils.collectMethods(): " + ex.getMessage());
-//         return mList;
       }
 
       String clazzName = clazz.getSimpleName();
@@ -101,7 +99,7 @@ public class QAUtils
       return mList;
    }
 
-
+   
    /**
     * Display a method list. Set the return type on the other side of the signature to easier read
     * the method name: <br>

@@ -30,19 +30,13 @@ import pdc.QAUtils.FileType;
 public class SrcReader
 {
    private final String COMMA = ",";
-   private final String DOT = ".";
    private final String SPACE = " ";
    private final String LEFT_PAREN = "(";
    private final String RIGHT_PAREN = ")";
 
    // Path of the tree folder being scanned, used for finding relative paths
    private String _rootPath;
-   // private TestWriter _testWriter;
-
-   // private ArrayList<String> _dirsScanned;
-   // private ArrayList<String> _filesScanned;
-   // private ArrayList<String> _dirsSkipped;
-   // private ArrayList<String> _filesSkipped;
+   private TestWriter _testWriter;
 
    private int _dirsScanned;
    private int _filesScanned;
@@ -58,15 +52,6 @@ public class SrcReader
    // CONSTRUCTOR and HELPER METHODS
    // ================================================================================
 
-   // public SrcReader(File srcRoot, TestWriter testWriter)
-   // {
-   // // _srcRoot = srcRoot;
-   // // _srcPathLen = _srcRoot.getPath().length();
-   // _testWriter = testWriter;
-   // // _verbose = verbose;
-   // }
-
-
    /**
     * Sets object fields and exclusion files
     * 
@@ -75,16 +60,15 @@ public class SrcReader
     *           to scan
     * @param testWriter
     */
-   // public SrcReader(File srcRoot, File excFile, TestWriter testWriter)
+//   public SrcReader(File srcRoot, File excFile, TestWriter testWriter)
    public SrcReader(File srcRoot, File excFile)
    {
-      // _testWriter = testWriter;
+//      _testWriter = testWriter;
 
       // Parse the exclusion file and save the designated exclusion files and directories
       if (excFile != null) {
          setExclusions(excFile, srcRoot);
       }
-
       _rootPath = srcRoot.getPath();
 
       // Collections of files and directories and their scanning results
@@ -147,7 +131,6 @@ public class SrcReader
       }
       ArrayList<String> srcList = new ArrayList<String>();
       String srcPath = f.getPath();
-      // String relName = getRelative(srcPath);
       try {
          srcList = QAUtils.collectMethods(srcPath, FileType.SOURCE);
       } catch (IllegalArgumentException ex1) {
@@ -192,8 +175,10 @@ public class SrcReader
          if (isValidFile(f)) {
             QAUtils.verboseMsg("\tScanning file " + f.getName());
             try {
-               fileScan(f);
+               ArrayList<String> srcList = fileScan(f);
                _filesScanned++;
+               // For each source file scanned, write to its test file
+//               writeTestFile(f.getPath(), srcList);
             } catch (ClassNotFoundException ex) {
                _filesSkipped++;
             }
@@ -226,7 +211,9 @@ public class SrcReader
     */
    private String getRelative(String longPath)
    {
-      String s = longPath.replace(_rootPath, "~");
+      // Split the filename from the root path
+      int ndx = longPath.lastIndexOf(Constants.FS);
+      String s = longPath.substring(ndx+1);
       return s;
    }
 
@@ -318,7 +305,6 @@ public class SrcReader
    {
       boolean retval = false;
       String s = f.getPath();
-      String relName = getRelative(s);
 
       // Guard: Skip non-files
       if (!f.isFile()) {
@@ -326,23 +312,15 @@ public class SrcReader
       }
       // Audit trail for files in the exclusion file (if there is one)
       if ((_excFiles != null) && (_excFiles.contains(s))) {
-         // QAUtils.verboseMsg("Skipping excluded file" + relName);
-         // _filesSkipped.add(relName);
-         // _filesSkipped++;
          retval = false;
       }
       // Count and audit trail for java files
-      if (relName.endsWith(".java")) {
-         // QAUtils.verboseMsg("\n\t\tScanning " + relName);
-         // _filesScanned.add(relName);
-         // _filesScanned++;
+      if (s.endsWith(".java")) {
          retval = true;
       }
       // Count and audit trail for non-java files
       else {
-         QAUtils.verboseMsg("Skipping ineligible file: " + relName);
-         // _filesSkipped.add(relName);
-         // _filesSkipped++;
+         QAUtils.verboseMsg("Skipping ineligible file: " + s);
          retval = false;
       }
       return retval;

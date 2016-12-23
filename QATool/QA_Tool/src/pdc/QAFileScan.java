@@ -56,6 +56,8 @@ public class QAFileScan
    /** If true, write test method stubs that fail instead of printing a message */
    static public boolean _failStubs = false;
 
+   static private TestWriter _testWriter = null;
+
    /** Target file from which to check source for missing test methods */
    static private File _srcFile = null;
 
@@ -77,26 +79,24 @@ public class QAFileScan
          System.err.println(USAGE_MSG);
          System.exit(-1);
       }
-      // Create TestWriter and SrcReader
-      // TestWriter tw = new TestWriter(_srcFile);
-      TestWriter tw = new TestWriter();
+
+      // Create a TestWriter for the SrcReader
+      _testWriter = new TestWriter();
       // A single file scan does not use an exclusions file
       SrcReader sr = new SrcReader(new File(args[0]), null);
-      // SrcReader sr = new SrcReader(_srcFile, null, tw);
       if (!sr.isValidFile(_srcFile)) {
          QAUtils.verboseMsg("Invalid source file " + _srcFile);
-         System.exit(-1);
+         System.exit(-2);
       }
+      QAUtils.verboseMsg("Scanning " + _srcFile);
       try {
          ArrayList<String> srcList = sr.fileScan(_srcFile);
+         writeTestFile(_srcFile.getPath(), srcList);
       } catch (ClassNotFoundException ex) {
          QAUtils.verboseMsg("Cannot find .class file for " + _srcFile);
-         System.exit(-1);
+         System.exit(-3);
       }
-//      String testTarget = tw.makeTestFilename(_srcFile.getPath());
-//      tw.writeTestFile(new File(testTarget), srcList);
    }
-
 
    /**
     * Validates and activates command line arguments, including the filepath.
@@ -140,32 +140,54 @@ public class QAFileScan
       return ERRMSG_OK;
    }
 
-
+   
    // ===============================================================================
-   // Private Helper Methods
+   // Private Methods
    // ===============================================================================
 
+   /**
+    * Get the test file path corresponding to the source file, and pass the srcList for writing to a
+    * new or augmented test file
+    * 
+    * @param srcPath source file containing source methods
+    * @param srcList all source methods in source file
+    */
+   static private void writeTestFile(String srcPath, ArrayList<String> srcList)
+   {
+      // Convert src path to test path
+      String testPath = _testWriter.makeTestFilename(srcPath);
+      // Convert src methods to test methods
+      ArrayList<String> testList = _testWriter.convertToTestNames(srcList);
+      // Write new test file (or augment existing one) with these method names
+      try {
+         _testWriter.writeTestFile(new File(testPath), srcList, testList);
+      } catch (ClassNotFoundException e) {
+         e.printStackTrace();
+      }
+   }
 
-//   // ===============================================================================
-//   // Mock_QAFileScan
-//   // ===============================================================================
-//
-//   public class Mock_QAFileScan
-//   {
-//      public Mock_QAFileScan()
-//      {};
-//
-//      /**
-//       * Set the verbose flag for testing purposes
-//       * 
-//       * @param state true or false
-//       */
-//      public void setVerboseFlag(boolean state)
-//      {
-//         QAFileScan.this._verbose = state;
-//      }
-//
-//   }
+
+
+   // // ===============================================================================
+   // // Mock_QAFileScan
+   // // ===============================================================================
+   //
+   // public class Mock_QAFileScan
+   // {
+   // public Mock_QAFileScan()
+   // {};
+   //
+   // /**
+   // * Set the verbose flag for testing purposes
+   // *
+   // * @param state true or false
+   // */
+   // public void setVerboseFlag(boolean state)
+   // {
+   // QAFileScan.this._verbose = state;
+   // }
+   //
+   // }
 
 
 }  // end of QAFileScan class
