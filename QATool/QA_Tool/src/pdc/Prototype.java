@@ -102,7 +102,7 @@ public class Prototype
     * outputfile original name. Later, the input file will be deleted and the new file returned.
     * 
     * @param originalTestFile existing test file to update
-    * @param srcList signatures of source method names used in test file comments
+    * @param srcList signatures of source method names to be used in test file comments
     * @param augList new methods to write to the existing test file (output)
     * @return the test file written
     */
@@ -591,6 +591,7 @@ public class Prototype
       for (String s : codeBlock) {
          op.println(s);
          fileEcho(s);
+         QAUtils.verboseMsg("\tCode block written = " + s.length());
       }
    }
 

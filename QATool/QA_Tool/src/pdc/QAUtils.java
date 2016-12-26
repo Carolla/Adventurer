@@ -55,8 +55,8 @@ public class QAUtils
    /**
     * Extracts public and protected methods from a source or test file, then sorts each list.
     * 
-    * @param clazz target source file
-    * @param ft enum FileType.SOURCE or FileType.TEST to know more about the file being examined
+    * @param filepath   path of target file
+    * @param ft enum FileType.SOURCE or FileType.TEST. See {@code QAUtils}.
     * @return list of public and protected method signatures for the target
     * @throws IllegalArgumentException if the file type doesn't match the actual file type: test
     *            files must be {@code /test/} directories, and source files cannot.
@@ -97,6 +97,15 @@ public class QAUtils
       // Sort methods to keep in sync with test methods later
       sortSignatures(mList);
       return mList;
+   }
+
+   static public ArrayList<String> createList(String[] ary)
+   {
+      ArrayList<String> myList = new ArrayList<String>(ary.length);
+      for (int k = 0; k < ary.length; k++) {
+         myList.add(ary[k]);
+      }
+      return myList;
    }
 
    

@@ -9,8 +9,11 @@
 
 package test.pdc;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import org.junit.After;
@@ -21,6 +24,7 @@ import org.junit.Test;
 
 import mylib.MsgCtrl;
 import pdc.QAUtils;
+import pdc.TestWriter;
 
 /**
  * @author Al Cline
@@ -100,7 +104,7 @@ public class TestQAUtils
 
       // Expected methods
       String[] expList = {"File alpha(String)", "String beta(File)"};
-
+      
       // Extract methods from a source file
       ArrayList<String> srcList = null;
       try {
@@ -120,13 +124,22 @@ public class TestQAUtils
    @Test
    public void testCollectMethodsAsTest()
    {
-      MsgCtrl.auditMsgsOn(false);
-      MsgCtrl.errorMsgsOn(false);
+      MsgCtrl.auditMsgsOn(true);
+      MsgCtrl.errorMsgsOn(true);
       MsgCtrl.where(this);
 
+      // SETUP 
       // Expected methods
-      String[] expList = {"void testAlpha()", "void testBeta()"};
-
+      String[] srcAry = {"File alpha(String x)", "String beta(File f)"};
+      String[] expAry = {"void testAlpha()", "void testBeta()"};
+      // Create test method with only these methods
+      File testTarget = new File(TEST_PATHNAME);
+      testTarget.delete();
+      assertTrue(!testTarget.exists());
+      
+      TestWriter tw = new TestWriter();
+      File target = tw.writeTestFile(testTarget, QAUtils.createList(srcAry), QAUtils.createList(expAry)); 
+      
       // Extract methods from a test file
       ArrayList<String> mList = null;
       try {
@@ -135,8 +148,12 @@ public class TestQAUtils
          fail("\tUnexpected exception thrown");
       }
       displayList("Test methods found", mList);
-      assertTrue(expList[0].equals(mList.get(0)));
-      assertTrue(expList[1].equals(mList.get(1)));
+      assertTrue(expAry[0].equals(mList.get(0)));
+      assertTrue(expAry[1].equals(mList.get(1)));
+      
+      // TEARDOWN
+      target.delete();
+      
    }
 
 
@@ -146,8 +163,8 @@ public class TestQAUtils
    @Test
    public void testOutList()
    {
-      MsgCtrl.auditMsgsOn(true);
-      MsgCtrl.errorMsgsOn(true);
+      MsgCtrl.auditMsgsOn(false);
+      MsgCtrl.errorMsgsOn(false);
       MsgCtrl.where(this);
 
       // SETUP

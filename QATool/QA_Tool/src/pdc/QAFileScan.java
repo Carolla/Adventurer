@@ -159,11 +159,7 @@ public class QAFileScan
       // Convert src methods to test methods
       ArrayList<String> testList = _testWriter.convertToTestNames(srcList);
       // Write new test file (or augment existing one) with these method names
-      try {
-         _testWriter.writeTestFile(new File(testPath), srcList, testList);
-      } catch (ClassNotFoundException e) {
-         e.printStackTrace();
-      }
+      _testWriter.writeTestFile(new File(testPath), srcList, testList);
    }
 
 
