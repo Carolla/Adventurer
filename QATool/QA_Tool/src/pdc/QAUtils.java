@@ -9,6 +9,7 @@
 
 package pdc;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class QAUtils
    /** All compiled classes are stored in this bin directory */
    static private final String _srcBin = "/Projects/eChronos/QATool/QA_Tool/bin";
    static private final String _testBin = "/Projects/eChronos/QATool/QA_Tool/bin/test";
-   static private final String _compileLine = "javac -d ";
+   static private final String _compileLine = "javac -d";
 
    public enum FileType {
       SOURCE, TEST
@@ -55,7 +56,7 @@ public class QAUtils
    /**
     * Extracts public and protected methods from a source or test file, then sorts each list.
     * 
-    * @param filepath   path of target file
+    * @param filepath path of target file
     * @param ft enum FileType.SOURCE or FileType.TEST. See {@code QAUtils}.
     * @return list of public and protected method signatures for the target
     * @throws IllegalArgumentException if the file type doesn't match the actual file type: test
@@ -73,7 +74,7 @@ public class QAUtils
       ArrayList<String> mList = new ArrayList<String>();
       Class<?> clazz = null;
       try {
-         clazz = convertFileToClass(filePath, ft);
+         clazz = QAUtils.convertFileToClass(filePath, ft);
       } catch (ClassNotFoundException ex) {
          throw ex;
       }
@@ -108,7 +109,7 @@ public class QAUtils
       return myList;
    }
 
-   
+
    /**
     * Display a method list. Set the return type on the other side of the signature to easier read
     * the method name: <br>
@@ -169,24 +170,36 @@ public class QAUtils
     * @param filePath file to be compiled
     * @param ft source or test determines into which bin file the compiler class is stored
     */
-   static private void compileFileClass(String filePath, QAUtils.FileType ft)
+   public static void compileFileClass(String filePath, QAUtils.FileType ft)
    {
       // Determine where compiler output (.class file) will be stored
       String binPath = (ft == QAUtils.FileType.SOURCE) ? QAUtils._srcBin : QAUtils._testBin;
       String compileLine = _compileLine + SPACE + binPath + SPACE + filePath;
       try {
-         Process pro1 = Runtime.getRuntime().exec(compileLine);
-         pro1.waitFor();
-      } catch (Exception ex) {
-         ex.printStackTrace();
-         System.err.println(ex.getMessage());
+         Process pro1 = null;
+         try {
+            pro1 = Runtime.getRuntime().exec(compileLine);
+         } catch (IOException ex1) {
+            System.err.println(ex1.getMessage());
+            ex1.printStackTrace();
+         }
+         // Returns non-standard value of 1 (pid of released thread)
+         int pid = pro1.waitFor();
+         if (pid != 1) {
+            System.err.println("\tQAUtils.compileFileClass() terminated with " + pid);
+            // System.err.println("\tWaiting for 3 seconds for (assumedly) file I/O to catch up.");
+            // Thread.sleep(3000);
+         }
+      } catch (InterruptedException ex2) {
+         System.err.println(ex2.getMessage());
+         ex2.printStackTrace();
       }
    }
 
 
    /**
-    * Return the {@code Class} for the given java file. If the .class file is not found, recovery
-    * code wil compile it into a predefined bin directory.
+    * Return the {@code Class} for the given java file. If the .class file is not found, null is
+    * returned.
     * 
     * @param path the fully-qualifed (with package name) {@code .java} source filename
     * @param ft indentify where SOURCE or TEST file is located
@@ -196,7 +209,27 @@ public class QAUtils
    static private Class<?> convertFileToClass(String path, FileType ft)
          throws ClassNotFoundException
    {
-      // Seperate the file and the root part from the path
+      // Guard: get qualifed package name of class file
+      String className = convertPathToPackageName(path);
+      Class<?> sourceClass = Class.forName(className);
+      return sourceClass;
+   }
+
+
+   /**
+    * Convert a path name to its package name equivalent so it can be used to retrieve class names;
+    * path cannot be null.
+    * 
+    * @param path path of file to convert
+    * @return the dot-delimited package name corresponding to the file name
+    */
+   static private String convertPathToPackageName(String path)
+   {
+      // Guard: null prohibited
+      if (path == null) {
+         return null;
+      }
+      // Separate the file and the root part from the path
       String fname = null;
       String[] parts = path.split(SRC_PREFIX);
       // String root = parts[0];
@@ -205,21 +238,7 @@ public class QAUtils
       fname = fname.split(".java")[0];
       // Convert file separators to package format
       fname = fname.replaceAll(Pattern.quote(Constants.FS), ".");
-      String className = fname;
-
-      Class<?> sourceClass = null;
-      try {
-         sourceClass = Class.forName(className);
-      } catch (ClassNotFoundException ex) {
-         // If class cannot be found, compile a new one and try again
-         compileFileClass(path, ft);
-         try {
-            sourceClass = Class.forName(className);
-         } catch (ClassNotFoundException ex2) {
-            throw ex2;
-         }
-      }
-      return sourceClass;
+      return fname;
    }
 
 
@@ -332,7 +351,6 @@ public class QAUtils
     */
    static private String simplifyReturnType(String decl)
    {
-      final int NOT_FOUND = -1;
       // Remove trailing and leading white space then make a destination String
       decl = decl.trim();
       String dest = new String(decl);
@@ -343,10 +361,6 @@ public class QAUtils
       String retSig = dest.substring(0, retNdx);
       int lastDot = retSig.lastIndexOf(DOT);
       retSig = retSig.substring(lastDot + 1, retNdx);
-//      int retNdx = decl.indexOf(SPACE); // return type
-//      String retSig = decl.substring(0, retNdx);
-//      int lastDot = retSig.lastIndexOf(DOT);
-//      dest = decl.substring(lastDot + 1, retNdx);
 
       return retSig;
    }

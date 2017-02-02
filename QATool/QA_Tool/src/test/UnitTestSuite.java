@@ -32,8 +32,9 @@ import test.pdc.TestTestWriter;
       /** PDC Test Files */
       TestPrototype.class,
       TestQAFileScan.class,
-      TestQAUtils.class,
+      // TestQATool.class,
       TestSrcReader.class,
+      TestQAUtils.class,
       // TestSuiteBuilder.class,
       TestTestWriter.class
 

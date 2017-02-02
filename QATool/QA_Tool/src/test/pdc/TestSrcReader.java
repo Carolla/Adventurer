@@ -176,7 +176,7 @@ public class TestSrcReader
       assertEquals(8, results[1]);  // files scanned: Prototype, QAFileScan, QATool, QAUtils,
                                     // SrcReader, SuiteBuilder, TargetSrcFile, TestWriter
       assertEquals(1, results[2]);  // dirs skipped: src.test
-      assertEquals(3, results[3]);  // files skipped: _QAScanner, .DS_Store, ScanExclusions.txt
+      assertEquals(2, results[3]);  // files skipped: _QAScanner, .DS_Store, ScanExclusions.txt
 
       // TEARDOWN
       QAFileScan._verbose = false;

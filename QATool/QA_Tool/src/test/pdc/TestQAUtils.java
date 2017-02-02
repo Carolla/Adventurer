@@ -23,13 +23,15 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mylib.MsgCtrl;
+import pdc.Prototype;
 import pdc.QAUtils;
-import pdc.TestWriter;
 
 /**
  * @author Al Cline
  * @version December 13, 2016 // original <br>
  *          December 20, 2016 // autogen: QA Tool added missing test methods <br>
+ *          December 26, 2016 // Revised to allow unit test suite to pass <br>
+ *          Jan 30, 2016 // {@code collectMethods()} returns exception sooners <br>
  */
 public class TestQAUtils
 {
@@ -39,6 +41,9 @@ public class TestQAUtils
    // Target test file
    static private final String TEST_PATHNAME =
          "/Projects/eChronos/QATool/QA_Tool/src/test/pdc/TestTargetSrcFile.java";
+   // Target test class file
+   static private final String TEST_CLASSPATH =
+         "/Projects/eChronos/QATool/QA_Tool/bin/test/pdc/TestTargetSrcFile.class";
 
 
    /**
@@ -77,7 +82,6 @@ public class TestQAUtils
    // BEGIN TESTING
    // ===============================================================================
 
-
    /**
     * @NORMAL_TEST static collectMethods(String, QAUtils$FileType)
     */
@@ -98,13 +102,13 @@ public class TestQAUtils
    @Test
    public void testCollectMethodsAsSrc()
    {
-      MsgCtrl.auditMsgsOn(false);
-      MsgCtrl.errorMsgsOn(false);
+      MsgCtrl.auditMsgsOn(true);
+      MsgCtrl.errorMsgsOn(true);
       MsgCtrl.where(this);
 
       // Expected methods
       String[] expList = {"File alpha(String)", "String beta(File)"};
-      
+
       // Extract methods from a source file
       ArrayList<String> srcList = null;
       try {
@@ -128,32 +132,34 @@ public class TestQAUtils
       MsgCtrl.errorMsgsOn(true);
       MsgCtrl.where(this);
 
-      // SETUP 
+      // SETUP
       // Expected methods
       String[] srcAry = {"File alpha(String x)", "String beta(File f)"};
       String[] expAry = {"void testAlpha()", "void testBeta()"};
-      // Create test method with only these methods
-      File testTarget = new File(TEST_PATHNAME);
-      testTarget.delete();
-      assertTrue(!testTarget.exists());
-      
-      TestWriter tw = new TestWriter();
-      File target = tw.writeTestFile(testTarget, QAUtils.createList(srcAry), QAUtils.createList(expAry)); 
-      
-      // Extract methods from a test file
+
+      // Create a new test file from which to extract methods
+      Prototype proto = new Prototype();
+      File srcFile = new File(TEST_PATHNAME);
+      File target = proto.writeNewTestFile(srcFile, QAUtils.createList(srcAry),
+            QAUtils.createList(expAry));
+      // Both source and test .class file should now exist.
+      assertTrue(target.exists());
+      File clazz = new File(TEST_CLASSPATH);
+      assertTrue(clazz.exists());
+
+      // RUN Extract methods from the test .class file
       ArrayList<String> mList = null;
       try {
          mList = QAUtils.collectMethods(TEST_PATHNAME, QAUtils.FileType.TEST);
-      } catch (ClassNotFoundException ex) {
-         fail("\tUnexpected exception thrown");
+      } catch (IllegalArgumentException ex1) {
+         fail("\tUnexpected exception thrown: " + ex1.getMessage());
+      } catch (ClassNotFoundException ex2) {
+         fail("\tUnexpected exception thrown:" + ex2.getMessage());
       }
       displayList("Test methods found", mList);
       assertTrue(expAry[0].equals(mList.get(0)));
       assertTrue(expAry[1].equals(mList.get(1)));
-      
-      // TEARDOWN
-      target.delete();
-      
+
    }
 
 
@@ -176,14 +182,8 @@ public class TestQAUtils
             {"zeta() -> void", "alpha() -> File", "beta(File x) -> String", "gamma(int y) -> void",
                   "delta(String msg, ArrayList<String> alist) -> ArrayList<String>"};
       // Push the string elements into a list to use as parm
-      ArrayList<String> inList = new ArrayList<String>();
-      for (int k = 0; k < inMethods.length; k++) {
-         inList.add(inMethods[k]);
-      }
-      ArrayList<String> expList = new ArrayList<String>();
-      for (int k = 0; k < expMethods.length; k++) {
-         expList.add(expMethods[k]);
-      }
+      ArrayList<String> inList = QAUtils.createList(inMethods);
+      ArrayList<String> expList = QAUtils.createList(expMethods);
 
       // RUN
       ArrayList<String> returnList = new ArrayList<String>(inList.size());

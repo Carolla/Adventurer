@@ -35,6 +35,9 @@ public class TestTestWriter
 {
    private TestWriter _tw;
 
+   private String TEST_PATHNAME =
+         "/Projects/eChronos/QATool/QA_Tool/src/test/pdc/TestTargetSrcFile.java";
+
    /**
     * @throws java.lang.Exception
     */
@@ -246,7 +249,7 @@ public class TestTestWriter
       // SETUP
       String testPath = "/Projects/eChronos/QATool/QA_Tool/src/test/pdc/TestTargetSrcFile.java";
       long existingTargetLength = 2134L;
-      long newTargetLength = 2703L;
+      long newTargetLength = 2702L;
       // Methods existing in source and test files :
       String[] oldSrc = {"void alpha(String)", "File beta(int z)", "int beta(String x)"};
       String[] oldTests = {"void alpha()", "void beta1()", "void beta2()"};
@@ -259,11 +262,8 @@ public class TestTestWriter
       String[] newSrc = {"String gamma(String[] s", "ArrayList<String> gamma(File x, String y)"};
       String[] newTests = {"void testGamma1()", "void gamma2()"};
 
-      // QAFileScan._verbose = true;
-      // QAFileScan._fileEcho = true;
-
       // Ensure that this file does exists
-      target = _tw.writeTestFile(new File(testPath), QAUtils.createList(newSrc),
+      target = _tw.writeTestFile(new File(TEST_PATHNAME), QAUtils.createList(newSrc),
             QAUtils.createList(newTests));
 
       // Verify file exists
@@ -271,8 +271,7 @@ public class TestTestWriter
       assertEquals(newTargetLength, target.length());
 
       // TEARDOWN
-      // QAFileScan._verbose = false;
-      // QAFileScan._fileEcho = false;
+      target.delete();
 
    }
 
@@ -280,7 +279,6 @@ public class TestTestWriter
    // ===============================================================================
    // Private Helper methods
    // ===============================================================================
-
 
 
 } 	// end of TestTestWriter.java class

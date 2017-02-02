@@ -56,7 +56,7 @@ public class TestPrototype
 
    // File size for the the file containing the above methods
    private final long TARGET_FILELEN = 1917L;
-   private final long AUGTARGET_FILELEN = 2454L;
+   private final long AUGTARGET_FILELEN = 2453L;
 
 
    /**
@@ -182,8 +182,8 @@ public class TestPrototype
    @Test
    public void testAugmentTestFile()
    {
-      MsgCtrl.auditMsgsOn(false);
-      MsgCtrl.errorMsgsOn(false);
+      MsgCtrl.auditMsgsOn(true);
+      MsgCtrl.errorMsgsOn(true);
       MsgCtrl.where(this);
 
       // Create an existing (known) test file
@@ -255,8 +255,8 @@ public class TestPrototype
    @Test
    public void testWriteNewTestFile()
    {
-      MsgCtrl.auditMsgsOn(false);
-      MsgCtrl.errorMsgsOn(false);
+      MsgCtrl.auditMsgsOn(true);
+      MsgCtrl.errorMsgsOn(true);
       MsgCtrl.where(this);
 
       // SETUP

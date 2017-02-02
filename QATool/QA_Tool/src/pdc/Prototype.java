@@ -198,7 +198,7 @@ public class Prototype
    /**
     * Writes a prototype test template with JUnit test stubs and Chronos-specific data
     * 
-    * @param target prototype test file to write into
+    * @param target test file to write into
     * @param srcList signatures of source method names used in test file comments
     * @param tstList test method names to write to the output file
     * @return the test file written
@@ -246,8 +246,12 @@ public class Prototype
 
       // 7. Write the class closing brace
       out.println(String.format("} \t// end of %s class", target.getName()));
+      out.flush();
       out.close();
 
+      // Make sure that the .class file is created with the .java file, for later reflection
+      QAUtils.compileFileClass(target.getPath(), QAUtils.FileType.TEST);            
+            
       return target;
    }
 
@@ -286,7 +290,7 @@ public class Prototype
    {
       out.println("\n" + DBL_HRULE);
       out.println(BANNER);
-      out.println(DBL_HRULE);
+      out.println(DBL_HRULE + "\n");
    }
 
 
