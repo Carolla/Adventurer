@@ -26,7 +26,6 @@ public class Constants
   public static final int ERROR = -1;
   public static final int NOT_FOUND = -1;
   public static final int UNASSIGNED = -99;
-  public static final String SPACE = " ";
 
   public static enum Side {
     LEFT, RIGHT
@@ -39,6 +38,12 @@ public class Constants
 
   public static final String LEFT_PAREN = "(";
   public static final String RIGHT_PAREN = ")";
+  public static final String SPACE = " ";
+  public static final String COMMA = ",";
+  public static final String DOT = ".";
+
+  /** Root folder for all source files */
+  public static final String SRC_PREFIX = "src" + Constants.FS;
 
   private static String findMyLibRootDir()
   {
