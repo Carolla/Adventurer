@@ -13,7 +13,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import org.junit.After;
@@ -23,7 +22,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mylib.MsgCtrl;
-import pdc.Prototype;
 import pdc.QAUtils;
 
 /**
@@ -100,7 +98,7 @@ public class TestQAUtils
     * @NORMAL_TEST static collectMethods(String, QAUtils$FileType)
     */
    @Test
-   public void testCollectMethodsAsSrc()
+   public void testCollectSrcMethods()
    {
       MsgCtrl.auditMsgsOn(true);
       MsgCtrl.errorMsgsOn(true);
@@ -112,7 +110,7 @@ public class TestQAUtils
       // Extract methods from a source file
       ArrayList<String> srcList = null;
       try {
-         srcList = QAUtils.collectMethods(SRC_PATHNAME, QAUtils.FileType.SOURCE);
+         srcList = QAUtils.collectSrcMethods(SRC_PATHNAME);
       } catch (ClassNotFoundException ex) {
          fail("\tUnexpected exception thrown");
       }
@@ -122,45 +120,45 @@ public class TestQAUtils
    }
 
 
-   /**
-    * @NORMAL_TEST static collectMethods(String, QAUtils$FileType)
-    */
-   @Test
-   public void testCollectMethodsAsTest()
-   {
-      MsgCtrl.auditMsgsOn(true);
-      MsgCtrl.errorMsgsOn(true);
-      MsgCtrl.where(this);
-
-      // SETUP
-      // Expected methods
-      String[] srcAry = {"File alpha(String x)", "String beta(File f)"};
-      String[] expAry = {"void testAlpha()", "void testBeta()"};
-
-      // Create a new test file from which to extract methods
-      Prototype proto = new Prototype();
-      File srcFile = new File(TEST_PATHNAME);
-      File target = proto.writeNewTestFile(srcFile, QAUtils.createList(srcAry),
-            QAUtils.createList(expAry));
-      // Both source and test .class file should now exist.
-      assertTrue(target.exists());
-      File clazz = new File(TEST_CLASSPATH);
-      assertTrue(clazz.exists());
-
-      // RUN Extract methods from the test .class file
-      ArrayList<String> mList = null;
-      try {
-         mList = QAUtils.collectMethods(TEST_PATHNAME, QAUtils.FileType.TEST);
-      } catch (IllegalArgumentException ex1) {
-         fail("\tUnexpected exception thrown: " + ex1.getMessage());
-      } catch (ClassNotFoundException ex2) {
-         fail("\tUnexpected exception thrown:" + ex2.getMessage());
-      }
-      displayList("Test methods found", mList);
-      assertTrue(expAry[0].equals(mList.get(0)));
-      assertTrue(expAry[1].equals(mList.get(1)));
-
-   }
+//   /**
+//    * @NORMAL_TEST static collectMethods(String, QAUtils$FileType)
+//    */
+//   @Test
+//   public void testCollectTestMethods()
+//   {
+//      MsgCtrl.auditMsgsOn(true);
+//      MsgCtrl.errorMsgsOn(true);
+//      MsgCtrl.where(this);
+//
+//      // SETUP
+//      // Expected methods
+//      String[] srcAry = {"File alpha(String x)", "String beta(File f)"};
+//      String[] expAry = {"void testAlpha()", "void testBeta()"};
+//
+//      // Create a new test file from which to extract methods
+//      Prototype proto = new Prototype();
+//      File srcFile = new File(TEST_PATHNAME);
+//      File target = writeNewTestFile(srcFile, QAUtils.createList(srcAry),
+//            QAUtils.createList(expAry));
+//      // Both source and test .class file should now exist.
+//      assertTrue(target.exists());
+//      File clazz = new File(TEST_CLASSPATH);
+//      assertTrue(clazz.exists());
+//
+//      // RUN Extract methods from the test .class file
+//      ArrayList<String> mList = null;
+//      try {
+//         mList = QAUtils.collectTestMethods(TEST_PATHNAME);
+//      } catch (IllegalArgumentException ex1) {
+//         fail("\tUnexpected exception thrown: " + ex1.getMessage());
+//      } catch (ClassNotFoundException ex2) {
+//         fail("\tUnexpected exception thrown:" + ex2.getMessage());
+//      }
+//      displayList("Test methods found", mList);
+//      assertTrue(expAry[0].equals(mList.get(0)));
+//      assertTrue(expAry[1].equals(mList.get(1)));
+//
+//   }
 
 
    /**

@@ -17,7 +17,6 @@ import java.util.Comparator;
 import java.util.Scanner;
 
 import mylib.Constants;
-import pdc.QAUtils.FileType;
 
 /**
  * Traverses the source tree, providing source files to compare with test files from the
@@ -117,76 +116,176 @@ public class SrcReader
    // PUBLIC METHODS
    // ================================================================================
 
+   
    /**
-    * Scans a particular file and returns a list of src methods
+    * Get the methods in the target file if it exists
     * 
-    * @param f File to examine for methods
-    * @throws ClassNotFoundException if .class file not found
+    * @param target source or test file from which to retreive internal method names
+    * @param ft indicates whether a source file or a test file
+    * @return all extracted methods of the source file
     */
-   public ArrayList<String> fileScan(File f) throws ClassNotFoundException
+   public ArrayList<String> getMethodList(File target, QAUtils.FileType ft)
    {
-      // Guard against missing file
-      if ((f == null) || (!f.exists())) {
-         return null;
-      }
-      ArrayList<String> srcList = new ArrayList<String>();
-      String srcPath = f.getPath();
+      ArrayList<String> mList = new ArrayList<String>();
       try {
-         srcList = QAUtils.collectMethods(srcPath, FileType.SOURCE);
-      } catch (IllegalArgumentException ex1) {
-         QAUtils.verboseMsg("Wrong file type. Source file expected");
-         return null;
-      } catch (ClassNotFoundException ex2) {
-         QAUtils.verboseMsg("Could not find .class file to compile: " + srcPath);
-         throw ex2;
-      }
-      if (QAFileScan._verbose) {
-         if (srcList.size() != 0) {
-            QAUtils.outList(null, srcList);
+         if (ft == QAUtils.FileType.SOURCE) {
+            mList = srcFileScan(target);
          } else {
-            QAUtils.verboseMsg("\tNo eligible methods.");
+            mList = testFileScan(target);
          }
+      } catch (ClassNotFoundException exSrc) {
+         QAUtils.verboseMsg(".class file not found for file " + target);
+         System.exit(-2);
       }
-      return srcList;
+      return mList;
+   }
+
+
+   // /**
+   // * Reduce a fully qualified class name to it simplified name by removing the dot-delimited full
+   // * name to yield the suffix, the simple name. This is used for return types and argument types
+   // * that occur in the method declaration.<br>
+   // * The method declaration has format, where each type is a fully qualified type: <br>
+   // * {@code return-type methodName(argType, argType,...) <br>
+   // * For example, {@code java.lang.String extractSignature(java.io.File, java.lang.String)}
+   // becomes
+   // * {@code String extractSignature(File, String)}.<br>
+   // * Note: The ellipsis in the signature example refers to a fixed but indefinite number of
+   // * arguments, not to a varargs set.
+   // *
+   // * @param decl the fully-qualified method declaration
+   // * @return the method name and simple argname list
+   // */
+   // public String simplifyDeclaration(String decl)
+   // {
+   // // Discard the the return type
+   // decl = decl.trim();
+   // int rtNdx = decl.indexOf(SPACE);
+   // decl = decl.substring(rtNdx + 1);
+   //
+   // // Setup buffers to allow characer movement
+   // StringBuilder sbIn = new StringBuilder(decl);
+   // StringBuilder sbOut = new StringBuilder();
+   //
+   // // To simplify arguments, walk backwards from the right paren, removing prefixes
+   // boolean skip = false;
+   // int in = sbIn.length() - 1;
+   // for (; in >= 0; in--) {
+   // char ch = sbIn.charAt(in);
+   // // Add space character to follow each comma
+   // if (ch == ',') {
+   // sbOut.insert(0, SPACE); // new char is placed in front of existing chars
+   // skip = false;
+   // } else if (ch == '(') {
+   // skip = false;
+   // }
+   // // Skip all characters between previous comma or left paren and the dot
+   // else if ((ch == '.') || (skip == true)) {
+   // skip = true;
+   // continue;
+   // }
+   // sbOut.insert(0, ch);
+   // // System.out.println(String.format("\tCharacter written: %c", sbOut.charAt(0)));
+   // }
+   // String result = sbOut.toString().trim();
+   // return result;
+   // }
+   
+   
+   // /**
+   // * Convert the fully qualifed return type of a signature into its simple type. Also removes the
+   // * method modifier (public, private, static, protected).
+   // *
+   // * @param decl fully qualifed method signature, with parm types and return type
+   // * @return only the simple return type
+   // */
+   // public String simplifyReturnType(String decl)
+   // {
+   // // Remove trailing and leading white space then make a destination String
+   // decl = decl.trim();
+   // String dest = new String(decl);
+   //
+   // int retNdx = decl.indexOf(SPACE); // return type
+   // String retSig = decl.substring(0, retNdx);
+   // int lastDot = retSig.lastIndexOf(DOT);
+   // dest = decl.substring(lastDot + 1, retNdx);
+   //
+   // return dest;
+   // }
+   
+   
+   // ================================================================================
+   // PRIVATE METHODS
+   // ================================================================================
+   
+   /**
+    * Checks if file is a non-excluded java source file or directory
+    * 
+    * @param f file under examination
+    * @return true if file is a valid source file
+    */
+   public boolean isValidFile(File f)
+   {
+      boolean retval = false;
+      String s = f.getPath();
+   
+      // Guard: Skip non-files
+      if (!f.isFile()) {
+         return false;
+      }
+      // Audit trail for files in the exclusion file (if there is one)
+      if ((_excFiles != null) && (_excFiles.contains(s))) {
+         retval = false;
+      }
+      // Count and audit trail for java files
+      if (s.endsWith(".java")) {
+         retval = true;
+      }
+      // Count and audit trail for non-java files
+      else {
+         QAUtils.verboseMsg("Skipping ineligible file: " + s);
+         retval = false;
+      }
+      return retval;
    }
 
 
    /**
-    * Traverse the source tree recursively, skipping over files in the HIC or non-java files.
-    * Directories encountered drops to subdirectory recursively.
-    * 
-    * @param srcRoot starting directory for source files
-    * @return source file that meets all criteria
-    */
-   public void scan(File srcRoot)
-   {
-      // Retrieve all files and subdirs under dir
-      File[] allFiles = srcRoot.listFiles();
-      for (File f : allFiles) {
-         QAUtils.verboseMsg("\n\t" + f.getName());
-         // Validate directories for scanning
-         if (isValidDirectory(f)) {
-            scan(f);
-            _dirsScanned++;
-         } else if (f.isDirectory()) {
-            _dirsSkipped++;
-         }
-         // Validate files for scanning
-         if (isValidFile(f)) {
-            QAUtils.verboseMsg("\tScanning file " + f.getName());
-            try {
-               ArrayList<String> srcList = fileScan(f);
-               _filesScanned++;
-               // For each source file scanned, write to its test file
-//               writeTestFile(f.getPath(), srcList);
-            } catch (ClassNotFoundException ex) {
+       * Traverse the source tree recursively, skipping over files in the HIC or non-java files.
+       * Directories encountered drops to subdirectory recursively.
+       * 
+       * @param srcRoot starting directory for source files
+       * @return source file that meets all criteria
+       */
+      public void scan(File srcRoot)
+      {
+         // Retrieve all files and subdirs under dir
+         File[] allFiles = srcRoot.listFiles();
+         for (File f : allFiles) {
+            QAUtils.verboseMsg("\n\t" + f.getName());
+            // Validate directories for scanning
+            if (isValidDirectory(f)) {
+               scan(f);
+               _dirsScanned++;
+            } else if (f.isDirectory()) {
+               _dirsSkipped++;
+            }
+            // Validate files for scanning
+            if (isValidFile(f)) {
+               QAUtils.verboseMsg("\tScanning file " + f.getName());
+               try {
+                  ArrayList<String> srcList = srcFileScan(f);
+                  _filesScanned++;
+                  // For each source file scanned, write to its test file
+   //               writeTestFile(f.getPath(), srcList);
+               } catch (ClassNotFoundException ex) {
+                  _filesSkipped++;
+               }
+            } else if (f.isFile()) {
                _filesSkipped++;
             }
-         } else if (f.isFile()) {
-            _filesSkipped++;
          }
       }
-   }
 
 
    /** Display a report of the directories and files scanned or skipped */
@@ -197,6 +296,78 @@ public class SrcReader
       QAUtils.verboseMsg("\t Files scanned: " + _filesScanned);
       QAUtils.verboseMsg("\t Directories skipped: " + _dirsSkipped);
       QAUtils.verboseMsg("\t Files skipped: " + _filesSkipped);
+   }
+
+
+   /**
+    * Scans a Java source file and returns a list of its methods
+    * 
+    * @param f File to examine for methods
+    * @return a list of the methods found in the file
+    * @throws ClassNotFoundExceptio if .class file not found
+    */
+   public ArrayList<String> srcFileScan(File f) 
+         throws ClassNotFoundException
+   {
+      // Guard against missing file
+      if ((f == null) || (!f.exists())) {
+         return null;
+      }
+      ArrayList<String> srcList = new ArrayList<String>();
+      String srcPath = f.getPath();
+      try {
+         srcList = QAUtils.collectSrcMethods(srcPath);
+      } catch (IllegalArgumentException ex1) {
+         QAUtils.verboseMsg("Wrong file type. Source file expected");
+         return null;
+      } catch (ClassNotFoundException ex2) {
+         QAUtils.verboseMsg("Could not find .class file to compile: " + srcPath);
+         throw ex2;
+      }
+      if (SingleFileScan._verbose) {
+         if (srcList.size() != 0) {
+            QAUtils.outList(null, srcList);
+         } else {
+            QAUtils.verboseMsg("\tNo eligible methods.");
+         }
+      }
+      return srcList;
+   }
+
+   /**
+    * Scans a JUnit test file and returns a list of its methods
+    * 
+    * @param f File to examine for methods
+    * @return a list of the methods found in the file
+    * @throws ClassNotFoundException if .class file not found
+    */
+   public ArrayList<String> testFileScan(File f) 
+         throws ClassNotFoundException
+   {
+      // Guard against missing file
+      if ((f == null) || (!f.exists())) {
+         return null;
+      }
+      ArrayList<String> srcList = new ArrayList<String>();
+      String srcPath = f.getPath();
+      try {
+         srcList = QAUtils.collectTestMethods(srcPath);
+//      } 
+//      catch (IllegalArgumentException ex1) {
+//         QAUtils.verboseMsg("Wrong file type. Source file expected");
+//         return null;
+      } catch (ClassNotFoundException ex2) {
+         QAUtils.verboseMsg("Could not find .class file to compile: " + srcPath);
+         throw ex2;
+      }
+      if (SingleFileScan._verbose) {
+         if (srcList.size() != 0) {
+            QAUtils.outList(null, srcList);
+         } else {
+            QAUtils.verboseMsg("\tNo eligible methods.");
+         }
+      }
+      return srcList;
    }
 
 
@@ -294,38 +465,6 @@ public class SrcReader
    // ================================================================================
    // PRIVATE METHODS
    // ================================================================================
-
-   /**
-    * Checks if file is a non-excluded java source file or directory
-    * 
-    * @param f file under examination
-    * @return true if file is a valid source file
-    */
-   public boolean isValidFile(File f)
-   {
-      boolean retval = false;
-      String s = f.getPath();
-
-      // Guard: Skip non-files
-      if (!f.isFile()) {
-         return false;
-      }
-      // Audit trail for files in the exclusion file (if there is one)
-      if ((_excFiles != null) && (_excFiles.contains(s))) {
-         retval = false;
-      }
-      // Count and audit trail for java files
-      if (s.endsWith(".java")) {
-         retval = true;
-      }
-      // Count and audit trail for non-java files
-      else {
-         QAUtils.verboseMsg("Skipping ineligible file: " + s);
-         retval = false;
-      }
-      return retval;
-   }
-
 
    /**
     * Checks if file is a non-excluded directory

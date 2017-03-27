@@ -1,6 +1,6 @@
 
 /**
- * QAFileScan.java Copyright (c) 2016, Alan Cline. All Rights Reserved.
+ * SingleFileScan.java Copyright (c) 2016, Alan Cline. All Rights Reserved.
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
@@ -14,12 +14,14 @@ import java.util.ArrayList;
 
 /**
  * Searches a single source file for its methods and compares them against the source file's
- * corresponding test case and methods. It is similar to calling {@code QATool} with a single file
- * instead of a root tree and no exclusions file. {@code QAFileScan} takes the flags <br>
- * {@code -verbose :} turns on auditing messages <br>
- * {@code -echoFile :} all file writes are echoed to the console <br>
- * {@code -failStubs :} all testfile stubs will be set to fail instead of printing a safe
- * {@code Not_Implemented} message <br>
+ * corresponding test case and methods. Takes the following flags <br>
+ * &nbsp; &nbsp; &nbsp; {@code -verbose:} turns on auditing messages <br>
+ * &nbsp; &nbsp; &nbsp;{@code -echoFile:} all file writes are echoed to the console <br>
+ * &nbsp; &nbsp; &nbsp; {@code -failStubs:} all testfile stubs will be set to {@code fail} instead
+ * of printing the default {@code Not_Implemented} message <br>
+ * <P>
+ * {@code SingleFileScan} is similar to {@code QATool} with a single file instead of a root tree;
+ * and no exclusion file is available.
  * 
  * @author Alan Cline
  * @version Jul 21, 2016 // original <br>
@@ -28,13 +30,17 @@ import java.util.ArrayList;
  *          Nov 16 2016 // modification to align with test cases <br>
  *          Nov 24 2016 // clarify proper -verbose and -fileaudit flags <br>
  *          Dec 11 2016 // refactored and tested verifyArgs <br>
- *          Dec 21 2016 // refactored QAScanner into QAFileScan <br>
+ *          Dec 21 2016 // refactored old {@code QAScanner} into {@code SingleFileScan} <br>
+ *          Feb 12 2017 // changed error msg for command line errors <br>
  */
-public class QAFileScan
+public class SingleFileScan
 {
    /** Usage message displayed with command line error */
    static private final String USAGE_MSG =
-         "USAGE: QAFileScan <filepath>.java [-verbose] [-fileEcho] [-failStubs]";
+         "USAGE: QAFileScan <filepath>.java [-verbose] [-fileEcho] [-failStubs]\n"
+               + "\t[-verbose]: audit trail of actions taken\n"
+               + "\t[-failStubs]: test stubs will fail instead of printing message.\n"
+               + "\t[-fileEcho]: copy file output to console\n";
 
    // Error messages for various command line errors
    static public final String ERRMSG_OK = "Command line OK";
@@ -49,17 +55,29 @@ public class QAFileScan
    static public final String FILEECHO_ARG = "-fileEcho";
    static public final String FAILSTUBS_ARG = "-failStubs";
 
-   /** If true, turns on audit trail while executing */
+   private final String COMMA = ",";
+   private final String SPACE = " ";
+   private final String LEFT_PAREN = "(";
+   private final String RIGHT_PAREN = ")";
+
+   /** Command line arg to turn on audit trail while executing */
    static public boolean _verbose = false;
-   /** If true, echoes all file writes to the console */
+   /** Command line arg to echo all file writes to the console */
    static public boolean _fileEcho = false;
-   /** If true, write test method stubs that fail instead of printing a message */
+   /** Command line arg to write test method stubs that fail instead of printing a message */
    static public boolean _failStubs = false;
 
-   static private TestWriter _testWriter = null;
+   /** Main object that reads and parses the source file */
+   static private SrcReader _srcRdr;
+   /** Main object that writes the test file */
+   static private TestWriter _testWriter;
 
    /** Target file from which to check source for missing test methods */
-   static private File _srcFile = null;
+   static private File _srcFile;
+   /** Associated test file */
+   static private File _testFile;
+   /** Associated prototype object to handle syntactical considerations, e.g., methods names */
+   static private Prototype _proto;
 
 
    /**
@@ -67,42 +85,57 @@ public class QAFileScan
     * omitted test methods supplied as stubs. See class description for flags available.
     * 
     * @param args list of args for the command line. First arg is the filepath of the source file to
-    *           examine; remaining args are described in the {@code QAFileScan} class description
+    *           examine; remaining args are described in the class description
     */
    static public void main(String[] args)
    {
-      // Guard: Check that valid and correct number of args are entered, and activates flags;
-      // else calls System exists
+      // Guard: Checks that valid and correct number of args are entered, and activates flags;
+      // else calls System exits
       String errorMsg = verifyArgs(args);
       if (!errorMsg.equals(ERRMSG_OK)) {
          System.err.println(errorMsg);
          System.err.println(USAGE_MSG);
          System.exit(-1);
       }
+      // Create a prototype to handle syntactical naming considerations later
+      Prototype _proto = new Prototype();
 
-      // Create a TestWriter for the SrcReader
-      _testWriter = new TestWriter();
-      // A single file scan does not use an exclusions file
-      SrcReader sr = new SrcReader(new File(args[0]), null);
-      if (!sr.isValidFile(_srcFile)) {
-         QAUtils.verboseMsg("Invalid source file " + _srcFile);
-         System.exit(-2);
-      }
+      // Create a SrcReader for file input
+      _srcRdr = new SrcReader(new File(args[0]), null);
       QAUtils.verboseMsg("Scanning " + _srcFile);
+      // Get all source methods
+      ArrayList<String> srcList = _srcRdr.getMethodList(_srcFile, QAUtils.FileType.SOURCE);
+      // Convert src method names to test method names
+      ArrayList<String> srcToTestNameList = _proto.convertToTestNames(srcList);
+
+      // Create a TestWriter for test file output
+      _testWriter = new TestWriter(_verbose, _failStubs, _fileEcho);
+      String testPath = null;
       try {
-         ArrayList<String> srcList = sr.fileScan(_srcFile);
-         writeTestFile(_srcFile.getPath(), srcList);
-      } catch (ClassNotFoundException ex) {
-         QAUtils.verboseMsg("Cannot find .class file for " + _srcFile);
+         testPath = _testWriter.makeTestFilename(_srcFile.getPath());
+      } catch (IllegalArgumentException ex) {
+         QAUtils.verboseMsg("Corresponding test file not found.");
          System.exit(-3);
       }
+      // Find the corresponding test file if it exists...
+      _testFile = new File(testPath);
+      // If corresponding test file exists, get existing test methods
+      ArrayList<String> testList = null;
+      if (_testFile.exists()) {
+         testList = _srcRdr.getMethodList(_testFile, QAUtils.FileType.TEST);
+         // Remove existing test methods that match src methods
+         ArrayList<String> augList = _proto.findAugList(srcToTestNameList, testList);
+         _testWriter.augmentTestFile(_testFile, srcList, augList);
+      }
+      // ...else write a new test file from the source list if it doesn't
+      _testWriter.writeNewTestFile(_testFile, srcList, testList);
    }
+
 
    /**
     * Validates and activates command line arguments, including the filepath.
     * 
     * @param args command line as presented by operating system
-    * 
     * @return OK message if command Line is valid, else error message related to kind of error
     */
    static public String verifyArgs(String[] args)
@@ -140,50 +173,11 @@ public class QAFileScan
       return ERRMSG_OK;
    }
 
-   
+
    // ===============================================================================
    // Private Methods
    // ===============================================================================
 
-   /**
-    * Get the test file path corresponding to the source file, and pass the srcList for writing to a
-    * new or augmented test file
-    * 
-    * @param srcPath source file containing source methods
-    * @param srcList all source methods in source file
-    */
-   static private void writeTestFile(String srcPath, ArrayList<String> srcList)
-   {
-      // Convert src path to test path
-      String testPath = _testWriter.makeTestFilename(srcPath);
-      // Convert src methods to test methods
-      ArrayList<String> testList = _testWriter.convertToTestNames(srcList);
-      // Write new test file (or augment existing one) with these method names
-      _testWriter.writeTestFile(new File(testPath), srcList, testList);
-   }
 
 
-
-   // // ===============================================================================
-   // // Mock_QAFileScan
-   // // ===============================================================================
-   //
-   // public class Mock_QAFileScan
-   // {
-   // public Mock_QAFileScan()
-   // {};
-   //
-   // /**
-   // * Set the verbose flag for testing purposes
-   // *
-   // * @param state true or false
-   // */
-   // public void setVerboseFlag(boolean state)
-   // {
-   // QAFileScan.this._verbose = state;
-   // }
-   //
-   // }
-
-
-}  // end of QAFileScan class
+}  // end of SingleFileScan class

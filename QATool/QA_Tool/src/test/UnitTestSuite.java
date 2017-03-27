@@ -11,11 +11,7 @@ package test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import test.pdc.TestPrototype;
-import test.pdc.TestQAFileScan;
-import test.pdc.TestQAUtils;
-import test.pdc.TestSrcReader;
-import test.pdc.TestTestWriter;
+import test.pdc.TestQATool;
 
 /**
  * Run all unit tests for the project.
@@ -30,18 +26,19 @@ import test.pdc.TestTestWriter;
       /** Base Test Files */
 
       /** PDC Test Files */
-      TestPrototype.class,
-      TestQAFileScan.class,
-      // TestQATool.class,
-      TestSrcReader.class,
-      TestQAUtils.class,
+      //TestPrototype.class,
+      TestQATool.class, // no need to test this launcher class 
+      // TestQAUtils.class,
+      // TestSingleFileScan.class,
+      // TestSrcReader.class,
       // TestSuiteBuilder.class,
-      TestTestWriter.class
+      // TestTestWriter.class
 
       /** CIV Test Files */
-
+      // None
+      
       /** DMC Test Files */
-
+      // None
 })
 
 public class UnitTestSuite

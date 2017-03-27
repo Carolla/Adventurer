@@ -10,7 +10,6 @@ package test.pdc;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -79,57 +78,57 @@ public class TestTestWriter
    // BEGIN TESTING
    // ===============================================================================
 
-   /**
-    * @NORMAL_TEST ArrayList convertToTestNames(ArrayList)
-    */
-   @Test
-   public void testConvertToTestNames()
-   {
-      MsgCtrl.auditMsgsOn(false);
-      MsgCtrl.errorMsgsOn(false);
-      MsgCtrl.where(this);
+//   /**
+//    * @NORMAL_TEST ArrayList convertToTestNames(ArrayList)
+//    */
+//   @Test
+//   public void testConvertToTestNames()
+//   {
+//      MsgCtrl.auditMsgsOn(false);
+//      MsgCtrl.errorMsgsOn(false);
+//      MsgCtrl.where(this);
+//
+//      // SETUP
+//      String[] srcAry = {"void alpha(String)", "File beta()",
+//            "ArrayList<String> gamma(File x, String y)", "int alpha(int)", "String alpha(int)"};
+//      String[] testAry = {"void testAlpha1()", "void testAlpha2()", "void testAlpha3()",
+//            "void testBeta()", "void testGamma()"};
+//      ArrayList<String> resultsList = new ArrayList<String>();
+//      ArrayList<String> srcList = QAUtils.createList(srcAry);
+//      ArrayList<String> testList = QAUtils.createList(testAry);
+//
+//      // RUN
+//      resultsList = _tw.convertToTestNames(srcList);
+//
+//      // VERIFY test names in alphabetical order
+//      assertTrue(testList.size() == resultsList.size());
+//      for (int k = 0; k < resultsList.size(); k++) {
+//         MsgCtrl.msgln("\t" + resultsList.get(k));
+//         assertTrue(resultsList.get(k).equals(testList.get(k)));
+//      }
+//   }
 
-      // SETUP
-      String[] srcAry = {"void alpha(String)", "File beta()",
-            "ArrayList<String> gamma(File x, String y)", "int alpha(int)", "String alpha(int)"};
-      String[] testAry = {"void testAlpha1()", "void testAlpha2()", "void testAlpha3()",
-            "void testBeta()", "void testGamma()"};
-      ArrayList<String> resultsList = new ArrayList<String>();
-      ArrayList<String> srcList = QAUtils.createList(srcAry);
-      ArrayList<String> testList = QAUtils.createList(testAry);
 
-      // RUN
-      resultsList = _tw.convertToTestNames(srcList);
-
-      // VERIFY test names in alphabetical order
-      assertTrue(testList.size() == resultsList.size());
-      for (int k = 0; k < resultsList.size(); k++) {
-         MsgCtrl.msgln("\t" + resultsList.get(k));
-         assertTrue(resultsList.get(k).equals(testList.get(k)));
-      }
-   }
-
-
-   /**
-    * @NORMAL_TEST ArrayList convertToTestNames(ArrayList)
-    */
-   @Test
-   public void testConvertToTestNames_NoList()
-   {
-      MsgCtrl.auditMsgsOn(false);
-      MsgCtrl.errorMsgsOn(false);
-      MsgCtrl.where(this);
-
-      // Run Null List
-      ArrayList<String> emptyList = new ArrayList<String>();
-      emptyList = _tw.convertToTestNames(null);
-      assertNull(emptyList);
-
-      // Run empty list
-      emptyList = new ArrayList<String>();
-      emptyList = _tw.convertToTestNames(emptyList);
-      assertEquals(0, emptyList.size());
-   }
+//   /**
+//    * @NORMAL_TEST ArrayList convertToTestNames(ArrayList)
+//    */
+//   @Test
+//   public void testConvertToTestNames_NoList()
+//   {
+//      MsgCtrl.auditMsgsOn(false);
+//      MsgCtrl.errorMsgsOn(false);
+//      MsgCtrl.where(this);
+//
+//      // Run Null List
+//      ArrayList<String> emptyList = new ArrayList<String>();
+//      emptyList = _tw.convertToTestNames(null);
+//      assertNull(emptyList);
+//
+//      // Run empty list
+//      emptyList = new ArrayList<String>();
+//      emptyList = _tw.convertToTestNames(emptyList);
+//      assertEquals(0, emptyList.size());
+//   }
 
 
    /**
@@ -224,7 +223,7 @@ public class TestTestWriter
       assertTrue(!target.exists());
 
       // RUN to create new test file
-      _tw.writeTestFile(target, srcList, testList);
+      _tw.writeNewTestFile(target, srcList, testList);
 
       // Verify file exists
       assertTrue(target.exists());
@@ -254,7 +253,7 @@ public class TestTestWriter
       String[] oldSrc = {"void alpha(String)", "File beta(int z)", "int beta(String x)"};
       String[] oldTests = {"void alpha()", "void beta1()", "void beta2()"};
       // Create an "existing" file to augment
-      File target = _tw.writeTestFile(new File(testPath), QAUtils.createList(oldSrc),
+      File target = _tw.writeNewTestFile(new File(testPath), QAUtils.createList(oldSrc),
             QAUtils.createList(oldTests));
       assertEquals(existingTargetLength, target.length());
 
@@ -263,7 +262,7 @@ public class TestTestWriter
       String[] newTests = {"void testGamma1()", "void gamma2()"};
 
       // Ensure that this file does exists
-      target = _tw.writeTestFile(new File(TEST_PATHNAME), QAUtils.createList(newSrc),
+      target = _tw.writeNewTestFile(new File(TEST_PATHNAME), QAUtils.createList(newSrc),
             QAUtils.createList(newTests));
 
       // Verify file exists

@@ -23,7 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mylib.MsgCtrl;
-import pdc.QAFileScan;
+import pdc.SingleFileScan;
 import pdc.SrcReader;
 import pdc.SrcReader.MockSrcReader;
 
@@ -95,7 +95,7 @@ public class TestSrcReader
 
       ArrayList<String> srcList = new ArrayList<String>();
       try {
-         srcList = _srcRdr.fileScan(new File(TARGET_PATHNAME));
+         srcList = _srcRdr.srcFileScan(new File(TARGET_PATHNAME));
       } catch (ClassNotFoundException e) {
          fail("\tUnexpected exception thrown");
       }
@@ -115,7 +115,7 @@ public class TestSrcReader
       // Null file input
       ArrayList<String> srcList = new ArrayList<String>();
       try {
-         srcList = _srcRdr.fileScan(null);
+         srcList = _srcRdr.srcFileScan(null);
       } catch (ClassNotFoundException e) {
          fail("\tUnexpected exception thrown" + e.getMessage());
       }
@@ -125,7 +125,7 @@ public class TestSrcReader
       File badFile = new File("/Projects/eChronos/QATool/QA_Tool/src/pdc/dummy.java");
       srcList = new ArrayList<String>();
       try {
-         srcList = _srcRdr.fileScan(badFile);
+         srcList = _srcRdr.srcFileScan(badFile);
       } catch (ClassNotFoundException e) {
          fail("\tUnexpected exception thrown" + e.getMessage());
       }
@@ -136,7 +136,7 @@ public class TestSrcReader
             new File("/Projects/eChronos/QATool/QA_Tool/src/test/pdc/TestTargetSrcFile.java");
       srcList = new ArrayList<String>();
       try {
-         srcList = _srcRdr.fileScan(testFile);
+         srcList = _srcRdr.srcFileScan(testFile);
       } catch (IllegalArgumentException ex) {
          MsgCtrl.msgln("\tExpected Exception thrown");
       } catch (ClassNotFoundException e) {
@@ -158,7 +158,7 @@ public class TestSrcReader
       MsgCtrl.errorMsgsOn(state);
       MsgCtrl.where(this);
       // Turn audit traisl on or off for testing
-      QAFileScan._verbose = state;
+      SingleFileScan._verbose = state;
 
       // SETUP
       MockSrcReader mock = _srcRdr.new MockSrcReader();
@@ -173,13 +173,13 @@ public class TestSrcReader
       // Results returned in this order: dirs scanned, files scanned, dir skipped, files skipped
       int[] results = mock.getScanResults();
       assertEquals(1, results[0]);  // dirs scanned: src and src.pdc
-      assertEquals(8, results[1]);  // files scanned: Prototype, QAFileScan, QATool, QAUtils,
+      assertEquals(8, results[1]);  // files scanned: Prototype, SingleFileScan, QATool, QAUtils,
                                     // SrcReader, SuiteBuilder, TargetSrcFile, TestWriter
       assertEquals(1, results[2]);  // dirs skipped: src.test
       assertEquals(2, results[3]);  // files skipped: _QAScanner, .DS_Store, ScanExclusions.txt
 
       // TEARDOWN
-      QAFileScan._verbose = false;
+      SingleFileScan._verbose = false;
    }
 
 
@@ -194,7 +194,7 @@ public class TestSrcReader
       MsgCtrl.errorMsgsOn(state);
       MsgCtrl.where(this);
       // Turn audit traisl on or off for testing
-      QAFileScan._verbose = state;
+      SingleFileScan._verbose = state;
 
       // SETUP
       MockSrcReader mock = _srcRdr.new MockSrcReader();
@@ -218,7 +218,7 @@ public class TestSrcReader
       assertEquals(0, results[3]);   // files skipped: 0
 
       // TEARDOWN
-      QAFileScan._verbose = false;
+      SingleFileScan._verbose = false;
    }
 
 
@@ -233,7 +233,7 @@ public class TestSrcReader
       MsgCtrl.errorMsgsOn(state);
       MsgCtrl.where(this);
       // Turn audit traisl on or off for testing
-      QAFileScan._verbose = state;
+      SingleFileScan._verbose = state;
 
       // SETUP
       MockSrcReader mock = _srcRdr.new MockSrcReader();
@@ -254,7 +254,7 @@ public class TestSrcReader
       assertEquals(5, results[3]);  // files skipped: libResources(5)
 
       // TEARDOWN
-      QAFileScan._verbose = false;
+      SingleFileScan._verbose = false;
    }
 
 

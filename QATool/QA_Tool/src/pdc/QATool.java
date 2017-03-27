@@ -80,7 +80,6 @@ public class QATool
          "USAGE: QATool <source tree root path> [exclusion filename] [-v] [-nofail]";
    static private final String ERR_SRCDIR_MISSING = "Source directory null or not specified.";
    static private final String ERR_EXCFILE_MISSING = "Exclusion file specified cannot be found.";
-   static private final String ERR_VERBOSE_INVALID = "Extra argument or verbose flag incorrect";
 
    static private final String ROOT_MSG = "Scanning through root tree at %s";
    static private final String NO_EXCLUDE_FILE_MSG = "No exclude file given";

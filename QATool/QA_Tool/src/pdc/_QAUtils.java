@@ -53,6 +53,54 @@ public class QAUtils
          {"setUpBeforeClass", "tearDownAfterClass", "setUp", "tearDown"};
 
 
+   
+//   /**
+//    * Extracts public and protected methods from a source or test file, then sorts each list.
+//    * 
+//    * @param filepath path of target file
+//    * @param ft enum FileType.SOURCE or FileType.TEST. See {@code QAUtils}.
+//    * @return list of public and protected method signatures for the target
+//    * @throws IllegalArgumentException if the file type doesn't match the actual file type: test
+//    *            files must be {@code /test/} directories, and source files cannot.
+//    */
+//   static public ArrayList<String> collectMethods(String filePath, FileType ft)
+//         throws IllegalArgumentException, ClassNotFoundException
+//   {
+//      // Guard: Source files are not in test directories
+//      if (filePath.contains(Constants.FS + "test" + Constants.FS)
+//            && (ft == QAUtils.FileType.SOURCE)) {
+//         throw new IllegalArgumentException("File doesn't match file type expected");
+//      }
+//
+//      ArrayList<String> mList = new ArrayList<String>();
+//      Class<?> clazz = null;
+//      try {
+//         clazz = QAUtils.convertFileToClass(filePath, ft);
+//      } catch (ClassNotFoundException ex) {
+//         throw ex;
+//      }
+//
+//      String clazzName = clazz.getSimpleName();
+//      Method[] rawMethodList = clazz.getDeclaredMethods();
+//      for (Method method : rawMethodList) {
+//         int modifiers = method.getModifiers();
+//         if (modifiers == 0) {
+//            QAUtils.verboseMsg("WARNING: " + method.getName()
+//                  + "() has default access; should have a declared access");
+//         }
+//         if ((Modifier.isPublic(modifiers)) || (Modifier.isProtected(modifiers))) {
+//            String mName = extractSignature(method, clazzName);
+//            if ((mName != null) && (!isPrepMethod(mName))) {
+//               mList.add(mName);
+//            }
+//         }
+//      }
+//
+//      // Sort methods to keep in sync with test methods later
+//      sortSignatures(mList);
+//      return mList;
+//   }
+
    /**
     * Extracts public and protected methods from a source or test file, then sorts each list.
     * 
@@ -62,19 +110,53 @@ public class QAUtils
     * @throws IllegalArgumentException if the file type doesn't match the actual file type: test
     *            files must be {@code /test/} directories, and source files cannot.
     */
-   static public ArrayList<String> collectMethods(String filePath, FileType ft)
+   static public ArrayList<String> collectSrcMethods(String filePath)
          throws IllegalArgumentException, ClassNotFoundException
    {
-      // Guard: Source files are not in test directories
-      if (filePath.contains(Constants.FS + "test" + Constants.FS)
-            && (ft == QAUtils.FileType.SOURCE)) {
-         throw new IllegalArgumentException("File doesn't match file type expected");
-      }
-
       ArrayList<String> mList = new ArrayList<String>();
       Class<?> clazz = null;
       try {
-         clazz = QAUtils.convertFileToClass(filePath, ft);
+         clazz = QAUtils.convertFileToClass(filePath);
+      } catch (ClassNotFoundException ex) {
+         throw ex;
+      }
+
+      String clazzName = clazz.getSimpleName();
+      Method[] rawMethodList = clazz.getDeclaredMethods();
+      for (Method method : rawMethodList) {
+         int modifiers = method.getModifiers();
+         if (modifiers == 0) {
+            QAUtils.verboseMsg("WARNING: " + method.getName()
+                  + "() has default access; should have a declared access");
+         }
+         if ((Modifier.isPublic(modifiers)) || (Modifier.isProtected(modifiers))) {
+            String mName = extractSignature(method, clazzName);
+            if ((mName != null) && (!isPrepMethod(mName))) {
+               mList.add(mName);
+            }
+         }
+      }
+
+      // Sort methods to keep in sync with test methods later
+      QAUtils.sortSignatures(mList);
+      return mList;
+   }
+
+   /**
+    * Extracts public and protected methods from a source or test file, then sorts each list.
+    * 
+    * @param filepath path of target file
+    * @return list of public and protected method signatures for the target
+    * @throws IllegalArgumentException if the file type doesn't match the actual file type: test
+    *            files must be {@code /test/} directories, and source files cannot.
+    */
+   static public ArrayList<String> collectTestMethods(String filePath)
+         throws IllegalArgumentException, ClassNotFoundException
+   {
+      ArrayList<String> mList = new ArrayList<String>();
+      Class<?> clazz = null;
+      try {
+         clazz = QAUtils.convertFileToClass(filePath);
       } catch (ClassNotFoundException ex) {
          throw ex;
       }
@@ -100,6 +182,7 @@ public class QAUtils
       return mList;
    }
 
+   
    static public ArrayList<String> createList(String[] ary)
    {
       ArrayList<String> myList = new ArrayList<String>(ary.length);
@@ -107,6 +190,18 @@ public class QAUtils
          myList.add(ary[k]);
       }
       return myList;
+   }
+
+
+   /**
+    * Determine if the given character is a digit from 1 to 9
+    * 
+    * @param ch character to check
+    * @return true if c is a numeric digit
+    */
+   static public boolean isDigit(char ch)
+   {
+      return (ch >= '1' && ch <= '9');
    }
 
 
@@ -144,6 +239,41 @@ public class QAUtils
       return outList;
    }
 
+   
+   /**
+    * Sort first by method name, then by parm list number and value
+    * 
+    * @param sList collection of method signatures
+    */
+   static public void sortSignatures(ArrayList<String> sList)
+   {
+      Collections.sort(sList, new Comparator<String>() {
+         @Override
+         public int compare(String sig1, String sig2)
+         {
+            // Tokenize into three parts: method name, parm list, return type
+            String name1 = sig1.substring(sig1.indexOf(SPACE) + 1, sig1.indexOf(LEFT_PAREN));
+            String name2 = sig2.substring(sig2.indexOf(SPACE) + 1, sig2.indexOf(LEFT_PAREN));
+            String parms1 = sig1.substring(sig1.indexOf(LEFT_PAREN), sig1.indexOf(RIGHT_PAREN) + 1);
+            String parms2 = sig2.substring(sig2.indexOf(LEFT_PAREN), sig2.indexOf(RIGHT_PAREN) + 1);
+            // System.err.println("\t\t sort loops = " + ++count);
+
+            // Compare method names
+            int retval = name1.compareTo(name2); // compare method names
+            // Compare number of parms and parms names
+            if (retval == 0) {
+               String[] nbrParms1 = parms1.split(COMMA);
+               String[] nbrParms2 = parms2.split(COMMA);
+               retval = nbrParms1.length - nbrParms2.length;
+               if (retval == 0) {
+                  retval = parms1.compareTo(parms2);
+               }
+            }
+            return retval;
+         }
+      });
+   }
+
 
    /**
     * Display a message to the console if the verbose flag is set
@@ -153,7 +283,7 @@ public class QAUtils
     */
    static public void verboseMsg(String msg)
    {
-      if (QAFileScan._verbose) {
+      if (SingleFileScan._verbose) {
          System.out.println(msg);
       }
    }
@@ -202,11 +332,10 @@ public class QAUtils
     * returned.
     * 
     * @param path the fully-qualifed (with package name) {@code .java} source filename
-    * @param ft indentify where SOURCE or TEST file is located
     * @return the equivalent {@.class} file, or null if .class file could not be found
     * @throws ClassNotFoundException if the compile target cannot be found
     */
-   static private Class<?> convertFileToClass(String path, FileType ft)
+   static private Class<?> convertFileToClass(String path)
          throws ClassNotFoundException
    {
       // Guard: get qualifed package name of class file
@@ -364,41 +493,5 @@ public class QAUtils
 
       return retSig;
    }
-
-
-   /**
-    * Sort first by method name, then by parm list number and value
-    * 
-    * @param sList collection of method signatures
-    */
-   static private void sortSignatures(ArrayList<String> sList)
-   {
-      Collections.sort(sList, new Comparator<String>() {
-         @Override
-         public int compare(String sig1, String sig2)
-         {
-            // Tokenize into three parts: method name, parm list, return type
-            String name1 = sig1.substring(sig1.indexOf(SPACE) + 1, sig1.indexOf(LEFT_PAREN));
-            String name2 = sig2.substring(sig2.indexOf(SPACE) + 1, sig2.indexOf(LEFT_PAREN));
-            String parms1 = sig1.substring(sig1.indexOf(LEFT_PAREN), sig1.indexOf(RIGHT_PAREN) + 1);
-            String parms2 = sig2.substring(sig2.indexOf(LEFT_PAREN), sig2.indexOf(RIGHT_PAREN) + 1);
-            // System.err.println("\t\t sort loops = " + ++count);
-
-            // Compare method names
-            int retval = name1.compareTo(name2); // compare method names
-            // Compare number of parms and parms names
-            if (retval == 0) {
-               String[] nbrParms1 = parms1.split(COMMA);
-               String[] nbrParms2 = parms2.split(COMMA);
-               retval = nbrParms1.length - nbrParms2.length;
-               if (retval == 0) {
-                  retval = parms1.compareTo(parms2);
-               }
-            }
-            return retval;
-         }
-      });
-   }
-
 
 }     // end QAUtils class
