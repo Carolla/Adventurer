@@ -24,18 +24,10 @@ import mylib.Constants;
  * the {@code SrcReader}.
  * 
  * @author Alan Cline
- * @version Jul 5, 2016 // original <br>
+ * @version Apr 8 2017  // major refactoring from original to simply <br>
  */
 public class TestWriter
 {
-   // private final String COMMA = ",";
-   // private final String SPACE = " ";
-   // private final String LEFT_PAREN = "(";
-   // private final String RIGHT_PAREN = ")";
-   private final String LEFT_BRACE = "{";
-   private final String RIGHT_BRACE = "}";
-   private final String END_CMT = " */";
-
    /** Set of JUnit import statements */
    private final String JUNIT_IMPORTS =
          "import static org.junit.Assert.*; \n" +
@@ -77,8 +69,6 @@ public class TestWriter
    private boolean _failStubs;
    private boolean _fileEcho;
 
-   private Prototype _proto;
-
 
    // ================================================================================
    // CONSTRUCTOR and HELPERS
@@ -96,9 +86,6 @@ public class TestWriter
       _verbose = verbose;
       _failStubs = failStubs;
       _fileEcho = fileEcho;
-
-      // TestWriter needs a Prototype object to create the test file
-      _proto = new Prototype();
 
       _filesWritten = 0;
       _filesAugmented = 0;
@@ -450,7 +437,7 @@ public class TestWriter
 
       // Read through the version block until the last @version line and end cmt line has been read
       String lineAhead = in.nextLine();
-      while (!lineAhead.equals(END_CMT)) {
+      while (!lineAhead.equals(Constants.END_CMT)) {
          out.println(currentLine);
          fileEcho(currentLine);
          currentLine = lineAhead;
@@ -515,14 +502,14 @@ public class TestWriter
 
       while (in.hasNextLine()) {
          line = in.nextLine();
-         if (line.contains(LEFT_BRACE)) {
+         if (line.contains(Constants.LEFT_BRACE)) {
             delimCnt++;
          }
-         if (line.contains(RIGHT_BRACE)) {
+         if (line.contains(Constants.RIGHT_BRACE)) {
             delimCnt--;
          }
          // If end of class reached
-         if ((line.contains(RIGHT_BRACE)) && (delimCnt == 0)) {
+         if ((line.contains(Constants.RIGHT_BRACE)) && (delimCnt == 0)) {
             break;
          } else {
             out.println(line);

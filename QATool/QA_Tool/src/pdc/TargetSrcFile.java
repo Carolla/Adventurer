@@ -10,6 +10,7 @@
 package pdc;
 
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  * @author Al Cline
@@ -28,5 +29,20 @@ public class TargetSrcFile
       return null;
    }
 
+   public int beta(int f)
+   {
+      return -1;
+   }
 
+   public ArrayList<String> gamma(ArrayList<String> hm)
+   {
+      return null;
+   }
+
+   public int newFourthMethod()
+   {
+      return 42;
+   }
+   
+   
 } 	// end of TargetSrcFile

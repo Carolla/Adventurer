@@ -77,7 +77,7 @@ public class SingleFileScan
    /** Associated test file */
    static private File _testFile;
    /** Associated prototype object to handle syntactical considerations, e.g., methods names */
-   static private Prototype _proto;
+//   static private Prototype _proto;
 
 
    /**
@@ -98,7 +98,7 @@ public class SingleFileScan
          System.exit(-1);
       }
       // Create a prototype to handle syntactical naming considerations later
-      Prototype _proto = new Prototype();
+//      Prototype _proto = new Prototype();
 
       // Create a SrcReader for file input
       _srcRdr = new SrcReader(new File(args[0]), null);

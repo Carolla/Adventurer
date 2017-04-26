@@ -11,6 +11,7 @@ package pdc;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Searches a single source file for its methods and compares them against the source file's
@@ -55,11 +56,13 @@ public class FileScanner
    static public boolean _failStubs = false;
 
    /** Flags for controlling various auditing states and outputs */
-   public enum auditFlags { VERBOSE, FAILSTUBS, FILEECHO};
+   public enum auditFlags {
+      VERBOSE, FAILSTUBS, FILEECHO
+   };
 
    /**
-    * Creates a SrcReader to scan a source file and its corresponding test file for missing test 
-    * methods, and write a corresponding test file with the omitted test methods supplied as stubs. 
+    * Creates a SrcReader to scan a source file and its corresponding test file for missing test
+    * methods, and write a corresponding test file with the omitted test methods supplied as stubs.
     * 
     * @param args list of args for the command line. First arg is the filepath of the source file to
     *           examine; remaining args are described in the class description
@@ -77,37 +80,58 @@ public class FileScanner
 
       // Create a SrcReader for file input
       String srcPath = args[0];
-      SrcReader srcRdr = new SrcReader(srcPath);
-      QAUtils.verboseMsg("Scanning " + _srcFile);
+      SrcReader srcRdr = new SrcReader();
+      QAUtils.verboseMsg("Scanning " + srcPath);
       // Get all source methods
-      ArrayList<String> convSrcList = srcRdr.getSourceToTestMethods(srcPath);
-//      // Convert src method names to test method names
-//      ArrayList<String> srcToTestNameList = _proto.convertToTestNames(srcList);
-//
-//      // Create a TestWriter for test file output
-//      _testWriter = new TestWriter(_verbose, _failStubs, _fileEcho);
-//      String testPath = null;
-//      try {
-//         testPath = _testWriter.makeTestFilename(_srcFile.getPath());
-//      } catch (IllegalArgumentException ex) {
-//         QAUtils.verboseMsg("Corresponding test file not found.");
-//         System.exit(-3);
-//      }
-//      // Find the corresponding test file if it exists...
-//      _testFile = new File(testPath);
-//      // If corresponding test file exists, get existing test methods
-//      ArrayList<String> testList = null;
-//      if (_testFile.exists()) {
-//         testList = _srcRdr.getMethodList(_testFile, QAUtils.FileType.TEST);
-//         // Remove existing test methods that match src methods
-//         ArrayList<String> augList = _proto.findAugList(srcToTestNameList, testList);
-//         _testWriter.augmentTestFile(_testFile, srcList, augList);
-//      }
-//      // ...else write a new test file from the source list if it doesn't
-//      _testWriter.writeNewTestFile(_testFile, srcList, testList);
+      ArrayList<String> srcList = QAUtils.getMethods(srcPath);
+      // Create a triple map to maintain lists for src names, src-to-test names, and test names
+      TripleMap tMap = new TripleMap(srcList);
+      if (_verbose) {
+         QAUtils.printList("Source list: ", tMap.export(TripleMap.NameType.SRC));
+         QAUtils.printList("Converted test names from source: ",
+               tMap.export(TripleMap.NameType.SRC_TO_TEST));
+      }
+
+      // Create a TestWriter for test file output
+      TestWriter testWriter = new TestWriter(_failStubs, _fileEcho);
+      String testPath = null;
+      try {
+         testPath = testWriter.makeTestFilename(srcPath);
+      } catch (IllegalArgumentException ex) {
+         QAUtils.verboseMsg("Corresponding test file not found.");
+         System.exit(-1);
+      }
+      // Find the corresponding test file if it exists...
+      File testFile = new File(testPath);
+      // If corresponding test file exists, get existing test methods
+      ArrayList<String> testList = null;
+      if (testFile.exists()) {
+         testList = QAUtils.getMethods(testPath);
+         tMap.setMapList(TripleMap.NameType.TEST, testList);
+         // Find only test names that don't already exist in the test file
+         Map<String, String> augMap = tMap.buildAugMap();
+         if (_verbose) {
+            QAUtils.printList("Existing test method names: ", tMap.export(TripleMap.NameType.TEST));
+         }
+         if (augMap.size() == 0) {
+            if (_verbose) {
+               QAUtils.verboseMsg("\nNo new methods to add to test file.");
+            }
+         } else {
+            if (_verbose) {
+               QAUtils.printMap("Test methods to add to existing test file: ", augMap);
+            }
+            // Write the new test method stubs to the existing test file
+            testWriter.augmentTestFile(testFile, augMap);
+         }
+      } else {
+         // Write new file using the converted method names
+         Map<String, String> augMap = tMap.buildAugMap();
+         testWriter.writeNewTestFile(testFile, augMap);
+      }
    }
 
-   
+
    // ===============================================================================
    // Private Methods
    // ===============================================================================
@@ -152,5 +176,5 @@ public class FileScanner
       return ERRMSG_OK;
    }
 
-   
+
 }  // end of SingleFileScan class
