@@ -1,9 +1,0 @@
-DIRECTORIES
-
-FILES
-ing_Testing.java
-pdc/Fakeroonie.java
-pdc/TestTemplate.java
-pdc/QATool.java
-test/pdc/UnitTestSuite.java
-

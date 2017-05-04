@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="javadoc">
-    <target name="javadoc">
-        <javadoc access="private" additionalparam=" -tag Normal.Test:m:&quot;Normal 'happy path' tests&quot;&#10;-tag Error.Test:m:&quot;Trigger an error condition&quot;&#10;-tag Null.Test:m:&quot;Null parm or results tests&quot;&#10;-tag Special.Test:m:&quot;A Special Test that falls into no other category&quot;&#10;-tag Not.Implemented:m:&quot;Tests to be written for the methods listed&quot;&#10;-tag Not.Needed:m:&quot;Tests--and reasons--not needed for the methods listed&quot;&#10;" author="true" classpath="/Applications/Eclipse.app/Contents/Eclipse/plugins/org.junit_4.12.0.v201504281640/junit.jar:/Projects/eChronos/MyLibrary/src/mylib/libResources/miglayout-3.7.3.1-swing.jar:/Applications/Eclipse.app/Contents/Eclipse/plugins/org.hamcrest.core_1.3.0.v201303031735.jar:/Projects/eChronos/MyLibrary/src/mylib/libResources/db4o-8.0.249.16098-core-java5.jar:/Projects/eChronos/MyLibrary/src/mylib/libResources/hamcrest-all-1.3.jar:/Projects/eChronos/MyLibrary/bin" destdir="doc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="pdc,test" source="1.8" sourcefiles="src/authCode/FileMap.java" sourcepath="src" splitindex="true" use="true" version="true"/>
-    </target>
-</project>
