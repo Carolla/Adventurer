@@ -9,8 +9,6 @@
 package pdc;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -52,8 +50,8 @@ public class TripleMap
 
       // All signatures must be sorted for this to work
       _srcNames.addAll(srcList);
-      sortSignatures(_srcNames);
-      makeUnique();
+      QAUtils.sortSignatures(_srcNames);
+      makeUnique(_srcToTestNames);
    }
 
 
@@ -125,7 +123,7 @@ public class TripleMap
    public void setMapList(TripleMap.NameType column, ArrayList<String> alist)
    {
       // Names must first be sorted
-      sortSignatures(alist);
+      QAUtils.sortSignatures(alist);
       switch (column)
       {
          case SRC:
@@ -168,22 +166,22 @@ public class TripleMap
     * Ensure that all names within the src-to-test name list are unique by adding a numerical suffix
     * to duplicates
     */
-   private void makeUnique()
+   private void makeUnique(ArrayList<String> alist)
    {
       // Convert each srcName into a test method name and store
       for (String sName : _srcNames) {
          String s2tName = makeTestMethodName(sName);
          int suffix = 1;
          // Add numerical suffix for existing test names
-         if (_srcToTestNames.contains(s2tName)) {
+         if (alist.contains(s2tName)) {
             // Insert the name suffix before the parens
-            _srcToTestNames.remove(s2tName);
+            alist.remove(s2tName);
             s2tName = s2tName.replace("()", suffix + "()");
-            _srcToTestNames.add(s2tName);
+            alist.add(s2tName);
             s2tName = s2tName.replace(suffix + "()", ++suffix + "()");
-            _srcToTestNames.add(s2tName);
+            alist.add(s2tName);
          } else {
-            _srcToTestNames.add(s2tName);
+            alist.add(s2tName);
             // Reset suffix when new name is added
             suffix = 1;
          }
@@ -229,45 +227,6 @@ public class TripleMap
       }
    }
 
-
-   /**
-    * Sort first by method name, then by parm list number and value, using a customized
-    * {@code Comparator} object
-    * 
-    * @param sList collection of method signatures
-    */
-   private void sortSignatures(ArrayList<String> sList)
-   {
-      Collections.sort(sList, new Comparator<String>() {
-         @Override
-         public int compare(String sig1, String sig2)
-         {
-            // Tokenize into three parts: method name, parm list, return type
-            String name1 = sig1.substring(sig1.indexOf(Constants.SPACE) + 1,
-                  sig1.indexOf(Constants.LEFT_PAREN));
-            String name2 = sig2.substring(sig2.indexOf(Constants.SPACE) + 1,
-                  sig2.indexOf(Constants.LEFT_PAREN));
-            String parms1 = sig1.substring(sig1.indexOf(Constants.LEFT_PAREN),
-                  sig1.indexOf(Constants.RIGHT_PAREN) + 1);
-            String parms2 = sig2.substring(sig2.indexOf(Constants.LEFT_PAREN),
-                  sig2.indexOf(Constants.RIGHT_PAREN) + 1);
-            // System.err.println("\t\t sort loops = " + ++count);
-
-            // Compare method names
-            int retval = name1.compareTo(name2); // compare method names
-            // Compare number of parms and parms names
-            if (retval == 0) {
-               String[] nbrParms1 = parms1.split(Constants.COMMA);
-               String[] nbrParms2 = parms2.split(Constants.COMMA);
-               retval = nbrParms1.length - nbrParms2.length;
-               if (retval == 0) {
-                  retval = parms1.compareTo(parms2);
-               }
-            }
-            return retval;
-         }
-      });
-   }
 
 
 }  // end of TripleMap class

@@ -53,8 +53,9 @@ public class TestWriter
 
    /** Standard setup and teardown methods */
    private final String PREP_DECLARE =
-         "\t/** \n\t * @throws java.lang.Exception\n \t */ \n\t" +
-               "%s\n\tpublic %svoid %s throws Exception\n\t{ }\n\n";
+         "\t/** \n\t * @throws java.lang.Exception -- "
+               + "general catchall for exceptions not caught by the tests\n \t */ \n\t"
+               + "%s\n\tpublic %svoid %s throws Exception\n\t{ }\n\n";
 
    /** BEGIN TESTS Banner */
    private final String DBL_HRULE =
@@ -65,20 +66,17 @@ public class TestWriter
    /**
     * Test method template: @Normal annotation, @Test annotation, declaration, MsgCtrl block private
     */
-   private final String NORMAL_CMT = "\t/**\n \t * @Normal.Test %s\n\t */";
+   private final String NIMPL_CMT = "\t/**\n \t * Not Implemented %s\n\t */";
+   private final String NORMAL_CMT = "\t/**\n \t * Normal Test: %s\n\t */";
    private final String TEST_ANNOT = "\n\t@Test\n";
    private final String M_DECLARATION = "\tpublic %s\n\t{\n";
-   private final String MSGCTRL_BLOCK = "\t\tMsgCtrl.auditMsgsOn(true);\n" +
-         "\t\tMsgCtrl.errorMsgsOn(true);\n" +
+   private final String MSGCTRL_BLOCK = "\t\tMsgCtrl.auditMsgsOn(false);\n" +
+         "\t\tMsgCtrl.errorMsgsOn(false);\n" +
          "\t\tMsgCtrl.where(this);\n\n";
    private final String NOT_IMPLEMENTED_MSG =
          "\t\tMsgCtrl.errMsgln(\"\\t\\t TEST METHOD NOT YET IMPLEMENTED\");";
    private final String FAILSTUB_STATEMENT =
          "\t\tfail(\"TEST METHOD NOT YET IMPLEMENTED\");";
-
-   private int _filesWritten;
-   private int _filesAugmented;
-   private int _filesUnchanged;
 
    // Debugging and audit flags
    private boolean _failStubs;
@@ -100,10 +98,6 @@ public class TestWriter
    {
       _failStubs = failStubs;
       _fileEcho = fileEcho;
-
-      _filesWritten = 0;
-      _filesAugmented = 0;
-      _filesUnchanged = 0;
    }
 
 
@@ -125,6 +119,10 @@ public class TestWriter
    public File augmentTestFile(File originalTestFile, Map<String, String> augMap)
          throws IllegalArgumentException
    {
+      // Guard: Verify no null parms
+      if ((originalTestFile == null) || (augMap == null)) {
+         throw new NullPointerException("Null parms not permitted");
+      }
       // Guard: Verify that the file exists
       if (!originalTestFile.exists()) {
          throw new IllegalArgumentException("Can't find original test file");
@@ -134,8 +132,10 @@ public class TestWriter
          return originalTestFile;
       }
 
-      // Rename original file to have temporary suffix. Don't use ".tmp". It is too common and may
-      // collide elsewhere.
+      /*
+       * Rename original file to have temporary suffix. Don't use ".tmp". It is too common and may
+       * collide elsewhere.
+       */
       String origFilename = originalTestFile.getPath();
       File inFile = setAsTmpFile(originalTestFile);
       File outFile = new File(origFilename);
@@ -176,17 +176,21 @@ public class TestWriter
     * 
     * @param srcPath full path of source file
     * @return test file name that corresponds to source file
-    * @throws IllegalArguementException if "src" dir not found or .java src file not found
+    * @throws IllegalArgumentException if "src" dir not found or {@code .java} src file not found
     */
    public String makeTestFilename(String srcPath)
    {
+      // Guard against null parm
+      if (srcPath == null) {
+         throw new IllegalArgumentException("Null srcPath found");
+      }
       // Guard against non-Java files
       if (!srcPath.endsWith(".java")) {
          throw new IllegalArgumentException(".java file not found in " + srcPath);
       }
       // Guard against missing "src" directory
       if (!srcPath.contains(Constants.FS + "src" + Constants.FS)) {
-         throw new IllegalArgumentException("'src' directory required to create 'test' subdir");
+         throw new IllegalArgumentException("source file must be in 'src' directory");
       }
 
       StringBuilder sbTest = new StringBuilder(srcPath);
@@ -262,16 +266,6 @@ public class TestWriter
       out.close();
 
       return target;
-   }
-
-
-   /** Write messages to console. outMsg checks the globl verbose flag */
-   public void writeResults()
-   {
-      QAUtils.verboseMsg("Writing complete: ");
-      QAUtils.verboseMsg("\t Files written: " + _filesWritten);
-      QAUtils.verboseMsg("\t Files augmented: " + _filesAugmented);
-      QAUtils.verboseMsg("\t Files unchanged: " + _filesUnchanged);
    }
 
 
@@ -360,7 +354,8 @@ public class TestWriter
       for (Map.Entry<String, String> entry : augMap.entrySet()) {
          StringBuilder comment = new StringBuilder();
          // CREATE THE NORMAL COMMENT BLOCK containing the source signature
-         comment.append(String.format(NORMAL_CMT, entry.getKey()));
+         // comment.append(String.format(NORMAL_CMT, entry.getKey()));
+         comment.append(String.format(NIMPL_CMT, entry.getKey()));
          // Add the @Test annotation
          comment.append(TEST_ANNOT);
 

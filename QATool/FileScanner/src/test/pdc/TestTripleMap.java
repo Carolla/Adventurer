@@ -26,33 +26,33 @@ import pdc.TripleMap;
 /**
  * @author Alan Cline
  * @version Apr 22, 2017 // original <br>
- *          April 23, 2017    // autogen: QA Tool added missing test methods <br>
-*/
+ *          April 23, 2017 // autogen: QA Tool added missing test methods <br>
+ */
 public class TestTripleMap
 {
    /**
-    * @throws java.lang.Exception
+    * @throws java.lang.Exception -- catchall for what tests don't catch
     */
    @BeforeClass
    public static void setUpBeforeClass() throws Exception
    {}
 
    /**
-    * @throws java.lang.Exception
+    * @throws java.lang.Exception -- catchall for what tests don't catch
     */
    @AfterClass
    public static void tearDownAfterClass() throws Exception
    {}
 
    /**
-    * @throws java.lang.Exception
+    * @throws java.lang.Exception -- catchall for what tests don't catch
     */
    @Before
    public void setUp() throws Exception
    {}
 
    /**
-    * @throws java.lang.Exception
+    * @throws java.lang.Exception -- catchall for what tests don't catch
     */
    @After
    public void tearDown() throws Exception
@@ -67,7 +67,7 @@ public class TestTripleMap
    // ================================================================================
 
    /**
-    * @NORMAL_TEST   Map<String, String> buildAugMap()
+    * @Normal.Test {@code Map<String, String> buildAugMap()} -- Add new tests to test file
     */
    @Test
    public void testBuildAugListMoreTestsThanSource()
@@ -98,10 +98,10 @@ public class TestTripleMap
 
 
    /**
-    * @NORMAL_TEST   Map<String, String> buildAugMap()
+    * @Normal.Test {@code Map<String, String> buildAugMap()} -- Initial test: no new tests
     */
    @Test
-   public void testBuildAugListNoTests()
+   public void testBuildAugList()
    {
       MsgCtrl.auditMsgsOn(false);
       MsgCtrl.errorMsgsOn(false);
@@ -121,7 +121,7 @@ public class TestTripleMap
 
 
    /**
-    * @NORMAL_TEST   Map<String, String> buildAugMap()
+    * @Normal.Test {@code Map<String, String> buildAugMap()} -- no new tests to add to src names
     */
    @Test
    public void testBuildAugListNoNewTests()
@@ -148,7 +148,8 @@ public class TestTripleMap
 
 
    /**
-    * @NORMAL_TEST   Map<String, String> buildAugMap()
+    * @Normal.Test {@code Map<String, String> buildAugMap()} -- one new src method creates one test
+    *              method
     */
    @Test
    public void testBuildAugListOneNewSrcMethod()
@@ -177,51 +178,37 @@ public class TestTripleMap
 
 
    /**
- 	 * @NORMAL_TEST ArrayList export(TripleMap$NameType)
-	 */
-	@Test
-	public void testExport()
-	{
-		MsgCtrl.auditMsgsOn(false);
-		MsgCtrl.errorMsgsOn(false);
-		MsgCtrl.where(this);
+    * @Normal.Test ArrayList export(TripleMap$NameType)
+    */
+   @Test
+   public void testExport()
+   {
+      MsgCtrl.auditMsgsOn(false);
+      MsgCtrl.errorMsgsOn(false);
+      MsgCtrl.where(this);
 
-		MsgCtrl.errMsgln("\t\t Implemented by other tests in this file");
-	}
+      MsgCtrl.errMsgln("\t\t Implemented by other tests in this file");
+   }
 
 
    /**
-    * @NORMAL_TEST   Map<String, String> buildAugMap()
+    * @Normal.Test void setMapList(TripleMap$NameType, ArrayList)
     */
-	@Test
-	public void testBuildAugMap()
-	{
-		MsgCtrl.auditMsgsOn(false);
-		MsgCtrl.errorMsgsOn(false);
-		MsgCtrl.where(this);
+   @Test
+   public void testSetMapList()
+   {
+      MsgCtrl.auditMsgsOn(false);
+      MsgCtrl.errorMsgsOn(false);
+      MsgCtrl.where(this);
 
-      MsgCtrl.errMsgln("\t\t Implemented by other tests in this file");
-	}
+      MsgCtrl.errMsgln("\t\t Simple setter. No need to test");
+   }
 
 
-	/**
- 	 * @NORMAL_TEST void setMapList(TripleMap$NameType, ArrayList)
-	 */
-	@Test
-	public void testSetMapList()
-	{
-		MsgCtrl.auditMsgsOn(false);
-		MsgCtrl.errorMsgsOn(false);
-		MsgCtrl.where(this);
-
-		MsgCtrl.errMsgln("\t\t Simple setter. No need to test");
-	}
-
-	
    // ================================================================================
    // PRIVATE HELPER METHODSS
    // ================================================================================
-   
+
    /**
     * Send a list to the console as audit trail
     * 
@@ -236,7 +223,7 @@ public class TestTripleMap
       }
    }
 
-   
+
    /**
     * Send map entries to the console as audit trail
     * 

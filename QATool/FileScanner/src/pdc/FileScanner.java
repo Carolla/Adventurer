@@ -13,6 +13,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
 
+import mylib.MsgCtrl;
+
 /**
  * Searches a single source file for its methods and compares them against the source file's
  * corresponding test case and methods. Takes the following flags <br>
@@ -35,30 +37,28 @@ public class FileScanner
                + "\t[-failStubs]: test stubs will fail instead of printing message.\n"
                + "\t[-fileEcho]: copy file output to console\n";
 
-   // Error messages for various command line errors
-   static public final String ERRMSG_OK = "Command line OK";
-   static public final String ERRMSG_NOCMDLINE = "Missing command line for QAFileScan";
-   static public final String ERRMSG_BADFILE = "Cannot find proper .java file by that name";
-   static public final String ERRMSG_ARGNUMBER = "Too many arguments in command line";
-   static public final String ERRMSG_FILE_NOTFOUND = "Cannot find file specified in command line";
-   static public final String ERRMSG_INVALID_ARG = "Invalid arg entered in command line";
+   /** Error messages for various command line errors */
+   static private final String ERRMSG_OK = "Command line OK";
+   static private final String ERRMSG_NOCMDLINE = "Missing command line for QAFileScan";
+   static private final String ERRMSG_BADFILE = "Cannot find proper .java file by that name";
+   static private final String ERRMSG_ARGNUMBER = "Too many arguments in command line";
+   static private final String ERRMSG_FILE_NOTFOUND = "Cannot find file specified in command line";
+   static private final String ERRMSG_INVALID_ARG = "Invalid arg entered in command line";
 
-   // Command line args to turn on audit trail or file write trail
-   static public final String VERBOSE_ARG = "-verbose";
-   static public final String FILEECHO_ARG = "-fileEcho";
-   static public final String FAILSTUBS_ARG = "-failStubs";
+   /** Command line args to turn on audit trail or file write trail */
+   static private final String VERBOSE_ARG = "-verbose";
+   static private final String FILEECHO_ARG = "-fileEcho";
+   static private final String FAILSTUBS_ARG = "-failStubs";
 
-   /** Command line arg to turn on audit trail while executing */
-   static public boolean _verbose = false;
    /** Command line arg to echo all file writes to the console */
-   static public boolean _fileEcho = false;
+   static private boolean _fileEcho = false;
    /** Command line arg to write test method stubs that fail instead of printing a message */
-   static public boolean _failStubs = false;
+   static private boolean _failStubs = false;
 
-   /** Flags for controlling various auditing states and outputs */
-   public enum auditFlags {
-      VERBOSE, FAILSTUBS, FILEECHO
-   };
+
+   // ===============================================================================
+   // Launcher
+   // ===============================================================================
 
    /**
     * Creates a SrcReader to scan a source file and its corresponding test file for missing test
@@ -78,19 +78,15 @@ public class FileScanner
          System.exit(-1);
       }
 
-      // Create a SrcReader for file input
       String srcPath = args[0];
-      SrcReader srcRdr = new SrcReader();
-      QAUtils.verboseMsg("Scanning " + srcPath);
+      MsgCtrl.auditMsg("Scanning " + srcPath);
       // Get all source methods
       ArrayList<String> srcList = QAUtils.getMethods(srcPath);
       // Create a triple map to maintain lists for src names, src-to-test names, and test names
       TripleMap tMap = new TripleMap(srcList);
-      if (_verbose) {
-         QAUtils.printList("Source list: ", tMap.export(TripleMap.NameType.SRC));
-         QAUtils.printList("Converted test names from source: ",
-               tMap.export(TripleMap.NameType.SRC_TO_TEST));
-      }
+      MsgCtrl.auditPrintList("Source list: ", tMap.export(TripleMap.NameType.SRC));
+      MsgCtrl.auditPrintList("Converted test names from source: ",
+            tMap.export(TripleMap.NameType.SRC_TO_TEST));
 
       // Create a TestWriter for test file output
       TestWriter testWriter = new TestWriter(_failStubs, _fileEcho);
@@ -98,7 +94,7 @@ public class FileScanner
       try {
          testPath = testWriter.makeTestFilename(srcPath);
       } catch (IllegalArgumentException ex) {
-         QAUtils.verboseMsg("Corresponding test file not found.");
+         MsgCtrl.auditErrorMsg("Corresponding test file not found.");
          System.exit(-1);
       }
       // Find the corresponding test file if it exists...
@@ -110,17 +106,12 @@ public class FileScanner
          tMap.setMapList(TripleMap.NameType.TEST, testList);
          // Find only test names that don't already exist in the test file
          Map<String, String> augMap = tMap.buildAugMap();
-         if (_verbose) {
-            QAUtils.printList("Existing test method names: ", tMap.export(TripleMap.NameType.TEST));
-         }
+         MsgCtrl.auditPrintList("Existing test method names: ",
+               tMap.export(TripleMap.NameType.TEST));
          if (augMap.size() == 0) {
-            if (_verbose) {
-               QAUtils.verboseMsg("\nNo new methods to add to test file.");
-            }
+            MsgCtrl.auditMsg("\nNo new methods to add to test file.");
          } else {
-            if (_verbose) {
-               QAUtils.printMap("Test methods to add to existing test file: ", augMap);
-            }
+            MsgCtrl.auditPrintMap("Test methods to add to existing test file: ", augMap);
             // Write the new test method stubs to the existing test file
             testWriter.augmentTestFile(testFile, augMap);
          }
@@ -131,10 +122,6 @@ public class FileScanner
       }
    }
 
-
-   // ===============================================================================
-   // Private Methods
-   // ===============================================================================
 
    /**
     * Validates and activates command line arguments, including the filepath.
@@ -161,10 +148,17 @@ public class FileScanner
          return ERRMSG_FILE_NOTFOUND;
       }
 
+      // Set defaults
+      MsgCtrl.auditMsgsOn(false);
+      MsgCtrl.errorMsgsOn(false);
+      _fileEcho = false;
+      _failStubs = false;
+
       // Set the internal flags for command line args that are set
       for (int k = 1; k < args.length; k++) {
          if (args[k].equals(VERBOSE_ARG)) {
-            _verbose = true;
+            MsgCtrl.auditMsgsOn(true);
+            MsgCtrl.errorMsgsOn(true);
          } else if (args[k].equals(FILEECHO_ARG)) {
             _fileEcho = true;
          } else if (args[k].equals(FAILSTUBS_ARG)) {
@@ -175,6 +169,39 @@ public class FileScanner
       }
       return ERRMSG_OK;
    }
+
+
+   // ===============================================================================
+   // Inner Class for testing
+   // ===============================================================================
+
+   /**
+    * Mock innner class to get FileScanner state
+    */
+   public class MockFileScanner
+   {
+      public MockFileScanner()
+      {};
+
+      /** Is the program's audit flag on? */
+      public boolean isVerbose()
+      {
+         return MsgCtrl.isAuditOn();
+      }
+
+      /** Is the program's flag to echo file writes? */
+      public boolean isFileEcho()
+      {
+         return _fileEcho;
+      }
+
+      /** Is the program's flag on to create test stubs that fail, instead of print messages? */
+      public boolean isFailStubs()
+      {
+         return _failStubs;
+      }
+
+   }      // end of MockFileScanner class
 
 
 }  // end of SingleFileScan class
