@@ -38,9 +38,12 @@ public class Constants
 
   public static final String LEFT_PAREN = "(";
   public static final String RIGHT_PAREN = ")";
+  public static final String LEFT_BRACE = "{";
+  public static final String RIGHT_BRACE = "}";
   public static final String SPACE = " ";
   public static final String COMMA = ",";
   public static final String DOT = ".";
+  public static final String END_CMT = "*/";
 
   /** Root folder for all source files */
   public static final String SRC_PREFIX = "src" + Constants.FS;
