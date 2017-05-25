@@ -28,14 +28,19 @@ public class NewHeroCiv
 
   /** String arrays are used instead of Lists because it is final data and easier to work with */
   public static final String[] HAIR_COLOR_LIST =
-  {"bald", "black", "blonde", "brown", "gray", "red", "silver", "streaked", "white"};
+      {"bald", "black", "blonde", "brown", "gray", "red", "silver", "streaked", "white"};
 
-
+  // TODO: IS this duplication necessary?
   public static final String[] KLASS_LIST = Klass.KLASS_LIST;
 
   // ===========================================================================
   // CONSTRUCTOR
   // ===========================================================================
+
+  // Default constructor
+  public NewHeroCiv()
+  {}
+
 
   /**
    * Create the new Hero from the user's input data
@@ -45,10 +50,11 @@ public class NewHeroCiv
   public Hero createHero(EnumMap<HeroInput, String> inputMap)
   {
     Hero myHero = new Hero(inputMap.get(HeroInput.NAME),
-      inputMap.get(HeroInput.GENDER),
-      inputMap.get(HeroInput.HAIR),
-      inputMap.get(HeroInput.RACE),
-      inputMap.get(HeroInput.KLASS));
+        inputMap.get(HeroInput.GENDER),
+        inputMap.get(HeroInput.HAIR),
+        inputMap.get(HeroInput.RACE),
+        inputMap.get(HeroInput.KLASS));
     return myHero;
   }
+
 } // end of NewHeroCiv class

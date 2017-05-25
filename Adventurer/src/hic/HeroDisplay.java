@@ -30,55 +30,65 @@ import civ.HeroDisplayCiv;
 
 
 /**
- * Allows the user to show their Person's many attributes. <BL> <LI>Name: All Persons must have a
- * name by which they are addressed, and are associated with a file by which they are saved.</LI>
+ * Allows the user to show their Person's many attributes. <BL>
+ * <LI>Name: All Persons must have a name by which they are addressed, and are associated with a
+ * file by which they are saved.</LI>
  * <LI>Experience Points (XP): Reflects the amount of playing experiences encountered by the Person,
  * and gained toward next Level of ability. XP are awarded for gold and treasure recovered, monsters
- * killed, and puzzles solved. All start at XP = 0.</LI> <LI>Level: Reflects the Person's ability,
- * Level 0 being lowest (usually a Peasant), and Level 1 usually being the lowest Guild member.
- * Levels may rise to Level 10, master of all they command. A Person may rise in Level (be promoted)
- * in their Guild after obtaining enough XP to achieve that Level. All start at Level = 0.</LI> <LI>
- * Hit Points (HP): Reflects the life of the Person. HP are lost each time the Person is damaged in
- * a fight, and are recovered through healing. When the Person's HP = 0, he or she is dead. (There
- * are other ways of dying too, of course.) HP depend on the Person's Klass and Level; Peasants,
- * lowest of all, start at HP = 10.</LI> <LI>Race: Human is the default, but others are available:
- * Dwarf, Elf, Gnome, Half-Elf, Half-Orc, or Hobbit. Each have special penalties and bonuses
- * compared to the Human.</LI> <LI>Klass: Everyone starts as a Peasant, but can become a Fighter,
- * Cleric, Wizard, or Rogue at the proper Guild. All but Fighters inherit special abilities.</LI>
+ * killed, and puzzles solved. All start at XP = 0.</LI>
+ * <LI>Level: Reflects the Person's ability, Level 0 being lowest (usually a Peasant), and Level 1
+ * usually being the lowest Guild member. Levels may rise to Level 10, master of all they command. A
+ * Person may rise in Level (be promoted) in their Guild after obtaining enough XP to achieve that
+ * Level. All start at Level = 0.</LI>
+ * <LI>Hit Points (HP): Reflects the life of the Person. HP are lost each time the Person is damaged
+ * in a fight, and are recovered through healing. When the Person's HP = 0, he or she is dead.
+ * (There are other ways of dying too, of course.) HP depend on the Person's Klass and Level;
+ * Peasants, lowest of all, start at HP = 10.</LI>
+ * <LI>Race: Human is the default, but others are available: Dwarf, Elf, Gnome, Half-Elf, Half-Orc,
+ * or Hobbit. Each have special penalties and bonuses compared to the Human.</LI>
+ * <LI>Klass: Everyone starts as a Peasant, but can become a Fighter, Cleric, Wizard, or Rogue at
+ * the proper Guild. All but Fighters inherit special abilities.</LI>
  * <LI>Armor Class (AC): Reflects defensive ability, mostly due to the armor worn. AC also slightly
- * reflects the Dexterity a Person has to avoid being hit.</LI> <LI>Age: Reflects how old the Person
- * is. As the Person plays, and increases in Age, base traits change, and modifiers adjust
- * accordingly. Age also reflects how long the Person spent in play.</LI> <LI>Gender: Females are,
- * on average, shorter, lighter, and have less Strength than Males, but have a higher Constitution
- * and Charisma.</LI> <LI>Height: The height of the Person, affects speed slightly; also defines how
- * high the Person can reach for something. Height depends on the Person's Race.</LI> <LI>Weight:
- * The weight of the Person, affects non-lethal combat somewhat; also limits the strength of bridges
- * the Person may cross safely. Weight depends on the Person's Race.</LI> <LI>Occupation: Although
- * "No Skills" is an option, most occupations reflect some special skill that the Person acquired in
- * earlier life.</LI> <LI>Gold: The amount of wealth the Person owns, and carries about (adding to
- * his load). The <i>Gold</i> value is the number of gold pieces and silver pieces in G.S format (10
- * sp = 1 gp). Peasants start with the least gold; Guilds will confer a little wealth on the Person,
- * depending on the Guild.</LI> <LI>Gold Banked: The amount of wealth the Person has stashed away,
- * usually in the local Bank. Banks will charge interest on the amount periodically, but you won't
- * have to carry it around with you, and take the risk of being robbed.</LI> <LI>Weight Carried: The
- * weight the Person is currently carrying. Some weight may slow the Person, and there is a limit to
- * how much the Person can carry. Weight carried affects non-lethal combat somewhat; also limits the
- * strength of bridges the Person may cross safely. Weight carried depends on the Person's Strength.
- * </LI> <LI>Max Languages: The total number of languages a Person can learn, in addition to
- * <i>Common</i> and a Race language.</LI> <LI>Languages: All Persons know the <i>Common</i>
- * language, and perhaps a Race language. Each Person has the ability to learn other languages.</LI>
+ * reflects the Dexterity a Person has to avoid being hit.</LI>
+ * <LI>Age: Reflects how old the Person is. As the Person plays, and increases in Age, base traits
+ * change, and modifiers adjust accordingly. Age also reflects how long the Person spent in play.
+ * </LI>
+ * <LI>Gender: Females are, on average, shorter, lighter, and have less Strength than Males, but
+ * have a higher Constitution and Charisma.</LI>
+ * <LI>Height: The height of the Person, affects speed slightly; also defines how high the Person
+ * can reach for something. Height depends on the Person's Race.</LI>
+ * <LI>Weight: The weight of the Person, affects non-lethal combat somewhat; also limits the
+ * strength of bridges the Person may cross safely. Weight depends on the Person's Race.</LI>
+ * <LI>Occupation: Although "No Skills" is an option, most occupations reflect some special skill
+ * that the Person acquired in earlier life.</LI>
+ * <LI>Gold: The amount of wealth the Person owns, and carries about (adding to his load). The
+ * <i>Gold</i> value is the number of gold pieces and silver pieces in G.S format (10 sp = 1 gp).
+ * Peasants start with the least gold; Guilds will confer a little wealth on the Person, depending
+ * on the Guild.</LI>
+ * <LI>Gold Banked: The amount of wealth the Person has stashed away, usually in the local Bank.
+ * Banks will charge interest on the amount periodically, but you won't have to carry it around with
+ * you, and take the risk of being robbed.</LI>
+ * <LI>Weight Carried: The weight the Person is currently carrying. Some weight may slow the Person,
+ * and there is a limit to how much the Person can carry. Weight carried affects non-lethal combat
+ * somewhat; also limits the strength of bridges the Person may cross safely. Weight carried depends
+ * on the Person's Strength.</LI>
+ * <LI>Max Languages: The total number of languages a Person can learn, in addition to <i>Common</i>
+ * and a Race language.</LI>
+ * <LI>Languages: All Persons know the <i>Common</i> language, and perhaps a Race language. Each
+ * Person has the ability to learn other languages.</LI>
  * <LI>Description: Deduced from hair color, weight, height, gender, race, Klass and CHR, it follows
  * the formula "A [body type] [gender] [race] [klass] with [color] hair. She | He is [CHR value]."
  * Body type is derived from weight, height, body-mass-index ratio, e.g. "tall and thin", or
- * "short and squat". CHR value ranges from "stunningly beautiful" (18) to "horribly scarred" (8).</LI>
+ * "short and squat". CHR value ranges from "stunningly beautiful" (18) to "horribly scarred" (8).
+ * </LI>
  * <LI>Inventory: The list of Items carried by the Person, usually in their backpack. Items are
- * found in the Dungeon, or purchased in the Store. If you don't have it, you can't use it!</LI> <LI>
- * Special Abilities: The behaviors are specific to a Person's occupation, Race, and Klass. Special
- * abilities may involve detecting secret doors (e.g., Rogues and Elves), throwing spells (e.g.
- * Wizards and Clerics), or just plain luck (e.g, Gamblers).</LI> <LI>Magic Bag (Wizard) or Sacred
- * Satchel (Cleric): If the Person is a spellcaster, then this special container for spell items
- * will appear. Inventory items can be moved to or from the Bag or Satchel to be available for
- * Spells.</LI> </BL>
+ * found in the Dungeon, or purchased in the Store. If you don't have it, you can't use it!</LI>
+ * <LI>Special Abilities: The behaviors are specific to a Person's occupation, Race, and Klass.
+ * Special abilities may involve detecting secret doors (e.g., Rogues and Elves), throwing spells
+ * (e.g. Wizards and Clerics), or just plain luck (e.g, Gamblers).</LI>
+ * <LI>Magic Bag (Wizard) or Sacred Satchel (Cleric): If the Person is a spellcaster, then this
+ * special container for spell items will appear. Inventory items can be moved to or from the Bag or
+ * Satchel to be available for Spells.</LI> </BL>
  * <P>
  * 
  * @see NewHeroIPPanel
@@ -157,11 +167,11 @@ public class HeroDisplay extends ChronosPanel
 
     setLayout(new MigLayout());
     setBackground(_backColor);
-    
+
     add(_tabPane, "cell 0 0, grow");
     _buttonPanel = buildButtonPanel();
     add(_buttonPanel, "cell 0 1, align center");
-    
+
     _skillPanel = createTabPanel();
     _invenPanel = createTabPanel();
     _magicPanel = createTabPanel();
@@ -191,6 +201,106 @@ public class HeroDisplay extends ChronosPanel
     addHeroToTabPane();
   }
 
+
+  // Build panel of skills: literacy, racial skills, occupational skills, and klass skills
+  public void addSkills(List<String> ocpSkills, List<String> racialSkills,
+      List<String> klassSkills)
+  {
+    // Section 1: Literacy
+    _skillPanel.add(gridCell("", _ds.get(PersonKeys.LITERACY)), "gaptop 10, span 6, growx, wrap");
+
+    // Section 2: Occupational Skills title
+    _skillPanel.add(buildMultiCell(_ds.get(PersonKeys.OCCUPATION) + " SKILLS: ", ocpSkills),
+        "growx, wrap");
+
+    // Section 3: Racial skills
+    _skillPanel
+        .add(buildMultiCell("SPECIAL " + _ds.get(PersonKeys.RACENAME).toUpperCase() + " SKILLS: ",
+            racialSkills), "growx, wrap");
+
+    // Section 4: Klass skills
+    _skillPanel.add(buildMultiCell(_ds.get(PersonKeys.KLASSNAME).toUpperCase() + " SKILLS: ",
+        klassSkills), "growx, wrap");
+  }
+
+  /**
+   * Builds the inventory "table", showing Category, Items, quantity, weight (in lbs & oz of each,
+   * and total. Wielded Weapon and Armor Worn is at top. Inventory is organized by category: ARMS,
+   * ARMOR, CLOTHING, EQUIPMENT, PROVISIONS, LIVESTOCK, TRANSPORT : item, quantity, weight, total
+   * weight. See also Sacred Satchel and Magic Bag
+   * 
+   * @param inventory
+   */
+  public void addInventory(Inventory inventory)
+  {
+    _invenPanel.add(gridCell("Wielded Weapon:", "None"), "gaptop 10, span 6, growx, wrap 0");
+    _invenPanel.add(gridCell("Armor Worn: ", " None"), "span 6, growx, wrap 0");
+
+    JPanel blankLine = gridCell("", "");
+    blankLine.setBackground(Color.DARK_GRAY);
+    _invenPanel.add(blankLine, "span 6, growx, wrap 0");
+
+    for (ItemCategory category : ItemCategory.values()) {
+      List<String> nameList = inventory.getNameList(category);
+      _invenPanel.add(buildMultiCell(category.toString(), nameList), "growx, wrap");
+    }
+  }
+
+  /**
+   * Builds the inventory of magic items (not spell materials)
+   * 
+   * @param nameList
+   */
+  public void addMagicItem(List<String> nameList)
+  {
+    _magicPanel.add(buildMultiCell("MAGIC ITEMS", nameList), "growx, wrap 0");
+  }
+
+  /**
+   * Builds the inventory of (non-magical) spell material used for spells
+   */
+  public void addMaterials(List<String> itemList)
+  {
+    JPanel materialPanel = createTabPanel();
+    materialPanel.add(buildMultiCell("SPELL MATERIALS", itemList), "growx, wrap 0");
+    _tabPane.addTab("Magic Bag", null, materialPanel, "View Hero's materials needed for spells.");
+  }
+
+  /**
+   * Builds the list of spells that spellcaster knows
+   */
+  public void addSpell(List<String> spellList)
+  {
+    JPanel spellPanel = createTabPanel();
+
+    int known = spellList.size();
+    spellPanel.add(buildMultiCell(known + " SPELLS KNOWN", spellList), "growx, wrap 0");
+
+    // Prompt Wizard (only) to get more spells if he/she can
+    if (_ds.get(PersonKeys.KLASSNAME).equalsIgnoreCase("Wizard")) {
+      int allowed = Integer.parseInt(_ds.get(PersonKeys.MAX_MSP));
+      int diff = allowed - known;
+      if (diff != 0) {
+        String prompt =
+            String.format("Go to your local Wizard's Guild to get %d more spells", diff);
+        spellPanel.add(gridCell("", ""), "span 6, growx, wrap 0");
+        spellPanel.add(gridCell(prompt, " "), "span 6, growx, wrap 0");
+      }
+    }
+
+    _tabPane.addTab("Spell Book", null, spellPanel, "View Hero's known spells.");
+  }
+
+
+  public void setNameplate(String nameplate)
+  {
+    setTitle(nameplate);
+  }
+
+  // ======================================================================
+  // PRIVATE METHODS
+  // ======================================================================
+
   // Add the tabbed pane for attributes, inventory and magic tab displays
   private JTabbedPane addHeroToTabPane()
   {
@@ -202,9 +312,10 @@ public class HeroDisplay extends ChronosPanel
     _tabPane.addTab("Inventory", null, _invenPanel, "View Hero's items owned, worn, or wielded");
     _tabPane.addTab("Magic Items", null, _magicPanel, "View Hero's enchanted items");
     _tabPane.setSelectedIndex(0);
-    
+
     return _tabPane;
   }
+
 
   /**
    * Create the person's attributes in a grid panel for display. Attributes are unpacked from the
@@ -332,10 +443,11 @@ public class HeroDisplay extends ChronosPanel
     // Row 12: Occupation (full line, possibly multiline)
     attribPanel.add(gridCell("Former Occupation: ", _ds.get(PersonKeys.OCCUPATION)),
         "span 6, growx, wrap");
-    
+
     return attribPanel;
 
   }
+
 
   /**
    * Create Save, Delete, and Cancel buttons, then add then to a JPanel
@@ -364,105 +476,6 @@ public class HeroDisplay extends ChronosPanel
     return _buttonPanel;
   }
 
-
-  // Build panel of skills: literacy, racial skills, occupational skills, and klass skills
-  public void addSkills(List<String> ocpSkills, List<String> racialSkills,
-      List<String> klassSkills)
-  {
-    // Section 1: Literacy
-    _skillPanel.add(gridCell("", _ds.get(PersonKeys.LITERACY)), "gaptop 10, span 6, growx, wrap");
-
-    // Section 2: Occupational Skills title
-    _skillPanel.add(buildMultiCell(_ds.get(PersonKeys.OCCUPATION) + " SKILLS: ", ocpSkills),
-        "growx, wrap");
-
-    // Section 3: Racial skills
-    _skillPanel
-        .add(buildMultiCell("SPECIAL " + _ds.get(PersonKeys.RACENAME).toUpperCase() + " SKILLS: ",
-            racialSkills), "growx, wrap");
-
-    // Section 4: Klass skills
-    _skillPanel.add(buildMultiCell(_ds.get(PersonKeys.KLASSNAME).toUpperCase() + " SKILLS: ",
-        klassSkills), "growx, wrap");
-  }
-
-  /**
-   * Builds the inventory "table", showing Category, Items, quantity, weight (in lbs & oz of each,
-   * and total. Wielded Weapon and Armor Worn is at top. Inventory is organized by category: ARMS,
-   * ARMOR, CLOTHING, EQUIPMENT, PROVISIONS, LIVESTOCK, TRANSPORT : item, quantity, weight, total
-   * weight. See also Sacred Satchel and Magic Bag
-   * 
-   * @param inventory
-   */
-  public void addInventory(Inventory inventory)
-  {
-    _invenPanel.add(gridCell("Wielded Weapon:", "None"), "gaptop 10, span 6, growx, wrap 0");
-    _invenPanel.add(gridCell("Armor Worn: ", " None"), "span 6, growx, wrap 0");
-
-    JPanel blankLine = gridCell("", "");
-    blankLine.setBackground(Color.DARK_GRAY);
-    _invenPanel.add(blankLine, "span 6, growx, wrap 0");
-
-    for (ItemCategory category : ItemCategory.values()) {
-      List<String> nameList = inventory.getNameList(category);
-      _invenPanel.add(buildMultiCell(category.toString(), nameList), "growx, wrap");
-    }
-  }
-
-  /**
-   * Builds the inventory of magic items (not spell materials)
-   * 
-   * @param nameList
-   */
-  public void addMagicItem(List<String> nameList)
-  {
-    _magicPanel.add(buildMultiCell("MAGIC ITEMS", nameList), "growx, wrap 0");
-  }
-
-  /**
-   * Builds the inventory of (non-magical) spell material used for spells
-   */
-  public void addMaterials(List<String> itemList)
-  {
-    JPanel materialPanel = createTabPanel();
-    materialPanel.add(buildMultiCell("SPELL MATERIALS", itemList), "growx, wrap 0");
-    _tabPane.addTab("Magic Bag", null, materialPanel, "View Hero's materials needed for spells.");
-  }
-
-  /**
-   * Builds the list of spells that spellcaster knows
-   */
-  public void addSpell(List<String> spellList)
-  {
-    JPanel spellPanel = createTabPanel();
-
-    int known = spellList.size();
-    spellPanel.add(buildMultiCell(known + " SPELLS KNOWN", spellList), "growx, wrap 0");
-
-    // Prompt Wizard (only) to get more spells if he/she can
-    if (_ds.get(PersonKeys.KLASSNAME).equalsIgnoreCase("Wizard")) {
-      int allowed = Integer.parseInt(_ds.get(PersonKeys.MAX_MSP));
-      int diff = allowed - known;
-      if (diff != 0) {
-        String prompt =
-            String.format("Go to your local Wizard's Guild to get %d more spells", diff);
-        spellPanel.add(gridCell("", ""), "span 6, growx, wrap 0");
-        spellPanel.add(gridCell(prompt, " "), "span 6, growx, wrap 0");
-      }
-    }
-
-    _tabPane.addTab("Spell Book", null, spellPanel, "View Hero's known spells.");
-  }
-
-
-  public void setNameplate(String nameplate)
-  {
-    setTitle(nameplate);
-  }
-  
-  // ======================================================================
-  // PRIVATE METHODS
-  // ======================================================================
 
   // Ask to Overwrite, Cancel, or Rename, the do it=e
   private void doAlternateSaveAction()
@@ -555,7 +568,7 @@ public class HeroDisplay extends ChronosPanel
    * 
    * @param label the left-aligned text of the label, cannot be null but can be empty
    * @param value the right-aligned stringified value to display after the label, cannot be null but
-   *          can be empty
+   *        can be empty
    * @return bordered grid cell as Component
    */
   private JPanel gridCell(String label, String value)

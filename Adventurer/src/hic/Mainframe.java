@@ -55,7 +55,6 @@ import civ.Adventurer;
  *          program control <br>
  */
 @SuppressWarnings("serial")
-// public class Mainframe extends JFrame implements MainframeInterface, IHelpText
 public class Mainframe extends JFrame implements MainframeInterface
 {
   /** Width of the platform user's window frame */
@@ -400,6 +399,7 @@ public class Mainframe extends JFrame implements MainframeInterface
     _contentPane.setLayout(new MigLayout("", "[grow, fill]10[grow]", "[grow]"));
   }
 
+  
   /** Define the mainframe layout characteristics */
   private void setupSizeAndBoundaries()
   {

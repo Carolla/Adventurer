@@ -44,8 +44,8 @@ import net.miginfocom.swing.MigLayout;
  * <LI>Hair color: A cosmetic attribute for effect. No semantic information.</LI>
  * <LI>Race: Human is the default, but others are available: Dwarf, Elf, Gnome, Half-Elf, Half-Orc,
  * or Hobbit. Each have special penalties and bonuses compared to the Human.</LI>
- * <LI>Klass: Any Person can start as a Level 1 Fighter, Cleric, Wizard, or Rogue. All but Fighters
- * inherit special abilities.</LI>
+ * <LI>Klass: All new Persons start as a Level 1 Peasants. After they gain exnough experienc points,
+ * the can join a guild to become one of Fighter, Cleric, Rogue, or Wizard. </li>
  * <P>
  * </BL>
  * 
@@ -177,6 +177,7 @@ public class NewHeroIPPanel extends ChronosPanel
 
   } // end NewHeroIPPanel constructor
 
+  
   // ============================================================
   // Private Methods
   // ============================================================
@@ -223,7 +224,6 @@ public class NewHeroIPPanel extends ChronosPanel
           // Create the new Hero and display it
           Hero hero = _nhCiv.createHero(input);
           _hdCiv.displayHero(hero, true); // initial Hero needs true
-          // arg to check overwriting
         }
       }
     });
@@ -331,8 +331,7 @@ public class NewHeroIPPanel extends ChronosPanel
    */
   private EnumMap<HeroInput, String> submit()
   {
-    EnumMap<HeroInput, String> input = new EnumMap<HeroInput, String>(
-        HeroInput.class);
+    EnumMap<HeroInput, String> input = new EnumMap<HeroInput, String>(HeroInput.class);
 
     // Name is mandatory user input
     String name = (_nameField.getText()).trim();
