@@ -16,28 +16,29 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import mylib.dmc.IRegistryElement;
 import chronos.civ.PersonKeys;
 import chronos.pdc.Occupation;
 import chronos.pdc.character.TraitList.PrimeTraits;
 import chronos.pdc.race.Race;
-
+import mylib.dmc.IRegistryElement;
 
 
 /**
  * @author Alan Cline
- * @version Sept 4 2015 // rewrite per revised generation rules \n\t
+ * @version Sept 4 2015 // rewrite per revised generation rules <br>
+ *          May 22, 2017 // refined so all new Heroes are Peasant klass <br>
  */
 public class Hero implements IRegistryElement
 {
 
   /** Input data fields to create a new hero */
+  // TODO Remove KLASS element since all new Heroes are Peasant Klass
   public enum HeroInput {
     NAME, GENDER, HAIR, RACE, KLASS
   };
 
   /* INTERNAL OBJECT COMPONENTS */
-  /** One of the four canonical Hero klasses: Fighter, Cleric, Wizard, or Thief */
+  /** One of the five canonical Hero klasses: Peasant, Fighter, Cleric, Wizard, or Thief */
   private Klass _klass;
   /** The Race object for this Person (Input), and contains the Hunger objects */
   private Race _race;
@@ -46,36 +47,40 @@ public class Hero implements IRegistryElement
   private String _name;
   /** Male or female Person */
   private Gender _gender;
+  /** Hair color */
+  private String _hairColor;
   /** What we see when we look at the Person */
   private Description _description;
   /** The hungers state of the Hero as he/she burns calories and eats */
   private String _hunger;
 
   /** Hero game attributes */
-  private int _level = 1;
+  private int _level;
   private int _XP;
   private int _AC;
-  private int _AC_Magic;
   private int _HP;
 
   /** Each Person has six prime traits, adjusted by gender, race, and klass */
   private TraitList _traits = null;
   Set<String> _knownLangs = new TreeSet<String>();
 
-  // Gold pieces and silver pieces in hand.
-  int _gold;
-  int _silver;
-  double _goldBanked;
+  // Hero initial constants
+  private final int INITIAL_AC = 10;
   
+  // Gold pieces and silver pieces in hand.
+  private double _gold;
+  private double _goldBanked;
+
   private Inventory _inven;
   private Occupation _occ;
-  
+
   // ====================================================
   // CONSTRUCTOR(S) AND RELATED METHODS
   // ====================================================
-  
-  public Hero() {}; //db4o attempt
-  
+
+  public Hero()
+  {}; // db4o attempt
+
   /**
    * Create the Person from the basic non-klass attributes.
    * 
@@ -97,66 +102,69 @@ public class Hero implements IRegistryElement
     // Setup internal data
     _traits = new TraitList();
 
-    // 1. INPUT DATA
+    // INPUT DATA
     _name = name;
     _gender = new Gender(gender);
     _gender.adjustTraitsForGender(_traits);
+    _hairColor = hairColor;
 
-    // 4a. REARRANGE THE PRIME TRAITS FOR THE RACE
+    // REARRANGE THE PRIME TRAITS FOR THE RACE
     _race = Race.createRace(raceName, _gender);
     _traits = _race.adjustTraitsForRace(_traits);
+    // Now that all mods are completed...
+    _traits.ensureTraitConstraints();
 
-    // 3. REARRANGE THE PRIME TRAIT FOR THE KLASS
+    // REARRANGE THE PRIME TRAIT FOR THE KLASS
+    // (PEASANTS DO NOT HAVE A PRIME TRAIT UNTIL THEY JOIN A GUILD)
     _klass = Klass.createKlass(klassName, _traits);
-    _klass.calcClassMods();
-    _klass.adjustTraitsForKlass(_traits);
-
-    // 7a. ASSIGN THE INTELLIGENCE MODIFIERS: Known Languages, Max Languages, Literacy Skill
+    
+    // ASSIGN THE INTELLIGENCE MODIFIERS: Known Languages, Max Languages, Literacy Skill
     _knownLangs.add("Common");
     _knownLangs.add(_race.getRacialLanguage());
 
-    // 11a. ASSIGN HERO'S HEIGHT AND WEIGHT
+    // ASSIGN HERO'S HIT POINTS
     _HP = _klass.rollHP();
 
-    // 11b. GET THE HERO'S PHYSICAL DESCRIPTION FROM THIS BODY-TYPE
+    // GET THE HERO'S PHYSICAL DESCRIPTION FROM THIS BODY-TYPE
+    int weight = _race.calcWeight();
+    int height = _race.calcHeight();
     _description = new Description(_traits.getTrait(PrimeTraits.CHR), _race.getRaceDescriptor(),
-        hairColor, _gender, _race.calcHeight(), _race.calcWeight());
+        _hairColor, _gender, height, weight);
 
-    // 11c. SET THE HERO'S INITIAL HUNGER STATE
+    // Set AP and non-lethal mods
+    _traits.calcAPMods(weight);
+    // Calc speed, adjusted by height and AP
+    _traits.calcSpeed(height);
+    
+    // SET THE HERO'S INITIAL HUNGER STATE
     _hunger = "Full";
 
-    // 12. SET THE INITIAL LEVEL AND EXPERIENCE POINTS
-    _level = 1;
+    // SET THE INITIAL LEVEL AND EXPERIENCE POINTS
+    _level = 0;
     _XP = 0;
 
-    // 16. SET INITIAL ARMOR CLASS
-    _AC = 10 + _traits.getACMod();
-    _AC_Magic = 0; // no magica adjustments initially
+    // SET INITIAL ARMOR CLASS
+    _AC = INITIAL_AC + _traits.calcMod(PrimeTraits.DEX);
 
-    // 17. ROLL FOR KLASS-SPECIFIC STARTING GOLD
+    // ROLL FOR KLASS-SPECIFIC STARTING GOLD
     _gold = _klass.rollGold();
     _goldBanked = 0.0;
 
-    // 20. ADD RANDOM OCCUPATION AND OCCUPATIONAL SKILLS
+    // ADD RANDOM OCCUPATION AND OCCUPATIONAL SKILLS
     _occ = Occupation.getRandomOccupation();
 
-    // 21. ASSIGN SPELLS TO CLERICS (WIZARDS ALREADY WERE ASSIgned 'READ MAGIC')
-    _klass.addKlassSpells();
+    // ASSIGN SPELLS TO CLERICS (Wizards were already assigned 'Read Magic')
+    if (_klass.className().equals(Klass.CLERIC_CLASS_NAME)) {
+      _klass.addKlassSpells();
+    }
 
-    // 22. Assign initial inventory
+    // ASSIGN INTIIAL INVENTORY
     _inven = new Inventory();
     _inven.assignBasicInventory();
     _klass.addKlassItems(_inven);
+    
   } // end of Hero constructor
 
-//  public Hero(EnumMap<HeroInput, String> inputMap)
-//  {
-//    this(inputMap.get(HeroInput.NAME),
-//        inputMap.get(HeroInput.GENDER),
-//        inputMap.get(HeroInput.HAIR),
-//        inputMap.get(HeroInput.RACE),
-//        inputMap.get(HeroInput.KLASS));
-//  }
 
   public boolean canUseMagic()
   {
@@ -208,27 +216,22 @@ public class Hero implements IRegistryElement
   {
     Map<PersonKeys, String> map =
         new EnumMap<PersonKeys, String>(PersonKeys.class);
-    
-    // Now load the attributes in display order (values in parens are derived)
-    // Row 1: Name 
-    map.put(PersonKeys.NAME, _name);
 
-    // Row 2: Gender, Race and Klass
+    // Now load the attributes (values in parens are derived)
+    map.put(PersonKeys.NAME, _name);
     map.put(PersonKeys.GENDER, _gender.toString());
+    map.put(PersonKeys.HAIR_COLOR, _hairColor);
     map.put(PersonKeys.RACENAME, _race.getName());
     map.put(PersonKeys.KLASSNAME, _klass.className());
 
-    // Row 3: Level, Current HP, Max HP, AC, (AC with Magic adj)
     map.put(PersonKeys.LEVEL, "" + _level);
     map.put(PersonKeys.AC, "" + _AC);
-    map.put(PersonKeys.AC_MAGIC, "" + _AC_Magic);
     map.put(PersonKeys.HP, "" + _HP);
     map.put(PersonKeys.HP_MAX, "" + _HP);
 
-    // Row 4: XP, Speed, Gold/Silver (gp/sp), Gold Banked
     map.put(PersonKeys.XP, "" + _XP);
     map.put(PersonKeys.GOLD, "" + _gold);
-    map.put(PersonKeys.SILVER, "" + _silver);
+//    map.put(PersonKeys.SILVER, "" + _silver);
     map.put(PersonKeys.GOLD_BANKED, "" + _goldBanked);
 
     // Row 5: Occupation, Description
@@ -237,12 +240,11 @@ public class Hero implements IRegistryElement
     // Row 11: CHR, then Weight and Height of Hero
     map.put(PersonKeys.HUNGER, _hunger);
 
-
     // Row 14: All known languages as single string
     StringBuilder sb = new StringBuilder();
     for (String lang : _knownLangs) {
       sb.append(lang);
-      sb.append(", ");
+      sb.append(" ");
     }
     String langList = new String(sb);
     map.put(PersonKeys.LANGUAGES, langList);
@@ -257,7 +259,7 @@ public class Hero implements IRegistryElement
 
   public String toNamePlate()
   {
-    return _name + ": " + _gender.toString() + " " + _race.getName()+ " " + _klass.className();
+    return _name + ": " + _gender.toString() + " " + _race.getName() + " " + _klass.className();
   }
 
   @Override

@@ -13,10 +13,11 @@ package mylib.test.pdc;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import mylib.MsgCtrl;
-import mylib.pdc.MetaDie;
 
 import org.junit.Test;
+
+import mylib.MsgCtrl;
+import mylib.pdc.MetaDie;
 
 
 /**
@@ -36,18 +37,18 @@ public class TestMetaDie
   // Let the Testing Begin!
   // --------------------------------------------------------------------------------------------------------------
 
-  /** Test that rollTrait is returning the proper range and randomness */
+  /** Test that rollCharTrait is returning the proper range and randomness */
   @Test
-  public void testRollTraits()
+  public void testRollCharTrait()
   {
-    double COUNT = 100000;
-    int trait = 0;
-
-    for (int k = 0; k < COUNT; k++) {
-      trait = _md.rollTrait();
-      assertTrue("Trait " + trait + " too low", trait > 2);
-      assertTrue("Trait " + trait + " too high", trait < 19);
-    }
+//    double COUNT = 100000;
+//    int trait = 0;
+//
+//    for (int k = 0; k < COUNT; k++) {
+//      trait = _md.rollCharTrait();
+//      assertTrue("Trait " + trait + " too low", trait > 2);
+//      assertTrue("Trait " + trait + " too high", trait < 19);
+//    }
   }
 
   /**

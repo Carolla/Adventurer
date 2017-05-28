@@ -4,3 +4,5 @@ ctor
 subfolder
 carolla
 polymorphically
+gaussian
+lethal

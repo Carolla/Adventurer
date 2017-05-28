@@ -362,9 +362,9 @@ public class HeroDisplay extends ChronosPanel
     attribPanel.add(gridCell("Speed: ", _ds.get(PersonKeys.SPEED)), "growx");
     attribPanel.add(gridCell("Gold Banked: ", _ds.get(PersonKeys.GOLD_BANKED)), "growx");
     String gp = _ds.get(PersonKeys.GOLD);
-    String sp = _ds.get(PersonKeys.SILVER);
-    String inHand = gp + " gp / " + sp + " sp";
-    attribPanel.add(gridCell("Gold in Hand: ", inHand), "span 3, growx, wrap");
+//    String sp = _ds.get(PersonKeys.SILVER);
+//    String inHand = gp + " gp / " + sp + " sp";
+//    attribPanel.add(gridCell("Gold in Hand: ", inHand), "span 3, growx, wrap");
 
     // Row 3: Personal description (full line, possibly multiline)
     attribPanel.add(gridCell("Description: ", _ds.get(PersonKeys.DESCRIPTION)),

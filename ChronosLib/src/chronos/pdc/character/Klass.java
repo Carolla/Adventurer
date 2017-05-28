@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import mylib.pdc.MetaDie;
 import chronos.civ.PersonKeys;
 import chronos.pdc.character.TraitList.PrimeTraits;
+import mylib.pdc.MetaDie;
 
 /**
  * Defines the common methods and attributes for all Klasses. Peasant is the default Klass.
@@ -29,12 +29,13 @@ public class Klass
   // Spells in the Cleric or Wizard's spell book
   List<String> _spellBook = new ArrayList<String>();
 
+  public static final String PEASANT_CLASS_NAME = "Peasant";
   public static final String FIGHTER_CLASS_NAME = "Fighter";
   public static final String CLERIC_CLASS_NAME = "Cleric";
   public static final String WIZARD_CLASS_NAME = "Wizard";
-  public static final String THIEF_CLASS_NAME = "Thief";
+  public static final String THIEF_CLASS_NAME = "Rogue";
   public static final String[] KLASS_LIST =
-  {FIGHTER_CLASS_NAME, CLERIC_CLASS_NAME, WIZARD_CLASS_NAME, THIEF_CLASS_NAME};
+  {PEASANT_CLASS_NAME, FIGHTER_CLASS_NAME, CLERIC_CLASS_NAME, WIZARD_CLASS_NAME, THIEF_CLASS_NAME};
 
   // KLASS-SPECIFIC ATTRIBUTES and METHODS
   protected String _klassName;
@@ -56,6 +57,9 @@ public class Klass
   {
     Klass klass = null;
     switch (klassName) {
+      case PEASANT_CLASS_NAME:
+        klass = new Peasant(traits);
+        break;
       case FIGHTER_CLASS_NAME:
         klass = new Fighter(traits);
         break;
@@ -84,38 +88,43 @@ public class Klass
   }
 
 
+  /** Gets the name of this klass */
   public String className()
   {
     return _klassName;
   }
 
   /**
-   * Roll the klass-specific money dice
+   * Roll the klass-specific money dice plus a handful of silver pieces
    * 
    * @return the starting gold
    */
-  public int rollGold()
+  public double rollGold()
   {
-    return _md.roll(_goldDice) * 10;
+    // gold pieces
+    double gold = _md.roll(_goldDice) * 10.0;
+    // add silver pieces as fractional gold
+    gold += _md.roll("d10")/ 10.0;
+    return gold;
   }
 
   /**
-   * Roll the HP Die for the specific Klass, plus the mod, plus an initial number for all Level 1
-   * Heroes
+   * Roll the HP Die for the specific Klass, plus the mod
    * 
-   * @param mod the HP mod for the Hero, a CON-based attribute
-   * @return the initial Hit Points
+   * @return the initial modified Hit Points
    */
   public int rollHP()
   {
-    return _md.roll(_hpDie) + _traits.getHpMod();
+    return _md.roll(_hpDie) + _traits.calcMod(PrimeTraits.CON);
   }
 
+  
   public void loadKlassKeys(Map<PersonKeys, String> map)
   {
     map.put(PersonKeys.KLASSNAME, _klassName);
   }
 
+  
   /*************************
    ** OVERRIDEABLE METHODS *
    *************************/
@@ -142,16 +151,16 @@ public class Klass
     traits.swapPrime(_primeTrait);
   }
 
-  public void calcClassMods()
-  {
-    calcClassMods(_traits.getTrait(_primeTrait));
-  }
+//  public void calcClassMods()
+//  {
+//    calcClassMods(_traits.getTrait(_primeTrait));
+//  }
 
 
-  protected void calcClassMods(int trait)
-  {
-    //Override
-  }
+//  protected void calcClassMods(int trait)
+//  {
+//    //Override
+//  }
 
 
   public boolean canUseMagic()

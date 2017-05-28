@@ -32,7 +32,7 @@ public class FileScanner
 {
    /** Usage message displayed with command line error */
    static private final String USAGE_MSG =
-         "USAGE: QAFileScan <filepath>.java [-verbose] [-fileEcho] [-failStubs]\n"
+         "USAGE: FileScanner <filepath>.java [-verbose] [-fileEcho] [-failStubs]\n"
                + "\t[-verbose]: audit trail of actions taken\n"
                + "\t[-failStubs]: test stubs will fail instead of printing message.\n"
                + "\t[-fileEcho]: copy file output to console\n";
@@ -74,7 +74,7 @@ public class FileScanner
       String errorMsg = verifyArgs(args);
       if (!errorMsg.equals(ERRMSG_OK)) {
          System.err.println(errorMsg);
-         System.err.println(USAGE_MSG);
+         System.out.println(USAGE_MSG);
          System.exit(-1);
       }
 

@@ -28,6 +28,7 @@ import chronos.pdc.Item.ItemCategory;
  *          Dec 31, 2012 // updated to follow other Registries and db4o <br>
  *          Feb 12, 2013 // updated to allow all items for all registries <br>
  *          May 6, 2013 // updated getInstance(boolean) <br>
+ *          May 27 2017 // converted weights to lbs as standard measure <br>
  */
 public class ItemRegistry extends Registry<Item>
 {

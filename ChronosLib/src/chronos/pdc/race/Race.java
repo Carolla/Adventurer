@@ -90,16 +90,6 @@ public abstract class Race
     return traits;
   }
 
-  private void addRacialPoisonResist(int constitution, int magicAttackMod)
-  {
-    if ((_raceName.equalsIgnoreCase("Dwarf")) ||
-        (_raceName.equalsIgnoreCase("Gnome")) ||
-        (_raceName.equalsIgnoreCase("Hobbit"))) {
-      _racialPoisonResist = (int) Math.round((float) constitution / 3.5);
-      magicAttackMod += _racialPoisonResist;
-    }
-  }
-
   /**
    * Return the language specific to the race, or null. Half-breed races have a 50% chance of
    * knowing their race language.
@@ -157,6 +147,15 @@ public abstract class Race
   {
     map.put(PersonKeys.RACENAME, _raceName);
     map.put(PersonKeys.RMR, "" + _racialPoisonResist); 
+  }
+  private void addRacialPoisonResist(int constitution, int magicAttackMod)
+  {
+    if ((_raceName.equalsIgnoreCase("Dwarf")) ||
+        (_raceName.equalsIgnoreCase("Gnome")) ||
+        (_raceName.equalsIgnoreCase("Hobbit"))) {
+      _racialPoisonResist = (int) Math.round(constitution / 3.5);
+      magicAttackMod += _racialPoisonResist;
+    }
   }
 
 

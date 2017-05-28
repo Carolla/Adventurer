@@ -19,6 +19,8 @@ import mylib.dmc.IRegistryElement;
  *          Oct 21, 2009 // changed ctor to take int weights instead of codes <br>
  *          Apr 11 2011 // TAA changed visibiltiy of attributes to protected <br>
  *          Oct 13, 2015 // revised for new Hero gerneration rules <br>
+ *          May 27 2017 // converted weights to lbs as standard measure, instead of gpw <br>
+
  */
 public class Item implements IRegistryElement
 {
@@ -53,7 +55,6 @@ public class Item implements IRegistryElement
     if (weight <= 0.0) {
       weight = 0.0;
     }
-
     _category = cat;
     _name = name;
     _weight = weight;
@@ -183,5 +184,7 @@ public class Item implements IRegistryElement
     }
     return (_name + " (" + catStr + ")");
   }
+  
+  
 } // end of Item class
 

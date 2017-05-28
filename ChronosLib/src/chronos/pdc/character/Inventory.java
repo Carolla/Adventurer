@@ -65,7 +65,8 @@ public class Inventory {
 		_itemList.add(_itemRegistry.getItem("Belt"));
 		_itemList.add(_itemRegistry.getItem("Breeches"));
 		_itemList.add(_itemRegistry.getItem("Shirt"));
-		_itemList.add(_itemRegistry.getItem("Cloak"));
+    _itemList.add(_itemRegistry.getItem("Cloak"));
+    _itemList.add(_itemRegistry.getItem("Dagger"));
 	}
 
 	/**
@@ -84,7 +85,7 @@ public class Inventory {
 		if (itemName == null) {
 			return false;
 		}
-
+		
 		if (hasItem(itemName)) {
 			for (Item i : _itemList) {
 				if (i.getName().equalsIgnoreCase(itemName)) {
