@@ -10,6 +10,7 @@
 package test.integ;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.EnumMap;
@@ -296,14 +297,23 @@ public class TA01_CreateHero
     assertEquals(expBash, bash);
 
     /** LINE 11: Languages and max languages knowable */
+    // Max new learnable languages
     int intel = Integer.parseInt(_opMap.get(PersonKeys.INT));
-    int expLangs = intel/2 - 4;
-    int langs = Integer.parseInt(_opMap.get(PersonKeys.LANGUAGES));
-    MsgCtrl.msg("\n\tMax Languages Knowable = " + langs); 
-    assertEquals(expLangs, langs);
+    int expNbrLangs = intel/2 - 4;
+    int maxLangs = Integer.parseInt(_opMap.get(PersonKeys.MAX_LANGS));
+    MsgCtrl.msg("\n\tNew Languages Knowable = " + maxLangs); 
+    assertEquals(expNbrLangs, maxLangs);
     
+    // Languages known
+    String expLang = "Common"; 
+    String lang = _opMap.get(PersonKeys.LANGUAGES);
+    MsgCtrl.msg("   Languages known: " + lang); 
+    assertEquals(expLang, lang);
     
-    
+    /** LINE 12: Occupation */
+    String ocp = _opMap.get(PersonKeys.OCCUPATION);
+    MsgCtrl.msg("\n\t   Occupation: " + ocp); 
+    assertNotNull(ocp);
     
   }
 

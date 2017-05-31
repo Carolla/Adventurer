@@ -1,6 +1,3 @@
-
-package chronos.pdc.race;
-
 /**
  * Race.java Copyright (c) 2009, Carolla Development, Inc. All Rights Reserved
  * 
@@ -9,6 +6,9 @@ package chronos.pdc.race;
  * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
  * by email: acline@carolla.com
  */
+
+
+package chronos.pdc.race;
 
 import static chronos.pdc.character.TraitList.PrimeTraits.CON;
 
@@ -35,7 +35,7 @@ public abstract class Race
       {"Human", "Dwarf", "Elf", "Gnome", "Half-Elf", "Half-Orc", "Hobbit"};
 
   protected String _raceName;
-  protected String _raceLang = "Common";
+  protected String _raceLang;
 
   protected static MetaDie _md = new MetaDie();
 
@@ -48,7 +48,6 @@ public abstract class Race
   protected int[] _minLimit;
   protected int[] _maxLimit;
 
-  protected String _racialLang;
   protected String _descriptor;
   protected int[] _racialThiefMods;
   protected String[] _raceSkills;
@@ -89,7 +88,7 @@ public abstract class Race
   /** Races have different advantages and disadvantages */
   public TraitList adjustTraitsForRace(TraitList traits)
   {
-    addRacialPoisonResist(traits.getTrait(CON), traits.getMagicAttackMod());
+    addRacialPoisonResist(traits.getTrait(CON), (traits).getMagicDefenseMod());
     return traits;
   }
 

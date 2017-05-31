@@ -24,13 +24,10 @@ public class Human extends Race
   static final long serialVersionUID = 1100L;
 
   /** Racial limits for a Human for the traits */
-  private final int[] minLimit = {8, 8, 8, 8, 8, 8};
-  private final int[] maxLimit = {18, 18, 18, 18, 18, 18};
+//  private final int[] minLimit = {8, 8, 8, 8, 8, 8};
+//  private final int[] maxLimit = {18, 18, 18, 18, 18, 18};
 
   /** Weight ranges */
-  // protected final RangedValue _weightRangeFemale = new RangedValue(130, "3d12", "5d12");
-  // protected final RangedValue _weightRangeMale = new RangedValue(175, "3d12", "5d12");
-  //protected final RangedValue _weightRange = new RangedValue(130, "3d4");
   protected final int MALE_LOW_WT = 130; 
   protected final double FEMALE_ADJ = 0.90; // weight and height is 10% less
   protected final String WT_RANGE_DICE = "2d6-2";  // varying weight = 0 - 100 lb
@@ -41,7 +38,7 @@ public class Human extends Race
   protected int _height;
 
   /** Height ranges */
-  protected final RangedValue _heightRange = new RangedValue(64, "d12");
+//  protected final RangedValue _heightRange = new RangedValue(64, "d12");
 
   /** Human has no Race descriptor, so merely ends the description suffix */
   private final String _raceDescriptor = "a naive look in the eyes";
@@ -63,8 +60,8 @@ public class Human extends Race
   public Human()
   {
     _raceName = "Human";
-    _minLimit = minLimit;
-    _maxLimit = maxLimit;
+//    _minLimit = minLimit;
+//    _maxLimit = maxLimit;
     _raceLang = "";
 
     _descriptor = _raceDescriptor;
@@ -99,12 +96,6 @@ public class Human extends Race
     _height = calcHeight(lowHt, HT_RANGE_DICE);
     return _height;
   }
-
-//  @Override
-//  public int calcHeight()
-//  {
-//    return _heightRange.calcValue();
-//  };
   
   
 }

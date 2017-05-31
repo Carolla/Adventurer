@@ -58,11 +58,14 @@ public class Gender
   /** Females are given more CON and CHR but less STR */
   public TraitList adjustTraitsForGender(TraitList traits)
   {
-    traits.adjust(PrimeTraits.STR, -1);
-    traits.adjust(PrimeTraits.CON, 1);
-    traits.adjust(PrimeTraits.CHR, 1);
+    if (_gender == Gender_e.FEMALE) {
+      traits.adjust(PrimeTraits.STR, -1);
+      traits.adjust(PrimeTraits.CON, 1);
+      traits.adjust(PrimeTraits.CHR, 1);
+    }
     return traits;
   }
+
   
   @Override
   public int hashCode()

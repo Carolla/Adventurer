@@ -155,9 +155,9 @@ public class Hero implements IRegistryElement
     _occ = Occupation.getRandomOccupation();
 
     // ASSIGN SPELLS TO CLERICS (Wizards were already assigned 'Read Magic')
-    if (_klass.className().equals(Klass.CLERIC_CLASS_NAME)) {
-      _klass.addKlassSpells();
-    }
+//    if (_klass.className().equals(Klass.CLERIC_CLASS_NAME)) {
+//      _klass.addKlassSpells();
+//    }
 
     // ASSIGN INTIIAL INVENTORY
     _inven = new Inventory();
@@ -232,7 +232,6 @@ public class Hero implements IRegistryElement
 
     map.put(PersonKeys.XP, "" + _XP);
     map.put(PersonKeys.GOLD, "" + _gold);
-//    map.put(PersonKeys.SILVER, "" + _silver);
     map.put(PersonKeys.GOLD_BANKED, "" + _goldBanked);
 
     // Row 5: Occupation, Description
@@ -241,12 +240,16 @@ public class Hero implements IRegistryElement
     // Row 11: CHR, then Weight and Height of Hero
     map.put(PersonKeys.HUNGER, _hunger);
 
-    // Row 14: All known languages as single string
+    // Row 14: All known languages as single, common-separated string
     StringBuilder sb = new StringBuilder();
     for (String lang : _knownLangs) {
-      sb.append(lang);
-      sb.append(" ");
+      if (!lang.isEmpty()) {
+        sb.append(lang);
+        sb.append(",");
+      }
     }
+    // Remove extraneous last comma
+    sb.deleteCharAt(sb.length()-1);
     String langList = new String(sb);
     map.put(PersonKeys.LANGUAGES, langList);
 

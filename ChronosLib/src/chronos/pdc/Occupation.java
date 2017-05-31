@@ -60,7 +60,7 @@ public class Occupation implements IRegistryElement
    */
   public static Occupation getRandomOccupation()
   {
-    int ndx = md.getRandom(1, _ocpTable.length) - 1; // range must be between 1 and maxLimit
+    int ndx = md.getRandom(1, _ocpTable.length) - 1; 
     return new OccupationRegistry().getOccupation(_ocpTable[ndx]);
   }
 

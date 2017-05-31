@@ -103,23 +103,6 @@ public class TraitList
     return 0;
   }
 
-  // /** Tall people run faster; shorter people run slower; average people run 20.
-  // * Speed is adjusted by a block rate of SPEED_INC = 5
-  // *
-  // * @param ht height of the Hero
-  // * @return adjusted speed
-  // */
-  // public int adjSpeedByHeight(int ht)
-  // {
-  // if (ht > HT_TALL) {
-  // _speed += SPEED_INC;
-  // }
-  // else if (ht < HT_SHORT) {
-  // _speed -= SPEED_INC;
-  // }
-  // return _speed;
-  // }
-
 
   /**
    * Calculate the non-lethal combat stats: overbearing, grappling, pummeling, and shield bash.
@@ -223,7 +206,7 @@ public class TraitList
   // return findInRange(CON);
   // }
 
-  public int getMagicAttackMod()
+  public int getMagicDefenseMod()
   {
     return findInRange(WIS);
   }
@@ -252,8 +235,6 @@ public class TraitList
   // A person can carry their STR value squared (STR * STR), measured in lbs.
   public int getWeightAllowance()
   {
-    // int ndx = getTrait(STR) - 3; // read from the table 3 places to the left
-    // return wtTbl[ndx];
     return getTrait(STR) * getTrait(STR);
   }
 
@@ -273,9 +254,10 @@ public class TraitList
 
   public int getMaxLangs()
   {
-    return getTrait(INT) / 2 - 3;
+    return getTrait(INT) / 2 - 4;
   }
 
+  
   public boolean isLargestTrait(PrimeTraits trait)
   {
     return getTrait(findLargestTrait()) == getTrait(trait);
@@ -289,6 +271,7 @@ public class TraitList
    */
   public void loadTraitKeys(Map<PersonKeys, String> map)
   {
+    // Prime traits
     map.put(PersonKeys.STR, "" + getTrait(STR));
     map.put(PersonKeys.DEX, "" + getTrait(DEX));
     map.put(PersonKeys.CON, "" + getTrait(CON));
@@ -296,30 +279,30 @@ public class TraitList
     map.put(PersonKeys.WIS, "" + getTrait(WIS));
     map.put(PersonKeys.CHR, "" + getTrait(CHR));
 
-    // map.put(PersonKeys.DAMAGE, "" + getStrDmgBonus());
-    // map.put(PersonKeys.TO_HIT_MELEE, "" + getToHitStr());
+    // STR
     int strMod = calcMod(PrimeTraits.STR);
     map.put(PersonKeys.DAMAGE, "" + strMod);
     map.put(PersonKeys.TO_HIT_MELEE, "" + strMod);
     map.put(PersonKeys.WT_ALLOW, "" + getWeightAllowance());
 
-    // map.put(PersonKeys.MAM, "" + getMagicAttackMod());
-    // map.put(PersonKeys.HP_MOD, "" + getHpMod());
-    int conMod = calcMod(PrimeTraits.CON);
-    map.put(PersonKeys.HP_MOD, "" + conMod);
+    // INT
+    map.put(PersonKeys.MAX_LANGS, "" + getMaxLangs());
+    map.put(PersonKeys.LITERACY, getLiteracy());
 
+    // WIS
     int wisMod = calcMod(PrimeTraits.WIS);
     map.put(PersonKeys.MDM, "" + wisMod);
 
-    // map.put(PersonKeys.TO_HIT_MISSLE, "" + getToHitMissleBonus());
-    // map.put(PersonKeys.AC_MOD, "" + getACMod());
+    // CON
+    int conMod = calcMod(PrimeTraits.CON);
+    map.put(PersonKeys.HP_MOD, "" + conMod);
+
+    // DEX
     int dexMod = calcMod(PrimeTraits.DEX);
     map.put(PersonKeys.TO_HIT_MISSLE, "" + dexMod);
     map.put(PersonKeys.AC_MOD, "" + dexMod);
 
-    map.put(PersonKeys.MAX_LANGS, "" + getMaxLangs());
-    map.put(PersonKeys.LITERACY, getLiteracy());
-
+    // AP mods
     map.put(PersonKeys.SPEED, "" + _speed);
     map.put(PersonKeys.AP, "" + _AP);
     map.put(PersonKeys.OVERBEARING, "" + _apMods[OVERBEAR]);
