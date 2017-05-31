@@ -58,13 +58,13 @@ public class Gnome extends Race
 
 
   @Override
-  public int calcWeight()
+  public int calcWeight(Gender g)
   {
     return _weightRange.calcValue();
   }
 
   @Override
-  public int calcHeight()
+  public int calcHeight(Gender g)
   {
     return _heightRange.calcValue();
   };

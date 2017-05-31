@@ -123,7 +123,7 @@ public class MetaDie
    * <br>
    * Notation format: {[n][n] 'd' n[n][n] ['+' | '-'] n]}, that is, 1-100 required letter 'd', and
    * 1-100, e.g. 2d10, 1d8+1, or 2d4-1. Optional +n to provide minimums. <br>
-   * In cases where a zero result occurrs, e.g., 2d4-2 has two chances of zero result, the value 1
+   * In cases where a zero result occurs, e.g., 2d4-2 has two chances of zero result, the value 1
    * is returned
    * 
    * @param notation format as explained above

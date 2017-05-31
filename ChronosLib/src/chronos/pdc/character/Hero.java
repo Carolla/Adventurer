@@ -126,8 +126,9 @@ public class Hero implements IRegistryElement
     _HP = _klass.rollHP();
 
     // GET THE HERO'S PHYSICAL DESCRIPTION FROM THIS BODY-TYPE
-    int weight = _race.calcWeight();
-    int height = _race.calcHeight();
+    // TODO: Move the gender into the Race base class
+    int weight = _race.calcWeight(_gender);
+    int height = _race.calcHeight(_gender);
     _description = new Description(_traits.getTrait(PrimeTraits.CHR), _race.getRaceDescriptor(),
         _hairColor, _gender, height, weight);
 

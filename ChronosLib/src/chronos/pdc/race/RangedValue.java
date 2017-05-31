@@ -1,3 +1,4 @@
+
 package chronos.pdc.race;
 
 import mylib.pdc.MetaDie;
@@ -26,13 +27,28 @@ public class RangedValue
   {
     int result = 0;
     int range = _md.rollPercent();
-    if (range < 31) {
+    if (range <= 30) {
       result = _average - _md.roll(_lowDice);
-    } else if (range > 69) {
+    } else if (range >= 70) {
       result = _average + _md.roll(_highDice);
     } else {
       result = _average;
     }
+    return result;
+  }
+
+  /**
+   * Calculate the weight of the Hero based on deviation from average. For example,
+   * {@code calcValue(10, "2d6")} will provide a 2-12 number added to 10 to get 12-22, but centered
+   * on the average of 17
+   * 
+   * @param lowValue the lowest value in the range
+   * @param wtVariance the multiple-die distribution to be added to lowValue
+   */
+  public int calcValue(int lowValue, String wtVariance)
+  {
+    int result = 0;
+    result = lowValue + _md.roll(wtVariance);
     return result;
   }
 

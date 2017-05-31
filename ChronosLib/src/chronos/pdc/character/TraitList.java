@@ -46,9 +46,9 @@ public class TraitList
   // STR values 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21
   // private final int[] toHitTbl = {-3, -2, -2, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 2, 3};
   // private final int[] dmgTbl = {-3, -3, -2, -2, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5};
-//  private final int[] wtTbl =
-//      {80, 120, 160, 200, 280, 360, 440, 520, 600, 700, 800, 900, 1000, 1200, 1500,
-//          1800, 2100, 2300, 2600};
+  // private final int[] wtTbl =
+  // {80, 120, 160, 200, 280, 360, 440, 520, 600, 700, 800, 900, 1000, 1200, 1500,
+  // 1800, 2100, 2300, 2600};
 
   private final String ILLITERATE = "ILLITERATE: Cannot read or write";
   private final String LITERATE = "LITERATE: Can read and write";
@@ -89,7 +89,7 @@ public class TraitList
     for (PrimeTraits t : PrimeTraits.values()) {
       _traits.put(t.ordinal(), traits[t.ordinal()]);
     }
-//    _AP = getTrait(STR) + getTrait(DEX);
+    // _AP = getTrait(STR) + getTrait(DEX);
     // _apMods = calcAPMods(0, getTrait(STR));
     // _speed = calcSpeed();
   }
@@ -121,17 +121,21 @@ public class TraitList
   // }
 
 
-  /** Calculate the non-lethal combat stats: overbearing, grappling, pummeling, and shield bash */
-  // public int[] calcAPMods(int weight, int damage)
+  /**
+   * Calculate the non-lethal combat stats: overbearing, grappling, pummeling, and shield bash.
+   * 
+   * @param weight affects overbearing
+   * @return all four mods
+   */
   public int[] calcAPMods(int weight)
   {
     _apMods = new int[4];
     _AP = getTrait(STR) + getTrait(DEX);
-    
+
     int damageMod = calcMod(STR);
     _apMods[OVERBEAR] = _AP + (weight / 25);
-    _apMods[GRAPPLE] = _AP + damageMod;
     _apMods[PUMMEL] = _AP + damageMod + calcMod(PrimeTraits.DEX);
+    _apMods[GRAPPLE] = _AP + damageMod;
     _apMods[BASH] = 0;
     return _apMods;
   }
@@ -248,8 +252,8 @@ public class TraitList
   // A person can carry their STR value squared (STR * STR), measured in lbs.
   public int getWeightAllowance()
   {
-//    int ndx = getTrait(STR) - 3; // read from the table 3 places to the left
-//    return wtTbl[ndx];
+    // int ndx = getTrait(STR) - 3; // read from the table 3 places to the left
+    // return wtTbl[ndx];
     return getTrait(STR) * getTrait(STR);
   }
 
@@ -302,8 +306,10 @@ public class TraitList
     // map.put(PersonKeys.MAM, "" + getMagicAttackMod());
     // map.put(PersonKeys.HP_MOD, "" + getHpMod());
     int conMod = calcMod(PrimeTraits.CON);
-    map.put(PersonKeys.MAM, "" + conMod);
     map.put(PersonKeys.HP_MOD, "" + conMod);
+
+    int wisMod = calcMod(PrimeTraits.WIS);
+    map.put(PersonKeys.MDM, "" + wisMod);
 
     // map.put(PersonKeys.TO_HIT_MISSLE, "" + getToHitMissleBonus());
     // map.put(PersonKeys.AC_MOD, "" + getACMod());

@@ -42,7 +42,7 @@ public enum PersonKeys {
   SPELLS_KNOWN,
   MAX_LANGS,
   WIS,
-  MAM,
+  MDM,
   CURRENT_CSP,
   MAX_CSP,
   CSP_PER_LEVEL,
