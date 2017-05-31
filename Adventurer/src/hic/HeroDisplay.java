@@ -393,7 +393,7 @@ public class HeroDisplay extends ChronosPanel
 
     // Row 6: WIS and Wis Mods: Magic Attack Mod, Current/Max CSPs, CSP/Level, Turn Undead
     attribPanel.add(gridCell("WIS: ", _ds.get(PersonKeys.WIS)), "growx");
-    attribPanel.add(gridCell("Magic Attack Mod: ", _ds.get(PersonKeys.MAM)), "growx");
+    attribPanel.add(gridCell("Magic Defense Mod: ", _ds.get(PersonKeys.MDM)), "growx");
     if (klassname.equalsIgnoreCase("CLERIC")) {
       String CSP_valueStr = _ds.get(PersonKeys.CURRENT_CSP) + " / " + _ds.get(PersonKeys.MAX_CSP);
       attribPanel.add(gridCell("Current/Max CSP: ", CSP_valueStr), "growx");

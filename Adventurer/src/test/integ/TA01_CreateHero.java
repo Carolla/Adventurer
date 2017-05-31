@@ -203,45 +203,108 @@ public class TA01_CreateHero
     int expDmg = getMod(str);
     int toHit = Integer.parseInt(_opMap.get(PersonKeys.TO_HIT_MELEE));
     int dmg = Integer.parseInt(_opMap.get(PersonKeys.DAMAGE));
-    MsgCtrl.msg("\n\tSTR = " + str + "   To Hit = " + toHit + "   Damage= " + dmg);
+    MsgCtrl.msg("\n\t   STR = " + str + "   To Hit = " + toHit + "   Damage= " + dmg);
     assertEquals(expToHit, toHit);
     assertEquals(expDmg, dmg);
 
     // Weight allowance; STR * STR (in lbs)
     int expWtAllow = trait[STR] * trait[STR];
     int wtAllow = Integer.parseInt(_opMap.get(PersonKeys.WT_ALLOW));
-    MsgCtrl.msg("   Wt Allowance = " + wtAllow);
+    MsgCtrl.msg("   Wt Allowance = " + wtAllow + " lb.");
     assertEquals(expWtAllow, wtAllow);
 
     // Load: weight carried
     double expLoad = 23.375; // lbs. weight of starting inventory
     Inventory pack = _myHero.getInventory();
     double load = pack.calcInventoryWeight(); // in oz
-//    printInventory(pack);
     MsgCtrl.msg("\t   Load = " + load + " oz = " + load / 16.0 + " lb");
     assertEquals(expLoad, load / 16.0, .05);
 
-    /** LINE 5 */
-    // INT trait only
+    /** LINE 5: INT trait only */
     MsgCtrl.msg("\n\t   INT = " + _opMap.get(PersonKeys.INT));
 
-    /** LINE 6 */
-    // WIS and Magic Attack Mod (= WIS mod)
+    /** LINE 6: WIS and Magic Attack Mod (= WIS mod) */
     int wis = Integer.parseInt(_opMap.get(PersonKeys.WIS));
     int expWisMod = getMod(wis);
-    int wisMod = Integer.parseInt(_opMap.get(PersonKeys.MAM));
-    MsgCtrl.msg("\n\t   WIS = " + wis + "   Magic Attack Mod = " + wisMod); 
+    int wisMod = Integer.parseInt(_opMap.get(PersonKeys.MDM));
+    MsgCtrl.msg("\n\t   WIS = " + wis + "   Magic Defense Mod = " + wisMod); 
     assertEquals(expWisMod, wisMod);
 
-    /** LINE 7 */
-    // CON and HP Mod (= CON mod)
+    /** LINE 7: CON and HP Mod (= CON mod) */
     int con = Integer.parseInt(_opMap.get(PersonKeys.CON));
     int expConMod = getMod(con);
     int conMod = Integer.parseInt(_opMap.get(PersonKeys.HP_MOD));
     MsgCtrl.msg("\n\t   CON = " + con + "   HP Mod = " + conMod); 
     assertEquals(expConMod, conMod);
 
+    /** LINE 8: DEX and ToHit Mod and AC Mod */
+    int dex = Integer.parseInt(_opMap.get(PersonKeys.DEX));
+    int expDexMod = getMod(dex);
+    int toHitMod = Integer.parseInt(_opMap.get(PersonKeys.TO_HIT_MISSLE));
+    int acMod = Integer.parseInt(_opMap.get(PersonKeys.AC_MOD));
+    MsgCtrl.msg("\n\t   DEX = " + dex + "   ToHit Mod = " + toHitMod + "   AC Mod = " + acMod); 
+    assertEquals(expDexMod, toHitMod);
+    assertEquals(expDexMod, acMod);
 
+    /** LINE 9: CHR, Weight, and Height */
+    // CHR
+    int chr = Integer.parseInt(_opMap.get(PersonKeys.CHR));
+    // Weight: human male avg = 180, range = 130 - 230 [130 + (2d6-2 * 10) lb]
+    int expWtLow = 130;
+    int expWtHigh = 230;
+    int weight = Integer.parseInt(_opMap.get(PersonKeys.WEIGHT));
+    MsgCtrl.msg("\n\t   CHR = " + chr + "   Weight = " + weight + " lbs."); 
+    assertTrue((expWtLow <= weight) && (weight <= expWtHigh));
+
+    // Height: human male avg = 69"; range = 60 - 78 [60 + (2d10-2) in.]
+    int expHtLow = 60;
+    int expHtHigh = 78;
+    // height used in speed calc
+    height = Integer.parseInt(_opMap.get(PersonKeys.HEIGHT));
+    MsgCtrl.msg("   Height = " + height + " in."); 
+    assertTrue((expHtLow <= height) && (height <= expHtHigh));
+
+    /** LINE 10: AP, Mods for Overbearing, Grappling, Pummeling, and Shield Bash */
+    // AP = STR + DEX
+    int expAP = str + dex;
+    int AP = Integer.parseInt(_opMap.get(PersonKeys.AP));
+    MsgCtrl.msg("\n\t    AP = " + AP); 
+    assertEquals(expAP, AP);
+    
+    // Overbearing = AP + (1 per 25 lb weight)
+    int expOverbear = AP + weight/25;
+    int overbear = Integer.parseInt(_opMap.get(PersonKeys.OVERBEARING));
+    MsgCtrl.msg("   Overbear = " + overbear); 
+    assertEquals(expOverbear, overbear);
+    
+    // Grappling = AP + StrMod
+    int expGrapple = AP + getMod(str);
+    int grapple = Integer.parseInt(_opMap.get(PersonKeys.GRAPPLING));
+    MsgCtrl.msg("   Grappling = " + grapple); 
+    assertEquals(expGrapple, grapple);
+
+    // Pummeling = AP + StrMod + DexMod
+    int expPummel = AP + getMod(str) + getMod(dex);
+    int pummel = Integer.parseInt(_opMap.get(PersonKeys.PUMMELING));
+    MsgCtrl.msg("   Pummeling = " + pummel); 
+    assertEquals(expPummel, pummel);
+
+    // Sheild bash = 0 until Hero wields a shield
+    int expBash = 0;
+    int bash = Integer.parseInt(_opMap.get(PersonKeys.SHIELD_BASH));
+    MsgCtrl.msg("   Shield Bash = " + bash); 
+    assertEquals(expBash, bash);
+
+    /** LINE 11: Languages and max languages knowable */
+    int intel = Integer.parseInt(_opMap.get(PersonKeys.INT));
+    int expLangs = intel/2 - 4;
+    int langs = Integer.parseInt(_opMap.get(PersonKeys.LANGUAGES));
+    MsgCtrl.msg("\n\tMax Languages Knowable = " + langs); 
+    assertEquals(expLangs, langs);
+    
+    
+    
+    
   }
 
 
@@ -271,6 +334,7 @@ public class TA01_CreateHero
     return (trait - 10) / 2;
   }
 
+  
   /**
    * Convert the hero's traits to int[]
    * 
