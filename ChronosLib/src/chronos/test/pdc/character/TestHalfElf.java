@@ -15,7 +15,7 @@ public class TestHalfElf
   public void traitsAreNotAdjusted()
   {
      TraitList traits = new TraitList(TraitList.DEFAULT_TRAITS);
-     HalfElf he = new HalfElf(new Gender("Male"));
+     HalfElf he = new HalfElf();
      he.adjustTraitsForRace(traits);
 
      for (PrimeTraits trait : PrimeTraits.values()) {

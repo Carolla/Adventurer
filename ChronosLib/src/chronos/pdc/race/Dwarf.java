@@ -48,7 +48,7 @@ public class Dwarf extends Race
    * Default constructor, called reflectively by Klass
    * @param gender 
    */
-  public Dwarf(Gender gender)
+  public Dwarf()
   {
     _raceName = "Dwarf";
     _raceLang = "Groken";
@@ -74,13 +74,13 @@ public class Dwarf extends Race
 
 
   @Override
-  public int calcWeight(Gender g)
+  public int calcWeight()
   {
     return _weightRange.calcValue();
   }
 
   @Override
-  public int calcHeight(Gender g)
+  public int calcHeight()
   {
     return _heightRange.calcValue();
   };

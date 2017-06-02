@@ -10,6 +10,7 @@
 package chronos.pdc.race;
 
 import chronos.pdc.character.Gender;
+import chronos.pdc.character.TraitList;
 
 
 
@@ -25,6 +26,10 @@ public class Gnome extends Race
   /** Height ranges */
   protected final RangedValue _heightRange = new RangedValue(39, "d3");
   
+  /** Racial limits for a Gnome for the traits */
+  protected final int[] minLimit = {6, 7, 5, 5, 8, 5};
+  protected final int[] maxLimit = {18, 18, 18, 18, 18, 18};
+
   /** Gnomes have piercing blue eyes */
   private final String _raceDescriptor = "piercing blue eyes";
 
@@ -46,7 +51,7 @@ public class Gnome extends Race
    * Default constructor, called reflectively by Klass
    * @param gender 
    */
-  public Gnome(Gender gender)
+  public Gnome()
   {
     _raceName = "Gnome";
 
@@ -55,17 +60,41 @@ public class Gnome extends Race
     _raceSkills = _gnomeSkills;
   }
 
+  
+  /**
+   * Gnome has a few adjustments
+   * 
+   * @param traits the six prime traits of any Hero
+   * @return the adjusted traits
+   */
+  @Override
+  public TraitList adjustTraitsForRace(TraitList traits)
+  {
+    return traits;
+  }
 
 
   @Override
-  public int calcWeight(Gender g)
+  public int calcWeight()
   {
     return _weightRange.calcValue();
   }
 
   @Override
-  public int calcHeight(Gender g)
+  public int calcHeight()
   {
     return _heightRange.calcValue();
-  };
-}
+  }
+
+
+  /* (non-Javadoc)
+   * @see chronos.pdc.race.Race#calcWeight()
+   */
+  @Override
+  public int calcWeight(int lowValue, String variance)
+  {
+    return calcWeight();
+  }
+
+  
+} // end of Gnome klass

@@ -44,8 +44,7 @@ public class Cleric extends Klass {
 	 * @param traits
 	 */
 	public Cleric(TraitList traits) {
-		super(traits, CLERIC_CLASS_NAME, PrimeTraits.WIS, _hitDie,
-				_startingGold);
+		super(traits, CLERIC_CLASS_NAME, PrimeTraits.WIS);
 	}
 
 	// 8b. FOR CLERICS ONLY: CSPs/Level, CSPS, Turn Undead
@@ -74,6 +73,20 @@ public class Cleric extends Klass {
 		return true;
 	}
 
+  @Override
+  public int rollHP()
+  {
+    return rollHP(_hitDie);
+  }
+
+  
+  @Override
+  public double rollStartingGold()
+  {
+    return rollStartingGold(_startingGold);
+  }
+
+  
 	@Override
 	public void loadKlassKeys(Map<PersonKeys, String> map) {
 		super.loadKlassKeys(map);

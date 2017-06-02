@@ -15,7 +15,7 @@ public class TestHobbit
   public void traitsAreAdjustDexPlus1StrMinus1()
   {
      TraitList traits = new TraitList(TraitList.DEFAULT_TRAITS);
-     Hobbit h = new Hobbit(new Gender("Male"));
+     Hobbit h = new Hobbit();
      h.adjustTraitsForRace(traits);
 
      assertEquals(11, traits.getTrait(PrimeTraits.DEX));

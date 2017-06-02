@@ -21,12 +21,12 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
-import mylib.Constants;
-import net.miginfocom.swing.MigLayout;
 import chronos.civ.PersonKeys;
 import chronos.pdc.Item.ItemCategory;
 import chronos.pdc.character.Inventory;
 import civ.HeroDisplayCiv;
+import mylib.Constants;
+import net.miginfocom.swing.MigLayout;
 
 
 /**
@@ -381,7 +381,7 @@ public class HeroDisplay extends ChronosPanel
     attribPanel.add(gridCell("INT: ", _ds.get(PersonKeys.INT)), "growx");
     String klassname = _ds.get(PersonKeys.KLASSNAME);
     if (klassname.equalsIgnoreCase("WIZARD")) {
-      attribPanel.add(gridCell("% to Know: ", _ds.get(PersonKeys.TO_KNOW)), "growx");
+      attribPanel.add(gridCell("???: ", "Fix"), "growx");
       String MSP_valueStr = _ds.get(PersonKeys.CURRENT_MSP) + " / " + _ds.get(PersonKeys.MAX_MSP);
       attribPanel.add(gridCell("Current/Max MSP: ", MSP_valueStr), "growx");
       attribPanel.add(gridCell("Bonus MSP/Level: ", _ds.get(PersonKeys.MSP_PER_LEVEL)), "growx");

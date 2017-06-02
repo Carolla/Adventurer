@@ -15,7 +15,7 @@ public class TestGnome
   public void traitsAreNotAdjusted()
   {
      TraitList traits = new TraitList(TraitList.DEFAULT_TRAITS);
-     Gnome g = new Gnome(new Gender("Male"));
+     Gnome g = new Gnome();
      g.adjustTraitsForRace(traits);
 
      for (PrimeTraits trait : PrimeTraits.values()) {

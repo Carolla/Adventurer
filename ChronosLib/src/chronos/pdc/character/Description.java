@@ -1,17 +1,5 @@
 package chronos.pdc.character;
 
-/**
- * Description.java Copyright (c) 2009, Carolla Development, Inc. All Rights Reserved
- * 
- * Permission to make digital or hard copies of all or parts of this work for commercial use is
- * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
- * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
- * by email: acline@carolla.com
- */
-
-import java.util.Map;
-
-import chronos.civ.PersonKeys;
 import chronos.pdc.Chronos;
 
 public class Description
@@ -72,25 +60,63 @@ public class Description
   }
 
 
-  /**
-   * Template for the attributes in description: \n\t
-   * "A [height_descriptor] and [weight_descriptor]" + "[gender] with [color] hair" +
-   * "and [racial note]". [She | He] is [CHR reflection]". \n\t
-   * 
-   * @return a string that describes the Person's body-type (a Race function).
-   */
-  public String initDescription()
-  {
-    String bodyType = bodyType(_chr, _height, _weight);
-    return article(bodyType) + bodyType + " " + _gender.toString().toLowerCase() + " with "
-        + hairDescription() + " and " + _raceDescriptor + ". " + _gender.pronoun() + " is "
-        + initCharismaDescriptor(_chr) + ".";
-  }
+  //  public void loadKeys(Map<PersonKeys, String> map)
+  //  {
+  //    map.put(PersonKeys.DESCRIPTION, _description);
+  //    map.put(PersonKeys.WEIGHT, "" + _weight);
+  //    map.put(PersonKeys.HEIGHT, "" + _height);
+  //  }
+  
+    /**
+     * Associate the height and weight of the character with their Charisma to get a body type
+     * descriptor. For this implementation, height and weight are broken into only three cartegories.
+     * 
+     * @param charisma body types are perceived as favorable or unfavorable depending on the Person's
+     *        CHR
+     * @return what the person looks like for their Charisma trait
+     */
+    public String bodyType(int charisma, int height, int weight)
+    {
+      String[][] descrChoice = (charisma >= Chronos.AVERAGE_TRAIT) ? posBody : negBody;
+      int rowNbr = findBucket(height, Chronos.STD_MAX_HEIGHT, Chronos.STD_MIN_HEIGHT);
+      int colNbr = findBucket(weight, Chronos.STD_MAX_WEIGHT, Chronos.STD_MIN_WEIGHT);
+      return descrChoice[rowNbr][colNbr];
+    }
+
+
+  @Override
+    public boolean equals(Object obj)
+    {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      Description other = (Description) obj;
+      if (_description == null) {
+        if (other._description != null)
+          return false;
+      } else if (!_description.equals(other._description))
+        return false;
+      return true;
+    }
+
 
   public String hairDescription()
   {
     return (_hairColor.equalsIgnoreCase("bald")) ? "a bald head" : _hairColor + " hair";
   }
+
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((_description == null) ? 0 : _description.hashCode());
+    return result;
+  }
+
 
   public static String article(String string)
   {
@@ -109,39 +135,12 @@ public class Description
     return false;
   }
 
-  public void loadKeys(Map<PersonKeys, String> map)
-  {
-    map.put(PersonKeys.DESCRIPTION, _description);
-    map.put(PersonKeys.WEIGHT, "" + _weight);
-    map.put(PersonKeys.HEIGHT, "" + _height);
-  }
-
-  /**
-   * Associate the height and weight of the character with their Charisma to get a body type
-   * descriptor. For this implementation, height and weight are broken into only three cartegories.
-   * 
-   * @param charisma body types are perceived as favorable or unfavorable depending on the Person's
-   *        CHR
-   * @return what the person looks like for their Charisma trait
-   */
-  public String bodyType(int charisma, int height, int weight)
-  {
-    String[][] descrChoice = (charisma >= Chronos.AVERAGE_TRAIT) ? posBody : negBody;
-    int rowNbr = findBucket(height, Chronos.STD_MAX_HEIGHT, Chronos.STD_MIN_HEIGHT);
-    int colNbr = findBucket(weight, Chronos.STD_MAX_WEIGHT, Chronos.STD_MIN_WEIGHT);
-    return descrChoice[rowNbr][colNbr];
-  }
-
-  private int findBucket(int value, int highValue, int lowValue)
-  {
-    if (value < lowValue) {
-      return 0;
-    } else if (value > highValue) {
-      return 2;
-    } else {
-      return 1;
-    }
-  }
+//  public void loadKeys(Map<PersonKeys, String> map)
+//  {
+//    map.put(PersonKeys.DESCRIPTION, _description);
+//    map.put(PersonKeys.WEIGHT, "" + _weight);
+//    map.put(PersonKeys.HEIGHT, "" + _height);
+//  }
 
   /**
    * Associate the Charisma of the character with their attractiveness, a simple string matching
@@ -161,36 +160,37 @@ public class Description
     return _chrDescs[pos];
   }
 
-  @Override
-  public int hashCode()
+  /**
+   * Template for the attributes in description: \n\t
+   * "A [height_descriptor] and [weight_descriptor]" + "[gender] with [color] hair" +
+   * "and [racial note]". [She | He] is [CHR reflection]". \n\t
+   * 
+   * @return a string that describes the Person's body-type (a Race function).
+   */
+  public String initDescription()
   {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((_description == null) ? 0 : _description.hashCode());
-    return result;
+    String bodyType = bodyType(_chr, _height, _weight);
+    return article(bodyType) + bodyType + " " + _gender.toString().toLowerCase() + " with "
+        + hairDescription() + " and " + _raceDescriptor + ". " + _gender.pronoun() + " is "
+        + initCharismaDescriptor(_chr) + ".";
   }
 
-  @Override
-  public boolean equals(Object obj)
-  {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    Description other = (Description) obj;
-    if (_description == null) {
-      if (other._description != null)
-        return false;
-    } else if (!_description.equals(other._description))
-      return false;
-    return true;
-  }
-  
+
   @Override
   public String toString()
   {
     return _description;
+  }
+
+
+  private int findBucket(int value, int highValue, int lowValue)
+  {
+    if (value < lowValue) {
+      return 0;
+    } else if (value > highValue) {
+      return 2;
+    } else {
+      return 1;
+    }
   }
 }

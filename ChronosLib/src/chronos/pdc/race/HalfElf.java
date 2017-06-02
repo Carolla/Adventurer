@@ -9,7 +9,7 @@
 
 package chronos.pdc.race;
 
-import chronos.pdc.character.Gender;
+import chronos.pdc.character.TraitList;
 
 /**
  * @author Al Cline
@@ -42,7 +42,7 @@ public class HalfElf extends Race
    * Default constructor, called reflectively by Race
    * @param gender 
    */
-  public HalfElf(Gender gender)
+  public HalfElf()
   {
     _raceName = "Half-Elf";
     _raceLang = getRaceLang();
@@ -60,14 +60,25 @@ public class HalfElf extends Race
   }
 
   @Override
-  public int calcWeight(Gender g)
+  public int calcWeight()
   {
     return _weightRange.calcValue();
   }
 
   @Override
-  public int calcHeight(Gender g)
+  public int calcHeight()
   {
     return _heightRange.calcValue();
-  };
-}
+  }
+
+  /* (non-Javadoc)
+   * @see chronos.pdc.race.Race#adjustTraitsForRace(chronos.pdc.character.TraitList)
+   */
+  @Override
+  public TraitList adjustTraitsForRace(TraitList traits)
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+}   // end of HalfElf class

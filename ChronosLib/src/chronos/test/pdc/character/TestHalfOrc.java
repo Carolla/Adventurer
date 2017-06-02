@@ -15,7 +15,7 @@ public class TestHalfOrc
   public void traitsAreAdjustStrAndConPlus1ChrMinus2()
   {
      TraitList traits = new TraitList(TraitList.DEFAULT_TRAITS);
-     HalfOrc ho = new HalfOrc(new Gender("Male"));
+     HalfOrc ho = new HalfOrc();
      ho.adjustTraitsForRace(traits);
 
      assertEquals(8, traits.getTrait(PrimeTraits.CHR));

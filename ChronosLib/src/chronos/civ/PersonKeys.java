@@ -17,16 +17,17 @@ package chronos.civ;
  * @author Alan Cline
  * @version Sep 14, 2011 // original <br>
  *          Oct 10, 2015 // added Skill enums <br>
+ *          June 2 2017 // minor revisions to support refactoring Peasant Hero <br>
  */
 public enum PersonKeys {
   // First group contains the input data when a Person is created
   NAME,
   GENDER,
   HAIR_COLOR,
-  KLASSNAME,
   OCCUPATION,
   RACENAME,
-  ABILITY_SCORES,
+  // Hero is always created as a Peasant first
+  KLASSNAME,
 
   // Prime traits and their mods
   STR,
@@ -34,22 +35,25 @@ public enum PersonKeys {
   DAMAGE,
   WT_ALLOW,
   LOAD,
+  
   INT,
-  TO_KNOW,
   CURRENT_MSP,
   MAX_MSP,
   MSP_PER_LEVEL,
   SPELLS_KNOWN,
   MAX_LANGS,
+
   WIS,
   MDM,
   CURRENT_CSP,
   MAX_CSP,
   CSP_PER_LEVEL,
   TURN_UNDEAD,
+  
   CON,
   HP_MOD,
   RMR,
+  
   DEX,
   TO_HIT_MISSLE,
   AC_MOD,

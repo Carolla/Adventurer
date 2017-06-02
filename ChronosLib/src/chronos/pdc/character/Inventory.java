@@ -49,11 +49,13 @@ public class Inventory {
 	 */
 	public Inventory() {
 		_itemList = new ArrayList<Item>();
+		assignBasicInventory();
 	}
 
 	// =============================================================================
 	// PUBLIC METHODS
 	// =============================================================================
+
 	public void assignBasicInventory() {
 		_itemList.add(_itemRegistry.getItem("Backpack"));
 		_itemList.add(_itemRegistry.getItem("Tinderbox"));

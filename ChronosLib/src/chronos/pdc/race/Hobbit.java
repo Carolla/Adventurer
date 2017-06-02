@@ -45,7 +45,7 @@ public class Hobbit extends Race
    * Default constructor, called reflectively by Klass
    * @param gender 
    */
-  public Hobbit(Gender gender)
+  public Hobbit()
   {
     _raceName = "Hobbit";
     _raceLang = "Tolkeen";
@@ -67,13 +67,13 @@ public class Hobbit extends Race
 
 
   @Override
-  public int calcWeight(Gender g)
+  public int calcWeight()
   {
     return _weightRange.calcValue();
   }
 
   @Override
-  public int calcHeight(Gender g)
+  public int calcHeight()
   {
     return _heightRange.calcValue();
   };

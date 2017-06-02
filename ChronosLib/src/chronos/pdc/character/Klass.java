@@ -23,8 +23,9 @@ import mylib.pdc.MetaDie;
  * 
  * @author Alan Cline
  * @version Sept 4 2015 // rewrite to support Hero rewrite <br>
+ *          June 2 2017 // refactored for clearer organization <br>
  */
-public class Klass
+public abstract class Klass
 {
   // Spells in the Cleric or Wizard's spell book
   List<String> _spellBook = new ArrayList<String>();
@@ -35,28 +36,48 @@ public class Klass
   public static final String WIZARD_CLASS_NAME = "Wizard";
   public static final String THIEF_CLASS_NAME = "Rogue";
   public static final String[] KLASS_LIST =
-  {PEASANT_CLASS_NAME, FIGHTER_CLASS_NAME, CLERIC_CLASS_NAME, WIZARD_CLASS_NAME, THIEF_CLASS_NAME};
+      {PEASANT_CLASS_NAME, FIGHTER_CLASS_NAME, CLERIC_CLASS_NAME, WIZARD_CLASS_NAME,
+          THIEF_CLASS_NAME};
 
   // KLASS-SPECIFIC ATTRIBUTES and METHODS
   protected String _klassName;
+  protected int _level;
+  protected int _XP;
+  protected int _HP_Max;
+  protected int _currentHP;
   protected PrimeTraits _primeTrait;
-  protected String _hpDie;
-  protected String _goldDice;
   protected TraitList _traits;
   private static final MetaDie _md = new MetaDie();
+
+
+  // ====================================================
+  // ABSTRACT METHODS FOR SUBCLASSES
+  // ====================================================
+
+  /** Each klass has a unique amount of starting gold */
+  protected abstract double rollStartingGold();
+
+  /** Each klass has a unique amount of starting HO */
+  protected abstract int rollHP();
+
+
+  // ====================================================
+  // CONSTRUCTORS AND RELATED METHODS
+  // ====================================================
 
   /**
    * Create a specific subclass of Klass based on its klass name. <br>
    * NOTE: The subclass must be in the same package as the Klass class.
    *
    * @param klassName the name of the subclass to be created
-   * @param traits 
+   * @param traits
    * @return Klass, the subclass created, but referenced polymorphically; else null
    */
   static public Klass createKlass(String klassName, TraitList traits)
   {
     Klass klass = null;
-    switch (klassName) {
+    switch (klassName)
+    {
       case PEASANT_CLASS_NAME:
         klass = new Peasant(traits);
         break;
@@ -73,71 +94,45 @@ public class Klass
         klass = new Thief(traits);
         break;
       default:
-        throw new NullPointerException("Klass.createKlass(): Cannot find class requested " + klassName);
+        throw new NullPointerException(
+            "Klass.createKlass(): Cannot find class requested " + klassName);
     }
     return klass;
   }
-  
-  public Klass(TraitList traits, String klassName, PrimeTraits trait, String hitdie, String startinggold)
+
+
+  /**
+   * Method called by each subsclass with its own specific data
+   * 
+   * @param traits prime traits of Hero
+   * @param klassName Peasant, Fighter, Cleric, Rogue, Wizard
+   * @param trait except for Peasant, the trait set to max for the klass
+   * @param hitdie starting hit points die to be rolled
+   * @param startinggold starting gold for specific klass
+   */
+  protected Klass(TraitList traits, String klassName, PrimeTraits trait)
   {
     _traits = traits;
     _klassName = klassName;
     _primeTrait = trait;
-    _hpDie = hitdie;
-    _goldDice = startinggold;
+    _level = 0;
+    _XP = 0;
+    _HP_Max = rollHP();
+    _currentHP = _HP_Max;
   }
 
 
-  /** Gets the name of this klass */
-  public String className()
-  {
-    return _klassName;
-  }
-
-  /**
-   * Roll the klass-specific money dice plus a handful of silver pieces
-   * 
-   * @return the starting gold
-   */
-  public double rollGold()
-  {
-    // gold pieces
-    double gold = _md.roll(_goldDice) * 10.0;
-    // add silver pieces as fractional gold
-    gold += _md.roll("d10")/ 10.0;
-    return gold;
-  }
-
-  /**
-   * Roll the HP Die for the specific Klass, plus the mod
-   * 
-   * @return the initial modified Hit Points
-   */
-  public int rollHP()
-  {
-    return _md.roll(_hpDie) + _traits.calcMod(PrimeTraits.CON);
-  }
-
-  
-  public void loadKlassKeys(Map<PersonKeys, String> map)
-  {
-    map.put(PersonKeys.KLASSNAME, _klassName);
-  }
-
-  
-  /*************************
-   ** OVERRIDEABLE METHODS *
-   *************************/
   public void addKlassSpells()
   {
-    //Override
+    // Override
   }
 
   /** Assign klass specific inventory items */
   public void addKlassItems(Inventory inventory)
   {
-    //Override
+    // Override
   }
+
 
   /**
    * Swap the largest trait for the prime trait of the klass: <br>
@@ -151,21 +146,17 @@ public class Klass
     traits.swapPrime(_primeTrait);
   }
 
-//  public void calcClassMods()
-//  {
-//    calcClassMods(_traits.getTrait(_primeTrait));
-//  }
-
-
-//  protected void calcClassMods(int trait)
-//  {
-//    //Override
-//  }
-
 
   public boolean canUseMagic()
   {
     return false;
+  }
+
+
+  /** Gets the name of this klass */
+  public String className()
+  {
+    return _klassName;
   }
 
 
@@ -174,10 +165,66 @@ public class Klass
     return new ArrayList<String>();
   }
 
+
+  public double getStartingGold()
+  {
+    return rollStartingGold();
+
+  }
+
+
   public List<String> getSpells()
   {
     return _spellBook;
   }
+
+  public void loadKlassKeys(Map<PersonKeys, String> map)
+  {
+    map.put(PersonKeys.KLASSNAME, _klassName);
+    map.put(PersonKeys.HP, Integer.toString(_currentHP));
+    map.put(PersonKeys.HP_MAX, Integer.toString(_HP_Max));
+    map.put(PersonKeys.LEVEL, Integer.toString(_level));
+    map.put(PersonKeys.XP, Integer.toString(_XP));
+  }
+
+  public int getCurrentHP()
+  {
+    return _currentHP;
+  }
+
+  public int getHP_Max()
+  {
+    return _HP_Max;
+  }
+
+  /**
+   * All Peasants start at 10 hp, plus HP modifier. Further HP rolls by other Klasses depend on the
+   * klass-specific HP die
+   * 
+   * @param the starting dice for a klass's Hit Points
+   * @return the initial modified Hit Points
+   */
+  protected int rollHP(String hpDie)
+  {
+    return _md.roll(hpDie) + _traits.calcMod(PrimeTraits.CON);
+  }
+
+
+  /**
+   * Roll the klass-specific money dice plus a handful of silver pieces
+   * 
+   * @param dice string for how much klass-specific gold Hero starts with
+   * @return the starting gold
+   */
+  protected double rollStartingGold(String startingGoldDice)
+  {
+    // gold pieces
+    double gold = _md.roll(startingGoldDice) * 10.0;
+    // add silver pieces as fractional gold
+    gold += _md.roll("d10") / 10.0;
+    return gold;
+  }
+
 
   /*************************
    ** OVERRIDDEN METHODS *

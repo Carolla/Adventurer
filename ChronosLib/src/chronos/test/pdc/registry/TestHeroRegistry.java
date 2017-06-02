@@ -31,9 +31,9 @@ public class TestHeroRegistry
 {
   private static HeroRegistry _heroReg;
 
-  static private Hero _hero1 = new Hero("Falsoon", "Male", "Brown", "Human", "Fighter");
-  static private Hero _hero2 = new Hero("Blythe", "Female", "Red", "Elf", "Wizard");
-  static private Hero _hero3 = new Hero("Balthazar", "Male", "Bald", "Human", "Cleric");
+  static private Hero _hero1 = new Hero("Falsoon", "Male", "Brown", "Human");
+  static private Hero _hero2 = new Hero("Blythe", "Female", "Red", "Elf");
+  static private Hero _hero3 = new Hero("Balthazar", "Male", "Bald", "Human");
 
   @BeforeClass
   public static void setUp() 
@@ -65,7 +65,7 @@ public class TestHeroRegistry
   public void testAdd()
   {
     // SETUP Create new heroes to add
-    Hero newHero = new Hero("Red Shirt", "male", "White", "Human", "Fighter");
+    Hero newHero = new Hero("Red Shirt", "male", "White", "Human");
     int oldNbrHeros = _heroReg.getNbrElements();
     assertTrue(_heroReg.add(newHero));
     assertEquals(oldNbrHeros + 1, _heroReg.getNbrElements());

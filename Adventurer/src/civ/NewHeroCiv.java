@@ -20,6 +20,7 @@ import chronos.pdc.character.Klass;
  * 
  * @author Al Cline
  * @version Sep 20, 2015 // rewrite of more complicated {@code NewHeroCiv} class <br>
+ *          June 2 2017 // modified for refactored Hero class <br>
  */
 public class NewHeroCiv
 {
@@ -43,17 +44,16 @@ public class NewHeroCiv
 
 
   /**
-   * Create the new Hero from the user's input data
+   * Create the new Hero from the user's input data. New Heroes are always Peasant klass.
    * 
-   * @param inputMap of user fields: name, gender, hairColor, race, and Klass
+   * @param inputMap of user fields: name, gender, hairColor, and race
    */
   public Hero createHero(EnumMap<HeroInput, String> inputMap)
   {
     Hero myHero = new Hero(inputMap.get(HeroInput.NAME),
         inputMap.get(HeroInput.GENDER),
         inputMap.get(HeroInput.HAIR),
-        inputMap.get(HeroInput.RACE),
-        inputMap.get(HeroInput.KLASS));
+        inputMap.get(HeroInput.RACE));
     return myHero;
   }
 

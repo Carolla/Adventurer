@@ -10,16 +10,16 @@
 
 package chronos.pdc.race;
 
-import static chronos.pdc.character.TraitList.PrimeTraits.CON;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import chronos.civ.PersonKeys;
+import chronos.pdc.character.Description;
 import chronos.pdc.character.Gender;
 import chronos.pdc.character.TraitList;
+import chronos.pdc.character.TraitList.PrimeTraits;
 import mylib.pdc.MetaDie;
 
 /**
@@ -27,24 +27,34 @@ import mylib.pdc.MetaDie;
  * 
  * @author Alan Cline
  * @version Sept 4 2015 // rewrite to support Hero rewrite <br>
+ *          June 2 2017 // Refactored for better organization <br>
  */
 public abstract class Race
 {
-
   public static final String[] RACE_LIST =
       {"Human", "Dwarf", "Elf", "Gnome", "Half-Elf", "Half-Orc", "Hobbit"};
 
+  public static final String HUMAN_RACENAME = "Human";
+  public static final String DWARF_RACENAME = "Dwarf";
+  public static final String ELF_RACENAME = "Elf";
+  public static final String GNOME_RACENAME = "Gnome";
+  public static final String HALFELF_RACENAME = "Half-Elf";
+  public static final String HALFORC_RACENAME = "Half-Orc";
+  public static final String HOBBIT_RACENAME = "Hobbit";
+
+  static protected Gender _gender;
+  static protected String _hairColor;
+
   protected String _raceName;
   protected String _raceLang;
+  protected int _height;
+  protected int _weight;
+  protected Description _description;
+  protected String _hunger;
 
   protected static MetaDie _md = new MetaDie();
 
-  /** Hero male and female weight ranges */
-  protected int _weightMedValue;
-  /** Hero male and female height ranges */
-  protected int _heightMedValue;
-
-  /** Racial limits for a each subclass for the traits */
+  /** Racial limits for a each subclass for constraining the traits */
   protected int[] _minLimit;
   protected int[] _maxLimit;
 
@@ -53,59 +63,95 @@ public abstract class Race
   protected String[] _raceSkills;
   protected int _racialPoisonResist = 0;
 
-  public abstract int calcWeight(Gender g);
+  // ====================================================
+  // ABSTRACT METHODS FOR SUBCLASSES
+  // ====================================================
 
-  public abstract int calcHeight(Gender g);
+  /** Modify prime traits for racial specialties */
+  public abstract TraitList adjustTraitsForRace(TraitList traits);
 
-  
+  /** Calculate the gender- and racial specific weight of the Hero */
+  public abstract int calcWeight();
+
+  /** Calculate the gender- and racial specific height of the Hero */
+  public abstract int calcHeight();
+
+
+  // ====================================================
+  // CONSTRUCTOR(S) AND RELATED METHODS
+  // ====================================================
+
+  /** For subclass constructors */
+  protected Race()
+  {}
+
   /**
    * Create a specific subclass of Race based on the Race name. <br>
-   * NOTE: The subclass must be in the same package as the Race class.
+   * NOTE: (1) The method must be static because Race works as dispatcher, and itself cannot be
+   * instantiated. (2) The subclass must be in the same package as the Race class.
    *
    * @param RaceName the name of the subclass to be created
+   * @param gender male or female of all Races
+   * @param hairColor of any Race
    */
-  static public Race createRace(String raceName, Gender gender)
+  static public Race createRace(String raceName, Gender gender, String hairColor)
   {
+    _gender = gender;
+    _hairColor = hairColor;
     Race race = null;
-    if (raceName.toLowerCase().equals("dwarf")) {
-      race = new Dwarf(gender);
-    } else if (raceName.toLowerCase().equals("elf")) {
-      race = new Elf(gender);
-    } else if (raceName.toLowerCase().equals("gnome")) {
-      race = new Gnome(gender);
-    } else if (raceName.toLowerCase().equals("half-elf")) {
-      race = new HalfElf(gender);
-    } else if (raceName.toLowerCase().equals("half-orc")) {
-      race = new HalfOrc(gender);
-    } else if (raceName.toLowerCase().equals("hobbit")) {
-      race = new Hobbit(gender);
-    } else {
-      race = new Human();
+    switch (raceName)
+    {
+      case HUMAN_RACENAME:
+        race = new Human();
+        break;
+       case DWARF_RACENAME:
+       race = new Dwarf();
+       break;
+       case ELF_RACENAME:
+       race = new Elf();
+       break;
+       case GNOME_RACENAME:
+       race = new Gnome();
+       break;
+       case HALFELF_RACENAME:
+       race = new HalfElf();
+       break;
+       case HALFORC_RACENAME:
+       race = new HalfOrc();
+       break;
+       case HOBBIT_RACENAME:
+       race = new Hobbit();
+       break;
+      default:
+        throw new NullPointerException(
+            "Race.createRace(): Cannot find race requested " + raceName);
     }
     return race;
   }
 
-  /** Races have different advantages and disadvantages */
-  public TraitList adjustTraitsForRace(TraitList traits)
+  
+  /**
+   * Genders have slightly different traits Once the specific Race is created, then specific
+   * attributes are refined or created: trait adjustment for race and gender, weight and height, and
+   * a physical description
+   * 
+   * @param traits the six prime traits for all Heroes
+   */
+  public TraitList buildRace(TraitList traits)
   {
-    addRacialPoisonResist(traits.getTrait(CON), (traits).getMagicDefenseMod());
+    adjustTraitsForRace(traits);
+    _gender.adjustTraitsForGender(traits);
+    _weight = calcWeight();
+    _height = calcHeight();
+    _hunger = "Full";
+    _description = new Description(traits.getTrait(PrimeTraits.CHR), _descriptor, _hairColor,
+        _gender, _height, _weight);
     return traits;
   }
 
-
-  /**
-   * Calculate the weight of the Hero based on deviation from average
-   * 
-   * @param lowValue lower boundary for the weight distribution
-   * @param variance dice format for normal-curve distribution to add to lowValue
-   * @return the randomly-determined weight within the lower bound and average distribution
-   */
-  protected int calcWeight(int lowValue, String variance)
-  {
-    int weight = lowValue + (_md.roll(variance) * 10);
-    return weight;
-  }
-
+  // ====================================================
+  // PROTECTED METHODS
+  // ====================================================
 
   /**
    * Calculate the height of the Hero based on deviation from average
@@ -121,6 +167,68 @@ public abstract class Race
   }
 
 
+
+  // ====================================================
+  // PROTECTED METHODS
+  // ====================================================
+
+  /**
+   * Calculate the weight of the Hero based on deviation from average
+   * 
+   * @param lowValue lower boundary for the weight distribution
+   * @param variance dice format for normal-curve distribution to add to lowValue
+   * @return the randomly-determined weight within the lower bound and average distribution
+   */
+  protected int calcWeight(int lowValue, String variance)
+  {
+    int weight = lowValue + (_md.roll(variance) * 10);
+    return weight;
+  }
+
+
+  // ====================================================
+  // PUBLIC METHODS
+  // ====================================================
+
+  public String getGender()
+  {
+    return _gender.toString();
+  }
+
+  
+  public int getHeight()
+  {
+    return _height;
+  }
+
+  // ====================================================
+  // PRIVATE METHODS
+  // ====================================================
+
+
+
+  // ====================================================
+  // PRIVATE METHODS
+  // ====================================================
+
+
+
+  public String getName()
+  {
+    return _raceName;
+  }
+
+  // ====================================================
+  // PRIVATE METHODS
+  // ====================================================
+
+
+
+  public String getRaceDescriptor()
+  {
+    return _descriptor;
+  }
+
   /**
    * Return the language specific to the race, or null. Half-breed races have a 50% chance of
    * knowing their race language.
@@ -132,20 +240,28 @@ public abstract class Race
     return _raceLang;
   }
 
-  public String getName()
-  {
-    return _raceName;
-  }
+  // ====================================================
+  // PRIVATE METHODS
+  // ====================================================
 
-  public String getRaceDescriptor()
-  {
-    return _descriptor;
-  }
+
 
   public List<String> getSkills()
   {
     return new ArrayList<String>(Arrays.asList(_raceSkills));
   }
+
+  public int getWeight()
+  {
+    return _weight;
+  }
+
+
+  // ====================================================
+  // PRIVATE METHODS
+  // ====================================================
+
+
 
   @Override
   public int hashCode()
@@ -176,19 +292,30 @@ public abstract class Race
 
   public void loadRaceKeys(Map<PersonKeys, String> map)
   {
+    map.put(PersonKeys.GENDER, _gender.toString());
+    map.put(PersonKeys.DESCRIPTION, _description.toString());
+    map.put(PersonKeys.HAIR_COLOR, _hairColor);
+    map.put(PersonKeys.HEIGHT, Integer.toString(_height));
+    map.put(PersonKeys.HUNGER, _hunger);
     map.put(PersonKeys.RACENAME, _raceName);
     map.put(PersonKeys.RMR, "" + _racialPoisonResist);
+    map.put(PersonKeys.WEIGHT, Integer.toString(_weight));
   }
 
-  private void addRacialPoisonResist(int constitution, int magicAttackMod)
-  {
-    if ((_raceName.equalsIgnoreCase("Dwarf")) ||
-        (_raceName.equalsIgnoreCase("Gnome")) ||
-        (_raceName.equalsIgnoreCase("Hobbit"))) {
-      _racialPoisonResist = (int) Math.round(constitution / 3.5);
-      magicAttackMod += _racialPoisonResist;
-    }
-  }
+
+  // ====================================================
+  // PRIVATE METHODS
+  // ====================================================
+
+//  private void addRacialPoisonResist(int constitution, int magicAttackMod)
+//  {
+//    if ((_raceName.equalsIgnoreCase("Dwarf")) ||
+//        (_raceName.equalsIgnoreCase("Gnome")) ||
+//        (_raceName.equalsIgnoreCase("Hobbit"))) {
+//      _racialPoisonResist = (int) Math.round(constitution / 3.5);
+//      magicAttackMod += _racialPoisonResist;
+//    }
+//  }
 
 
 } // end of abstract Race class

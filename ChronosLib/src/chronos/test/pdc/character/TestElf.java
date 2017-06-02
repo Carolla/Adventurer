@@ -15,7 +15,7 @@ public class TestElf
   public void traitsAreAdjustDexPlus1ConMinus1()
   {
      TraitList traits = new TraitList(TraitList.DEFAULT_TRAITS);
-     Elf e = new Elf(new Gender("Male"));
+     Elf e = new Elf();
      e.adjustTraitsForRace(traits);
 
      assertEquals(11, traits.getTrait(PrimeTraits.DEX));

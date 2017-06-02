@@ -26,7 +26,6 @@ public class Wizard extends Klass {
 
 	private int _MSPs = 0;
 	private int _MSPsPerLevel = 0;
-	private int _percentToKnow = 0;
 	private int _spellsKnown = 0;
 	private String[] _wizardItems = { "Walking stick", "Spell book", "Magic bag" };
 
@@ -36,13 +35,11 @@ public class Wizard extends Klass {
 	 * @param traits
 	 */
 	public Wizard(TraitList traits) {
-		super(traits, WIZARD_CLASS_NAME, PrimeTraits.INT, _hitDie,
-				_startingGold);
+		super(traits, WIZARD_CLASS_NAME, PrimeTraits.INT);
 	}
 
 	protected void calcClassMods(int intell) {
 		_MSPsPerLevel = intell / 2 - 3;
-		_percentToKnow = intell * 5;
 		_MSPs = _MSPsPerLevel; // for first level
 	}
 
@@ -64,10 +61,24 @@ public class Wizard extends Klass {
 		return true;
 	}
 
+  /** Each klass has a unique amount of starting gold */
+  @Override
+  public double rollStartingGold()
+  {
+    return rollStartingGold(_startingGold);
+  }
+
+  /** Each klass has a unique amount of starting HO */
+  @Override
+  public int rollHP()
+  {
+    return rollHP(_hitDie);
+  }
+  
+  
 	@Override
 	public void loadKlassKeys(Map<PersonKeys, String> map) {
 		super.loadKlassKeys(map);
-		map.put(PersonKeys.TO_KNOW, "" + _percentToKnow);
 		map.put(PersonKeys.CURRENT_MSP, "" + _MSPs);
 		map.put(PersonKeys.MAX_MSP, "" + _MSPs);
 		map.put(PersonKeys.MSP_PER_LEVEL, "" + _MSPsPerLevel);

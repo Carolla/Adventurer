@@ -9,7 +9,6 @@
 
 package chronos.pdc.race;
 
-import chronos.pdc.character.Gender;
 import chronos.pdc.character.TraitList;
 import chronos.pdc.character.TraitList.PrimeTraits;
 
@@ -40,7 +39,7 @@ public class HalfOrc extends Race
    * Default constructor, called reflectively by Race
    * @param gender 
    */
-  public HalfOrc(Gender gender)
+  public HalfOrc()
   {
     _raceName = "Half-Orc";
     _raceLang = getRaceLang();
@@ -70,13 +69,13 @@ public class HalfOrc extends Race
 
 
   @Override
-  public int calcWeight(Gender g)
+  public int calcWeight()
   {
     return _weightRange.calcValue();
   }
 
   @Override
-  public int calcHeight(Gender g)
+  public int calcHeight()
   {
     return _heightRange.calcValue();
   };

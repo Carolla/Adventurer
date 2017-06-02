@@ -31,15 +31,15 @@ import chronos.pdc.race.Race;
 public class TestRace  
 {
 
-	@Test
-	public void testCreateRace() 
-	{
-		Race aRace = null;
-		for (int k = 0; k < Race.RACE_LIST.length; k++) {
-			aRace = Race.createRace(Race.RACE_LIST[k], new Gender("Male"));
-			assertTrue(aRace.getName().equals(Race.RACE_LIST[k]));
-		}
-	}
+//	@Test
+//	public void testCreateRace() 
+//	{
+//		Race aRace = null;
+//		for (int k = 0; k < Race.RACE_LIST.length; k++) {
+//			aRace = Race.createRace(Race.RACE_LIST[k], new Gender("Male"));
+//			assertTrue(aRace.getName().equals(Race.RACE_LIST[k]));
+//		}
+//	}
 	
 	@Test
 	public void weightIsCalculatedByCategory()

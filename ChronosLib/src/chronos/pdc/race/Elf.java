@@ -45,7 +45,7 @@ public class Elf extends Race
    * Default constructor, called reflectively by Klass
    * @param gender 
    */
-  public Elf(Gender gender)
+  public Elf()
   {
     _raceName = "Elf";
     _raceLang = "Elvish";
@@ -67,13 +67,13 @@ public class Elf extends Race
 
 
   @Override
-  public int calcWeight(Gender g)
+  public int calcWeight()
   {
     return _weightRange.calcValue();
   }
 
   @Override
-  public int calcHeight(Gender g)
+  public int calcHeight()
   {
     return _heightRange.calcValue();
   };

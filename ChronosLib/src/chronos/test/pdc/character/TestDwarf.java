@@ -15,7 +15,7 @@ public class TestDwarf
   public void traitsAreAdjustConPlus1ChrMinus1()
   {
      TraitList traits = new TraitList(TraitList.DEFAULT_TRAITS);
-     Dwarf d = new Dwarf(new Gender("Male"));
+     Dwarf d = new Dwarf();
      d.adjustTraitsForRace(traits);
 
      assertEquals(11, traits.getTrait(PrimeTraits.CON));

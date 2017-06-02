@@ -39,7 +39,6 @@ import chronos.test.pdc.race.TestRace;
     TestGender.class,
     RangedValueTest.class,
 
-    TestKlass.class,
     TestFighter.class,
     TestCleric.class,
     TestThief.class,
