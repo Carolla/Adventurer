@@ -38,7 +38,7 @@ public class Utilities
 
 
   /** Convert a String[] to a ArrayList<String> for easier handling */
-   public static ArrayList<String> convertToArrayList(String[] strs)
+  public static ArrayList<String> convertToArrayList(String[] strs)
   {
     // Setup for arraylist
     ArrayList<String> alist = new ArrayList<String>();
@@ -46,6 +46,18 @@ public class Utilities
       alist.add(strs[k]);
     }
     return alist;
+  }
+
+  /**
+   * Convert a string to all lower case, then capitalize the first letter
+   * 
+   * @param str string to modify
+   * @return the capitalized string
+   */
+  static public String capitalize(String str)
+  {
+    str = Character.toUpperCase(str.charAt(0)) + str.substring(1);
+    return str;
   }
 
 
@@ -305,5 +317,41 @@ public class Utilities
 
     return result;
   }
+
+
+  /**
+   * Break a long line into a series of list items. Each item is broken just before a white space,
+   * and is not longer than the given length
+   *
+   * @param line the long string to wrap
+   * @param maxLen the farthest position at which to break the line
+   * @return a list of line segments that are less than maxLen
+   */
+  static public ArrayList<String> wordWrap(String line, int maxLen)
+  {
+    ArrayList<String> result = new ArrayList<>();
+    StringBuffer sb = new StringBuffer();
+    
+    // Segment a long line into an array of strings separated by the delimiter SPACE or HYPHEN
+    String[] words = line.split(Constants.SPACE);
+
+    // Append words until maxLen would be exceeded
+    for (int k = 0; k < words.length; k++) {
+      if (sb.length() + words[k].length() <= maxLen) {
+        sb.append(words[k]);
+        sb.append(Constants.SPACE);
+      }
+      else {    
+        // Remove the white space at the end
+        result.add(sb.toString().trim());
+        sb.delete(0, sb.length());
+        k = k-1;    // backstep one to get the skipped word
+      }
+    }
+    // Remove the white space at the end
+    result.add(sb.toString().trim());
+    return result;
+  }
+
 
 } // end of Utilities class

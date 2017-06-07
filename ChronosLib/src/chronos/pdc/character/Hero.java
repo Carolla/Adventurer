@@ -10,6 +10,7 @@
 
 package chronos.pdc.character;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import java.util.TreeSet;
 
 import chronos.civ.PersonKeys;
 import chronos.pdc.Occupation;
+import chronos.pdc.Skill;
 import chronos.pdc.character.TraitList.PrimeTraits;
 import chronos.pdc.race.Race;
 import mylib.dmc.IRegistryElement;
@@ -62,6 +64,8 @@ public class Hero implements IRegistryElement
   private int _AC;
   /** Each Person knows at least one language, and can usually learn others */
   Set<String> _knownLangs = new TreeSet<String>();
+  /** Skills can originate from occupation, races (not Human), and klasses (not Peasant) */
+  private ArrayList<Skill> _skills;
   /** Single string of all known languages */
   private String _langString;
   // Special cases
@@ -98,7 +102,7 @@ public class Hero implements IRegistryElement
     _name = name;
     _knownLangs.add("Common");
     _goldBanked = 0.0;
-    
+
     // Add random occupation and occupational skills
     _occ = Occupation.getRandomOccupation();
     // Assign initial inventory
@@ -122,34 +126,17 @@ public class Hero implements IRegistryElement
     _langString = buildLangString();
 
     // Set Klass attributes
-     _klass = Klass.createKlass(INITIAL_KLASS, _traits);
-     _gold = _klass.getStartingGold();
-     
-     // Now add the inventory
-     _inven = new Inventory();
+    _klass = Klass.createKlass(INITIAL_KLASS, _traits);
+    _gold = _klass.getStartingGold();
+
+    // Add occupational skills (Humans and Peasants have no special skills)
+    _skills = (ArrayList<Skill>) _occ.getSkills();
+
+    // Now add the inventory
+    _inven = new Inventory();
 
   } // end of Hero constructor
 
-
-  // ====================================================
-  // PRIVATE METHODS
-  // ====================================================
-
-  /** Compress all languages into a single comma-delimted string */
-  private String buildLangString()
-  {
-    StringBuilder sb = new StringBuilder();
-    for (String lang : _knownLangs) {
-      if (!lang.isEmpty()) {
-        sb.append(lang);
-        sb.append(",");
-      }
-    }
-    // Remove extraneous last comma
-    sb.deleteCharAt(sb.length() - 1);
-    String langList = new String(sb);
-    return langList;
-  }
 
   /**
    * Load all the Hero attributes into a single output map, keyed by the {@code PersonKeys} enum.
@@ -166,10 +153,18 @@ public class Hero implements IRegistryElement
     // Load the Hero attributes
     map.put(PersonKeys.NAME, _name);
     map.put(PersonKeys.AC, "" + _AC);
-    map.put(PersonKeys.OCCUPATION, _occ.getName());
     map.put(PersonKeys.LANGUAGES, _langString);
-    map.put(PersonKeys.GOLD, Double.toString(_gold));
+    int opGold = (int) _gold;
+    int opSilver = (int) ((_gold - opGold) * 10);
+    map.put(PersonKeys.GOLD, Integer.toString(opGold));
+    map.put(PersonKeys.SILVER, Integer.toString(opSilver));
     map.put(PersonKeys.GOLD_BANKED, Double.toString(_goldBanked));
+
+    // Load the occupation, occupation description, and skill list. Each skill in the list
+    // contains a skill name and skill action (description)
+    map.put(PersonKeys.OCCUPATION, _occ.getName());
+    map.put(PersonKeys.OCC_DESCRIPTOR, _occ.getDescription());
+    map.put(PersonKeys.SKILL, _skills.toString());
 
     // Load the Trait attributes
     _traits.loadTraitKeys(map);
@@ -184,8 +179,8 @@ public class Hero implements IRegistryElement
     int load = _inven.calcInventoryWeight();
     map.put(PersonKeys.LOAD, Integer.toString(load));
     map.put(PersonKeys.INVENTORY, _inven.toString());
-    
-    
+
+
     return map;
   }
 
@@ -234,77 +229,52 @@ public class Hero implements IRegistryElement
 
   public String toNamePlate()
   {
+    // return _name + ": " + _race.getGender().toString() + " " + _race.getName() + " "
+    // + _klass.className();
     return _name + ": " + _race.getGender().toString() + " " + _race.getName() + " "
-        + _klass.className();
+        + _occ.getName();
   }
 
-//  @Override
-//  public String toString()
-//  {
-//    return toNamePlate() + ". " + _traits;
-//  }
+  // ====================================================
+  // PRIVATE METHODS
+  // ====================================================
 
-//  @Override
-//  public boolean equals(Object obj)
-//  {
-//    if (this == obj)
-//      return true;
-//    if (obj == null)
-//      return false;
-//    if (getClass() != obj.getClass())
-//      return false;
-//    Hero other = (Hero) obj;
-//    if (_description == null) {
-//      if (other._description != null)
-//        return false;
-//    } else if (!_description.equals(other._description))
-//      return false;
-//    if (_gender == null) {
-//      if (other._gender != null)
-//        return false;
-//    } else if (!_gender.equals(other._gender))
-//      return false;
-//    if (_klass == null) {
-//      if (other._klass != null)
-//        return false;
-//    } else if (!_klass.equals(other._klass))
-//      return false;
-//    if (_name == null) {
-//      if (other._name != null)
-//        return false;
-//    } else if (!_name.equals(other._name))
-//      return false;
-//    if (_occ == null) {
-//      if (other._occ != null)
-//        return false;
-//    } else if (!_occ.equals(other._occ))
-//      return false;
-//    if (_race == null) {
-//      if (other._race != null)
-//        return false;
-//    } else if (!_race.equals(other._race))
-//      return false;
-//    return true;
-//  }
-
-  @Override
-  public String getKey()
+  /** Compress all languages into a single comma-delimted string */
+  private String buildLangString()
   {
-    return _name;
+    StringBuilder sb = new StringBuilder();
+    for (String lang : _knownLangs) {
+      if (!lang.isEmpty()) {
+        sb.append(lang);
+        sb.append(",");
+      }
+    }
+    // Remove extraneous last comma
+    sb.deleteCharAt(sb.length() - 1);
+    String langList = new String(sb);
+    return langList;
   }
+
 
   @Override
   public int hashCode()
   {
     final int prime = 31;
     int result = 1;
-//    result = prime * result + ((_description == null) ? 0 : _description.hashCode());
-//    result = prime * result + ((_gender == null) ? 0 : _gender.hashCode());
+    // result = prime * result + ((_description == null) ? 0 : _description.hashCode());
+    // result = prime * result + ((_gender == null) ? 0 : _gender.hashCode());
     result = prime * result + ((_klass == null) ? 0 : _klass.hashCode());
     result = prime * result + ((_name == null) ? 0 : _name.hashCode());
     result = prime * result + ((_occ == null) ? 0 : _occ.hashCode());
     result = prime * result + ((_race == null) ? 0 : _race.hashCode());
     return result;
+  }
+
+
+  @Override
+  public String getKey()
+  {
+    return _name;
   }
 
 } // end of Hero class

@@ -6,3 +6,9 @@ carolla
 polymorphically
 gaussian
 lethal
+charisma
+cleric
+gnome
+hobbit
+klass
+multiline

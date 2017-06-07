@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import chronos.civ.PersonKeys;
+import chronos.pdc.Skill;
 import chronos.pdc.character.TraitList.PrimeTraits;
 import mylib.pdc.MetaDie;
 
@@ -49,7 +50,7 @@ public abstract class Klass
   protected TraitList _traits;
   private static final MetaDie _md = new MetaDie();
 
-
+  
   // ====================================================
   // ABSTRACT METHODS FOR SUBCLASSES
   // ====================================================
@@ -169,7 +170,6 @@ public abstract class Klass
   public double getStartingGold()
   {
     return rollStartingGold();
-
   }
 
 
@@ -184,7 +184,7 @@ public abstract class Klass
     map.put(PersonKeys.HP, Integer.toString(_currentHP));
     map.put(PersonKeys.HP_MAX, Integer.toString(_HP_Max));
     map.put(PersonKeys.LEVEL, Integer.toString(_level));
-    map.put(PersonKeys.XP, Integer.toString(_XP));
+    map.put(PersonKeys.XP, Integer.toString(_XP));    
   }
 
   public int getCurrentHP()

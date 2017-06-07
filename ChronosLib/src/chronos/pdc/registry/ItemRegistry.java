@@ -52,7 +52,7 @@ public class ItemRegistry extends Registry<Item>
       add(new Item(ItemCategory.CLOTHING, "Shirt", 8));// 0.5 lb
       add(new Item(ItemCategory.EQUIPMENT, "Tinderbox", 5));// 0.3125 lb
       add(new Item(ItemCategory.EQUIPMENT, "Torch", 8));// 0.5 lb
-      add(new Item(ItemCategory.EQUIPMENT, "Rations", 2));// 0.125 lb
+      add(new Item(ItemCategory.PROVISION, "Rations", 2));// 0.125 lb
       add(new Item(ItemCategory.EQUIPMENT, "Water skein", 80));// 5.0 lb
       add(new Item(ItemCategory.VALUABLES, "Platinum pieces", 2));
       add(new Item(ItemCategory.VALUABLES, "Gem, topaz", 25));

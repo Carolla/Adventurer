@@ -25,6 +25,7 @@ public enum PersonKeys {
   GENDER,
   HAIR_COLOR,
   OCCUPATION,
+  OCC_DESCRIPTOR,
   RACENAME,
   // Hero is always created as a Peasant first
   KLASSNAME,
@@ -68,7 +69,6 @@ public enum PersonKeys {
 
   // This group contains the remaining displayable set of key values for the Person
   AC,
-//  AC_MAGIC,
   DESCRIPTION,
   GOLD,
   GOLD_BANKED,
@@ -80,7 +80,8 @@ public enum PersonKeys {
   LANGUAGES,
   LITERACY,
   LEVEL,
-//  SILVER,
+  SILVER,
+  SKILL,
   SPEED,
   WEIGHT,
   XP;

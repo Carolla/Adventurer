@@ -36,7 +36,7 @@ import net.miginfocom.swing.MigLayout;
 
 /**
  * Allows the author to input a few key attributes of their Hero. A CIV object is called to validate
- * the data and create the {@code Hero} object. <BL>
+ * the data and create the {@code Hero} object. <UL>
  * <LI>Name: All Persons must have a name by which they are addressed, and are associated with a
  * file in which they are saved.</LI>
  * <LI>Gender: Females are, on average, shorter, lighter, and have less Strength than Males (the
@@ -44,10 +44,9 @@ import net.miginfocom.swing.MigLayout;
  * <LI>Hair color: A cosmetic attribute for effect. No semantic information.</LI>
  * <LI>Race: Human is the default, but others are available: Dwarf, Elf, Gnome, Half-Elf, Half-Orc,
  * or Hobbit. Each have special penalties and bonuses compared to the Human.</LI>
- * <LI>Klass: All new Persons start as a Level 1 Peasants. After they gain exnough experienc points,
- * the can join a guild to become one of Fighter, Cleric, Rogue, or Wizard. </li>
- * <P>
- * </BL>
+ * <LI>Klass: All new Persons start as a Level 0 Peasants. After they gain enough experience points,
+ * the can join a guild to become one of Fighter, Cleric, Rogue, or Wizard.</li>
+ * </UL>
  * 
  * @author Alan Cline
  * @version Jan 24 2009 // original <br>
@@ -68,13 +67,15 @@ public class NewHeroIPPanel extends ChronosPanel
   /** Prompt for hero's name */
   private final String HERO_NAME_PROMPT = "What is your Hero's Name?";
   /** Hair color prompt */
-  private final String HERO_HAIR_PROMPT = "What color is your hair?";
+//  private final String HERO_HAIR_PROMPT = "What color is your hair?";
+  private final String HERO_HAIR_PROMPT = "Choose your hair color";
   /** Gender prompt */
-  private final String HERO_GENDER_PROMPT = "What gender are you?";
+//  private final String HERO_GENDER_PROMPT = "What gender are you?";
+  private final String HERO_GENDER_PROMPT = "Choose your gender";
   /** Race prompt */
   private final String HERO_RACE_PROMPT = "Choose your Race";
-  /** Occupation prompt */
-  private final String HERO_KLASS_PROMPT = "What Guild to you belong to?";
+  // /** Klass prompt */
+  // private final String HERO_KLASS_PROMPT = "What Guild to you belong to?";
 
   /** Space between buttons */
   private final String SPACER = "          ";
@@ -83,7 +84,6 @@ public class NewHeroIPPanel extends ChronosPanel
   private final String HERO_ERROR_TITLE = "COULDN'T CREATE HERO";
   /** Error message when name (required field) is omitted */
   private final String ERRMSG_NAME_MISSING = "Your Hero must have a name!";
-  /** Error message when namefield is too long */
 
   /** Background color inherited from parent */
   private Color _backColor = Constants.MY_BROWN;
@@ -101,7 +101,7 @@ public class NewHeroIPPanel extends ChronosPanel
   private JTextField _nameField = null;
 
   private JComboBox<String> _hairCombo;
-  private JComboBox<String> _klassCombo;
+  // private JComboBox<String> _klassCombo;
   private JComboBox<String> _raceCombo;
 
 
@@ -119,8 +119,7 @@ public class NewHeroIPPanel extends ChronosPanel
    * created in private helper methods.
    * 
    * @param nhCiv controls this ChronosPanel
-   * @param mfCiv mainframeCiv needed for displaying the panel
-   * @param maCiv
+   * @param hdCiv needed for displaying the panel
    */
   public NewHeroIPPanel(NewHeroCiv nhCiv, HeroDisplayCiv hdCiv)
   {
@@ -142,42 +141,40 @@ public class NewHeroIPPanel extends ChronosPanel
 
     /* HERO NAME AND PROMPT COMPONENTS */
     // Add name components to the name subpanel
-    // Create a hero name prompt label centered
+    // Create a hero name prompt label centered across all columns
     add(new JLabel(HERO_NAME_PROMPT), "push, aligncenter, span");
 
-    // Create the input text field to collect the Hero's name give it
-    // default focus
+    // Create the input text field to collect the Hero's name give it default focus
     _nameField = makeNameField();
     add(_nameField, "push, align center, span");
 
-    /*
-     * THIS GRID POPULATES HORIZONTALLY: Save all Components for later data extraction
-     */
-    // Prompts for gender radio buttons and air color combo box */
+    /* Label prompts for three horizontal inputs */
     add(new JLabel(HERO_GENDER_PROMPT), "push, align center, gaptop 5%");
-    add(new JLabel(HERO_HAIR_PROMPT), "push, align center, wrap");
+//    add(new JLabel(HERO_HAIR_PROMPT), "push, align center, wrap");
+//    add(new JLabel(HERO_RACE_PROMPT), "push, align center, gaptop 5%");
+    add(new JLabel(HERO_HAIR_PROMPT), "push, align center, gaptop 5%");
+    add(new JLabel(HERO_RACE_PROMPT), "push, align center, wrap");
+    // add(new JLabel(HERO_KLASS_PROMPT), "push, align center, wrap");
 
     /* Gender radio buttons */
     _genderPanel = new GenderPanel();
     add(_genderPanel.toJPanel());
     /* Hair color drop-down box */
-    add(makeHairCombo(), "wrap");
-
-    /* Prompts for Race and Occupation drop-downs */
-    add(new JLabel(HERO_RACE_PROMPT), "push, align center, gaptop 5%");
-    add(new JLabel(HERO_KLASS_PROMPT), "push, align center, wrap");
+//    add(makeHairCombo(), "wrap");
+    add(makeHairCombo());
 
     /* Add the Race drop-down combo */
-    add(makeRaceCombo(), "push, align center");
-    /* Add the Occupation drop-down combo */
-    add(makeKlassCombo(), "push, align center, wrap");
+    add(makeRaceCombo(), "push, align center, wrap");
+    // /* Add the Klass drop-down combo */
+    // add(makeKlassCombo(), "push, align center, wrap");
 
     /* Add a button panel containing the Submit and Cancel buttons */
-    add(makeButtonPanel(), "push, align center, span, gaptop 20%");
+//    add(makeButtonPanel(), "push, align center, span, gaptop 20%");
+    add(makeButtonPanel(), "push, align center, span, gaptop 50%");
 
   } // end NewHeroIPPanel constructor
 
-  
+
   // ============================================================
   // Private Methods
   // ============================================================
@@ -207,13 +204,13 @@ public class NewHeroIPPanel extends ChronosPanel
     JButton cancelButton = new JButton("CANCEL");
     // Clear editFlag and data, then return back to main action panel if
     // Cancel is pressed
-    cancelButton.addActionListener((a) -> _hdCiv.back());
+    // TODO Remove this lambda expressionl; it produces a Javadoc error
+//    cancelButton.addActionListener((a) -> _hdCiv.back());
 
     // Create the SUBMIT button
     JButton submitButton = new JButton("SUBMIT");
 
-    // Display error message if received from submit button, or new Hero if
-    // OK
+    // Display error message if received from submit button, or new Hero if OK
     submitButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent event)
       {
@@ -250,18 +247,18 @@ public class NewHeroIPPanel extends ChronosPanel
     return _hairCombo;
   }
 
-  /**
-   * Create a combo box of Guilds (Klasses) that the Hero may want to be
-   * 
-   * @return the JComboBox<String> of Guild options
-   */
-  private JComboBox<String> makeKlassCombo()
-  {
-    _klassCombo = new JComboBox<String>(NewHeroCiv.KLASS_LIST);
-    _klassCombo.setEditable(false);
-    _klassCombo.setBackground(Color.WHITE);
-    return _klassCombo;
-  }
+  // /**
+  // * Create a combo box of Guilds (Klasses) that the Hero may want to be
+  // *
+  // * @return the JComboBox<String> of Guild options
+  // */
+  // private JComboBox<String> makeKlassCombo()
+  // {
+  // _klassCombo = new JComboBox<String>(NewHeroCiv.KLASS_LIST);
+  // _klassCombo.setEditable(false);
+  // _klassCombo.setBackground(Color.WHITE);
+  // return _klassCombo;
+  // }
 
   /**
    * Create the Hero's name input field and associated action before placement
@@ -344,7 +341,7 @@ public class NewHeroIPPanel extends ChronosPanel
     input.put(HeroInput.GENDER, _genderPanel.getSelectedGender());
     input.put(HeroInput.HAIR, String.valueOf(_hairCombo.getSelectedItem()));
     input.put(HeroInput.RACE, String.valueOf(_raceCombo.getSelectedItem()));
-    input.put(HeroInput.KLASS, String.valueOf(_klassCombo.getSelectedItem()));
+    // input.put(HeroInput.KLASS, String.valueOf(_klassCombo.getSelectedItem()));
 
     return input;
   }

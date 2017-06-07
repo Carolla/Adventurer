@@ -42,6 +42,7 @@ public class Peasant extends Klass
   {}
 
 
+
   /** Peasants get a fixed 10 pts, augmented later when they join a guild */
   @Override
   public int rollHP()

@@ -41,7 +41,7 @@ public class Skill implements IRegistryElement
     protected final String _description;
 
     /** Errors message for missing field */
-    private final String FLDERR_MISSING = "%s field is requied to have data";
+    private final String FLDERR_MISSING = "%s field is required to have data";
 
     /*
      * CONSTRUCTOR(S) AND RELATED METHODS
@@ -78,16 +78,6 @@ public class Skill implements IRegistryElement
         // Build the skill as specifics
         _name = name;
         _description = desc;
-    }
-
-    @Override
-    public int hashCode()
-    {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + ((_description == null) ? 0 : _description.hashCode());
-      result = prime * result + ((_name == null) ? 0 : _name.hashCode());
-      return result;
     }
 
     @Override
@@ -147,6 +137,16 @@ public class Skill implements IRegistryElement
     @Override
     public String toString()
     {
-        return (_name);
+        return (_name + ": " + _description);
+    }
+
+    @Override
+    public int hashCode()
+    {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((_description == null) ? 0 : _description.hashCode());
+      result = prime * result + ((_name == null) ? 0 : _name.hashCode());
+      return result;
     }
 } // end of Skill outer class

@@ -66,6 +66,21 @@ public class HeroDisplayCiv
     _mfCiv.backToMain(null);
   }
 
+  public boolean createPerson()
+  {
+    return _dorm.add(_hero);
+  }
+
+  /**
+   * Delete the Person
+   * 
+   * @return true if the delete worked correctly; else false
+   */
+  public void deletePerson()
+  {
+    _dorm.delete(_hero);
+  }
+
   /**
    * Display the Hero the HeroDisplay widget.
    * 
@@ -85,26 +100,9 @@ public class HeroDisplayCiv
     _mfCiv.replaceLeftPanel(_heroDisp);
   }
 
-  private void addAdditionalHeroStuff(Hero hero)
+  public boolean overwritePerson()
   {
-    Inventory inventory = hero.getInventory();
-    _heroDisp.addSkills(_hero.getOcpSkills(), _hero.getRaceSkills(), _hero.getKlassSkills());
-    _heroDisp.addInventory(inventory);
-    _heroDisp.addMagicItem(inventory.getNameList(ItemCategory.MAGIC));
-    if (_hero.canUseMagic()) {
-      _heroDisp.addMaterials(inventory.getNameList(ItemCategory.SPELL_MATERIAL));
-      _heroDisp.addSpell(_hero.getSpellBook());
-    }
-  }
-
-  /**
-   * Delete the Person
-   * 
-   * @return true if the delete worked correctly; else false
-   */
-  public void deletePerson()
-  {
-    _dorm.delete(_hero);
+    return _dorm.update(_hero);
   }
 
   /**
@@ -118,14 +116,16 @@ public class HeroDisplayCiv
     _hero.setName(name);
   }
 
-  public boolean overwritePerson()
+  private void addAdditionalHeroStuff(Hero hero)
   {
-    return _dorm.update(_hero);
-  }
-
-  public boolean createPerson()
-  {
-    return _dorm.add(_hero);
+    Inventory inventory = hero.getInventory();
+    _heroDisp.addSkills(_hero.getOcpSkills(), _hero.getRaceSkills(), _hero.getKlassSkills());
+    _heroDisp.addInventory(inventory);
+    _heroDisp.addMagicItem(inventory.getNameList(ItemCategory.MAGIC));
+    if (_hero.canUseMagic()) {
+      _heroDisp.addMaterials(inventory.getNameList(ItemCategory.SPELL_MATERIAL));
+      _heroDisp.addSpell(_hero.getSpellBook());
+    }
   }
 } // end of HeroDisplayCiv class
 

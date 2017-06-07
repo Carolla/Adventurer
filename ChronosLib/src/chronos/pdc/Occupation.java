@@ -12,11 +12,11 @@ package chronos.pdc;
 import java.util.ArrayList;
 import java.util.List;
 
+import chronos.pdc.registry.OccupationRegistry;
+import chronos.pdc.registry.SkillRegistry;
 import mylib.ApplicationException;
 import mylib.dmc.IRegistryElement;
 import mylib.pdc.MetaDie;
-import chronos.pdc.registry.OccupationRegistry;
-import chronos.pdc.registry.SkillRegistry;
 
 /**
  * An occupation gives a person some skill from their previous experience. Occupations are
@@ -27,6 +27,7 @@ import chronos.pdc.registry.SkillRegistry;
  * @version Feb 5 2011 // original <br>
  *          June 13, 2011 // TAA updated for registries <br>
  *          Feb 29, 2012 // ABC updated to add Skill object <br>
+ *          June 3 2017 // ABC updated to display Skill actions <br>
  */
 public class Occupation implements IRegistryElement
 {
@@ -153,7 +154,7 @@ public class Occupation implements IRegistryElement
     return _trait;
   }
 
-  public List<Skill> getSkill()
+  public List<Skill> getSkills()
   {
     return _skills;
   }
@@ -172,7 +173,7 @@ public class Occupation implements IRegistryElement
     return names;
   }
 
-  /** Return a string of the Occupatio's name and skill */
+  /** Return a string of the Occupation's name */
   public String toString()
   {
     return _name;

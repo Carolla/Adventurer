@@ -26,6 +26,7 @@ import chronos.pdc.Item.ItemCategory;
 import chronos.pdc.character.Inventory;
 import civ.HeroDisplayCiv;
 import mylib.Constants;
+import mylib.pdc.Utilities;
 import net.miginfocom.swing.MigLayout;
 
 
@@ -134,6 +135,7 @@ public class HeroDisplay extends ChronosPanel
 
   /** Background color inherited from parent */
   private Color _backColor = Constants.MY_BROWN;
+  private Color _gridColor = Color.LIGHT_GRAY.brighter().brighter();
 
   /** The backend CIV for this panel */
   private final HeroDisplayCiv _hdCiv;
@@ -144,7 +146,8 @@ public class HeroDisplay extends ChronosPanel
   private final JPanel _skillPanel;
   private final JPanel _invenPanel;
   private final JPanel _magicPanel;
-  private final JTabbedPane _tabPane = new JTabbedPane();
+  // private final JTabbedPane _tabPane = new JTabbedPane();
+  private final JTabbedPane _tabPane;
   private JButton _delButton;
   private JButton _saveButton;
   private JButton _cancelButton;
@@ -158,11 +161,14 @@ public class HeroDisplay extends ChronosPanel
    * Create the GUI and populate it with various data maps
    * 
    * @param hdCiv the intermediary between this GUI and the Person
-   * @param ds
    */
   public HeroDisplay(HeroDisplayCiv hdCiv)
   {
     super("Nameplate goes here");
+
+    // Tab pane fits on left-half of screen
+    _tabPane = new JTabbedPane();
+
     _hdCiv = hdCiv;
 
     setLayout(new MigLayout());
@@ -209,18 +215,18 @@ public class HeroDisplay extends ChronosPanel
     // Section 1: Literacy
     _skillPanel.add(gridCell("", _ds.get(PersonKeys.LITERACY)), "gaptop 10, span 6, growx, wrap");
 
-    // Section 2: Occupational Skills title
-    _skillPanel.add(buildMultiCell(_ds.get(PersonKeys.OCCUPATION) + " SKILLS: ", ocpSkills),
+    // Section 2: Occupational Skills
+    _skillPanel.add(buildMultiCell(_ds.get(PersonKeys.OCCUPATION) + " Skills: ", ocpSkills),
         "growx, wrap");
 
     // Section 3: Racial skills
-    _skillPanel
-        .add(buildMultiCell("SPECIAL " + _ds.get(PersonKeys.RACENAME).toUpperCase() + " SKILLS: ",
-            racialSkills), "growx, wrap");
+    String rSkills = Utilities.capitalize(_ds.get(PersonKeys.RACENAME));
+    _skillPanel.add(buildMultiCell("Special " + rSkills + " Skills: ", racialSkills),
+        "growx, wrap");
 
-    // Section 4: Klass skills
-    _skillPanel.add(buildMultiCell(_ds.get(PersonKeys.KLASSNAME).toUpperCase() + " SKILLS: ",
-        klassSkills), "growx, wrap");
+    // // Section 4: Klass skills
+    // _skillPanel.add(buildMultiCell(_ds.get(PersonKeys.KLASSNAME).toUpperCase() + " SKILLS: ",
+    // klassSkills), "growx, wrap");
   }
 
   /**
@@ -237,7 +243,7 @@ public class HeroDisplay extends ChronosPanel
     _invenPanel.add(gridCell("Armor Worn: ", " None"), "span 6, growx, wrap 0");
 
     JPanel blankLine = gridCell("", "");
-    blankLine.setBackground(Color.DARK_GRAY);
+//    blankLine.setBackground(Color.DARK_GRAY);
     _invenPanel.add(blankLine, "span 6, growx, wrap 0");
 
     for (ItemCategory category : ItemCategory.values()) {
@@ -321,7 +327,7 @@ public class HeroDisplay extends ChronosPanel
    * Create the person's attributes in a grid panel for display. Attributes are unpacked from the
    * outputmap as they are needed, row by row.
    * <P>
-   * HEURISTIC LAYOUT: Character attibutes, e.g. XP and Level, go toward the left side; Personal
+   * HEURISTIC LAYOUT: Character attributes, e.g. XP and Level, go toward the left side; Personal
    * attributes, such as gender, weight, and height, go toward the right side. The more important
    * attributes, e.g. HP and Klass, go toward the top; lesser ones, e.g. description and gold
    * banked, toward the bottom.
@@ -362,13 +368,13 @@ public class HeroDisplay extends ChronosPanel
     attribPanel.add(gridCell("Speed: ", _ds.get(PersonKeys.SPEED)), "growx");
     attribPanel.add(gridCell("Gold Banked: ", _ds.get(PersonKeys.GOLD_BANKED)), "growx");
     String gp = _ds.get(PersonKeys.GOLD);
-//    String sp = _ds.get(PersonKeys.SILVER);
-//    String inHand = gp + " gp / " + sp + " sp";
-//    attribPanel.add(gridCell("Gold in Hand: ", inHand), "span 3, growx, wrap");
+    String sp = _ds.get(PersonKeys.SILVER);
+    String inHand = gp + " gp / " + sp + " sp";
+    attribPanel.add(gridCell("Gold in Hand: ", inHand), "span 3, growx, wrap");
 
     // Row 3: Personal description (full line, possibly multiline)
-    attribPanel.add(gridCell("Description: ", _ds.get(PersonKeys.DESCRIPTION)),
-        "span 6, growx, wrap");
+    String desc = _ds.get(PersonKeys.DESCRIPTION);
+    attribPanel.add(wrapCell("Description: ", desc), "span 6, growx, wrap");
 
     // Row 4: STR trait, ToHitMelee, Damage, Wt Allowance (gpw), Load Carried (gpw)
     attribPanel.add(gridCell("STR: ", _ds.get(PersonKeys.STR)), "growx");
@@ -440,9 +446,11 @@ public class HeroDisplay extends ChronosPanel
     String langList = String.format("%s", _ds.get(PersonKeys.LANGUAGES));
     attribPanel.add(gridCell(langList, ""), "span 4, growx, wrap");
 
-    // Row 12: Occupation (full line, possibly multiline)
-    attribPanel.add(gridCell("Former Occupation: ", _ds.get(PersonKeys.OCCUPATION)),
-        "span 6, growx, wrap");
+    // Row 12: Occupation and description (full line, possibly multiline)
+//    attribPanel.add(gridCell(_ds.get(PersonKeys.OCCUPATION) + ": ",
+//        _ds.get(PersonKeys.OCC_DESCRIPTOR)), "span 6, growx, wrap");
+    attribPanel.add(wrapCell(_ds.get(PersonKeys.OCCUPATION) + ": ",
+        _ds.get(PersonKeys.OCC_DESCRIPTOR)), "span 6, growx, wrap");
 
     return attribPanel;
 
@@ -527,6 +535,7 @@ public class HeroDisplay extends ChronosPanel
     return panel;
   }
 
+
   /**
    * Add a JTextArea into a multiline grid
    * 
@@ -537,7 +546,8 @@ public class HeroDisplay extends ChronosPanel
   {
     JTextArea msgArea = new JTextArea(nameList.size() + 1, DATA_WIDTH);
     msgArea.setPreferredSize(new Dimension(DATA_WIDTH, nameList.size() + 1));
-    msgArea.setBackground(_backColor);
+    msgArea.setBackground(_backColor);  
+
     msgArea.setEditable(false);
     msgArea.setLineWrap(true); // auto line wrapping doesn't seem to work
     msgArea.setWrapStyleWord(true);
@@ -553,13 +563,36 @@ public class HeroDisplay extends ChronosPanel
         msgArea.append(" + " + name + Constants.NEWLINE);
       }
     }
-
     // Add the text area into a JPanel cell
     JPanel cell = new JPanel(new MigLayout("ins 0"));
     cell.add(msgArea, "growx, wrap");
     cell.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
     return cell;
   }
+
+  
+  private JPanel wrapCell(String label, String desc)
+  {
+    JTextArea msgArea = new JTextArea(1, DATA_WIDTH);
+    msgArea.setPreferredSize(new Dimension(DATA_WIDTH, 1));
+    msgArea.setEditable(false);
+    msgArea.setLineWrap(true); // auto line wrapping doesn't seem to work
+    msgArea.setWrapStyleWord(true);
+//    msgArea.setBackground(Color.GRAY.brighter().brighter());
+//    Color clr = msgArea.getBackground();
+    msgArea.setBackground(_gridColor);
+
+    // Display the title
+    msgArea.append(" " + label);
+    msgArea.append(desc);
+  
+    // Add the text area into a JPanel cell
+    JPanel cell = new JPanel(new MigLayout("ins 0"));
+    cell.add(msgArea);
+    cell.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+    return cell;
+  }
+
 
   /**
    * Creates a lined bordered cell containing a label and its value. The label and its value can be
@@ -575,12 +608,16 @@ public class HeroDisplay extends ChronosPanel
   {
     JPanel p = new JPanel(new MigLayout("inset 3"));
     p.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-    p.add(new JLabel(label, SwingConstants.LEFT));
+    JLabel tmp = new JLabel(label, SwingConstants.LEFT);
+    //Color clr = tmp.getBackground();
+    p.setBackground(_gridColor);
+    p.add(tmp);
     p.add(new JLabel(value, SwingConstants.RIGHT));
-
+//    p.add(new JLabel(label, SwingConstants.LEFT));
     return p;
   }
 
+  
   /**
    * Delete the Person currently being displayed into a new file.
    * 
