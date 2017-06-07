@@ -36,7 +36,8 @@ import net.miginfocom.swing.MigLayout;
 
 /**
  * Allows the author to input a few key attributes of their Hero. A CIV object is called to validate
- * the data and create the {@code Hero} object. <UL>
+ * the data and create the {@code Hero} object.
+ * <UL>
  * <LI>Name: All Persons must have a name by which they are addressed, and are associated with a
  * file in which they are saved.</LI>
  * <LI>Gender: Females are, on average, shorter, lighter, and have less Strength than Males (the
@@ -67,15 +68,11 @@ public class NewHeroIPPanel extends ChronosPanel
   /** Prompt for hero's name */
   private final String HERO_NAME_PROMPT = "What is your Hero's Name?";
   /** Hair color prompt */
-//  private final String HERO_HAIR_PROMPT = "What color is your hair?";
   private final String HERO_HAIR_PROMPT = "Choose your hair color";
   /** Gender prompt */
-//  private final String HERO_GENDER_PROMPT = "What gender are you?";
   private final String HERO_GENDER_PROMPT = "Choose your gender";
   /** Race prompt */
   private final String HERO_RACE_PROMPT = "Choose your Race";
-  // /** Klass prompt */
-  // private final String HERO_KLASS_PROMPT = "What Guild to you belong to?";
 
   /** Space between buttons */
   private final String SPACER = "          ";
@@ -131,8 +128,7 @@ public class NewHeroIPPanel extends ChronosPanel
     setPreferredSize(Mainframe.getWindowSize());
 
     int pad = Mainframe.PAD;
-    Border matte = BorderFactory.createMatteBorder(pad, pad, pad, pad,
-        Color.WHITE);
+    Border matte = BorderFactory.createMatteBorder(pad, pad, pad, pad, Color.WHITE);
     setBorder(matte);
     setBackground(_backColor);
 
@@ -150,26 +146,19 @@ public class NewHeroIPPanel extends ChronosPanel
 
     /* Label prompts for three horizontal inputs */
     add(new JLabel(HERO_GENDER_PROMPT), "push, align center, gaptop 5%");
-//    add(new JLabel(HERO_HAIR_PROMPT), "push, align center, wrap");
-//    add(new JLabel(HERO_RACE_PROMPT), "push, align center, gaptop 5%");
     add(new JLabel(HERO_HAIR_PROMPT), "push, align center, gaptop 5%");
     add(new JLabel(HERO_RACE_PROMPT), "push, align center, wrap");
-    // add(new JLabel(HERO_KLASS_PROMPT), "push, align center, wrap");
 
     /* Gender radio buttons */
     _genderPanel = new GenderPanel();
     add(_genderPanel.toJPanel());
     /* Hair color drop-down box */
-//    add(makeHairCombo(), "wrap");
     add(makeHairCombo());
 
     /* Add the Race drop-down combo */
     add(makeRaceCombo(), "push, align center, wrap");
-    // /* Add the Klass drop-down combo */
-    // add(makeKlassCombo(), "push, align center, wrap");
 
     /* Add a button panel containing the Submit and Cancel buttons */
-//    add(makeButtonPanel(), "push, align center, span, gaptop 20%");
     add(makeButtonPanel(), "push, align center, span, gaptop 50%");
 
   } // end NewHeroIPPanel constructor
@@ -202,10 +191,9 @@ public class NewHeroIPPanel extends ChronosPanel
 
     // Create the CANCEL button
     JButton cancelButton = new JButton("CANCEL");
-    // Clear editFlag and data, then return back to main action panel if
-    // Cancel is pressed
+    // Clear editFlag and data, then return back to main action panel if Cancel is pressed
     // TODO Remove this lambda expressionl; it produces a Javadoc error
-//    cancelButton.addActionListener((a) -> _hdCiv.back());
+    cancelButton.addActionListener((a) -> _hdCiv.back());
 
     // Create the SUBMIT button
     JButton submitButton = new JButton("SUBMIT");
@@ -247,18 +235,6 @@ public class NewHeroIPPanel extends ChronosPanel
     return _hairCombo;
   }
 
-  // /**
-  // * Create a combo box of Guilds (Klasses) that the Hero may want to be
-  // *
-  // * @return the JComboBox<String> of Guild options
-  // */
-  // private JComboBox<String> makeKlassCombo()
-  // {
-  // _klassCombo = new JComboBox<String>(NewHeroCiv.KLASS_LIST);
-  // _klassCombo.setEditable(false);
-  // _klassCombo.setBackground(Color.WHITE);
-  // return _klassCombo;
-  // }
 
   /**
    * Create the Hero's name input field and associated action before placement
@@ -341,7 +317,6 @@ public class NewHeroIPPanel extends ChronosPanel
     input.put(HeroInput.GENDER, _genderPanel.getSelectedGender());
     input.put(HeroInput.HAIR, String.valueOf(_hairCombo.getSelectedItem()));
     input.put(HeroInput.RACE, String.valueOf(_raceCombo.getSelectedItem()));
-    // input.put(HeroInput.KLASS, String.valueOf(_klassCombo.getSelectedItem()));
 
     return input;
   }

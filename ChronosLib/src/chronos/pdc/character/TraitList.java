@@ -257,7 +257,7 @@ public class TraitList
     return getTrait(INT) / 2 - 4;
   }
 
-  
+
   public boolean isLargestTrait(PrimeTraits trait)
   {
     return getTrait(findLargestTrait()) == getTrait(trait);
@@ -281,8 +281,8 @@ public class TraitList
 
     // STR
     int strMod = calcMod(PrimeTraits.STR);
-    map.put(PersonKeys.DAMAGE, "" + strMod);
-    map.put(PersonKeys.TO_HIT_MELEE, "" + strMod);
+    map.put(PersonKeys.DAMAGE, addPolarity(strMod));
+    map.put(PersonKeys.TO_HIT_MELEE, addPolarity(strMod));
     map.put(PersonKeys.WT_ALLOW, "" + getWeightAllowance());
 
     // INT
@@ -291,16 +291,16 @@ public class TraitList
 
     // WIS
     int wisMod = calcMod(PrimeTraits.WIS);
-    map.put(PersonKeys.MDM, "" + wisMod);
+    map.put(PersonKeys.MDM, "" + addPolarity(wisMod));
 
     // CON
     int conMod = calcMod(PrimeTraits.CON);
-    map.put(PersonKeys.HP_MOD, "" + conMod);
+    map.put(PersonKeys.HP_MOD, addPolarity(conMod));
 
     // DEX
     int dexMod = calcMod(PrimeTraits.DEX);
-    map.put(PersonKeys.TO_HIT_MISSLE, "" + dexMod);
-    map.put(PersonKeys.AC_MOD, "" + dexMod);
+    map.put(PersonKeys.TO_HIT_MISSLE, addPolarity(dexMod));
+    map.put(PersonKeys.AC_MOD, addPolarity(dexMod));
 
     // AP mods
     map.put(PersonKeys.SPEED, "" + _speed);
@@ -312,6 +312,13 @@ public class TraitList
   }
 
 
+  private String addPolarity(int mod) 
+  {
+    String modStr = (mod > 0) ? "+" + mod : Integer.toString(mod);
+    return modStr;
+  }
+  
+  
   public void recalcSpeed(int height)
   {
     if (height < 49) {

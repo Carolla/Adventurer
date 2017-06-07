@@ -9,6 +9,7 @@ package hic;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Insets;
 import java.util.List;
 import java.util.Map;
 
@@ -110,6 +111,7 @@ import net.miginfocom.swing.MigLayout;
  *          Oct 1 2015 // revised to accommodate new Hero character sheet <br>
  *          Oct 17 2015 // added dual tab pane for Spell casters vs non-spell casters <br>
  *          Nov 22 2015 // updated Save, Overwrite, Rename, and Cancel buttons for new Hero <br>
+ *          Jun 7 2017 // revised to accommodate non-Klass peasants, and a little esthetics <br>
  */
 @SuppressWarnings("serial")
 public class HeroDisplay extends ChronosPanel
@@ -135,7 +137,7 @@ public class HeroDisplay extends ChronosPanel
 
   /** Background color inherited from parent */
   private Color _backColor = Constants.MY_BROWN;
-  private Color _gridColor = Color.LIGHT_GRAY.brighter().brighter();
+  private Color _gridColor = Color.LIGHT_GRAY.brighter();
 
   /** The backend CIV for this panel */
   private final HeroDisplayCiv _hdCiv;
@@ -243,7 +245,7 @@ public class HeroDisplay extends ChronosPanel
     _invenPanel.add(gridCell("Armor Worn: ", " None"), "span 6, growx, wrap 0");
 
     JPanel blankLine = gridCell("", "");
-//    blankLine.setBackground(Color.DARK_GRAY);
+    // blankLine.setBackground(Color.DARK_GRAY);
     _invenPanel.add(blankLine, "span 6, growx, wrap 0");
 
     for (ItemCategory category : ItemCategory.values()) {
@@ -345,7 +347,6 @@ public class HeroDisplay extends ChronosPanel
    * @param panelLimits size of the parent panel into which this panel must fit
    * @return the attribute grid panel
    */
-  // private JPanel buildAttributePanel(Dimension panelLimits)
   private JPanel buildAttributePanel()
   {
     // Create a layout that spans the entire width of the panel
@@ -363,10 +364,10 @@ public class HeroDisplay extends ChronosPanel
     attribPanel.add(gridCell("AC: ", _ds.get(PersonKeys.AC)), "growx");
     attribPanel.add(gridCell("Hunger: ", _ds.get(PersonKeys.HUNGER)), "span 2, growx, wrap");
 
-    // Row 2: XP, Speed, Gold Banked, Gold (gp/sp) (in hand) (3)
+    // Row 2: XP, Speed, Gold Banked (gp), Gold (gp/sp) (in hand) (3)
     attribPanel.add(gridCell("XP: ", _ds.get(PersonKeys.XP)), "growx");
     attribPanel.add(gridCell("Speed: ", _ds.get(PersonKeys.SPEED)), "growx");
-    attribPanel.add(gridCell("Gold Banked: ", _ds.get(PersonKeys.GOLD_BANKED)), "growx");
+    attribPanel.add(gridCell("Gold Banked: ", _ds.get(PersonKeys.GOLD_BANKED) + " gp"), "growx");
     String gp = _ds.get(PersonKeys.GOLD);
     String sp = _ds.get(PersonKeys.SILVER);
     String inHand = gp + " gp / " + sp + " sp";
@@ -376,12 +377,13 @@ public class HeroDisplay extends ChronosPanel
     String desc = _ds.get(PersonKeys.DESCRIPTION);
     attribPanel.add(wrapCell("Description: ", desc), "span 6, growx, wrap");
 
-    // Row 4: STR trait, ToHitMelee, Damage, Wt Allowance (gpw), Load Carried (gpw)
+    // Row 4: STR trait, ToHitMelee, Damage, Wt Allowance (lb), Load Carried (lb / oz)
     attribPanel.add(gridCell("STR: ", _ds.get(PersonKeys.STR)), "growx");
     attribPanel.add(gridCell("To Hit (Melee): ", _ds.get(PersonKeys.TO_HIT_MELEE)), "growx");
     attribPanel.add(gridCell("Damage: ", _ds.get(PersonKeys.DAMAGE)), "growx");
-    attribPanel.add(gridCell("Wt Allowance (gpw): ", _ds.get(PersonKeys.WT_ALLOW)), "growx");
-    attribPanel.add(gridCell("Load (gpw): ", _ds.get(PersonKeys.LOAD)), "span 2, growx, wrap");
+    attribPanel.add(gridCell("Wt Allowance: ", _ds.get(PersonKeys.WT_ALLOW) + " lb"), "growx");
+    double load = Double.parseDouble(_ds.get(PersonKeys.LOAD)) / 16.0;
+    attribPanel.add(gridCell("Load: ", load + " lb"), "span 2, growx, wrap");
 
     // Row 5: INT and INT mods: percent to know spell, current/max MSP, MSPs/Level, Spells in Book
     attribPanel.add(gridCell("INT: ", _ds.get(PersonKeys.INT)), "growx");
@@ -417,13 +419,13 @@ public class HeroDisplay extends ChronosPanel
 
     // Row 8: DEX and DEX mods: To Hit Missle, AC Mod
     attribPanel.add(gridCell("DEX: ", _ds.get(PersonKeys.DEX)), "growx");
-    attribPanel.add(gridCell("To Hit (missile): ", _ds.get(PersonKeys.TO_HIT_MISSLE)), "growx");
+    attribPanel.add(gridCell("To Hit (Missile): ", _ds.get(PersonKeys.TO_HIT_MISSLE)), "growx");
     attribPanel.add(gridCell("AC Mod: ", _ds.get(PersonKeys.AC_MOD)), "growx");
     attribPanel.add(gridCell(" ", ""), "span 3, growx, wrap"); // remainder of line is empty
 
     // Row 9: CHR, Weight, and Height
     attribPanel.add(gridCell("CHR: ", _ds.get(PersonKeys.CHR)), "growx");
-    attribPanel.add(gridCell("Weight (lbs): ", _ds.get(PersonKeys.WEIGHT)), "growx");
+    attribPanel.add(gridCell("Weight: ", _ds.get(PersonKeys.WEIGHT) + " lb"), "growx");
     int intHeight = new Integer(_ds.get(PersonKeys.HEIGHT));
     int feet = intHeight / 12;
     int inches = intHeight - feet * 12;
@@ -440,15 +442,14 @@ public class HeroDisplay extends ChronosPanel
         "span 2, growx, wrap");
 
     // Row 11: Languages label, max langs, list of languages
-    String langStr = String.format("Languages (can learn %s more):",
-        _ds.get(PersonKeys.MAX_LANGS));
-    attribPanel.add(gridCell(langStr, ""), "span 2, growx");
-    String langList = String.format("%s", _ds.get(PersonKeys.LANGUAGES));
-    attribPanel.add(gridCell(langList, ""), "span 4, growx, wrap");
+    String langStr =
+        String.format("Languages (can learn %s more): ", _ds.get(PersonKeys.MAX_LANGS));
+    attribPanel.add(wrapCell(langStr, _ds.get(PersonKeys.LANGUAGES)), "span 6, growx, wrap");
+    // attribPanel.add(gridCell(langStr, ""), "span 2, growx");
+    // String langList = String.format("%s", _ds.get(PersonKeys.LANGUAGES));
+    // attribPanel.add(gridCell(langList, ""), "span 4, growx, wrap");
 
     // Row 12: Occupation and description (full line, possibly multiline)
-//    attribPanel.add(gridCell(_ds.get(PersonKeys.OCCUPATION) + ": ",
-//        _ds.get(PersonKeys.OCC_DESCRIPTOR)), "span 6, growx, wrap");
     attribPanel.add(wrapCell(_ds.get(PersonKeys.OCCUPATION) + ": ",
         _ds.get(PersonKeys.OCC_DESCRIPTOR)), "span 6, growx, wrap");
 
@@ -546,7 +547,7 @@ public class HeroDisplay extends ChronosPanel
   {
     JTextArea msgArea = new JTextArea(nameList.size() + 1, DATA_WIDTH);
     msgArea.setPreferredSize(new Dimension(DATA_WIDTH, nameList.size() + 1));
-    msgArea.setBackground(_backColor);  
+    msgArea.setBackground(_backColor);
 
     msgArea.setEditable(false);
     msgArea.setLineWrap(true); // auto line wrapping doesn't seem to work
@@ -564,13 +565,13 @@ public class HeroDisplay extends ChronosPanel
       }
     }
     // Add the text area into a JPanel cell
-    JPanel cell = new JPanel(new MigLayout("ins 0"));
+    JPanel cell = new JPanel(new MigLayout("ins 3"));
     cell.add(msgArea, "growx, wrap");
     cell.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
     return cell;
   }
 
-  
+
   private JPanel wrapCell(String label, String desc)
   {
     JTextArea msgArea = new JTextArea(1, DATA_WIDTH);
@@ -578,14 +579,13 @@ public class HeroDisplay extends ChronosPanel
     msgArea.setEditable(false);
     msgArea.setLineWrap(true); // auto line wrapping doesn't seem to work
     msgArea.setWrapStyleWord(true);
-//    msgArea.setBackground(Color.GRAY.brighter().brighter());
-//    Color clr = msgArea.getBackground();
+    msgArea.setMargin(new Insets(5, 5, 5, 5));
     msgArea.setBackground(_gridColor);
 
     // Display the title
-    msgArea.append(" " + label);
+    msgArea.append(label);
     msgArea.append(desc);
-  
+
     // Add the text area into a JPanel cell
     JPanel cell = new JPanel(new MigLayout("ins 0"));
     cell.add(msgArea);
@@ -606,18 +606,15 @@ public class HeroDisplay extends ChronosPanel
    */
   private JPanel gridCell(String label, String value)
   {
-    JPanel p = new JPanel(new MigLayout("inset 3"));
+    JPanel p = new JPanel(new MigLayout("inset 5"));
     p.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-    JLabel tmp = new JLabel(label, SwingConstants.LEFT);
-    //Color clr = tmp.getBackground();
     p.setBackground(_gridColor);
-    p.add(tmp);
+    p.add(new JLabel(label, SwingConstants.LEFT));
     p.add(new JLabel(value, SwingConstants.RIGHT));
-//    p.add(new JLabel(label, SwingConstants.LEFT));
     return p;
   }
 
-  
+
   /**
    * Delete the Person currently being displayed into a new file.
    * 
