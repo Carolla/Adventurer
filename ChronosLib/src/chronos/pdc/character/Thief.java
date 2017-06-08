@@ -55,7 +55,7 @@ public class Thief extends Klass
    */
   public Thief(TraitList traits)
   {
-    super(traits, THIEF_CLASS_NAME, PrimeTraits.DEX);
+    super(traits, ROGUE_CLASS_NAME, PrimeTraits.DEX);
   }
 
   /** Converts from Skill name, description, and percent change into a string */

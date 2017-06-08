@@ -11,8 +11,8 @@ package civ;
 
 import java.util.EnumMap;
 
+import chronos.civ.PersonKeys;
 import chronos.pdc.character.Hero;
-import chronos.pdc.character.Hero.HeroInput;
 import chronos.pdc.character.Klass;
 
 /**
@@ -48,12 +48,16 @@ public class NewHeroCiv
    * 
    * @param inputMap of user fields: name, gender, hairColor, and race
    */
-  public Hero createHero(EnumMap<HeroInput, String> inputMap)
+  public Hero createHero(EnumMap<PersonKeys, String> inputMap)
   {
-    Hero myHero = new Hero(inputMap.get(HeroInput.NAME),
-        inputMap.get(HeroInput.GENDER),
-        inputMap.get(HeroInput.HAIR),
-        inputMap.get(HeroInput.RACE));
+//    Hero myHero = new Hero(inputMap.get(HeroInput.NAME),
+//        inputMap.get(HeroInput.GENDER),
+//        inputMap.get(HeroInput.HAIR),
+//        inputMap.get(HeroInput.RACE));
+    Hero myHero = new Hero(inputMap.get(PersonKeys.NAME),
+        inputMap.get(PersonKeys.GENDER),
+        inputMap.get(PersonKeys.HAIR_COLOR),
+        inputMap.get(PersonKeys.RACENAME));
     return myHero;
   }
 

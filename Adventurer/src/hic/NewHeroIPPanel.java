@@ -25,6 +25,7 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.AbstractDocument;
 
+import chronos.civ.PersonKeys;
 import chronos.hic.NameFieldLimiter;
 import chronos.pdc.character.Hero;
 import chronos.pdc.character.Hero.HeroInput;
@@ -204,7 +205,7 @@ public class NewHeroIPPanel extends ChronosPanel
       {
         // Call the Civ to validate the attributes. If no errors, Hero
         // is created and displayed
-        EnumMap<HeroInput, String> input = submit();
+        EnumMap<PersonKeys, String> input = submit();
         if ((input != null) && (input.size() > 0)) {
           // Create the new Hero and display it
           Hero hero = _nhCiv.createHero(input);
@@ -302,9 +303,9 @@ public class NewHeroIPPanel extends ChronosPanel
    * 
    * @return One of the ErrorCode enum values (NO_ERROR if all went well)
    */
-  private EnumMap<HeroInput, String> submit()
+  private EnumMap<PersonKeys, String> submit()
   {
-    EnumMap<HeroInput, String> input = new EnumMap<HeroInput, String>(HeroInput.class);
+    EnumMap<PersonKeys, String> input = new EnumMap<PersonKeys, String>(PersonKeys.class);
 
     // Name is mandatory user input
     String name = (_nameField.getText()).trim();
@@ -313,10 +314,14 @@ public class NewHeroIPPanel extends ChronosPanel
       showErrorMessage(ERRMSG_NAME_MISSING);
       return null;
     }
-    input.put(HeroInput.NAME, name);
-    input.put(HeroInput.GENDER, _genderPanel.getSelectedGender());
-    input.put(HeroInput.HAIR, String.valueOf(_hairCombo.getSelectedItem()));
-    input.put(HeroInput.RACE, String.valueOf(_raceCombo.getSelectedItem()));
+//    input.put(HeroInput.NAME, name);
+//    input.put(HeroInput.GENDER, _genderPanel.getSelectedGender());
+//    input.put(HeroInput.HAIR, String.valueOf(_hairCombo.getSelectedItem()));
+//    input.put(HeroInput.RACE, String.valueOf(_raceCombo.getSelectedItem()));
+    input.put(PersonKeys.NAME, name);
+    input.put(PersonKeys.GENDER, _genderPanel.getSelectedGender());
+    input.put(PersonKeys.HAIR_COLOR, String.valueOf(_hairCombo.getSelectedItem()));
+    input.put(PersonKeys.RACENAME, String.valueOf(_raceCombo.getSelectedItem()));
 
     return input;
   }

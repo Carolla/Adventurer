@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import chronos.civ.PersonKeys;
-import chronos.pdc.Skill;
 import chronos.pdc.character.TraitList.PrimeTraits;
 import mylib.pdc.MetaDie;
 
@@ -35,10 +34,9 @@ public abstract class Klass
   public static final String FIGHTER_CLASS_NAME = "Fighter";
   public static final String CLERIC_CLASS_NAME = "Cleric";
   public static final String WIZARD_CLASS_NAME = "Wizard";
-  public static final String THIEF_CLASS_NAME = "Rogue";
-  public static final String[] KLASS_LIST =
-      {PEASANT_CLASS_NAME, FIGHTER_CLASS_NAME, CLERIC_CLASS_NAME, WIZARD_CLASS_NAME,
-          THIEF_CLASS_NAME};
+  public static final String ROGUE_CLASS_NAME = "Rogue";
+  public static final String[] KLASS_LIST = {PEASANT_CLASS_NAME, FIGHTER_CLASS_NAME,
+      CLERIC_CLASS_NAME, WIZARD_CLASS_NAME, ROGUE_CLASS_NAME};
 
   // KLASS-SPECIFIC ATTRIBUTES and METHODS
   protected String _klassName;
@@ -50,7 +48,7 @@ public abstract class Klass
   protected TraitList _traits;
   private static final MetaDie _md = new MetaDie();
 
-  
+
   // ====================================================
   // ABSTRACT METHODS FOR SUBCLASSES
   // ====================================================
@@ -91,7 +89,7 @@ public abstract class Klass
       case WIZARD_CLASS_NAME:
         klass = new Wizard(traits);
         break;
-      case THIEF_CLASS_NAME:
+      case ROGUE_CLASS_NAME:
         klass = new Thief(traits);
         break;
       default:
@@ -184,7 +182,7 @@ public abstract class Klass
     map.put(PersonKeys.HP, Integer.toString(_currentHP));
     map.put(PersonKeys.HP_MAX, Integer.toString(_HP_Max));
     map.put(PersonKeys.LEVEL, Integer.toString(_level));
-    map.put(PersonKeys.XP, Integer.toString(_XP));    
+    map.put(PersonKeys.XP, Integer.toString(_XP));
   }
 
   public int getCurrentHP()

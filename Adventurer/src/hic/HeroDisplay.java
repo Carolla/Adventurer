@@ -210,12 +210,18 @@ public class HeroDisplay extends ChronosPanel
   }
 
 
-  // Build panel of skills: literacy, racial skills, occupational skills, and klass skills
-  public void addSkills(List<String> ocpSkills, List<String> racialSkills,
-      List<String> klassSkills)
+  /**
+   * Build panel of skills: literacy, racial skills, occupational skills, and klass skills
+   * 
+   * @param ocpSkills skills based on occupation
+   * @param racialSkills skills based on race
+   * @param klassSkills skills based on klass (a Peasant has no klass skills)
+   */
+  public void addSkills(List<String> ocpSkills, List<String> racialSkills, List<String> klassSkills)
   {
     // Section 1: Literacy
     _skillPanel.add(gridCell("", _ds.get(PersonKeys.LITERACY)), "gaptop 10, span 6, growx, wrap");
+    // _skillPanel.add(gridCell("", _ds.get(PersonKeys.LITERACY)), "span 6, growx, wrap");
 
     // Section 2: Occupational Skills
     _skillPanel.add(buildMultiCell(_ds.get(PersonKeys.OCCUPATION) + " Skills: ", ocpSkills),
@@ -226,42 +232,51 @@ public class HeroDisplay extends ChronosPanel
     _skillPanel.add(buildMultiCell("Special " + rSkills + " Skills: ", racialSkills),
         "growx, wrap");
 
-    // // Section 4: Klass skills
-    // _skillPanel.add(buildMultiCell(_ds.get(PersonKeys.KLASSNAME).toUpperCase() + " SKILLS: ",
-    // klassSkills), "growx, wrap");
+    // Section 4: Klass skills
+    _skillPanel.add(buildMultiCell(_ds.get(PersonKeys.KLASSNAME) + " Skills: ",
+        klassSkills), "growx, wrap");
   }
 
   /**
    * Builds the inventory "table", showing Category, Items, quantity, weight (in lbs & oz of each,
    * and total. Wielded Weapon and Armor Worn is at top. Inventory is organized by category: ARMS,
    * ARMOR, CLOTHING, EQUIPMENT, PROVISIONS, LIVESTOCK, TRANSPORT : item, quantity, weight, total
-   * weight. See also Sacred Satchel and Magic Bag
+   * weight. Magic-related items are not displayed here.
    * 
-   * @param inventory
+   * @param inventory list of regular equipment
    */
   public void addInventory(Inventory inventory)
   {
     _invenPanel.add(gridCell("Wielded Weapon:", "None"), "gaptop 10, span 6, growx, wrap 0");
     _invenPanel.add(gridCell("Armor Worn: ", " None"), "span 6, growx, wrap 0");
 
-    JPanel blankLine = gridCell("", "");
-    // blankLine.setBackground(Color.DARK_GRAY);
-    _invenPanel.add(blankLine, "span 6, growx, wrap 0");
+    // JPanel blankLine = gridCell("", "");
+    // // blankLine.setBackground(Color.DARK_GRAY);
+    // _invenPanel.add(blankLine, "span 6, growx, wrap 0");
 
     for (ItemCategory category : ItemCategory.values()) {
       List<String> nameList = inventory.getNameList(category);
+      // Do not display magic or spell materials on this tab
+      if ((category == ItemCategory.MAGIC) || (category == ItemCategory.SPELL_MATERIAL)) {
+        continue;
+      }
       _invenPanel.add(buildMultiCell(category.toString(), nameList), "growx, wrap");
     }
   }
 
   /**
-   * Builds the inventory of magic items (not spell materials)
+   * Display only magical stuff on the Magic tab
    * 
    * @param nameList
    */
-  public void addMagicItem(List<String> nameList)
+  public void addMagic(Inventory inventory)
   {
-    _magicPanel.add(buildMultiCell("MAGIC ITEMS", nameList), "growx, wrap 0");
+    List<String> magicList = inventory.getNameList(ItemCategory.MAGIC);
+    _magicPanel.add(buildMultiCell("MAGIC ITEMS", magicList), "gaptop 10, growx, wrap");
+
+    List<String> materialsList = inventory.getNameList(ItemCategory.SPELL_MATERIAL);
+    _magicPanel.add(buildMultiCell("SPELL MATERIALS", materialsList), "growx, wrap");
+
   }
 
   /**
@@ -350,7 +365,7 @@ public class HeroDisplay extends ChronosPanel
   private JPanel buildAttributePanel()
   {
     // Create a layout that spans the entire width of the panel
-    JPanel attribPanel = new JPanel(new MigLayout("ins 0", // layout constraints
+    JPanel attribPanel = new JPanel(new MigLayout("ins 10", // layout constraints
         "[]0[]0[]0[]0[]0[][left]", // align horizontally 6 cell-widths
         "[]0[]0[]0[]0[]0[]0[]0[]0[]0[]0[]0[][bottom]")); // align vertically 12 rows
 
@@ -545,13 +560,14 @@ public class HeroDisplay extends ChronosPanel
    */
   private JPanel buildMultiCell(String title, List<String> nameList)
   {
-    JTextArea msgArea = new JTextArea(nameList.size() + 1, DATA_WIDTH);
-    msgArea.setPreferredSize(new Dimension(DATA_WIDTH, nameList.size() + 1));
+    JTextArea msgArea = new JTextArea(nameList.size(), DATA_WIDTH);
+    msgArea.setPreferredSize(new Dimension(DATA_WIDTH, nameList.size()));
     msgArea.setBackground(_backColor);
 
     msgArea.setEditable(false);
     msgArea.setLineWrap(true); // auto line wrapping doesn't seem to work
     msgArea.setWrapStyleWord(true);
+    msgArea.setMargin(new Insets(5, 5, 5, 5));
 
     // Display the title
     msgArea.append(" " + title + Constants.NEWLINE);
@@ -565,7 +581,7 @@ public class HeroDisplay extends ChronosPanel
       }
     }
     // Add the text area into a JPanel cell
-    JPanel cell = new JPanel(new MigLayout("ins 3"));
+    JPanel cell = new JPanel(new MigLayout("ins 1"));
     cell.add(msgArea, "growx, wrap");
     cell.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
     return cell;
@@ -606,6 +622,7 @@ public class HeroDisplay extends ChronosPanel
    */
   private JPanel gridCell(String label, String value)
   {
+    // Give a little margin around the text to make it 'read' better
     JPanel p = new JPanel(new MigLayout("inset 5"));
     p.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
     p.setBackground(_gridColor);

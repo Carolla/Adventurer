@@ -10,15 +10,13 @@
 package civ;
 
 
-import hic.HeroDisplay;
-
 import java.util.Map;
 
 import chronos.civ.PersonKeys;
-import chronos.pdc.Item.ItemCategory;
 import chronos.pdc.character.Hero;
 import chronos.pdc.character.Inventory;
 import chronos.pdc.registry.HeroRegistry;
+import hic.HeroDisplay;
 
 
 /**
@@ -82,9 +80,9 @@ public class HeroDisplayCiv
   }
 
   /**
-   * Display the Hero the HeroDisplay widget.
+   * Display the Hero in the HeroDisplay tab pane.
    * 
-   * @param firstTime Heroes disable Delete button
+   * @param firstTime Hero has disabled Delete button
    * @param hero to display
    */
   public void displayHero(Hero hero, boolean firstTime)
@@ -119,13 +117,18 @@ public class HeroDisplayCiv
   private void addAdditionalHeroStuff(Hero hero)
   {
     Inventory inventory = hero.getInventory();
+    // Build a list of the Hero's various skills
     _heroDisp.addSkills(_hero.getOcpSkills(), _hero.getRaceSkills(), _hero.getKlassSkills());
+    // Build an inventory list of regular items
     _heroDisp.addInventory(inventory);
-    _heroDisp.addMagicItem(inventory.getNameList(ItemCategory.MAGIC));
-    if (_hero.canUseMagic()) {
-      _heroDisp.addMaterials(inventory.getNameList(ItemCategory.SPELL_MATERIAL));
-      _heroDisp.addSpell(_hero.getSpellBook());
-    }
+    // Build an inventory list of magical items
+    _heroDisp.addMagic(inventory);
+    
+    // Only clerics and wizards have spell materials
+    // if (_hero.canUseMagic()) {
+    // _heroDisp.addMaterials(inventory.getNameList(ItemCategory.SPELL_MATERIAL));
+    // _heroDisp.addSpell(_hero.getSpellBook());
+    // }
   }
 } // end of HeroDisplayCiv class
 

@@ -25,7 +25,6 @@ import org.junit.Test;
 
 import chronos.civ.PersonKeys;
 import chronos.pdc.character.Hero;
-import chronos.pdc.character.Hero.HeroInput;
 import chronos.pdc.character.Inventory;
 import chronos.pdc.character.TraitList;
 import civ.NewHeroCiv;
@@ -78,13 +77,18 @@ public class TA01_CreateHero
   {
     // Setup: Define simulated data from the input panel to create hero
     NewHeroCiv nhCiv = new NewHeroCiv();
-    EnumMap<HeroInput, String> inputMap = new EnumMap<HeroInput, String>(HeroInput.class);
+    EnumMap<PersonKeys, String> inputMap = new EnumMap<PersonKeys, String>(PersonKeys.class);
     // TODO Re-use PersonKeys instead of requiring a new HeroInput map
-    inputMap.put(HeroInput.NAME, _heroData[0]);
-    inputMap.put(HeroInput.GENDER, _heroData[1]);
-    inputMap.put(HeroInput.HAIR, _heroData[2]);
-    inputMap.put(HeroInput.RACE, _heroData[3]);
-    inputMap.put(HeroInput.KLASS, _heroData[4]);
+    // inputMap.put(HeroInput.NAME, _heroData[0]);
+    // inputMap.put(HeroInput.GENDER, _heroData[1]);
+    // inputMap.put(HeroInput.HAIR, _heroData[2]);
+    // inputMap.put(HeroInput.RACE, _heroData[3]);
+    // inputMap.put(HeroInput.KLASS, _heroData[4]);
+    inputMap.put(PersonKeys.NAME, _heroData[0]);
+    inputMap.put(PersonKeys.GENDER, _heroData[1]);
+    inputMap.put(PersonKeys.HAIR_COLOR, _heroData[2]);
+    inputMap.put(PersonKeys.RACENAME, _heroData[3]);
+    inputMap.put(PersonKeys.KLASSNAME, _heroData[4]);
 
     // Create a Peasant
     // TODO: Use TestProxy with Civs to ensure same interface to Civ and GUI
@@ -117,7 +121,7 @@ public class TA01_CreateHero
 
     // Some keys do not apply to Peasants, so load an exception list
     PersonKeys[] pk = {PersonKeys.CURRENT_MSP, PersonKeys.MAX_MSP, PersonKeys.MSP_PER_LEVEL,
-        PersonKeys.SPELLS_KNOWN, PersonKeys.CURRENT_CSP, PersonKeys.MAX_CSP, 
+        PersonKeys.SPELLS_KNOWN, PersonKeys.CURRENT_CSP, PersonKeys.MAX_CSP,
         PersonKeys.CSP_PER_LEVEL, PersonKeys.TURN_UNDEAD};
 
     ArrayList<PersonKeys> ignoreKeys = new ArrayList<>();
@@ -419,15 +423,15 @@ public class TA01_CreateHero
   }
 
   // Save for later when testing inventory tab
-//  /** Print the Hero's inventory */
-//  private void printInventory(Inventory inv)
-//  {
-//    List<Item> invList = inv.getAll();
-//    MsgCtrl.msgln("\n");
-//    for (Item item : invList) {
-//      MsgCtrl.msgln("\t\t\t" + item.toString() + "\t\t\t" + item.getWeight() + " oz.");
-//    }
-//  }
+  // /** Print the Hero's inventory */
+  // private void printInventory(Inventory inv)
+  // {
+  // List<Item> invList = inv.getAll();
+  // MsgCtrl.msgln("\n");
+  // for (Item item : invList) {
+  // MsgCtrl.msgln("\t\t\t" + item.toString() + "\t\t\t" + item.getWeight() + " oz.");
+  // }
+  // }
 
 
 
