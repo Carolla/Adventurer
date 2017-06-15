@@ -50,10 +50,6 @@ public class NewHeroCiv
    */
   public Hero createHero(EnumMap<PersonKeys, String> inputMap)
   {
-//    Hero myHero = new Hero(inputMap.get(HeroInput.NAME),
-//        inputMap.get(HeroInput.GENDER),
-//        inputMap.get(HeroInput.HAIR),
-//        inputMap.get(HeroInput.RACE));
     Hero myHero = new Hero(inputMap.get(PersonKeys.NAME),
         inputMap.get(PersonKeys.GENDER),
         inputMap.get(PersonKeys.HAIR_COLOR),
@@ -61,4 +57,5 @@ public class NewHeroCiv
     return myHero;
   }
 
+  
 } // end of NewHeroCiv class

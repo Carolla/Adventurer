@@ -89,5 +89,6 @@ public class Constants
 
   /** My own special version of Brown since there is not one for Color */
   static public final Color MY_BROWN = new Color(130, 100, 90).brighter();
+  
 } // end of common library Constants global class
 

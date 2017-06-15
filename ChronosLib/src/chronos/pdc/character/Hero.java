@@ -132,9 +132,6 @@ public class Hero implements IRegistryElement
     // Add occupational skills (Humans and Peasants have no special skills)
     _skills = (ArrayList<Skill>) _occ.getSkills();
 
-    // Now add the inventory
-    _inven = new Inventory();
-
   } // end of Hero constructor
 
 

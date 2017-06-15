@@ -12,3 +12,8 @@ gnome
 hobbit
 klass
 multiline
+configurator
+remaking
+overbearing
+pummeling
+miscellanea

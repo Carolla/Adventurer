@@ -24,13 +24,11 @@ public enum PersonKeys {
   NAME,
   GENDER,
   HAIR_COLOR,
-  OCCUPATION,
-  OCC_DESCRIPTOR,
   RACENAME,
   // Hero is always created as a Peasant first
-  KLASSNAME,
+  KLASSNAME,        // Klass-specific
 
-  // Prime traits and their mods
+  // Prime traits and their mods (race-specific)
   STR,
   TO_HIT_MELEE,
   DAMAGE,
@@ -38,26 +36,26 @@ public enum PersonKeys {
   LOAD,
   
   INT,
-  CURRENT_MSP,
-  MAX_MSP,
-  MSP_PER_LEVEL,
-  SPELLS_KNOWN,
+  CURRENT_MSP,    // Klass specific
+  MAX_MSP,        // Klass specific
+  MSP_PER_LEVEL,  // Klass specific
+  SPELLS_KNOWN,   // Klass specific
   MAX_LANGS,
 
   WIS,
   MDM,
-  CURRENT_CSP,
-  MAX_CSP,
-  CSP_PER_LEVEL,
-  TURN_UNDEAD,
+  CURRENT_CSP,    // Klass specific
+  MAX_CSP,        // Klass specific
+  CSP_PER_LEVEL,  // Klass specific
+  TURN_UNDEAD,    // Klass specific
   
   CON,
   HP_MOD,
   RMR,
   
   DEX,
-  TO_HIT_MISSLE,
-  AC_MOD,
+  TO_HIT_MISSLE,  // Klass specific
+  AC_MOD,         
   CHR,
 
   // This group contains the remaining non-lethal combat values
@@ -70,20 +68,22 @@ public enum PersonKeys {
   // This group contains the remaining displayable set of key values for the Person
   AC,
   DESCRIPTION,
-  GOLD,
+  GOLD,         // Klass specific
   GOLD_BANKED,
-  HEIGHT,
-  HP,
-  HP_MAX,
+  HEIGHT,       // gender-specific
+  HP,           
+  HP_MAX,       // Klass specific
   HUNGER,
   INVENTORY,
-  LANGUAGES,
+  LANGUAGES,    // Race-specific
   LITERACY,
   LEVEL,
-  SILVER,
+  OCCUPATION,
+  OCC_DESCRIPTOR,
+  SILVER,       // Klass specific
   SKILL,
-  SPEED,
-  WEIGHT,
+  SPEED,      // AP and height dependent
+  WEIGHT,     // gender-specific
   XP;
 
 }; // end of PersonKeys enum class

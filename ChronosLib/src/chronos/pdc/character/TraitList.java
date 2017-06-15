@@ -43,13 +43,6 @@ public class TraitList
   private int BASH = 3;
   private int[] _apMods;
 
-  // STR values 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21
-  // private final int[] toHitTbl = {-3, -2, -2, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 2, 3};
-  // private final int[] dmgTbl = {-3, -3, -2, -2, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5};
-  // private final int[] wtTbl =
-  // {80, 120, 160, 200, 280, 360, 440, 520, 600, 700, 800, 900, 1000, 1200, 1500,
-  // 1800, 2100, 2300, 2600};
-
   private final String ILLITERATE = "ILLITERATE: Cannot read or write";
   private final String LITERATE = "LITERATE: Can read and write";
   private final String PART_LITERATE = "PARTIALLY LITERATE: Can read but cannot write";
@@ -60,7 +53,9 @@ public class TraitList
   // No trait, raw of modified, may be less than MIN_TRAIT at start
   // Make this static to be available by other classes
   static public final int MIN_TRAIT = 8;
-  // Hight indicators for speed mod
+  static public final int MAX_TRAIT = 18;
+  
+  // Height indicators for speed mod
   private final int HT_TALL = 74;
   private final int HT_SHORT = 48;
   private final int SPEED_INC = 5;

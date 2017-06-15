@@ -216,10 +216,10 @@ public abstract class Klass
    */
   protected double rollStartingGold(String startingGoldDice)
   {
-    // gold pieces
+    // Gold pieces
     double gold = _md.roll(startingGoldDice) * 10.0;
-    // add silver pieces as fractional gold
-    gold += _md.roll("d10") / 10.0;
+    // Add silver pieces as fractional gold
+    gold += (_md.roll("d10") / 10.0);
     return gold;
   }
 
