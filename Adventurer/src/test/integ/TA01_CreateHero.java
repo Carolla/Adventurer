@@ -21,24 +21,25 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 import chronos.civ.PersonKeys;
 import chronos.pdc.character.Hero;
 import civ.NewHeroCiv;
 import mylib.MsgCtrl;
+import mylib.pdc.Utilities;
 
 /**
- * Creates a Peasant Hero, and contains all the common tests that are not race or gender specific.
- * The specific tests are placed into subclasses of this one, whose {@code setUp()} methods define
- * the inputs that create the specific gender- and race-dependent Heros. This structure is called
- * the {@code configurator} pattern.
+ * Creates a Peasant Hero, and contains all the common tests that are not race- or gender specific.
+ * Each specific tests are contained in subclasses. For clarity, only true tests, those that use the
+ * {@code @Test} annotation, create a Hero and are prefixed with {@code test}; all methods called by
+ * the {@code Test} method are prefixed with {@code verify}.
  * 
  * @author Al Cline
  * @version May 21, 2017 // original <br>
  *          June 2 2017 // revised to support refactored male Peasant Hero <br>
  *          June 9 2017 // refactored to split gender tests from others via the inheritance
  *          Configurator pattern <br>
+ *          June 16 2017 // final cleanup of use case testing, and passing regression tests <br>
  */
 public class TA01_CreateHero
 {
@@ -133,11 +134,9 @@ public class TA01_CreateHero
    * Verify that initialization values are set as expected: Level, Gold Banked, Gold in Hand,
    * Hunger, Level, Load, Klass, XP
    */
-  
+
   public void verifyGenericAttributes()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
     // Peasant klass
@@ -265,26 +264,24 @@ public class TA01_CreateHero
     double goldInHand = gold + silver / 10.0;
     MsgCtrl.msg("   Gold/silver in hand = " + gold + " gp/ " + silver + " sp = " + goldInHand);
     assertTrue(checkRangeValue(10.1, 40.9, goldInHand, 0.05));
-    
-    // All Peasants start with 10 HP 
-     int expHP_Mod = getMod(_traits[CON]); // expected value
-     int expHP = MIN_HP + expHP_Mod;
-     int hpmod = Integer.parseInt(_opMap.get(PersonKeys.HP_MOD));
-     int HP = Integer.parseInt(_opMap.get(PersonKeys.HP));
-     int HP_Max = Integer.parseInt(_opMap.get(PersonKeys.HP_MAX));
-     MsgCtrl.msg("; HP / Max HP = " + HP + "/" + HP_Max + " (" + hpmod + ")");
-     assertEquals(expHP_Mod, hpmod);
-     assertEquals(expHP, HP);
-     assertEquals(expHP, HP_Max);
+
+    // All Peasants start with 10 HP
+    int expHP_Mod = getMod(_traits[CON]); // expected value
+    int expHP = MIN_HP + expHP_Mod;
+    int hpmod = Integer.parseInt(_opMap.get(PersonKeys.HP_MOD));
+    int HP = Integer.parseInt(_opMap.get(PersonKeys.HP));
+    int HP_Max = Integer.parseInt(_opMap.get(PersonKeys.HP_MAX));
+    MsgCtrl.msg("; HP / Max HP = " + HP + "/" + HP_Max + " (" + hpmod + ")");
+    assertEquals(expHP_Mod, hpmod);
+    assertEquals(expHP, HP);
+    assertEquals(expHP, HP_Max);
 
   }
 
-  
+
   /** Verify inventory attributes, but for now, only its load */
-  public void testInventoryAttributes()
+  protected void verifyInventoryAttributes()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
     // LOAD: weight carried depends on standard basic inventory items
@@ -369,11 +366,10 @@ public class TA01_CreateHero
     return sb.toString();
   }
 
+
   /** Verify that the HP and HP Mods are correct */
   protected void verifyHPMods()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
     /** HP and Max HP depends on Klass */
@@ -388,6 +384,11 @@ public class TA01_CreateHero
     assertEquals(expHP, HP);
     assertEquals(expHP, HP_Max);
   }
+
+
+  // ============================================================
+  // BEGIN VERIFICATION
+  // ============================================================
 
   /** Compare the hero input data against the output data */
   // private boolean echoCheck(String[] indata, Map<PersonKeys, String> outdata)
@@ -440,19 +441,80 @@ public class TA01_CreateHero
     return _inputMap;
   }
 
-
-
-  // ============================================================
-  // BEGIN VERIFICATION
-  // ============================================================
-  
-  private void stockChecks()
+  /** Display the hero attributes */
+  protected void printHero(Map<PersonKeys, String> op)
   {
     MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(true);
     MsgCtrl.where(this);
-  
-  
+
+    // Name plate
+    MsgCtrl.msgln("\n\t" + op.get(PersonKeys.NAME) + ": "
+        + op.get(PersonKeys.GENDER) + " " + op.get(PersonKeys.RACENAME) + " "
+        + op.get(PersonKeys.OCCUPATION));
+
+    // Level, HP, HP Max, AC, Hunger
+    MsgCtrl.msgln("\tLevel = " + op.get(PersonKeys.LEVEL) + "   HP/HPMax = "
+        + op.get(PersonKeys.HP) + "/" + op.get(PersonKeys.HP_MAX) + "   AC = "
+        + op.get(PersonKeys.AC) + "   Hunger: " + op.get(PersonKeys.HUNGER));
+
+    // XP, Speed, Gold Banked, Gold in Hand
+    MsgCtrl.msgln("\tXP = " + op.get(PersonKeys.XP) + "   Speed = " + op.get(PersonKeys.SPEED)
+        + "   Gold Banked = " + op.get(PersonKeys.GOLD_BANKED) + "   Gold in Hand = "
+        + op.get(PersonKeys.GOLD) + " gp / " + op.get(PersonKeys.SILVER) + " sp");
+
+    // Description
+    MsgCtrl.msgln("\tDescription: " + op.get(PersonKeys.DESCRIPTION));
+
+    // STR, toHit Mod, Damage Mod, Wt allowance, Load
+    MsgCtrl.msgln("\tSTR = " + _traits[STR] + "   To Hit (melee) = "
+        + op.get(PersonKeys.TO_HIT_MELEE) + "   Damage = " + op.get(PersonKeys.DAMAGE)
+        + "   Wt Allowance = " + op.get(PersonKeys.WT_ALLOW) + " lb   Load = "
+        + op.get(PersonKeys.LOAD) + " lb");
+
+    // INT
+    MsgCtrl.msgln("\tINT = " + _traits[INT]);
+
+    // WIS, Magic Defense Mod
+    MsgCtrl.msgln("\tWIS = " + _traits[WIS] + "   Magic Defense = " + op.get(PersonKeys.MDM));
+
+    // CON, HP Mod
+    MsgCtrl.msgln("\tCON = " + _traits[CON] + "   HP Mod = " + op.get(PersonKeys.HP_MOD));
+
+    // DEX, toHit Mod, AC Mod
+    MsgCtrl.msgln("\tDEX = " + _traits[DEX] + "   To Hit (missile) = "
+        + op.get(PersonKeys.TO_HIT_MISSLE) + "   AC Mod = " + op.get(PersonKeys.AC_MOD));
+
+    // CHR, weight, height
+    MsgCtrl.msgln("\tCHR = " + _traits[CHR] + "   Weight = " + op.get(PersonKeys.WEIGHT)
+        + " lb   Height = " + Utilities.formatHeight(op.get(PersonKeys.HEIGHT)));
+
+    // AP, overbearing, grappling, pummeling, sheild bash
+    MsgCtrl.msgln("\tAP = " + op.get(PersonKeys.AP) + "   Overbearing: "
+        + op.get(PersonKeys.OVERBEARING) + "   Grappling: " + op.get(PersonKeys.GRAPPLING)
+        + "   Pummeling: " + op.get(PersonKeys.PUMMELING) + "   Shield Bash: "
+        + op.get(PersonKeys.SHIELD_BASH));
+
+    // Languages (max),language list
+    MsgCtrl.msgln("\tLanguages (can learn " + op.get(PersonKeys.MAX_LANGS) + " more): "
+        + op.get(PersonKeys.LANGUAGES));
+
+    // Occupation description
+    MsgCtrl.msgln("\t" + op.get(PersonKeys.OCCUPATION) + ": " + op.get(PersonKeys.OCC_DESCRIPTOR));
+
+
+
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.auditMsgsOn(false);
+  }
+
+
+
+  private void stockChecks()
+  {
+    MsgCtrl.where(this);
+
+
     /** HP and Max HP depends on Klass */
     // int expHP_Mod = getMod(trait[CON]); // expected value
     // int expHP = MIN_HP + expHP_Mod;
@@ -463,7 +525,7 @@ public class TA01_CreateHero
     // assertEquals(expHP_Mod, hpmod);
     // assertEquals(expHP, HP);
     // assertEquals(expHP, HP_Max);
-  
+
     /** Languages and max languages knowable depend on INT (and Race) */
     // Max new learnable languages
     // int intel = Integer.parseInt(_opMap.get(PersonKeys.INT));
@@ -478,7 +540,7 @@ public class TA01_CreateHero
     // MsgCtrl.msg(" Languages known: " + lang);
     // assertEquals(expLang, lang);
     //
-  
+
   }
 
   // ============================================================
@@ -486,10 +548,8 @@ public class TA01_CreateHero
   // ============================================================
 
   /** Confirm that all PersonsKeys have a value */
-  private void verifyPersonKeys()
+  protected void verifyPersonKeys()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
     // SETUP for male human peasant

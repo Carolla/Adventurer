@@ -18,9 +18,8 @@ import chronos.pdc.character.TraitList;
 import mylib.MsgCtrl;
 
 /**
- * Configurator test class for a male human Peasant. Only male Human hero values are verified; the
- * other Hero traits are verified in the base class or other subclass tests configured for those
- * specific configurations.
+ * Test class for a human Peasant. Verifies female and male traits, and human-specifc attributes.
+ * Non-specific attributes are verified in the base class. 
  * 
  * @author Al Cline
  * @version Jun 9, 2017 // original <br>
@@ -37,13 +36,14 @@ public class CreateHumanPeasant extends TA01_CreateHero
   @Test
   public void testMalePeasant()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     /** Set data and create a male human Peasant */
     _myHero = createHero("Falsoon", "Male", "brown", "Human", "Peasant");
-
+    printHero(_opMap);
+    
     // Verify male-specific weight and height
     int weight = Integer.parseInt(_opMap.get(PersonKeys.WEIGHT));
     assertTrue(checkRangeValue(130, 230, weight));
@@ -63,12 +63,13 @@ public class CreateHumanPeasant extends TA01_CreateHero
   @Test
   public void testFemalePeasant()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     /** Set data and create a female human Peasant */
     _myHero = createHero("Belinda", "Female", "blond", "Human", "Peasant");
+    printHero(_opMap);
 
     // Verify female-specific weight and height
     int weight = Integer.parseInt(_opMap.get(PersonKeys.WEIGHT));
