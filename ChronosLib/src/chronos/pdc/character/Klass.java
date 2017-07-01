@@ -46,6 +46,8 @@ public abstract class Klass
   protected int _currentHP;
   protected PrimeTraits _primeTrait;
   protected TraitList _traits;
+  protected final int INIT_HP = 10;
+  
   private static final MetaDie _md = new MetaDie();
 
 
@@ -116,7 +118,7 @@ public abstract class Klass
     _primeTrait = trait;
     _level = 0;
     _XP = 0;
-    _HP_Max = rollHP();
+    _HP_Max = INIT_HP + _traits.calcMod(PrimeTraits.CON);
     _currentHP = _HP_Max;
   }
 

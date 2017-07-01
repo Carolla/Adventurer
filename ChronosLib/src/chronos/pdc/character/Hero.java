@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import chronos.civ.PersonKeys;
 import chronos.pdc.Occupation;
@@ -51,7 +49,7 @@ public class Hero implements IRegistryElement
   /** The Hero's occupation, until they join a Guild */
   private Occupation _occ;
   /** Each Person has six prime traits, adjusted by gender, race, and klass */
-  private TraitList _traits = null;
+  private TraitList _traits;
 
   /** Hero initial constants */
   private final int INITIAL_AC = 10;
@@ -63,11 +61,11 @@ public class Hero implements IRegistryElement
   /** Armor Class depends on what the person is wearing */
   private int _AC;
   /** Each Person knows at least one language, and can usually learn others */
-  Set<String> _knownLangs = new TreeSet<String>();
+  ArrayList<String> _knownLangs;
   /** Skills can originate from occupation, races (not Human), and klasses (not Peasant) */
   private ArrayList<Skill> _skills;
-  /** Single string of all known languages */
-  private String _langString;
+//  /** Single string of all known languages */
+//  private String _langString;
   // Special cases
   private double _gold;
   private double _goldBanked;
@@ -98,32 +96,29 @@ public class Hero implements IRegistryElement
       throw new NullPointerException("Missing input data passed to Hero constructor");
     }
 
-    // DEPENDENT ON ONLY INPUTS, OR ON NOTHING
+    // INDEPENDENT FIELDS
     _name = name;
-    _knownLangs.add("Common");
     _goldBanked = 0.0;
 
     // Add random occupation and occupational skills
     _occ = Occupation.getRandomOccupation();
     // Assign initial inventory
     _inven = new Inventory();
-    // Setup internal data
-    _traits = new TraitList();
 
-    // DEPENDENT ON RACE AND TRAITS
+    // DEPENDENT ON RACE, GENDER, AND TRAITS
     _race = Race.createRace(raceName, new Gender(gender), hairColor);
-    // Fill out other race-dependent attributes
-    _traits = _race.buildRace(_traits);
+    // Fill out other race-dependent traits and attributes, 
+    _traits = _race.buildRace();
     // Assign Race language
-    _knownLangs.add(_race.getRacialLanguage());
+    _knownLangs = _race.getLanguages();
+    // Build single string of all known languages
+//    _langString = buildLangString();
     // Initial Armor Class from adjusted DEX
     _AC = INITIAL_AC + _traits.calcMod(PrimeTraits.DEX);
     // Set AP and non-lethal mods
     _traits.calcAPMods(_race.getWeight());
     // Calc speed, adjusted by height and AP
     _traits.calcSpeed(_race.getHeight());
-    // Build single string of all known languages
-    _langString = buildLangString();
 
     // Set Klass attributes
     _klass = Klass.createKlass(INITIAL_KLASS, _traits);
@@ -150,7 +145,7 @@ public class Hero implements IRegistryElement
     // Load the Hero attributes
     map.put(PersonKeys.NAME, _name);
     map.put(PersonKeys.AC, "" + _AC);
-    map.put(PersonKeys.LANGUAGES, _langString);
+    map.put(PersonKeys.LANGUAGES, buildLangString());
     int opGold = (int) _gold;
     int opSilver = (int) ((_gold - opGold) * 10);
     map.put(PersonKeys.GOLD, Integer.toString(opGold));
@@ -236,19 +231,19 @@ public class Hero implements IRegistryElement
   // PRIVATE METHODS
   // ====================================================
 
-  /** Compress all languages into a single comma-delimted string */
+  /** Compress all languages into a single comma-delimited string */
   private String buildLangString()
   {
     StringBuilder sb = new StringBuilder();
     for (String lang : _knownLangs) {
       if (!lang.isEmpty()) {
         sb.append(lang);
-        sb.append(",");
+        sb.append(", ");
       }
     }
-    // Remove extraneous last comma
-    sb.deleteCharAt(sb.length() - 1);
-    String langList = new String(sb);
+    // Remove extraneous last comma and space
+    sb.deleteCharAt(sb.length() - 2);
+    String langList = new String(sb).trim();
     return langList;
   }
 
@@ -258,8 +253,6 @@ public class Hero implements IRegistryElement
   {
     final int prime = 31;
     int result = 1;
-    // result = prime * result + ((_description == null) ? 0 : _description.hashCode());
-    // result = prime * result + ((_gender == null) ? 0 : _gender.hashCode());
     result = prime * result + ((_klass == null) ? 0 : _klass.hashCode());
     result = prime * result + ((_name == null) ? 0 : _name.hashCode());
     result = prime * result + ((_occ == null) ? 0 : _occ.hashCode());

@@ -9,7 +9,6 @@
 
 package chronos.pdc.race;
 
-import chronos.pdc.character.Gender;
 import chronos.pdc.character.TraitList;
 import chronos.pdc.character.TraitList.PrimeTraits;
 
@@ -19,17 +18,19 @@ import chronos.pdc.character.TraitList.PrimeTraits;
  */
 public class Elf extends Race
 {
-  /** Weight ranges */
-  protected final RangedValue _weightRange = new RangedValue(80, "d10", "d20");
+  // /** Weight ranges */
+  // protected final RangedValue _weightRange = new RangedValue(80, "d10", "d20");
+  // /** Height ranges */
+  // protected final RangedValue _heightRange = new RangedValue(54, "d4", "d6");
 
-  /** Height ranges */
-  protected final RangedValue _heightRange = new RangedValue(54, "d4", "d6");
+  private final String RACE_NAME = "Elf";
+  private final String RACE_LANGUAGE = "Elvish";
 
   /** Elves have pointed ears */
   private final String _raceDescriptor = "pointed ears";
 
   // Find Secret Door | Pick Pockets | Open Locks | Find/Remove Traps | Move Silently |
-  //    Hide in Shadows | Listening | Climb Walls | Back Attack
+  // Hide in Shadows | Listening | Climb Walls | Back Attack
   protected final int[] _elfThiefMods = {0, 5, -5, 0, 5, 10, 5, 0, 5};
 
   // Special Elf skills
@@ -43,12 +44,13 @@ public class Elf extends Race
 
   /**
    * Default constructor, called reflectively by Klass
-   * @param gender 
+   * 
+   * @param gender
    */
   public Elf()
   {
-    _raceName = "Elf";
-    _raceLang = "Elvish";
+    _raceName = RACE_NAME;
+    _raceLang = RACE_LANGUAGE;
 
     _descriptor = _raceDescriptor;
     _racialThiefMods = _elfThiefMods;
@@ -69,12 +71,39 @@ public class Elf extends Race
   @Override
   public int calcWeight()
   {
-    return _weightRange.calcValue();
+//    return calcWeight(WT_AVG, WT_RANGE, WT_RANGE_DICE);
+    return 42;
   }
 
   @Override
   public int calcHeight()
   {
-    return _heightRange.calcValue();
+//    return calcHeight(HT_AVG, HT_RANGE, HT_RANGE_DICE);
+    return 42;
+  }
+
+
+  /* (non-Javadoc)
+   * @see chronos.pdc.race.Race#setTraitLimits(chronos.pdc.character.TraitList)
+   */
+  @Override
+  public TraitList setTraitLimits(TraitList traits)
+  {
+    // TODO Auto-generated method stub
+    return null;
   };
-}
+
+
+  // /* (non-Javadoc)
+  // * @see chronos.pdc.race.Race#getRaceLang()
+  // */
+  // @Override
+  // protected String getRaceLang()
+  // {
+  // // TODO Auto-generated method stub
+  // return null;
+  // };
+
+
+} // end of Elf subclass
+

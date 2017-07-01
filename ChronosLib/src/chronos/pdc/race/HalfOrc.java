@@ -18,11 +18,13 @@ import chronos.pdc.character.TraitList.PrimeTraits;
  */
 public class HalfOrc extends Race
 {
-  /** Weight ranges */
-  protected final RangedValue _weightRange = new RangedValue(150, "3d8", "4d10");
+//  /** Weight ranges */
+//  protected final RangedValue _weightRange = new RangedValue(150, "3d8", "4d10");
+//  /** Height ranges */
+//  protected final RangedValue _heightRange = new RangedValue(65, "2d4");
 
-  /** Height ranges */
-  protected final RangedValue _heightRange = new RangedValue(65, "2d4");
+  private final String RACE_NAME = "Half-Orc";
+  private final String RACE_LANGUAGE = "Orcish";
 
   /** Half-orcs are burly and pig-like */
   private final String _raceDescriptor = "a squat snoutish face";
@@ -41,8 +43,8 @@ public class HalfOrc extends Race
    */
   public HalfOrc()
   {
-    _raceName = "Half-Orc";
-    _raceLang = getRaceLang();
+    _raceName = RACE_NAME;
+    _raceLang = RACE_LANGUAGE;
 
     _descriptor = _raceDescriptor;
     _racialThiefMods = _halforcThiefMods;
@@ -50,13 +52,7 @@ public class HalfOrc extends Race
 
   }
 
-  /** Half-orc has 50% chance of knowing elvish */
-  private String getRaceLang()
-  {
-    String s = (_md.rollPercent() < 50) ? "Common" : "Orcish";
-    return s;
-  }
-
+  
   /** Half-Orcs are sturdier, stronger, and uglier: STR+1, CON+1, CHR-2 */
   @Override
   public TraitList adjustTraitsForRace(TraitList traits)
@@ -71,13 +67,36 @@ public class HalfOrc extends Race
   @Override
   public int calcWeight()
   {
-    return _weightRange.calcValue();
+//    return calcWeight(WT_AVG, WT_RANGE, WT_RANGE_DICE);
+    return 42;
   }
 
   @Override
   public int calcHeight()
   {
-    return _heightRange.calcValue();
+//    return calcHeight(HT_AVG, HT_RANGE, HT_RANGE_DICE);
+    return 42;
+  }
+
+
+  /* (non-Javadoc)
+   * @see chronos.pdc.race.Race#setTraitLimits(chronos.pdc.character.TraitList)
+   */
+  @Override
+  public TraitList setTraitLimits(TraitList traits)
+  {
+    // TODO Auto-generated method stub
+    return null;
   };
 
-}
+  
+//  /** Half-orc has 50% chance of knowing elvish */
+//  @Override
+//  protected String getRaceLang()
+//  {
+//    String s = (_md.rollPercent() < 50) ? "Common" : "Orcish";
+//    return s;
+//  }
+
+  
+} // end of HalfOrc subclass

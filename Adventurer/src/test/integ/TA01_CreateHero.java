@@ -12,6 +12,7 @@ package test.integ;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -53,7 +54,7 @@ public class TA01_CreateHero
 
   /** Convenience array for easier access to prime traits */
   protected int[] _traits;
-  private final int MAX_TRAITS = 6;
+  protected final int MAX_TRAITS = 6;
 
   // Specific constants
   protected final int MIN_HP = 10;
@@ -114,12 +115,11 @@ public class TA01_CreateHero
    * Set up subclass specific data to generate the hero. If the echoCheck within fails, no further
    * tests should be called
    */
-  protected Hero createHero(String name, String gender, String hairColor, String raceName,
-      String klassName)
+  protected Hero createHero(String name, String gender, String hairColor, String raceName)
   {
     MsgCtrl.where(this);
 
-    _inputMap = loadInput(name, gender, hairColor, raceName, klassName);
+    _inputMap = loadInput(name, gender, hairColor, raceName);
     _myHero = _nhCiv.createHero(_inputMap);
     _opMap = _myHero.loadAttributes();
     // Echo-Check
@@ -255,7 +255,7 @@ public class TA01_CreateHero
 
     /** GOLD BANKED: Peasants get 0.0 gold banked */
     double goldBanked = Double.parseDouble(_opMap.get(PersonKeys.GOLD_BANKED));
-    MsgCtrl.msg("   Gold banked = " + goldBanked);
+    MsgCtrl.msg("\n   Gold banked = " + goldBanked);
     assertTrue(goldBanked < 0.05);
 
     /** GOLD IN HAND: All peasants get 10*d4 gold + d10 silver */
@@ -263,7 +263,7 @@ public class TA01_CreateHero
     double silver = Double.parseDouble(_opMap.get(PersonKeys.SILVER));
     double goldInHand = gold + silver / 10.0;
     MsgCtrl.msg("   Gold/silver in hand = " + gold + " gp/ " + silver + " sp = " + goldInHand);
-    assertTrue(checkRangeValue(10.1, 40.9, goldInHand, 0.05));
+    assertTrue(checkRangeValue(10.0, 41.0, goldInHand, 0.1));
 
     // All Peasants start with 10 HP
     int expHP_Mod = getMod(_traits[CON]); // expected value
@@ -367,6 +367,71 @@ public class TA01_CreateHero
   }
 
 
+  /** Display the hero attributes */
+  protected void printHero(Map<PersonKeys, String> op)
+  {
+//    MsgCtrl.auditMsgsOn(true);
+//    MsgCtrl.auditMsgsOn(true);
+//    MsgCtrl.where(this);
+  
+    MsgCtrl.msgln("\t-- HERO ATTRIBUTE DUMP --");
+    // Name plate
+    MsgCtrl.msgln("\t" + op.get(PersonKeys.NAME) + ": "
+        + op.get(PersonKeys.GENDER) + " " + op.get(PersonKeys.RACENAME) + " "
+        + op.get(PersonKeys.OCCUPATION));
+  
+    // Level, HP, HP Max, AC, Hunger
+    MsgCtrl.msgln("\tLevel = " + op.get(PersonKeys.LEVEL) + "   HP/HPMax = "
+        + op.get(PersonKeys.HP) + "/" + op.get(PersonKeys.HP_MAX) + "   AC = "
+        + op.get(PersonKeys.AC) + "   Hunger: " + op.get(PersonKeys.HUNGER));
+  
+    // XP, Speed, Gold Banked, Gold in Hand
+    MsgCtrl.msgln("\tXP = " + op.get(PersonKeys.XP) + "   Speed = " + op.get(PersonKeys.SPEED)
+        + "   Gold Banked = " + op.get(PersonKeys.GOLD_BANKED) + "   Gold in Hand = "
+        + op.get(PersonKeys.GOLD) + " gp / " + op.get(PersonKeys.SILVER) + " sp");
+  
+    // Description
+    MsgCtrl.msgln("\tDescription: " + op.get(PersonKeys.DESCRIPTION));
+  
+    // STR, toHit Mod, Damage Mod, Wt allowance, Load
+    MsgCtrl.msgln("\tSTR = " + _traits[STR] + "   To Hit (melee) = "
+        + op.get(PersonKeys.TO_HIT_MELEE) + "   Damage = " + op.get(PersonKeys.DAMAGE)
+        + "   Wt Allowance = " + op.get(PersonKeys.WT_ALLOW) + " lb   Load = "
+        + op.get(PersonKeys.LOAD) + " lb");
+  
+    // INT
+    MsgCtrl.msgln("\tINT = " + _traits[INT]);
+  
+    // WIS, Magic Defense Mod
+    MsgCtrl.msgln("\tWIS = " + _traits[WIS] + "   Magic Defense = " + op.get(PersonKeys.MDM));
+  
+    // CON, HP Mod
+    MsgCtrl.msgln("\tCON = " + _traits[CON] + "   HP Mod = " + op.get(PersonKeys.HP_MOD));
+  
+    // DEX, toHit Mod, AC Mod
+    MsgCtrl.msgln("\tDEX = " + _traits[DEX] + "   To Hit (missile) = "
+        + op.get(PersonKeys.TO_HIT_MISSLE) + "   AC Mod = " + op.get(PersonKeys.AC_MOD));
+  
+    // CHR, weight, height
+    MsgCtrl.msgln("\tCHR = " + _traits[CHR] + "   Weight = " + op.get(PersonKeys.WEIGHT)
+        + " lb   Height = " + Utilities.formatHeight(op.get(PersonKeys.HEIGHT)));
+  
+    // AP, overbearing, grappling, pummeling, sheild bash
+    MsgCtrl.msgln("\tAP = " + op.get(PersonKeys.AP) + "   Overbearing: "
+        + op.get(PersonKeys.OVERBEARING) + "   Grappling: " + op.get(PersonKeys.GRAPPLING)
+        + "   Pummeling: " + op.get(PersonKeys.PUMMELING) + "   Shield Bash: "
+        + op.get(PersonKeys.SHIELD_BASH));
+  
+    // Languages (max),language list
+    MsgCtrl.msgln("\tLanguages (can learn " + op.get(PersonKeys.MAX_LANGS) + " more): "
+        + op.get(PersonKeys.LANGUAGES));
+  
+    // Occupation description
+    MsgCtrl.msgln("\t" + op.get(PersonKeys.OCCUPATION) + ": " + op.get(PersonKeys.OCC_DESCRIPTOR));
+  
+  }
+
+  
   /** Verify that the HP and HP Mods are correct */
   protected void verifyHPMods()
   {
@@ -390,14 +455,67 @@ public class TA01_CreateHero
   // BEGIN VERIFICATION
   // ============================================================
 
+  // ============================================================
+  // Protected Methods
+  // ============================================================
+  
+  /** Confirm that all PersonsKeys have a value */
+  protected void verifyPersonKeys()
+  {
+    MsgCtrl.where(this);
+  
+    // SETUP for male human peasant
+    _inputMap = loadInput("Falsoon", "Male", "brown", "Human");
+  
+    // Some keys do not apply to Peasants, so load an exception list
+    PersonKeys[] pk = {PersonKeys.CURRENT_MSP, PersonKeys.MAX_MSP, PersonKeys.MSP_PER_LEVEL,
+        PersonKeys.SPELLS_KNOWN, PersonKeys.CURRENT_CSP, PersonKeys.MAX_CSP,
+        PersonKeys.CSP_PER_LEVEL, PersonKeys.TURN_UNDEAD};
+  
+    ArrayList<PersonKeys> ignoreKeys = new ArrayList<>();
+    for (int k = 0; k < pk.length; k++) {
+      ignoreKeys.add(pk[k]);
+    }
+  
+    for (PersonKeys key : PersonKeys.values()) {
+      String s = _opMap.get(key);
+      if (s == null) {
+        if (!ignoreKeys.contains(key)) {
+          MsgCtrl.msgln("\tPersonKey value " + key + " = null");
+          assertNotNull(s);
+        }
+      }
+    }
+  }
+
+  /**
+   * Verify that all Hero traits SIWCDCh fall within range the given range. Method {@code fails} if
+   * any trait is out of range.
+   * 
+   * @param lowVals the lowest trait allowed for the given trait
+   * @param highVals the highest trait allowed for the given trait
+   */
+  protected void verifyTraits(int[] lowVals, int[] highVals)
+  {
+    MsgCtrl.where(this);
+
+    // Check that each trait falls within the proper range SIWDCCh
+    for (int k = 0; k < MAX_TRAITS; k++) {
+      if (!checkRangeValue(lowVals[k], highVals[k], _traits[k])) {
+        fail("\n\tError on trait " + k + " = " + _traits[k]);
+      }
+    }
+  }
+
+  
   /** Compare the hero input data against the output data */
   // private boolean echoCheck(String[] indata, Map<PersonKeys, String> outdata)
   private boolean echoCheck(EnumMap<PersonKeys, String> inData, Map<PersonKeys, String> outdata)
   {
-    MsgCtrl.msgln("\tHero " + _opMap.get(PersonKeys.NAME) + ": " + _opMap.get(PersonKeys.RACENAME)
-        + " " + _opMap.get(PersonKeys.GENDER) + " " + _opMap.get(PersonKeys.KLASSNAME)
-        + " with " + _opMap.get(PersonKeys.HAIR_COLOR) + " hair.");
-    MsgCtrl.msgln("\t" + _opMap.get(PersonKeys.DESCRIPTION));
+//    MsgCtrl.msgln("\tHero " + _opMap.get(PersonKeys.NAME) + ": " + _opMap.get(PersonKeys.RACENAME)
+//        + " " + _opMap.get(PersonKeys.GENDER) + " " + _opMap.get(PersonKeys.KLASSNAME)
+//        + " with " + _opMap.get(PersonKeys.HAIR_COLOR) + " hair.");
+//    MsgCtrl.msgln("\t" + _opMap.get(PersonKeys.DESCRIPTION));
     boolean bName = inData.get(PersonKeys.NAME).equals(outdata.get(PersonKeys.NAME));
     boolean bGender = inData.get(PersonKeys.GENDER).equals(outdata.get(PersonKeys.GENDER));
     boolean bHair = inData.get(PersonKeys.HAIR_COLOR).equals(outdata.get(PersonKeys.HAIR_COLOR));
@@ -430,151 +548,22 @@ public class TA01_CreateHero
    * @param indataame, gender, hair color, race,
    * @return the input map but is also a class field
    */
-  private EnumMap<PersonKeys, String> loadInput(String name, String gender,
-      String hairColor, String raceName, String klassName)
+  private EnumMap<PersonKeys, String> loadInput(String name, String gender, String hairColor,
+      String raceName)
   {
     _inputMap.put(PersonKeys.NAME, name);
     _inputMap.put(PersonKeys.GENDER, gender);
     _inputMap.put(PersonKeys.HAIR_COLOR, hairColor);
     _inputMap.put(PersonKeys.RACENAME, raceName);
-    _inputMap.put(PersonKeys.KLASSNAME, klassName);
+    _inputMap.put(PersonKeys.KLASSNAME, "Peasant");
     return _inputMap;
   }
 
-  /** Display the hero attributes */
-  protected void printHero(Map<PersonKeys, String> op)
-  {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.where(this);
-
-    // Name plate
-    MsgCtrl.msgln("\n\t" + op.get(PersonKeys.NAME) + ": "
-        + op.get(PersonKeys.GENDER) + " " + op.get(PersonKeys.RACENAME) + " "
-        + op.get(PersonKeys.OCCUPATION));
-
-    // Level, HP, HP Max, AC, Hunger
-    MsgCtrl.msgln("\tLevel = " + op.get(PersonKeys.LEVEL) + "   HP/HPMax = "
-        + op.get(PersonKeys.HP) + "/" + op.get(PersonKeys.HP_MAX) + "   AC = "
-        + op.get(PersonKeys.AC) + "   Hunger: " + op.get(PersonKeys.HUNGER));
-
-    // XP, Speed, Gold Banked, Gold in Hand
-    MsgCtrl.msgln("\tXP = " + op.get(PersonKeys.XP) + "   Speed = " + op.get(PersonKeys.SPEED)
-        + "   Gold Banked = " + op.get(PersonKeys.GOLD_BANKED) + "   Gold in Hand = "
-        + op.get(PersonKeys.GOLD) + " gp / " + op.get(PersonKeys.SILVER) + " sp");
-
-    // Description
-    MsgCtrl.msgln("\tDescription: " + op.get(PersonKeys.DESCRIPTION));
-
-    // STR, toHit Mod, Damage Mod, Wt allowance, Load
-    MsgCtrl.msgln("\tSTR = " + _traits[STR] + "   To Hit (melee) = "
-        + op.get(PersonKeys.TO_HIT_MELEE) + "   Damage = " + op.get(PersonKeys.DAMAGE)
-        + "   Wt Allowance = " + op.get(PersonKeys.WT_ALLOW) + " lb   Load = "
-        + op.get(PersonKeys.LOAD) + " lb");
-
-    // INT
-    MsgCtrl.msgln("\tINT = " + _traits[INT]);
-
-    // WIS, Magic Defense Mod
-    MsgCtrl.msgln("\tWIS = " + _traits[WIS] + "   Magic Defense = " + op.get(PersonKeys.MDM));
-
-    // CON, HP Mod
-    MsgCtrl.msgln("\tCON = " + _traits[CON] + "   HP Mod = " + op.get(PersonKeys.HP_MOD));
-
-    // DEX, toHit Mod, AC Mod
-    MsgCtrl.msgln("\tDEX = " + _traits[DEX] + "   To Hit (missile) = "
-        + op.get(PersonKeys.TO_HIT_MISSLE) + "   AC Mod = " + op.get(PersonKeys.AC_MOD));
-
-    // CHR, weight, height
-    MsgCtrl.msgln("\tCHR = " + _traits[CHR] + "   Weight = " + op.get(PersonKeys.WEIGHT)
-        + " lb   Height = " + Utilities.formatHeight(op.get(PersonKeys.HEIGHT)));
-
-    // AP, overbearing, grappling, pummeling, sheild bash
-    MsgCtrl.msgln("\tAP = " + op.get(PersonKeys.AP) + "   Overbearing: "
-        + op.get(PersonKeys.OVERBEARING) + "   Grappling: " + op.get(PersonKeys.GRAPPLING)
-        + "   Pummeling: " + op.get(PersonKeys.PUMMELING) + "   Shield Bash: "
-        + op.get(PersonKeys.SHIELD_BASH));
-
-    // Languages (max),language list
-    MsgCtrl.msgln("\tLanguages (can learn " + op.get(PersonKeys.MAX_LANGS) + " more): "
-        + op.get(PersonKeys.LANGUAGES));
-
-    // Occupation description
-    MsgCtrl.msgln("\t" + op.get(PersonKeys.OCCUPATION) + ": " + op.get(PersonKeys.OCC_DESCRIPTOR));
-
-
-
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.auditMsgsOn(false);
-  }
-
-
-
-  private void stockChecks()
-  {
-    MsgCtrl.where(this);
-
-
-    /** HP and Max HP depends on Klass */
-    // int expHP_Mod = getMod(trait[CON]); // expected value
-    // int expHP = MIN_HP + expHP_Mod;
-    // int hpmod = Integer.parseInt(_opMap.get(PersonKeys.HP_MOD));
-    // int HP = Integer.parseInt(_opMap.get(PersonKeys.HP));
-    // int HP_Max = Integer.parseInt(_opMap.get(PersonKeys.HP_MAX));
-    // MsgCtrl.msg("; HP / Max HP = " + HP + "/" + HP_Max + " (" + hpmod + ")");
-    // assertEquals(expHP_Mod, hpmod);
-    // assertEquals(expHP, HP);
-    // assertEquals(expHP, HP_Max);
-
-    /** Languages and max languages knowable depend on INT (and Race) */
-    // Max new learnable languages
-    // int intel = Integer.parseInt(_opMap.get(PersonKeys.INT));
-    // int expNbrLangs = intel / 2 - 4;
-    // int maxLangs = Integer.parseInt(_opMap.get(PersonKeys.MAX_LANGS));
-    // MsgCtrl.msg("\n\tNew Languages Knowable = " + maxLangs);
-    // assertEquals(expNbrLangs, maxLangs);
-    //
-    // Languages known
-    // String expLang = "Common";
-    // String lang = _opMap.get(PersonKeys.LANGUAGES);
-    // MsgCtrl.msg(" Languages known: " + lang);
-    // assertEquals(expLang, lang);
-    //
-
-  }
-
+  
   // ============================================================
   // Protected Methods
   // ============================================================
 
-  /** Confirm that all PersonsKeys have a value */
-  protected void verifyPersonKeys()
-  {
-    MsgCtrl.where(this);
-
-    // SETUP for male human peasant
-    _inputMap = loadInput("Falsoon", "Male", "brown", "Human", "Peasant");
-
-    // Some keys do not apply to Peasants, so load an exception list
-    PersonKeys[] pk = {PersonKeys.CURRENT_MSP, PersonKeys.MAX_MSP, PersonKeys.MSP_PER_LEVEL,
-        PersonKeys.SPELLS_KNOWN, PersonKeys.CURRENT_CSP, PersonKeys.MAX_CSP,
-        PersonKeys.CSP_PER_LEVEL, PersonKeys.TURN_UNDEAD};
-
-    ArrayList<PersonKeys> ignoreKeys = new ArrayList<>();
-    for (int k = 0; k < pk.length; k++) {
-      ignoreKeys.add(pk[k]);
-    }
-
-    for (PersonKeys key : PersonKeys.values()) {
-      String s = _opMap.get(key);
-      if (s == null) {
-        if (!ignoreKeys.contains(key)) {
-          MsgCtrl.msgln("\tPersonKey value " + key + " = null");
-          assertNotNull(s);
-        }
-      }
-    }
-  }
 
 
 } // end of TA01_CreateHero class

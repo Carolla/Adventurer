@@ -9,7 +9,6 @@
 
 package chronos.pdc.race;
 
-import chronos.pdc.character.Gender;
 import chronos.pdc.character.TraitList;
 import chronos.pdc.character.TraitList.PrimeTraits;
 
@@ -20,17 +19,19 @@ import chronos.pdc.character.TraitList.PrimeTraits;
  */
 public class Hobbit extends Race
 {
-  /** Weight ranges */
-  protected final RangedValue _weightRange = new RangedValue(50, "2d4", "2d6");
+  // /** Weight ranges */
+  // protected final RangedValue _weightRange = new RangedValue(50, "2d4", "2d6");
+  // /** Height ranges */
+  // protected final RangedValue _heightRange = new RangedValue(33, "d3", "d6");
 
-  /** Height ranges */
-  protected final RangedValue _heightRange = new RangedValue(33, "d3", "d6");
+  private final String RACE_NAME = "Hobbit";
+  private final String RACE_LANGUAGE = "Tolkeen";
 
   /** Hobbits have hairy bare feet */
   private final String _raceDescriptor = "hairy bare feet";
 
   // Find Secret Door | Pick Pockets | Open Locks | Find/Remove Traps | Move Silently |
-  //    Hide in Shadows | Listening | Climb Walls | Back Attack
+  // Hide in Shadows | Listening | Climb Walls | Back Attack
   protected final int[] _hobbitThiefMods = {5, 5, 5, 5, 10, 15, 5, -15, 10};
 
   // Special Hobbit skills
@@ -43,12 +44,13 @@ public class Hobbit extends Race
 
   /**
    * Default constructor, called reflectively by Klass
-   * @param gender 
+   * 
+   * @param gender
    */
   public Hobbit()
   {
-    _raceName = "Hobbit";
-    _raceLang = "Tolkeen";
+    super._raceName = RACE_NAME;
+    super._raceLang = RACE_LANGUAGE;
 
     _descriptor = _raceDescriptor;
     _racialThiefMods = _hobbitThiefMods;
@@ -69,12 +71,39 @@ public class Hobbit extends Race
   @Override
   public int calcWeight()
   {
-    return _weightRange.calcValue();
+    // return calcWeight(WT_AVG, WT_RANGE, WT_RANGE_DICE);
+    return 42;
   }
+
 
   @Override
   public int calcHeight()
   {
-    return _heightRange.calcValue();
+    // return calcHeight(HT_AVG, HT_RANGE, HT_RANGE_DICE);
+    return 42;
+  }
+
+
+  /* (non-Javadoc)
+   * @see chronos.pdc.race.Race#setTraitLimits(chronos.pdc.character.TraitList)
+   */
+  @Override
+  public TraitList setTraitLimits(TraitList traits)
+  {
+    // TODO Auto-generated method stub
+    return null;
   };
-}
+
+  // /* (non-Javadoc)
+  // * @see chronos.pdc.race.Race#getRaceLang()
+  // */
+  // @Override
+  // protected String getRaceLang()
+  // {
+  // // TODO Auto-generated method stub
+  // return null;
+  // };
+
+
+} // end of Hobbit subclass
+

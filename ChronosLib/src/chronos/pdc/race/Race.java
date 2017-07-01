@@ -21,6 +21,7 @@ import chronos.pdc.character.Gender;
 import chronos.pdc.character.TraitList;
 import chronos.pdc.character.TraitList.PrimeTraits;
 import mylib.pdc.MetaDie;
+import mylib.pdc.Utilities;
 
 /**
  * Defines the common methods and attributes for all Races.
@@ -28,6 +29,7 @@ import mylib.pdc.MetaDie;
  * @author Alan Cline
  * @version Sept 4 2015 // rewrite to support Hero rewrite <br>
  *          June 2 2017 // Refactored for better organization <br>
+ *          June 17 2017 // Modified trait limits <br>
  */
 public abstract class Race
 {
@@ -47,6 +49,7 @@ public abstract class Race
 
   protected String _raceName;
   protected String _raceLang;
+  protected ArrayList<String> _languages;
   protected int _height;
   protected int _weight;
   protected Description _description;
@@ -54,14 +57,16 @@ public abstract class Race
 
   protected static MetaDie _md = new MetaDie();
 
-  /** Racial limits for a each subclass for constraining the traits */
-  protected int[] _minLimit;
-  protected int[] _maxLimit;
-
   protected String _descriptor;
   protected int[] _racialThiefMods;
   protected String[] _raceSkills;
   protected int _racialPoisonResist = 0;
+
+  /** Weight and height are 10% less for females */
+  private final double FEMALE_ADJ = 0.90;
+  /** All races know the 'Common' language */
+  private final String DEFAULT_LANG = "Common";
+
 
   // ====================================================
   // ABSTRACT METHODS FOR SUBCLASSES
@@ -76,6 +81,9 @@ public abstract class Race
   /** Calculate the gender- and racial specific height of the Hero */
   public abstract int calcHeight();
 
+  /** Ensure that all traits are within the proper range after all adjustments are made */
+  public abstract TraitList setTraitLimits(TraitList traits);
+
 
   // ====================================================
   // CONSTRUCTOR(S) AND RELATED METHODS
@@ -83,7 +91,32 @@ public abstract class Race
 
   /** For subclass constructors */
   protected Race()
-  {}
+  {
+    _languages = new ArrayList<String>();
+  }
+
+
+  /**
+   * Genders have slightly different traits. Once the specific Race is created, then specific
+   * attributes are refined or created: trait adjustment for race and gender, weight and height, and
+   * a physical description.
+   * 
+   * @param traits the six prime unadjusted traits for all Heroes
+   */
+  public TraitList buildRace()
+  {
+    // Set the race-specific traits
+    TraitList traits = setRaceTraits();
+
+    _languages.add(DEFAULT_LANG);
+    _languages.add(_raceLang);
+    _weight = calcWeight();
+    _height = calcHeight();
+    _hunger = "Full";
+    _description = new Description(traits.getTrait(PrimeTraits.CHR), _descriptor, _hairColor,
+        _gender, _height, _weight);
+    return traits;
+  }
 
   /**
    * Create a specific subclass of Race based on the Race name. <br>
@@ -104,24 +137,24 @@ public abstract class Race
       case HUMAN_RACENAME:
         race = new Human();
         break;
-       case DWARF_RACENAME:
-       race = new Dwarf();
-       break;
-       case ELF_RACENAME:
-       race = new Elf();
-       break;
-       case GNOME_RACENAME:
-       race = new Gnome();
-       break;
-       case HALFELF_RACENAME:
-       race = new HalfElf();
-       break;
-       case HALFORC_RACENAME:
-       race = new HalfOrc();
-       break;
-       case HOBBIT_RACENAME:
-       race = new Hobbit();
-       break;
+      case DWARF_RACENAME:
+        race = new Dwarf();
+        break;
+      case ELF_RACENAME:
+        race = new Elf();
+        break;
+      case GNOME_RACENAME:
+        race = new Gnome();
+        break;
+      case HALFELF_RACENAME:
+        race = new HalfElf();
+        break;
+      case HALFORC_RACENAME:
+        race = new HalfOrc();
+        break;
+      case HOBBIT_RACENAME:
+        race = new Hobbit();
+        break;
       default:
         throw new NullPointerException(
             "Race.createRace(): Cannot find race requested " + raceName);
@@ -129,25 +162,6 @@ public abstract class Race
     return race;
   }
 
-  
-  /**
-   * Genders have slightly different traits Once the specific Race is created, then specific
-   * attributes are refined or created: trait adjustment for race and gender, weight and height, and
-   * a physical description
-   * 
-   * @param traits the six prime traits for all Heroes
-   */
-  public TraitList buildRace(TraitList traits)
-  {
-    adjustTraitsForRace(traits);
-    _gender.adjustTraitsForGender(traits);
-    _weight = calcWeight();
-    _height = calcHeight();
-    _hunger = "Full";
-    _description = new Description(traits.getTrait(PrimeTraits.CHR), _descriptor, _hairColor,
-        _gender, _height, _weight);
-    return traits;
-  }
 
   // ====================================================
   // PROTECTED METHODS
@@ -156,34 +170,48 @@ public abstract class Race
   /**
    * Calculate the height of the Hero based on deviation from average
    * 
-   * @param lowValue lower boundary for the height distribution
-   * @param variance dice format for normal-curve distribution to add to lowValue
-   * @return the randomly-determined height within the lower bound and average distribution
+   * @param low lowest value for a male; female adjustment made
+   * @param variance dice format for normal-curve distribution across average value
+   * @return the randomly-determined height over the average with a normal distribution
    */
-  protected int calcHeight(int lowValue, String variance)
+  protected int calcHeight(int low, String variance)
   {
-    int height = lowValue + _md.roll(variance);
+    int newLow  = (int) (_gender.isMale() ? low : low * FEMALE_ADJ);
+    int height = newLow + _md.roll(variance) - 1; // adjust for 1 when 0 is rolled
     return height;
   }
 
 
-
-  // ====================================================
-  // PROTECTED METHODS
-  // ====================================================
-
   /**
    * Calculate the weight of the Hero based on deviation from average
    * 
-   * @param lowValue lower boundary for the weight distribution
-   * @param variance dice format for normal-curve distribution to add to lowValue
-   * @return the randomly-determined weight within the lower bound and average distribution
+   * @param low lowest value for a male; female adjustment made
+   * @param variance dice format for normal-curve distribution across average value
+   * @return the randomly-determined weight over the average with a normal distribution
    */
-  protected int calcWeight(int lowValue, String variance)
+  protected int calcWeight(int low, String variance)
   {
-    int weight = lowValue + (_md.roll(variance) * 10);
+    int newLow = (int) (_gender.isMale() ? low : low * FEMALE_ADJ);
+    int weight = newLow + _md.roll(variance) - 1;
     return weight;
   }
+
+  /**
+   * Constrain all traits to fall within a given range for the racial subclass. Any value outside
+   * those limits are set to the range boundary. NOTE: TraitList is created anew so return value
+   * must be assigned to the _traits field
+   * 
+   * @param traits the original set to check
+   * @param lowerLimits the lower bound per trait
+   * @param upperLimits the upper bound per trait
+   */
+  protected TraitList constrainTo(TraitList traits, int[] lowerLimits, int[] upperLimits)
+  {
+    int[] values = traits.toArray();
+    values = Utilities.constrain(values, lowerLimits, upperLimits);
+    return new TraitList(values);
+  }
+
 
 
   // ====================================================
@@ -195,33 +223,17 @@ public abstract class Race
     return _gender.toString();
   }
 
-  
+
   public int getHeight()
   {
     return _height;
   }
-
-  // ====================================================
-  // PRIVATE METHODS
-  // ====================================================
-
-
-
-  // ====================================================
-  // PRIVATE METHODS
-  // ====================================================
-
 
 
   public String getName()
   {
     return _raceName;
   }
-
-  // ====================================================
-  // PRIVATE METHODS
-  // ====================================================
-
 
 
   public String getRaceDescriptor()
@@ -230,20 +242,15 @@ public abstract class Race
   }
 
   /**
-   * Return the language specific to the race, or null. Half-breed races have a 50% chance of
-   * knowing their race language.
+   * Return the language specific to the race, or null. Hybrid races have a 50% chance of knowing
+   * their race language.
    * 
    * @return the race language
    */
-  public String getRacialLanguage()
+  public ArrayList<String> getLanguages()
   {
-    return _raceLang;
+    return _languages;
   }
-
-  // ====================================================
-  // PRIVATE METHODS
-  // ====================================================
-
 
 
   public List<String> getSkills()
@@ -261,6 +268,21 @@ public abstract class Race
   // PRIVATE METHODS
   // ====================================================
 
+  /**
+   * Create the traits for a particular race. Starts with the default (human) trait list, then
+   * modifies then for specific race and gender, then verifies that they fall with the proper
+   * race-specific trait limits.
+   * 
+   * @return set of final traits for the Hero: STR, INT, WIS, CON, DEX, CHR
+   */
+  private TraitList setRaceTraits()
+  {
+    TraitList traits = new TraitList(); // default range of [8,18]
+    traits = adjustTraitsForRace(traits);
+    traits = _gender.adjustTraitsForGender(traits);
+    traits = setTraitLimits(traits); // set to race-specific trait ranges
+    return traits;
+  }
 
 
   @Override
@@ -303,19 +325,15 @@ public abstract class Race
   }
 
 
-  // ====================================================
-  // PRIVATE METHODS
-  // ====================================================
-
-//  private void addRacialPoisonResist(int constitution, int magicAttackMod)
-//  {
-//    if ((_raceName.equalsIgnoreCase("Dwarf")) ||
-//        (_raceName.equalsIgnoreCase("Gnome")) ||
-//        (_raceName.equalsIgnoreCase("Hobbit"))) {
-//      _racialPoisonResist = (int) Math.round(constitution / 3.5);
-//      magicAttackMod += _racialPoisonResist;
-//    }
-//  }
+  // private void addRacialPoisonResist(int constitution, int magicAttackMod)
+  // {
+  // if ((_raceName.equalsIgnoreCase("Dwarf")) ||
+  // (_raceName.equalsIgnoreCase("Gnome")) ||
+  // (_raceName.equalsIgnoreCase("Hobbit"))) {
+  // _racialPoisonResist = (int) Math.round(constitution / 3.5);
+  // magicAttackMod += _racialPoisonResist;
+  // }
+  // }
 
 
 } // end of abstract Race class

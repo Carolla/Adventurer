@@ -53,9 +53,9 @@ public class HalfElf extends Race
   }
 
   /** Half-elf has 50% chance of knowing elvish */
-  private String getRaceLang()
+  protected String getRaceLang()
   {
-    String s = (_md.rollPercent() < 50) ? "Common" : "Elvish";
+    String s = (_md.rollPercent() < 50) ? null : "Elvish";
     return s;
   }
 
@@ -76,6 +76,16 @@ public class HalfElf extends Race
    */
   @Override
   public TraitList adjustTraitsForRace(TraitList traits)
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  /* (non-Javadoc)
+   * @see chronos.pdc.race.Race#setTraitLimits(chronos.pdc.character.TraitList)
+   */
+  @Override
+  public TraitList setTraitLimits(TraitList traits)
   {
     // TODO Auto-generated method stub
     return null;

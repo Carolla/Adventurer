@@ -28,7 +28,7 @@ public class TraitList
   };
 
   /** Max number of traits */
-  private final int NUMBER_OF_TRAITS = 6;
+  static public final int NUMBER_OF_TRAITS = 6;
 
   /** Indices into the non-lethal stats */
   public static enum NonLethal {
@@ -52,8 +52,8 @@ public class TraitList
 
   // No trait, raw of modified, may be less than MIN_TRAIT at start
   // Make this static to be available by other classes
-  static public final int MIN_TRAIT = 8;
-  static public final int MAX_TRAIT = 18;
+//  static public final int MIN_TRAIT = 8;
+//  static public final int MAX_TRAIT = 18;
   
   // Height indicators for speed mod
   private final int HT_TALL = 74;
@@ -84,9 +84,6 @@ public class TraitList
     for (PrimeTraits t : PrimeTraits.values()) {
       _traits.put(t.ordinal(), traits[t.ordinal()]);
     }
-    // _AP = getTrait(STR) + getTrait(DEX);
-    // _apMods = calcAPMods(0, getTrait(STR));
-    // _speed = calcSpeed();
   }
 
 
@@ -158,20 +155,19 @@ public class TraitList
 
   }
 
-  /**
-   * Ensure that no trait, raw or modified, is below MI_TRAIT. Modified traits be exceed MAX_TRAIT
-   * 
-   * @return nothing: internal fields modified to be within proper range
-   */
-  public void ensureTraitConstraints()
-  {
-    // private final Map<Integer, Integer> _traits = new TreeMap<Integer, Integer>();
-    for (PrimeTraits t : PrimeTraits.values()) {
-      if (getTrait(t) < MIN_TRAIT) {
-        _traits.put(t.ordinal(), MIN_TRAIT);
-      }
-    }
-  }
+//  /**
+//   * Ensure that no trait, raw or modified, is below MI_TRAIT. Modified traits be exceed MAX_TRAIT
+//   * 
+//   * @return nothing: internal fields modified to be within proper range
+//   */
+//  public void ensureTraitConstraints()
+//  {
+//    for (PrimeTraits t : PrimeTraits.values()) {
+//      if (getTrait(t) < MIN_TRAIT) {
+//        _traits.put(t.ordinal(), MIN_TRAIT);
+//      }
+//    }
+//  }
 
 
   public PrimeTraits findLargestTrait()
@@ -346,20 +342,24 @@ public class TraitList
   public int[] toArray()
   {
     int[] trAry = new int[NUMBER_OF_TRAITS];
-    for (int k = 0; k < _traits.size(); k++) {
-      trAry[k] = getTrait(PrimeTraits.STR);
-    }
+    trAry[0] = getTrait(PrimeTraits.STR);
+    trAry[1] = getTrait(PrimeTraits.INT);
+    trAry[2] = getTrait(PrimeTraits.WIS);
+    trAry[3] = getTrait(PrimeTraits.CON);
+    trAry[4] = getTrait(PrimeTraits.DEX);
+    trAry[5] = getTrait(PrimeTraits.CHR);
     return trAry;
   }
 
+  
   @Override
   public String toString()
   {
     return "STR: " + getTrait(PrimeTraits.STR) + ", " +
         "INT: " + getTrait(PrimeTraits.INT) + ", " +
         "WIS: " + getTrait(PrimeTraits.WIS) + ", " +
-        "DEX: " + getTrait(PrimeTraits.DEX) + ", " +
         "CON: " + getTrait(PrimeTraits.CON) + ", " +
+        "DEX: " + getTrait(PrimeTraits.DEX) + ", " +
         "CHR: " + getTrait(PrimeTraits.CHR);
   }
 

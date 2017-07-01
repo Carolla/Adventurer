@@ -59,6 +59,24 @@ public class Utilities
     str = Character.toUpperCase(str.charAt(0)) + str.substring(1);
     return str;
   }
+  
+  
+  /**
+   * Constrain an integer array to fall within a given range for each element of the set by setting
+   * any value to its upper or lower limit
+   * 
+   * @param values the original set to check
+   * @param lowLimit the lower bound per value
+   * @param upLimit the upper bound per value
+   */
+  static public int[] constrain(int[] values, int[] lowLimit, int[] upLimit)
+  {
+    for (int k = 0; k < values.length; k++) {
+      values[k] = (values[k] < lowLimit[k]) ? lowLimit[k] : values[k];
+      values[k] = (values[k] > upLimit[k]) ? upLimit[k] : values[k];
+    }
+    return values;
+  }
 
 
   /**
@@ -331,7 +349,7 @@ public class Utilities
   {
     ArrayList<String> result = new ArrayList<>();
     StringBuffer sb = new StringBuffer();
-    
+
     // Segment a long line into an array of strings separated by the delimiter SPACE or HYPHEN
     String[] words = line.split(Constants.SPACE);
 
@@ -340,12 +358,11 @@ public class Utilities
       if (sb.length() + words[k].length() <= maxLen) {
         sb.append(words[k]);
         sb.append(Constants.SPACE);
-      }
-      else {    
+      } else {
         // Remove the white space at the end
         result.add(sb.toString().trim());
         sb.delete(0, sb.length());
-        k = k-1;    // backstep one to get the skipped word
+        k = k - 1; // backstep one to get the skipped word
       }
     }
     // Remove the white space at the end
