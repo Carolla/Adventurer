@@ -1,5 +1,5 @@
 /**
- * TestCreateGnomePeasant.java Copyright (c) 2017, Carolla Development, Inc. All Rights Reserved
+ * TestCreateElffPeasant.java Copyright (c) 2017, Carolla Development, Inc. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
@@ -21,36 +21,36 @@ import mylib.MsgCtrl;
  * Non-specific attributes are verified in the base class.
  * 
  * @author Al Cline
- * @version Jun 30, 2017 // original <br>
+ * @version July 1, 2017 // original <br>
  */
-public class TestCreateGnomePeasant extends TestCreateHero
+public class TestCreateElfPeasant extends TestCreateHero
 {
-  // Trait range for gnome males, adjusted from norm by STR-2, CHR-1
-  private final int[] MALE_LOWTRAITS =  { 6,  8,  8,  8,  8,  7};
-  private final int[] MALE_HIGHTRAITS = {16, 18, 18, 18, 18, 17};
+  // Trait range for elf males, adjusted from norm by CON-1, DEX+1
 
-  // Trait range for gnome females, adjusted from male by STR-1, CON+1, CHR+1
-  private final int[] FEMALE_LOWTRAITS =  { 5,  8,  8,  9,  8,  8};
-  private final int[] FEMALE_HIGHTRAITS = {15, 18, 18, 19, 18, 18};
+  protected final int[] MALE_LOWTRAITS =  { 8,  8,  8,  7,  9,  8};
+  protected final int[] MALE_HIGHTRAITS = {18, 18, 19, 17, 19, 19};
+  /** Female limits after adjustments from the male: STR-1, CON+1, CHR+1 */
+  protected final int[] FEMALE_LOWTRAITS =  { 7,  8,  8,  8,  9,  9};
+  protected final int[] FEMALE_HIGHTRAITS = {17, 18, 18, 18, 19, 19};
 
-  // Height range for gnomes
-  private final int MALE_LOWWT = 60;
-  private final int MALE_HIGHWT = 100;
-  private final int MALE_LOWHT = 33;
-  private final int MALE_HIGHHT = 39;
+  // Height range for elves
+  private final int MALE_LOWWT = 80;
+  private final int MALE_HIGHWT = 120;
+  private final int MALE_LOWHT = 60;
+  private final int MALE_HIGHHT = 72;
 
-  // Weight range for gnomes
-  private final int FEMALE_LOWWT = 54;
-  private final int FEMALE_HIGHWT = 94;
-  private final int FEMALE_LOWHT = 30;
-  private final int FEMALE_HIGHHT = 36;
+  // Weight range for elves
+  private final int FEMALE_LOWWT = 72;
+  private final int FEMALE_HIGHWT = 112;
+  private final int FEMALE_LOWHT = 54;
+  private final int FEMALE_HIGHHT = 66;
 
 
   // ============================================================
   // BEGIN TESTING
   // ============================================================
 
-  /** Verify that the female gnome complies */
+  /** Verify that the female elf complies */
   @Test
   public void testFemalePeasant()
   {
@@ -58,8 +58,8 @@ public class TestCreateGnomePeasant extends TestCreateHero
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    /** Set data and create a female gnome Peasant */
-    _myHero = createHero("Gnomilla", "Female", "blond", "Gnome");
+    /** Set data and create a female elf Peasant */
+    _myHero = createHero("Gladriel", "Female", "silver", "Elf");
     printHero(_opMap);
 
     // Verify female-specific weight and height
@@ -70,7 +70,7 @@ public class TestCreateGnomePeasant extends TestCreateHero
     assertTrue(checkRangeValue(FEMALE_LOWHT, FEMALE_HIGHHT, height));
 
     // Verify female trait adjustments, and Common language
-    assertTrue(_opMap.get(PersonKeys.LANGUAGES).equals("Common, Gnomish"));
+    assertTrue(_opMap.get(PersonKeys.LANGUAGES).equals("Common, Elvish"));
     verifyTraits(FEMALE_LOWTRAITS, FEMALE_HIGHTRAITS);
 
     // Now check all gender- and race-neutral attributes
@@ -78,7 +78,7 @@ public class TestCreateGnomePeasant extends TestCreateHero
   }
 
 
-  /** Verify that the male gnome traits complies */
+  /** Verify that the male elf traits complies */
   @Test
   public void testMalePeasant()
   {
@@ -87,7 +87,7 @@ public class TestCreateGnomePeasant extends TestCreateHero
     MsgCtrl.where(this);
 
     /** Set data and create a male gnome Peasant */
-    _myHero = createHero("Gnorm", "Male", "brown", "Gnome");
+    _myHero = createHero("Glarodin", "Male", "brown", "Elf");
     printHero(_opMap);
 
     // Verify male-specific weight and height
@@ -98,7 +98,7 @@ public class TestCreateGnomePeasant extends TestCreateHero
     assertTrue(checkRangeValue(MALE_LOWHT, MALE_HIGHHT, height));
 
     // Verify male (unadjusted) traits, and only Common language
-    assertTrue(_opMap.get(PersonKeys.LANGUAGES).equals("Common, Gnomish"));
+    assertTrue(_opMap.get(PersonKeys.LANGUAGES).equals("Common, Elvish"));
     verifyTraits(MALE_LOWTRAITS, MALE_HIGHTRAITS);
 
     // Now check all gender- and race-neutral attributes

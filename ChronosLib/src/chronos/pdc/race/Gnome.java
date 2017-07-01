@@ -9,26 +9,25 @@
 
 package chronos.pdc.race;
 
-import chronos.pdc.character.Gender;
 import chronos.pdc.character.TraitList;
 import chronos.pdc.character.TraitList.PrimeTraits;
-
 
 
 /**
  * @author Al Cline
  * @version Sep 6, 2015 // original <br>
+ *          July 1, 2017 // refactored for Peasant class <br>
  */
 public class Gnome extends Race
 {
+  private final String RACE_NAME = "Gnome";
+  private final String RACE_LANGUAGE = "Gnomish";
+
   /** Weight and height is generated in a normal distribution across the range's average value */
-  protected final int WT_LOW = 60;
-//  protected final int WT_RANGE = 40; // male range [60, 100]
-  protected final int HT_LOW = 33;
-//  protected final int HT_RANGE = 6; // male range [33, 39]
+  protected final int WT_LOW = 60;  // male range [60, 100]; female [54, 94]
+  protected final int HT_LOW = 33;  // male range [33, 39];  female [30, 36]
   protected final String WT_RANGE_DICE = "2d3-2"; // times 10: varying weight = 0 - 40 lb
   protected final String HT_RANGE_DICE = "2d4-2"; // varying height = 0 - 6 in
-
 
   /** Racial limits for a male Gnome for the traits SIWCDCh: STR-1, CHR-1 */
   protected final int[] MALE_MINLIMIT = {6, 8, 8, 8, 8, 7};
@@ -37,8 +36,6 @@ public class Gnome extends Race
   protected final int[] FEMALE_MINLIMIT = {5, 8, 8, 9, 8, 8};
   protected final int[] FEMALE_MAXLIMIT = {15, 18, 18, 19, 18, 18};
 
-  private final String RACE_NAME = "Gnome";
-  private final String RACE_LANGUAGE = "Gnomish";
 
   /** Gnomes have piercing blue eyes */
   private final String _raceDescriptor = "piercing blue eyes";
@@ -94,7 +91,7 @@ public class Gnome extends Race
   @Override
   public int calcHeight()
   {
-//    return calcHeight(HT_LOW, HT_RANGE, HT_RANGE_DICE);
+    // return calcHeight(HT_LOW, HT_RANGE, HT_RANGE_DICE);
     return calcHeight(HT_LOW, HT_RANGE_DICE);
   }
 
@@ -107,7 +104,7 @@ public class Gnome extends Race
   @Override
   public int calcWeight()
   {
-//    return calcWeight(WT_LOW, WT_RANGE, WT_RANGE_DICE);
+    // return calcWeight(WT_LOW, WT_RANGE, WT_RANGE_DICE);
     return calcWeight(WT_LOW, WT_RANGE_DICE);
   }
 
@@ -122,7 +119,7 @@ public class Gnome extends Race
   @Override
   public TraitList setTraitLimits(TraitList traits)
   {
-    if (_gender.equals(Gender.FEMALE_STRING)) {
+    if (_gender.isFemale()) {
       traits = constrainTo(traits, FEMALE_MINLIMIT, FEMALE_MAXLIMIT);
     } else {
       traits = constrainTo(traits, MALE_MINLIMIT, MALE_MAXLIMIT);

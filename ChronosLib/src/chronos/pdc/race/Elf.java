@@ -15,23 +15,31 @@ import chronos.pdc.character.TraitList.PrimeTraits;
 /**
  * @author Al Cline
  * @version Sep 6, 2015 // original <br>
+ *          July 1, 2017 // refactored for Peasant klass and base methods {br}
  */
 public class Elf extends Race
 {
-  // /** Weight ranges */
-  // protected final RangedValue _weightRange = new RangedValue(80, "d10", "d20");
-  // /** Height ranges */
-  // protected final RangedValue _heightRange = new RangedValue(54, "d4", "d6");
-
   private final String RACE_NAME = "Elf";
   private final String RACE_LANGUAGE = "Elvish";
-
   /** Elves have pointed ears */
   private final String _raceDescriptor = "pointed ears";
 
+  /** Weights and heights are generated in a normal distribution about an average over a Range */
+  protected final int WT_LOW = 80;   // range: male [80, 120]; female [72, 112]
+  protected final int HT_LOW = 60;    // range: male [60, 72]; female [54, 66]
+  protected final String WT_RANGE_DICE = "2d3-2"; // varying weight = (0 - 8) * 10 lb
+  protected final String HT_RANGE_DICE = "2d7-2"; // varying height = (0 - 10) in
+
+  /** Racial limits for a male dwarf for the traits SIWCDCh: CON-1, DEX+1 */
+  protected final int[] MALE_MINLIMIT = { 8,  8,  8,  7,  9,  8};
+  protected final int[] MALE_MAXLIMIT = {18, 18, 19, 17, 19, 19};
+  /** Female limits after adjustments from the male: STR-1, CON+1, CHR+1 */
+  protected final int[] FEMALE_MINLIMIT = { 7,  8,  8,  8,  9,  9};
+  protected final int[] FEMALE_MAXLIMIT = {17, 18, 18, 18, 19, 19};
+
   // Find Secret Door | Pick Pockets | Open Locks | Find/Remove Traps | Move Silently |
   // Hide in Shadows | Listening | Climb Walls | Back Attack
-  protected final int[] _elfThiefMods = {0, 5, -5, 0, 5, 10, 5, 0, 5};
+//  protected final int[] _elfThiefMods = {0, 5, -5, 0, 5, 10, 5, 0, 5};
 
   // Special Elf skills
   private final String[] _elfSkills = {
@@ -51,9 +59,7 @@ public class Elf extends Race
   {
     _raceName = RACE_NAME;
     _raceLang = RACE_LANGUAGE;
-
     _descriptor = _raceDescriptor;
-    _racialThiefMods = _elfThiefMods;
     _raceSkills = _elfSkills;
   }
 
@@ -71,38 +77,33 @@ public class Elf extends Race
   @Override
   public int calcWeight()
   {
-//    return calcWeight(WT_AVG, WT_RANGE, WT_RANGE_DICE);
-    return 42;
+    return calcWeight(WT_LOW, WT_RANGE_DICE);
   }
 
   @Override
   public int calcHeight()
   {
-//    return calcHeight(HT_AVG, HT_RANGE, HT_RANGE_DICE);
-    return 42;
+    return calcHeight(HT_LOW, HT_RANGE_DICE);
   }
 
 
-  /* (non-Javadoc)
-   * @see chronos.pdc.race.Race#setTraitLimits(chronos.pdc.character.TraitList)
+  /**
+   * Ensure that the traits fall within the proper male/female. After the limits are defined for
+   * this subclass, the base class is called with that data.
+   * 
+   * @param traits the six prime traits of any Hero
+   * @return the adjusted traits
    */
   @Override
   public TraitList setTraitLimits(TraitList traits)
   {
-    // TODO Auto-generated method stub
-    return null;
-  };
-
-
-  // /* (non-Javadoc)
-  // * @see chronos.pdc.race.Race#getRaceLang()
-  // */
-  // @Override
-  // protected String getRaceLang()
-  // {
-  // // TODO Auto-generated method stub
-  // return null;
-  // };
+    if (_gender.isFemale()) {
+      traits = constrainTo(traits, FEMALE_MINLIMIT, FEMALE_MAXLIMIT);
+    } else {
+      traits = constrainTo(traits, MALE_MINLIMIT, MALE_MAXLIMIT);
+    }
+    return traits;
+  }
 
 
 } // end of Elf subclass

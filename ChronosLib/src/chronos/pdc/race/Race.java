@@ -176,8 +176,8 @@ public abstract class Race
    */
   protected int calcHeight(int low, String variance)
   {
-    int newLow  = (int) (_gender.isMale() ? low : low * FEMALE_ADJ);
-    int height = newLow + _md.roll(variance) - 1; // adjust for 1 when 0 is rolled
+    int newLow  = (int) (_gender.isMale() ? low : Math.round(low * FEMALE_ADJ));
+    int height = newLow + _md.roll(variance); // adjust for 1 when 0 is rolled
     return height;
   }
 
@@ -191,8 +191,8 @@ public abstract class Race
    */
   protected int calcWeight(int low, String variance)
   {
-    int newLow = (int) (_gender.isMale() ? low : low * FEMALE_ADJ);
-    int weight = newLow + _md.roll(variance) - 1;
+    int newLow = (int) (_gender.isMale() ? low : Math.round(low * FEMALE_ADJ));
+    int weight = newLow + _md.roll(variance);
     return weight;
   }
 

@@ -56,11 +56,12 @@ public class Adventurer
   {
     /** All Swing processing occurs from the single EventQueue thread. */
     EventQueue.invokeLater(new Runnable() {
+      @SuppressWarnings("unused")
       @Override
       public void run()
       {
         try {
-          new MainframeCiv((MainframeInterface) new Mainframe());
+          new MainframeCiv(new Mainframe());
         } catch (Exception e) {
           e.printStackTrace();
           System.exit(-1);

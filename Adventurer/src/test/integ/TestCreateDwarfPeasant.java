@@ -1,10 +1,10 @@
 /**
- * TestCreateDwarfPeasant.java Copyright (c) 2015, Carolla Development, Inc. All Rights Reserved
+ * TestCreateDwarfPeasant.java Copyright (c) 2017, Carolla Development, Inc. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
  * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
- * by email: acline@carolla.com
+ * by email: acline@wowway.com
  */
 
 package test.integ;
@@ -17,123 +17,100 @@ import chronos.civ.PersonKeys;
 import mylib.MsgCtrl;
 
 /**
- * Test class for a human Peasant. Verifies female and male traits, and human-specifc attributes.
+ * Test class for a gnome Peasant. Verifies female and male traits, and gnome-specific attributes.
  * Non-specific attributes are verified in the base class.
  * 
  * @author Al Cline
- * @version Jun 27, 2017 // original <br>
+ * @version July 1, 2017 // original <br>
  */
-public class TestCreateDwarfPeasant extends TA01_CreateHero
+public class TestCreateDwarfPeasant extends TestCreateHero
 {
+  // Trait range for gnome males, adjusted from norm by CON+1, CHR-1
+  private final int[] MALE_LOWTRAITS =  { 8,  8,  8,  9,  8,  7};
+  private final int[] MALE_HIGHTRAITS = {18, 18, 18, 19, 18, 17};
+
+  // Trait range for gnome females, adjusted from male by STR-1, CON+1, CHR+1
+  private final int[] FEMALE_LOWTRAITS =  { 7,  8,  8, 10,  8,  8};
+  private final int[] FEMALE_HIGHTRAITS = {17, 18, 18, 20, 18, 18};
+
+  // Height range for gnomes
+  private final int MALE_LOWWT = 110;
+  private final int MALE_HIGHWT = 190;
+  private final int MALE_LOWHT = 49;
+  private final int MALE_HIGHHT = 59;
+
+  // Weight range for gnomes
+  private final int FEMALE_LOWWT = 99;
+  private final int FEMALE_HIGHWT = 179;
+  private final int FEMALE_LOWHT = 44;
+  private final int FEMALE_HIGHHT = 54;
+
 
   // ============================================================
   // BEGIN TESTING
   // ============================================================
 
-  /** Verify that the weight complies with the male human weight range */
+  /** Verify that the female dwarf complies */
   @Test
   public void testFemalePeasant()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    /** Set data and create a female human Peasant */
-    _myHero = createHero("Durtha", "Female", "red", "Dwarf");
+    /** Set data and create a female dwarf Peasant */
+    _myHero = createHero("Brohimina", "Female", "red", "Dwarf");
     printHero(_opMap);
 
     // Verify female-specific weight and height
     int weight = Integer.parseInt(_opMap.get(PersonKeys.WEIGHT));
-    assertTrue(checkRangeValue(95, 175, weight));
+    assertTrue(checkRangeValue(FEMALE_LOWWT, FEMALE_HIGHWT, weight));
 
     int height = Integer.parseInt(_opMap.get(PersonKeys.HEIGHT));
-    assertTrue(checkRangeValue(44, 54, height));
+    assertTrue(checkRangeValue(FEMALE_LOWHT, FEMALE_HIGHHT, height));
 
     // Verify female trait adjustments, and Common language
-    assertTrue(_opMap.get(PersonKeys.LANGUAGES).equals("Common, Groken"));
-    verifyFemaleTraits();
+    assertTrue(_opMap.get(PersonKeys.LANGUAGES).equals("Common, Dwarvish"));
+    verifyTraits(FEMALE_LOWTRAITS, FEMALE_HIGHTRAITS);
 
     // Now check all gender- and race-neutral attributes
     verifyGenericAttributes();
   }
 
 
-  /** Verify that the weight complies with the male human weight range */
+  /** Verify that the male dwarf traits complies */
   @Test
   public void testMalePeasant()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    /** Set data and create a male human Peasant */
-    _myHero = createHero("Balim", "Male", "red", "Dwarf");
+    /** Set data and create a male gnome Peasant */
+    _myHero = createHero("Brolim", "Male", "red", "Dwarf");
     printHero(_opMap);
 
     // Verify male-specific weight and height
     int weight = Integer.parseInt(_opMap.get(PersonKeys.WEIGHT));
-    assertTrue(checkRangeValue(110, 190, weight));
+    assertTrue(checkRangeValue(MALE_LOWWT, MALE_HIGHWT, weight));
 
     int height = Integer.parseInt(_opMap.get(PersonKeys.HEIGHT));
-    assertTrue(checkRangeValue(49, 59, height));
+    assertTrue(checkRangeValue(MALE_LOWHT, MALE_HIGHHT, height));
 
     // Verify male (unadjusted) traits, and only Common language
-    assertTrue(_opMap.get(PersonKeys.LANGUAGES).equals("Common, Groken"));
-    verifyMaleTraits();
+    assertTrue(_opMap.get(PersonKeys.LANGUAGES).equals("Common, Dwarvish"));
+    verifyTraits(MALE_LOWTRAITS, MALE_HIGHTRAITS);
 
     // Now check all gender- and race-neutral attributes
     verifyGenericAttributes();
   }
 
 
-  /**
-   * Verify that all female traits fall within trait-specific range: Females get -1 STR, +1 CON, and
-   * +1 CHR. There are no race-specific adjustments.
-   */
-  private void verifyFemaleTraits()
-  {
-    MsgCtrl.where(this);
-
-    // Expected range values for female SIWCDCh
-    String traitStrings = loadTraitStrings(_opMap);
-    MsgCtrl.msgln("\tTraits: \t" + traitStrings);
-    _traits = loadTraits(_opMap);
-
-    // Check that each trait (SIWCDCh) falls within the proper range CON+1, CHR-1
-    // Plus adjustments for Female = STR-1, CON+1, CHR+1 => net STR-1, CON+2, CHR+0
-    int[] lowVals = {7, 8, 8, 10, 8, 8};
-    int[] hiVals = {17, 18, 18, 20, 18, 18};
-    // MsgCtrl.msg("\tTrait check: ");
-    for (int k = 0; k < MAX_TRAITS; k++) {
-       MsgCtrl.msg(" " + _traits[k]);
-      assertTrue(checkRangeValue(lowVals[k], hiVals[k], _traits[k]));
-    }
-  }
-
-
-  /**
-   * Verify that all Hero traits fall within range of [8,18] (No Race adjustments)
-   */
-  private void verifyMaleTraits()
-  {
-    MsgCtrl.where(this);
-
-    // Verify ALL male traits ranges within [8, 18]
-    String traitStrings = loadTraitStrings(_opMap);
-    MsgCtrl.msgln("\tTraits: \t" + traitStrings);
-//    _traits = loadTraits(_opMap);
-
-    // Check that each trait (SIWCDCh) falls within the proper range CON+1, CHR-1
-    int[] lowVals = {8, 8, 8, 9, 8, 7};
-    int[] hiVals = {18, 18, 18, 19, 18, 17};
-    // MsgCtrl.msg("\tTrait check: ");
-    for (int k = 0; k < MAX_TRAITS; k++) {
-       MsgCtrl.msg(" " + _traits[k]);
-      assertTrue(checkRangeValue(lowVals[k], hiVals[k], _traits[k]));
-    }
-  }
+  // ============================================================
+  // PRIVATE VERIFICATION METHODS
+  // ============================================================
 
 
 
-} // end of TestCreateHumanPeasant subclass
+} // end of TestCreateGnomePeasant subclass
 

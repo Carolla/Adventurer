@@ -1,10 +1,10 @@
 /**
- * Hobbit.java Copyright (c) 2015, Carolla Development, Inc. All Rights Reserved
+ * Hobbit.java Copyright (c) 2017, Carolla Development, Inc. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
  * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
- * by email: acline@carolla.com
+ * by email: acline@wowway.com
  */
 
 package chronos.pdc.race;
@@ -16,16 +16,25 @@ import chronos.pdc.character.TraitList.PrimeTraits;
 /**
  * @author Al Cline
  * @version Sep 6, 2015 // original <br>
+ *          July 1, 2017 // refactored for Peasant klass and reduce duplication <br>
  */
 public class Hobbit extends Race
 {
-  // /** Weight ranges */
-  // protected final RangedValue _weightRange = new RangedValue(50, "2d4", "2d6");
-  // /** Height ranges */
-  // protected final RangedValue _heightRange = new RangedValue(33, "d3", "d6");
-
   private final String RACE_NAME = "Hobbit";
   private final String RACE_LANGUAGE = "Tolkeen";
+
+  /** Weight and height is generated in a normal distribution across the range's average value */
+  protected final int WT_LOW = 70;  // male range [70, 110]; female [63, 103]
+  protected final int HT_LOW = 38;  // male range [38, 46];  female [34, 42]
+  protected final String WT_RANGE_DICE = "2d3-2"; // times 10: varying weight = 0 - 40 lb
+  protected final String HT_RANGE_DICE = "2d5-2"; // varying height = 0 - 8 in
+
+  /** Racial limits for a male Gnome for the traits SIWCDCh: STR-1, CON+1, DEX+1 */
+  protected final int[] MALE_MINLIMIT = { 7,  8,  8,  9,  9,  8};
+  protected final int[] MALE_MAXLIMIT = {17, 18, 18, 19, 19, 18};
+  /** Female limits after adjustments from the male: STR-1, CON+1, CHR+1 */
+  protected final int[] FEMALE_MINLIMIT = { 6,  8,  8, 10,  9,  9};
+  protected final int[] FEMALE_MAXLIMIT = {16, 18, 18, 20, 19, 19};
 
   /** Hobbits have hairy bare feet */
   private final String _raceDescriptor = "hairy bare feet";
@@ -49,60 +58,65 @@ public class Hobbit extends Race
    */
   public Hobbit()
   {
-    super._raceName = RACE_NAME;
-    super._raceLang = RACE_LANGUAGE;
-
+    _raceName = RACE_NAME;
+    _raceLang = RACE_LANGUAGE;
     _descriptor = _raceDescriptor;
-    _racialThiefMods = _hobbitThiefMods;
     _raceSkills = _hobbitSkills;
   }
 
 
-  /** Hobbits are more agile but weaker: STR-1, DEX+1 */
+  /** Hobbits are more agile and hearty, but weaker: STR-1, CON+1, DEX+1 */
   @Override
   public TraitList adjustTraitsForRace(TraitList traits)
   {
     traits.adjust(PrimeTraits.STR, -1);
+    traits.adjust(PrimeTraits.CON, 1);
     traits.adjust(PrimeTraits.DEX, 1);
     return traits;
   };
 
 
-  @Override
-  public int calcWeight()
-  {
-    // return calcWeight(WT_AVG, WT_RANGE, WT_RANGE_DICE);
-    return 42;
-  }
-
-
+  /**
+   * Call the base method with race-specific values
+   * 
+   * @return the gender-adjusted height of the Hero
+   */
   @Override
   public int calcHeight()
   {
-    // return calcHeight(HT_AVG, HT_RANGE, HT_RANGE_DICE);
-    return 42;
+    return calcHeight(HT_LOW, HT_RANGE_DICE);
   }
 
 
-  /* (non-Javadoc)
-   * @see chronos.pdc.race.Race#setTraitLimits(chronos.pdc.character.TraitList)
+  /**
+   * Call the base method with race-specific values
+   * 
+   * @return the gender-adjusted weight of the Hero
+   */
+  @Override
+  public int calcWeight()
+  {
+    return calcWeight(WT_LOW, WT_RANGE_DICE);
+  }
+
+
+  /**
+   * Ensure that the traits fall within the proper male/female. After the limits are defined for
+   * this subclass, the base class is called with that data.
+   * 
+   * @param traits the six prime traits of any Hero
+   * @return the adjusted traits
    */
   @Override
   public TraitList setTraitLimits(TraitList traits)
   {
-    // TODO Auto-generated method stub
-    return null;
-  };
-
-  // /* (non-Javadoc)
-  // * @see chronos.pdc.race.Race#getRaceLang()
-  // */
-  // @Override
-  // protected String getRaceLang()
-  // {
-  // // TODO Auto-generated method stub
-  // return null;
-  // };
+    if (_gender.isFemale()) {
+      traits = constrainTo(traits, FEMALE_MINLIMIT, FEMALE_MAXLIMIT);
+    } else {
+      traits = constrainTo(traits, MALE_MINLIMIT, MALE_MAXLIMIT);
+    }
+    return traits;
+  }
 
 
 } // end of Hobbit subclass

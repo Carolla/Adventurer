@@ -1,10 +1,10 @@
 /**
- * TA01_CreateHero.java Copyright (c) 2015, Carolla Development, Inc. All Rights Reserved
+ * TestCreateHero.java Copyright (c) 2017, Carolla Development, Inc. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
  * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
- * by email: acline@carolla.com
+ * by email: acline@wowway.com
  */
 
 package test.integ;
@@ -42,7 +42,7 @@ import mylib.pdc.Utilities;
  *          Configurator pattern <br>
  *          June 16 2017 // final cleanup of use case testing, and passing regression tests <br>
  */
-public class TA01_CreateHero
+public class TestCreateHero
 {
   // Keys into the traits (count the AP as an additional trait)
   protected final int STR = 0;
@@ -117,7 +117,7 @@ public class TA01_CreateHero
    */
   protected Hero createHero(String name, String gender, String hairColor, String raceName)
   {
-    MsgCtrl.where(this);
+//    MsgCtrl.where(this);
 
     _inputMap = loadInput(name, gender, hairColor, raceName);
     _myHero = _nhCiv.createHero(_inputMap);
@@ -137,32 +137,32 @@ public class TA01_CreateHero
 
   public void verifyGenericAttributes()
   {
-    MsgCtrl.where(this);
+//    MsgCtrl.where(this);
 
     // Peasant klass
-    MsgCtrl.msg("   Klass = " + _opMap.get(PersonKeys.KLASSNAME));
+//    MsgCtrl.msg("   Klass = " + _opMap.get(PersonKeys.KLASSNAME));
     assertTrue(_opMap.get(PersonKeys.KLASSNAME).equals("Peasant"));
 
     // Description: Almost anything can go in here.
     String desc = _opMap.get(PersonKeys.DESCRIPTION);
-    MsgCtrl.msg("\n\t Description: " + desc);
+//    MsgCtrl.msg("\n\t Description: " + desc);
     assertNotNull(desc);
 
     // Occupation: almost anything can be in here
     String ocp = _opMap.get(PersonKeys.OCCUPATION);
-    MsgCtrl.msg("\n\t Occupation: " + ocp);
+//    MsgCtrl.msg("\n\t Occupation: " + ocp);
     assertNotNull(ocp);
 
     // HUNGER
-    MsgCtrl.msgln("   Hunger = " + _opMap.get(PersonKeys.HUNGER));
+//    MsgCtrl.msgln("   Hunger = " + _opMap.get(PersonKeys.HUNGER));
     assertTrue(_opMap.get(PersonKeys.HUNGER).equals("Full"));
 
     // LEVEL
-    MsgCtrl.msgln("   Level = " + _opMap.get(PersonKeys.LEVEL));
+//    MsgCtrl.msgln("   Level = " + _opMap.get(PersonKeys.LEVEL));
     assertTrue(_opMap.get(PersonKeys.LEVEL).equals("0"));
 
     // XP
-    MsgCtrl.msgln("   XP = " + _opMap.get(PersonKeys.XP));
+//    MsgCtrl.msgln("   XP = " + _opMap.get(PersonKeys.XP));
     assertTrue(_opMap.get(PersonKeys.XP).equals("0"));
 
     /** STR Attributes: To Hit, Damage, Wt Allowance */
@@ -171,31 +171,31 @@ public class TA01_CreateHero
     int expDmg = getMod(str);
     int toHit = Integer.parseInt(_opMap.get(PersonKeys.TO_HIT_MELEE));
     int dmg = Integer.parseInt(_opMap.get(PersonKeys.DAMAGE));
-    MsgCtrl.msg("\n\t STR = " + str + " To Hit = " + toHit + " Damage= " + dmg);
+//    MsgCtrl.msg("\n\t STR = " + str + " To Hit = " + toHit + " Damage= " + dmg);
     assertEquals(expToHit, toHit);
     assertEquals(expDmg, dmg);
 
     /** Weight allowance; STR * STR (in lbs) */
     int expWtAllow = _traits[STR] * _traits[STR];
     int wtAllow = Integer.parseInt(_opMap.get(PersonKeys.WT_ALLOW));
-    MsgCtrl.msg(" Wt Allowance = " + wtAllow + " lb.");
+//    MsgCtrl.msg(" Wt Allowance = " + wtAllow + " lb.");
     assertEquals(expWtAllow, wtAllow);
 
     /** INT has no attributes */
-    MsgCtrl.msg("\n\t INT = " + _opMap.get(PersonKeys.INT));
+//    MsgCtrl.msg("\n\t INT = " + _opMap.get(PersonKeys.INT));
 
     /** WIS and Magic Defense Mod (= WIS mod) */
     int wis = Integer.parseInt(_opMap.get(PersonKeys.WIS));
     int expWisMod = getMod(wis);
     int wisMod = Integer.parseInt(_opMap.get(PersonKeys.MDM));
-    MsgCtrl.msg("\n\t WIS = " + wis + " Magic Defense Mod = " + wisMod);
+//    MsgCtrl.msg("\n\t WIS = " + wis + " Magic Defense Mod = " + wisMod);
     assertEquals(expWisMod, wisMod);
 
     /** CON and HP Mod (CON mod) */
     int con = Integer.parseInt(_opMap.get(PersonKeys.CON));
     int expConMod = getMod(con);
     int conMod = Integer.parseInt(_opMap.get(PersonKeys.HP_MOD));
-    MsgCtrl.msg("\n\t CON = " + con + " HP Mod = " + conMod);
+//    MsgCtrl.msg("\n\t CON = " + con + " HP Mod = " + conMod);
     assertEquals(expConMod, conMod);
 
     /** DEX attributes: ToHit Mod and AC Mod */
@@ -203,7 +203,7 @@ public class TA01_CreateHero
     int expDexMod = getMod(dex);
     int toHitMod = Integer.parseInt(_opMap.get(PersonKeys.TO_HIT_MISSLE));
     int acMod = Integer.parseInt(_opMap.get(PersonKeys.AC_MOD));
-    MsgCtrl.msg("\n\t DEX = " + dex + " ToHit Mod = " + toHitMod + " AC Mod = " + acMod);
+//    MsgCtrl.msg("\n\t DEX = " + dex + " ToHit Mod = " + toHitMod + " AC Mod = " + acMod);
     assertEquals(expDexMod, toHitMod);
     assertEquals(expDexMod, acMod);
 
@@ -212,57 +212,57 @@ public class TA01_CreateHero
     int expAC = MIN_HP + expAC_Mod;
     int acmod = Integer.parseInt(_opMap.get(PersonKeys.AC_MOD));
     int AC = Integer.parseInt(_opMap.get(PersonKeys.AC));
-    MsgCtrl.msg("; AC = " + AC + " (" + acmod + ")");
+//    MsgCtrl.msg("; AC = " + AC + " (" + acmod + ")");
     assertEquals(expAC_Mod, acmod);
     assertEquals(expAC, AC);
 
     /** AP = STR + DEX */
     int expAP = _traits[STR] + _traits[DEX];
     int AP = Integer.parseInt(_opMap.get(PersonKeys.AP));
-    MsgCtrl.msg("\n\t AP = " + AP);
+//    MsgCtrl.msg("\n\t AP = " + AP);
     assertEquals(expAP, AP);
 
     /** Speed, depends on height and AP */
     int height = Integer.parseInt(_opMap.get(PersonKeys.HEIGHT));
     int expSpeed = getExpSpeed(height, AP);
-    MsgCtrl.msg(" Speed = " + _opMap.get(PersonKeys.SPEED) + " (" + height + "\")");
+//    MsgCtrl.msg(" Speed = " + _opMap.get(PersonKeys.SPEED) + " (" + height + "\")");
     int speed = Integer.parseInt(_opMap.get(PersonKeys.SPEED));
     assertEquals(expSpeed, speed);
 
     /** Overbearing = AP + (1 per 25 lb weight) */
     int expOverbear = AP + Integer.parseInt(_opMap.get(PersonKeys.WEIGHT)) / 25;
     int overbear = Integer.parseInt(_opMap.get(PersonKeys.OVERBEARING));
-    MsgCtrl.msg(" Overbear = " + overbear);
+//    MsgCtrl.msg(" Overbear = " + overbear);
     assertEquals(expOverbear, overbear);
 
     /** Grappling = AP + StrMod */
     int expGrapple = AP + getMod(_traits[STR]);
     int grapple = Integer.parseInt(_opMap.get(PersonKeys.GRAPPLING));
-    MsgCtrl.msg(" Grappling = " + grapple);
+//   MsgCtrl.msg(" Grappling = " + grapple);
     assertEquals(expGrapple, grapple);
 
     /** Pummeling = AP + StrMod + DexMod */
     int expPummel = AP + getMod(_traits[STR]) + getMod(_traits[DEX]);
     int pummel = Integer.parseInt(_opMap.get(PersonKeys.PUMMELING));
-    MsgCtrl.msg(" Pummeling = " + pummel);
+//    MsgCtrl.msg(" Pummeling = " + pummel);
     assertEquals(expPummel, pummel);
 
     /** Shield bash = 0 until Hero wields a shield */
     int expBash = 0;
     int bash = Integer.parseInt(_opMap.get(PersonKeys.SHIELD_BASH));
-    MsgCtrl.msg(" Shield Bash = " + bash);
+//    MsgCtrl.msg(" Shield Bash = " + bash);
     assertEquals(expBash, bash);
 
     /** GOLD BANKED: Peasants get 0.0 gold banked */
     double goldBanked = Double.parseDouble(_opMap.get(PersonKeys.GOLD_BANKED));
-    MsgCtrl.msg("\n   Gold banked = " + goldBanked);
+//    MsgCtrl.msg("\n   Gold banked = " + goldBanked);
     assertTrue(goldBanked < 0.05);
 
     /** GOLD IN HAND: All peasants get 10*d4 gold + d10 silver */
     double gold = Double.parseDouble(_opMap.get(PersonKeys.GOLD));
     double silver = Double.parseDouble(_opMap.get(PersonKeys.SILVER));
     double goldInHand = gold + silver / 10.0;
-    MsgCtrl.msg("   Gold/silver in hand = " + gold + " gp/ " + silver + " sp = " + goldInHand);
+//    MsgCtrl.msg("   Gold/silver in hand = " + gold + " gp/ " + silver + " sp = " + goldInHand);
     assertTrue(checkRangeValue(10.0, 41.0, goldInHand, 0.1));
 
     // All Peasants start with 10 HP
@@ -271,24 +271,23 @@ public class TA01_CreateHero
     int hpmod = Integer.parseInt(_opMap.get(PersonKeys.HP_MOD));
     int HP = Integer.parseInt(_opMap.get(PersonKeys.HP));
     int HP_Max = Integer.parseInt(_opMap.get(PersonKeys.HP_MAX));
-    MsgCtrl.msg("; HP / Max HP = " + HP + "/" + HP_Max + " (" + hpmod + ")");
+//    MsgCtrl.msg("; HP / Max HP = " + HP + "/" + HP_Max + " (" + hpmod + ")");
     assertEquals(expHP_Mod, hpmod);
     assertEquals(expHP, HP);
     assertEquals(expHP, HP_Max);
-
   }
 
 
   /** Verify inventory attributes, but for now, only its load */
   protected void verifyInventoryAttributes()
   {
-    MsgCtrl.where(this);
+//    MsgCtrl.where(this);
 
     // LOAD: weight carried depends on standard basic inventory items
     double expLoad = 23.375; // lbs. weight of starting inventory
     // double load = _myHero.getInventory().calcInventoryWeight() / 16.0; // in lb
     double load = Double.parseDouble(_opMap.get(PersonKeys.LOAD)) / 16.0; // in lb
-    MsgCtrl.msgln("   Load = " + load + " lb");
+//    MsgCtrl.msgln("   Load = " + load + " lb");
     assertEquals(expLoad, load, 0.1);
   }
 
@@ -435,7 +434,7 @@ public class TA01_CreateHero
   /** Verify that the HP and HP Mods are correct */
   protected void verifyHPMods()
   {
-    MsgCtrl.where(this);
+//    MsgCtrl.where(this);
 
     /** HP and Max HP depends on Klass */
     int con = Integer.parseInt(_opMap.get(PersonKeys.CON));
@@ -444,20 +443,12 @@ public class TA01_CreateHero
     int hpmod = Integer.parseInt(_opMap.get(PersonKeys.HP_MOD));
     int HP = Integer.parseInt(_opMap.get(PersonKeys.HP));
     int HP_Max = Integer.parseInt(_opMap.get(PersonKeys.HP_MAX));
-    MsgCtrl.msg("; HP / Max HP = " + HP + "/" + HP_Max + " (" + hpmod + ")");
+//    MsgCtrl.msg("; HP / Max HP = " + HP + "/" + HP_Max + " (" + hpmod + ")");
     assertEquals(expHP_Mod, hpmod);
     assertEquals(expHP, HP);
     assertEquals(expHP, HP_Max);
   }
 
-
-  // ============================================================
-  // BEGIN VERIFICATION
-  // ============================================================
-
-  // ============================================================
-  // Protected Methods
-  // ============================================================
   
   /** Confirm that all PersonsKeys have a value */
   protected void verifyPersonKeys()
@@ -497,7 +488,7 @@ public class TA01_CreateHero
    */
   protected void verifyTraits(int[] lowVals, int[] highVals)
   {
-    MsgCtrl.where(this);
+//    MsgCtrl.where(this);
 
     // Check that each trait falls within the proper range SIWDCCh
     for (int k = 0; k < MAX_TRAITS; k++) {

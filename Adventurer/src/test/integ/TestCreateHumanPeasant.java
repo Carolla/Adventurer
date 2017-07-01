@@ -23,7 +23,7 @@ import mylib.MsgCtrl;
  * @author Al Cline
  * @version Jun 30, 2017 // original <br>
  */
-public class TestCreateHumanPeasant extends TA01_CreateHero
+public class TestCreateHumanPeasant extends TestCreateHero
 {
   // Trait range for human males STR, INT, WIS, CON, DEX, CHR
   private final int[] MALE_LOWTRAITS = {8, 8, 8, 8, 8, 8};

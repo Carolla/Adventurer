@@ -20,16 +20,21 @@ import chronos.pdc.character.TraitList.PrimeTraits;
 
 public class Dwarf extends Race
 {
-  /** Weights and heights are generated in a normal distribution about an Average over a Range */
-  protected final int WT_AVG = 150;
-  protected final int WT_RANGE = 80; // range: male [110, 190]; female [99, 179]
-  protected final int HT_AVG = 54;
-  protected final int HT_RANGE = 10; // range: male [49, 59]; female [44, 54]
+  /** Weights and heights are generated in a normal distribution about an average over a Range */
+  protected final int WT_LOW = 110;   // range: male [110, 190]; female [99, 179]
+  protected final int HT_LOW = 49;    // range: male [49, 59]; female [44, 54]
   protected final String WT_RANGE_DICE = "2d5-2"; // varying weight = (0 - 8) * 10 lb
   protected final String HT_RANGE_DICE = "2d6-2"; // varying height = (0 - 10) in
 
   private final String RACE_NAME = "Dwarf";
-  private final String RACE_LANGUAGE = "Groken";
+  private final String RACE_LANGUAGE = "Dwarvish";
+  
+  /** Racial limits for a male dwarf for the traits SIWCDCh: CON+1, CHR-1 */
+  protected final int[] MALE_MINLIMIT = { 8,  8,  8,  9,  8,  7};
+  protected final int[] MALE_MAXLIMIT = {18, 18, 19, 19, 18, 17};
+  /** Female limits after adjustments from the male: STR-1, CON+1, CHR+1 */
+  protected final int[] FEMALE_MINLIMIT = { 7,  8,  8, 10,  8,  8};
+  protected final int[] FEMALE_MAXLIMIT = {17, 18, 18, 20, 18, 18};
 
   /** All Dwarves have beards, even the females */
   private final String _raceDescriptor = "a scraggly beard";
@@ -54,12 +59,10 @@ public class Dwarf extends Race
    */
   public Dwarf()
   {
-    super._raceName = RACE_NAME;
-    super._raceLang = RACE_LANGUAGE;
-
-    super._descriptor = _raceDescriptor;
-    // _racialThiefMods = _dwarfThiefMods;
-    super._raceSkills = _dwarfSkills;
+    _raceName = RACE_NAME;
+    _raceLang = RACE_LANGUAGE;
+    _descriptor = _raceDescriptor;
+    _raceSkills = _dwarfSkills;
   }
 
 
@@ -80,32 +83,35 @@ public class Dwarf extends Race
   @Override
   public int calcWeight()
   {
-    return calcWeight(0, WT_RANGE_DICE);
+    return calcWeight(WT_LOW, WT_RANGE_DICE);
   }
   
 
   @Override
   public int calcHeight()
   {
-    return calcHeight(0, HT_RANGE_DICE);
+    return calcHeight(HT_LOW, HT_RANGE_DICE);
   }
 
 
-  /* (non-Javadoc)
-   * @see chronos.pdc.race.Race#setTraitLimits(chronos.pdc.character.TraitList)
+  /**
+   * Ensure that the traits fall within the proper male/female. After the limits are defined for
+   * this subclass, the base class is called with that data.
+   * 
+   * @param traits the six prime traits of any Hero
+   * @return the adjusted traits
    */
   @Override
   public TraitList setTraitLimits(TraitList traits)
   {
-    // TODO Auto-generated method stub
-    return null;
-  };
+    if (_gender.isFemale()) {
+      traits = constrainTo(traits, FEMALE_MINLIMIT, FEMALE_MAXLIMIT);
+    } else {
+      traits = constrainTo(traits, MALE_MINLIMIT, MALE_MAXLIMIT);
+    }
+    return traits;
+  }
 
-  // /** A Dwarf naturally speaks Groken */
-  // @Override
-  // protected String getRaceLang()
-  // {
-  // return RACE_LANGUAGE;
-  // }
+
 
 }

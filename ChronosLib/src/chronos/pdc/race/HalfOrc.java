@@ -18,20 +18,27 @@ import chronos.pdc.character.TraitList.PrimeTraits;
  */
 public class HalfOrc extends Race
 {
-//  /** Weight ranges */
-//  protected final RangedValue _weightRange = new RangedValue(150, "3d8", "4d10");
-//  /** Height ranges */
-//  protected final RangedValue _heightRange = new RangedValue(65, "2d4");
-
   private final String RACE_NAME = "Half-Orc";
-  private final String RACE_LANGUAGE = "Orcish";
+
+  /** Weights and heights are generated in a normal distribution about an average over a Range */
+  protected final int WT_LOW = 140;   // range: male [140, 260]; female [126, 246]
+  protected final int HT_LOW = 60;    // range: male [60, 76]; female [54, 70]
+  protected final String WT_RANGE_DICE = "2d7-2"; // varying weight = (0 - 12) * 10 lb
+  protected final String HT_RANGE_DICE = "2d11-2"; // varying height = (0 - 20) in
+
+  /** Racial limits for a male for the traits SIWCDCh: STR+1, CON+1, CHR-2 */
+  protected final int[] MALE_MINLIMIT = { 9,  8,  8,  9,  8,  6};
+  protected final int[] MALE_MAXLIMIT = {19, 18, 18, 19, 18, 16};
+  /** Female limits after adjustments from the male: STR-1, CON+1, CHR+1 */
+  protected final int[] FEMALE_MINLIMIT = { 8,  8,  8, 10,  8,  7};
+  protected final int[] FEMALE_MAXLIMIT = {18, 18, 18, 20, 18, 17};
 
   /** Half-orcs are burly and pig-like */
   private final String _raceDescriptor = "a squat snoutish face";
 
   // Find Secret Door | Pick Pockets | Open Locks | Find/Remove Traps | Move Silently |
   //    Hide in Shadows | Listening | Climb Walls | Back Attack
-  protected final int[] _halforcThiefMods = {5, -5, 5, 5, 0, 0, 5, -5, 0};
+//  protected final int[] _halforcThiefMods = {5, -5, 5, 5, 0, 0, 5, -5, 0};
 
   // Special Half-Orc skills
   private final String[] _halforcSkills = {"Infravision (60')"};
@@ -44,12 +51,9 @@ public class HalfOrc extends Race
   public HalfOrc()
   {
     _raceName = RACE_NAME;
-    _raceLang = RACE_LANGUAGE;
-
+    _raceLang = getRaceLang();
     _descriptor = _raceDescriptor;
-    _racialThiefMods = _halforcThiefMods;
     _raceSkills = _halforcSkills;
-
   }
 
   
@@ -67,36 +71,42 @@ public class HalfOrc extends Race
   @Override
   public int calcWeight()
   {
-//    return calcWeight(WT_AVG, WT_RANGE, WT_RANGE_DICE);
-    return 42;
+    return calcWeight(WT_LOW, WT_RANGE_DICE);
   }
 
+  
   @Override
   public int calcHeight()
   {
-//    return calcHeight(HT_AVG, HT_RANGE, HT_RANGE_DICE);
-    return 42;
+    return calcHeight(HT_LOW, HT_RANGE_DICE);
+  }
+
+  
+  /** Half-orc has 50% chance of knowing orcish */
+  public String getRaceLang()
+  {
+    String s = (_md.rollPercent() <= 50) ? "" : "Orcish";
+    return s;
   }
 
 
-  /* (non-Javadoc)
-   * @see chronos.pdc.race.Race#setTraitLimits(chronos.pdc.character.TraitList)
+  /**
+   * Ensure that the traits fall within the proper male/female. After the limits are defined for
+   * this subclass, the base class is called with that data.
+   * 
+   * @param traits the six prime traits of any Hero
+   * @return the adjusted traits
    */
   @Override
   public TraitList setTraitLimits(TraitList traits)
   {
-    // TODO Auto-generated method stub
-    return null;
+    if (_gender.isFemale()) {
+      traits = constrainTo(traits, FEMALE_MINLIMIT, FEMALE_MAXLIMIT);
+    } else {
+      traits = constrainTo(traits, MALE_MINLIMIT, MALE_MAXLIMIT);
+    }
+    return traits;
   };
-
-  
-//  /** Half-orc has 50% chance of knowing elvish */
-//  @Override
-//  protected String getRaceLang()
-//  {
-//    String s = (_md.rollPercent() < 50) ? "Common" : "Orcish";
-//    return s;
-//  }
 
   
 } // end of HalfOrc subclass
