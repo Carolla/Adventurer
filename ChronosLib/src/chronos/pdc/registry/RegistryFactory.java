@@ -56,19 +56,18 @@ public class RegistryFactory
   // Constructor(s) and Related Methods
   // ============================================================
 
-  
+
   // This map is needed by other classes; do not move
   public RegistryFactory()
   {
     _regMap = new HashMap<RegKey, Registry<?>>();
   }
 
-//  public void initRegistries(Scheduler _skedder)
   public void initRegistries()
   {
     _regMap.put(RegKey.HERO, new HeroRegistry());
     _regMap.put(RegKey.ITEM, new ItemRegistry());
-    _regMap.put(RegKey.SKILL, new SkillRegistry());    
+    _regMap.put(RegKey.SKILL, new SkillRegistry());
     _regMap.put(RegKey.OCP, new OccupationRegistry());
     _regMap.put(RegKey.NPC, new NPCRegistry());
     _regMap.put(RegKey.BLDG, new BuildingRegistry());

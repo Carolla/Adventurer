@@ -34,10 +34,11 @@ import mylib.pdc.Utilities;
  *          Oct 4, 2014 // added tests to match the new methods in Utilities <br>
  *          Oct 14, 2014 // added more tests for untested methods <br>
  *          June 4 2017 // added test for multiline() <br>
+ *          July 2, 2017 // cleanupped after major refactoring in apps <br>
+ * 
  */
 public class TestUtilities
 {
-
   /**
    * @throws java.lang.Exception
    */
@@ -400,12 +401,8 @@ public class TestUtilities
     MsgCtrl.where(this);
 
     String[] values = {"3600", "86400", "2592000", "31104000", "62208000", "87654321", "0"};
-    String[] expValues =
-        {"0.000 yrs.", "0.003 yrs.", "0.083 yrs.", "1.000 yrs.", "2.000 yrs.", "2.818 yrs.",
-            "0.000 yrs."};
-    // String[] expValues =
-    // {"0.000115741 yrs.", "0.002777778 yrs.", "0.08333333 yrs.", "1.000 yrs.", "2.000 yrs.",
-    // "2.818194456 yrs.", "0 yrs."};
+    String[] expValues = {"0.000 yrs.", "0.003 yrs.", "0.083 yrs.", "1.000 yrs.", "2.000 yrs.",
+        "2.818 yrs.", "0.000 yrs."};
 
     // Normal run a series of heights through the converter
     for (int k = 0; k < values.length; k++) {
@@ -436,6 +433,7 @@ public class TestUtilities
     MsgCtrl.errMsgln("\tExpected null return for null parm");
     assertNull(Utilities.formatSeconds(null));
   }
+
 
   /**
    * static boolean isTraitsEqual(int[] expValue, int[] testValue) Checks if two int equal-length
@@ -499,13 +497,12 @@ public class TestUtilities
     assertFalse(Utilities.isEqual(ctrlValues, null));
     MsgCtrl.msgln("\tfalse: both parms are null");
     assertFalse(Utilities.isEqual(null, null));
-
   }
 
 
   /**
-   * Break a long line into fixed line segements (word wrap) at a white space just prior to the
-   * given position
+   * Break a long line into fixed line segments (word wrap) at a white space just prior to the given
+   * position.
    */
   @Test
   public void testWordWrap()
@@ -528,16 +525,16 @@ public class TestUtilities
     assertEquals(oneLiner, result.get(0));
     expResult.clear();
     result.clear();
-    
+
     // A two-line wrappable
-    expResult.add("This is a single line that is greater than fifty"); 
-    expResult.add("lower case characters."); 
+    expResult.add("This is a single line that is greater than fifty");
+    expResult.add("lower case characters.");
     result = Utilities.wordWrap(twoLiner, len);
     assertEquals(expResult.get(0), result.get(0));
     assertEquals(expResult.get(1), result.get(1));
     expResult.clear();
     result.clear();
-    
+
     // A three-line wrappable
     expResult.add("This is an overly long line that needs to be");
     expResult.add("word-wrapped into three segments of no greater");
@@ -548,7 +545,6 @@ public class TestUtilities
     assertEquals(expResult.get(2), result.get(2));
     expResult.clear();
     result.clear();
-    
   }
 
 
@@ -642,7 +638,6 @@ public class TestUtilities
     }
     return dest;
   }
-
 
 
 } // end of TestUtilities class

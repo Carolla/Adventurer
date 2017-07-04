@@ -1,3 +1,4 @@
+
 package test.integ;
 
 import static org.junit.Assert.assertEquals;
@@ -7,7 +8,9 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 import chronos.pdc.Adventure;
 import chronos.pdc.buildings.Building;
@@ -23,6 +26,7 @@ import civ.MainActionCiv;
 import civ.MainframeCiv;
 import mylib.MsgCtrl;
 import pdc.command.CommandFactory;
+
 
 public class IntegrationTest
 {
@@ -41,12 +45,12 @@ public class IntegrationTest
   public static void setUpBeforeClass()
   {
     _regFactory.initRegistries();
-    
+
     BuildingRegistry bReg = (BuildingRegistry) _regFactory.getRegistry(RegKey.BLDG);
     ((Inn) bReg.getBuilding("Ugly Ogre Inn")).initPatrons(_skedder);
     AdventureRegistry advReg = (AdventureRegistry) _regFactory.getRegistry(RegKey.ADV);
     Adventure adv = advReg.getAll().get(0);
-    
+
     _maCiv.loadSelectedAdventure(adv.getName());
     _bldgCiv = new BuildingDisplayCiv(_mfCiv, adv, bReg);
     _cmdFac = new CommandFactory(_bldgCiv, _mfCiv);
@@ -58,20 +62,22 @@ public class IntegrationTest
     }
   }
 
-  @BeforeClass
+  @AfterClass
   public static void tearDownAfterClass()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
   }
 
-  
+
   // ============================================================================
-  //              HELPER METHODS
+  // HELPER METHODS
   // ============================================================================
 
-  /** Hero is onTwon, with not current Building, and not inside one */
-  protected void resetBuildingState()
+  /** Hero is on-Town, not with current Building, and not inside one */
+  @Test
+//  protected void resetBuildingState()
+  public void resetBuildingState()
   {
     _bldgCiv.openTown();
     assertTrue(_bldgCiv.isOnTown());

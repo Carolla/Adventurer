@@ -27,13 +27,13 @@ import chronos.test.pdc.race.TestRace;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     TestRace.class,
-    TestDwarf.class,
-    TestElf.class,
-    TestGnome.class,
-    TestHalfElf.class,
-    TestHalfOrc.class,
-    TestHobbit.class,
-    TestHuman.class,
+//    TestDwarf.class,
+//    TestElf.class,
+//    TestGnome.class,
+//    TestHalfElf.class,
+//    TestHalfOrc.class,
+//    TestHobbit.class,
+//    TestHuman.class,
 
     TestTraitList.class,
     TestGender.class,

@@ -101,7 +101,9 @@ public class FileScanner
       File testFile = new File(testPath);
       // If corresponding test file exists, get existing test methods
       ArrayList<String> testList = null;
+      MsgCtrl.errMsgln("Checking: \t" + testFile.getPath());
       if (testFile.exists()) {
+         MsgCtrl.errMsgln("\t\t FOUND IT");
          testList = QAUtils.getMethods(testPath);
          tMap.setMapList(TripleMap.NameType.TEST, testList);
          // Find only test names that don't already exist in the test file
@@ -116,6 +118,7 @@ public class FileScanner
             testWriter.augmentTestFile(testFile, augMap);
          }
       } else {
+        MsgCtrl.errMsgln("  NOT FOUND. Creating new test file");
          // Write new file using the converted method names
          Map<String, String> augMap = tMap.buildAugMap();
          testWriter.writeNewTestFile(testFile, augMap);

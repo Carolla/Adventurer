@@ -45,24 +45,25 @@ import test.pdc.character.SampleHeroGenerator;
 @Suite.SuiteClasses({
 
     // All integration tests for each use case
-    TA00a_Initialize.class,
-    TA00b_Quit.class,
-//    TA03a_SummonHeroes.class,
-//    TA04_DeleteHeroes.class,
-    TA08_CmdEnter.class,
-    TA09_CmdLeave.class,
-    TA10_ReturnToTown.class,
-    TA13_CmdInspect.class,
-    TA14_TalkToPatron.class,
+    // TA00a_Initialize.class,
+    // TA00b_Quit.class,
+    // TA03a_SummonHeroes.class,
+    // TA04_DeleteHeroes.class,
+    // TA08_CmdEnter.class,
+    // TA09_CmdLeave.class,
+    // TA10_ReturnToTown.class,
+    // TA13_CmdInspect.class,
+    // TA14_TalkToPatron.class,
 
     // Too slow to be unit test
-    TestDbReadWriter.class,
-    TestRegistry.class,
-    TestMetaDie.class,
-    TestRegistryFactory.class,
-    RegistryTestSuite.class,
-    
-    SampleHeroGenerator.class,
+    // TestDbReadWriter.class,
+    // TestRegistry.class,
+     TestMetaDie.class,
+    // TestRegistryFactory.class,
+    // RegistryTestSuite.class,
+    //
+    // SampleHeroGenerator.class,
+
 })
 public class AdventurerIntegTestSuite
 {

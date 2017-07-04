@@ -33,7 +33,6 @@ import com.db4o.query.Predicate;
  */
 public class HeroRegistry extends ConcreteRegistry<Hero>
 {
-
   @SuppressWarnings("serial")
   private static final Predicate<Hero> _heroQuery = new Predicate<Hero>() {
     @Override
@@ -72,5 +71,6 @@ public class HeroRegistry extends ConcreteRegistry<Hero>
   {
     return _regRW.query(_heroQuery);
   }
-} // end of HeroRegistry class
+  
+}   // end of HeroRegistry class
 

@@ -30,9 +30,12 @@ import chronos.pdc.registry.HeroRegistry;
 public class TA03a_SummonHeroes
 {
   private static HeroRegistry _dorm = new HeroRegistry(); 
-  private static Hero hero1 = new Hero("Alpha", "male", "brown", "Human", "Fighter");
-  private static Hero hero2 = new Hero("Beta", "female", "blond", "Elf", "Thief");
-  private static Hero hero3 = new Hero("Gamma", "male", "brown", "Dwarf", "Cleric");
+//  private static Hero hero1 = new Hero("Alpha", "male", "brown", "Human", "Fighter");
+//  private static Hero hero2 = new Hero("Beta", "female", "blond", "Elf", "Thief");
+//  private static Hero hero3 = new Hero("Gamma", "male", "brown", "Dwarf", "Cleric");
+  private static Hero hero1 = new Hero("Alpha", "male", "brown", "Human");
+  private static Hero hero2 = new Hero("Beta", "female", "blond", "Elf");
+  private static Hero hero3 = new Hero("Gamma", "male", "brown", "Dwarf");
   
   /**
    * @throws java.lang.Exception

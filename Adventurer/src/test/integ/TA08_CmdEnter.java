@@ -55,7 +55,6 @@ public class TA08_CmdEnter extends IntegrationTest
   // Begin the tests!
   // ==========================================================
 
-
   /**
    * Normal case: Enter a valid building from the town (no current building)
    */

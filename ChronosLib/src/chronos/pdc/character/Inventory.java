@@ -45,12 +45,12 @@ public class Inventory
 
   /**
    * Some Inventories are meant to be empty, for creating subsets. To populate the inventory with
-   * starting Items, call {@code initStartingInventory()}.
+   * starting Items, call {@code assignBasicInventory()}.
    */
   public Inventory()
   {
     _itemList = new ArrayList<Item>();
-    assignBasicInventory();
+//    assignBasicInventory();
   }
 
   
@@ -117,7 +117,15 @@ public class Inventory
     }
     return weight;
   }
+  
+  
+  /** Empty all items fron the inventory */
+  public void emptyAll()
+  {
+    _itemList.clear();
+  }
 
+  
   /**
    * Drop (remove) one or more Items of the same kind from Inventory. If there are multiples, then
    * quantity is decremented. If qty = 1, then Item itself is removed from the inventory.

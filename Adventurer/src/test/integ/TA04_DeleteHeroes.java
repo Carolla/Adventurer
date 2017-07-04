@@ -21,7 +21,8 @@ import chronos.pdc.registry.HeroRegistry;
 public class TA04_DeleteHeroes
 {
   private static HeroRegistry _dorm = new HeroRegistry(); 
-  private static Hero hero1 = new Hero("Alpha", "male", "brown", "Human", "Fighter");
+//  private static Hero hero1 = new Hero("Alpha", "male", "brown", "Human", "Fighter");
+  private static Hero hero1 = new Hero("Alpha", "male", "brown", "Human");
   
   /**
    * @throws java.lang.Exception
