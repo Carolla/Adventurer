@@ -4,13 +4,14 @@
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
  * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
- * by email: acline@carolla.com
+ * by email: acline@wowway.com
  */
 
 
 package mylib.test.pdc;
 
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -25,8 +26,11 @@ import mylib.pdc.MetaDie;
  * 
  * @author Alan Cline
  * @version Dec 12, 2010 // original <br>
- *          Sep 20, 2014 // trying to cut down the number of times a method fails for random value
+ *          Sep 20, 2014 // trying to cut down the number of times a method fails for random values
  *          out of range <br>
+ *          July 4, 2017 // autogen: QA Tool added missing test methods <br>
+ *          July 5, 2017 // autogen: QA Tool added missing test methods <br>
+ *          July 5, 2017 // autogen: QA Tool added missing test methods <br>
  */
 public class TestMetaDie
 {
@@ -36,20 +40,6 @@ public class TestMetaDie
   // --------------------------------------------------------------------------------------------------------------
   // Let the Testing Begin!
   // --------------------------------------------------------------------------------------------------------------
-
-  /** Test that rollCharTrait is returning the proper range and randomness */
-  @Test
-  public void testRollCharTrait()
-  {
-//    double COUNT = 100000;
-//    int trait = 0;
-//
-//    for (int k = 0; k < COUNT; k++) {
-//      trait = _md.rollCharTrait();
-//      assertTrue("Trait " + trait + " too low", trait > 2);
-//      assertTrue("Trait " + trait + " too high", trait < 19);
-//    }
-  }
 
   /**
    * Test that random numbers summed are calculated as expected
@@ -67,7 +57,7 @@ public class TestMetaDie
 
     for (int p = 0; p < mins.length; p++) {
       for (int m = 0; m < maxs.length; m++) {
-        
+
         if (mins[p] >= maxs[m]) {
           try {
             _md.getRandom(mins[p], maxs[m]);
@@ -76,7 +66,6 @@ public class TestMetaDie
             continue;
           }
         }
-        
         for (int k = 0; k < NBR_LOOPS; k++) {
           int value = _md.getRandom(mins[p], maxs[m]);
           assertTrue((value >= mins[p]) && (value <= maxs[m]));
@@ -99,7 +88,7 @@ public class TestMetaDie
     int NBR_LOOPS = 10000;
     int[] nbrDice = {1, 2, 3, 4, 6, 100}; // 6 groups of dice
     int[] nbrSides = {2, 4, 6, 8, 10, 12, 20, 100}; // 8 kinds of dice
-   
+
     for (int p = 0; p < nbrDice.length; p++) {
       for (int m = 0; m < nbrSides.length; m++) {
         int value = -1;
@@ -117,8 +106,9 @@ public class TestMetaDie
     }
   }
 
+
   /**
-   * Test that roll method the same as above except use String d20 notation instead of ints Only
+   * Test that roll method the same as above except use String d20 notation instead of ints. Only
    * test that the string returns the correct number of dice and sides
    * 
    * @Normal.Test MetaDie.roll(String notation) ok
@@ -126,12 +116,12 @@ public class TestMetaDie
    * @Null.Test MetaDie.roll(String notation) ok
    */
   @Test
-  public void testRollString()
+  public void testRoll2()
   {
     String[] dice = {"1d2", "1d4", "1d6", "1d8", "d10", "d20", "d100",
-        "2d6", "2d10", "3d4", "4d6", "2d10", "d4-1", "2d4+1", "4d6-10"};
-    int[] minVal = {1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 4, 2, 0, 3, -6};
-    int[] maxVal = {2, 4, 6, 8, 10, 20, 100, 12, 20, 12, 24, 20, 3, 9, 14};
+        "2d6", "2d10", "3d4", "4d6", "2d10", "2d6-2", "d4-1", "2d4+1", "4d6-10"};
+    int[] minVal = {1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 4, 2, 0, 0, 3, -6};
+    int[] maxVal = {2, 4, 6, 8, 10, 20, 100, 12, 20, 12, 24, 20, 10, 3, 9, 14};
 
     for (int m = 0; m < dice.length; m++) {
       int value = -1;
@@ -143,5 +133,71 @@ public class TestMetaDie
     }
   }
 
-} // end of TestMetaDie class
 
+  /**
+   * Test that rollCharTrait is returning the proper range and randomness, that is the unadjusted
+   * sum of 4d6-lowest. Range [3,18]. average = 12.5
+   */
+  @Test
+  public void testRollCharTrait()
+  {
+    double COUNT = 100000;
+    double AVG = 12.25;
+    int trait = 0;
+    double sum = 0.0;
+    
+    for (int k = 0; k < COUNT; k++) {
+      trait = _md.rollCharTrait();
+      assertTrue("Trait " + trait + " too low", trait > 2);
+      assertTrue("Trait " + trait + " too high", trait < 19);
+      sum += trait;
+    }
+    assertEquals(AVG, sum/COUNT, 0.05);
+  }
+
+
+  @Test
+  public void testRollPercent()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    int LIMIT = 100000;
+    double AVG = 50.500;
+    double sum = 0;
+    for (int k = 0; k < LIMIT; k++) {
+      int value = _md.rollPercent();
+      assertTrue((value <= 100) && (value >= 1));
+      sum += value;
+    }
+    assertEquals(AVG, sum / LIMIT, 1.0);
+  }
+
+
+  /**
+   * Roll many 4d6-1 sets of dice and check range and average
+   */
+  @Test
+  public void testRollTraits()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    int LIMIT = 100000;
+    double AVG = 12.5;
+    double sum = 0;
+    for (int k = 0; k < LIMIT; k++) {
+      // Generate 4d6-lowest die to get a foreced range from [8,18]
+      int[] value = _md.rollTraits();
+      for (int n = 0; n < 6; n++) {
+        assertTrue((value[n] <= 18) && (value[n] >= 8));
+        sum += value[n];
+      }
+    }
+    assertEquals(AVG, sum / (6 * LIMIT), .5);
+  }
+
+
+} // end of TestMetaDie class

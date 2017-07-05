@@ -317,11 +317,13 @@ public class TestTestWriter
       MsgCtrl.where(this);
 
       // SETUP
-      String srcPath = "/Projects/eChronos/QATool/FileScanner/src/pdc/QAUtils.java";
+      String rootPath = "/Projects/eChronos/QATool/FileScanner/src/";
+      String srcPath = "pdc/QAUtils.java";
+      String testPath = "/Projects/eChronos/QATool/FileScanner/src/test/pdc/TestQAUtils";
 
       // RUN
-      String testName = _tw.makeTestFilename(srcPath);
-      assertEquals("/Projects/eChronos/QATool/FileScanner/src/test/pdc/TestQAUtils.java", testName);
+      String testName = _tw.makeTestFilename(rootPath, srcPath);
+      assertEquals(testPath, testName);
    }
 
 
@@ -337,10 +339,11 @@ public class TestTestWriter
       MsgCtrl.where(this);
 
       // SETUP
-      String notSrcPath = "/Projects/eChronos/QATool/FileScanner/QAUtils.java";
+      String rootPath = "/Projects/eChronos/QATool/FileScanner/";
+      String notSrcPath = "NoFoundFile.java";
       // RUN
       try {
-         _tw.makeTestFilename(notSrcPath);
+         _tw.makeTestFilename(rootPath, notSrcPath);
       } catch (IllegalArgumentException ex1) {
          MsgCtrl.errMsgln("\tExpected Exception: " + ex1.getMessage());
       }
@@ -359,10 +362,11 @@ public class TestTestWriter
       MsgCtrl.where(this);
 
       // SETUP
-      String notJavaPath = "/Projects/eChronos/QATool/FileScanner/QAUtils.docx";
+      String rootPath = "/Projects/eChronos/QATool/FileScanner/";
+      String notJavaPath = "QAUtils.docx";
       // RUN
       try {
-         _tw.makeTestFilename(notJavaPath);
+         _tw.makeTestFilename(rootPath, notJavaPath);
       } catch (IllegalArgumentException ex2) {
          MsgCtrl.errMsgln("\tExpected Exception: " + ex2.getMessage());
       }
@@ -382,7 +386,7 @@ public class TestTestWriter
 
       // RUN
       try {
-         _tw.makeTestFilename(null);
+         _tw.makeTestFilename(null, null);
       } catch (IllegalArgumentException ex2) {
          MsgCtrl.errMsgln("\tExpected Exception: " + ex2.getMessage());
       }

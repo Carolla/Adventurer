@@ -165,6 +165,7 @@ public class TripleMap
    /**
     * Ensure that all names within the src-to-test name list are unique by adding a numerical suffix
     * to duplicates
+    * @param alist  the list into which to place the augmented test names
     */
    private void makeUnique(ArrayList<String> alist)
    {
@@ -185,6 +186,17 @@ public class TripleMap
             // Reset suffix when new name is added
             suffix = 1;
          }
+      }
+      // One last step: replace testName1() with testName(), which is more likely to match
+      // the original test method; leaving testName2() as is.
+      String testOne = "1()";
+      String testNone = "()";
+      for (int k=0; k < alist.size(); k++) {
+        String s = alist.get(k);
+        if (s.contains(testOne)) {
+          String ss = s.replace(testOne, testNone);
+          alist.set(k, ss);
+        }
       }
    }
 

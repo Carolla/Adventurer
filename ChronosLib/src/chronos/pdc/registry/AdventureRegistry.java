@@ -12,9 +12,9 @@ package chronos.pdc.registry;
 import java.util.ArrayList;
 import java.util.List;
 
-import mylib.pdc.Registry;
 import chronos.pdc.Adventure;
 import chronos.pdc.Chronos;
+import mylib.pdc.Registry;
 
 /**
  * Contains a set of Adventure objects, where each Adventure contains the name of a Town and an
