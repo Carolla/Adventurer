@@ -26,14 +26,14 @@ import mylib.test.pdc.TestUtilities;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-  
+
+    /** DMC Test files */
+    TestDbReadWriter.class,
+
     /** PDC Test files */
     TestMetaDie.class,
     TestUtilities.class,
 
-    /** DMC Test files */
-    TestDbReadWriter.class,
-    
 })
 public class MyLibraryUnitTestSuite
 {

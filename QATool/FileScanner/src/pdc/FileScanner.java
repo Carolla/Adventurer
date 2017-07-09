@@ -132,11 +132,13 @@ public class FileScanner
     // Build list of test names missing from src file, with original source names for comments
     Map<String, String> augList = fs.buildAugMap();
 
-    // Write the new test method stubs to the existing test file, or create a new test file
-    if (testFile.exists()) {
-      fs.augmentTestFile(testFile, augList);
-    } else {
-      fs.writeNewTestFile(testFile, augList);
+    // If there are any methods to add or augment, write them out
+    if (augList.size() != 0) {
+      if (testFile.exists()) {
+        fs.augmentTestFile(testFile, augList);
+      } else {
+        fs.writeNewTestFile(testFile, augList);
+      }
     }
   }
 
@@ -286,8 +288,8 @@ public class FileScanner
     // Sort them, for saving and for printing
     QAUtils.sortSignatures(srcList);
     _tmap.setMapList(TripleMap.NameType.SRC, srcList);
-//    MsgCtrl.auditPrintList("Source list: " + srcList.size() + " source methods", srcList);
-    
+    // MsgCtrl.auditPrintList("Source list: " + srcList.size() + " source methods", srcList);
+
     return srcList;
   }
 
@@ -348,10 +350,11 @@ public class FileScanner
       return _failStubs;
     }
 
-    /** Call the private static method
+    /**
+     * Call the private static method
      * 
-     * @param args  command line args
-     * @return an error code or OK if all args are ok; 
+     * @param args command line args
+     * @return an error code or OK if all args are ok;
      */
     public String verifyArgs(String[] args)
     {
