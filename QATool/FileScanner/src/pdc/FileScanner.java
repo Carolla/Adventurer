@@ -74,12 +74,27 @@ public class FileScanner
   /** Command line arg to write test method stubs that fail instead of printing a message */
   static private boolean _failStubs = false;
 
+  private TripleMap _tmap;
+  private TestWriter _tw;
+
+
+  // ===============================================================================
+  // Constructor
+  // ===============================================================================
+
+  public FileScanner()
+  {
+    _tmap = new TripleMap();
+    _tw = new TestWriter(_failStubs, _fileEcho);
+  };
+
 
   // ===============================================================================
   // Launcher
   // ===============================================================================
 
   /**
+   * 
    * Creates a SrcReader to scan a source file and its corresponding test file for missing test
    * methods, and write a corresponding test file with the omitted test methods supplied as stubs.
    * 
@@ -96,53 +111,32 @@ public class FileScanner
       System.out.println(USAGE_MSG);
       System.exit(-1);
     }
-
     String root = args[0];
     String srcRelPath = args[1];
     String srcPath = root + srcRelPath;
-    MsgCtrl.auditMsg("Scanning " + srcPath);
-    // Get all source methods
-    ArrayList<String> srcList = QAUtils.getMethods(srcPath);
-    // Create a triple map to maintain lists for src names, src-to-test names, and test names
-    TripleMap tMap = new TripleMap(srcList);
-    MsgCtrl.auditPrintList("Source list: ", tMap.export(TripleMap.NameType.SRC));
-    MsgCtrl.auditPrintList("Converted test names from source: ",
-        tMap.export(TripleMap.NameType.SRC_TO_TEST));
 
-    // Create a TestWriter for test file output
-    TestWriter testWriter = new TestWriter(_failStubs, _fileEcho);
-    String testPath = null;
-    try {
-      testPath = testWriter.makeTestFilename(root, srcRelPath);
-    } catch (IllegalArgumentException ex) {
-      MsgCtrl.auditErrorMsg("Corresponding test file not found.");
-      System.exit(-1);
-    }
-    // Find the corresponding test file if it exists...
-    File testFile = new File(testPath);
-    // If corresponding test file exists, get existing test methods
-    ArrayList<String> testList = null;
-    MsgCtrl.errMsgln("Checking: \t" + testFile.getPath());
+    // Create this object for further processing
+    FileScanner fs = new FileScanner();
+
+    // Extract source method names into the map
+    fs.saveSourceMethods(srcPath);
+    // Generate test names from source signature names and save
+    fs.convertSrcToTestNames();
+
+    // Find corresponding test file if it exists
+    File testFile = fs.findTestFile(root, srcRelPath);
+
+    // Extract source method names into the map
+    fs.saveTestMethods(testFile.getPath());
+
+    // Build list of test names missing from src file, with original source names for comments
+    Map<String, String> augList = fs.buildAugMap();
+
+    // Write the new test method stubs to the existing test file, or create a new test file
     if (testFile.exists()) {
-      MsgCtrl.errMsgln("\t\t FOUND IT");
-      testList = QAUtils.getMethods(testPath);
-      tMap.setMapList(TripleMap.NameType.TEST, testList);
-      // Find only test names that don't already exist in the test file
-      Map<String, String> augMap = tMap.buildAugMap();
-      MsgCtrl.auditPrintList("Existing test method names: ",
-          tMap.export(TripleMap.NameType.TEST));
-      if (augMap.size() == 0) {
-        MsgCtrl.auditMsg("\nNo new methods to add to test file.");
-      } else {
-        MsgCtrl.auditPrintMap("Test methods to add to existing test file: ", augMap);
-        // Write the new test method stubs to the existing test file
-        testWriter.augmentTestFile(testFile, augMap);
-      }
+      fs.augmentTestFile(testFile, augList);
     } else {
-      MsgCtrl.errMsgln("  NOT FOUND. Creating new test file");
-      // Write new file using the converted method names
-      Map<String, String> augMap = tMap.buildAugMap();
-      testWriter.writeNewTestFile(testFile, augMap);
+      fs.writeNewTestFile(testFile, augList);
     }
   }
 
@@ -153,7 +147,7 @@ public class FileScanner
    * @param args command line as presented by operating system
    * @return OK message if command Line is valid, else error message related to kind of error
    */
-  static public String verifyArgs(String[] args)
+  static private String verifyArgs(String[] args)
   {
     if ((args == null) || (args.length == 0)) {
       return ERRMSG_NOCMDLINE;
@@ -163,18 +157,18 @@ public class FileScanner
     if ((args.length < 2) || (args.length > 5)) {
       return ERRMSG_ARGNUMBER;
     }
-    // Check for valid Root directory
-    if (!args[0].endsWith("/")) {
+    // // Check for valid Root directory
+    // if (!args[0].endsWith("/")) {
+    // return ERRMSG_BADROOT;
+    // }
+    // Verify root exists and is a directory
+    File root = new File(args[0]);
+    if (!root.isDirectory()) {
       return ERRMSG_BADROOT;
     }
     // Check for valid source file path
     if (!args[1].endsWith(".java")) {
       return ERRMSG_BADFILE;
-    }
-    // Verify root exists and is a directory
-    File root = new File(args[0]);
-    if (!root.isDirectory()) {
-      return ERRMSG_BADROOT;
     }
     // Verify file exists
     File target = new File(args[0] + args[1]);
@@ -205,12 +199,131 @@ public class FileScanner
   }
 
 
+  /**
+   * Wrapper to write test stubs to the existing test file
+   * 
+   * @param testfile the test file into which to write the new test methods stubs
+   * @param augMap list of test name (key) and corresponding source signature to write to file
+   */
+  private void augmentTestFile(File testFile, Map<String, String> augMap)
+  {
+    _tw.augmentTestFile(testFile, augMap);
+  }
+
+  /**
+   * Wrapper to sort the saved src names and make unique test names from it
+   */
+  private void convertSrcToTestNames()
+  {
+    _tmap.convertSrcToTestNames();
+  }
+
+
+  /**
+   * Wrapper to write an entirely new file of test stubs
+   * 
+   * @param testfile the test file into which to write the new test methods stubs
+   * @param augMap list of test name (key) and corresponding source signature to write to file
+   */
+  private void writeNewTestFile(File testFile, Map<String, String> augMap)
+  {
+    _tw.writeNewTestFile(testFile, augMap);
+  }
+
+
+
+  /**
+   * Wrapper to build the augmentation list of test names
+   * 
+   * @return the list of names to add to the test file, with their source counterpart
+   */
+  private Map<String, String> buildAugMap()
+  {
+    return _tmap.buildAugMap();
+  }
+
+
+  // ===============================================================================
+  // Private Support Methods
+  // ===============================================================================
+
+  /**
+   * Searches for a corresponding test file if it exists
+   * 
+   * @param root the parent of the test folder
+   * @param srcRelPath the relative path name of the source file
+   * @return test file or null if not found
+   */
+  private File findTestFile(String root, String srcRelPath)
+  {
+    String testPath = null;
+
+    try {
+      testPath = _tw.makeTestFilename(root, srcRelPath);
+      // MsgCtrl.errMsgln("Searching for: \t" + testPath);
+    } catch (IllegalArgumentException ex) {
+      // MsgCtrl.auditErrorMsg("Corresponding test file not found.");
+      System.exit(-1);
+    }
+    // Return the corresponding test file if it exists, or null
+    File testFile = new File(testPath);
+    // if (testFile != null) {
+    // MsgCtrl.errMsgln("\t FOUND IT");
+    // }
+    return testFile;
+  }
+
+  /**
+   * Retrieves source methods from the target file
+   * 
+   * @param srcPath path of the source file to be examined
+   * @return the map of source names to generated test names
+   */
+  private ArrayList<String> saveSourceMethods(String srcPath)
+  {
+    MsgCtrl.auditMsg("Scanning " + srcPath);
+    ArrayList<String> srcList = QAUtils.getMethods(srcPath);
+    // Sort them, for saving and for printing
+    QAUtils.sortSignatures(srcList);
+    _tmap.setMapList(TripleMap.NameType.SRC, srcList);
+//    MsgCtrl.auditPrintList("Source list: " + srcList.size() + " source methods", srcList);
+    
+    return srcList;
+  }
+
+  /**
+   * Retrieves source methods from the target file
+   * 
+   * @param srcPath path of the source file to be examined
+   * @return the map of source names to generated test names
+   */
+  private ArrayList<String> saveTestMethods(String testPath)
+  {
+    // Exclude the JUnit prep methods
+    String[] preps = {"void setUp()", "void tearDown()", "void setUpBeforeClass()",
+        "void tearDownAfterClass()"};
+
+    MsgCtrl.auditMsg("\nScanning " + testPath);
+    ArrayList<String> testList = QAUtils.getMethods(testPath);
+    // Remove prep methods from list
+    for (int k = 0; k < preps.length; k++) {
+      if (testList.contains(preps[k])) {
+        testList.remove(preps[k]);
+      }
+    }
+    MsgCtrl.auditPrintList("Test list: " + testList.size() + " test methods", testList);
+    _tmap.setMapList(TripleMap.NameType.TEST, testList);
+
+    return testList;
+  }
+
+
   // ===============================================================================
   // Inner Class for testing
   // ===============================================================================
 
   /**
-   * Mock innner class to get FileScanner state
+   * Mock inner class to get FileScanner state
    */
   public class MockFileScanner
   {
@@ -233,6 +346,16 @@ public class FileScanner
     public boolean isFailStubs()
     {
       return _failStubs;
+    }
+
+    /** Call the private static method
+     * 
+     * @param args  command line args
+     * @return an error code or OK if all args are ok; 
+     */
+    public String verifyArgs(String[] args)
+    {
+      return verifyArgs(args);
     }
 
   } // end of MockFileScanner class

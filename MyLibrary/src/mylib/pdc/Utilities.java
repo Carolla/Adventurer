@@ -37,17 +37,6 @@ public class Utilities
   public static final int INCHES_PER_FOOT = 12;
 
 
-  /** Convert a String[] to a ArrayList<String> for easier handling */
-  public static ArrayList<String> convertToArrayList(String[] strs)
-  {
-    // Setup for arraylist
-    ArrayList<String> alist = new ArrayList<String>();
-    for (int k = 0; k < strs.length; k++) {
-      alist.add(strs[k]);
-    }
-    return alist;
-  }
-
   /**
    * Convert a string to all lower case, then capitalize the first letter
    * 
@@ -78,6 +67,17 @@ public class Utilities
     return values;
   }
 
+  
+  /** Convert a String[] to a ArrayList<String> for easier handling */
+  public static ArrayList<String> convertToArrayList(String[] strs)
+  {
+    // Setup for arraylist
+    ArrayList<String> alist = new ArrayList<String>();
+    for (int k = 0; k < strs.length; k++) {
+      alist.add(strs[k]);
+    }
+    return alist;
+  }
 
   /**
    * Replaces the last white space character with a newline character within the designated limit.
@@ -124,31 +124,6 @@ public class Utilities
 
 
   /**
-   * Formats a String representing height in feet to one representing feet and inches
-   * 
-   * @param strHeight to convert into feet and inches
-   * @return the converted input; else null if empty
-   */
-  public static String formatHeight(String strHeight)
-  {
-    // Guard: verify inut parm has data in it
-    if (isEmptyString(strHeight)) {
-      return null;
-    }
-
-    // Get integer and ensure that it is a positive number
-    int total = Integer.parseInt(strHeight);
-    if (total < 0) {
-      return null;
-    }
-    int feet = total / INCHES_PER_FOOT;
-    int inches = total % INCHES_PER_FOOT;
-    String fullWt = String.format("%s' %s\"", feet, inches);
-    return fullWt;
-  }
-
-
-  /**
    * Formats a double representing height in feet to one representing feet and inches
    * 
    * @param height to convert into feet and inches
@@ -171,6 +146,31 @@ public class Utilities
     convertedHeight[1] = inches;
     // return
     return convertedHeight;
+  }
+
+
+  /**
+   * Formats a String representing height in feet to one representing feet and inches
+   * 
+   * @param strHeight to convert into feet and inches
+   * @return the converted input; else null if empty
+   */
+  public static String formatHeight(String strHeight)
+  {
+    // Guard: verify inut parm has data in it
+    if (isEmptyString(strHeight)) {
+      return null;
+    }
+  
+    // Get integer and ensure that it is a positive number
+    int total = Integer.parseInt(strHeight);
+    if (total < 0) {
+      return null;
+    }
+    int feet = total / INCHES_PER_FOOT;
+    int inches = total % INCHES_PER_FOOT;
+    String fullWt = String.format("%s' %s\"", feet, inches);
+    return fullWt;
   }
 
 

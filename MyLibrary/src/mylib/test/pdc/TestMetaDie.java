@@ -31,12 +31,15 @@ import mylib.pdc.MetaDie;
  *          July 4, 2017 // autogen: QA Tool added missing test methods <br>
  *          July 5, 2017 // autogen: QA Tool added missing test methods <br>
  *          July 5, 2017 // autogen: QA Tool added missing test methods <br>
+ *          July 9, 2017    // autogen: QA Tool added missing test methods <br>
+ *          July 9, 2017    // autogen: QA Tool added missing test methods <br>
  */
 public class TestMetaDie
 {
   /** Non-repeatable random generator */
   private MetaDie _md = new MetaDie();
 
+  
   // --------------------------------------------------------------------------------------------------------------
   // Let the Testing Begin!
   // --------------------------------------------------------------------------------------------------------------
@@ -198,6 +201,20 @@ public class TestMetaDie
     }
     assertEquals(AVG, sum / (6 * LIMIT), .5);
   }
+
+
+	/**
+ 	 * Not Implemented int roll(String)
+	 */
+	@Test
+	public void testRoll1()
+	{
+		MsgCtrl.auditMsgsOn(false);
+		MsgCtrl.errorMsgsOn(false);
+		MsgCtrl.where(this);
+
+		fail("TEST METHOD NOT YET IMPLEMENTED");
+	}
 
 
 } // end of TestMetaDie class

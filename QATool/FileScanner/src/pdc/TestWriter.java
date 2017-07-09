@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Pattern;
@@ -113,8 +114,7 @@ public class TestWriter
    * outputfile original name. Later, the temp file is deleted and the new file returned.
    * 
    * @param originalTestFile existing test file to update
-   * @param augMap a map of src signature (for comments) and test file names to write to the test
-   *        file
+   * @param augMap  list of test name (key) and corresponding source signature to write to file
    * @return the test file written
    * @throws IllegalArgumentException if original file cannot be found
    */
@@ -129,15 +129,9 @@ public class TestWriter
     if (!originalTestFile.exists()) {
       throw new IllegalArgumentException("Can't find original test file");
     }
-    // Guard: Verify that there are methods to add
-    if (augMap.size() == 0L) {
-      return originalTestFile;
-    }
 
-    /*
-     * Rename original file to have temporary suffix. Don't use ".tmp". It is too common and may
-     * collide elsewhere.
-     */
+    // Rename original file to have temporary suffix. Don't use ".tmp". It is too common and may
+    // collide elsewhere.
     String origFilename = originalTestFile.getPath();
     File inFile = setAsTmpFile(originalTestFile);
     File outFile = new File(origFilename);
@@ -185,15 +179,18 @@ public class TestWriter
   {
     // Guard against null parm
     if (srcPath == null) {
-      throw new IllegalArgumentException("Null srcPath found");
+      // throw new IllegalArgumentException("Null srcPath found");
+      return null;
     }
     // Guard against non-Java files
     if (!srcPath.endsWith(".java")) {
-      throw new IllegalArgumentException(".java file not found in " + srcPath);
+      // throw new IllegalArgumentException(".java file not found in " + srcPath);
+      return null;
     }
     // Guard against missing "src" directory
     if (!rootPath.contains(Constants.FS + "src" + Constants.FS)) {
-      throw new IllegalArgumentException("source file must be in 'src' directory");
+      // throw new IllegalArgumentException("source file must be in 'src' directory");
+      return null;
     }
     // Test path is concatenation of rootPath + "test/" + srcPath, with "Test" prefix
     StringBuilder sbTest = new StringBuilder(rootPath);
@@ -205,11 +202,6 @@ public class TestWriter
     sbTest.insert(ndx + 1, "Test");
     String newName = sbTest.toString();
 
-    // int srcTextNdx = srcPath.lastIndexOf("src");
-    // sbTest.insert(srcTextNdx + 4, "test" + Constants.FS);
-    // int ndx = sbTest.lastIndexOf(Constants.FS);
-    // sbTest.insert(ndx + 1, "Test");
-    // String newName = sbTest.toString();
     return newName;
   }
 
@@ -218,7 +210,7 @@ public class TestWriter
    * Create a new JUnit test file with test stubs
    * 
    * @param target destination of test file to write into
-   * @param augMap src method sigatures with corresponding test names
+   * @param augMap  list of test name (key) and corresponding source signature to write to file
    * @return the test file written
    * @throws IllegalArgumentException if target file already exists
    */
@@ -228,10 +220,6 @@ public class TestWriter
     // Guard: File cannot exist already
     if (target.exists()) {
       throw new IllegalArgumentException("Cannot create a new file; it already exists");
-    }
-    // Guard: augMap must contains some methods to write
-    if (augMap.size() == 0) {
-      return target;
     }
 
     // Create new output device
@@ -313,7 +301,7 @@ public class TestWriter
       lineAhead = in.nextLine();
     }
     fileWrite(out, currentLine);
-    
+
     // Current line now holds the latest version; add today's date if it isn't already there
     if (!todaysVersion.contains(latestDate)) {
       fileWrite(out, todaysVersion);
@@ -365,17 +353,19 @@ public class TestWriter
     ArrayList<String> codeBlock = new ArrayList<String>();
 
     // Walk the map and extract the src name (key) and the test name (value) as needed
-    for (Map.Entry<String, String> entry : augMap.entrySet()) {
+    Iterator<String> iter = augMap.keySet().iterator();
+//    for (Map.Entry<String, String> entry : augMap.entrySet()) {
+    while (iter.hasNext()) {
       StringBuilder comment = new StringBuilder();
       // CREATE THE NORMAL COMMENT BLOCK containing the source signature
-      // comment.append(String.format(NORMAL_CMT, entry.getKey()));
-      comment.append(String.format(NIMPL_CMT, entry.getKey()));
+      String testKey = iter.next();
+      String src = augMap.get(testKey);
+      comment.append(String.format(NIMPL_CMT, src));
       // Add the @Test annotation
       comment.append(TEST_ANNOT);
 
-      // ADD THE TEST DECLARATIAON
-      String m = entry.getValue();
-      String decl = String.format(M_DECLARATION, m);
+      // Get the test name (key) of the map
+      String decl = String.format(M_DECLARATION, testKey);
       comment.append(decl);
 
       // ADD THE MSGCTRL BLOCK and Fail or Not Impl message

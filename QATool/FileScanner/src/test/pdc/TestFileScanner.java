@@ -91,7 +91,7 @@ public class TestFileScanner
       args[0] = _path;
 
       // RUN
-      FileScanner.verifyArgs(args);
+      _mock.verifyArgs(args);
 
       // VERIFY
       assertFalse(_mock.isVerbose());
@@ -116,7 +116,7 @@ public class TestFileScanner
       args[1] = "-verbose";
 
       // RUN
-      FileScanner.verifyArgs(args);
+      _mock.verifyArgs(args);
 
       // VERIFY
       assertTrue(_mock.isVerbose());
@@ -140,7 +140,7 @@ public class TestFileScanner
       args[1] = "-fileEcho";
 
       // RUN
-      FileScanner.verifyArgs(args);
+      _mock.verifyArgs(args);
 
       // VERIFY
       assertFalse(_mock.isVerbose());
@@ -166,7 +166,7 @@ public class TestFileScanner
       args[3] = "-verbose";
 
       // RUN
-      FileScanner.verifyArgs(args);
+      _mock.verifyArgs(args);
 
       // VERIFY
       assertTrue(_mock.isVerbose());
@@ -191,7 +191,7 @@ public class TestFileScanner
       args[1] = "-failStubs";
 
       // RUN
-      FileScanner.verifyArgs(args);
+      _mock.verifyArgs(args);
 
       // VERIFY
       assertFalse(_mock.isVerbose());
@@ -213,7 +213,8 @@ public class TestFileScanner
       // SETUP Load command line options
       String ERRMSG_NOCMDLINE = "Missing command line for QAFileScan";
       // RUN
-      String result = FileScanner.verifyArgs(null);
+      String result = _mock.verifyArgs(null);
+
       // VERIFY
       assertEquals(ERRMSG_NOCMDLINE, result);
       
@@ -221,7 +222,7 @@ public class TestFileScanner
       String[] args = new String[0];
       assertEquals(0, args.length);
       // RUN
-      result = FileScanner.verifyArgs(args);
+      result = _mock.verifyArgs(args);
       // VERIFY
       assertEquals(ERRMSG_NOCMDLINE, result);
    }
