@@ -26,10 +26,11 @@ import test.pdc.TestTripleMap;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 
-      TestFileScanner.class,
-      TestQAUtils.class,
-      TestTestWriter.class,
-      TestTripleMap.class
+    // All classes are in PDC folder
+    TestFileScanner.class,
+    TestQAUtils.class,
+    TestTestWriter.class,
+    TestTripleMap.class
 
 })
 

@@ -225,9 +225,10 @@ public class FileScanner
    */
   private void convertSrcToTestNames()
   {
-    ArrayList<String> genList = _tmap.convertSrcToTestNames(_tmap.export(TripleMap.NameType.SRC),
-        _tmap.export(TripleMap.NameType.SRC_TO_TEST));
-    _tmap.setMapList(TripleMap.NameType.SRC_TO_TEST, genList);
+//    ArrayList<String> genList = _tmap.convertSrcToTestNames(_tmap.export(TripleMap.NameType.SRC),
+//        _tmap.export(TripleMap.NameType.SRC_TO_TEST));
+//    _tmap.setMapList(TripleMap.NameType.SRC_TO_TEST, genList);
+    _tmap.convertSrcToTestNames();
   }
 
 

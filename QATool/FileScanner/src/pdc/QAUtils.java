@@ -45,6 +45,69 @@ public class QAUtils
     return mList;
   }
 
+  
+  /**
+   * Send a list to the console as audit trail
+   * 
+   * @param msg message to be printed above list dump
+   * @param alist some list to be printed
+   */
+  static public void printList(String msg, ArrayList<String> alist)
+  {
+    MsgCtrl.msgln("\n" + msg);
+    for (String s : alist) {
+      MsgCtrl.msgln("\t" + s);
+    }
+  }
+
+  
+  /**
+   * Sort first by method name, then by parm list number and type; return value is ignored
+   * 
+   * @param sList collection of method signatures
+   * @throws IllegalArgumentException if any signature does not have a return value
+   */
+  static public void sortSignatures(ArrayList<String> sList) throws IllegalArgumentException
+  {
+    // Now sort the list
+    Collections.sort(sList, new Comparator<String>() {
+      @Override
+      public int compare(String sig1, String sig2)
+      {
+        checkReturns(sig1);
+        checkReturns(sig2);
+
+        // Tokenize into three parts: method name, parm list, return type (which is ignored)
+        String name1 = sig1.substring(sig1.indexOf(Constants.SPACE) + 1,
+            sig1.indexOf(Constants.LEFT_PAREN));
+        String name2 = sig2.substring(sig2.indexOf(Constants.SPACE) + 1,
+            sig2.indexOf(Constants.LEFT_PAREN));
+        String parms1 = sig1.substring(sig1.indexOf(Constants.LEFT_PAREN),
+            sig1.indexOf(Constants.RIGHT_PAREN) + 1);
+        String parms2 = sig2.substring(sig2.indexOf(Constants.LEFT_PAREN),
+            sig2.indexOf(Constants.RIGHT_PAREN) + 1);
+
+        // Compare method names
+        int retval = name1.compareTo(name2); // compare method names
+        int retval2 = parms1.compareTo(parms2); // compare parm list
+        // Guard against duplicate method+parm names
+        if ((retval == 0) && (retval2 == 0)) {
+          throw new IllegalArgumentException("Duplicate signatures not allowed: " + name1 + parms1);
+        }
+        // Compare number of parms and parms names
+        if (retval == 0) {
+          String[] nbrParms1 = parms1.split(Constants.COMMA);
+          String[] nbrParms2 = parms2.split(Constants.COMMA);
+          retval = nbrParms1.length - nbrParms2.length;
+          if (retval == 0) {
+            retval = parms1.compareTo(parms2);
+          }
+        }
+        return retval;
+      }
+    });
+  }
+
 
   /**
    * Ensure that signatures contains a return value before sorting
@@ -267,55 +330,6 @@ public class QAUtils
     retSig = retSig.substring(lastDot + 1, retNdx);
 
     return retSig;
-  }
-
-
-  /**
-   * Sort first by method name, then by parm list number and value
-   * 
-   * @param sList collection of method signatures
-   * @throws IllegalArgumentException if any signature does not have a return value
-   */
-  static public void sortSignatures(ArrayList<String> sList) throws IllegalArgumentException
-  {
-    // Now sort the list
-    Collections.sort(sList, new Comparator<String>() {
-      @Override
-      public int compare(String sig1, String sig2)
-      {
-        checkReturns(sig1);
-        checkReturns(sig2);
-
-        // Tokenize into three parts: method name, parm list, return type
-        String name1 = sig1.substring(sig1.indexOf(Constants.SPACE) + 1,
-            sig1.indexOf(Constants.LEFT_PAREN));
-        String name2 = sig2.substring(sig2.indexOf(Constants.SPACE) + 1,
-            sig2.indexOf(Constants.LEFT_PAREN));
-        String parms1 = sig1.substring(sig1.indexOf(Constants.LEFT_PAREN),
-            sig1.indexOf(Constants.RIGHT_PAREN) + 1);
-        String parms2 = sig2.substring(sig2.indexOf(Constants.LEFT_PAREN),
-            sig2.indexOf(Constants.RIGHT_PAREN) + 1);
-
-        // Compare method names
-        int retval = name1.compareTo(name2); // compare method names
-        int retval2 = parms1.compareTo(parms2); // compare parm list
-        // Guard against duplicate method+parm names
-        if ((retval == 0) && (retval2 == 0)) {
-          throw new IllegalArgumentException(
-              "Duplicate signatures not allowed: " + name1 + parms1);
-        }
-        // Compare number of parms and parms names
-        if (retval == 0) {
-          String[] nbrParms1 = parms1.split(Constants.COMMA);
-          String[] nbrParms2 = parms2.split(Constants.COMMA);
-          retval = nbrParms1.length - nbrParms2.length;
-          if (retval == 0) {
-            retval = parms1.compareTo(parms2);
-          }
-        }
-        return retval;
-      }
-    });
   }
 
 } // end of QAUtils class

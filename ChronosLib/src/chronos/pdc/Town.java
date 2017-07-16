@@ -35,6 +35,14 @@ public class Town implements IRegistryElement
   /** The name of the Buildings in Town */
   private List<Building> _buildings;
 
+  private final String ERR_NULL_NAME = "The town must have a name; cannot be null or empty";
+  private final String ERR_NULL_DESC = 
+      "The town must have a daytime description; cannot be null or empty";
+  
+  // ================================================================================
+  // CONSTRUCTOR AND HELPERS
+  // ================================================================================
+  
   /**
    * Constructor. If the descNight is null, the descDay value is used. Some rare towns do not have
    * night time descriptions, so null values are ok.
@@ -46,15 +54,20 @@ public class Town implements IRegistryElement
    */
   public Town(String name, String descDay, String descNight)
   {
-    assert(name != null);
-    assert(descDay != null);
-    assert(descNight != null);
-    
+    // Guard: Name is required
+    if ((name == null) || (name.isEmpty())) {
+      throw new IllegalArgumentException(ERR_NULL_NAME);
+    }
+    // Guard: Daytime description is required
+    if ((descDay == null) || (descDay.isEmpty())) {
+      throw new IllegalArgumentException(ERR_NULL_DESC);
+    }
     _name = name;
     _descDay = descDay;
     _descNight = descNight;
     _buildings = new ArrayList<Building>();
   }
+
 
   /**
    * Add the names of {@code Building}s that are in the Town after verifying each one from the
@@ -67,34 +80,11 @@ public class Town implements IRegistryElement
     _buildings.addAll(bldgList);
   }
 
-
-  @Override
-  public int hashCode()
-  {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((_name == null) ? 0 : _name.hashCode());
-    return result;
-  }
-
-  @Override
-  public boolean equals(Object obj)
-  {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    Town other = (Town) obj;
-    if (_name == null) {
-      if (other._name != null)
-        return false;
-    } else if (!_name.equals(other._name))
-      return false;
-    return true;
-  }
-
+  
+  // ================================================================================
+  // PUBLIC METHODS
+  // ================================================================================
+  
   /** Get a list of all the Buildings in the town */
   public List<Building> getAllBuildings()
   {
@@ -122,10 +112,53 @@ public class Town implements IRegistryElement
     return _descNight;
   }
 
+  /** Get the name of this town */
+  public String getName()
+  {
+    return _name;
+  }
+
   /** Get the name of the town */
   public String toString()
   {
     return _name;
   }
+
+  // ================================================================================
+  // SPECIALITY: PRIMITIVE SUPPORT METHODS
+  // ================================================================================
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Town other = (Town) obj;
+    if (_name == null) {
+      if (other._name != null)
+        return false;
+    } else if (!_name.equals(other._name))
+      return false;
+    return true;
+  }
+
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((_name == null) ? 0 : _name.hashCode());
+    return result;
+  }
+
+  
+  // ================================================================================
+  // PRIVATE METHODS
+  // ================================================================================
+
 } // end of Town class
 

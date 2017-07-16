@@ -85,6 +85,7 @@ public class TestQAUtils
         "Map buildAugMap()",
         "void convertSrcToTestNames()",
         "ArrayList export(TripleMap$NameType)",
+        "Map exportAugMap()",
         "void setMapList(TripleMap$NameType, ArrayList)"));
 
     // RUN
@@ -117,10 +118,73 @@ public class TestQAUtils
   }
 
 
+  /**
+   * @Normal.Test void sortSignatures(ArrayList) -- sort signatures by name, then parms
+   */
+  @Test
+  public void testSortSignatures()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // SETUP should be sorted by name, then return value, then parms
+    ArrayList<String> srcList = new ArrayList<>(Arrays.asList(
+        "ArrayList zeta(int, ArrayList)",
+        "ArrayList zeta(int, long)",
+        "File beta(String)",
+        "void beta(int, String)",
+        "boolean alpha()",
+        "File beta(double, String)"));
+    ArrayList<String> expList = new ArrayList<>(Arrays.asList(
+        "boolean alpha()",
+        "File beta(String)",
+        "File beta(double, String)",
+        "void beta(int, String)",
+        "ArrayList zeta(int, ArrayList)", 
+        "ArrayList zeta(int, long)"));
+
+    // RUN list changed in place
+    QAUtils.sortSignatures(srcList);
+    QAUtils.printList("Sorted input list:", srcList);
+    
+    // VERIFY
+    for (int k = 0; k < expList.size(); k++) {
+      String s = srcList.get(k);
+      assertEquals(expList.get(k), s);
+    }
+
+  }
+
+  /**
+   * @Error.Test void sortSignatures(ArrayList) -- duplicate signature throws exception
+   */
+  @Test
+  public void testSortSignatures_WithDup()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // SETUP should be sorted by name, then return value, then parms
+    ArrayList<String> srcList = new ArrayList<>(Arrays.asList(
+        "ArrayList zeta(int, ArrayList)",
+        "File beta(double, String)",
+        "ArrayList zeta(int, ArrayList)"));
+
+    // RUN list changed in place
+    try {
+      QAUtils.sortSignatures(srcList);
+    } catch (IllegalArgumentException ex) {
+      MsgCtrl.errMsg("\tExpected exception for duplicate signatures");
+    }
+
+  }
+  
+
   // ===============================================================================
   // PRIVATE HELPER METHODS
   // ===============================================================================
-
 
 
 } // end of TestQAUtils.java class

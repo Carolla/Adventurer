@@ -148,34 +148,29 @@ public class TripleMap
 
 
   /**
-   * Ensure that all names within the src-to-test name list are unique by adding a numerical suffix
-   * to duplicates; i.e., for overloaded source names
-   * 
-   * @param alist the list into which to place the augmented test names
-   * @return the list of unique generated test names
+   * Traverse through the internal src names and generate test names from them, ensuring that
+   * all names within the src-to-test name list are unique by adding a numerical suffix.
    */
-  public ArrayList<String> convertSrcToTestNames(ArrayList<String> srcList,
-      ArrayList<String> gennedList)
+  public void convertSrcToTestNames()
   {
     // Convert each srcName into a test method name and store
-    for (String sName : srcList) {
+    for (String sName : _srcNames) {
       String s2tName = makeTestMethodName(sName);
       int suffix = 1;
       // Add numerical suffix for existing test names
-      if (gennedList.contains(s2tName)) {
+      if (_srcToTestNames.contains(s2tName)) {
         // Insert the name suffix before the parens
-        gennedList.remove(s2tName);
+        _srcToTestNames.remove(s2tName);
         s2tName = s2tName.replace("()", suffix + "()");
-        gennedList.add(s2tName);
+        _srcToTestNames.add(s2tName);
         s2tName = s2tName.replace(suffix + "()", ++suffix + "()");
-        gennedList.add(s2tName);
+        _srcToTestNames.add(s2tName);
       } else {
-        gennedList.add(s2tName);
+        _srcToTestNames.add(s2tName);
         // Reset suffix when new name is added
         suffix = 1;
       }
     }
-    return gennedList;
   }
 
 

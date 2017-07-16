@@ -31,9 +31,9 @@ import pdc.TripleMap;
  */
 public class TestTripleMap
 {
-  // Target object to test 
+  // Target object to test
   private TripleMap _tmap;
-  
+
   /**
    * @throws java.lang.Exception -- catchall for what tests don't catch
    */
@@ -82,11 +82,11 @@ public class TestTripleMap
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-  
+
     MsgCtrl.errMsgln("\t\t Switch case wrapper. No need to test");
   }
 
-  
+
   /**
    * @Normal.Test {@code Map<String, String> buildAugMap()} -- Initial test: no new tests
    */
@@ -204,7 +204,7 @@ public class TestTripleMap
     assertEquals(2, augMap.size());
   }
 
-  
+
   /**
    * @Normal.Test void ConvertSrcToTestNames() -- convert srcNames list to srcToTestNames list,
    *              ensuring there are no duplicates (e.g. overloaded method names)
@@ -216,19 +216,23 @@ public class TestTripleMap
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    // SETUP  Three overloaded names are included
+    // SETUP Three overloaded names are included
     ArrayList<String> srcNames = new ArrayList<String>(Arrays.asList(
         "String alpha(int)", "void alphaDog(String)", "File gamma(String)", "long gamma(File)",
         "File gamma2(String)"));
     ArrayList<String> expNames = new ArrayList<String>(Arrays.asList(
         "void testAlpha()", "void testAlphaDog()", "void testGamma1()", "void testGamma21()",
         "void testGamma22()"));
-    TripleMap tmap = new TripleMap();
+    // Load the tmap with only src names  
+    _tmap = loadTripleMap(srcNames, new ArrayList<String>(), new ArrayList<String>());
 
     // RUN
-    ArrayList<String> genList = tmap.convertSrcToTestNames(srcNames, new ArrayList<>());
+    _tmap.convertSrcToTestNames();
 
     // VERIFY
+    ArrayList<String> srcList = _tmap.export(TripleMap.NameType.SRC);
+    ArrayList<String> genList = _tmap.export(TripleMap.NameType.SRC_TO_TEST);
+
     assertEquals(srcNames.size(), genList.size());
     assertEquals(expNames.size(), genList.size());
     for (int k = 0; k < expNames.size(); k++) {
@@ -246,7 +250,7 @@ public class TestTripleMap
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-  
+
     MsgCtrl.errMsgln("\t\t Switch case wrapper. No need to test");
   }
 
@@ -260,7 +264,7 @@ public class TestTripleMap
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-  
+
     MsgCtrl.errMsgln("\t\t Wrapper. No need to test");
   }
 
@@ -301,20 +305,6 @@ public class TestTripleMap
     return tMap;
   }
 
-
-  /**
-   * Send a list to the console as audit trail
-   * 
-   * @param msg message to be printed above list dump
-   * @param alist some list to be printed
-   */
-  private void printList(String msg, ArrayList<String> alist)
-  {
-    MsgCtrl.msgln("\n" + msg);
-    for (String s : alist) {
-      MsgCtrl.msgln("\t" + s);
-    }
-  }
 
   /**
    * Send map entries to the console as audit trail
