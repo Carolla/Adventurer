@@ -30,94 +30,97 @@ import pdc.QAUtils;
  */
 public class TestQAUtils
 {
-   /**
-    * @throws java.lang.Exception -- general catchall for exceptions not caught by the tests
-    */
-   @BeforeClass
-   public static void setUpBeforeClass() throws Exception
-   {}
+  /**
+   * @throws java.lang.Exception -- general catchall for exceptions not caught by the tests
+   */
+  @BeforeClass
+  public static void setUpBeforeClass() throws Exception
+  {}
 
-   /**
-    * @throws java.lang.Exception -- general catchall for exceptions not caught by the tests
-    */
-   @AfterClass
-   public static void tearDownAfterClass() throws Exception
-   {}
+  /**
+   * @throws java.lang.Exception -- general catchall for exceptions not caught by the tests
+   */
+  @AfterClass
+  public static void tearDownAfterClass() throws Exception
+  {}
 
-   /**
-    * @throws java.lang.Exception -- general catchall for exceptions not caught by the tests
-    */
-   @Before
-   public void setUp() throws Exception
-   {}
+  /**
+   * @throws java.lang.Exception -- general catchall for exceptions not caught by the tests
+   */
+  @Before
+  public void setUp() throws Exception
+  {}
 
-   /**
-    * @throws java.lang.Exception -- general catchall for exceptions not caught by the tests
-    */
-   @After
-   public void tearDown() throws Exception
-   {
-      MsgCtrl.auditMsgsOn(false);
-      MsgCtrl.errorMsgsOn(false);
-   }
-
-
-   // ===============================================================================
-   // BEGIN TESTING
-   // ===============================================================================
-
-   /**
-    * Normal Test: ArrayList getMethods(String) -- return the methods in .class file associated with
-    * the source path
-    */
-   @Test
-   public void testGetMethods()
-   {
-      MsgCtrl.auditMsgsOn(false);
-      MsgCtrl.errorMsgsOn(false);
-      MsgCtrl.where(this);
-
-      // SETUP Create target Class from outside the project
-      String targetPath = "/Projects/eChronos/QATool/FileScanner/src/pdc/TripleMap.java";
-      // Initialize a set of src methods
-      ArrayList<String> expList = new ArrayList<>(Arrays.asList(
-            "Map buildAugMap()", "ArrayList export(TripleMap$NameType)",
-                  "void setMapList(TripleMap$NameType, ArrayList)"));
-
-      // RUN
-      ArrayList<String> resultList = QAUtils.getMethods(targetPath);
-      MsgCtrl.auditPrintList("\tMethods found: ", resultList);
-      // VERIFY
-      assertEquals(3, resultList.size());
-      for (int k=0; k < resultList.size(); k++) {
-         assertEquals(expList.get(k), resultList.get(k));
-      }
-   }
+  /**
+   * @throws java.lang.Exception -- general catchall for exceptions not caught by the tests
+   */
+  @After
+  public void tearDown() throws Exception
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+  }
 
 
-   /**
-    * Null Test: ArrayList getMethods(null) -- returns NullPointerException
-    */
-   @Test
-   public void testGetMethods_NullParm_Exception()
-   {
-      MsgCtrl.auditMsgsOn(false);
-      MsgCtrl.errorMsgsOn(false);
-      MsgCtrl.where(this);
+  // ===============================================================================
+  // BEGIN TESTING
+  // ===============================================================================
 
-      // RUN
-      try {
-         QAUtils.getMethods(null);
-      } catch (NullPointerException ex) {
-         MsgCtrl.errMsgln("\t Expected exception for null parms");
-      }
-   }
+  /**
+   * Normal Test: ArrayList getMethods(String) -- return the methods in .class file associated with
+   * the source path
+   */
+  @Test
+  public void testGetMethods()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // SETUP Create target Class from outside the project
+    String targetPath = "/Projects/eChronos/QATool/FileScanner/src/pdc/TripleMap.java";
+    // Initialize a set of src methods
+    ArrayList<String> expList = new ArrayList<>(Arrays.asList(
+        "void addEntry(String, TripleMap$NameType)",
+        "Map buildAugMap()",
+        "void convertSrcToTestNames()",
+        "ArrayList export(TripleMap$NameType)",
+        "void setMapList(TripleMap$NameType, ArrayList)"));
+
+    // RUN
+    ArrayList<String> resultList = QAUtils.getMethods(targetPath);
+    MsgCtrl.auditPrintList("\tMethods found: ", resultList);
+    // VERIFY
+    assertEquals(expList.size(), resultList.size());
+    for (int k = 0; k < resultList.size(); k++) {
+      assertEquals(expList.get(k), resultList.get(k));
+    }
+  }
 
 
-   // ===============================================================================
-   // PRIVATE HELPER METHODS
-   // ===============================================================================
+  /**
+   * Null Test: ArrayList getMethods(null) -- returns NullPointerException
+   */
+  @Test
+  public void testGetMethods_NullParm_Exception()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // RUN
+    try {
+      QAUtils.getMethods(null);
+    } catch (NullPointerException ex) {
+      MsgCtrl.errMsgln("\t Expected exception for null parms");
+    }
+  }
+
+
+  // ===============================================================================
+  // PRIVATE HELPER METHODS
+  // ===============================================================================
 
 
 
-} 	// end of TestQAUtils.java class
+} // end of TestQAUtils.java class

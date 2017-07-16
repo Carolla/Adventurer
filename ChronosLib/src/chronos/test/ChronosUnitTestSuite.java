@@ -4,7 +4,7 @@
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
  * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
- * by email: acline@carolla.com
+ * by email: acline@wowway.com
  */
 
 package chronos.test;
@@ -19,8 +19,11 @@ import chronos.test.pdc.TestOccupation;
 import chronos.test.pdc.TestSkill;
 import chronos.test.pdc.TestTown;
 import chronos.test.pdc.buildings.BuildingsTestSuite;
+import chronos.test.pdc.buildings.TestArena;
 import chronos.test.pdc.character.CharacterTestSuite;
+import chronos.test.pdc.command.CommandTestSuite;
 import chronos.test.pdc.race.RaceTestSuite;
+import chronos.test.pdc.registry.RegistryTestSuite;
 
 
 /**
@@ -44,21 +47,30 @@ import chronos.test.pdc.race.RaceTestSuite;
 @Suite.SuiteClasses({
 
       /* CIV test files */
-      // None
+      // PersonKeys.class,        // only an enum definition
+      // UserMsgInterface.class,  // interface definition only
+      // UserMsgProxy.class,      // wrapper methods only
 
-      /* PDC test suite from subdirectories */
+  // TODO Verify that all classes below have tests that pass, or don't need them
+  
+      /* Test suites from PDC.subdirectories */
       BuildingsTestSuite.class,
       CharacterTestSuite.class,
+      CommandTestSuite.class,
       RaceTestSuite.class,
+      RegistryTestSuite.class,
 
       /* PDC test files */
       TestAdventure.class,
+      TestArena.class,
+      // Chronos.class,   // collection of constants and statics 
+//      TestGameClock.class,    TO BE IMPLEMENTED
       TestItem.class,
       TestOccupation.class,
       TestNPC.class,
       TestSkill.class,
       TestTown.class,
-
+      
 })
 /** Compilation of all unit tests for regression and integration testing. */
 public class ChronosUnitTestSuite

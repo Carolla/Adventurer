@@ -47,6 +47,7 @@ import mylib.MsgCtrl;
  * @version Mar 27, 2017 // major refactor from older version to more compact program <br>
  *          July 4, 2017 // modified to remove assumption that {@code test} dirs are directly under
  *          the {@code src} root dir. <br>
+ *          July 17, 2017 // minor changes for testing <br>
  */
 public class FileScanner
 {
@@ -159,10 +160,6 @@ public class FileScanner
     if ((args.length < 2) || (args.length > 5)) {
       return ERRMSG_ARGNUMBER;
     }
-    // // Check for valid Root directory
-    // if (!args[0].endsWith("/")) {
-    // return ERRMSG_BADROOT;
-    // }
     // Verify root exists and is a directory
     File root = new File(args[0]);
     if (!root.isDirectory()) {
@@ -213,28 +210,6 @@ public class FileScanner
   }
 
   /**
-   * Wrapper to sort the saved src names and make unique test names from it
-   */
-  private void convertSrcToTestNames()
-  {
-    _tmap.convertSrcToTestNames();
-  }
-
-
-  /**
-   * Wrapper to write an entirely new file of test stubs
-   * 
-   * @param testfile the test file into which to write the new test methods stubs
-   * @param augMap list of test name (key) and corresponding source signature to write to file
-   */
-  private void writeNewTestFile(File testFile, Map<String, String> augMap)
-  {
-    _tw.writeNewTestFile(testFile, augMap);
-  }
-
-
-
-  /**
    * Wrapper to build the augmentation list of test names
    * 
    * @return the list of names to add to the test file, with their source counterpart
@@ -242,6 +217,17 @@ public class FileScanner
   private Map<String, String> buildAugMap()
   {
     return _tmap.buildAugMap();
+  }
+
+
+  /**
+   * Convert the source names to genned names, then save them back into tmap.
+   */
+  private void convertSrcToTestNames()
+  {
+    ArrayList<String> genList = _tmap.convertSrcToTestNames(_tmap.export(TripleMap.NameType.SRC),
+        _tmap.export(TripleMap.NameType.SRC_TO_TEST));
+    _tmap.setMapList(TripleMap.NameType.SRC_TO_TEST, genList);
   }
 
 
@@ -320,6 +306,18 @@ public class FileScanner
   }
 
 
+  /**
+   * Wrapper to write an entirely new file of test stubs
+   * 
+   * @param testfile the test file into which to write the new test methods stubs
+   * @param augMap list of test name (key) and corresponding source signature to write to file
+   */
+  private void writeNewTestFile(File testFile, Map<String, String> augMap)
+  {
+    _tw.writeNewTestFile(testFile, augMap);
+  }
+
+
   // ===============================================================================
   // Inner Class for testing
   // ===============================================================================
@@ -358,7 +356,7 @@ public class FileScanner
      */
     public String verifyArgs(String[] args)
     {
-      return verifyArgs(args);
+      return FileScanner.verifyArgs(args);
     }
 
   } // end of MockFileScanner class

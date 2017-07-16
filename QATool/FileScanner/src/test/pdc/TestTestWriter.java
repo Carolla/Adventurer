@@ -319,7 +319,7 @@ public class TestTestWriter
       // SETUP
       String rootPath = "/Projects/eChronos/QATool/FileScanner/src/";
       String srcPath = "pdc/QAUtils.java";
-      String testPath = "/Projects/eChronos/QATool/FileScanner/src/test/pdc/TestQAUtils";
+      String testPath = "/Projects/eChronos/QATool/FileScanner/src/test/pdc/TestQAUtils.java";
 
       // RUN
       String testName = _tw.makeTestFilename(rootPath, srcPath);

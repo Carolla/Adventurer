@@ -11,7 +11,6 @@ package chronos.pdc.registry;
 
 import java.util.List;
 
-import mylib.pdc.Registry;
 import chronos.pdc.Chronos;
 import chronos.pdc.buildings.Bank;
 import chronos.pdc.buildings.Building;
@@ -22,12 +21,14 @@ import chronos.pdc.buildings.Jail;
 import chronos.pdc.buildings.RoguesGuild;
 import chronos.pdc.buildings.Store;
 import chronos.pdc.buildings.WizardsGuild;
+import mylib.pdc.Registry;
 
 /**
  * All Town Buildings are collected here. The initial (default) Registry contains 8 buildings.
  * 
  * @author Alan Cline
  * @version April 20, 2013 // original <br>
+ *          July 15, 2017 // added Stable and Jewelry store to initialization <br>
  */
 public class BuildingRegistry extends Registry<Building>
 {
@@ -52,6 +53,8 @@ public class BuildingRegistry extends Registry<Building>
     super.add(new Store()); // Rat's Pack
     super.add(new Jail()); // Jail
     super.add(new Bank()); // The Bank
+    // super.add(new Jewelry()); // Gems & Jewels
+    // super.add(new Stable()); // Larry's Livery
     super.add(new FightersGuild()); // Stadium
     super.add(new RoguesGuild()); // Rouge's Tavern
     super.add(new ClericsGuild()); // Monastery

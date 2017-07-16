@@ -10,22 +10,22 @@
 
 package chronos.pdc.registry;
 
+import java.rmi.registry.Registry;
 import java.util.HashMap;
-
-import mylib.pdc.Registry;
 
 
 /**
  * Creates singleton registries of various kinds and keeps count of existing registries
  * 
  * @author Alan Cline
- * @version Jan 1, 2014 // ABC original <br>
- *          July 19, 2014 // ABC added method to return already created Registry <br>
- *          July 25, 2014 // ABC added collection funtionality <br>
+ * @version Jan 1, 2014 // original <br>
+ *          July 19, 2014 // added method to return already created Registry <br>
+ *          July 25, 2014 // added collection funtionality <br>
+ *          July 15, 2017 // salilght modifications to support test class <br>
  */
 public class RegistryFactory
 {
-  private HashMap<RegKey, Registry<?>> _regMap = null;
+  private HashMap<RegKey, Registry> _regMap = null;
 
   /** Public list of all possible registries subclasses, in rough dependency order. */
   public enum RegKey {
@@ -33,8 +33,8 @@ public class RegistryFactory
     SKILL("Skill"), // default: 8 racial, and 27 general Skills
     OCP("Occupation"), // default: 26 Occupations plus "None"
     ITEM("Item"), // default 14 Hero, 6 Bank, 11 Inn menu, 5 Rogue, 3 Store
-    BLDG("Building"), // default: 4 Guilds, Inn, Store, Jail, Bank
-    NPC("NPC"), // Default: 8 building masters and 8 Inn patrons
+    BLDG("Building"), // default: 4 Guilds, Inn, Jail, Store, Bank, Jewelry, Stable
+    NPC("NPC"), // Default: 8 Building Masters and 8 Inn patrons
     TOWN("Town"), // default: Biljur'Baz
     ADV("Adventure"); // default: "The Quest for Rogahn and Zelligar" (Arena = Quasqueton)
 
@@ -52,27 +52,27 @@ public class RegistryFactory
     }
   }
 
+
   // ============================================================
   // Constructor(s) and Related Methods
   // ============================================================
 
-
   // This map is needed by other classes; do not move
   public RegistryFactory()
   {
-    _regMap = new HashMap<RegKey, Registry<?>>();
+    _regMap = new HashMap<RegKey, Registry>();
   }
 
   public void initRegistries()
   {
-    _regMap.put(RegKey.HERO, new HeroRegistry());
-    _regMap.put(RegKey.ITEM, new ItemRegistry());
-    _regMap.put(RegKey.SKILL, new SkillRegistry());
-    _regMap.put(RegKey.OCP, new OccupationRegistry());
-    _regMap.put(RegKey.NPC, new NPCRegistry());
-    _regMap.put(RegKey.BLDG, new BuildingRegistry());
-    _regMap.put(RegKey.TOWN, new TownRegistry());
-    _regMap.put(RegKey.ADV, new AdventureRegistry());
+    _regMap.put(RegKey.HERO, (Registry) new HeroRegistry());
+    _regMap.put(RegKey.ITEM, (Registry) new ItemRegistry());
+    _regMap.put(RegKey.SKILL, (Registry) new SkillRegistry());
+    _regMap.put(RegKey.OCP, (Registry) new OccupationRegistry());
+    _regMap.put(RegKey.NPC, (Registry) new NPCRegistry());
+    _regMap.put(RegKey.BLDG, (Registry) new BuildingRegistry());
+    _regMap.put(RegKey.TOWN, (Registry) new TownRegistry());
+    _regMap.put(RegKey.ADV, (Registry) new AdventureRegistry());
   }
 
 
@@ -92,15 +92,16 @@ public class RegistryFactory
 
 
   /**
-   * Return the requested regsistry, or null if the registry is null or closed
+   * Return the requested registry, or null if the registry is null or closed
    * 
    * @param regtype one of the canonical immutable Registries defined in <code>enum RegKey</code>
    * @return an existing registry of the requested type, or null if it doesn't exist or can't be
    *         found
    */
-  public Registry<?> getRegistry(RegKey regtype)
+  public Registry getRegistry(RegKey regtype)
   {
     return _regMap.get(regtype);
   }
+
 
 } // end of RegistryFactory class

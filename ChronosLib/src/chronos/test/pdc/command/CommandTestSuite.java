@@ -4,11 +4,11 @@
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
  * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
- * by email: acline@carolla.com
+ * by email: acline@wowway.com
  */
 
 
-package chronos.test.pdc.registry;
+package chronos.test.pdc.command;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -18,29 +18,27 @@ import org.junit.runners.Suite;
  * * {@code pdc.registry.Test*.java} regression test suite
  *
  * @author Alan Cline
- * @version Jan 17, 2015 // original <br>
- *          Mar 29 2016 // reviewed and updated for overall QA (<br>
+ * @version July 15, 2017 // original <br>
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 
-  // TODO Verify that all classes below have tests that pass, or don't need them
+    // TODO Verify that all classes below have tests that pass, or don't need them
 
     /* chronos.pdc.registry test files */
-//    TestAdventureRegistry.class,
-//    TestBuildingRegistry.class,
-//    TestHelpTextObject.class,
-//    TestHeroRegistry.class,
-//    TestItemRegistry.class,
-//    TestNPCRegistry.class,
-//    TestOccupationRegistry.class,
-//    TestRegistryFactory.class,
-//    TestTownRegistry.class,
-//    TestSkillRegistry.class,
+//    TestCommand.class,
+//    TestDeltaCmdList.class,
+//    TestEvent.class,
+//    TestEventTest.class,
+//    TestintCmdPatronEnter.class,
+//    TestintCmdPatronLeave.class,
+//    TestNullCommand.class,
+//    TestScheduler.class,
 
 })
+
 /** Compilation of all unit tests for regression and integration testing. */
-public class RegistryTestSuite
+public class CommandTestSuite
 {
 }
 

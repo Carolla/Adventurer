@@ -9,7 +9,6 @@
 package pdc;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -26,7 +25,7 @@ public class TripleMap
 {
   /** Designator for 1st, 2nd, or 3rd column of the TripleMap */
   public enum NameType {
-    SRC, SRC_TO_TEST, TEST, AUG
+    SRC, SRC_TO_TEST, TEST
   };
 
   /** First column for source method names */
@@ -35,8 +34,13 @@ public class TripleMap
   ArrayList<String> _srcToTestNames;
   /** Third column for test method names */
   ArrayList<String> _testNames;
-  /** Resulting list of test names that are missing from src file */
-  ArrayList<String> _augNames;
+  /** Test names (key) matched with source signatures (value) */
+  Map<String, String> _augMap;
+
+
+  // ================================================================================
+  // CONSTRUCTOR
+  // ================================================================================
 
   /**
    * Create a triple map to hold source method names, test names generated from the source names,
@@ -47,7 +51,7 @@ public class TripleMap
     _srcNames = new ArrayList<String>();
     _srcToTestNames = new ArrayList<String>();
     _testNames = new ArrayList<String>();
-    _augNames = new ArrayList<String>();
+    _augMap = new TreeMap<String, String>();
   }
 
 
@@ -72,9 +76,6 @@ public class TripleMap
       case TEST:
         _testNames.add(entry);
         break;
-      case AUG:
-        _augNames.add(entry);
-        break;
       default:
         System.err.println("addEntry(): unrecognized NameType ");
     }
@@ -83,17 +84,29 @@ public class TripleMap
 
   /**
    * Compare the generated test names with the actual test names in the test file, and make a list
-   * of the test method names missing
+   * of the test method names missing. Input data and output data are internal fields, use
+   * {@code export} method to retrieve result. <br>
+   * NOTE: If there are no test names, then the genned and src names are copied directly into the
+   * augMap.
    * 
-   * @return the list of test names with which to augment the test file, with its source counterpart
+   * @return a copy of the augMap
    */
   public Map<String, String> buildAugMap()
   {
     // Ensure that the names are sorted and overloaded names handled
+    QAUtils.sortSignatures(_srcNames);
     QAUtils.sortSignatures(_srcToTestNames);
-    QAUtils.sortSignatures(_testNames);
 
-    Map<String, String> augList = new TreeMap<String, String>();
+    // If no test names, copy src and genned names into the map
+    if (_testNames.size() == 0) {
+      for (int k = 0; k < _srcToTestNames.size(); k++) {
+        _augMap.put(_srcToTestNames.get(k), _srcNames.get(k));
+      }
+      return _augMap;
+    }
+
+    // Ensure that the names are sorted and overloaded names handled
+    QAUtils.sortSignatures(_testNames);
 
     int g = 0;
     int tlen = _testNames.size();
@@ -102,13 +115,16 @@ public class TripleMap
         + " generated test methods from source");
 
     for (int t = 0; t < tlen; t++) {
-      String testNm = _testNames.get(t);
+      // If all generated names are examined, then no more to add to augMap
+      if (g >= genlen) {
+        break;
+      }
       String genNm = _srcToTestNames.get(g);
+      String testNm = _testNames.get(t);
       int match = testNm.compareTo(genNm);
       if (match > 0) {
         MsgCtrl.errMsgln("\tMissing from test file: \t [----- ] \t\t => \t" + genNm);
-        _augNames.add(genNm);
-        augList.put(genNm, _srcNames.get(g));
+        _augMap.put(genNm, _srcNames.get(g));
         g++;
         t--;
         continue;
@@ -120,26 +136,46 @@ public class TripleMap
         g++;
       }
     }
+    // If out of test names but still have genned names, copy them into the map
+    for (int k = g; k < genlen; k++) {
+      _augMap.put(_srcToTestNames.get(k), _srcNames.get(k));
+    }
+
     // Display the result if in audit mode
-    MsgCtrl.auditPrintMap("\nTest name (key) and corresponding src signature", augList);
-    return augList;
+    MsgCtrl.auditPrintMap("\nTest name (key) and corresponding src signature", _augMap);
+    return _augMap;
   }
 
 
-  /** For each srcName, generate a unique test name for it, and store it in this map */
-  public void convertSrcToTestNames()
+  /**
+   * Ensure that all names within the src-to-test name list are unique by adding a numerical suffix
+   * to duplicates; i.e., for overloaded source names
+   * 
+   * @param alist the list into which to place the augmented test names
+   * @return the list of unique generated test names
+   */
+  public ArrayList<String> convertSrcToTestNames(ArrayList<String> srcList,
+      ArrayList<String> gennedList)
   {
-    // Ensure that overloaded methods don't have the same test name before storing it into
-    // the SrcToTest list of this map
-    makeUnique(_srcToTestNames);
-
-    // Lock these these generated test names (key) with the source signatures
-    Map<String, String> augMap = new TreeMap<String, String>();
-    for (int k = 0; k < _srcNames.size(); k++) {
-      augMap.put(_srcToTestNames.get(k), _srcNames.get(k));
+    // Convert each srcName into a test method name and store
+    for (String sName : srcList) {
+      String s2tName = makeTestMethodName(sName);
+      int suffix = 1;
+      // Add numerical suffix for existing test names
+      if (gennedList.contains(s2tName)) {
+        // Insert the name suffix before the parens
+        gennedList.remove(s2tName);
+        s2tName = s2tName.replace("()", suffix + "()");
+        gennedList.add(s2tName);
+        s2tName = s2tName.replace(suffix + "()", ++suffix + "()");
+        gennedList.add(s2tName);
+      } else {
+        gennedList.add(s2tName);
+        // Reset suffix when new name is added
+        suffix = 1;
+      }
     }
-    int nbr = _srcToTestNames.size();
-    MsgCtrl.auditPrintMap(nbr + " generated test methods \t\t => source signatures:", augMap);
+    return gennedList;
   }
 
 
@@ -164,6 +200,16 @@ public class TripleMap
     }
   }
 
+  /**
+   * Return the map of augment test names with corresponding source signature
+   * 
+   * @return the designated list
+   */
+  public Map<String, String> exportAugMap()
+  {
+    return _augMap;
+  }
+
 
   /**
    * Set a list of names into one of the map columns
@@ -176,13 +222,16 @@ public class TripleMap
     switch (column)
     {
       case SRC:
-        _srcNames = alist;
+        _srcNames.clear();
+        _srcNames.addAll(alist);
         break;
       case SRC_TO_TEST:
-        _srcToTestNames = alist;
+        _srcToTestNames.clear();
+        _srcToTestNames.addAll(alist);
         break;
       case TEST:
-        _testNames = alist;
+        _testNames.clear();
+        _testNames.addAll(alist);
         break;
       default:
         System.err.println("If you got here, you probably entered a bad NameType");
@@ -210,46 +259,6 @@ public class TripleMap
       }
     }
     return false;
-  }
-
-
-  /**
-   * Ensure that all names within the src-to-test name list are unique by adding a numerical suffix
-   * to duplicates
-   * 
-   * @param alist the list into which to place the augmented test names
-   */
-  private void makeUnique(ArrayList<String> alist)
-  {
-    // Convert each srcName into a test method name and store
-    for (String sName : _srcNames) {
-      String s2tName = makeTestMethodName(sName);
-      int suffix = 1;
-      // Add numerical suffix for existing test names
-      if (alist.contains(s2tName)) {
-        // Insert the name suffix before the parens
-        alist.remove(s2tName);
-        s2tName = s2tName.replace("()", suffix + "()");
-        alist.add(s2tName);
-        s2tName = s2tName.replace(suffix + "()", ++suffix + "()");
-        alist.add(s2tName);
-      } else {
-        alist.add(s2tName);
-        // Reset suffix when new name is added
-        suffix = 1;
-      }
-    }
-    // One last step: replace testName1() with testName(), which is more likely to match
-    // the original test method; leaving testName2() as is.
-    // String testOne = "1()";
-    // String testNone = "()";
-    // for (int k = 0; k < alist.size(); k++) {
-    // String s = alist.get(k);
-    // if (s.contains(testOne)) {
-    // String ss = s.replace(testOne, testNone);
-    // alist.set(k, ss);
-    // }
-    // }
   }
 
 

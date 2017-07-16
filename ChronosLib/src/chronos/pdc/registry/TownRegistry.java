@@ -12,10 +12,10 @@ package chronos.pdc.registry;
 import java.util.ArrayList;
 import java.util.List;
 
-import mylib.pdc.Registry;
 import chronos.pdc.Chronos;
-import chronos.pdc.Town;
 import chronos.pdc.buildings.Building;
+import chronos.pdc.Town;
+import mylib.pdc.Registry;
 
 /**
  * Contains a collection of all Town objects

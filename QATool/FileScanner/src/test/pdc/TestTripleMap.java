@@ -27,9 +27,13 @@ import pdc.TripleMap;
  * @author Alan Cline
  * @version Apr 22, 2017 // original <br>
  *          April 23, 2017 // autogen: QA Tool added missing test methods <br>
+ *          July 16, 2017 // revised mostly for buildMap changes <br>
  */
 public class TestTripleMap
 {
+  // Target object to test 
+  private TripleMap _tmap;
+  
   /**
    * @throws java.lang.Exception -- catchall for what tests don't catch
    */
@@ -49,7 +53,9 @@ public class TestTripleMap
    */
   @Before
   public void setUp() throws Exception
-  {}
+  {
+    _tmap = new TripleMap();
+  }
 
   /**
    * @throws java.lang.Exception -- catchall for what tests don't catch
@@ -59,6 +65,7 @@ public class TestTripleMap
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
+    _tmap = null;
   }
 
 
@@ -67,83 +74,72 @@ public class TestTripleMap
   // ================================================================================
 
   /**
-   * @Normal.Test {@code Map<String, String> buildAugMap()} -- Add new tests to test file
+   * @Not.Needed void addEntry(String, TripleMap$NameType) -- Switch case wrapper
    */
   @Test
-  public void testBuildAugListMoreTestsThanSource()
+  public void testAddEntry()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-
-    ArrayList<String> srcNames = new ArrayList<String>(Arrays.asList(
-        "File alpha(String)", "String beta(File)", "int epsilon(int)"));
-
-    ArrayList<String> testNames = new ArrayList<String>(Arrays.asList(
-        "void testAlpha()", "void testBeta1()", "void testBeta2()", "void testGamma()"));
-
-    TripleMap tMap = new TripleMap();
-    tMap.setMapList(TripleMap.NameType.TEST, testNames);
-
-    printList("Source list: ", tMap.export(TripleMap.NameType.SRC));
-    printList("Converted test names from source: ", tMap.export(TripleMap.NameType.SRC_TO_TEST));
-    printList("Test names found: ", tMap.export(TripleMap.NameType.TEST));
-
-//    Map<String, String> augMap = tMap.buildAugMap();
-//    printMap("\nNew test methods to write", augMap);
-//    assertEquals(2, augMap.size());
-//    assertEquals("void testEpsilon()", augMap.get("int epsilon(int)"));
-//    assertEquals("void testBeta()", augMap.get("String beta(File)"));
+  
+    MsgCtrl.errMsgln("\t\t Switch case wrapper. No need to test");
   }
 
-
+  
   /**
    * @Normal.Test {@code Map<String, String> buildAugMap()} -- Initial test: no new tests
    */
   @Test
-  public void testBuildAugList()
+  public void testBuildAugMap()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
+    // SETUP Populate TripleMap; all three types are needed for augmap
     ArrayList<String> srcNames = new ArrayList<String>(Arrays.asList(
-        "File alpha(String)", "String beta(File)", "int beta(int)"));
+        "String alpha(int)", "void beta(String)", "File epsilon(String)"));
+    ArrayList<String> gennedNames = new ArrayList<String>(Arrays.asList(
+        "void testAlpha()", "void testBeta()", "void testEpsilon()"));
+    ArrayList<String> testNames = new ArrayList<String>(Arrays.asList(
+        "void testAlpha()", "void testBeta()", "void testEpsilon()"));
+    TripleMap tMap = loadTripleMap(srcNames, gennedNames, testNames);
 
-    TripleMap tMap = new TripleMap();
-    printList("Source list: ", tMap.export(TripleMap.NameType.SRC));
-    printList("Converted test names from source: ",
-        tMap.export(TripleMap.NameType.SRC_TO_TEST));
+    // RUN Find the difference between the actual test names and genned names
+    Map<String, String> augMap = tMap.buildAugMap();
+
+    // VERIFY
+    printMap("Methods to add to test file: ", augMap);
 
     // NORMAL: No test names at all
-    assertEquals(srcNames.size(), tMap.buildAugMap().size());
+    assertEquals(0, augMap.size());
   }
 
 
   /**
-   * @Normal.Test {@code Map<String, String> buildAugMap()} -- no new tests to add to src names
+   * @Normal.Test {@code Map<String, String> buildAugMap()} -- All new tests (no existing ones)
    */
   @Test
-  public void testBuildAugListNoNewTests()
+  public void testBuildAugMap_AllNewTests()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
+    // SETUP Populate TripleMap; all three types are needed for augmap
     ArrayList<String> srcNames = new ArrayList<String>(Arrays.asList(
-        "File alpha(String)", "String beta(File)", "int beta(int)"));
-    // NORMAL: No NEW test names, so auglist should be 0
-    ArrayList<String> testNames = new ArrayList<String>(Arrays.asList(
-        "void testAlpha()", "void testBeta1()", "void testBeta2()"));
+        "String alpha(int)", "void beta(String)", "File epsilon(String)"));
+    ArrayList<String> gennedNames = new ArrayList<String>(Arrays.asList(
+        "void testAlpha()", "void testBeta()", "void testEpsilon()"));
+    ArrayList<String> testNames = new ArrayList<String>();
+    TripleMap tMap = loadTripleMap(srcNames, gennedNames, testNames);
 
-    TripleMap tMap = new TripleMap();
-    printList("Source list: ", tMap.export(TripleMap.NameType.SRC));
-    printList("Converted test names from source: ",
-        tMap.export(TripleMap.NameType.SRC_TO_TEST));
-
-    tMap.setMapList(TripleMap.NameType.TEST, testNames);
+    // RUN If there are no test names, then there is no augMap
     Map<String, String> augMap = tMap.buildAugMap();
-    assertEquals(0, augMap.size());
+
+    // VERIFY
+    assertEquals(srcNames.size(), augMap.size());
   }
 
 
@@ -152,33 +148,97 @@ public class TestTripleMap
    *              method
    */
   @Test
-  public void testBuildAugListOneNewSrcMethod()
+  public void testBuildAugList_OneNewSrcMethodAtEnd()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     ArrayList<String> srcNames = new ArrayList<String>(Arrays.asList(
-        "File alpha(String)", "String beta(File)", "int beta(int)", "boolean gamma(boolean)"));
-    // NORMAL: No NEW test names, so auglist should be 0
+        "String alpha(int)", "void beta(String)", "File epsilon(String)", "long gamma(File)"));
+    ArrayList<String> gennedNames = new ArrayList<String>(Arrays.asList(
+        "void testAlpha()", "void testBeta()", "void testEpsilon()", "void testGamma()"));
     ArrayList<String> testNames = new ArrayList<String>(Arrays.asList(
-        "void testAlpha()", "void testBeta1()", "void testBeta2()"));
+        "void testAlpha()", "void testBeta()", "void testEpsilon()"));
+    TripleMap tMap = loadTripleMap(srcNames, gennedNames, testNames);
 
-    TripleMap tMap = new TripleMap();
-    printList("Source list: ", tMap.export(TripleMap.NameType.SRC));
-    printList("Converted test names from source: ",
-        tMap.export(TripleMap.NameType.SRC_TO_TEST));
-
-    tMap.setMapList(TripleMap.NameType.TEST, testNames);
+    // RUN Find the difference between the actual test names and genned names
     Map<String, String> augMap = tMap.buildAugMap();
-    assertEquals(1, augMap.size());
 
-    printMap("\nNew test method to write", augMap);
+    // VERIFY
+    printMap("Methods to add to test file: ", augMap);
+
+    // NORMAL: One new test name to add
+    assertEquals(1, augMap.size());
   }
 
 
   /**
-   * @Normal.Test ArrayList export(TripleMap$NameType)
+   * @Normal.Test {@code Map<String, String> buildAugMap()} -- one new src method creates one test
+   *              method
+   */
+  @Test
+  public void testBuildAugList_TwoSrcMethodsAtEnd()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    ArrayList<String> srcNames = new ArrayList<String>(Arrays.asList(
+        "String alpha(int)", "void beta(String)", "File epsilon(String)", "long gamma(File)",
+        "File zeta(String)"));
+    ArrayList<String> gennedNames = new ArrayList<String>(Arrays.asList(
+        "void testAlpha()", "void testBeta()", "void testEpsilon()", "void testGamma()",
+        "void testZeta()"));
+    ArrayList<String> testNames = new ArrayList<String>(Arrays.asList(
+        "void testAlpha()", "void testBeta()", "void testEpsilon()"));
+    TripleMap tMap = loadTripleMap(srcNames, gennedNames, testNames);
+
+    // RUN Find the difference between the actual test names and genned names
+    Map<String, String> augMap = tMap.buildAugMap();
+
+    // VERIFY
+    printMap("Methods to add to test file: ", augMap);
+
+    // NORMAL: One new test name to add
+    assertEquals(2, augMap.size());
+  }
+
+  
+  /**
+   * @Normal.Test void ConvertSrcToTestNames() -- convert srcNames list to srcToTestNames list,
+   *              ensuring there are no duplicates (e.g. overloaded method names)
+   */
+  @Test
+  public void testConvertSrcToTestNames()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // SETUP  Three overloaded names are included
+    ArrayList<String> srcNames = new ArrayList<String>(Arrays.asList(
+        "String alpha(int)", "void alphaDog(String)", "File gamma(String)", "long gamma(File)",
+        "File gamma2(String)"));
+    ArrayList<String> expNames = new ArrayList<String>(Arrays.asList(
+        "void testAlpha()", "void testAlphaDog()", "void testGamma1()", "void testGamma21()",
+        "void testGamma22()"));
+    TripleMap tmap = new TripleMap();
+
+    // RUN
+    ArrayList<String> genList = tmap.convertSrcToTestNames(srcNames, new ArrayList<>());
+
+    // VERIFY
+    assertEquals(srcNames.size(), genList.size());
+    assertEquals(expNames.size(), genList.size());
+    for (int k = 0; k < expNames.size(); k++) {
+      assertEquals(expNames.get(k), genList.get(k));
+    }
+  }
+
+
+  /**
+   * @Not.Needed ArrayList<String> addExport(TripleMap$NameType) -- Switch case wrapper
    */
   @Test
   public void testExport()
@@ -186,13 +246,26 @@ public class TestTripleMap
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-
-    MsgCtrl.errMsgln("\t\t Implemented by other tests in this file");
+  
+    MsgCtrl.errMsgln("\t\t Switch case wrapper. No need to test");
   }
 
 
   /**
-   * @Normal.Test void setMapList(TripleMap$NameType, ArrayList)
+   * @Not.Needed Map<String, String> exportAugMap() -- Simple wrapper
+   */
+  @Test
+  public void testExportAugMap()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+  
+    MsgCtrl.errMsgln("\t\t Wrapper. No need to test");
+  }
+
+  /**
+   * @Not.Needed void setMapList(TripleMap$NameType, ArrayList) -- Simple setter
    */
   @Test
   public void testSetMapList()
@@ -210,6 +283,26 @@ public class TestTripleMap
   // ================================================================================
 
   /**
+   * Load a triple map with the three name lists
+   * 
+   * @param srcList list of source signatures
+   * @param gennedList list of test names generated from source signatures
+   * @param testList list of test names from test file
+   * @@return the loaded TripleMap
+   */
+  private TripleMap loadTripleMap(ArrayList<String> srcList, ArrayList<String> gennedList,
+      ArrayList<String> testList)
+  {
+    TripleMap tMap = new TripleMap();
+    tMap.setMapList(TripleMap.NameType.SRC, srcList);
+    tMap.setMapList(TripleMap.NameType.SRC_TO_TEST, gennedList);
+    tMap.setMapList(TripleMap.NameType.TEST, testList);
+
+    return tMap;
+  }
+
+
+  /**
    * Send a list to the console as audit trail
    * 
    * @param msg message to be printed above list dump
@@ -223,7 +316,6 @@ public class TestTripleMap
     }
   }
 
-
   /**
    * Send map entries to the console as audit trail
    * 
@@ -232,6 +324,10 @@ public class TestTripleMap
    */
   private void printMap(String msg, Map<String, String> amap)
   {
+    if (amap.isEmpty()) {
+      MsgCtrl.msgln("\n Map is empty");
+      return;
+    }
     MsgCtrl.msgln("\n" + msg);
     for (String key : amap.keySet()) {
       MsgCtrl.msgln("\t" + key + "\t \\\\  " + amap.get(key));

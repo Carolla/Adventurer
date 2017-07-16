@@ -8,13 +8,6 @@
  */
 
 
-/*
- * Town(String, String, String) addBuildings(String[]) buildingRegContainsName(String)
- * equals(IRegistryElement) getAllBuildings() getBuilding(String) getCostOfLiving()
- * getDayDescription() getKey() getName() getNightDescription() setCostOfLiving(double) toString()
- */
-
-
 package chronos.test.pdc;
 
 import static org.junit.Assert.assertEquals;
@@ -39,6 +32,8 @@ import mylib.MsgCtrl;
  * @author Alan Cline
  * @version Feb 6, 2013 // original <br>
  *          Oct 17, 2014 // added more tests <br>
+ *          July 17, 2017 // added more tests per QA File Scanner tool <br>
+ *          July 15, 2017    // autogen: QA Tool added missing test methods <br>
  */
 public class TestTown
 {
@@ -137,4 +132,118 @@ public class TestTown
     assertEquals(_town, town2);
     assertEquals(town2, town3);
   } 
+  
+  
+	/**
+ 	 * Not Implemented void addBuildings(List)
+	 */
+	@Test
+	public void testAddBuildings()
+	{
+		MsgCtrl.auditMsgsOn(false);
+		MsgCtrl.errorMsgsOn(false);
+		MsgCtrl.where(this);
+
+		fail("TEST METHOD NOT YET IMPLEMENTED");
+	}
+
+
+	/**
+ 	 * Not Implemented boolean equals(Object)
+	 */
+	@Test
+	public void testEquals()
+	{
+		MsgCtrl.auditMsgsOn(false);
+		MsgCtrl.errorMsgsOn(false);
+		MsgCtrl.where(this);
+
+		fail("TEST METHOD NOT YET IMPLEMENTED");
+	}
+
+
+	/**
+ 	 * Not Implemented List getAllBuildings()
+	 */
+	@Test
+	public void testGetAllBuildings()
+	{
+		MsgCtrl.auditMsgsOn(false);
+		MsgCtrl.errorMsgsOn(false);
+		MsgCtrl.where(this);
+
+		fail("TEST METHOD NOT YET IMPLEMENTED");
+	}
+
+
+	/**
+ 	 * Not Implemented String getDayDescription()
+	 */
+	@Test
+	public void testGetDayDescription()
+	{
+		MsgCtrl.auditMsgsOn(false);
+		MsgCtrl.errorMsgsOn(false);
+		MsgCtrl.where(this);
+
+		fail("TEST METHOD NOT YET IMPLEMENTED");
+	}
+
+
+	/**
+ 	 * Not Implemented String getKey()
+	 */
+	@Test
+	public void testGetKey()
+	{
+		MsgCtrl.auditMsgsOn(false);
+		MsgCtrl.errorMsgsOn(false);
+		MsgCtrl.where(this);
+
+		fail("TEST METHOD NOT YET IMPLEMENTED");
+	}
+
+
+	/**
+ 	 * Not Implemented String getNightDescription()
+	 */
+	@Test
+	public void testGetNightDescription()
+	{
+		MsgCtrl.auditMsgsOn(false);
+		MsgCtrl.errorMsgsOn(false);
+		MsgCtrl.where(this);
+
+		fail("TEST METHOD NOT YET IMPLEMENTED");
+	}
+
+
+	/**
+ 	 * Not Implemented int hashCode()
+	 */
+	@Test
+	public void testHashCode()
+	{
+		MsgCtrl.auditMsgsOn(false);
+		MsgCtrl.errorMsgsOn(false);
+		MsgCtrl.where(this);
+
+		fail("TEST METHOD NOT YET IMPLEMENTED");
+	}
+
+
+	/**
+ 	 * Not Implemented String toString()
+	 */
+	@Test
+	public void testToString()
+	{
+		MsgCtrl.auditMsgsOn(false);
+		MsgCtrl.errorMsgsOn(false);
+		MsgCtrl.where(this);
+
+		fail("TEST METHOD NOT YET IMPLEMENTED");
+	}
+
+
 } // end of TestTown class

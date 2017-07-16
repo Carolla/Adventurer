@@ -44,5 +44,7 @@ public class NameFieldLimiter extends DocumentFilter {
 			fb.insertString(offset, text, attrs);
 		}
 	}
+	
+	
 } // end NameFieldLimiter
 
