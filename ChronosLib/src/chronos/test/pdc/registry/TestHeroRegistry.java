@@ -66,9 +66,9 @@ public class TestHeroRegistry
   {
     // SETUP Create new heroes to add
     Hero newHero = new Hero("Red Shirt", "male", "White", "Human");
-    int oldNbrHeros = _heroReg.getNbrElements();
+    int oldNbrHeros = _heroReg.size();
     assertTrue(_heroReg.add(newHero));
-    assertEquals(oldNbrHeros + 1, _heroReg.getNbrElements());
+    assertEquals(oldNbrHeros + 1, _heroReg.size());
     _heroReg.delete(newHero);
   }
   
@@ -86,9 +86,9 @@ public class TestHeroRegistry
   @Test
   public void testGetHero()
   {
-    int nbr = _heroReg.getNbrElements();
+    int nbr = _heroReg.size();
     _heroReg.get("Blythe");
-    assertEquals(nbr, _heroReg.getNbrElements());
+    assertEquals(nbr, _heroReg.size());
   }
 
 
@@ -99,7 +99,7 @@ public class TestHeroRegistry
   public void testGetAll()
   {
     List<Hero> heroList = _heroReg.getAll();
-    assertEquals(_heroReg.getNbrElements(), heroList.size());
+    assertEquals(_heroReg.size(), heroList.size());
   }
 
 

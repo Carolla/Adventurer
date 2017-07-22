@@ -19,9 +19,10 @@ import mylib.dmc.IRegistryElement;
 import mylib.pdc.MetaDie;
 
 /**
- * An occupation gives a person some skill from their previous experience. Occupations are
- * one-to-many to Skills: each Occupation has one Skill, but a Skill might be associated with more
- * than one Occupations.
+ * Each Occupation is associated with one Skill, but a Skill might be associated with more than one
+ * Occupation.
+ * 
+ * @see Skill
  * 
  * @author Timothy Armstrong
  * @version Feb 5 2011 // original <br>
@@ -31,84 +32,95 @@ import mylib.pdc.MetaDie;
  */
 public class Occupation implements IRegistryElement
 {
+//  /** List of Occupations (31) for random assignment */
+//  public static final String[] _ocpTable = {
+//      "Academic", "Acrobat", "Alchemist", "Apothecary", "Armorer", "Banker", "Bowyer",
+//      "Carpenter", "Farmer", "Fisher", "Forester", "Freighter", "Gambler", "Hunter",
+//      "Husbandman", "Innkeeper", "Jeweler", "Leatherworker", "Painter", "Mason",
+//      "Miner", "Navigator", "Sailor", "Shipwright", "Tailor", "Trader", "Trapper",
+//      "Weaponsmith", "Weaver", "Woodworker", "Drifter"};
 
-  // Various occupations (31) for random selection
-  public static final String[] _ocpTable = {
-      "Academic", "Acrobat", "Alchemist", "Apothecary", "Armorer", "Banker", "Bowyer",
-      "Carpenter", "Farmer", "Fisher", "Forester", "Freighter", "Gambler", "Hunter",
-      "Husbandman", "Innkeeper", "Jeweler", "Leatherworker", "Painter", "Mason",
-      "Miner", "Navigator", "Sailor", "Shipwright", "Tailor", "Trader", "Trapper",
-      "Weaponsmith", "Weaver", "Woodworker", "Drifter"};
+  /** MetDie for randomizing Occupations */
+  private static final MetaDie _md = new MetaDie();
 
-  private static final MetaDie md = new MetaDie();
-
-  /** The name of the occupation the player selected */
+  /** The name of this Occupation */
   private String _name = null;
+  /** What this Occupation is or can do */
   private String _description;
-  private String _trait;
+  /** A list of skills associated with this Occupation */
   private List<Skill> _skills = new ArrayList<Skill>();
 
-  /** The length of the name field in a record */
+  /** Max length of the Occupation name field. */
   public static final int OCC_NAME_LIMIT = 35;
 
-  /**
-   * Maximum length of the skill description (used for GUI limitations and records)
-   */
-  public static final int OCC_SKILL_LIMIT = 35;
 
-  /*
-   * CONSTRUCTOR(S) AND RELATED METHODS
-   */
-  public static Occupation getRandomOccupation()
-  {
-    int ndx = md.getRandom(1, _ocpTable.length) - 1; 
-    return new OccupationRegistry().getOccupation(_ocpTable[ndx]);
-  }
+  // ========================================================================
+  // CONSTRUCTOR AND RELATED METHODS
+  // ========================================================================
 
   /**
-   * Construct an Occupation from its components
-   * 
-   * @param name of the occupation; cannot be null
-   * @param skillname name of the associated skill
-   * @throws ApplicationException if the description is too long
-   * @throws NullPointerException if the parms are null
+   * Construct an Occupation from its components: each Occupation has a name, description, and a set
+   * of Skills. No parm may be null.
+   *
+   * @param name of the occupation
+   * @param description of the occupation
+   * @param skillNames names for a set of Skills associated with this Occupation
+   * @throws NullPointerException any of the parms are null
    */
-  public Occupation(String name, String description, String trait, List<String> arrayList)
+
+  public Occupation(String name, String description, List<String> skillNames)
   {
     // GUARDS
     // Name cannot be null
-    if (name == null || description == null || trait == null || arrayList == null) {
+    if (name == null || description == null || skillNames == null) {
       throw new NullPointerException(name
-          + ": Occupation must have a name, description, trait and skills; received null");
+          + ": Occupation must have a name, description, and skills; received null");
     }
-
     // Do not create an Occupation if its name is too long
     if (name.length() > OCC_NAME_LIMIT) {
-      throw new ApplicationException(name
-          + ": Occupation name is too long by "
+      throw new ApplicationException(name + ": Occupation name is too long by "
           + (name.length() - OCC_NAME_LIMIT));
     }
-    // End Guards
 
     _name = name;
     _description = description;
-    _trait = trait;
-
-    SkillRegistry skReg = new SkillRegistry();
-    for (String skill : arrayList) {
-      _skills.add(skReg.getSkill(skill));
-    }
+    // Add the Skills to the Occupation from the given skill names
+    _skills = addSkills(skillNames);
   }
 
-  @Override
-  public int hashCode()
+
+  /**
+   * Converts each Skill name into a list of Skill objects. If a Skill is not found in the
+   * SkillRegistry, it is not added to the Occupation
+   * 
+   * @param list of skill names associated with this Occupation
+   * @return list of Skill objects for the given skill names
+   */
+  private List<Skill> addSkills(List<String> skillNames)
   {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((_name == null) ? 0 : _name.hashCode());
-    return result;
+    SkillRegistry skReg = new SkillRegistry();
+    for (String skill : skillNames) {
+      Skill regSkill = skReg.getSkill(skill);
+      if (!(regSkill == null)) {
+        _skills.add(regSkill);
+      } else {
+        System.err.println("Skill " + skill + " not recognized in SkillRegistry; will not be added"
+            + "to Occupation");
+      }
+    }
+    return _skills;
   }
 
+
+  // ========================================================================
+  // PUBLIC METHODS
+  // ========================================================================
+
+  /**
+   * Required support primitive: two Occupations are equal when their names are equal
+   * 
+   * @return true if {@code Occupation.equals(otherOccupation)}
+   **/
   @Override
   public boolean equals(Object obj)
   {
@@ -127,6 +139,12 @@ public class Occupation implements IRegistryElement
     return true;
   }
 
+  /** Get the Occupation's description */
+  public String getDescription()
+  {
+    return _description;
+  }
+
 
   /*
    * Returns the field used for registry retrieval
@@ -139,30 +157,39 @@ public class Occupation implements IRegistryElement
     return _name;
   }
 
+
+  /**
+   * Get the Occupation's name. If retrieving an Occupation from the OccupationRegistry, use
+   * {@code getKey()}.
+   */
   public String getName()
   {
     return _name;
   }
 
-  public String getDescription()
+
+  /** Get a random Occupation from the OccupationRegistry */
+  public static Occupation getRandomOccupation()
   {
-    return _description;
+//    int ndx = _md.getRandom(1, _ocpTable.length) - 1;
+//    int ndx = _md.getRandom(1, ocpReg.getNbrElements() - 1);
+//    return new OccupationRegistry().getOccupation(_ocpTable[ndx]);
+    OccupationRegistry ocpReg = new OccupationRegistry();
+    List<Occupation> ocps = ocpReg.getAll();
+    int ndx = _md.getRandom(1, ocps.size() - 1);
+    return ocps.get(ndx);
   }
 
-  public String getTrait()
-  {
-    return _trait;
-  }
 
+  /** Return a list of Skill objects for this Occupation */
   public List<Skill> getSkills()
   {
     return _skills;
   }
 
+
   /**
-   * Get the description of the skill that corresponds to this occupation
-   * 
-   * @return the name of the skill
+   * Returns a list of skill names associated with this Occupation
    */
   public List<String> getSkillNames()
   {
@@ -173,10 +200,31 @@ public class Occupation implements IRegistryElement
     return names;
   }
 
-  /** Return a string of the Occupation's name */
+
+  /**
+   * Required support primitive: an Occupation is encrypted into a comparable int code
+   * 
+   * @return true if {@code Occupation.equals(otherOccupation)}
+   **/
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((_name == null) ? 0 : _name.hashCode());
+    return result;
+  }
+
+
+  /**
+   * Required support primitive: an Occupation is converted to its name when called by the system's
+   * print methods.
+   **/
+  @Override
   public String toString()
   {
     return _name;
   }
+
 
 } // end of Occupation class

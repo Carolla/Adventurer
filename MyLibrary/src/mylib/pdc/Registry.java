@@ -59,6 +59,14 @@ public abstract class Registry<E extends IRegistryElement>
   // CONSTRUCTOR AND RELATED METHODS
   // ============================================================
 
+  /** Base constructor for in-memory registries */
+  public Registry()
+  {
+    _list = new ArrayList<E>();
+    initialize();
+  }
+
+  
   /**
    * Creates a Registry (read-write) and its DbReadWriter component. If the Registry exists, its
    * database is reloaded from the db file. if the Registry is created new, initializes the database
@@ -186,7 +194,7 @@ public abstract class Registry<E extends IRegistryElement>
    * 
    * @return then number of objects in the register
    */
-  public int getNbrElements()
+  public int size()
   {
     return _list.size();
   }

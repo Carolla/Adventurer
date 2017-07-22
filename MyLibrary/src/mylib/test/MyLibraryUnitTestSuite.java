@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import mylib.test.dmc.TestDbReadWriter;
+import mylib.test.dmc.TestRegistry;
 import mylib.test.pdc.TestMetaDie;
 import mylib.test.pdc.TestUtilities;
 
@@ -29,7 +30,8 @@ import mylib.test.pdc.TestUtilities;
 
     /** DMC Test files */
     TestDbReadWriter.class,
-    
+    TestRegistry.class, // base class
+
     /** PDC Test files */
     TestMetaDie.class,
     TestUtilities.class,

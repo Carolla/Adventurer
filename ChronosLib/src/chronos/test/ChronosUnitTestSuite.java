@@ -12,18 +12,10 @@ package chronos.test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import chronos.test.pdc.TestAdventure;
-import chronos.test.pdc.TestItem;
 import chronos.test.pdc.TestNPC;
 import chronos.test.pdc.TestOccupation;
 import chronos.test.pdc.TestSkill;
 import chronos.test.pdc.TestTown;
-import chronos.test.pdc.buildings.BuildingsTestSuite;
-import chronos.test.pdc.buildings.TestArena;
-import chronos.test.pdc.character.CharacterTestSuite;
-import chronos.test.pdc.command.CommandTestSuite;
-import chronos.test.pdc.race.RaceTestSuite;
-import chronos.test.pdc.registry.RegistryTestSuite;
 
 
 /**
@@ -42,35 +34,36 @@ import chronos.test.pdc.registry.RegistryTestSuite;
  *          Sep 20, 2014 // Organized test file list <br>
  *          Dec 25, 2015 // verify testfile names against prod files names <br>
  *          Mar 29 2016 // reviewed and updated all test classes <br>
+ *          July 17, 2017 // cleaned up tests as informed by QATool (FileScanner) <br>
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 
-      /* CIV test files */
-      // PersonKeys.class,        // only an enum definition
-      // UserMsgInterface.class,  // interface definition only
-      // UserMsgProxy.class,      // wrapper methods only
+    /* CIV test files */
+    // PersonKeys.class, // only an enum definition
+    // UserMsgInterface.class, // interface definition only
+    // UserMsgProxy.class, // wrapper methods only
 
-  // TODO Verify that all classes below have tests that pass, or don't need them
-  
-      /* Test suites from PDC.subdirectories */
-      BuildingsTestSuite.class,
-      CharacterTestSuite.class,
-      CommandTestSuite.class,
-      RaceTestSuite.class,
-      RegistryTestSuite.class,
+    // TODO Verify that all classes below have tests that pass, or don't need them
 
-      /* PDC test files */
-      TestAdventure.class,
-      TestArena.class,
-      // Chronos.class,   // collection of constants and statics 
-//      TestGameClock.class,    TO BE IMPLEMENTED
-      TestItem.class,
-      TestOccupation.class,
-      TestNPC.class,
-      TestSkill.class,
-      TestTown.class,
-      
+    /* Test suites from PDC.subdirectories */
+    // BuildingsTestSuite.class,
+    // CharacterTestSuite.class,
+    // CommandTestSuite.class,
+    // RaceTestSuite.class,
+    // RegistryTestSuite.class,
+
+    /* PDC test files */
+    // Chronos.class, // no test: collection of constants and statics
+    // TestAdventure.class,
+    // TestGameClock.class, TO BE IMPLEMENTED
+    // TestAdventure.class,
+    // TestItem.class,
+    TestNPC.class,
+    TestOccupation.class,
+    TestSkill.class,
+    TestTown.class,
+
 })
 /** Compilation of all unit tests for regression and integration testing. */
 public class ChronosUnitTestSuite

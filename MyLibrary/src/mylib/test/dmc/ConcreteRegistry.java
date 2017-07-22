@@ -8,7 +8,7 @@
  */
 
 
-package chronos.test.pdc;
+package mylib.test.dmc;
 
 import java.util.List;
 

@@ -48,8 +48,8 @@ public class Utilities
     str = Character.toUpperCase(str.charAt(0)) + str.substring(1);
     return str;
   }
-  
-  
+
+
   /**
    * Constrain an integer array to fall within a given range for each element of the set by setting
    * any value to its upper or lower limit
@@ -57,6 +57,7 @@ public class Utilities
    * @param values the original set to check
    * @param lowLimit the lower bound per value
    * @param upLimit the upper bound per value
+   * @return the (possible revised) values arrays
    */
   static public int[] constrain(int[] values, int[] lowLimit, int[] upLimit)
   {
@@ -67,8 +68,13 @@ public class Utilities
     return values;
   }
 
-  
-  /** Convert a String[] to a ArrayList<String> for easier handling */
+
+  /**
+   * Convert a @Code String[]} to an {@code ArrayList<String>} for easier handling
+   * 
+   * @param strs string array to convert
+   * @return the converted ArrayList
+   */
   public static ArrayList<String> convertToArrayList(String[] strs)
   {
     // Setup for arraylist
@@ -126,7 +132,7 @@ public class Utilities
   /**
    * Formats a double representing height in feet to one representing feet and inches
    * 
-   * @param height to convert into feet and inches
+   * @param heightInFeet to convert into feet and inches
    * @return the converted input; else null if empty
    */
   public static double[] formatDistance(double heightInFeet)
@@ -161,7 +167,7 @@ public class Utilities
     if (isEmptyString(strHeight)) {
       return null;
     }
-  
+
     // Get integer and ensure that it is a positive number
     int total = Integer.parseInt(strHeight);
     if (total < 0) {

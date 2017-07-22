@@ -31,6 +31,7 @@ import mylib.Constants;
  *          April 15, 2016 // refactored for simplification <br>
  *          July 4, 2017 // allowed "anchor" subdir between {@code src} dir root and {@code test}
  *          subdir <br>
+ *          July 22, 2017 // bug: didn't recognize missing test file when writing new file <br>
  */
 public class TestWriter
 {
@@ -57,7 +58,7 @@ public class TestWriter
   /** Standard setup and teardown methods */
   private final String PREP_DECLARE =
       "\t/** \n\t * @throws java.lang.Exception -- "
-          + "general catchall for exceptions not caught by the tests\n \t */ \n\t"
+          + "general catch-all for exceptions not caught by the tests\n \t */ \n\t"
           + "%s\n\tpublic %svoid %s throws Exception\n\t{ }\n\n";
 
   /** BEGIN TESTS Banner */
@@ -69,8 +70,8 @@ public class TestWriter
   /**
    * Test method template: @Normal annotation, @Test annotation, declaration, MsgCtrl block private
    */
-  private final String NIMPL_CMT = "\t/**\n \t * Not Implemented %s\n\t */";
-  private final String NORMAL_CMT = "\t/**\n \t * Normal Test: %s\n\t */";
+  private final String NIMPL_CMT = "\t/**\n \t * @Not.Implemented %s\n\t */";
+  private final String NORMAL_CMT = "\t/**\n \t * @Normal.Test: %s\n\t */";
   private final String TEST_ANNOT = "\n\t@Test\n";
   private final String M_DECLARATION = "\tpublic %s\n\t{\n";
   private final String MSGCTRL_BLOCK = "\t\tMsgCtrl.auditMsgsOn(false);\n" +
@@ -114,7 +115,7 @@ public class TestWriter
    * outputfile original name. Later, the temp file is deleted and the new file returned.
    * 
    * @param originalTestFile existing test file to update
-   * @param augMap  list of test name (key) and corresponding source signature to write to file
+   * @param augMap list of test name (key) and corresponding source signature to write to file
    * @return the test file written
    * @throws IllegalArgumentException if original file cannot be found
    */
@@ -210,7 +211,7 @@ public class TestWriter
    * Create a new JUnit test file with test stubs
    * 
    * @param target destination of test file to write into
-   * @param augMap  list of test name (key) and corresponding source signature to write to file
+   * @param augMap list of test name (key) and corresponding source signature to write to file
    * @return the test file written
    * @throws IllegalArgumentException if target file already exists
    */
@@ -354,7 +355,7 @@ public class TestWriter
 
     // Walk the map and extract the src name (key) and the test name (value) as needed
     Iterator<String> iter = augMap.keySet().iterator();
-//    for (Map.Entry<String, String> entry : augMap.entrySet()) {
+    // for (Map.Entry<String, String> entry : augMap.entrySet()) {
     while (iter.hasNext()) {
       StringBuilder comment = new StringBuilder();
       // CREATE THE NORMAL COMMENT BLOCK containing the source signature

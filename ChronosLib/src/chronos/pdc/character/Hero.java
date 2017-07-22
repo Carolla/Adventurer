@@ -64,8 +64,6 @@ public class Hero implements IRegistryElement
   ArrayList<String> _knownLangs;
   /** Skills can originate from occupation, races (not Human), and klasses (not Peasant) */
   private ArrayList<Skill> _skills;
-//  /** Single string of all known languages */
-//  private String _langString;
   // Special cases
   private double _gold;
   private double _goldBanked;

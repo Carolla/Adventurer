@@ -39,6 +39,7 @@ public class Chronos
   private Chronos()
   {};
 
+
   /** Synonyms */
   public static final String FS = Constants.FS;
 
@@ -51,7 +52,7 @@ public class Chronos
    */
 
   /** Initializer for CHRONOS_ROOT static variable */
-  private static String find_eChronosRootDir() 
+  private static String find_eChronosRootDir()
   {
     String fileName = null;
     try {
@@ -69,7 +70,7 @@ public class Chronos
   /** Relative path location of all shared resources */
   public static String RESOURCES_PATH = ECHRONOS_ROOT + "resources";
 
-  public static String CHRONOS_LIB_RESOURCES_PATH = ECHRONOS_ROOT + "ChronosLib" + FS +"resources";
+  public static String CHRONOS_LIB_RESOURCES_PATH = ECHRONOS_ROOT + "ChronosLib" + FS + "resources";
   /** Relative path location of Adventurer-specific resources */
   public static String ADV_RESOURCES_PATH = ECHRONOS_ROOT + "Adventurer" + FS + "resources";
   /** Most registry Classes are located in the ChronosLib shared source package (ChronosLib) */
@@ -82,37 +83,37 @@ public class Chronos
   /** These images are in the Adventurer resources directory */
   public static final String ADV_IMAGE_PATH = ADV_RESOURCES_PATH + FS + "images" + FS;
 
-//   LOG FOR TESTING
-   static {
-//   System.out.println("Chronos Log: ");
-//   System.out.println("CHRONOS_LIB_RESOURCES_PATH = " + CHRONOS_LIB_RESOURCES_PATH);
-//   System.out.println("ADV_RESOURCES_PATH = " + ADV_RESOURCES_PATH);
-//   System.out.println("ADV_IMAGE_PATH = " + ADV_IMAGE_PATH);
-   }
+  // LOG FOR TESTING
+  static {
+    // System.out.println("Chronos Log: ");
+    // System.out.println("CHRONOS_LIB_RESOURCES_PATH = " + CHRONOS_LIB_RESOURCES_PATH);
+    // System.out.println("ADV_RESOURCES_PATH = " + ADV_RESOURCES_PATH);
+    // System.out.println("ADV_IMAGE_PATH = " + ADV_IMAGE_PATH);
+  }
 
-  public static String HeroRegPath    = REGISTRY_PATH + "Dormitory.reg";
+  public static String HeroRegPath = REGISTRY_PATH + "Dormitory.reg";
   public static String AdventureRegPath = REGISTRY_PATH + "Adventures.reg";
   public static String BuildingRegPath = REGISTRY_PATH + "Buildings.reg";
-  public static String ItemRegPath    = REGISTRY_PATH + "Items.reg";
-  public static String NPCRegPath     = REGISTRY_PATH + "NPCs.reg";
-  public static String OcpRegPath     = REGISTRY_PATH + "Occupations.reg";
-  public static String PersonRegPath  = REGISTRY_PATH + "Dormitory.reg";
-  public static String SkillRegPath   = REGISTRY_PATH + "Skills.reg";
-  public static String TownRegPath    = REGISTRY_PATH + "Towns.reg";
+  public static String ItemRegPath = REGISTRY_PATH + "Items.reg";
+  public static String NPCRegPath = REGISTRY_PATH + "NPCs.reg";
+  public static String OcpRegPath = REGISTRY_PATH + "Occupations.reg";
+  public static String PersonRegPath = REGISTRY_PATH + "Dormitory.reg";
+  public static String SkillRegPath = REGISTRY_PATH + "Skills.reg";
+  public static String TownRegPath = REGISTRY_PATH + "Towns.reg";
   public static String AdvHelpRegPath = REGISTRY_PATH + "AdvHelpRegistry.reg";
 
   // LOG FOR TESTING
   static {
-//     System.out.println("Chronos Log: ");
-//     System.out.println("AdventureRegPath = " + AdventureRegPath);
-//     System.out.println("BuildingRegPath = " + BuildingRegPath);
-//     System.out.println("ItemRegPath = " + ItemRegPath);
-//     System.out.println("NPCRegPath = " + NPCRegPath);
-//     System.out.println("OcpRegPath = " + OcpRegPath);
-//     System.out.println("PersonRegPath = " + PersonRegPath);
-//     System.out.println("SkillRegPath = " + SkillRegPath);
-//     System.out.println("TownRegPath = " + TownRegPath);
-//     System.out.println("AdvHelpRegPath = " + AdvHelpRegPath);
+    // System.out.println("Chronos Log: ");
+    // System.out.println("AdventureRegPath = " + AdventureRegPath);
+    // System.out.println("BuildingRegPath = " + BuildingRegPath);
+    // System.out.println("ItemRegPath = " + ItemRegPath);
+    // System.out.println("NPCRegPath = " + NPCRegPath);
+    // System.out.println("OcpRegPath = " + OcpRegPath);
+    // System.out.println("PersonRegPath = " + PersonRegPath);
+    // System.out.println("SkillRegPath = " + SkillRegPath);
+    // System.out.println("TownRegPath = " + TownRegPath);
+    // System.out.println("AdvHelpRegPath = " + AdvHelpRegPath);
   }
 
   /** Fake Registry location for testing purposes. */
@@ -125,7 +126,7 @@ public class Chronos
   public static String DEFAULT_PKG = "pdc.character.";
 
   /** Generic font folder */
-  public static final String FONT_PATH = CHRONOS_LIB_RESOURCES_PATH + FS +"fonts" + FS;
+  public static final String FONT_PATH = CHRONOS_LIB_RESOURCES_PATH + FS + "fonts" + FS;
   /** Location of font file used for name display */
   static public final String RUNIC_FONT_FILE = RESOURCES_PATH + FS + "fonts" + FS + "RUNE_A.ttf";
   /** Location of font file used for English-runic display */
@@ -135,11 +136,12 @@ public class Chronos
   /** Global standard font for buttons and widgets */
   static public final Font STANDARD_FONT = new Font("Tahoma", Font.PLAIN, 24);
   /** Global Runic font for user interactions */
-  
+
   static public final Font RUNIC_FONT = makeRunicFont(14f);
+
   /**
    * Create a Runic font that simulates English letters. <br>
-   * Warning: Be careful of character selection and float size; round-up errors for {@code float} 
+   * Warning: Be careful of character selection and float size; round-up errors for {@code float}
    * sizes can cause overruns on displayed Components.
    * 
    * @param height of the font
@@ -158,8 +160,6 @@ public class Chronos
     return font;
   }
 
-
-  
   /** Define half standard deviation range boundary for normal distribution */
   static public final double HALF_SIGMA = (1.0 / 6.0) * 100.0;
   /** Weight and height minimums fall about 84% of average (-half-sigma). */

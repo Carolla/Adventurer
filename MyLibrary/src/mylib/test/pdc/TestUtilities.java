@@ -36,18 +36,19 @@ import mylib.pdc.Utilities;
  *          June 4 2017 // added test for multiline() <br>
  *          July 2, 2017 // cleanupped after major refactoring in apps <br>
  *          July 8, 2017 // autogen: QA Tool added missing test methods <br>
+ *          July 21, 2017 // revised custom Javadoc tags <br>
  */
 public class TestUtilities
 {
   /**
-   * @throws java.lang.Exception
+   * @throws java.lang.Exception for unexpected exceptions
    */
   @Before
   public void setUp() throws Exception
   {}
 
   /**
-   * @throws java.lang.Exception
+   * @throws java.lang.Exception for unexpected exceptions
    */
   @After
   public void tearDown() throws Exception
@@ -62,19 +63,25 @@ public class TestUtilities
   // ================================================================================
 
   /**
-   * static String cropLine(String msg, int width) Truncates text line {@code msg} to within
-   * {@code width} limit by replacing last space in limit with newline character.
-   * 
-   * @Normal.Test A line of text is cropped before the last word <br>
-   * @Normal.Test A line of text is cropped after the last word, at a white space <br>
-   * @Normal.Test A line of text is cropped after a tab (valid) character <br>
-   * @Normal.Test A line of text is cropped after a carriage return (\r) character <br>
-   * @Normal.Test String contains newline character at crop point. <br>
-   * @Normal.Test String contains backspace character <br>
-   * @Normal.Test A backspace character (\b) is not counted as whitespace <br>
-   * @Normal.Test An escaped double quote (\") is not counted as whitespace <br>
-   * @Normal.Test An escaped single quote (\') is not counted as whitespace <br>
-   * @Normal.Test An escaped escape char (\\) is not counted as whitespace <br>
+   * @Normal.Test String cropLine(String, int) -- A line of text is cropped before the last word
+   *              <br>
+   * @Normal.Test String cropLine(String, int) -- A line of text is cropped after the last word, at
+   *              a white space <br>
+   * @Normal.Test String cropLine(String, int) -- A line of text is cropped after a tab (valid)
+   *              character <br>
+   * @Normal.Test String cropLine(String, int) -- A line of text is cropped after a carriage return
+   *              (\r) character <br>
+   * @Normal.Test String cropLine(String, int) -- String contains newline character at crop point.
+   *              <br>
+   * @Normal.Test String cropLine(String, int) -- String contains backspace character <br>
+   * @Normal.Test String cropLine(String, int) -- A backspace character (\b) is not counted as
+   *              whitespace <br>
+   * @Normal.Test String cropLine(String, int) -- An escaped double quote (\") is not counted as
+   *              whitespace <br>
+   * @Normal.Test String cropLine(String, int) -- An escaped single quote (\') is not counted as
+   *              whitespace <br>
+   * @Normal.Test String cropLine(String, int) -- An escaped escape char (\\) is not counted as
+   *              whitespace <br>
    */
   @Test
   public void testCropLine()
@@ -159,12 +166,11 @@ public class TestUtilities
 
 
   /**
-   * static String cropLine(String msg, int width) Truncates text line {@code msg} to within
-   * {@code width} limit by replacing last space in limit with newline character.
-   * 
-   * @Special.Test Input line is less than crop width permitted; return input string <br>
-   * @Error.Test Input line contains a newline within the width; return input string <br>
-   * @Null.Test Null input line <br>
+   * @Special.Test String cropLine(String, int) -- Input line is less than crop width permitted;
+   *               return input string <br>
+   * @Error.Test String cropLine(String, int) -- Input line contains a newline within the width;
+   *             return input string <br>
+   * @Null.Test String cropLine(String, int) -- Null input line <br>
    */
   @Test
   public void testCropLineErrors()
@@ -202,15 +208,12 @@ public class TestUtilities
   }
 
 
-
   /**
-   * static boolean isEmptyString(String target) Returns true if {@code target} is only white space
-   * 
-   * @Normal.Test checks for non-empty string <br>
-   * @Normal.Test checks for empty string <br>
-   * @Normal.Test checks for all-spaces target <br>
-   * @Normal.Test checks for control characters: \n\b\r\t <br>
-   * @Null.Test checks for null parameter
+   * @Normal.Test boolean isEmptyString(String) -- checks for non-empty string <br>
+   * @Normal.Test boolean isEmptyString(String) -- checks for empty string <br>
+   * @Normal.Test boolean isEmptyString(String) -- checks for all-spaces target <br>
+   * @Normal.Test boolean isEmptyString(String) -- checks for control characters: \n\b\r\t <br>
+   * @Null.Test boolean isEmptyString(String) -- checks for null parameter
    */
   @Test
   public void testIsEmptyString()
@@ -226,16 +229,14 @@ public class TestUtilities
   }
 
 
-
   /**
-   * static String formatInches(String) Converts from inches, to feet and inches
-   * 
-   * @Normal.Test string value must be integer less than, equal to, and greater than one foot <br>
-   * @Normal.Test string value contains exactly zero inches <br>
-   * @Error.Test string value contains decimal fraction <br>
-   * @Error.Test string value contains negative number <br>
-   * @Error.Test string value contains empty string <br>
-   * @Null.Test string parm is null <br>
+   * @Normal.Test String formatInches(String) -- string value must be integer less than, equal to,
+   *              and greater than one foot <br>
+   * @Normal.Test String formatInches(String) -- string value contains exactly zero inches <br>
+   * @Error.Test String formatInches(String) -- string value contains decimal fraction <br>
+   * @Error.Test String formatInches(String) -- string value contains negative number <br>
+   * @Error.Test String formatInches(String) -- string value contains empty string <br>
+   * @Null.Test String formatInches(String) -- string parm is null <br>
    */
   @Test
   public void testFormatInches()
@@ -279,11 +280,9 @@ public class TestUtilities
 
 
   /**
-   * Converts from feet to feet and inches format
-   * 
-   * @Normal.Test zero <br>
-   * @Normal.Test various whole numbers <br>
-   * @Normal.Test various floating-point value <br>
+   * @Normal.Test double[] formatDistance(double) -- zero <br>
+   * @Normal.Test double[] formatDistance(double) -- various whole numbers <br>
+   * @Normal.Test double[] formatDistance(double) -- various floating-point value <br>
    */
   @Test
   public void testFormatDistance()
@@ -313,16 +312,14 @@ public class TestUtilities
   }
 
 
-
   /**
-   * static String formatOunces(String) Converts from ounces to pounds and ounces format
-   * 
-   * @Normal.Test string value must be integer less than, equal to, and greater than one pound <br>
-   * @Normal.Test string value contains exactly zero ounces <br>
-   * @Error.Test string value contains decimal fraction <br>
-   * @Error.Test string value contains negative number <br>
-   * @Error.Test string value contains empty string <br>
-   * @Null.Test string parm is null <br>
+   * @Normal.Test String formatOunces(String) -- string value must be integer less than, equal to,
+   *              and greater than one pound <br>
+   * @Normal.Test String formatOunces(String) -- string value contains exactly zero ounces <br>
+   * @Error.Test String formatOunces(String) -- string value contains decimal fraction <br>
+   * @Error.Test String formatOunces(String) -- string value contains negative number <br>
+   * @Error.Test String formatOunces(String) -- string value contains empty string <br>
+   * @Null.Test String formatOunces(String) -- string parm is null <br>
    */
   @Test
   public void testFormatOunces()
@@ -367,14 +364,13 @@ public class TestUtilities
 
 
   /**
-   * static String formatSecondss(String) Converts from seconds to years and fractional years
-   * 
-   * @Normal.Test string value must be integer less than, equal to, and greater than one year <br>
-   * @Normal.Test string value contains exactly zero seconds <br>
-   * @Error.Test string value contains decimal fraction <br>
-   * @Error.Test string value contains negative number <br>
-   * @Error.Test string value contains empty string <br>
-   * @Null.Test string parm is null <br>
+   * @Normal.Test String formatSeconds(String) -- string value must be integer less than, equal to,
+   *              and greater than one year <br>
+   * @Normal.Test String formatSeconds(String) -- string value contains exactly zero seconds <br>
+   * @Error.Test String formatSeconds(String) -- string value contains decimal fraction <br>
+   * @Error.Test String formatSeconds(String) -- string value contains negative number <br>
+   * @Error.Test String formatSeconds(String) -- string value contains empty string <br>
+   * @Null.Test String formatSeconds(String) -- string parm is null <br>
    */
   @Test
   public void testFormatSeconds()
@@ -419,16 +415,15 @@ public class TestUtilities
 
 
   /**
-   * static boolean isTraitsEqual(int[] expValue, int[] testValue) Checks if two int equal-length
-   * arrays are equal, element by element. Arrays must be of equal length.
-   * 
-   * @Normal.Test arrays contain exactly the same elements <br>
-   * @Normal.Test arrays contain one value different <br>
-   * @Normal.Test arrays contain all values different <br>
-   * @Error.Test arrays are of different length <br>
-   * @Error.Test arrays are not totally filled but have 0 values in one or more slots <br>
-   * @Special.Test arrays have 0's in all slots; legal but useless for comparing prime traits
-   * @Null.Test one or both parms are null
+   * @Normal.Test boolean isTraitsEqual(int[], int[]) -- contain exactly the same elements <br>
+   * @Normal.Test boolean isTraitsEqual(int[], int[]) -- contain one value different <br>
+   * @Normal.Test boolean isTraitsEqual(int[], int[]) -- contain all values different <br>
+   * @Error.Test boolean isTraitsEqual(int[], int[]) -- are of different length <br>
+   * @Error.Test boolean isTraitsEqual(int[], int[]) -- are not totally filled but have 0 values in
+   *             one or more slots <br>
+   * @Special.Test boolean isTraitsEqual(int[], int[]) -- have 0's in all slots; legal but useless
+   *               for comparing prime traits
+   * @Null.Test boolean isTraitsEqual(int[], int[]) -- one or both parms are null
    */
   @Test
   public void testIsEqual()
@@ -484,14 +479,16 @@ public class TestUtilities
 
 
   /**
-   * Break a long line into fixed line segments (word wrap) at a white space just prior to the given
-   * position.
+   * @Normal.Test {@code ArrayList<String> wordWrap(String, int)} -- A single line, no wrapping
+   *              needed
+   * @Normal.Test {@code ArrayList<String> wordWrap(String, int)} -- A two-line wrappable
+   * @Normal.Test {@code ArrayList<String> wordWrap(String, int)} -- A three-line wrappable
    */
   @Test
   public void testWordWrap()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // For a fixed length of 50
@@ -532,16 +529,16 @@ public class TestUtilities
 
 
   /**
-   * static {@code ArrayList<String> sort(ArrayList<String> target)} Sort on {@code target}
-   * alphabetically, The sort algorithm uses a {@code TreeSet} because it automatically uses an
-   * insert-sort algorithm with no duplicates.
-   * 
-   * @Normal.Test Sort an unsorted list of unique elements <br>
-   * @Normal.Test Sort an already sorted list <br>
-   * @Normal.Test Sort an unsorted list with duplicate and triplicate elements <br>
-   * @Normal.Test Sort an unsorted list with empty elements<br>
-   * @Error.Test Input parm has no length <br>
-   * @Null.Test input parm is null
+   * @Normal.Test {@code ArrayList<String> sort(ArrayList<String>)} -- Sort an unsorted list of
+   *              unique elements <br>
+   * @Normal.Test {@code ArrayList<String> sort(ArrayList<String>)} -- Sort an already sorted list
+   *              <br>
+   * @Normal.Test {@code ArrayList<String> sort(ArrayList<String>)} -- Sort an unsorted list with
+   *              duplicate and triplicate elements <br>
+   * @Normal.Test {@code ArrayList<String> sort(ArrayList<String>)} -- Sort an unsorted list with
+   *              empty elements<br>
+   * @Error.Test {@code ArrayList<String> sort(ArrayList<String>)} -- Input parm has no length <br>
+   * @Null.Test {@code ArrayList<String> sort(ArrayList<String>)} -- input parm is null
    */
   @Test
   public void testUniqueSort()
@@ -612,7 +609,12 @@ public class TestUtilities
   // Private Helper Methods
   // ================================================================================
 
-  /** Convert string[] to ArrayList<String> */
+  /**
+   * Convert {@code string[]} to {@code ArrayList<String>}
+   * 
+   * @param source array of strings to convert
+   * @return ArrayList of strings
+   */
   private ArrayList<String> convertToArrayList(String[] source)
   {
     ArrayList<String> dest = new ArrayList<String>();

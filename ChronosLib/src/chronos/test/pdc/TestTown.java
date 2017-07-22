@@ -10,10 +10,7 @@
 
 package chronos.test.pdc;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +32,7 @@ import mylib.MsgCtrl;
  *          Oct 17, 2014 // added more tests <br>
  *          July 16, 2017 // added more tests per QA File Scanner tool; major refactoring to put
  *          file into standard (Chronos) coding style <br>
+ *          July 21, 2017 // revised for custom Javadoc tags <br>
  */
 public class TestTown
 {
@@ -72,11 +70,11 @@ public class TestTown
 
 
   // ================================================================================
-  // CONSTRUCTOR TESTING
+  // CONSTRUCTOR AND RELATED TESTS
   // ================================================================================
 
   /**
-   * @NORMAL.TEST Town(String name, String descDay, String descNight) -- includes adding all
+   * @Normal.Test Town(String name, String descDay, String descNight) -- includes adding all
    *              buildings into the Town
    */
   @Test
@@ -85,13 +83,11 @@ public class TestTown
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-
     assertEquals(_bldgNames.length, _town.getAllBuildings().size());
   }
 
-
   /**
-   * @NORMAL.TEST Town(String name, String descDay, String descNight) -- Town are only
+   * @Normal.Test Town(String name, String descDay, String descNight) -- Town are only
    *              differentiated by their name, not their descriptions
    */
   @Test
@@ -109,15 +105,15 @@ public class TestTown
   }
 
   /**
-   * @ERROR.TEST Town(String name, String descDay, String descNight) -- Null parms for various
-   *             inputs to force an exception or error
+   * @Null.Test Town(String name, String descDay, String descNight) -- Null parms for various inputs
+   *            to force an exception or error
    */
   @SuppressWarnings("unused")
-  @Test(expected = AssertionError.class)
+  @Test
   public void testCtor_NullNightDesc()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // Night description can be null
@@ -125,14 +121,16 @@ public class TestTown
     // Day description is required
     try {
       new Town(NAME, null, DESC_NIGHT);
+      MsgCtrl.errMsgln(MsgCtrl.EXCEPTION_NOT_THROWN);
     } catch (IllegalArgumentException ex1) {
-      MsgCtrl.errMsg("\tExpected exception on null daytime description");
+      MsgCtrl.msgln(MsgCtrl.EXP_EXCEPTION + ex1.getMessage());
     }
     // Town name is required
     try {
       new Town(null, DESC_DAY, DESC_NIGHT);
+      MsgCtrl.errMsgln(MsgCtrl.EXCEPTION_NOT_THROWN);
     } catch (IllegalArgumentException ex2) {
-      MsgCtrl.errMsg("\tExpected exception on null town name");
+      MsgCtrl.msgln(MsgCtrl.EXP_EXCEPTION + ex2.getMessage());
     }
   }
 
@@ -151,16 +149,15 @@ public class TestTown
     Town t2 = new Town(NAME, DESC_DAY, "Optional nighttime description");
 
     assertEquals(t1.getName(), t2.getName());
-    
   }
 
-  
+
   // ================================================================================
   // TEST METHODS
   // ================================================================================
-  
+
   /**
-   * @Not.Needed void addBuildings(List) -- wrapper; part of ctor testing
+   * @Not.Needed void addBuildings(List) -- wrapper
    */
   @Test
   public void testAddBuildings()
@@ -168,15 +165,11 @@ public class TestTown
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-    MsgCtrl.msg("\tSimple wrapper method; part of constructor testing");
+    MsgCtrl.msgln(MsgCtrl.NOTEST + MsgCtrl.WRAPPER);
   }
 
-  
-
-
-
   /**
-   * Not Implemented List getAllBuildings()
+   * @Not.Needed List<Building> getAllBuildings() -- wrapper
    */
   @Test
   public void testGetAllBuildings()
@@ -184,13 +177,12 @@ public class TestTown
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-
-    fail("TEST METHOD NOT YET IMPLEMENTED");
+    MsgCtrl.msgln(MsgCtrl.NOTEST + MsgCtrl.WRAPPER);
   }
 
 
   /**
-   * Not Implemented String getDayDescription()
+   * @Not.Needed List<Building> getDayDescription() -- getter
    */
   @Test
   public void testGetDayDescription()
@@ -198,13 +190,12 @@ public class TestTown
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-
-    fail("TEST METHOD NOT YET IMPLEMENTED");
+    MsgCtrl.msgln(MsgCtrl.NOTEST + MsgCtrl.GETTER);
   }
 
 
   /**
-   * Not Implemented String getKey()
+   * @Not.Needed String getKey() -- getter
    */
   @Test
   public void testGetKey()
@@ -212,13 +203,24 @@ public class TestTown
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-
-    fail("TEST METHOD NOT YET IMPLEMENTED");
+    MsgCtrl.msgln(MsgCtrl.NOTEST + MsgCtrl.PRIMITIVE);
   }
 
 
   /**
-   * Not Implemented String getNightDescription()
+   * @Not.Needed String getName() -- getter
+   */
+  @Test
+  public void testGetName()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+    MsgCtrl.msgln(MsgCtrl.NOTEST + MsgCtrl.GETTER);
+  }
+
+  /**
+   * @Not.Needed String getNightDescription() -- getter
    */
   @Test
   public void testGetNightDescription()
@@ -226,13 +228,12 @@ public class TestTown
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-
-    fail("TEST METHOD NOT YET IMPLEMENTED");
+    MsgCtrl.msgln(MsgCtrl.NOTEST + MsgCtrl.GETTER);
   }
 
 
   /**
-   * Not Implemented int hashCode()
+   * @Not.Needed int hashCode() -- simple calc used in other tests
    */
   @Test
   public void testHashCode()
@@ -240,41 +241,67 @@ public class TestTown
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-
-    fail("TEST METHOD NOT YET IMPLEMENTED");
+    MsgCtrl.msgln(MsgCtrl.NOTEST + MsgCtrl.PRIMITIVE);
   }
 
 
+  /**
+   * @Normal.Test boolean equals(Object obj) - verify name against hashcode for equality
+   */
   @Test
-  public void testHashCode_SameTownEqual()
+  public void testEquals_SameTown()
   {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
     assertEquals(_town, _town);
     assertEquals(_town.hashCode(), _town.hashCode());
     assertEquals(_town.toString(), _town.toString());
+    assertTrue(_town.equals(_town));
   }
 
+
+  /**
+   * @Normal.Test boolean equals(Object obj) - verify duplicate town by hashcode for equality
+   */
   @Test
-  public void testHashCode_DupTownEquals()
+  public void testEquals_DupTownEquals()
   {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
     Town town2 = new Town(NAME, DESC_DAY, DESC_NIGHT);
 
     assertEquals(_town, town2);
     assertEquals(_town.hashCode(), town2.hashCode());
     assertEquals(_town.toString(), town2.toString());
+    assertTrue(_town.equals(town2));
   }
 
+
+  /**
+   * @Norml.Test boolean equals(Object obj) - verify inequality with names and hashcode
+   */
   @Test
-  public void testHashCode_DifferentNameDifferentTown()
+  public void testEquals_DifferentNameDifferentTown()
   {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
     Town town2 = new Town("Not the same", DESC_DAY, DESC_NIGHT);
 
     assertFalse(_town.equals(town2));
     assertFalse(_town.hashCode() == town2.hashCode());
     assertFalse(_town.toString().equals(town2.toString()));
+    assertFalse(_town.equals(town2));
+
   }
 
   /**
-   * Not Implemented String toString()
+   * @Not.Needed String toString() -- simple getter
    */
   @Test
   public void testToString()
@@ -282,8 +309,7 @@ public class TestTown
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-
-    fail("TEST METHOD NOT YET IMPLEMENTED");
+    MsgCtrl.msgln(MsgCtrl.NOTEST + MsgCtrl.GETTER);
   }
 
 

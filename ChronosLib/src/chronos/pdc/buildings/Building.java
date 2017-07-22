@@ -195,7 +195,7 @@ public abstract class Building implements IRegistryElement
     if (_patrons.size() > 0) {
       description += "\n\nYou see patrons inside:\n";
       for (NPC npc : _patrons) {
-        description += npc.getName() + "\n\t" + npc.getDescription() + "\n\n";
+        description += npc.getName() + "\n\t" + npc.getFarDescription() + "\n\n";
       }
     }
 
@@ -364,7 +364,7 @@ public abstract class Building implements IRegistryElement
     for (NPC npc : _patrons) {
       String name = npc.getName();
       if (name.equalsIgnoreCase(target)) {
-        return npc.getDescription();
+        return npc.getFarDescription();
       }
     }
     return MISSING_PERSON;

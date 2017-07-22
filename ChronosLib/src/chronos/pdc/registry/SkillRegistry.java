@@ -12,9 +12,8 @@ package chronos.pdc.registry;
 import java.util.ArrayList;
 import java.util.List;
 
-import mylib.pdc.Registry;
-import chronos.pdc.Chronos;
 import chronos.pdc.Skill;
+import mylib.pdc.Registry;
 
 
 /**
@@ -28,7 +27,8 @@ public class SkillRegistry extends Registry<Skill>
 {
   /** 8 Skills that are defined for particular races: Name, Description. */
   @SuppressWarnings("serial")
-  private static final List<Skill> _racialSkillTable = new ArrayList<Skill>() {{
+  private static final List<Skill> _racialSkillTable = new ArrayList<Skill>() {
+    {
       add(new Skill("Archery", "Extra skillful with a short or long bow."));
       add(new Skill("Geasing", "Able to detect undeground direction and stone-based traps."));
       add(new Skill("Infravision", "Can see warm bodies in the dark."));
@@ -36,12 +36,15 @@ public class SkillRegistry extends Registry<Skill>
       add(new Skill("Resistance to Charm", "Charm spells rarely effect you."));
       add(new Skill("Resistance to Poison", "Most poisons only moderately effect you."));
       add(new Skill("Resistance to Sleep", "Sleep spells rarely effect you."));
-      add(new Skill("Tingling", "Ability to find hidden doors, secret panels, or concealed openings."));
-  }};
+      add(new Skill("Tingling",
+          "Ability to find hidden doors, secret panels, or concealed openings."));
+    }
+  };
 
   // Occupational skills and descriptions for defined occupations
   @SuppressWarnings("serial")
-  private static final List<Skill> _occupSkillTable = new ArrayList<Skill>() {{
+  private static final List<Skill> _occupSkillTable = new ArrayList<Skill>() {
+    {
       add(new Skill("Animal Empathy", "Communicate emotionally with animals"));
       add(new Skill("Appraise Jewelry", "Estimate selling value of gems and jewelry"));
       add(new Skill("Appraise Tapestries", "Estimate selling value of tapestries"));
@@ -52,7 +55,8 @@ public class SkillRegistry extends Registry<Skill>
           + "\n\t --Make weak explosive (2d6 dmg (5gp, 1hr) "
           + "\n\t --Make medium explosive (3d8 dmg (20gp, 4hr in town only) "));
       add(new Skill("Balance", "+1 DEX for balancing tasks and saves"));
-      add(new Skill("Bluff", "+2 CHR if the lie is only a matter of luck that the listener believes you"));
+      add(new Skill("Bluff",
+          "+2 CHR if the lie is only a matter of luck that the listener believes you"));
       add(new Skill("Bowmaking", "in the field if proper materials available:"
           + "\n\t --Make/repair short bow (-1 to hit) (20 gp, 3 days) "
           + "\n\t --Make arrows (-1 damage), need 1 bird for feathers "
@@ -63,25 +67,31 @@ public class SkillRegistry extends Registry<Skill>
           + "\n\t --Avoid natural cavern hazards"
           + "\n\t --Identify most kinds of rock ores, +1 INT on rarer ores"
           + "\n\t --Use picks and shovels as +1, +1 weapons"));
+      add(new Skill("Cheating", "gets +2 to win in card games and other games of chance"));
       add(new Skill("Climb Walls", "as a Level 1 Thief (%)"));
       add(new Skill("Concentration",
           "+1 Save vs INT to avoid distraction (and spell interruption if spell caster)"));
       add(new Skill("Diplomacy", "+1 CHR for all political negotiating"));
       add(new Skill("Disable Device Skill", "same as Remove Traps as Level 1 Thief (%)"
           + "\n\t --Undo or jam wooden devices or traps at +1"));
-      add(new Skill("Escape Artist", "+1 DEX to slip from manacles, ropes, or through tight spaces"));
-      add(new Skill("Fast Swim", "Gains +1 BM when moving in water or underwater (normal water penalty = BM/2) "
-          + "\n\t --Gets +4 Save when falling into water due to diving "));
+      add(new Skill("Escape Artist",
+          "+1 DEX to slip from manacles, ropes, or through tight spaces"));
+      add(new Skill("Fast Swim",
+          "Gains +1 BM when moving in water or underwater (normal water penalty = BM/2) "
+              + "\n\t --Gets +4 Save when falling into water due to diving "));
       add(new Skill("Financial Brokering", "+1 CHR when negotiating money deals "
           + "\n\t --No fee banking "
           + "\n\t --Gets 10% discount on all transactions in town "));
       add(new Skill("Find Secrets in Woodwork",
           "+10% chance to find secret doors in wall panels, cabinets, etc."));
-      add(new Skill("Find Secrets in Stonework", "+10% chance to find openings in stone construction, "
-          + "e.g. cavern walls, stone floors, fireplaces "));
-      add(new Skill("Find/Set Traps", "for simple traps like snares and deadweights, as a Level 1 Thief (%)"));
-      add(new Skill("Gather Information", "+2 CHR to hear rumor when in an inn or similarly crowded place"
-          + "\n\t -- Gets +2 CHR to find contact information for a key person"));
+      add(new Skill("Find Secrets in Stonework",
+          "+10% chance to find openings in stone construction, "
+              + "e.g. cavern walls, stone floors, fireplaces "));
+      add(new Skill("Find/Set Traps",
+          "for simple traps like snares and deadweights, as a Level 1 Thief (%)"));
+      add(new Skill("Gather Information",
+          "+2 CHR to hear rumor when in an inn or similarly crowded place"
+              + "\n\t -- Gets +2 CHR to find contact information for a key person"));
       add(new Skill("General Knowledge", "+1 INT on any general question on specific topic "));
       add(new Skill("Hide in Shadows", "as a Level 1 Thief (%)"));
       add(new Skill("Hunting", "20% chance of finding wild game"));
@@ -117,8 +127,9 @@ public class SkillRegistry extends Registry<Skill>
           + "\n\t --Make weak poison (L1 poison)( (5gp, 1hr) "
           + "\n\t --Make medium poison (L2 poison)(40gp, 4hr in town only) "));
       add(new Skill("Negotiations", "+1 CHR when negotiating money deals"));
-      add(new Skill("Netmaking", "Make/repair 10'x10' net that can provide 10d4 fish per day for food. "
-          + " Needs 50' rope (2 days) "));
+      add(new Skill("Netmaking",
+          "Make/repair 10'x10' net that can provide 10d4 fish per day for food. "
+              + " Needs 50' rope (2 days) "));
       add(new Skill("Open Locks", "as a Level 1 Thief (%)"));
       add(new Skill("Painting", "Paint buildings, mix paint. (yep, that's it)."));
       add(new Skill("Pick Pockets", "as a Level 1 Thief (%)"));
@@ -138,28 +149,30 @@ public class SkillRegistry extends Registry<Skill>
       add(new Skill("Trapping", "Catch animals alive (20%)"));
       add(new Skill("Tumble", "land softer when falling (reduce dmg by d3) "
           + "\n\t--Dive tumble over opponents at +2 AC "));
-      add(new Skill("Water Lore", "+1 WIS to guide party through water areas and avoid natural hazards"));
+      add(new Skill("Water Lore",
+          "+1 WIS to guide party through water areas and avoid natural hazards"));
       add(new Skill("Wilderness Lore", "Guide party through badlands and avoid natural hazards "
           + "\n\t --Navigate outdoor course without getting lost "
           + "\n\t --Survive off the land"));
       add(new Skill("Woodworking", "Make/repair wooden items, e.g. repair xbows (not bows),"
           + "\n\t --Add secret compartments to chests"));
       add(new Skill("No special skills", "Learned in life but without extra skills"));
-  }};
+    }
+  };
 
-  /*
-   * CONSTRUCTOR(S) AND RELATED METHODS
-   */
+
+  // ========================================================================
+  // CONSTRUCTOR(S) AND RELATED METHODS
+  // ========================================================================
 
   /**
    * Private ctor because this singleton is called from getInstance(). Registry filename is used for
    * database
-   * 
-   * @param init flag to initialize registry for default data if true
    */
   public SkillRegistry()
   {
-    super(Chronos.SkillRegPath);
+//    super(Chronos.SkillRegPath);
+//    System.err.println("The Skillregistry is called with path " + Chronos.SkillRegPath);
   }
 
   /**
@@ -169,10 +182,14 @@ public class SkillRegistry extends Registry<Skill>
   @Override
   protected void initialize()
   {
-	  _list.addAll(_occupSkillTable);
-	  _list.addAll(_racialSkillTable);
+    _list.addAll(_occupSkillTable);
+    _list.addAll(_racialSkillTable);
   }
 
+
+  // ========================================================================
+  // PUBLIC METHODS
+  // ========================================================================
 
   /**
    * Get a particlar Skill by name

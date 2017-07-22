@@ -10,7 +10,7 @@
  */
 
 
-package chronos.pdc;
+package chronos.pdc.buildings;
 
 
 

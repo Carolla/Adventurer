@@ -8,23 +8,23 @@
  */
 
 
-package chronos.test.pdc;
+package mylib.test.dmc;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import mylib.Constants;
-import mylib.MsgCtrl;
-import mylib.dmc.DbReadWriter;
-import mylib.dmc.IRegistryElement;
-import mylib.test.dmc.SomeObject;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.db4o.query.Predicate;
+
+import mylib.Constants;
+import mylib.MsgCtrl;
+import mylib.dmc.DbReadWriter;
+import mylib.dmc.IRegistryElement;
 
 
 
@@ -43,6 +43,7 @@ import com.db4o.query.Predicate;
  *          Sep 27, 2014 // pruned again, looking for missed bug <br>
  *          Dec 7, 2014 // added specific getUnique() tests<br>
  *          Dec 25, 2015 // major changes for better encapsulation, including DbReadWtiter <br>
+ *          July 21, 2017 // moved into MyLibrary from ChronosLib as general purpose registry <br>
  */
 public class TestRegistry
 {
@@ -88,13 +89,13 @@ public class TestRegistry
     // Normal Create an object to add and verify
     SomeObject so1 = new SomeObject(4, "object one");
     _testReg.add(so1); // object 1 into db
-    assertEquals(1, _testReg.getNbrElements());
+    assertEquals(1, _testReg.size());
     assertEquals(so1, _testReg.get("object one"));
 
     // Normal Add a second object
     SomeObject so2 = new SomeObject(100, "object two");
     _testReg.add(so2); // object 2 into db
-    assertEquals(2, _testReg.getNbrElements());
+    assertEquals(2, _testReg.size());
     assertEquals(so2, _testReg.get("object two"));
 
     // Normal Add two identical objects and verify that the second is not added
@@ -102,7 +103,7 @@ public class TestRegistry
     assertTrue(so1Copy.equals(so1));
     // The copy is rejected because it matches an original
     assertFalse(_testReg.add(so1Copy));
-    assertEquals(2, _testReg.getNbrElements());
+    assertEquals(2, _testReg.size());
     assertTrue(_testReg.contains(so2));
     assertTrue(_testReg.contains(so1));
     // Although so1Copy does not exist in the db, a field-level equivalent does
@@ -111,7 +112,7 @@ public class TestRegistry
     // Error Verify that null cannot be saved in the db
     SomeObject empty = null;
     assertFalse(_testReg.add(empty));
-    assertEquals(2, _testReg.getNbrElements());
+    assertEquals(2, _testReg.size());
   }
 
 
@@ -128,7 +129,7 @@ public class TestRegistry
   {
     SomeObject so1 = new SomeObject(4, "object one");
     _testReg.add(so1); // object 1 into db
-    assertEquals(1, _testReg.getNbrElements());
+    assertEquals(1, _testReg.size());
     assertTrue(_testReg.contains(so1));
   }
 
@@ -139,7 +140,7 @@ public class TestRegistry
     _testReg.add(so1); // object 1 into db
     SomeObject so2 = new SomeObject(100, "object two");
     _testReg.add(so2); // object 2 into db
-    assertEquals(2, _testReg.getNbrElements());
+    assertEquals(2, _testReg.size());
     assertTrue(_testReg.contains(so2));
   }
 
@@ -152,7 +153,7 @@ public class TestRegistry
     _testReg.add(so2);
     SomeObject so3 = new SomeObject(42, "object three");
     _testReg.add(so3); // object 3 into db
-    assertEquals(3, _testReg.getNbrElements());
+    assertEquals(3, _testReg.size());
   }
 
   @Test
@@ -164,9 +165,9 @@ public class TestRegistry
     _testReg.add(so2);
     SomeObject so3 = new SomeObject(42, "object three");
     _testReg.add(so3);
-    
+
     _testReg.delete(so1);
-    assertEquals(2, _testReg.getNbrElements());
+    assertEquals(2, _testReg.size());
     assertFalse(_testReg.contains(so1));
     assertTrue(_testReg.contains(so2));
     assertTrue(_testReg.contains(so3));
@@ -174,7 +175,7 @@ public class TestRegistry
     // Normal Verify that an updated object is still contained
     so3.setNum(-42);
     _testReg.update(so3); // object 3 into db
-    assertEquals(2, _testReg.getNbrElements());
+    assertEquals(2, _testReg.size());
     assertFalse(_testReg.contains(so1));
     assertTrue(_testReg.contains(so2));
     assertTrue(_testReg.contains(so3));
@@ -183,7 +184,7 @@ public class TestRegistry
 
     // Error Verify that null cannot be saved in the db
     assertFalse(_testReg.contains(null));
-    assertEquals(2, _testReg.getNbrElements());
+    assertEquals(2, _testReg.size());
   }
 
 
@@ -200,18 +201,18 @@ public class TestRegistry
     // Normal Create an object to add and verify
     SomeObject so = new SomeObject(4, "perfect");
     _testReg.add(so);
-    assertEquals(1, _testReg.getNbrElements());
+    assertEquals(1, _testReg.size());
     assertEquals(so, _testReg.get("perfect"));
 
     // Add a second object
     SomeObject so2 = new SomeObject(100, "one hundred");
     _testReg.add(so2);
-    assertEquals(2, _testReg.getNbrElements());
+    assertEquals(2, _testReg.size());
     assertEquals(so2, _testReg.get("one hundred"));
 
     // Remove the first object and verify the number of elements is reduced...
     _testReg.delete(so);
-    assertEquals(1, _testReg.getNbrElements());
+    assertEquals(1, _testReg.size());
     // ... and the second object still exists
     assertTrue(_testReg.contains(so2));
 
@@ -229,16 +230,16 @@ public class TestRegistry
     } catch (NullPointerException ex) {
       MsgCtrl.errMsg("\tExpected exception: " + ex.getMessage());
     }
-    assertEquals(0, _testReg.getNbrElements());
+    assertEquals(0, _testReg.size());
   }
-  
+
   @Test
   public void deletePersistsAfterClosingDb()
   {
     SomeObject so = new SomeObject(4, "perfect");
     _testReg.add(so);
     _testReg.delete(so);
-    
+
     _testReg = new ConcreteRegistry<SomeObject>(TEST_FILEPATH);
     assertFalse(_testReg.contains(so));
   }
@@ -252,14 +253,14 @@ public class TestRegistry
   @Test
   public void testGetAll()
   {
-    int preSize = _testReg.getNbrElements();
+    int preSize = _testReg.size();
 
     // Add two and try again
     SomeObject s1 = new SomeObject(1, "supplement A");
     SomeObject s2 = new SomeObject(2, "supplement B");
     _testReg.add(s1);
     _testReg.add(s2);
-    assertEquals(preSize + 2, _testReg.getNbrElements());
+    assertEquals(preSize + 2, _testReg.size());
   }
 
 
@@ -279,7 +280,7 @@ public class TestRegistry
     final String keyString = "key";
     SomeObject obj = new SomeObject(11, keyString);
     _testReg.add(obj);
-    assertEquals(_testReg.getNbrElements(), 1);
+    assertEquals(_testReg.size(), 1);
 
     // Retrieve the object by name
     IRegistryElement elem = (IRegistryElement) _testReg.get(keyString);
@@ -304,9 +305,10 @@ public class TestRegistry
    * mylib.test.pdc.update(RegistryElement)
    * 
    * @Normal.Test Ensure that one object is swapped for a newer one <br>
-   * @Normal.Test Ensure that one object is swapped for the itself (same incident) without
-   *              incident <br>
-   * @Normal.Test Ensure that one object is swapped for different one but of the same field values <br>
+   * @Normal.Test Ensure that one object is swapped for the itself (same incident) without incident
+   *              <br>
+   * @Normal.Test Ensure that one object is swapped for different one but of the same field values
+   *              <br>
    * @Normal.Test Try to replace an object when more than one is in the registry <br>
    * @Error.Test Try to replace an object that does not exist in the registry <br>
    * @Null.Test Replace an object with a null object <br>
@@ -323,8 +325,8 @@ public class TestRegistry
     SomeObject so1 = new SomeObject(1, "one");
     assertTrue(_testReg.add(so1));
     MsgCtrl.msg("\tObject stored: " + so1.toString());
-    MsgCtrl.msgln("\tRegistry contains " + _testReg.getNbrElements() + " elements.");
-    assertEquals(1, _testReg.getNbrElements());
+    MsgCtrl.msgln("\tRegistry contains " + _testReg.size() + " elements.");
+    assertEquals(1, _testReg.size());
 
     // Normal Ensure that one object is swapped for the itself (same incident) without incident
     SomeObject so2 = new SomeObject(2, "two");
@@ -332,7 +334,7 @@ public class TestRegistry
     assertTrue(_testReg.contains(so2));
     assertTrue(_testReg.update(so2));
     MsgCtrl.msgln("\tObject swapped with itself: " + _testReg.get(so2.getKey()));
-    MsgCtrl.msgln("\tRegistry still contains " + _testReg.getNbrElements() + " elements.");
+    MsgCtrl.msgln("\tRegistry still contains " + _testReg.size() + " elements.");
 
     // Normal Ensure that one object is swapped for different one but of the same field values
     // Now try the update: same fields but different instance
@@ -341,7 +343,7 @@ public class TestRegistry
     assertTrue(_testReg.update(so1Copy));
     MsgCtrl.msgln("\tObject tried to update to make a duplicate...");
     MsgCtrl.msgln("\t...but update bypassed, so Registry still contains "
-        + _testReg.getNbrElements() + " elements.");
+        + _testReg.size() + " elements.");
   }
 
 
@@ -354,7 +356,7 @@ public class TestRegistry
    * 
    * @Not.Needed initialize() -- abstract method <br>
    * @Not.Needed getDBRW() -- getter <br>
-   * @Not.Needed getNbrElements() -- getter <br>
+   * @Not.Needed size() -- getter <br>
    * @Not.Needed Registry(String) -- abstract base class <br>
    */
   void _testsNotNeeded()

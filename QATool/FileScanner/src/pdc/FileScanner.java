@@ -128,7 +128,9 @@ public class FileScanner
     File testFile = fs.findTestFile(root, srcRelPath);
 
     // Extract source method names into the map
-    fs.saveTestMethods(testFile.getPath());
+    if (testFile.exists()) {
+      fs.saveTestMethods(testFile.getPath());
+    }
 
     // Build list of test names missing from src file, with original source names for comments
     Map<String, String> augList = fs.buildAugMap();

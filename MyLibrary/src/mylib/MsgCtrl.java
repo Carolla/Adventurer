@@ -32,6 +32,7 @@ import java.util.Map;
  *          May 30, 2010 // added Object parm overloads <br>
  *          Feb 21, 2015 // added getState() <br>
  *          Apr 30, 2017 // added methods to check state of SUPPRESS states <br>
+ *          July 17, 2017 // added some constants to help test auditing messages <br>
  */
 public class MsgCtrl
 {
@@ -41,6 +42,20 @@ public class MsgCtrl
   /** Flag to suppress error messages that might otherwise appear */
   static private boolean ERROR_SUPPRESS = false;
 
+  // ================================================================================
+  // This section reserved for constants for testing
+  // ================================================================================
+  public static final String NOT_IMPLEMENTED = "\tTest not yet implemented.";
+  public static final String EXP_EXCEPTION = "\tExpected exception: ";
+  public static final String EXCEPTION_NOT_THROWN =
+      "\tExpected an exception here. Did not receive one. ";
+  public static final String NOTEST = "\t Test not needed ";
+  public static final String WRAPPER = "-- simple wrapper call";
+  public static final String GETTER = "-- simple field getter";
+  public static final String SETTER = "-- simple field setter";
+  public static final String PRIMITIVE = "-- primitive calc used in many other tests";
+
+  // ================================================================================
 
   // -------------------------------------------------------------------------------------------
   // PUBLIC STATIC METHODS

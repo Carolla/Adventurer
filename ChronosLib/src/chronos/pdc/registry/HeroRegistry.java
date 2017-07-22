@@ -12,12 +12,12 @@ package chronos.pdc.registry;
 
 import java.util.List;
 
-import mylib.ApplicationException;
+import com.db4o.query.Predicate;
+
 import chronos.pdc.Chronos;
 import chronos.pdc.character.Hero;
-import chronos.test.pdc.ConcreteRegistry;
-
-import com.db4o.query.Predicate;
+import mylib.ApplicationException;
+import mylib.test.dmc.ConcreteRegistry;
 
 /**
  * Contains all Heros in the game. This is the only {@code Registry} that currently uses
@@ -71,6 +71,6 @@ public class HeroRegistry extends ConcreteRegistry<Hero>
   {
     return _regRW.query(_heroQuery);
   }
-  
-}   // end of HeroRegistry class
+
+} // end of HeroRegistry class
 

@@ -75,7 +75,7 @@ public class TestAdventureRegistry
     MsgCtrl.where(this);
 
     // VERIFY AdvReg contains single element
-    assertEquals(1, areg.getNbrElements());
+    assertEquals(1, areg.size());
 
     // and the element is the recent adventure
     Adventure adv = areg.getAdventure(DEF_ADVENTURE);

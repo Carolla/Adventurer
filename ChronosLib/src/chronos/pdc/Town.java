@@ -106,24 +106,20 @@ public class Town implements IRegistryElement
     return _name;
   }
 
-  /** Get the appearance of this town at night */
-  public String getNightDescription()
-  {
-    return _descNight;
-  }
-
   /** Get the name of this town */
   public String getName()
   {
     return _name;
   }
 
-  /** Get the name of the town */
-  public String toString()
+
+  /** Get the appearance of this town at night */
+  public String getNightDescription()
   {
-    return _name;
+    return _descNight;
   }
 
+  
   // ================================================================================
   // SPECIALITY: PRIMITIVE SUPPORT METHODS
   // ================================================================================
@@ -155,10 +151,19 @@ public class Town implements IRegistryElement
     return result;
   }
 
+
+  /** Get the name of the town */
+  @Override
+  public String toString()
+  {
+    return _name;
+  }
+
   
   // ================================================================================
   // PRIVATE METHODS
   // ================================================================================
 
+  
 } // end of Town class
 
