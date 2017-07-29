@@ -20,7 +20,7 @@ import mylib.dmc.IRegistryElement;
  *          Apr 11 2011 // TAA changed visibiltiy of attributes to protected <br>
  *          Oct 13, 2015 // revised for new Hero gerneration rules <br>
  *          May 27 2017 // converted weights to lbs as standard measure, instead of gpw <br>
-
+ *          July 29, 2017 // refactored per QATool <br>
  */
 public class Item implements IRegistryElement
 {
@@ -38,50 +38,51 @@ public class Item implements IRegistryElement
   /** Number of the kinds of items (quantity) */
   private int _qty;
 
-  /*
-   * CONSTRUCTOR(S) AND RELATED METHODS
-   */
+
+  // ==========================================================================================
+  // CONSTRUCTOR AND RELATED METHODS
+  // ==========================================================================================
 
   /**
    * Construct an Item from its name and weight descriptor
    * 
-   * @param type one of enum ItemCategory
+   * @param cat one of enum ItemCategory
    * @param name of the Item
    * @param weight weight of item in lbs.ounces
-   * @param initialQty the number of these Items being constructed
    */
   public Item(ItemCategory cat, String name, double weight)
   {
-    if (weight <= 0.0) {
-      weight = 0.0;
+    if ((cat == null) || (name == null) || (name.isEmpty())) {
+      throw new NullPointerException("Constructor parms cannot be null");
     }
+    // Negative weights are converted to 0
+    weight = (weight <= 0.0) ? 0.0 : weight;
     _category = cat;
     _name = name;
     _weight = weight;
     _qty = 1;
   }
 
-  /*
-   * PUBLIC METHODS
-   */
+
+  // ==========================================================================================
+  // PUBLIC METHODS
+  // ==========================================================================================
 
   /**
-   * Increment the number of these kinds of Items in addition to it's current quanity. Negative
-   * values are allowed for dropping one or more of these Items
+   * Increment the number of these kinds of Items in addition to it's current quantity. Negative
+   * values are allowed for dropping one or more of these Items. If more items are attempted to be
+   * dropped than exist in the inventory, then no change is made and the current quantity is
+   * returned
    * 
    * @param delta the <i>increase or decrease</i> in quantity for this Item
    * @return the final quantity for the Item
    */
   public int adjustQuantity(int delta)
   {
-    if (delta + _qty < 0) {
-      _qty = 0;
-    } else {
-      _qty += delta;
-    }
-
+    _qty = (delta + _qty >= 0) ? _qty + delta : _qty;
     return _qty;
   }
+
 
   @Override
   public String getKey()
@@ -170,21 +171,23 @@ public class Item implements IRegistryElement
   }
 
   /**
-   * Convert Item to string: name (category), qty = ?, weight = ?
+   * Converts this Item to string: name (category): qty : weight 
    * 
-   * @param item that is converted to a record for saving
    * @return record of the item passed in
    */
   @Override
   public String toString()
   {
+    String COLON = " : ";
     String catStr = null;
     if (_category != null) {
       catStr = _category.toString();
     }
-    return (_name + " (" + catStr + ")");
+    StringBuilder sb = new StringBuilder();
+    sb.append(_name + " (" + catStr + ")" + COLON + _qty + COLON + _weight);
+    return sb.toString();
   }
-  
-  
+
+
 } // end of Item class
 

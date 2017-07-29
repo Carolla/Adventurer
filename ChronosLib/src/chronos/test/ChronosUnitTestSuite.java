@@ -12,6 +12,7 @@ package chronos.test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import chronos.test.pdc.TestGameClock;
 import chronos.test.pdc.TestNPC;
 import chronos.test.pdc.TestOccupation;
 import chronos.test.pdc.TestSkill;
@@ -56,8 +57,7 @@ import chronos.test.pdc.TestTown;
     /* PDC test files */
     // Chronos.class, // no test: collection of constants and statics
     // TestAdventure.class,
-    // TestGameClock.class, TO BE IMPLEMENTED
-    // TestAdventure.class,
+    TestGameClock.class, 
     // TestItem.class,
     TestNPC.class,
     TestOccupation.class,

@@ -23,13 +23,16 @@ package chronos.pdc;
  */
 public class GameClock
 {
-  static private final double MINUTES_PER_HOUR = 60L;
-  static private final double SECONDS_PER_MINUTE = 60L;
+  static private final long MINUTES_PER_HOUR = 60L;
+  static private final long SECONDS_PER_MINUTE = 60L;
+  static private final long SECONDS_PER_DAY = 86400L;
 
   /** Set the default game clock time to 6am. */
   final long START_HOUR = 6 * 3600;
   /** Internal: init the game clock */
   long _timeLog = 0L;
+  /** Internal: init day counter */
+  long _dayCount = 1L;
 
   /** This object's singleton reference. */
   private static GameClock _clock = null;
@@ -77,13 +80,112 @@ public class GameClock
    * 
    * @param secs time interval, in seconds, past midnight
    * @param miltime true if military is to be returned; else meridian time
-   * @return the time of day formatted as nn:nn a/pm or nnnn (military time)
+   * @return the time of day formatted as "nn:nn a/pm" or "nnnn hours" (military time)
    */
-  static public String formatSecondsToTOD(long secs, boolean miltime)
+  public String fmtSecondsToTOD(long secs, boolean miltime)
+  {
+    double hoursfrac = (double) secs / (double) (SECONDS_PER_MINUTE * MINUTES_PER_HOUR);
+    int hours = (int) hoursfrac;
+    double minfrac = (hoursfrac - hours) * SECONDS_PER_MINUTE;
+    int minutes = Math.round((float) minfrac);
+
+    // Accommodate going into next day
+    hours = hours % 24;    // this line should never be needed
+
+    String tod = null;
+    if (miltime) {
+      tod = fmtMilitaryTime(hours, minutes);
+    } else {
+      tod = fmtMeridianTime(hours, minutes);
+    }
+    return tod;
+  }
+  
+
+  /**
+   * Gets the game time in terms of days and hours
+   * 
+   * @return the time in the GameClock.
+   */
+  public String getGameTime()
+  {
+    StringBuilder sb = new StringBuilder();
+    sb.append("Day ");
+    sb.append(_dayCount);
+    sb.append(" ");
+    String tsecs = fmtSecondsToTOD(getTimelog(), false);
+    sb.append(tsecs);
+    return sb.toString();
+  }
+
+  
+  /**
+   * Gets the time, returned to the nearest millisecond. The caller must format as desired.
+   * 
+   * @return the time in the GameClock.
+   */
+  public long getTimelog()
+  {
+    return _timeLog;
+  }
+
+
+  /**
+   * Accumulates time to the clock, and adjsuts day counter when more than one day has elapsed
+   * negative increments do nothing.
+   * 
+   * @param seconds the amount of time to add.
+   */
+  public void increment(long seconds)
+  {
+    if (seconds > 0L) {
+      _timeLog += seconds;
+    }
+    // Adjust day counter
+    if (_timeLog >= SECONDS_PER_DAY) {
+      _dayCount++;
+      _timeLog = _timeLog - SECONDS_PER_DAY; 
+    }
+  }
+
+
+  /**
+   * Convert the hours and seconds into meridian (AM/PM) Time Of Day
+   * 
+   * @param hours number of hours on the game clock
+   * @param minutes number of seconds on the game clock
+   * @return a TOD formatted im military time: "nnnn hours"
+   */
+  private String fmtMeridianTime(int hours, int minutes)
   {
     StringBuilder tod = new StringBuilder();
-    int hours = (int) (secs / (SECONDS_PER_MINUTE * MINUTES_PER_HOUR));
-    int minutes = (int) (secs - hours * (SECONDS_PER_MINUTE * MINUTES_PER_HOUR));
+    String mer = (hours >= 12) ? " PM" : " AM";
+    // All 0 hour are 12 am
+    hours = hours % 12;
+    hours = (hours == 0) ? 12 : hours;
+      
+    tod.append(hours);
+    tod.append(":");
+    if (minutes < 10) {
+      tod.append("0");
+    }
+    tod.append(minutes);
+    tod.append(mer);
+  
+    return tod.toString();
+  }
+
+
+  /**
+   * Convert the hours and seconds into military Time Of Day
+   * 
+   * @param hours number of hours on the game clock
+   * @param minutes number of seconds on the game clock
+   * @return a TOD formatted im military time: "nnnn hours"
+   */
+  private String fmtMilitaryTime(int hours, int minutes)
+  {
+    StringBuilder tod = new StringBuilder();
     if (hours < 10) {
       tod.append("0");
     }
@@ -93,31 +195,8 @@ public class GameClock
     }
     tod.append(minutes);
     tod.append(" hours");
+  
     return tod.toString();
-  }
-
-
-  /**
-   * Gets the time, returned to the nearest millisecond. The caller must format as desired.
-   * 
-   * @return the time in the GameClock.
-   */
-  public long getTime()
-  {
-    return _timeLog;
-  }
-
-
-  /**
-   * Accumulates time to the clock; negative increments do nothing.
-   * 
-   * @param seconds the amount of time to add.
-   */
-  public void increment(long seconds)
-  {
-    if (seconds > 0L) {
-      _timeLog += seconds;
-    }
   }
 
 
