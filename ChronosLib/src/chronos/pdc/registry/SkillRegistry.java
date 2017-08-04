@@ -12,6 +12,7 @@ package chronos.pdc.registry;
 import java.util.ArrayList;
 import java.util.List;
 
+import chronos.pdc.Chronos;
 import chronos.pdc.Skill;
 import mylib.pdc.Registry;
 
@@ -22,6 +23,7 @@ import mylib.pdc.Registry;
  * 
  * @author Alan Cline
  * @version Jan 1 2010 // original <br>
+ *          July 30, 2017 // revised per QATool <br>
  */
 public class SkillRegistry extends Registry<Skill>
 {
@@ -41,7 +43,7 @@ public class SkillRegistry extends Registry<Skill>
     }
   };
 
-  // Occupational skills and descriptions for defined occupations
+  // 55 Occupational skills and descriptions for defined occupations
   @SuppressWarnings("serial")
   private static final List<Skill> _occupSkillTable = new ArrayList<Skill>() {
     {
@@ -165,16 +167,12 @@ public class SkillRegistry extends Registry<Skill>
   // CONSTRUCTOR(S) AND RELATED METHODS
   // ========================================================================
 
-  /**
-   * Private ctor because this singleton is called from getInstance(). Registry filename is used for
-   * database
-   */
   public SkillRegistry()
   {
-//    super(Chronos.SkillRegPath);
-//    System.err.println("The Skillregistry is called with path " + Chronos.SkillRegPath);
+    super(Chronos.SkillRegPath);
   }
 
+  
   /**
    * Create the Skill Registry with the tables given, converting each element to a Skill object and
    * saving it in the database.
@@ -182,8 +180,8 @@ public class SkillRegistry extends Registry<Skill>
   @Override
   protected void initialize()
   {
-    _list.addAll(_occupSkillTable);
     _list.addAll(_racialSkillTable);
+    _list.addAll(_occupSkillTable);
   }
 
 
@@ -192,7 +190,7 @@ public class SkillRegistry extends Registry<Skill>
   // ========================================================================
 
   /**
-   * Get a particlar Skill by name
+   * Get a particular Skill by name
    * 
    * @param name of the Item
    * @return the Item
@@ -212,5 +210,7 @@ public class SkillRegistry extends Registry<Skill>
   {
     return getAll();
   }
+
+  
 } // end of SkillRegistry class
 

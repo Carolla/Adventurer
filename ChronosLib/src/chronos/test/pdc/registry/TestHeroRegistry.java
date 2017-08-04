@@ -10,44 +10,71 @@
 package chronos.test.pdc.registry;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.pdc.character.Hero;
 import chronos.pdc.registry.HeroRegistry;
+import chronos.pdc.registry.HeroRegistry.MockHeroRegistry;
+import mylib.MsgCtrl;
+
 
 /**
- * @author Al Cline
+ * @author Alan Cline
  * @version Mar 29, 2016 // original <br>
+ *          Aug 1, 2017 // updated per QATool <br>
  */
 public class TestHeroRegistry
 {
   private static HeroRegistry _heroReg;
+  private static MockHeroRegistry _mock;
 
   static private Hero _hero1 = new Hero("Falsoon", "Male", "Brown", "Human");
   static private Hero _hero2 = new Hero("Blythe", "Female", "Red", "Elf");
   static private Hero _hero3 = new Hero("Balthazar", "Male", "Bald", "Human");
 
   @BeforeClass
-  public static void setUp() 
+  public static void setUpBeforeClass()
   {
     _heroReg = new HeroRegistry();
-
-    assertTrue(_heroReg.add(_hero1));
-    assertTrue(_heroReg.add(_hero2));
-    assertTrue(_heroReg.add(_hero3));
+    assertNotNull(_heroReg);
+    _mock = _heroReg.new MockHeroRegistry();
+    assertNotNull(_mock);
   }
 
   @AfterClass
-  public static void tearDown() 
+  public static void tearDownAfterClass()
   {
+    _mock = null;
+    _heroReg = null;
+    // Delete the reg file from the file system
+    //_mock.delete();
+  }
+
+  @Before
+  public void setUp()
+  {
+    assertTrue(_heroReg.add(_hero1));
+    assertTrue(_heroReg.add(_hero2));
+    assertTrue(_heroReg.add(_hero3));
+    assertEquals(3, _heroReg.size());
+  }
+
+  @After
+  public void tearDown()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     _heroReg.delete(_hero1);
     _heroReg.delete(_hero2);
     _heroReg.delete(_hero3);
@@ -59,70 +86,147 @@ public class TestHeroRegistry
   // ========================================================
 
   /**
-   * @NORMAL.TEST boolean add(Hero hero)
+   * @Normal.Test HeroRegistry()-- heroRegistry is created empty with an open file
    */
   @Test
-  public void testAdd()
+  public void testCtor()
   {
-    // SETUP Create new heroes to add
-    Hero newHero = new Hero("Red Shirt", "male", "White", "Human");
-    int oldNbrHeros = _heroReg.size();
-    assertTrue(_heroReg.add(newHero));
-    assertEquals(oldNbrHeros + 1, _heroReg.size());
-    _heroReg.delete(newHero);
-  }
-  
-  @Test
-  public void addFailsWhenAlreadyInRegistry()
-  {
-    assertTrue(_heroReg.contains(_hero2));
-    assertFalse(_heroReg.add(_hero2));
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // Verify that three heroes are in the registry
+    assertEquals(3, _heroReg.size());
+
+    // Verify: there are 3 Items in the registry
+    int expEntries = 3;
+    ArrayList<Hero> entryList = (ArrayList<Hero>) _heroReg.getAll();
+    assertNotNull(entryList);
+    int len = entryList.size();
+    MsgCtrl.msg("\t There are " + len + " Heroes in the registry");
+    assertEquals(expEntries, len);
+
+    // Print out all names in the HeroRegistry
+    StringBuilder sb = new StringBuilder();
+    for (int k = 0; k < len; k++) {
+      sb.append(entryList.get(k).getName());
+      sb.append("\t ");
+    }
+    MsgCtrl.msg("\t " + sb.toString());
   }
 
 
   /**
-   * @NORMAL.TEST Hero getHero(String name)
+   * @Normal.Test Hero getHero(String name) -- get a copy of the hero from registry
+   * @Error.Test Hero getHero(String name) -- attempt to get hero not in registry
    */
   @Test
   public void testGetHero()
   {
-    int nbr = _heroReg.size();
-    _heroReg.get("Blythe");
-    assertEquals(nbr, _heroReg.size());
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // Retrieve all three heroes in a different creation order
+    assertEquals(3, _heroReg.size());
+    Hero h1 = _heroReg.getHero("Blythe");
+    Hero h2 = _heroReg.getHero("Falsoon");
+    Hero h3 = _heroReg.getHero("Balthazar");
+    
+    assertNotNull(h1);
+    assertNotNull(h2);
+    assertNotNull(h3);
+    assertEquals("Falsoon", h2.getName());
+    assertEquals("Blythe", h1.getName());
+    assertEquals("Balthazar", h3.getName());
+    assertEquals(3, _heroReg.size());
+
+    // Get a hero not in the registry (size doesn't change)
+    Hero badguy = _heroReg.get("Wanderer");
+    assertNull(badguy);
+    assertEquals(3, _heroReg.size());
   }
 
 
   /**
-   * @NORMAL.TEST List<Hero> getAll()
+   * @Not.Needed <Hero> getAll() -- tested in ctor test
    */
   @Test
   public void testGetAll()
   {
-    List<Hero> heroList = _heroReg.getAll();
-    assertEquals(_heroReg.size(), heroList.size());
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+    MsgCtrl.msgln(MsgCtrl.NOTEST + MsgCtrl.PRIMITIVE);
   }
 
 
   /**
-   * @NORMAL.TEST List<String> getNamePlates()
+   * @Not.Needed initialize() -- verified in ctor test
    */
   @Test
-  public void testGetNamePlates()
+  public void testInitialize()
   {
-    String[] expNamePlates = {"Falsoon: Male Human Fighter", "Blythe: Female Elf Wizard",
-        "Balthazar: Male Human Cleric"};
-
-    List<Hero> list = _heroReg.getAll();
-    List<String> plateList = new ArrayList<String>();
-    for (Hero h : list) {
-      plateList.add(h.toNamePlate());
-    }
-    
-    String fullList = plateList.toString();
-    for (int k = 0; k < expNamePlates.length; k++) {
-      assertTrue("Didn't find " + expNamePlates[k] + " in " + fullList, fullList.contains(expNamePlates[k]));
-    }
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+    MsgCtrl.msgln(MsgCtrl.NOTEST + MsgCtrl.PRIMITIVE);
   }
 
 
+  /**
+   * @Normal.Test boolean save() -- save empty registry
+   */
+  @Test
+  public void testSave()
+  {
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.where(this);
+
+    // SETUP: Save an empty registry 
+    _heroReg.delete(_hero1);
+    _heroReg.delete(_hero2);
+    _heroReg.delete(_hero3);
+    
+    // RUN
+    MsgCtrl.msg("\t Reading...");
+    _heroReg.save();
+    
+    // Create a file to get some file stats
+    File regFile = _mock.getRegFile();
+    assertTrue(regFile.exists());
+    MsgCtrl.msgln("\t Dormitory file is size " + regFile.length() + " bytes");
+    
+    // Try to read it back in
+    MsgCtrl.msg("\t Loading...");
+    HeroRegistry reg2 = _heroReg.load();
+    assertNotNull(reg2);
+    assertEquals(reg2, _heroReg);
+    MsgCtrl.msgln("\t Dormitory is restored at " + regFile.length() + " bytes");
+    
+  }
+
+
+  /**
+   * @Normal.Test boolean save() -- save a registry populated with Heroes
+   */
+  @Test
+  public void testSave_Populated()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // SETUP: Save an empty registry 
+    _heroReg.save();
+    
+    // Create a file to get some file stats
+    File regFile = _mock.getRegFile();
+    assertTrue(regFile.exists());
+    MsgCtrl.msgln("\t Dormitory file is size " + regFile.length() + " bytes");
+  }
+
+  
+ 
 } // end of TestHeroRegistry class

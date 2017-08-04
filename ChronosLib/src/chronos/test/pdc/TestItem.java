@@ -238,7 +238,7 @@ public class TestItem
 
 
   /**
-   * @Not.Needed double getWeight() -- simple getter
+   * @Not.Needed double getName() -- simple getter
    */
   public void testGetName()
   {

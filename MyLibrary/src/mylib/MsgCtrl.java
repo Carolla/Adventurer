@@ -53,7 +53,7 @@ public class MsgCtrl
   public static final String WRAPPER = "-- simple wrapper call";
   public static final String GETTER = "-- simple field getter";
   public static final String SETTER = "-- simple field setter";
-  public static final String PRIMITIVE = "-- primitive calc used in many other tests";
+  public static final String PRIMITIVE = "-- primitive calc used in other tests";
 
   // ================================================================================
 

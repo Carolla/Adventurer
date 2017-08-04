@@ -43,8 +43,8 @@ public class Adventure implements IRegistryElement
    * @param townName the primary town in the adventure
    * @param arenaName arena in the adventure
    * @param overview description and background story of town, arena, and situation
-   * @throws throws NullPointerException if any of the parms are null, or the Town cannot be found
-   *         in the {@code TownRegistry}
+   * @throws NullPointerException if any of the parms are null, or the Town cannot be found in the
+   *         {@code TownRegistry}
    */
   public Adventure(String advName, String townName, String arenaName, String overview)
       throws NullPointerException
@@ -65,17 +65,6 @@ public class Adventure implements IRegistryElement
   // ============================================================
 
   @Override
-  public int hashCode()
-  {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((_arenaName == null) ? 0 : _arenaName.hashCode());
-    result = prime * result + ((_name == null) ? 0 : _name.hashCode());
-    result = prime * result + ((_townName == null) ? 0 : _townName.hashCode());
-    return result;
-  }
-
-  @Override
   public boolean equals(Object obj)
   {
     if (this == obj)
@@ -92,13 +81,6 @@ public class Adventure implements IRegistryElement
     if (!_townName.equals(other._townName))
       return false;
     return true;
-  }
-
-  /** @return the display name of the Adventure */
-  @Override
-  public String toString()
-  {
-    return _name;
   }
 
   /**
@@ -135,4 +117,25 @@ public class Adventure implements IRegistryElement
   {
     return _townName;
   }
+
+  
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((_arenaName == null) ? 0 : _arenaName.hashCode());
+    result = prime * result + ((_name == null) ? 0 : _name.hashCode());
+    result = prime * result + ((_townName == null) ? 0 : _townName.hashCode());
+    return result;
+  }
+
+  /** @return the display name of the Adventure */
+  @Override
+  public String toString()
+  {
+    return _name;
+  }
+  
+  
 } // end of Adventure class

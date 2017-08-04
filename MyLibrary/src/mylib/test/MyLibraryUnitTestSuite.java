@@ -12,7 +12,6 @@ package mylib.test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import mylib.test.dmc.TestDbReadWriter;
 import mylib.test.dmc.TestRegistry;
 import mylib.test.pdc.TestMetaDie;
 import mylib.test.pdc.TestUtilities;
@@ -29,7 +28,7 @@ import mylib.test.pdc.TestUtilities;
 @Suite.SuiteClasses({
 
     /** DMC Test files */
-    TestDbReadWriter.class,
+//    TestDbReadWriter.class,   // Db4o dropped from the program
     TestRegistry.class, // base class
 
     /** PDC Test files */

@@ -12,11 +12,14 @@ package chronos.test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import chronos.test.pdc.TestAdventure;
 import chronos.test.pdc.TestGameClock;
+import chronos.test.pdc.TestItem;
 import chronos.test.pdc.TestNPC;
 import chronos.test.pdc.TestOccupation;
 import chronos.test.pdc.TestSkill;
 import chronos.test.pdc.TestTown;
+import chronos.test.pdc.registry.RegistryTestSuite;
 
 
 /**
@@ -52,13 +55,13 @@ import chronos.test.pdc.TestTown;
     // CharacterTestSuite.class,
     // CommandTestSuite.class,
     // RaceTestSuite.class,
-    // RegistryTestSuite.class,
+    RegistryTestSuite.class,
 
     /* PDC test files */
     // Chronos.class, // no test: collection of constants and statics
-    // TestAdventure.class,
-    TestGameClock.class, 
-    // TestItem.class,
+    TestAdventure.class,
+    TestGameClock.class,
+    TestItem.class,
     TestNPC.class,
     TestOccupation.class,
     TestSkill.class,

@@ -101,6 +101,8 @@ public class TripleMap
     if (_testNames.size() == 0) {
       for (int k = 0; k < _srcToTestNames.size(); k++) {
         _augMap.put(_srcToTestNames.get(k), _srcNames.get(k));
+        MsgCtrl.msgln("\n" + "No test methods found; \t" + _srcToTestNames.size()
+            + " test methods written from source");
       }
       return _augMap;
     }
@@ -148,8 +150,8 @@ public class TripleMap
 
 
   /**
-   * Traverse through the internal src names and generate test names from them, ensuring that
-   * all names within the src-to-test name list are unique by adding a numerical suffix.
+   * Traverse through the internal src names and generate test names from them, ensuring that all
+   * names within the src-to-test name list are unique by adding a numerical suffix.
    */
   public void convertSrcToTestNames()
   {

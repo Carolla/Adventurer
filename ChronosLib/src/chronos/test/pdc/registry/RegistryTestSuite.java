@@ -24,19 +24,17 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 
-  // TODO Verify that all classes below have tests that pass, or don't need them
-
     /* chronos.pdc.registry test files */
-//    TestAdventureRegistry.class,
-//    TestBuildingRegistry.class,
-//    TestHelpTextObject.class,
-//    TestHeroRegistry.class,
-//    TestItemRegistry.class,
-//    TestNPCRegistry.class,
-//    TestOccupationRegistry.class,
-//    TestRegistryFactory.class,
-//    TestTownRegistry.class,
-//    TestSkillRegistry.class,
+    // TestAdventureRegistry.class,
+    // TestBuildingRegistry.class,
+    // TestHelpTextObject.class,
+    TestHeroRegistry.class,
+    TestItemRegistry.class,
+    TestNPCRegistry.class,
+    TestOccupationRegistry.class,
+    // TestRegistryFactory.class, // this doesn't seem to be used
+    TestSkillRegistry.class,
+    TestTownRegistry.class,
 
 })
 /** Compilation of all unit tests for regression and integration testing. */

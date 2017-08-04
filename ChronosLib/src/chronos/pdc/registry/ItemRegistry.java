@@ -29,18 +29,19 @@ import chronos.pdc.Item.ItemCategory;
  *          Feb 12, 2013 // updated to allow all items for all registries <br>
  *          May 6, 2013 // updated getInstance(boolean) <br>
  *          May 27 2017 // converted weights to lbs as standard measure <br>
+ *          July 31, 2017 // updated per QATool <br>
  */
 public class ItemRegistry extends Registry<Item>
 {
   /**
-   * 14 Starting Items, and weight in ounces, for the Hero's inventory: Total weight for this stash
-   * is 426 oz + Peasant starting cash (15.8 gp = 32 oz) = 464 oz. The String format is used so that
-   * the triple-array can be easily iniitialized until in ItemRegistry. Each Item := Category, Name,
-   * Weight (ea), and Quantity. Cash will be set from the Klass initCash() method as Gold and
-   * Silver, both of Category CASH
+   * 46 Starting Items, and weight in ounces, for the Hero's inventory. The String format is used so
+   * that the triple-array can be easily initialized in ItemRegistry. Each Item := Category, Name,
+   * Weight (ea), and Quantity. Cash will be initialized from the {@code Klass.initCash()} method as
+   * Gold and Silver, both of Category CASH
    */
   @SuppressWarnings("serial")
-  private static List<Item> Inventory = new ArrayList<Item>() {{
+  private static List<Item> Inventory = new ArrayList<Item>() {
+    {
       add(new Item(ItemCategory.VALUABLES, "Gold pieces", 1));// 1.875 lb
       add(new Item(ItemCategory.VALUABLES, "Silver pieces", 1));// 0.5 lb
       add(new Item(ItemCategory.EQUIPMENT, "Backpack", 160));// 10.0 lb
@@ -87,7 +88,8 @@ public class ItemRegistry extends Registry<Item>
       add(new Item(ItemCategory.ARMS, "Walking stick", 48));
       add(new Item(ItemCategory.MAGIC, "Spell book", 80));
       add(new Item(ItemCategory.MAGIC, "Magic bag", 2));
-  }};
+    }
+  };
 
   /*
    * CONSTRUCTOR(S) AND RELATED METHODS
@@ -110,7 +112,7 @@ public class ItemRegistry extends Registry<Item>
   @Override
   public void initialize()
   {
-	  _list.addAll(Inventory);
+    _list.addAll(Inventory);
   }
 
 

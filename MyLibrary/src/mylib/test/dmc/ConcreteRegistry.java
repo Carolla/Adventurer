@@ -10,10 +10,10 @@
 
 package mylib.test.dmc;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mylib.ApplicationException;
-import mylib.dmc.DbReadWriter;
 import mylib.dmc.IRegistryElement;
 import mylib.pdc.Registry;
 
@@ -33,6 +33,7 @@ import mylib.pdc.Registry;
  *          May 23 2011 // TAA: added getKey method <br>
  *          Jun 13 2011 // TAA: updated/deprecated methods <br>
  *          Sep 27 2014 // ABC removed unneeded methods and encapsulated DBRW better <br>
+ *          Aug 1, 2017 // replaced db4o with a HaspMap<><br>
  */
 public class ConcreteRegistry<E extends IRegistryElement> extends Registry<E>
 {
@@ -41,7 +42,7 @@ public class ConcreteRegistry<E extends IRegistryElement> extends Registry<E>
   // CONSTRUCTOR AND RELATED METHODS
   // ============================================================
 
-  protected DbReadWriter<E> _regRW;
+  // protected DbReadWriter<E> _regRW;
 
   /**
    * Default constructor
@@ -49,50 +50,56 @@ public class ConcreteRegistry<E extends IRegistryElement> extends Registry<E>
    * @param filename of the file to act as db repository
    * @throws ApplicationException if the constructor fails
    */
-  public ConcreteRegistry(String filename) 
+  public ConcreteRegistry(String filename)
   {
     super(filename);
   }
 
-  public void setDbReadWriter(DbReadWriter<E> regRW)
-  {
-    _regRW = regRW;
-  }
+  // public void setDbReadWriter(DbReadWriter<E> regRW)
+  // {
+  // _regRW = regRW;
+  // }
+
 
   @Override
   protected void initialize()
   {
-    _regRW = new DbReadWriter<E>(_filename);
-    _list = getAll(); //generic using subclass to avoid type erasure(?) issue
+    // _regRW = new DbReadWriter<E>(_filename);
+    _list = (ArrayList<E>) getAll(); // generic using subclass to avoid type erasure(?) issue
   }
+
 
   @Override
   public boolean add(E obj)
   {
     if (super.add(obj)) {
-      _regRW.addElement(obj);
+      // _regRW.addElement(obj);
       return true;
     }
     return false;
-  } 
-  
+  }
+
+
   @Override
   public void delete(E obj)
   {
     super.delete(obj);
-    _regRW.deleteElement(obj);
+    // _regRW.deleteElement(obj);
   }
 
+
   /**
-   * Retrieve element names in the particular Registry that match the type of
-   * the object passed in. Uses the getKey() method of IRegistryElement, and
-   * assumes the key is the object's name field.
+   * Retrieve element names in the particular Registry that match the type of the object passed in.
+   * Uses the getKey() method of IRegistryElement, and assumes the key is the object's name field.
    * 
    * @return the list of names
    */
-  public List<String> getNamesByType(E elem) {
-    return _regRW.getAllNames(elem);
+  public List<E> getNamesByType(E elem)
+  {
+//    return _regRW.getAllNames(elem);
+    return (List<E>) new ArrayList<E>();
   }
+
   
 } // end of ConcreteRegistry outer class
 

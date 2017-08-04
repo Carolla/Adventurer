@@ -97,7 +97,7 @@ public class Chronos
   public static String ItemRegPath = REGISTRY_PATH + "Items.reg";
   public static String NPCRegPath = REGISTRY_PATH + "NPCs.reg";
   public static String OcpRegPath = REGISTRY_PATH + "Occupations.reg";
-  public static String PersonRegPath = REGISTRY_PATH + "Dormitory.reg";
+  // public static String PersonRegPath = REGISTRY_PATH + "Dormitory.reg";
   public static String SkillRegPath = REGISTRY_PATH + "Skills.reg";
   public static String TownRegPath = REGISTRY_PATH + "Towns.reg";
   public static String AdvHelpRegPath = REGISTRY_PATH + "AdvHelpRegistry.reg";

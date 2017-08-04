@@ -16,17 +16,11 @@ import java.util.List;
 import mylib.dmc.IRegistryElement;
 
 /**
- * The base class for all Registries, contains component {@code DbReadWriter}. All derived
- * registries will become persistent singleton containers for unique homogeneous objects. The
- * singleton will reload the file when created, or initialize from static tables containing default
- * data if the file doesn't exist.
- * <p>
- * All concrete classes derived from this abstract class works with a data management component
- * class {@code DbReadWriter} to handle the actual database read and write operations.
+ * The base class for all Registries.
  * <p>
  * WARNING: All Registry elements must implement the interface {@code IRegistryElement}. Do not use
  * the default {@code boolean Object.equals} method because it compares objects independent of the
- * field data within (an instantiation level compare) and will not work as expected with db4o.
+ * field data within (an instantiation level compare) and will not work as expected.
  * 
  * @author Alan Cline
  * @version Aug 6, 2012 // original <br>
@@ -35,17 +29,19 @@ import mylib.dmc.IRegistryElement;
  *          Dec 19 2015 // removed the <IRegistryElement> generic <br>
  *          Dec 25 2015 // refactored for the new DbReadWriter class <br>
  *          Mar 28 2016 // ABC refactored to in-memory List instead of dbReadWriter <br>
+ *          July 30, 2017 // revised per QATool <br>
+ *          Aug 1, 2017 // added HeroRegistry to cadre of Registry subclasses <br>
  */
 public abstract class Registry<E extends IRegistryElement>
 {
-  /**
-   * The DMC registry class for handling persistence. Each derived-class {@code Registry} has its
-   * own ReadWriter
-   */
-  protected String _filename;
+  // /**
+  // * The DMC registry class for handling persistence. Each derived-class {@code Registry} has its
+  // * own ReadWriter
+  // */
+  // protected String _filename;
 
   /** Registries are in-memory object structures except for HeroRegistry. */
-  protected List<E> _list;
+  protected ArrayList<E> _list;
 
   /**
    * Initialize registry with beginning data from static tables, called when the registry file does
@@ -59,26 +55,25 @@ public abstract class Registry<E extends IRegistryElement>
   // CONSTRUCTOR AND RELATED METHODS
   // ============================================================
 
-  /** Base constructor for in-memory registries */
+  /**
+   * Base constructor for in-memory registries creates a read-only {@code Registry}.
+   * Required for serialization.
+   */
   public Registry()
   {
     _list = new ArrayList<E>();
     initialize();
   }
 
-  
+
   /**
-   * Creates a Registry (read-write) and its DbReadWriter component. If the Registry exists, its
-   * database is reloaded from the db file. if the Registry is created new, initializes the database
-   * with starting hard-coded data in the sublcass. A new Registry can only be created and
-   * initialized if the initFlag is true
+   * Creates a for persistent registry. Currently, {@code HeroRegistry} is the only one.
    * 
-   * @param filename relative path filename going to the db
+   * @param filename path filename designated the save file
    */
   public Registry(String filename)
   {
     _list = new ArrayList<E>();
-    _filename = filename;
     initialize();
   }
 
@@ -150,7 +145,7 @@ public abstract class Registry<E extends IRegistryElement>
    * Retrieve one or more objects by name. The object's {@code getKey()} method is called.
    * 
    * @param name of the target object to match against for comparison
-   * @return the list of all elements that match the name
+   * @return the element object that matches the name
    */
   public E get(String name)
   {
@@ -173,21 +168,21 @@ public abstract class Registry<E extends IRegistryElement>
     return _list;
   }
 
-	/**
-	 * Retrieve elements in the particular Registry that match the type of
-	 * the object passed in.
-	 * 
-	 * @return list of elements
-	 */
-	public List<Object> getElementsByType(Object obj) {
-		List<Object> selectedElements = new ArrayList<Object>();
-		for (IRegistryElement elem : getAll()) {
-			if (elem.getClass().equals(obj.getClass())) {
-				selectedElements.add(elem);
-			}
-		}
-		return selectedElements;
-	}
+  /**
+   * Retrieve elements in the particular Registry that match the type of the object passed in.
+   * 
+   * @return list of elements
+   */
+  public List<Object> getElementsByType(Object obj)
+  {
+    List<Object> selectedElements = new ArrayList<Object>();
+    for (IRegistryElement elem : getAll()) {
+      if (elem.getClass().equals(obj.getClass())) {
+        selectedElements.add(elem);
+      }
+    }
+    return selectedElements;
+  }
 
   /**
    * Get the number of elements currently in the registry

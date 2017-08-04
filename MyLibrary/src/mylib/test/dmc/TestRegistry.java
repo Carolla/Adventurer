@@ -23,7 +23,6 @@ import com.db4o.query.Predicate;
 
 import mylib.Constants;
 import mylib.MsgCtrl;
-import mylib.dmc.DbReadWriter;
 import mylib.dmc.IRegistryElement;
 
 
@@ -52,20 +51,20 @@ public class TestRegistry
 
   /** A predicate for retrieving objects by name */
   Predicate<IRegistryElement> _pred = null;
-  private DbReadWriter<SomeObject> _dbReadWriter = new DbReadWriter<SomeObject>(TEST_FILEPATH);
+//  private DbReadWriter<SomeObject> _dbReadWriter = new DbReadWriter<SomeObject>(TEST_FILEPATH);
 
   @Before
   public void setUp() throws Exception
   {
     // Create a Registry object, which will be initialized if one doesn't exist
     _testReg = new ConcreteRegistry<SomeObject>(TEST_FILEPATH);
-    _testReg.setDbReadWriter(_dbReadWriter);
+//    _testReg.setDbReadWriter(_dbReadWriter);
   }
 
   @After
   public void tearDown() throws Exception
   {
-    _dbReadWriter.clear();
+//    _dbReadWriter.clear();
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
   }

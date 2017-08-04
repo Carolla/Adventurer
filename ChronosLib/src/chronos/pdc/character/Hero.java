@@ -10,6 +10,12 @@
 
 package chronos.pdc.character;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -32,8 +38,11 @@ import mylib.dmc.IRegistryElement;
  *          May 22, 2017 // refined so all new Heroes are Peasant klass <br>
  *          June 2 2017 // refactored for clearer organization <br>
  */
-public class Hero implements IRegistryElement
+public class Hero implements IRegistryElement, Serializable
 {
+  // Required for serialization
+  static final long serialVersionUID = 42L;
+
   /** Input data fields to create a new hero */
   public enum HeroInput {
     NAME, GENDER, HAIR, RACE, KLASS
@@ -73,7 +82,10 @@ public class Hero implements IRegistryElement
   // CONSTRUCTOR(S) AND RELATED METHODS
   // ====================================================
 
-  // public Hero() {}; // db4o attempt
+  /** Required for serialization */
+  public Hero()
+  {};
+
 
   /**
    * Create the Person from the basic non-klass attributes. <br>
@@ -105,12 +117,12 @@ public class Hero implements IRegistryElement
 
     // DEPENDENT ON RACE, GENDER, AND TRAITS
     _race = Race.createRace(raceName, new Gender(gender), hairColor);
-    // Fill out other race-dependent traits and attributes, 
+    // Fill out other race-dependent traits and attributes,
     _traits = _race.buildRace();
     // Assign Race language
     _knownLangs = _race.getLanguages();
     // Build single string of all known languages
-//    _langString = buildLangString();
+    // _langString = buildLangString();
     // Initial Armor Class from adjusted DEX
     _AC = INITIAL_AC + _traits.calcMod(PrimeTraits.DEX);
     // Set AP and non-lethal mods
@@ -214,6 +226,31 @@ public class Hero implements IRegistryElement
   public List<String> getSpellBook()
   {
     return _klass.getSpells();
+  }
+
+
+  /*
+   * Create an object output stream file into which to Serialize this Hero. Note: serialization
+   * methods will throw a {@code NotActiveException runtime error} if all component objects are not
+   * serializable. The Hero's name will be used as the filename.
+   */
+  public void writeObject()
+  {
+    FileOutputStream fileOut = null;
+    ObjectOutputStream oos = null;
+    try {
+      fileOut = new FileOutputStream(_name);
+    } catch (FileNotFoundException ex) {
+      ex.printStackTrace();
+    }
+    try {
+      oos = new ObjectOutputStream(fileOut);
+      oos.defaultWriteObject();
+      oos.flush();
+      oos.close();
+    } catch (IOException ex) {
+      ex.printStackTrace();
+    }
   }
 
 

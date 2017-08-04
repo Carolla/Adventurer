@@ -21,10 +21,10 @@ import mylib.pdc.Registry;
  * 
  * @author Alan Cline
  * @version Jan 21, 2013 // original <br>
+ *          July 31, 2017 // updaed per QATool <br>
  */
 public class NPCRegistry extends Registry<NPC>
 {
-
   /**
    * The default init table containing starting Non-Player Characters 16 NPCs in table
    */
@@ -374,17 +374,19 @@ public class NPCRegistry extends Registry<NPC>
               add("He stares at you silently, then goes to the other side of the kitchen.");
               add("\"Rogahn and Zelligar probably wouldn't like you poking into their home.\"");
               add("\"A group of adventurers went into that place two days ago. They have not returned.\"");
-              }}));
-          // J. P. Pennypacker, the Bank manager
-          add(new NPC(
-              "J. P. Pennypacker",
-              0,
-              "A slightly-overweight and balding man stands near the bar talking to the Innkeeper. "
-                  + "He is well-dressed, and seems out of place in the tavern.",
-              "He is obviously not here for entertainment. He is discussing something in low urgent "
-                  + "whispers with the Innkeeper.",
-              // rumors
-                  new ArrayList<String>() {{
+            }
+          }));
+      // J. P. Pennypacker, the Bank manager
+      add(new NPC(
+          "J. P. Pennypacker",
+          0,
+          "A slightly-overweight and balding man stands near the bar talking to the Innkeeper. "
+              + "He is well-dressed, and seems out of place in the tavern.",
+          "He is obviously not here for entertainment. He is discussing something in low urgent "
+              + "whispers with the Innkeeper.",
+          // rumors
+          new ArrayList<String>() {
+            {
               add("He tries at first to ignore you, but since you continue to stand, he turns and faces "
                   + "you with an insincere smile. \"Well, what can I do for you, er, futture customers?\"");
               add("\"A proficient adventurer like yourself will need a safe place to store their loot, er, "

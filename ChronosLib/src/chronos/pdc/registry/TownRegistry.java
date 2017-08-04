@@ -22,6 +22,7 @@ import mylib.pdc.Registry;
  * 
  * @author Alan Cline
  * @version Feb 6, 2013 // original <br>
+ *          July 30, 2017 // updated per QATool <br>
  */
 public class TownRegistry extends Registry<Town>
 {
@@ -51,15 +52,13 @@ public class TownRegistry extends Registry<Town>
   // ==============================================================================
 
   /**
-   * Private ctor because this singleton is called from getInstance(). Registry filename is used
-   * for database
-   * 
-   * @param init flag to initialize registry for default data if true
+   * Registry filename is used for database
    */
-  protected TownRegistry()
+  public TownRegistry()
   {
     super(Chronos.TownRegPath);
   }
+
 
   // ==============================================================================
   // PUBLIC METHODS
@@ -98,5 +97,7 @@ public class TownRegistry extends Registry<Town>
   {
     return getAll();
   }
+
+
 } // end of TownRegistry class
 
