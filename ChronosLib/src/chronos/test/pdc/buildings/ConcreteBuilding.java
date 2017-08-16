@@ -17,35 +17,32 @@ import mylib.ApplicationException;
  * Enables testing of the abstract base class building
  *
  * @author Alan Cline
- * @version
- *          <DL>
- *          <DT>Build 1.0 Apr 5, 2013 // original
- *          <DD>
- *          </DL>
+ * @version Apr 5, 2013 // original <br>
+ *          Aug 9, 2017 // updated per QATool <br>
  */
 public class ConcreteBuilding extends Building
 {
 
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND RELATED METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
+  // ========================================================================
+  // CONSTRUCTOR(S) AND RELATED METHODS
+  // ========================================================================
 
   /**
    * Create the base building; called by the concrete Building object
    * 
    * @param name of this building
    * @param master owner or manager of the building
+   * @param openTime when (military time of day) the building opens for business
+   * @param closeTime when (military time of day) the building closes for business
    * @param hoverText quick phrase for purpose of building
    * @param exterior first glance of building
    * @param interior detailed description of building, usually once inside
    * @throws ApplicationException if NPC cannot be found
    **/
-  public ConcreteBuilding(String name, String master, String hoverText, String exterior,
-      String interior)
-          throws ApplicationException
+  public ConcreteBuilding(String name, String master, int openTime, int closeTime, String hoverText,
+      String exterior, String interior) throws ApplicationException
   {
-    super(name, master, hoverText, exterior, interior, null, null);
+    super(name, master, openTime, closeTime, hoverText, exterior, interior, null, null);
   }
 
 

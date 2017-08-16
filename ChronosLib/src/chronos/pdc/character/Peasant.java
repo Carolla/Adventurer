@@ -9,13 +9,18 @@
 
 package chronos.pdc.character;
 
+import java.io.Serializable;
+
 /**
  * @author Al Cline
  * @version May 21, 2017 // original <br>
  *          June 2 2017 // modified to support hero peasant refactoring <br>
  */
-public class Peasant extends Klass
+public class Peasant extends Klass implements Serializable
 {
+  // Required for serialization
+  static final long serialVersionUID = 20170804445L;
+
 
   /** Starting die and initial free HP for klass */
   // Starting HP is fixed at 10, but string notation is required

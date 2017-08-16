@@ -10,6 +10,7 @@
 
 package chronos.pdc.character;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +26,11 @@ import mylib.pdc.MetaDie;
  * @version Sept 4 2015 // rewrite to support Hero rewrite <br>
  *          June 2 2017 // refactored for clearer organization <br>
  */
-public abstract class Klass
+public abstract class Klass implements Serializable
 {
+  // Required for serialization
+  static final long serialVersionUID = 20170804500L;
+
   // Spells in the Cleric or Wizard's spell book
   List<String> _spellBook = new ArrayList<String>();
 
@@ -155,7 +159,7 @@ public abstract class Klass
 
 
   /** Gets the name of this klass */
-  public String className()
+  public String getName()
   {
     return _klassName;
   }

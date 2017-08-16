@@ -32,6 +32,7 @@ import mylib.MsgCtrl;
  *          July 25, 2014 // ABC: Moved AdvHelpRegistry from Adventurer to shared registry area<br>
  *          Dec 7, 2014 // ABC: Moved platform-independent directory variables to Contants.java <br>
  *          Oct 28, 2015 // ABC: Added Hero registry path
+ *          Aug 5, 2017 // revised to point to directory of Hero files
  */
 public class Chronos
 {
@@ -91,7 +92,8 @@ public class Chronos
     // System.out.println("ADV_IMAGE_PATH = " + ADV_IMAGE_PATH);
   }
 
-  public static String HeroRegPath = REGISTRY_PATH + "Dormitory.reg";
+//  public static String HeroRegPath = REGISTRY_PATH + "Dormitory.reg";
+  public static String HeroRegPath = REGISTRY_PATH + "Dormitory/";
   public static String AdventureRegPath = REGISTRY_PATH + "Adventures.reg";
   public static String BuildingRegPath = REGISTRY_PATH + "Buildings.reg";
   public static String ItemRegPath = REGISTRY_PATH + "Items.reg";

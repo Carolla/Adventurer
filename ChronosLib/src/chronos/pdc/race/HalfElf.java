@@ -9,6 +9,7 @@
 
 package chronos.pdc.race;
 
+import chronos.pdc.character.Gender;
 import chronos.pdc.character.TraitList;
 import chronos.pdc.character.TraitList.PrimeTraits;
 
@@ -49,15 +50,18 @@ public class HalfElf extends Race
 
 
   /**
-   * Default constructor, called reflectively by Race
-   * @param gender 
+   * Default constructor, called by Race base class
+   * 
+   * @param gender
    */
-  public HalfElf()
+  public HalfElf(Gender gender, String hairColor)
   {
     _raceName = RACE_NAME;
     _raceLang = getRaceLang();
     _descriptor = _raceDescriptor;
     _raceSkills = _halfelfSkills;
+    _gender = gender;
+    _hairColor = hairColor;
   }
 
   

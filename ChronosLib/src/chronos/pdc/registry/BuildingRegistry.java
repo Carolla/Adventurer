@@ -19,6 +19,7 @@ import chronos.pdc.buildings.FightersGuild;
 import chronos.pdc.buildings.Inn;
 import chronos.pdc.buildings.Jail;
 import chronos.pdc.buildings.RoguesGuild;
+import chronos.pdc.buildings.Stables;
 import chronos.pdc.buildings.Store;
 import chronos.pdc.buildings.WizardsGuild;
 import mylib.pdc.Registry;
@@ -29,6 +30,7 @@ import mylib.pdc.Registry;
  * @author Alan Cline
  * @version April 20, 2013 // original <br>
  *          July 15, 2017 // added Stable and Jewelry store to initialization <br>
+ *          Aug 9, 2017 // updaed per QATool, and replaced Jewelry store with Stable <br>
  */
 public class BuildingRegistry extends Registry<Building>
 {
@@ -47,20 +49,21 @@ public class BuildingRegistry extends Registry<Building>
   /**
    * Creates the Building Registry with the default buildings and saves it
    */
+  @Override
   public void initialize()
   {
     super.add(new Inn()); // Ugly Ogre Inn
     super.add(new Store()); // Rat's Pack
     super.add(new Jail()); // Jail
     super.add(new Bank()); // The Bank
-    // super.add(new Jewelry()); // Gems & Jewels
-    // super.add(new Stable()); // Larry's Livery
+    super.add(new Stables()); // Larry's Livery
     super.add(new FightersGuild()); // Stadium
     super.add(new RoguesGuild()); // Rouge's Tavern
     super.add(new ClericsGuild()); // Monastery
     super.add(new WizardsGuild()); // Arcaneum
   }
 
+  
   /**
    * Retrieve a building by name from the building registry
    * 

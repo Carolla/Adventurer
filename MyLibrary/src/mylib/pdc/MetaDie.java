@@ -15,24 +15,26 @@ import mylib.ApplicationException;
 /**
  * A custom random generator biased toward rolling dice for mapping to standard d20 gaming system
  * rules, including Chronos. <br>
- * <code>MetaDie</code> has three core methods:
+ * {@code MetaDie} has three core methods:
  * <UL>
- * <LI><code>getRandom(int min, int max)</code>, which selects a single number from a linear random
+ * <LI>{@code getRandom(int min, int max)}, which selects a single number from a linear random
  * population within the range, defined by the given min, max limits (inclusive).</LI>
- * <LI><code>getGaussian(double mean, double lowEnd, double highEnd)</code>, which retrieves a
- * number from a Gaussian distribution adjusted to fit the given mean.</LI>
- * <LI><code>roll(int nbrSide, int nbrDice)</code>, which returns the sum of random numbers by
- * adding the given dice together. A call to this method is similar to retrieving numbers from a
- * Gaussian distribution.</LI>
+ * <LI>{@code getGaussian(double mean, double lowEnd, double highEnd)}, which retrieves a number
+ * from a Gaussian distribution adjusted to fit the given mean.</LI>
+ * <LI>{@code roll(int nbrSide, int nbrDice)}, which returns the sum of random numbers by adding the
+ * given dice together. A call to this method is similar to retrieving numbers from a Gaussian
+ * distribution.</LI>
  * </UL>
- * <code>MetaDie</code> can be created either in debug mode (repeatable numeric sequences) or with
- * the standard randomizer (non-repeatable). <br>
+ * {@code MetaDie} can be created either in debug mode (repeatable numeric sequences) or with the
+ * standard randomizer (non-repeatable). <br>
  * 
  *
  * @author Alan Cline
  * @version Dec 10 2006 // re-used from previous programs <br>
  *          Apr 28 2009 // major refactoring to simplify method set <br>
  *          May 23 2017 // revise traits to fall within [8, 18] <br>
+ *          Aug 14, 2017 // minor Javadoc adjustments <br>
+ *          Aug 15, 2017 // repaired roll(int, int) for 0-based numbers <br>
  * 
  * @see java.util.Random
  */
@@ -107,7 +109,7 @@ public class MetaDie
    * Returns the sum of rolling the given number of dice, which is similar to selecting a number
    * from a normal (Gaussian) population that has the given dice characteristics. If nbrDice = 1,
    * then this method returns a (linear) number from 1 to nbrSides. The generator uses zero-based
-   * numbers, so is offset by 1 for the caller.
+   * numbers, so is adjusted, but should never exceed nbrDice * nbrSides.
    * 
    * @param nbrDice number of rolls to sum
    * @param nbrSides max range of each roll (number of sides of die)
@@ -118,9 +120,15 @@ public class MetaDie
     if (nbrSides < 1) {
       nbrSides = 1;
     }
+    // Cannot be greater than this number
+    int bound = nbrDice * nbrSides;
     int sum = 0;
     for (int k = 0; k < nbrDice; k++) {
-      sum += _generator.nextInt(nbrSides) + 1;
+      int incr = Math.min(_generator.nextInt(nbrSides) + 1, bound);
+      if (incr >= 20) {
+        System.err.println("\t MetDie.roll(int, int) exceeded 20 for 2d10 roll");
+      }
+      sum += incr;
     }
     return (sum);
   }
@@ -150,11 +158,11 @@ public class MetaDie
       int sign = getSign(matcher, "ADD", "+");
 
       return roll(rolls, faces) + sign * addValue;
-    } else {
-      System.out.println("Failed to match");
-      return -1;
     }
+    System.out.println("Failed to match");
+    return -1;
   }
+
 
   /**
    * Returns a single trait using the 4d6-1 algorithm: Four d6 dice are rolled, and the lowest die
@@ -182,7 +190,7 @@ public class MetaDie
     return sum;
   }
 
-  
+
   /**
    * Returns a linear random number in terms of percent. Same as <code>getRandom(1, 100)</code>.
    * 
@@ -193,7 +201,7 @@ public class MetaDie
     return getRandom(1, 100);
   }
 
-  
+
   /**
    * Rolls six random numbers for Hero traits, constrained to fall within 8 and 18, inclusive
    * 

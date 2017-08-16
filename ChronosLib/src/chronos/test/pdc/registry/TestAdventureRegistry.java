@@ -12,12 +12,10 @@ package chronos.test.pdc.registry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.Before;
@@ -25,6 +23,7 @@ import org.junit.Test;
 
 import chronos.pdc.Adventure;
 import chronos.pdc.registry.AdventureRegistry;
+import mylib.MsgCtrl;
 
 /**
  * Test the repository for Adventure storage
@@ -32,12 +31,19 @@ import chronos.pdc.registry.AdventureRegistry;
  * @author Alan Cline
  * @version Feb 16, 2014 // original <br>
  *          Sep 13, 2014 // cleaned up and added MsgCtrl.where() method <br>
+ *          August 9, 2017 // autogen: QA Tool added missing test methods <br>
  */
 public class TestAdventureRegistry
 {
+  /** Default Adventure name to start AdventureRegistry with */
+  private final String DEF_ADVENTURE = "The Quest for Rogahn and Zelligar";
+  /** Default Town to start AdventureRegistry with */
+  private final String DEF_TOWN = "Biljur'Baz";
+  /** Default Arena to start AdventureRegistry with */
+  private final String DEF_ARENA = "Quasqueton";
 
-  private String DEF_ADVENTURE = "The Quest for Rogahn and Zelligar";
-  private AdventureRegistry areg;
+  private AdventureRegistry _advReg;
+
 
   // ===========================================================================
   // FIXTURES
@@ -49,9 +55,8 @@ public class TestAdventureRegistry
   @Before
   public void setUp() throws Exception
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    areg = new AdventureRegistry();
+    _advReg = new AdventureRegistry();
+    assertNotNull(_advReg);
   }
 
   /**
@@ -59,7 +64,11 @@ public class TestAdventureRegistry
    */
   @After
   public void tearDown() throws Exception
-  {}
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    _advReg = null;
+  }
 
 
   // ===========================================================================
@@ -67,91 +76,107 @@ public class TestAdventureRegistry
   // ===========================================================================
 
   /**
-   * @Normal Add a new Adventure into the AdvReg, then retrieve it without recreating it
+   * @Normal.Test AdventureRegistry() -- Verify registry created properly
    */
   @Test
-  public void testNewInstance()
+  public void testCtor()
   {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    // VERIFY AdvReg contains single element
-    assertEquals(1, areg.size());
-
-    // and the element is the recent adventure
-    Adventure adv = areg.getAdventure(DEF_ADVENTURE);
+    // VERIFY AdvReg contains one adventure
+    assertEquals(1, _advReg.size());
+    Adventure adv = _advReg.getAdventure(DEF_ADVENTURE);
     assertTrue(adv.getName().equals(DEF_ADVENTURE));
+
+    List<String> advList = _advReg.getAdventureList();
+    assertEquals(1, advList.size());
   }
 
 
   /**
-   * @Normal Return an adventure by name
+   * @Not.Needed Adventure getAdventure(String name) -- tester in testCtor
    */
   @Test
   public void testGetAdventure()
   {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-
-    Adventure adv = (Adventure) areg.get(DEF_ADVENTURE);
-    assertNotNull(adv);
-    assertEquals(DEF_ADVENTURE, adv.getName());
+    MsgCtrl.msgln(MsgCtrl.NOTEST + MsgCtrl.PRIMITIVE);
   }
 
 
   /**
-   * @Error Return an non-existing adventure
-   * @Error Return an adventure with an empty null key
-   * @Null Return an adventure with a null key
-   * @Error Retrieve an adventure from a non-existing AdventureRegistry
+   * @Error.Test Adventure getAdventure(String name) -- Request a non-existing adventure
+   * @Error.Test Adventure getAdventure(String name) -- Request an adventure with an empty null key
+   * @Null.Test Adventure getAdventure(String name) -- Request an adventure with a null key
    */
   @Test
   public void testGetAdventure_Nonexisting()
   {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    Adventure adv = (Adventure) areg.get("Salazar's Lair");
+    // Request a non-existing adventure
+    Adventure adv = _advReg.getAdventure("Salazar's Lair");
+    assertTrue(adv == null);
+
+    // Request an adventure with an empty key
+    adv = _advReg.getAdventure("  ");
+    assertTrue(adv == null);
+
+    // Request an adventure with an null key
+    adv = _advReg.getAdventure(null);
     assertTrue(adv == null);
   }
 
 
   /**
-   * @Error Attempt to return an adventure with an empty key
-   * @Null Return an adventure with a null key -- compile error
-   */
-  @Test
-  public void testGetAdventure_EmptyKey()
-  {
-    MsgCtrl.where(this);
-
-    Adventure adv = (Adventure) areg.get("   ");
-    assertNull(adv);
-  }
-
-
-  /**
-   * @Normal Get a list of all adventures in the AdventureRegistry
+   * @Not.Needed Adventure getAdvnetureList() -- used in testCtor
    */
   @Test
   public void testGetAdventureList()
   {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-    List<String> advList = areg.getAdventureList();
-    assertEquals(1, advList.size());
+    MsgCtrl.msgln(MsgCtrl.NOTEST + MsgCtrl.PRIMITIVE);
   }
 
 
+  /**
+   * @Normal.Test void initialize() -- verify proper constructor
+   */
+  @Test
+  public void testInitialize()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // Get all the adventures, which is one.
+    ArrayList<Adventure> advList = (ArrayList<Adventure>) _advReg.getAll();
+    assertEquals(1, advList.size());
+    Adventure adv = advList.get(0);
+    MsgCtrl.msgln("\t Dumping elements of this adventure, initialized by superclass");
+    MsgCtrl.msgln("\t Name: \t" + adv.getName());
+    assertEquals(DEF_ADVENTURE, adv.getName());
+
+    MsgCtrl.msgln("\t Town: \t" + adv.getTownName());
+    assertEquals(DEF_TOWN, adv.getTownName());
+
+    MsgCtrl.msgln("\t Arena: \t" + adv.getArenaName());
+    assertEquals(DEF_ARENA, adv.getArenaName());
+  }
+
+  
   // ===========================================================================
   // PRIVATE HELPER METHODS
   // ===========================================================================
 
-  /**
-   * @Null Return an adventure with a null key
-   */
-
-  /**
-   * All methods tested
-   */
-  void _testsNotNeeded()
-  {}
 
 
-} // end of TestAdvHelp class
+} // end of TestAdventureRegistry class

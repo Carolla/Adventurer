@@ -9,6 +9,7 @@
 
 package chronos.pdc.race;
 
+import chronos.pdc.character.Gender;
 import chronos.pdc.character.TraitList;
 import chronos.pdc.character.TraitList.PrimeTraits;
 
@@ -57,12 +58,15 @@ public class Dwarf extends Race
   /**
    * Default constructor, called reflectively by Klass
    */
-  public Dwarf()
+  public Dwarf(Gender gender, String hairColor)
   {
     _raceName = RACE_NAME;
     _raceLang = RACE_LANGUAGE;
     _descriptor = _raceDescriptor;
     _raceSkills = _dwarfSkills;
+    _gender = gender;
+    _hairColor = hairColor;
+
   }
 
 

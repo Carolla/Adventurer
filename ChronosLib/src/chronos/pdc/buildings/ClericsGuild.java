@@ -33,8 +33,9 @@ public class ClericsGuild extends Building
       " building. The entire area permeates peacefulness.";
 
   /** For this case, a non-Guild member cannot enter */
-  public static final String DEFAULT_INTERIOR = "A cheerful looking man in a brown robe greets you. " +
-      "His hood lays back on his shoulders. \"How can I serve you? \" he asks. ";
+  public static final String DEFAULT_INTERIOR =
+      "A cheerful looking man in a brown robe greets you. " +
+          "His hood lays back on his shoulders. \"How can I serve you? \" he asks. ";
 
   /** Paths to the images for this building **/
   static private final String EXTERIOR_IMAGE = "ext_Monastery.JPG";
@@ -42,13 +43,13 @@ public class ClericsGuild extends Building
 
 
   /** The Monastery opens at dawn (6am) and closes at dusk (7pm) */
-  private int OPENTIME = 600;
-  private int CLOSETIME = 1900;
+  static private final int OPENTIME = 600;
+  static private final int CLOSETIME = 1900;
 
 
-  /*
-   * CONSTRUCTOR(S) AND RELATED METHODS
-   */
+  // ================================================================================
+  // CONSTRUCTOR(S) AND RELATED METHODS
+  // ================================================================================
 
   /**
    * Default Constructor, create Inn with default data
@@ -57,7 +58,10 @@ public class ClericsGuild extends Building
    */
   public ClericsGuild() throws ApplicationException
   {
-    super(DEFAULT_GUILD_NAME, DEFAULT_OWNER, HOVERTEXT, DEFAULT_EXTERIOR, DEFAULT_INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
-    setBusinessHours(OPENTIME, CLOSETIME);
+    super(DEFAULT_GUILD_NAME, DEFAULT_OWNER, OPENTIME, CLOSETIME, HOVERTEXT, DEFAULT_EXTERIOR,
+        DEFAULT_INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
+    // setBusinessHours(OPENTIME, CLOSETIME);
   }
+
+
 } // end of ClericsGuild class

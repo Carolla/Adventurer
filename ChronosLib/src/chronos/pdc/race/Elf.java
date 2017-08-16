@@ -9,6 +9,7 @@
 
 package chronos.pdc.race;
 
+import chronos.pdc.character.Gender;
 import chronos.pdc.character.TraitList;
 import chronos.pdc.character.TraitList.PrimeTraits;
 
@@ -55,12 +56,14 @@ public class Elf extends Race
    * 
    * @param gender
    */
-  public Elf()
+  public Elf(Gender gender, String hairColor)
   {
     _raceName = RACE_NAME;
     _raceLang = RACE_LANGUAGE;
     _descriptor = _raceDescriptor;
     _raceSkills = _elfSkills;
+    _gender = gender;
+    _hairColor = hairColor;
   }
 
 

@@ -9,6 +9,7 @@
 
 package chronos.pdc;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,15 +31,10 @@ import mylib.pdc.MetaDie;
  *          Feb 29, 2012 // ABC updated to add Skill object <br>
  *          June 3 2017 // ABC updated to display Skill actions <br>
  */
-public class Occupation implements IRegistryElement
+public class Occupation implements IRegistryElement, Serializable
 {
-//  /** List of Occupations (31) for random assignment */
-//  public static final String[] _ocpTable = {
-//      "Academic", "Acrobat", "Alchemist", "Apothecary", "Armorer", "Banker", "Bowyer",
-//      "Carpenter", "Farmer", "Fisher", "Forester", "Freighter", "Gambler", "Hunter",
-//      "Husbandman", "Innkeeper", "Jeweler", "Leatherworker", "Painter", "Mason",
-//      "Miner", "Navigator", "Sailor", "Shipwright", "Tailor", "Trader", "Trapper",
-//      "Weaponsmith", "Weaver", "Woodworker", "Drifter"};
+  // Required for serialization
+  static final long serialVersionUID = 201708040446L;
 
   /** MetDie for randomizing Occupations */
   private static final MetaDie _md = new MetaDie();

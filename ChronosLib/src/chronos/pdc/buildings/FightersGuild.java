@@ -17,7 +17,8 @@ import mylib.ApplicationException;
  * "Stadium".
  * 
  * @author Alan Cline
- * @version <DL>
+ * @version
+ *          <DL>
  *          <DT>Build 1.0 Jan 28, 2013 // original
  *          <DD>
  *          </DL>
@@ -32,9 +33,10 @@ public class FightersGuild extends Building
   /** Fighter's Guild */
   static private final String HOVERTEXT = "Fighters' Guild, for martial training and weaponry";
   /** What appears as one enters the building */
-  public static final String DEFAULT_EXTERIOR = "You stand outside a large coliseum-style building. " +
-      "You can see a courtyard through the entranceway, and hear the clashing " +
-      "of sword practice inside.";
+  public static final String DEFAULT_EXTERIOR =
+      "You stand outside a large coliseum-style building. " +
+          "You can see a courtyard through the entranceway, and hear the clashing " +
+          "of sword practice inside.";
   /** What one senses when looking around the inside of the Inn when few patrons are here. */
   public static final String DEFAULT_INTERIOR =
       "The Guildmaster meets you at the archway into the Guild. " +
@@ -48,14 +50,13 @@ public class FightersGuild extends Building
 
 
   /** The Store opens at 6am and closes at 6pm */
-  private int OPENTIME = 500;
-  private int CLOSETIME = 1600;
+  static private final int OPENTIME = 500;
+  static private final int CLOSETIME = 1600;
 
 
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND RELATED METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
+  // ================================================================================
+  // CONSTRUCTOR(S) AND RELATED METHODS
+  // ================================================================================
 
   /**
    * Default Constructor, create Inn with default data
@@ -64,7 +65,10 @@ public class FightersGuild extends Building
    */
   public FightersGuild() throws ApplicationException
   {
-    super(DEFAULT_GUILD_NAME, DEFAULT_OWNER, HOVERTEXT, DEFAULT_EXTERIOR, DEFAULT_INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
-    setBusinessHours(OPENTIME, CLOSETIME);
+    super(DEFAULT_GUILD_NAME, DEFAULT_OWNER, OPENTIME, CLOSETIME, HOVERTEXT, DEFAULT_EXTERIOR,
+        DEFAULT_INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
+    // setBusinessHours(OPENTIME, CLOSETIME);
   }
+
+
 } // end of FightersGuild class

@@ -9,6 +9,7 @@
 
 package chronos.pdc.character;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,8 +31,11 @@ import chronos.pdc.registry.ItemRegistry;
  *          Nov 25, 2011 // ABC replaced double cash with Items Gold and Silver <br>
  *          Oct 13, 2015 // updated for new Hero generation rules and categories <br>
  */
-public class Inventory
+public class Inventory implements Serializable
 {
+  // Required for serialization
+  static final long serialVersionUID = 20170804L;
+
   /** Peasant must start less than any of the other Klasses */
   static public final int SILVER_PER_GOLD = 10;
 

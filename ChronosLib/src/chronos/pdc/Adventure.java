@@ -17,6 +17,7 @@ import mylib.dmc.IRegistryElement;
  * 
  * @author Alan Cline
  * @version June 8, 2013 // original <br>
+ *          Aug 9, 2017 // updated per QATool <br>
  */
 public class Adventure implements IRegistryElement
 {
@@ -99,6 +100,15 @@ public class Adventure implements IRegistryElement
   {
     return _name;
   }
+  
+  
+  /**
+   * @return the name of the areana associated with this town
+   */
+  public String getArenaName()
+  {
+    return _arenaName;
+  }
 
 
   /**
@@ -118,7 +128,7 @@ public class Adventure implements IRegistryElement
     return _townName;
   }
 
-  
+
   @Override
   public int hashCode()
   {
@@ -136,6 +146,6 @@ public class Adventure implements IRegistryElement
   {
     return _name;
   }
-  
-  
+
+
 } // end of Adventure class

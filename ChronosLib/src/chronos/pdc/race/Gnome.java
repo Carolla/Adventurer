@@ -9,6 +9,7 @@
 
 package chronos.pdc.race;
 
+import chronos.pdc.character.Gender;
 import chronos.pdc.character.TraitList;
 import chronos.pdc.character.TraitList.PrimeTraits;
 
@@ -55,16 +56,18 @@ public class Gnome extends Race
 
 
   /**
-   * Default constructor, called reflectively by Klass
+   * Default constructor, called by Race base class
    * 
    * @param gender
    */
-  public Gnome()
+  public Gnome(Gender gender, String hairColor)
   {
     _raceName = RACE_NAME;
     _raceLang = RACE_LANGUAGE;
     _descriptor = _raceDescriptor;
     _raceSkills = _gnomeSkills;
+    _gender = gender;
+    _hairColor = hairColor;
   }
 
 

@@ -24,10 +24,10 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 
-    /* chronos.pdc.registry test files */
-    // TestAdventureRegistry.class,
-    // TestBuildingRegistry.class,
-    // TestHelpTextObject.class,
+    /* CHRONOS.PDC.REGISTRY TEST FILES */
+    TestAdventureRegistry.class,
+    TestBuildingRegistry.class,
+    // TestHelpTextObject.class,    // this doesn't seem to be used yet
     TestHeroRegistry.class,
     TestItemRegistry.class,
     TestNPCRegistry.class,

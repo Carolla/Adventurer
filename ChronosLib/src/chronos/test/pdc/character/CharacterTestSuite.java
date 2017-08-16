@@ -13,7 +13,6 @@ package chronos.test.pdc.character;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import chronos.pdc.race.RangedValueTest;
 import chronos.test.pdc.race.TestRace;
 
 
@@ -34,17 +33,14 @@ import chronos.test.pdc.race.TestRace;
 //    TestHalfOrc.class,
 //    TestHobbit.class,
 //    TestHuman.class,
-
-    TestTraitList.class,
-    TestGender.class,
-    RangedValueTest.class,
-
-    TestFighter.class,
-    TestCleric.class,
-    TestThief.class,
-    TestWizard.class,
-
-    TestDescription.class,
+//    TestTraitList.class,
+//    TestGender.class,
+//    RangedValueTest.class,
+//    TestFighter.class,
+//    TestCleric.class,
+//    TestThief.class,
+//    TestWizard.class,
+//    TestDescription.class,
 })
 
 /** Compilation of all unit tests for regression and integration testing. */

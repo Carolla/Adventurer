@@ -24,3 +24,5 @@ peacekeeper
 peacekeepers
 unhelpful
 townspeople
+courtesan
+hyphenated

@@ -9,6 +9,7 @@
 
 package mylib.pdc;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -32,13 +33,10 @@ import mylib.dmc.IRegistryElement;
  *          July 30, 2017 // revised per QATool <br>
  *          Aug 1, 2017 // added HeroRegistry to cadre of Registry subclasses <br>
  */
-public abstract class Registry<E extends IRegistryElement>
+public abstract class Registry<E extends IRegistryElement> implements Serializable
 {
-  // /**
-  // * The DMC registry class for handling persistence. Each derived-class {@code Registry} has its
-  // * own ReadWriter
-  // */
-  // protected String _filename;
+  // Required for serialization
+  static final long serialVersionUID = 20170804530L;
 
   /** Registries are in-memory object structures except for HeroRegistry. */
   protected ArrayList<E> _list;
@@ -56,8 +54,8 @@ public abstract class Registry<E extends IRegistryElement>
   // ============================================================
 
   /**
-   * Base constructor for in-memory registries creates a read-only {@code Registry}.
-   * Required for serialization.
+   * Base constructor for in-memory registries creates a read-only {@code Registry}. Required for
+   * serialization.
    */
   public Registry()
   {
@@ -95,13 +93,13 @@ public abstract class Registry<E extends IRegistryElement>
     if ((obj == null) || (obj.getKey().trim().length() == 0)) {
       return false;
     }
-
+    // Add only entries unique to the list
     if (!contains(obj)) {
       return _list.add(obj);
     }
-
     return false;
   }
+
 
   /**
    * Verifies if the given object exists in the registry. The object's equal() method is called.
@@ -111,7 +109,6 @@ public abstract class Registry<E extends IRegistryElement>
    */
   public boolean contains(E target)
   {
-
     if (target == null)
       return false;
 
@@ -142,15 +139,17 @@ public abstract class Registry<E extends IRegistryElement>
 
 
   /**
-   * Retrieve one or more objects by name. The object's {@code getKey()} method is called.
+   * Retrieve one or more objects by key, which is more than the name. The object's {@code getKey()}
+   * method is called.
    * 
-   * @param name of the target object to match against for comparison
+   * @param key of the target object to match against for comparison
    * @return the element object that matches the name
    */
-  public E get(String name)
+  // public E get(String name)
+  public E get(String key)
   {
     for (E elem : _list) {
-      if (elem.getKey().equalsIgnoreCase(name)) {
+      if (elem.getKey().equalsIgnoreCase(key)) {
         return elem;
       }
     }

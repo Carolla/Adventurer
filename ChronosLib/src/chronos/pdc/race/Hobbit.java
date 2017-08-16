@@ -9,6 +9,7 @@
 
 package chronos.pdc.race;
 
+import chronos.pdc.character.Gender;
 import chronos.pdc.character.TraitList;
 import chronos.pdc.character.TraitList.PrimeTraits;
 
@@ -24,16 +25,16 @@ public class Hobbit extends Race
   private final String RACE_LANGUAGE = "Tolkeen";
 
   /** Weight and height is generated in a normal distribution across the range's average value */
-  protected final int WT_LOW = 70;  // male range [70, 110]; female [63, 103]
-  protected final int HT_LOW = 38;  // male range [38, 46];  female [34, 42]
+  protected final int WT_LOW = 70; // male range [70, 110]; female [63, 103]
+  protected final int HT_LOW = 38; // male range [38, 46]; female [34, 42]
   protected final String WT_RANGE_DICE = "2d3-2"; // times 10: varying weight = 0 - 40 lb
   protected final String HT_RANGE_DICE = "2d5-2"; // varying height = 0 - 8 in
 
   /** Racial limits for a male Gnome for the traits SIWCDCh: STR-1, CON+1, DEX+1 */
-  protected final int[] MALE_MINLIMIT = { 7,  8,  8,  9,  9,  8};
+  protected final int[] MALE_MINLIMIT = {7, 8, 8, 9, 9, 8};
   protected final int[] MALE_MAXLIMIT = {17, 18, 18, 19, 19, 18};
   /** Female limits after adjustments from the male: STR-1, CON+1, CHR+1 */
-  protected final int[] FEMALE_MINLIMIT = { 6,  8,  8, 10,  9,  9};
+  protected final int[] FEMALE_MINLIMIT = {6, 8, 8, 10, 9, 9};
   protected final int[] FEMALE_MAXLIMIT = {16, 18, 18, 20, 19, 19};
 
   /** Hobbits have hairy bare feet */
@@ -56,12 +57,14 @@ public class Hobbit extends Race
    * 
    * @param gender
    */
-  public Hobbit()
+  public Hobbit(Gender gender, String hairColor)
   {
     _raceName = RACE_NAME;
     _raceLang = RACE_LANGUAGE;
     _descriptor = _raceDescriptor;
     _raceSkills = _hobbitSkills;
+    _gender = gender;
+    _hairColor = hairColor;
   }
 
 

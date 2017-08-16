@@ -19,7 +19,8 @@ import mylib.ApplicationException;
  * later.
  * 
  * @author Alan Cline
- * @version <DL>
+ * @version
+ *          <DL>
  *          <DT>Build 1.0 Apr 8, 2013 // original
  *          <DD>
  *          </DL>
@@ -47,8 +48,8 @@ public class Bank extends Building
 
 
   /** The bank opens at 9am and closes at 3pm */
-  private int OPENTIME = 900;
-  private int CLOSETIME = 1500;
+  static private final int OPENTIME = 900;
+  static private final int CLOSETIME = 1500;
 
 
   /*
@@ -62,9 +63,12 @@ public class Bank extends Building
    */
   public Bank() throws ApplicationException
   {
-    super(DEFAULT_BANK_NAME, DEFAULT_OWNER, DEFAULT_HOVERTEXT, DEFAULT_EXTERIOR, DEFAULT_INTERIOR,
+    super(DEFAULT_BANK_NAME, DEFAULT_OWNER, OPENTIME, CLOSETIME, DEFAULT_HOVERTEXT,
+        DEFAULT_EXTERIOR, DEFAULT_INTERIOR,
         EXTERIOR_IMAGE, INTERIOR_IMAGE);
-    setBusinessHours(OPENTIME, CLOSETIME);
+    // setBusinessHours(OPENTIME, CLOSETIME);
   }
+
+
 } // end of Bank class
 

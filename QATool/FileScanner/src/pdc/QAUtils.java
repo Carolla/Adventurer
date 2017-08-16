@@ -23,6 +23,7 @@ import mylib.MsgCtrl;
 /**
  * @author Alan Cline
  * @version Mar 27, 2017 // major refactoring from existing utility class <br>
+ *          Aug 10, 2017 // excluded abstract methods from creating stubs <br>
  */
 public class QAUtils
 {
@@ -45,7 +46,7 @@ public class QAUtils
     return mList;
   }
 
-  
+
   /**
    * Send a list to the console as audit trail
    * 
@@ -60,7 +61,7 @@ public class QAUtils
     }
   }
 
-  
+
   /**
    * Sort first by method name, then by parm list number and type; return value is ignored
    * 
@@ -185,10 +186,13 @@ public class QAUtils
         MsgCtrl.auditErrorMsg("WARNING: " + method.getName()
             + "() has default access; should have a declared access");
       }
+      // Collect public and protected, but not abstract, methods
       if ((Modifier.isPublic(modifiers)) || (Modifier.isProtected(modifiers))) {
-        String mName = QAUtils.extractSignature(method, clazzName.getName());
-        if (mName != null) {
-          mList.add(mName);
+        if (!Modifier.isAbstract(modifiers)) {
+          String mName = QAUtils.extractSignature(method, clazzName.getName());
+          if (mName != null) {
+            mList.add(mName);
+          }
         }
       }
     }

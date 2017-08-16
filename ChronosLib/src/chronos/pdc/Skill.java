@@ -9,6 +9,8 @@
 
 package chronos.pdc;
 
+import java.io.Serializable;
+
 import chronos.pdc.registry.SkillRegistry;
 import mylib.ApplicationException;
 import mylib.dmc.IRegistryElement;
@@ -29,8 +31,9 @@ import mylib.dmc.IRegistryElement;
  *          Mar 25 2013 // ABC added in IRegistryElement <br>
  *          July 17 2017 // ABC slight modifications per QATool <br>
  */
-public class Skill implements IRegistryElement
+public class Skill implements IRegistryElement, Serializable
 {
+
   // Serializable because it is part of the serialized Person object
   static final long serialVersionUID = 101005L; // creation date
 

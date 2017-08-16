@@ -8,6 +8,7 @@ import static chronos.pdc.character.TraitList.PrimeTraits.INT;
 import static chronos.pdc.character.TraitList.PrimeTraits.STR;
 import static chronos.pdc.character.TraitList.PrimeTraits.WIS;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -20,8 +21,11 @@ import mylib.pdc.MetaDie;
  * @author Al Cline
  * @version May 23, 2017 // revised from original (unknown date) <br>
  */
-public class TraitList
+public class TraitList implements Serializable
 {
+  // Required for serialization
+  static final long serialVersionUID = 201708040449L;
+
   /** Indices into the Hero's prime traits */
   public static enum PrimeTraits {
     STR, INT, WIS, CON, DEX, CHR
@@ -303,13 +307,6 @@ public class TraitList
   }
 
 
-  private String addPolarity(int mod) 
-  {
-    String modStr = (mod > 0) ? "+" + mod : Integer.toString(mod);
-    return modStr;
-  }
-  
-  
   public void recalcSpeed(int height)
   {
     if (height < 49) {
@@ -361,6 +358,12 @@ public class TraitList
         "CON: " + getTrait(PrimeTraits.CON) + ", " +
         "DEX: " + getTrait(PrimeTraits.DEX) + ", " +
         "CHR: " + getTrait(PrimeTraits.CHR);
+  }
+
+  private String addPolarity(int mod) 
+  {
+    String modStr = (mod > 0) ? "+" + mod : Integer.toString(mod);
+    return modStr;
   }
 
   // Find a number in one of three ranges: low, medium, high

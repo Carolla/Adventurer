@@ -12,14 +12,14 @@ package chronos.pdc.buildings;
 import java.util.ArrayList;
 import java.util.List;
 
-import mylib.ApplicationException;
-import mylib.pdc.MetaDie;
-import mylib.pdc.Utilities;
 import chronos.pdc.NPC;
 import chronos.pdc.command.Scheduler;
 import chronos.pdc.command.intCmdPatronEnter;
 import chronos.pdc.command.intCmdPatronLeave;
 import chronos.pdc.registry.NPCRegistry;
+import mylib.ApplicationException;
+import mylib.pdc.MetaDie;
+import mylib.pdc.Utilities;
 
 /**
  * Main building in town for rest, food, conversation, and sometimes even a bar brawl. Heroes can be
@@ -59,8 +59,8 @@ public class Inn extends Building
   static private final String INTERIOR_IMAGE = "int_Inn.jpg";
 
   /** The Inn opens at 6am and closes at midnight */
-  private int OPENTIME = 600;
-  private int CLOSETIME = 2400;
+  static private final int OPENTIME = 600;
+  static private final int CLOSETIME = 2400;
 
   /** Patrons start entering right away */
   private final int MIN_DELAY = 1;
@@ -69,7 +69,7 @@ public class Inn extends Building
 
   /** Patrons stay at least 10 minutes */
   private final int MIN_DURATION = 10 * 60;
-  /** Patrons never stay longer than 2 hour*/
+  /** Patrons never stay longer than 2 hour */
   private final int MAX_DURATION = 2 * Utilities.SECONDS_PER_HOUR;
 
   /** Minimum number of patrons that indicate if the Inn is busy or not */
@@ -89,16 +89,14 @@ public class Inn extends Building
    */
   public Inn() throws ApplicationException
   {
-    super(INN_NAME, INNKEEPER, HOVERTEXT, EXTERIOR, INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
-    setBusinessHours(OPENTIME, CLOSETIME);
+    super(INN_NAME, INNKEEPER, OPENTIME, CLOSETIME, HOVERTEXT, EXTERIOR, INTERIOR, EXTERIOR_IMAGE,
+        INTERIOR_IMAGE);
   }
 
 
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
-   *                      PUBLIC METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
+  // ==========================================================================================
+  // PUBLIC METHODS
+  // ==========================================================================================
 
   /**
    * Assigns the <code>Patron</code>s' delay and duration, then randomly assigns a few
@@ -106,7 +104,6 @@ public class Inn extends Building
    * enters. The "time-loaded" <code>Patron</code>s are then put on the <code>Scheduler</code> queue
    * for self-entering during runtime.<br>
    * 
-   * @param md <code>MetaDie</code> random generator for the game
    * @param skedder <code>Scheduler</code> singleton for scheduling <code>Patron</code>s
    */
   public void initPatrons(Scheduler skedder)
@@ -114,7 +111,7 @@ public class Inn extends Building
     NPCRegistry npcReg = new NPCRegistry();
     List<NPC> patrons = npcReg.getAll();
     patrons.remove(npcReg.getNPC(INNKEEPER)); // Bork is always here
-    
+
     // The starterList has no zero-delay intCmdEnter commands, each containing the
     // Patron who shall enter at the designated delay time.
     List<intCmdPatronEnter> starterList = createStarterList(patrons);
@@ -132,7 +129,8 @@ public class Inn extends Building
    * for all the <code>Patron</code>s in the <code>PatronRegistry</code>. Each intCmdEnter is
    * assigned a Patron to enter the Inn when it is their time. <br>
    * A CommandList is created instead of a Patron list because Events wrap Commands, not Patrons.
-   * @param patrons 
+   * 
+   * @param patrons
    * 
    * @return List of random non-zero <code>intCmdEnter</code> commands for each <code>Patron</code>
    */
@@ -163,7 +161,7 @@ public class Inn extends Building
     if (_patrons.size() >= NBR_PATRONS_TO_BE_BUSY) {
       _intDesc = BUSY_DESC;
     }
-    
+
     return added;
   }
 
@@ -172,11 +170,11 @@ public class Inn extends Building
   {
     System.out.println(npc.getName() + " left the Inn");
     boolean removed = super.remove(npc);
-    
+
     if (_patrons.size() < NBR_PATRONS_TO_BE_BUSY) {
       _intDesc = INTERIOR;
     }
-    
+
     return removed;
   }
 

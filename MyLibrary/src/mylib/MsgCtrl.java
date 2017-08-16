@@ -33,6 +33,7 @@ import java.util.Map;
  *          Feb 21, 2015 // added getState() <br>
  *          Apr 30, 2017 // added methods to check state of SUPPRESS states <br>
  *          July 17, 2017 // added some constants to help test auditing messages <br>
+ *          Aug 14, 2017 // added another to handle base class testing <br>
  */
 public class MsgCtrl
 {
@@ -45,15 +46,20 @@ public class MsgCtrl
   // ================================================================================
   // This section reserved for constants for testing
   // ================================================================================
+  
+  // Not tested or not implemented messagess
+  public static final String NOTEST = "\t Test not needed ";
   public static final String NOT_IMPLEMENTED = "\tTest not yet implemented.";
+  // Exception handling messages
   public static final String EXP_EXCEPTION = "\tExpected exception: ";
   public static final String EXCEPTION_NOT_THROWN =
       "\tExpected an exception here. Did not receive one. ";
-  public static final String NOTEST = "\t Test not needed ";
-  public static final String WRAPPER = "-- simple wrapper call";
+  // Reasons for not testing a method
+  public static final String BASECLASS = "-- subclasses will test this superclass method";
   public static final String GETTER = "-- simple field getter";
-  public static final String SETTER = "-- simple field setter";
   public static final String PRIMITIVE = "-- primitive calc used in other tests";
+  public static final String SETTER = "-- simple field setter";
+  public static final String WRAPPER = "-- simple wrapper call";
 
   // ================================================================================
 

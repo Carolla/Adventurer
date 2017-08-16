@@ -1,11 +1,16 @@
 
 package chronos.pdc.character;
 
+import java.io.Serializable;
+
 import chronos.pdc.character.TraitList.PrimeTraits;
 
 
-public class Gender
+public class Gender implements Serializable
 {
+  // Required for serialization
+  static final long serialVersionUID = 201708040451L;
+
   public static final String MALE_STRING = "Male";
   public static final String FEMALE_STRING = "Female";
 
@@ -47,15 +52,6 @@ public class Gender
   }
 
 
-  private Gender_e byName(String name)
-  {
-    if (name.equalsIgnoreCase("Male")) {
-      return Gender_e.MALE;
-    } else {
-      return Gender_e.FEMALE;
-    }
-  }
-
   @Override
   public int hashCode()
   {
@@ -87,6 +83,15 @@ public class Gender
       return MALE_STRING;
     } else {
       return FEMALE_STRING;
+    }
+  }
+
+  private Gender_e byName(String name)
+  {
+    if (name.equalsIgnoreCase("Male")) {
+      return Gender_e.MALE;
+    } else {
+      return Gender_e.FEMALE;
     }
   }
 }

@@ -30,9 +30,9 @@ public class WizardsGuild extends Building
   static private final String HOVERTEXT = "Wizards' Guild for magic, spells, and enchantments";
   /** What appears as one enters the building */
   static private final String EXTERIOR =
-      "As you round the corner, it is as if you have stepped into another world. The landscape is" +
-          " bathed in a pearl-white luminescence. A white marble orb on the hillside contains a" +
-          " surreal bubble of light and twisted images. ";
+      "As you round the corner, it is as if you have stepped into another world. The landscape is "
+          + "bathed in a pearl-white luminescence. A white marble orb on the hillside contains a "
+          + "surreal bubble of light and twisted images. ";
   /** For this case, a non-Guild member cannot enter */
   static private final String INTERIOR =
       "A tall shrouded figure appears suddenly in front of three doors of colored light as you "
@@ -43,13 +43,13 @@ public class WizardsGuild extends Building
   static private final String INTERIOR_IMAGE = "int_Arcaneum.jpg";
 
   /** The Arcaneum opens at noon and closes at 8pm */
-  private int OPENTIME = 1200;
-  private int CLOSETIME = 2000;
+  static private final int OPENTIME = 1200;
+  static private final int CLOSETIME = 2000;
 
 
-  /*
-   * CONSTRUCTOR(S) AND RELATED METHODS
-   */
+  // ================================================================================
+  // CONSTRUCTOR(S) AND RELATED METHODS
+  // ================================================================================
 
   /**
    * Default Constructor, create Inn with default data
@@ -58,7 +58,10 @@ public class WizardsGuild extends Building
    */
   public WizardsGuild() throws ApplicationException
   {
-    super(GUILD_NAME, OWNER, HOVERTEXT, EXTERIOR, INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
-    setBusinessHours(OPENTIME, CLOSETIME);
+    super(GUILD_NAME, OWNER, OPENTIME, CLOSETIME, HOVERTEXT, EXTERIOR, INTERIOR, EXTERIOR_IMAGE,
+        INTERIOR_IMAGE);
+    // setBusinessHours(OPENTIME, CLOSETIME);
   }
+
+
 } // end of Wizards Guild class

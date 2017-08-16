@@ -10,6 +10,7 @@
 
 package chronos.pdc.race;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,9 +31,15 @@ import mylib.pdc.Utilities;
  * @version Sept 4 2015 // rewrite to support Hero rewrite <br>
  *          June 2 2017 // Refactored for better organization <br>
  *          June 17 2017 // Modified trait limits <br>
+ *          Aug 10, 2017 // updated per QATool <br>
+ *          Aug 15, 2017 // expand {@code equals()} to include gender <br>
  */
-public abstract class Race
+public abstract class Race implements Serializable
 {
+  // Required for serialization
+  static final long serialVersionUID = 20170804450L;
+
+  /** Names of Race subclasses, hyphen for Half- races removed */
   public static final String[] RACE_LIST =
       {"Human", "Dwarf", "Elf", "Gnome", "Half-Elf", "Half-Orc", "Hobbit"};
 
@@ -44,8 +51,8 @@ public abstract class Race
   public static final String HALFORC_RACENAME = "Half-Orc";
   public static final String HOBBIT_RACENAME = "Hobbit";
 
-  static protected Gender _gender;
-  static protected String _hairColor;
+  protected Gender _gender;
+  protected String _hairColor;
 
   protected String _raceName;
   protected String _raceLang;
@@ -96,20 +103,28 @@ public abstract class Race
   }
 
 
+
+  // ====================================================
+  // PROTECTED METHODS
+  // ====================================================
+
+  // ====================================================
+  // PUBLIC METHODS
+  // ====================================================
+
   /**
    * Genders have slightly different traits. Once the specific Race is created, then specific
    * attributes are refined or created: trait adjustment for race and gender, weight and height, and
    * a physical description.
-   * 
-   * @param traits the six prime unadjusted traits for all Heroes
    */
-  public TraitList buildRace()
+  public TraitList buildRace(String gender, String hairColor)
   {
     // Set the race-specific traits
     TraitList traits = setRaceTraits();
+    _gender = new Gender(gender);
+    _hairColor = hairColor;
 
-    _languages.add(DEFAULT_LANG);
-    _languages.add(_raceLang);
+    addLanguages();
     _weight = calcWeight();
     _height = calcHeight();
     _hunger = "Full";
@@ -117,55 +132,6 @@ public abstract class Race
         _gender, _height, _weight);
     return traits;
   }
-
-  /**
-   * Create a specific subclass of Race based on the Race name. <br>
-   * NOTE: (1) The method must be static because Race works as dispatcher, and itself cannot be
-   * instantiated. (2) The subclass must be in the same package as the Race class.
-   *
-   * @param RaceName the name of the subclass to be created
-   * @param gender male or female of all Races
-   * @param hairColor of any Race
-   */
-  static public Race createRace(String raceName, Gender gender, String hairColor)
-  {
-    _gender = gender;
-    _hairColor = hairColor;
-    Race race = null;
-    switch (raceName)
-    {
-      case HUMAN_RACENAME:
-        race = new Human();
-        break;
-      case DWARF_RACENAME:
-        race = new Dwarf();
-        break;
-      case ELF_RACENAME:
-        race = new Elf();
-        break;
-      case GNOME_RACENAME:
-        race = new Gnome();
-        break;
-      case HALFELF_RACENAME:
-        race = new HalfElf();
-        break;
-      case HALFORC_RACENAME:
-        race = new HalfOrc();
-        break;
-      case HOBBIT_RACENAME:
-        race = new Hobbit();
-        break;
-      default:
-        throw new NullPointerException(
-            "Race.createRace(): Cannot find race requested " + raceName);
-    }
-    return race;
-  }
-
-
-  // ====================================================
-  // PROTECTED METHODS
-  // ====================================================
 
   /**
    * Calculate the height of the Hero based on deviation from average
@@ -176,8 +142,8 @@ public abstract class Race
    */
   protected int calcHeight(int low, String variance)
   {
-    int newLow  = (int) (_gender.isMale() ? low : Math.round(low * FEMALE_ADJ));
-    int height = newLow + _md.roll(variance); // adjust for 1 when 0 is rolled
+    int newLow = (int) (_gender.isMale() ? low : low * FEMALE_ADJ);
+    int height = newLow + _md.roll(variance);
     return height;
   }
 
@@ -185,14 +151,14 @@ public abstract class Race
   /**
    * Calculate the weight of the Hero based on deviation from average
    * 
-   * @param low lowest value for a male; female adjustment made
+   * @param low lowest value for a male; adjustment made for female
    * @param variance dice format for normal-curve distribution across average value
    * @return the randomly-determined weight over the average with a normal distribution
    */
   protected int calcWeight(int low, String variance)
   {
     int newLow = (int) (_gender.isMale() ? low : Math.round(low * FEMALE_ADJ));
-    int weight = newLow + _md.roll(variance);
+    int weight = newLow + _md.roll(variance) * 10;
     return weight;
   }
 
@@ -218,6 +184,76 @@ public abstract class Race
   // PUBLIC METHODS
   // ====================================================
 
+  /**
+   * Create a specific subclass of Race based on the Race name. <br>
+   * NOTE: (1) The method must be static because Race works as dispatcher, and itself cannot be
+   * instantiated. (2) The subclass must be in the same package as the Race class. Maps String
+   * racename to class racename; beware the hyphenated names, like Half-Elf
+   *
+   * @param raceName the name of the subclass to be created
+   * @param gender male or female of all Races
+   * @param hairColor of any Race
+   */
+  static public Race createRace(String raceName, Gender gender, String hairColor)
+  {
+    Race race = null;
+    switch (raceName)
+    {
+      case HUMAN_RACENAME:
+        race = new Human(gender, hairColor);
+        break;
+      case DWARF_RACENAME:
+        race = new Dwarf(gender, hairColor);
+        break;
+      case ELF_RACENAME:
+        race = new Elf(gender, hairColor);
+        break;
+      case GNOME_RACENAME:
+        race = new Gnome(gender, hairColor);
+        break;
+      case HALFELF_RACENAME:
+        race = new HalfElf(gender, hairColor);
+        break;
+      case HALFORC_RACENAME:
+        race = new HalfOrc(gender, hairColor);
+        break;
+      case HOBBIT_RACENAME:
+        race = new Hobbit(gender, hairColor);
+        break;
+      default:
+        throw new NullPointerException(
+            "Race.createRace(): Cannot find race requested " + raceName);
+    }
+    return race;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+
+    Race other = (Race) obj;
+    if (_raceName == null) {
+      if (other._raceName != null)
+        return false;
+    } else if (!_raceName.equals(other._raceName))
+      return false;
+
+    if (_gender == null) {
+      if (other._gender != null)
+        return false;
+    } else if (!_gender.equals(other._gender))
+      return false;
+
+    return true;
+  }
+
+
   public String getGender()
   {
     return _gender.toString();
@@ -230,17 +266,6 @@ public abstract class Race
   }
 
 
-  public String getName()
-  {
-    return _raceName;
-  }
-
-
-  public String getRaceDescriptor()
-  {
-    return _descriptor;
-  }
-
   /**
    * Return the language specific to the race, or null. Hybrid races have a 50% chance of knowing
    * their race language.
@@ -252,21 +277,69 @@ public abstract class Race
     return _languages;
   }
 
+  public String getName()
+  {
+    return _raceName;
+  }
 
+
+  public String getRaceDescriptor()
+  {
+    return _descriptor;
+  }
+
+  
   public List<String> getSkills()
   {
     return new ArrayList<String>(Arrays.asList(_raceSkills));
   }
 
+  
   public int getWeight()
   {
     return _weight;
   }
 
 
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((_raceName == null) ? 0 : _raceName.hashCode());
+    result = prime * result + ((_gender == null) ? 0 : _gender.hashCode());
+    return result;
+  }
+
+  
+  public void loadRaceKeys(Map<PersonKeys, String> map)
+  {
+    map.put(PersonKeys.GENDER, _gender.toString());
+    map.put(PersonKeys.DESCRIPTION, _description.toString());
+    map.put(PersonKeys.HAIR_COLOR, _hairColor);
+    map.put(PersonKeys.HEIGHT, Integer.toString(_height));
+    map.put(PersonKeys.HUNGER, _hunger);
+    map.put(PersonKeys.RACENAME, _raceName);
+    map.put(PersonKeys.RMR, "" + _racialPoisonResist);
+    map.put(PersonKeys.WEIGHT, Integer.toString(_weight));
+  }
+
+
   // ====================================================
   // PRIVATE METHODS
   // ====================================================
+
+  /**
+   * All Races have Common language, and their race language. Humans have no reace language
+   */
+  private void addLanguages()
+  {
+    _languages.add(DEFAULT_LANG);
+    if (_raceLang != null) {
+      _languages.add(_raceLang);
+    }
+  }
+
 
   /**
    * Create the traits for a particular race. Starts with the default (human) trait list, then
@@ -285,55 +358,31 @@ public abstract class Race
   }
 
 
-  @Override
-  public int hashCode()
+  public class MockRace
   {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((_raceName == null) ? 0 : _raceName.hashCode());
-    return result;
-  }
+    public MockRace()
+    {};
 
-  @Override
-  public boolean equals(Object obj)
-  {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    Race other = (Race) obj;
-    if (_raceName == null) {
-      if (other._raceName != null)
-        return false;
-    } else if (!_raceName.equals(other._raceName))
-      return false;
-    return true;
-  }
+    /**
+     * @param gender give proper gender string to create gender object in race
+     */
+    public void setGender(String gender)
+    {
+      _gender = new Gender(gender);
+    }
 
-  public void loadRaceKeys(Map<PersonKeys, String> map)
-  {
-    map.put(PersonKeys.GENDER, _gender.toString());
-    map.put(PersonKeys.DESCRIPTION, _description.toString());
-    map.put(PersonKeys.HAIR_COLOR, _hairColor);
-    map.put(PersonKeys.HEIGHT, Integer.toString(_height));
-    map.put(PersonKeys.HUNGER, _hunger);
-    map.put(PersonKeys.RACENAME, _raceName);
-    map.put(PersonKeys.RMR, "" + _racialPoisonResist);
-    map.put(PersonKeys.WEIGHT, Integer.toString(_weight));
-  }
+    public int calcHeight(int low, String range)
+    {
+      return Race.this.calcHeight(low, range);
+    }
+
+    public TraitList constrainTo(TraitList tr, int[] low, int[] hi)
+    {
+      return Race.this.constrainTo(tr, low, hi);
+    }
 
 
-  // private void addRacialPoisonResist(int constitution, int magicAttackMod)
-  // {
-  // if ((_raceName.equalsIgnoreCase("Dwarf")) ||
-  // (_raceName.equalsIgnoreCase("Gnome")) ||
-  // (_raceName.equalsIgnoreCase("Hobbit"))) {
-  // _racialPoisonResist = (int) Math.round(constitution / 3.5);
-  // magicAttackMod += _racialPoisonResist;
-  // }
-  // }
+  } // end of MockRace
 
 
 } // end of abstract Race class

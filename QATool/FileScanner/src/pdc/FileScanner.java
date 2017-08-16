@@ -35,7 +35,7 @@ import mylib.MsgCtrl;
  * <P>
  * {@code FileScanner} assumes that the test folders mirror the source folders, and that all
  * corresponding test files start with the name {@code Test[srcname].java}. For example, the test
- * file for {@code /Project/eChronos/src/mylib/pdc/target.java} must be at location <br>
+ * file for {@code /Project/eChronos/src/mylib/pdc/target.java} must be at location 
  * {@code /Project/eChronos/src/mylib/test/pdc/testTarget.java}. <br>
  * The command line arguments would then be: <br>
  * {@code FileScanner /Project/eChronos/src/mylib/ pdc/target.java -[flags]}.

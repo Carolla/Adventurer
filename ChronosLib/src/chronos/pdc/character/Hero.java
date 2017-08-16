@@ -10,7 +10,6 @@
 
 package chronos.pdc.character;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -37,6 +36,7 @@ import mylib.dmc.IRegistryElement;
  * @version Sept 4 2015 // rewrite per revised generation rules <br>
  *          May 22, 2017 // refined so all new Heroes are Peasant klass <br>
  *          June 2 2017 // refactored for clearer organization <br>
+ *          Aug 6, 2017 // revised for serialization and to work with HeroRegistry <br>
  */
 public class Hero implements IRegistryElement, Serializable
 {
@@ -118,7 +118,7 @@ public class Hero implements IRegistryElement, Serializable
     // DEPENDENT ON RACE, GENDER, AND TRAITS
     _race = Race.createRace(raceName, new Gender(gender), hairColor);
     // Fill out other race-dependent traits and attributes,
-    _traits = _race.buildRace();
+    _traits = _race.buildRace(gender, hairColor);
     // Assign Race language
     _knownLangs = _race.getLanguages();
     // Build single string of all known languages
@@ -138,6 +138,118 @@ public class Hero implements IRegistryElement, Serializable
     _skills = (ArrayList<Skill>) _occ.getSkills();
 
   } // end of Hero constructor
+
+
+  public boolean canUseMagic()
+  {
+    return _klass.canUseMagic();
+  }
+
+  /**
+   * Compares two Heroes, who are equal when name, gender, race, and klass are equal. Required for
+   * serialization.
+   * 
+   * @param obj some other possible HeroRegistry to compare with
+   */
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    // Heroes are equal if name, gender, race, and klass are the same
+    Hero other = (Hero) obj;
+    if (!_name.equals(other._name)) {
+      return false;
+    }
+    if (!_race.equals(other._race)) {
+      return false;
+    }
+    if (!_klass.equals(other._klass)) {
+      return false;
+    }
+    if (!_race.getGender().equals(other._race.getGender())) {
+      return false;
+    }
+    return true;
+  }
+
+
+  /** Return the integer armor class */
+  public int getAC()
+  {
+    return _AC;
+  }
+
+
+  /** Return the string version of the Hero's gender */
+  public String getGender()
+  {
+    return _race.getGender();
+  }
+
+
+  /**
+   * The key distinguishes equal Heros from others, and the name is sufficient
+   */
+  @Override
+  public String getKey()
+  {
+    return _name;
+  }
+
+
+  public List<String> getKlassSkills()
+  {
+    return _klass.getSkills();
+  }
+
+  public Inventory getInventory()
+  {
+    return _inven;
+  }
+
+  public String getName()
+  {
+    return _name;
+  }
+
+  public List<String> getOcpSkills()
+  {
+    return _occ.getSkillNames();
+  }
+
+  public List<String> getRaceSkills()
+  {
+    return _race.getSkills();
+  }
+
+
+  public List<String> getSpellBook()
+  {
+    return _klass.getSpells();
+  }
+
+
+  // ====================================================
+  // PRIVATE METHODS
+  // ====================================================
+
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((_klass == null) ? 0 : _klass.hashCode());
+    result = prime * result + ((_name == null) ? 0 : _name.hashCode());
+    result = prime * result + ((_occ == null) ? 0 : _occ.hashCode());
+    result = prime * result + ((_race == null) ? 0 : _race.hashCode());
+    return result;
+  }
 
 
   /**
@@ -188,44 +300,43 @@ public class Hero implements IRegistryElement, Serializable
 
 
 
-  public boolean canUseMagic()
+  /*
+   * Serialize the Hero to a file derived from its name.
+   * 
+   * @param pathname filename to save the Hero to
+   */
+  public void save(String pathname)
   {
-    return _klass.canUseMagic();
+    // Write out Hero
+    FileOutputStream fileOut = null;
+    ObjectOutputStream oos = null;
+    try {
+      fileOut = new FileOutputStream(pathname);
+    } catch (FileNotFoundException ex) {
+      ex.printStackTrace();
+    }
+    try {
+      oos = new ObjectOutputStream(fileOut);
+      oos.writeObject(this);
+      oos.flush();
+      oos.close();
+    } catch (IOException ex) {
+      System.err.println("Could not write out the Hero");
+      System.err.println("\t" + ex.getMessage());
+    }
   }
 
-  public List<String> getKlassSkills()
-  {
-    return _klass.getSkills();
-  }
-
-  public Inventory getInventory()
-  {
-    return _inven;
-  }
-
-  public String getName()
-  {
-    return _name;
-  }
 
   public void setName(String newName)
   {
     _name = newName;
   }
 
-  public List<String> getRaceSkills()
-  {
-    return _race.getSkills();
-  }
 
-  public List<String> getOcpSkills()
+  public String toNamePlate()
   {
-    return _occ.getSkillNames();
-  }
-
-  public List<String> getSpellBook()
-  {
-    return _klass.getSpells();
+    return _name + ": " + _race.getGender().toString() + " " + _race.getName() + " "
+        + _occ.getName();
   }
 
 
@@ -254,14 +365,6 @@ public class Hero implements IRegistryElement, Serializable
   }
 
 
-  public String toNamePlate()
-  {
-    // return _name + ": " + _race.getGender().toString() + " " + _race.getName() + " "
-    // + _klass.className();
-    return _name + ": " + _race.getGender().toString() + " " + _race.getName() + " "
-        + _occ.getName();
-  }
-
   // ====================================================
   // PRIVATE METHODS
   // ====================================================
@@ -283,23 +386,5 @@ public class Hero implements IRegistryElement, Serializable
   }
 
 
-  @Override
-  public int hashCode()
-  {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((_klass == null) ? 0 : _klass.hashCode());
-    result = prime * result + ((_name == null) ? 0 : _name.hashCode());
-    result = prime * result + ((_occ == null) ? 0 : _occ.hashCode());
-    result = prime * result + ((_race == null) ? 0 : _race.hashCode());
-    return result;
-  }
-
-
-  @Override
-  public String getKey()
-  {
-    return _name;
-  }
 
 } // end of Hero class

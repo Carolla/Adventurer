@@ -15,8 +15,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import mylib.ApplicationException;
-import mylib.MsgCtrl;
 
 import org.junit.After;
 import org.junit.Before;
@@ -35,6 +33,8 @@ import chronos.pdc.buildings.WizardsGuild;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.NPCRegistry;
 import chronos.test.pdc.buildings.ConcreteBuilding.MockConcreteBuilding;
+import mylib.ApplicationException;
+import mylib.MsgCtrl;
 
 
 /**
@@ -85,7 +85,7 @@ public class TestBuilding
   @Before
   public void setUp() throws Exception
   {
-    _cb = new ConcreteBuilding(NAME, MASTER, HOVERTEXT, INTRO, DESC);
+    _cb = new ConcreteBuilding(NAME, MASTER, 0, 2400, HOVERTEXT, INTRO, DESC);
     assertNotNull(_cb);
     _mock = _cb.new MockConcreteBuilding();
     assertNotNull(_mock);
@@ -122,7 +122,7 @@ public class TestBuilding
     dump(_cb);
 
     // Normal: HoverText can be null
-    ConcreteBuilding b0 = new ConcreteBuilding(NAME, MASTER, HOVERTEXT, INTRO, DESC);
+    ConcreteBuilding b0 = new ConcreteBuilding(NAME, MASTER, 0, 2400, HOVERTEXT, INTRO, DESC);
     assertNotNull(b0);
     assertEquals(HOVERTEXT, b0.getHoverText());
     dump(b0);
@@ -130,20 +130,20 @@ public class TestBuilding
 
     // Error: null ctor parms
     try {
-      new ConcreteBuilding(null, MASTER, HOVERTEXT, INTRO, DESC);
+      new ConcreteBuilding(null, MASTER, 0, 2400, HOVERTEXT, INTRO, DESC);
       assertNotNull(_cb);
     } catch (ApplicationException ex) {
       MsgCtrl.msgln("\n\tExpected exception: " + ex.getMessage());
     }
     // Error: null ctor parms
     try {
-      new ConcreteBuilding(null, MASTER, HOVERTEXT, INTRO, DESC);
+      new ConcreteBuilding(null, MASTER, 0, 2400, HOVERTEXT, INTRO, DESC);
       assertNotNull(_cb);
     } catch (ApplicationException ex) {
       MsgCtrl.msgln("\tExpected exception: " + ex.getMessage());
     }
     try {
-      new ConcreteBuilding(NAME, null, HOVERTEXT, INTRO, DESC);
+      new ConcreteBuilding(NAME, null, 0, 2400, HOVERTEXT, INTRO, DESC);
       assertNotNull(_cb);
     } catch (ApplicationException ex) {
       MsgCtrl.msgln("\tExpected exception: " + ex.getMessage());
@@ -151,7 +151,7 @@ public class TestBuilding
 
     // Error: master is not in NPC Registry
     try {
-      new ConcreteBuilding(NAME, "Blockhead", HOVERTEXT, INTRO, DESC);
+      new ConcreteBuilding(NAME, "Blockhead", 0, 2400, HOVERTEXT, INTRO, DESC);
       assertNotNull(_cb);
     } catch (ApplicationException ex) {
       MsgCtrl.msgln("\tExpected exception: " + ex.getMessage());
@@ -197,11 +197,11 @@ public class TestBuilding
   public void testEquals() throws ApplicationException
   {
     // NORMAL compare two identical buildings but different instances
-    ConcreteBuilding cb2 = new ConcreteBuilding(NAME, MASTER, HOVERTEXT, INTRO, DESC);
+    ConcreteBuilding cb2 = new ConcreteBuilding(NAME, MASTER, 0, 2400, HOVERTEXT, INTRO, DESC);
     assertTrue(cb2.equals(_cb));
 
     // NORMAL Compare two identical buildings but different instances (but both in NPC Registry)
-    cb2 = new ConcreteBuilding(NAME, "Aragon", HOVERTEXT, INTRO, DESC);
+    cb2 = new ConcreteBuilding(NAME, "Aragon", 0, 2400, HOVERTEXT, INTRO, DESC);
 
     MsgCtrl.msgln("\n\t" + _cb.getKey() + " has master " + _cb.getProprietor());
     MsgCtrl.msgln("\n\t" + _cb.getKey() + " has master " + cb2.getProprietor());

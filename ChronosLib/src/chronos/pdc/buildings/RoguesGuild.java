@@ -30,30 +30,33 @@ public class RoguesGuild extends Building
   static private final String HOVERTEXT = "Where all the thieves party";
   /** What appears as one enters the building */
   public static final String DEFAUL_TEXTERIOR =
-      "A rowdy bar filled with unseemly characters of the night " +
-          "obscures these headquarters for thieves and murderers.";
+      "A rowdy bar filled with unseemly characters of the night obscures this "
+          + "headquarters for thieves and murderers.";
   /** For this case, a non-Guild member cannot enter */
   public static final String DEFAULT_INTERIOR =
-      "The grizzled barman opens a secret door behind a large " +
-          "cask of wine. He motions you to proceed into the darkness. As you step inside, you " +
-          "hear laughter and can make out more seedy characters rolling dice, throwing short " +
-          "daggers at a dart board, and practicing picking locks. ";
+      "The grizzled barman opens a secret door behind a large cask of wine. He motions you to "
+          + "proceed into the darkness. As you step inside, you hear laughter ahead of you. You "
+          + "can make out more seedy characters rolling dice, throwing short daggers at a dart "
+          + "board, and practicing picking locks.";
 
   /** Paths to the images for this building **/
   static private final String EXTERIOR_IMAGE = "ext_RoguesDen.jpg";
   static private final String INTERIOR_IMAGE = "int_RoguesDen.jpg";
 
   /**
-   * The Rogues' Den opens at 9pm and closes in the wee hours at 4am. This is a special case of
-   * overnight hours when the Guild closed the day after it opens, continuing through midnight.
+   * The Rogues' Den opens at 8pm and closes in the wee hours at 4am. This is a special case of
+   * overnight hours when the Guild closes the day after it opens, continuing through midnight.
    */
-  private int OPENTIME = 2100;
-  private int CLOSETIME = 400;
+  // TODO: This may have to work as 8-midnight, then midnight to 4am, resetting the business
+  // hours when the clocks strikes midnight. For now, it closes at midnight
+  static private final int OPENTIME = 2000;
+  static private final int CLOSETIME = 2400;
 
 
-  /*
-   * CONSTRUCTOR(S) AND RELATED METHODS
-   */
+  // ==============================================================================
+  // CONSTRUCTOR(S) AND RELATED METHODS
+  // ==============================================================================
+
 
   /**
    * Default Constructor, create Inn with default data
@@ -62,8 +65,10 @@ public class RoguesGuild extends Building
    */
   public RoguesGuild() throws ApplicationException
   {
-    super(DEFAULT_GUILD_NAME, DEFAULT_OWNER, HOVERTEXT, DEFAUL_TEXTERIOR, DEFAULT_INTERIOR,
-        EXTERIOR_IMAGE, INTERIOR_IMAGE);
-    setBusinessHours(OPENTIME, CLOSETIME);
+    super(DEFAULT_GUILD_NAME, DEFAULT_OWNER, OPENTIME, CLOSETIME, HOVERTEXT, DEFAUL_TEXTERIOR,
+        DEFAULT_INTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
+    // setBusinessHours(OPENTIME, CLOSETIME);
   }
+
+
 } // end of Rogues Guild class

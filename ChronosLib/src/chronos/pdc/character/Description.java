@@ -1,9 +1,14 @@
 package chronos.pdc.character;
 
+import java.io.Serializable;
+
 import chronos.pdc.Chronos;
 
-public class Description
+public class Description implements Serializable
 {
+  // Required for serialization
+  static final long serialVersionUID = 20170804451L;
+
   // Possible descriptors for charismas in increasing order. 
   // Ranges from CHR=8 to CHR=18 are normal; CHR=7 and CHR=19 are exceptional and rarely occur
   private static final String[] _chrDescs = {

@@ -13,10 +13,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import mylib.ApplicationException;
-import mylib.dmc.IRegistryElement;
 import chronos.pdc.NPC;
 import chronos.pdc.registry.NPCRegistry;
+import mylib.ApplicationException;
+import mylib.dmc.IRegistryElement;
 
 
 /**
@@ -32,13 +32,13 @@ public abstract class Building implements IRegistryElement
   public static final String[][] DEFAULT_BUILDINGS = {{"Ugly Ogre Inn", "Bork"},
       {"Rat's Pack", "Dewey N. Howe"}, {"The Bank", "J. P. Pennypacker"},
       {"Stadium", "Aragon"}, {"Arcaneum", "Pendergast"}, {"Monastery", "Balthazar"},
-      {"Rouge's Tavern", "Ripper"}, {"Jail", "The Sheriff"}};
+      {"Rouge's Tavern", "Ripper"}, {"Jail", "The Sheriff"}, {"Larry's Livery", "Larry"}};
 
   public static final String MISSING_PERSON = "I don't see that person here";
-  /** Default Opening Time for all buildings */
-  private final int DEFAULT_OPENHOURS = 900;
-  /** Default Closing Time for all buildings */
-  private final int DEFAULT_CLOSINGHOURS = 1800;
+  // /** Default Opening Time for all buildings */
+  // private final int DEFAULT_OPENHOURS = 900;
+  // /** Default Closing Time for all buildings */
+  // private final int DEFAULT_CLOSINGHOURS = 1800;
   /** Error message when trying to enter a building during off-hours */
   protected final String BUILDING_CLOSED = "Sorry, the %s is not open now. "
       + "Return during normal business hours between %s and %s.";
@@ -70,33 +70,36 @@ public abstract class Building implements IRegistryElement
   protected final List<NPC> _patrons = new ArrayList<NPC>();
   private static final NPCRegistry _npcRegistry = new NPCRegistry();
 
-  /*
-   * CONSTRUCTOR(S) AND RELATED METHODS
-   */
-
+  
+  // ================================================================================
+  // CONSTRUCTOR(S) AND RELATED METHODS
+  // ================================================================================
 
   /**
    * Create the base building; called by the concrete Building object
    * 
    * @param name of this building
    * @param masterName owner or manager of the building
+   * @param openHours when this Building is open for business
+   * @param closeHours when this Building is closed for business
    * @param hoverText small phrase for purpose of the building
    * @param exterior first glance of building
    * @param interior detailed description of building, usually once inside
    * @throws ApplicationException if NPC cannot be found
    **/
-  protected Building(String name, String masterName, String hoverText, String exterior,
-      String interior, String extImagePath, String intImagePath)
+  protected Building(String name, String masterName, int openHours, int closeHours,
+      String hoverText, String exterior, String interior, String extImagePath, String intImagePath)
   {
     if ((name == null) || (masterName == null) || (exterior == null) || (interior == null)) {
       throw new ApplicationException("Null parms in Building ctor");
     }
     _name = name;
-
     _proprietor = _npcRegistry.getNPC(masterName);
     if (_proprietor == null) {
       throw new ApplicationException("Cannot find proprietor in registry.");
     }
+//    System.out.print("\t Creating Building " + _name);
+//    System.out.println("\t owned by " + masterName);
 
     _hoverText = hoverText;
     _extDesc = exterior;
@@ -105,10 +108,10 @@ public abstract class Building implements IRegistryElement
     _internalImagePath = intImagePath;
 
     // Set hours of operation, else return false for bad hours
-    if (setBusinessHours(DEFAULT_OPENHOURS, DEFAULT_CLOSINGHOURS) == false) {
+    if (setBusinessHours(openHours, closeHours) == false) {
       throw new ApplicationException("Business hours are invalid.");
     }
-
+    
   }
 
   /*

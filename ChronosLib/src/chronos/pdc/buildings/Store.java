@@ -47,8 +47,8 @@ public class Store extends Building
   static private final String INTERIOR_IMAGE = "int_GeneralStore.jpg";
 
   /** The Store opens at 6am and closes at 6pm */
-  private int OPENTIME = 600;
-  private int CLOSETIME = 1800;
+  static private final int OPENTIME = 600;
+  static private final int CLOSETIME = 1800;
 
 
   /*
@@ -62,7 +62,10 @@ public class Store extends Building
    */
   public Store() throws ApplicationException
   {
-    super(DEFAULT_STORE_NAME, DEFAULT_OWNER, HOVERTEXT, DEFAUL_TEXTERIOR, DEFAUL_TINTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
-    setBusinessHours(OPENTIME, CLOSETIME);
+    super(DEFAULT_STORE_NAME, DEFAULT_OWNER, OPENTIME, CLOSETIME, HOVERTEXT, DEFAUL_TEXTERIOR,
+        DEFAUL_TINTERIOR, EXTERIOR_IMAGE, INTERIOR_IMAGE);
+//    setBusinessHours();
   }
+  
+  
 } // end of Store class
