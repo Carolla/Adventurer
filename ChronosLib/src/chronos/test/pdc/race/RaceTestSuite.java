@@ -23,8 +23,9 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
 
     /* PDC.Race test files */
+    TestHobbit.class,
+    TestHuman.class,
     TestRace.class,
-    TestHuman.class
 
 })
 /** Compilation of all unit tests for regression and integration testing. */

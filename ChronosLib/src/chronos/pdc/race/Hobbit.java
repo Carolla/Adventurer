@@ -68,14 +68,18 @@ public class Hobbit extends Race
   }
 
 
-  /** Hobbits are more agile and hearty, but weaker: STR-1, CON+1, DEX+1 */
+  /**
+   * Hobbits are more agile and hearty, but weaker: STR-1, CON+1, DEX+1
+   * 
+   * @param traits the hobbit's prime traits, changed in place so input parm can be used as output
+   */
   @Override
-  public TraitList adjustTraitsForRace(TraitList traits)
+  public void adjustTraitsForRace(TraitList traits)
   {
     traits.adjust(PrimeTraits.STR, -1);
     traits.adjust(PrimeTraits.CON, 1);
     traits.adjust(PrimeTraits.DEX, 1);
-    return traits;
+    // return traits;
   };
 
 
@@ -102,24 +106,6 @@ public class Hobbit extends Race
     return calcWeight(WT_LOW, WT_RANGE_DICE);
   }
 
-
-  /**
-   * Ensure that the traits fall within the proper male/female. After the limits are defined for
-   * this subclass, the base class is called with that data.
-   * 
-   * @param traits the six prime traits of any Hero
-   * @return the adjusted traits
-   */
-  @Override
-  public TraitList setTraitLimits(TraitList traits)
-  {
-    if (_gender.isFemale()) {
-      traits = constrainTo(traits, FEMALE_MINLIMIT, FEMALE_MAXLIMIT);
-    } else {
-      traits = constrainTo(traits, MALE_MINLIMIT, MALE_MAXLIMIT);
-    }
-    return traits;
-  }
 
 
 } // end of Hobbit subclass

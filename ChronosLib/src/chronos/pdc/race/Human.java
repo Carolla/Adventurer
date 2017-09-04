@@ -77,9 +77,10 @@ public class Human extends Race
    * @return the adjusted traits
    */
   @Override
-  public TraitList adjustTraitsForRace(TraitList traits)
+//  public TraitList adjustTraitsForRace(TraitList traits)
+  public void adjustTraitsForRace(TraitList traits)
   {
-    return traits;
+    // Does nothing; original traits are final traits
   }
 
 
@@ -107,52 +108,53 @@ public class Human extends Race
   }
 
 
-  /**
-   * Ensure that the traits fall within the proper male/female. After the limits are defined for
-   * this subclass, the base class is called with that data.
-   * 
-   * @param traits the six prime traits of any Hero
-   * @return the adjusted traits
-   */
-  @Override
-  public TraitList setTraitLimits(TraitList traits)
-  {
-    if (_gender.isFemale()) {
-      traits = constrainTo(traits, FEMALE_MINLIMIT, FEMALE_MAXLIMIT);
-    } else {
-      traits = constrainTo(traits, MALE_MINLIMIT, MALE_MAXLIMIT);
-    }
-    return traits;
-  }
+  // TODO Shouldn't need this method; donuse a test to ensure the range; don't clip range
+//  /**
+//   * Ensure that the traits fall within the proper male/female. After the limits are defined for
+//   * this subclass, the base class is called with that data.
+//   * 
+//   * @param traits the six prime traits of any Hero
+//   * @return the adjusted traits
+//   */
+//  @Override
+//  public TraitList setTraitLimits(TraitList traits)
+//  {
+//    if (_gender.isFemale()) {
+//      traits = constrainTo(traits, FEMALE_MINLIMIT, FEMALE_MAXLIMIT);
+//    } else {
+//      traits = constrainTo(traits, MALE_MINLIMIT, MALE_MAXLIMIT);
+//    }
+//    return traits;
+//  }
 
 
 
-  // ===============================================================================
-  // MockHuman INNER CLASS
-  // ===============================================================================
-
-  public class MockHuman
-  {
-    public MockHuman()
-    {}
-
-    public String getHairColor()
-    {
-      return _hairColor;
-    }
-
-    public String getRaceLang()
-    {
-      return _raceLang;
-    }
-
-    public String getRaceName()
-    {
-      return _raceName;
-    }
-
-
-  } // end of MockHuman inner class
+//  // ===============================================================================
+//  // MockHuman INNER CLASS
+//  // ===============================================================================
+//
+//  public class MockHuman
+//  {
+//    public MockHuman()
+//    {}
+//
+//    public String getHairColor()
+//    {
+//      return _hairColor;
+//    }
+//
+//    public String getRaceLang()
+//    {
+//      return _raceLang;
+//    }
+//
+//    public String getRaceName()
+//    {
+//      return _raceName;
+//    }
+//    
+//
+//  } // end of MockHuman inner class
 
 
 } // end of Human subclass

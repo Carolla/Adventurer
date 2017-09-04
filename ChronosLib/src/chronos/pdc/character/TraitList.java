@@ -54,11 +54,6 @@ public class TraitList implements Serializable
   private int _AP;
   private int _speed;
 
-  // No trait, raw of modified, may be less than MIN_TRAIT at start
-  // Make this static to be available by other classes
-//  static public final int MIN_TRAIT = 8;
-//  static public final int MAX_TRAIT = 18;
-  
   // Height indicators for speed mod
   private final int HT_TALL = 74;
   private final int HT_SHORT = 48;
@@ -78,6 +73,7 @@ public class TraitList implements Serializable
     this(_md.rollTraits());
   }
 
+
   /**
    * Remap the int traits randomly rolled, then calc AP
    * 
@@ -90,7 +86,13 @@ public class TraitList implements Serializable
     }
   }
 
-
+  /**
+   * Replaces a single trait with a new value. This is a change-in-place
+   * 
+   * @param t the prime trait to be modified
+   * @param i the value by which it should be modified
+   * @return the new result; else 0 if there is no PrimeTrait found
+   */
   public int adjust(PrimeTraits t, int i)
   {
     if (_traits.containsKey(t.ordinal())) {
@@ -159,19 +161,19 @@ public class TraitList implements Serializable
 
   }
 
-//  /**
-//   * Ensure that no trait, raw or modified, is below MI_TRAIT. Modified traits be exceed MAX_TRAIT
-//   * 
-//   * @return nothing: internal fields modified to be within proper range
-//   */
-//  public void ensureTraitConstraints()
-//  {
-//    for (PrimeTraits t : PrimeTraits.values()) {
-//      if (getTrait(t) < MIN_TRAIT) {
-//        _traits.put(t.ordinal(), MIN_TRAIT);
-//      }
-//    }
-//  }
+  // /**
+  // * Ensure that no trait, raw or modified, is below MI_TRAIT. Modified traits be exceed MAX_TRAIT
+  // *
+  // * @return nothing: internal fields modified to be within proper range
+  // */
+  // public void ensureTraitConstraints()
+  // {
+  // for (PrimeTraits t : PrimeTraits.values()) {
+  // if (getTrait(t) < MIN_TRAIT) {
+  // _traits.put(t.ordinal(), MIN_TRAIT);
+  // }
+  // }
+  // }
 
 
   public PrimeTraits findLargestTrait()
@@ -348,7 +350,7 @@ public class TraitList implements Serializable
     return trAry;
   }
 
-  
+
   @Override
   public String toString()
   {
@@ -360,7 +362,7 @@ public class TraitList implements Serializable
         "CHR: " + getTrait(PrimeTraits.CHR);
   }
 
-  private String addPolarity(int mod) 
+  private String addPolarity(int mod)
   {
     String modStr = (mod > 0) ? "+" + mod : Integer.toString(mod);
     return modStr;

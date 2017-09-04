@@ -12,6 +12,7 @@ package chronos.pdc.race;
 import chronos.pdc.character.Gender;
 import chronos.pdc.character.TraitList;
 import chronos.pdc.character.TraitList.PrimeTraits;
+import mylib.pdc.MetaDie;
 
 /**
  * @author Al Cline
@@ -23,9 +24,9 @@ public class HalfOrc extends Race
 
   /** Weights and heights are generated in a normal distribution about an average over a Range */
   protected final int WT_LOW = 140; // range: male [140, 260]; female [126, 246]
-  protected final int HT_LOW = 60; // range: male [60, 76]; female [54, 70]
-  protected final String WT_RANGE_DICE = "2d7-2"; // varying weight = (0 - 12) * 10 lb
-  protected final String HT_RANGE_DICE = "2d11-2"; // varying height = (0 - 20) in
+  protected final String WT_RANGE_DICE = "2d7-2"; // varying weight = [0 - 120] lb
+  protected final int HT_LOW = 60; // range: male [60, 80]; female [54, 74]
+  protected final String HT_RANGE_DICE = "2d11-2"; // varying height = [0 - 20] in
 
   /** Racial limits for a male for the traits SIWCDCh: STR+1, CON+1, CHR-2 */
   protected final int[] MALE_MINLIMIT = {9, 8, 8, 9, 8, 6};
@@ -63,26 +64,27 @@ public class HalfOrc extends Race
 
   /** Half-Orcs are sturdier, stronger, and uglier: STR+1, CON+1, CHR-2 */
   @Override
-  public TraitList adjustTraitsForRace(TraitList traits)
+  // public TraitList adjustTraitsForRace(TraitList traits)
+  public void adjustTraitsForRace(TraitList traits)
   {
     traits.adjust(PrimeTraits.STR, 1);
     traits.adjust(PrimeTraits.CON, 1);
     traits.adjust(PrimeTraits.CHR, -2);
-    return traits;
+    // return traits;
   };
-
-
-  @Override
-  public int calcWeight()
-  {
-    return calcWeight(WT_LOW, WT_RANGE_DICE);
-  }
 
 
   @Override
   public int calcHeight()
   {
     return calcHeight(HT_LOW, HT_RANGE_DICE);
+  }
+
+
+  @Override
+  public int calcWeight()
+  {
+    return calcWeight(WT_LOW, WT_RANGE_DICE);
   }
 
 
@@ -94,23 +96,23 @@ public class HalfOrc extends Race
   }
 
 
-  /**
-   * Ensure that the traits fall within the proper male/female. After the limits are defined for
-   * this subclass, the base class is called with that data.
-   * 
-   * @param traits the six prime traits of any Hero
-   * @return the adjusted traits
-   */
-  @Override
-  public TraitList setTraitLimits(TraitList traits)
-  {
-    if (_gender.isFemale()) {
-      traits = constrainTo(traits, FEMALE_MINLIMIT, FEMALE_MAXLIMIT);
-    } else {
-      traits = constrainTo(traits, MALE_MINLIMIT, MALE_MAXLIMIT);
-    }
-    return traits;
-  };
+  // /**
+  // * Ensure that the traits fall within the proper male/female. After the limits are defined for
+  // * this subclass, the base class is called with that data.
+  // *
+  // * @param traits the six prime traits of any Hero
+  // * @return the adjusted traits
+  // */
+  // @Override
+  // public TraitList setTraitLimits(TraitList traits)
+  // {
+  // if (_gender.isFemale()) {
+  // traits = constrainTo(traits, FEMALE_MINLIMIT, FEMALE_MAXLIMIT);
+  // } else {
+  // traits = constrainTo(traits, MALE_MINLIMIT, MALE_MAXLIMIT);
+  // }
+  // return traits;
+  // };
 
 
 } // end of HalfOrc subclass

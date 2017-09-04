@@ -26,3 +26,6 @@ unhelpful
 townspeople
 courtesan
 hyphenated
+init
+stats
+int
