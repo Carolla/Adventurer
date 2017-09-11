@@ -10,7 +10,10 @@
 
 package chronos.test.pdc;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +36,7 @@ import mylib.MsgCtrl;
  *          July 16, 2017 // added more tests per QA File Scanner tool; major refactoring to put
  *          file into standard (Chronos) coding style <br>
  *          July 21, 2017 // revised for custom Javadoc tags <br>
+ *          Sept 5, 2017 // revising to get tests to pass <br>
  */
 public class TestTown
 {
@@ -49,6 +53,9 @@ public class TestTown
   private final List<Building> _bldgList = new ArrayList<Building>();
 
 
+  /**
+   * @throws java.lang.Exception -- general catch-all for exceptions not caught by the tests
+   */
   @Before
   public void setUp() throws Exception
   {
@@ -59,6 +66,9 @@ public class TestTown
     _town.addBuildings(_bldgList);
   }
 
+  /**
+   * @throws java.lang.Exception -- general catch-all for exceptions not caught by the tests
+   */
   @After
   public void tearDown() throws Exception
   {
@@ -70,7 +80,7 @@ public class TestTown
 
 
   // ================================================================================
-  // CONSTRUCTOR AND RELATED TESTS
+  // TEST METHODS
   // ================================================================================
 
   /**
@@ -78,13 +88,22 @@ public class TestTown
    *              buildings into the Town
    */
   @Test
-  public void testTown()
+  public void testCtor()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
+
+    // Verify name, day and night descriptions
+    MsgCtrl.msgln("\t Name: " + _town.getName());
+    MsgCtrl.msgln("\t Day: " + _town.getDayDescription());
+    MsgCtrl.msgln("\t Night:" + _town.getNightDescription());
+    assertEquals(NAME, _town.getName());
+    assertEquals(DESC_DAY, _town.getDayDescription());
+    assertEquals(DESC_NIGHT, _town.getNightDescription());
     assertEquals(_bldgNames.length, _town.getAllBuildings().size());
   }
+
 
   /**
    * @Normal.Test Town(String name, String descDay, String descNight) -- Town are only
@@ -103,6 +122,7 @@ public class TestTown
     assertEquals(_town, town2);
     assertEquals(town2, town3);
   }
+
 
   /**
    * @Null.Test Town(String name, String descDay, String descNight) -- Null parms for various inputs
@@ -138,11 +158,11 @@ public class TestTown
   /**
    * @Normal.Test Town(String name, String descDay, String descNight) -- Same town have same name
    */
-  @Test
+   @Test
   public void testCtor_SameNameTowns()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
+     MsgCtrl.auditMsgsOn(false);
+     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     Town t1 = new Town(NAME, "Daytime description", DESC_NIGHT);
@@ -151,10 +171,6 @@ public class TestTown
     assertEquals(t1.getName(), t2.getName());
   }
 
-
-  // ================================================================================
-  // TEST METHODS
-  // ================================================================================
 
   /**
    * @Not.Needed void addBuildings(List) -- wrapper
@@ -168,6 +184,62 @@ public class TestTown
     MsgCtrl.msgln(MsgCtrl.NOTEST + MsgCtrl.WRAPPER);
   }
 
+  
+  /**
+   * @Normal.Test boolean equals(Object obj) - verify name against hashcode for equality
+   */
+  @Test
+  public void testEquals()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    assertEquals(_town, _town);
+    assertEquals(_town.hashCode(), _town.hashCode());
+    assertEquals(_town.toString(), _town.toString());
+    assertTrue(_town.equals(_town));
+  }
+
+  
+  /**
+   * @Normal.Test boolean equals(Object obj) - verify duplicate town by hashcode for equality
+   */
+  @Test
+  public void testEquals_DupTownEquals()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    Town town2 = new Town(NAME, DESC_DAY, DESC_NIGHT);
+
+    assertEquals(_town, town2);
+    assertEquals(_town.hashCode(), town2.hashCode());
+    assertEquals(_town.toString(), town2.toString());
+    assertTrue(_town.equals(town2));
+  }
+
+  
+  /**
+   * @Norml.Test boolean equals(Object obj) - verify inequality with names and hashcode
+   */
+  @Test
+  public void testEquals_DifferentNameDifferentTown()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    Town town2 = new Town("Not the same", DESC_DAY, DESC_NIGHT);
+
+    assertFalse(_town.equals(town2));
+    assertFalse(_town.hashCode() == town2.hashCode());
+    assertFalse(_town.toString().equals(town2.toString()));
+    assertFalse(_town.equals(town2));
+  }
+
+  
   /**
    * @Not.Needed List<Building> getAllBuildings() -- wrapper
    */
@@ -244,61 +316,6 @@ public class TestTown
     MsgCtrl.msgln(MsgCtrl.NOTEST + MsgCtrl.PRIMITIVE);
   }
 
-
-  /**
-   * @Normal.Test boolean equals(Object obj) - verify name against hashcode for equality
-   */
-  @Test
-  public void testEquals_SameTown()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    assertEquals(_town, _town);
-    assertEquals(_town.hashCode(), _town.hashCode());
-    assertEquals(_town.toString(), _town.toString());
-    assertTrue(_town.equals(_town));
-  }
-
-
-  /**
-   * @Normal.Test boolean equals(Object obj) - verify duplicate town by hashcode for equality
-   */
-  @Test
-  public void testEquals_DupTownEquals()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    Town town2 = new Town(NAME, DESC_DAY, DESC_NIGHT);
-
-    assertEquals(_town, town2);
-    assertEquals(_town.hashCode(), town2.hashCode());
-    assertEquals(_town.toString(), town2.toString());
-    assertTrue(_town.equals(town2));
-  }
-
-
-  /**
-   * @Norml.Test boolean equals(Object obj) - verify inequality with names and hashcode
-   */
-  @Test
-  public void testEquals_DifferentNameDifferentTown()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    Town town2 = new Town("Not the same", DESC_DAY, DESC_NIGHT);
-
-    assertFalse(_town.equals(town2));
-    assertFalse(_town.hashCode() == town2.hashCode());
-    assertFalse(_town.toString().equals(town2.toString()));
-    assertFalse(_town.equals(town2));
-
-  }
 
   /**
    * @Not.Needed String toString() -- simple getter

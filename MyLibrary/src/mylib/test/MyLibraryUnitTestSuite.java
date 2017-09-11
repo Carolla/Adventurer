@@ -27,8 +27,11 @@ import mylib.test.pdc.TestUtilities;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 
+    /** HIC Test file */
+    // TestHelpDialog // TODO: Needs to be implemented
+
     /** DMC Test files */
-//    TestDbReadWriter.class,   // Db4o dropped from the program
+    // TestDbReadWriter.class, // Db4o dropped from the program
     TestRegistry.class, // base class
 
     /** PDC Test files */

@@ -146,7 +146,6 @@ public class Chronos
    * Warning: Be careful of character selection and float size; round-up errors for {@code float}
    * sizes can cause overruns on displayed Components.
    * 
-   * @param height of the font
    * @return the Font class
    */
   static public Font makeRunicFont(float fontHt)
@@ -210,5 +209,5 @@ public class Chronos
     DEFAULT_PKG = pkgName;
   }
 
-} // end of Chronos global class
+}    // end of Chronos global class
 

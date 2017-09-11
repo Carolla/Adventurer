@@ -131,71 +131,6 @@ public class MetaDie
   }
 
 
-  // TODO This method of removing trends seems to be unnecessary
-//  public int getRandomAntiTrend(int minRange, int maxRange) throws IllegalArgumentException
-//  {
-//    // Get a sequence of values, and select the one farthest from the average
-//    int TREND = 5;
-//    int[] value = new int[TREND];
-//    int sum = 0;
-//    double avg = 0.0;
-//    for (int k = 0; k < TREND; k++) {
-//      value[k] = getRandom(minRange, maxRange);
-//      sum += value[k];
-//    }
-//    // Find value farthest from average
-//    avg = sum / (double) TREND;
-//    double[] diff = new double[TREND];
-//    double max = -99;
-//    int pick = -1;
-//    // Select position of value with the largest difference
-//    for (int k = 0; k < TREND; k++) {
-//      diff[k] = Math.abs(avg - value[k]);
-//      if (diff[k] > max) {
-//        max = diff[k];
-//        pick = k; 
-//      }
-//    }
-//
-//    return value[pick];
-//  }
-
-
-
-  // TODO This doesn't do what I think it does.
-  // /**
-  // * Returns a single random number that falls within a "normal" Gaussian population. The result
-  // * returned defaults to a range across 0, symmetrically from [-2 * median, +2 * median]. If the
-  // * flag is set, the number is forced into a symmetric non-negative range [0, 2 * median].
-  // *
-  // * @param median the non-negative midpoint of the output result (0 is permitted)
-  // * @param positiveRange if true, will force result into range [0, 2 * median]
-  // * @return a random number either within the range [-2 * median, +2 * median] inclusive, or
-  // within
-  // * the range [0, 2 * median] if the positiveRange is true
-  // */
-  // public double getRandomGaussian(double median, boolean positiveRange)
-  // {
-  // if (median < 0) {
-  // throw new IllegalArgumentException("Input parm maxRange must be non-negative");
-  // }
-  // // Convert generator output from [-sigma, +sigma] to output to [0, maxRange].
-  // double result = 9990.0;
-  // if (positiveRange) {
-  // // Convert generator output from [-sigma, +sigma] to output to [0, maxRange].
-  // while ((result > 2 * median) || (result < 0)) {
-  // result = _generator.nextGaussian() * median + median;
-  // }
-  // } else {
-  // // Convert generator output from [-sigma, +sigma] to output to [0, maxRange].
-  // while (Math.abs(result) > 2 * median) {
-  // result = _generator.nextGaussian() * median;
-  // }
-  // }
-  // return result;
-  // }
-
-
   /**
    * Returns the sum of rolling the given number of dice, which is similar to selecting a number
    * from a normal (Gaussian) population that has the given dice characteristics. If nbrDice = 1,
@@ -221,6 +156,47 @@ public class MetaDie
       sum += incr;
     }
     return sum;
+  }
+
+
+  /**
+   * Pull a random number from a Gaussian population to add or subtract from the given average. The
+   * range is calculated from the low and average parms. this method must transform from a Gaussian
+   * average of 0 and a Gaussian range slightly over 3 to the average and range signified by the
+   * input parms.
+   * 
+   * @param low the low end of the range
+   * @param average the middle of the range
+   * @return a value within range, centered on the average
+   */
+  public int rollVariance(double low, double average) throws IllegalArgumentException
+  {
+    // Guard: only positive values are valid, and average must be greater than low
+    if ((low < 0) || (average < 0)) {
+      throw new IllegalArgumentException("rollVariance(): Parms must have positive values");
+    }
+    if (low >= average) {
+      throw new IllegalArgumentException("rollVariance(): Low parm must be less than average parm");
+    }
+    
+    double GAUSSIAN_RANGE = 3.1;
+    boolean inRange = false;
+    double halfRange = average - low;
+    double high = average + halfRange;
+    double result = -100.0;
+    while (!inRange) {
+      result = (_generator.nextGaussian() / GAUSSIAN_RANGE) * halfRange + average;
+      if ((result <= high) && (result >= low)) {
+        inRange = true;
+      }
+    }
+    return (int) Math.round(result);
+  }
+
+
+  public double nextGaussian()
+  {
+    return _generator.nextGaussian();
   }
 
 

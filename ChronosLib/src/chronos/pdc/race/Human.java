@@ -23,15 +23,16 @@ import chronos.pdc.character.TraitList;
 public class Human extends Race
 {
   /** Weights and heights are generated in a normal distribution about an Average over a Range */
-  protected final int WT_LOW = 130;
-  protected final int HT_LOW = 60;
   // Weight range: male [130, 230]; female [117, 217]
-  protected final String WT_RANGE_DICE = "2d6-2"; // varying weight = 0 - 100 lb
+  protected final int WT_LOW = 130;
+  protected final int WT_AVG = 180;
   // Height range: male [60, 78]; female [54, 72]
-  protected final String HT_RANGE_DICE = "2d10-2"; // varying height = 0 - 18 in
+  protected final int HT_LOW = 60;
+  protected final int HT_AVG = 69; 
+//  protected final String WT_RANGE_DICE = "2d6-2"; // varying weight = 0 - 100 lb
+//  protected final String HT_RANGE_DICE = "2d10-2"; // varying height = 0 - 18 in
 
   private final String RACE_NAME = "Human";
-  // private final String RACE_LANGUAGE = "";
   private final String RACE_LANGUAGE = null;
 
   /** Racial limits for a male Human for the traits SIWCDCh */

@@ -46,6 +46,8 @@ import mylib.pdc.MetaDie;
  *          July 5, 2017 // autogen: QA Tool added missing test methods <br>
  *          July 9, 2017 // autogen: QA Tool added missing test methods <br>
  *          Aug 18, 2017 // added tests for some refactored methods <br>
+ *          September 5, 2017 // autogen: QA Tool added missing test methods <br>
+ *          September 11, 2017 // added a nextGaussian() call for 0-based normal populations <br>
  */
 public class TestMetaDie
 {
@@ -122,52 +124,52 @@ public class TestMetaDie
   }
 
 
-//  /**
-//   * @Normal.Test MetaDie.getRandomAnitTrend(int minRange, int maxRange) -- Verify that random
-//   *              numbers do not trend, and fluctuate appropriately
-//   */
-//  @Test
-//  public void testGetRandom_AntiTrend()
-//  {
-//    MsgCtrl.auditMsgsOn(true);
-//    MsgCtrl.errorMsgsOn(true);
-//    MsgCtrl.where(this);
-//
-//    // Hold latest five values
-//    int NBR_VALUES = 1000;
-//    int[] linVal = new int[NBR_VALUES];
-//    int[] diff = new int[NBR_VALUES - 1];
-//    int min = 99;
-//    int max = -1;
-//    int sum = 0;
-//    double avg = 0.0;
-//    double expAvg = 50.5; // for a population from [1,100]
-//
-//    // Generate many numbers
-//    MsgCtrl.msg("\t " + NBR_VALUES + " values generated");
-//    for (int k = 0; k < linVal.length; k++) {
-//      linVal[k] = _md.getRandomAntiTrend(1, 100);
-//      min = Math.min(linVal[k], min);
-//      max = Math.max(linVal[k], max);
-//      sum += linVal[k];
-//    }
-//    avg = sum / NBR_VALUES;
-//    MsgCtrl.msgln(" with average of " + point3Fmt(avg) + " in range [" + min + ", " + max + "]");
-//    // Average tolerance may be large when NBR_VALUES is small
-//    assertEquals(expAvg, avg, 1.0);
-//    assertEquals(min, 1);
-//    assertEquals(max, 100);
-//
-//    int diffSum = 0;
-//    for (int k = 0; k < linVal.length - 1; k++) {
-//      diff[k] = linVal[k + 1] - linVal[k];
-//      diffSum += diff[k];
-//    }
-//    double diffAvg = diffSum / diff.length;
-//    MsgCtrl.msgln("\t Sum of all sequential differences = " + diffAvg);
-//    // Check for less than 1% variance
-//    assertEquals(diffAvg, 0, 1.0);
-//  }
+  // /**
+  // * @Normal.Test MetaDie.getRandomAnitTrend(int minRange, int maxRange) -- Verify that random
+  // * numbers do not trend, and fluctuate appropriately
+  // */
+  // @Test
+  // public void testGetRandom_AntiTrend()
+  // {
+  // MsgCtrl.auditMsgsOn(false);
+  // MsgCtrl.errorMsgsOn(false);
+  // MsgCtrl.where(this);
+  //
+  // // Hold latest five values
+  // int NBR_VALUES = 1000;
+  // int[] linVal = new int[NBR_VALUES];
+  // int[] diff = new int[NBR_VALUES - 1];
+  // int min = 99;
+  // int max = -1;
+  // int sum = 0;
+  // double avg = 0.0;
+  // double expAvg = 50.5; // for a population from [1,100]
+  //
+  // // Generate many numbers
+  // MsgCtrl.msg("\t " + NBR_VALUES + " values generated");
+  // for (int k = 0; k < linVal.length; k++) {
+  // linVal[k] = _md.getRandomAntiTrend(1, 100);
+  // min = Math.min(linVal[k], min);
+  // max = Math.max(linVal[k], max);
+  // sum += linVal[k];
+  // }
+  // avg = sum / NBR_VALUES;
+  // MsgCtrl.msgln(" with average of " + point3Fmt(avg) + " in range [" + min + ", " + max + "]");
+  // // Average tolerance may be large when NBR_VALUES is small
+  // assertEquals(expAvg, avg, 1.0);
+  // assertEquals(min, 1);
+  // assertEquals(max, 100);
+  //
+  // int diffSum = 0;
+  // for (int k = 0; k < linVal.length - 1; k++) {
+  // diff[k] = linVal[k + 1] - linVal[k];
+  // diffSum += diff[k];
+  // }
+  // double diffAvg = diffSum / diff.length;
+  // MsgCtrl.msgln("\t Sum of all sequential differences = " + diffAvg);
+  // // Check for less than 1% variance
+  // assertEquals(diffAvg, 0, 1.0);
+  // }
 
 
   /**
@@ -228,7 +230,7 @@ public class TestMetaDie
     MsgCtrl.where(this);
 
     // Hold latest five values
-    int NBR_VALUES = 1000;
+    int NBR_VALUES = LOOP_COUNT;
     int[] linVal = new int[NBR_VALUES];
     int[] diff = new int[NBR_VALUES - 1];
     int min = 99;
@@ -245,8 +247,8 @@ public class TestMetaDie
       max = Math.max(linVal[k], max);
       sum += linVal[k];
     }
-    avg = sum / NBR_VALUES;
-    MsgCtrl.msgln(" with average of " + point3Fmt(avg) + " in range [" + min + ", " + max + "]");
+    avg = sum / (double) NBR_VALUES;
+    MsgCtrl.msgln(" with average of " + pointFmt(avg, 3) + " in range [" + min + ", " + max + "]");
     // Average tolerance may be large when NBR_VALUES is small
     assertEquals(expAvg, avg, 1.0);
     assertEquals(min, 1);
@@ -257,10 +259,10 @@ public class TestMetaDie
       diff[k] = linVal[k + 1] - linVal[k];
       diffSum += diff[k];
     }
-    double diffAvg = diffSum / diff.length;
-    MsgCtrl.msgln("\t Sum of all sequential differences = " + diffAvg);
+    double diffAvg = (double) diffSum / (double) diff.length;
+    MsgCtrl.msgln("\t Sum of all sequential differences = " + pointFmt(diffAvg, 4));
     // Check for less than 1% variance
-    assertEquals(diffAvg, 0, 1.0);
+    assertEquals(diffAvg, 0, 0.1);
   }
 
 
@@ -272,8 +274,8 @@ public class TestMetaDie
   // @Test
   // public void testGetRandomGaussian()
   // {
-  // MsgCtrl.auditMsgsOn(true);
-  // MsgCtrl.errorMsgsOn(true);
+  // MsgCtrl.auditMsgsOn(false);
+  // MsgCtrl.errorMsgsOn(false);
   // MsgCtrl.where(this);
   //
   // double[] median = {0.0, 1.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 20.0, 100.0};
@@ -307,8 +309,8 @@ public class TestMetaDie
   // @Test
   // public void testGetRandomGaussian_Error()
   // {
-  // MsgCtrl.auditMsgsOn(true);
-  // MsgCtrl.errorMsgsOn(true);
+  // MsgCtrl.auditMsgsOn(false);
+  // MsgCtrl.errorMsgsOn(false);
   // MsgCtrl.where(this);
   //
   //// // Median is zero should be ok
@@ -338,8 +340,8 @@ public class TestMetaDie
   // @Test
   // public void testRandomSumVsGaussian()
   // {
-  // MsgCtrl.auditMsgsOn(true);
-  // MsgCtrl.errorMsgsOn(true);
+  // MsgCtrl.auditMsgsOn(false);
+  // MsgCtrl.errorMsgsOn(false);
   // MsgCtrl.where(this);
   //
   // int NBR_TRIES = 100;
@@ -468,7 +470,7 @@ public class TestMetaDie
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    // First ten, then four more
+    // First ten, then four more on next line
     String[] dice = {"1d2", "1d4", "1d6", "1d8", "d10", "d20", "d100", "2d6", "2d10", "3d4",
         "4d6", "2d10", "2d4+1"};
     int[] minVal = {1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 4, 2, 3};
@@ -518,6 +520,74 @@ public class TestMetaDie
   }
 
 
+  /**
+   * @Normal.Test int rollVariance(double low, double average) -- Gaussian value about the average,
+   *              within the range defined by low
+   */
+  @Test
+  public void testRollVariance()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    double[] lows = {2, 3, 80, 10};
+    double[] avgs = {7, 10.5, 100, 25};
+    int tmpCount = LOOP_COUNT;
+
+    // Traverse the input array
+    for (int n = 0; n < lows.length; n++) {
+      double min = 200;
+      double max = -1;
+      double sum = 0;
+      // Single calls of input arrays
+      for (int k = 0; k < tmpCount; k++) {
+        double result = _md.rollVariance(lows[n], avgs[n]);
+        sum += result;
+        min = Math.min(result, min);
+        max = Math.max(result, max);
+      }
+      double avg = sum / tmpCount;
+      MsgCtrl.msg("\t Range [" + min + ", " + max + "]");
+      MsgCtrl.msgln("\t Avg = " + pointFmt(avg, 2));
+      assertEquals(avgs[n], avg, 0.5);
+    }
+  }
+
+
+  /**
+   * @Normal.Test int rollVariance(double low, double average) -- parm invalid to throw exceptions
+   */
+  @Test
+  public void testRollVariance_Error()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // Negative parms
+    try {
+      _md.rollVariance(-5, 20);
+      fail(MsgCtrl.EXCEPTION_NOT_THROWN);
+    } catch (IllegalArgumentException e) {
+      MsgCtrl.msgln(MsgCtrl.EXP_EXCEPTION + e.getMessage());
+    }
+    try {
+      _md.rollVariance(-15, -20);
+      fail(MsgCtrl.EXCEPTION_NOT_THROWN);
+    } catch (IllegalArgumentException e) {
+      MsgCtrl.msgln(MsgCtrl.EXP_EXCEPTION + e.getMessage());
+    }
+    // Average lower than low parn
+    try {
+      _md.rollVariance(25, 20);
+      fail(MsgCtrl.EXCEPTION_NOT_THROWN);
+    } catch (IllegalArgumentException e) {
+      MsgCtrl.msgln(MsgCtrl.EXP_EXCEPTION + e.getMessage());
+    }
+  }
+  
+  
   /**
    * @Normal.Test int rollCharTrait() -- Returns the sum of highest three in 4d6: range [8,18],
    *              average = 12.5
@@ -643,14 +713,33 @@ public class TestMetaDie
   }
 
 
+  /**
+   * Not Implemented Only here to cover QA Tool for overloaded methods
+   */
+  @Test
+  public void testRoll2()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+    MsgCtrl.msgln(MsgCtrl.NOTEST + MsgCtrl.OVERLOADED);
+  }
+
+
   // --------------------------------------------------------------------------------------------------------------
   // Private Methods
   // --------------------------------------------------------------------------------------------------------------
 
-  // Utility to format a double variable for readability
-  private String point3Fmt(double x)
+  /** Utility to format a double variable for readability
+   * 
+   * @param x the value to format
+   * @param decFrac the number of digits to the right of the decimal point
+   * @return the formatted resutl
+   */
+  private String pointFmt(double x, int decFrac)
   {
-    return String.format("%.3f", x);
+    String fmtStr = "%." + decFrac + "f";
+    return String.format(fmtStr, x);
   }
 
 
