@@ -415,6 +415,41 @@ public class TestUtilities
 
 
   /**
+   * @Normal.Test double[] getStats(int[] ary) -- get average, min, max value from integer array
+   */
+  @Test
+  public void testGetStats()
+  {
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.where(this);
+
+    int[] testAry = {1,2,3,4,5,6,7,8,9,10};
+    
+    double[] results = Utilities.getStats(testAry);
+    double avg = results[0];
+    int min = (int) results[1];
+    int max = (int) results[2];
+    MsgCtrl.msgln("\t [Min, Max] = [" + min + ", " + max + "]; Average = " + avg);
+    assertEquals(1, min);
+    assertEquals(10, max);
+    assertEquals(5.5, avg, 0.1);
+    
+    int[] testAry2 = {-1, 0, 1, -2, 0, 2, -3, 3};
+    
+    results = Utilities.getStats(testAry2);
+    avg = results[0];
+    min = (int) results[1];
+    max = (int) results[2];
+    MsgCtrl.msgln("\t [Min, Max] = [" + min + ", " + max + "]; Average = " + avg);
+    assertEquals(-3, min);
+    assertEquals(3, max);
+    assertEquals(0.0, avg, 0.1);
+
+  }
+
+
+  /**
    * @Normal.Test boolean isTraitsEqual(int[], int[]) -- contain exactly the same elements <br>
    * @Normal.Test boolean isTraitsEqual(int[], int[]) -- contain one value different <br>
    * @Normal.Test boolean isTraitsEqual(int[], int[]) -- contain all values different <br>

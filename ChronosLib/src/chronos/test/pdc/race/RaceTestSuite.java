@@ -14,7 +14,7 @@ import org.junit.runners.Suite;
 
 
 /**
- * {@code pdc.race.Test*.java} regression test suite 
+ * {@code pdc.race.Test*.java} regression test suite
  * 
  * @author Alan Cline
  * @version Mar 29 2016 // original <br>
@@ -23,8 +23,13 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
 
     /* PDC.Race test files */
-    TestHobbit.class,
-    TestHuman.class,
+    TestDwarf.class,
+    TestElf.class,
+    TestGnome.class,
+    // TestHalfElf.class,
+    // TestHalfOrc.class,
+    // TestHobbit.class,
+    // TestHuman.class,
     TestRace.class,
 
 })

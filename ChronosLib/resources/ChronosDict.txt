@@ -29,3 +29,4 @@ hyphenated
 init
 stats
 int
+autogen

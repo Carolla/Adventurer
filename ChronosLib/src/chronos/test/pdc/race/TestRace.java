@@ -17,14 +17,17 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import chronos.pdc.character.Gender;
-import chronos.pdc.character.TraitList;
+import chronos.pdc.race.Human;
 import chronos.pdc.race.Race;
 import chronos.pdc.race.Race.MockRace;
 import mylib.MsgCtrl;
+import mylib.pdc.Utilities;
 
 
 /**
@@ -36,19 +39,66 @@ import mylib.MsgCtrl;
  *          Jan 18, 2010 // add in non-Human racial tests <br>
  *          August 10, 2017 // updated per QA Tool <br>
  *          August 15, 2017 // protected methods are better tested by subclasses <br>
+ *          Sept 24, 2017 // Put statistics into calcHeight() and calcWeight() methods instead of
+ *          subclass methods <br>
  */
 public class TestRace
 {
+  // Generate a bunch of values in a loop for stat calculation
+  private int NBR_LOOPS = 10000;
+  // Storage of generated values
+  private int[] _values = new int[NBR_LOOPS];
+
+  // Create a test object for the Race methods to be called
+  static private Human _him;
+  static private Human _her;
+  // Create a mock to bypass the protected method calls that differs by only data
+  static private MockRace _mockHim;
+  static private MockRace _mockHer;
+
+
+  /**
+   * @throws java.lang.Exception -- general catch-all for exceptions not caught by the tests
+   */
+  @BeforeClass
+  public static void setUpBeforeClass() throws Exception
+  {
+    _him = (Human) Race.createRace("Human", new Gender("male"), "black");
+    assertNotNull(_him);
+    _mockHim = _him.new MockRace();
+    assertNotNull(_mockHim);
+
+    _her = (Human) Race.createRace("Human", new Gender("female"), "blonde");
+    assertNotNull(_her);
+    _mockHer = _her.new MockRace();
+    assertNotNull(_mockHer);
+  }
+
+  /**
+   * @throws java.lang.Exception -- general catch-all for exceptions not caught by the tests
+   */
+  @AfterClass
+  public static void tearDownAfterClass() throws Exception
+  {
+    _mockHer = null;
+    _mockHer = null;
+    _him = null;
+    _her = null;
+  }
 
   @Before
   public void setUp()
-  {}
+  {
+    // Create storage for stats
+    _values = new int[NBR_LOOPS];
+  }
 
   @After
   public void tearDown()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
+    _values = null;
   }
 
 
@@ -84,7 +134,9 @@ public class TestRace
 
 
   /**
-   * @Not.Needed int calcHeight(int low, String range) -- parms depends on subclass
+   * @Normal.Test int calcHeight(double low, double average) -- ensure that proper distribution of
+   *              heights and means are generated for a few sample Heights. MockRace is called to
+   *              bypass the overridden data-driven methods.
    */
   @Test
   public void testCalcHeight()
@@ -92,12 +144,54 @@ public class TestRace
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-    MsgCtrl.msgln(MsgCtrl.NOTEST + MsgCtrl.BASECLASS);
+
+    int maleMin = 49;
+    int maleMax = 59;
+    double expMaleAvg = (maleMin + maleMax) / 2.0;
+
+    // Height range for males [49, 59]
+    // Generate a number of weights to check central tendency
+    MsgCtrl.msg("\t Expected male height in inches [" + maleMin + ", " + maleMax + "];");
+    MsgCtrl.msgln("\t Expected Average = " + expMaleAvg);
+    for (int k = 0; k < NBR_LOOPS; k++) {
+      _values[k] = _mockHim.calcHeight(maleMin, expMaleAvg);
+      assertTrue((_values[k] >= maleMin) && (_values[k] <= maleMax));
+    }
+    double[] results = Utilities.getStats(_values);
+    double avg = results[0];
+    int min = (int) results[1];
+    int max = (int) results[2];
+    MsgCtrl.msgln("\t Actual [Min, Max] = [" + min + ", " + max + "]; Average = " + avg);
+    assertEquals(expMaleAvg, results[0], 0.5);
+    assertEquals(maleMin, (int) results[1]);
+    assertEquals(maleMax, (int) results[2]);
+
+    // Height range for females = 90% of males: [44, 53]
+    int femaleMin = (int) (Math.round(0.90 * maleMin));
+    int femaleMax = (int) (Math.round(0.90 * maleMax));
+    double expFemaleAvg = (femaleMin + femaleMax) / 2.0;
+    MsgCtrl.msg("\t Expected female height in inches [" + femaleMin + ", " + femaleMax + "];");
+    MsgCtrl.msgln("\t Expected Average = " + expFemaleAvg);
+    for (int k = 0; k < NBR_LOOPS; k++) {
+      // Use male values since females values are automatically adjusted
+      _values[k] = _mockHer.calcHeight(maleMin, expMaleAvg);
+      assertTrue((_values[k] >= femaleMin) && (_values[k] <= femaleMax));
+    }
+    results = Utilities.getStats(_values);
+    avg = results[0];
+    min = (int) results[1];
+    max = (int) results[2];
+    MsgCtrl.msgln("\t Actual [Min, Max] = [" + min + ", " + max + "]; Average = " + avg);
+    assertEquals(expFemaleAvg, results[0], 0.5);
+    assertEquals(femaleMin, (int) results[1]);
+    assertEquals(femaleMax, (int) results[2]);
   }
 
 
   /**
-   * @Not.Needed int calcWeight(int low, String range) -- parms depends on subclass
+   * @Normal.Test int calcWeight(double low, double average) -- ensure that proper distribution of
+   *              weights and means are generated for a few sample weights. MockRace is called to
+   *              bypass the overridden data-driven methods.
    */
   @Test
   public void testCalcWeight()
@@ -105,101 +199,52 @@ public class TestRace
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-    MsgCtrl.msgln(MsgCtrl.NOTEST + MsgCtrl.BASECLASS);
-  }
 
+    int maleMin = 100;
+    int maleMax = 250;
+    double expMaleAvg = (maleMin + maleMax) / 2.0;
 
-  /**
-   * @Normal.Test TraitList constrainTo(TraitList, int[], int[]) -- force all values to 1
-   */
-  @Test
-  public void testConstrainTo()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    // SETUP
-    Race race = Race.createRace("Human", new Gender("male"), "brown");
-    MockRace mock = race.new MockRace();
-    TraitList traits = new TraitList();
-
-    int[] lower = {1, 1, 1, 1, 1, 1};
-    int[] upper = {1, 1, 1, 1, 1, 1};
-
-    // RUN
-    traits = mock.constrainTo(traits, lower, upper);
-    int[] values = traits.toArray();
-
-    // VERIFY All traits are set to 1
-    for (int k = 0; k < 6; k++) {
-      assertEquals(1, values[k]);
+    // Weight range for males [100, 250]
+    // Generate a number of weights to check central tendency
+    MsgCtrl.msg("\t Expected male weight in lbs [" + maleMin + ", " + maleMax + "];");
+    MsgCtrl.msgln("\t Expected Average = " + expMaleAvg);
+    for (int k = 0; k < NBR_LOOPS; k++) {
+      _values[k] = _mockHim.calcWeight(maleMin, expMaleAvg);
+      assertTrue((_values[k] >= maleMin) && (_values[k] <= maleMax));
     }
-    MsgCtrl.msgln("\t All traits bounded to [1,1]");
-  }
+    double[] results = Utilities.getStats(_values);
+    double avg = results[0];
+    int min = (int) results[1];
+    int max = (int) results[2];
+    MsgCtrl.msgln("\t Actual [Min, Max] = [" + min + ", " + max + "]; Average = " + avg);
+    // Check avg within 1%
+    assertEquals(expMaleAvg, results[0], expMaleAvg/100.0);
+    assertEquals(maleMin, (int) results[1]);
+    assertEquals(maleMax, (int) results[2]);
 
-
-  /**
-   * @Normal.Test TraitList constrainTo(TraitList, int[], int[]) -- force all values to [6,12]
-   */
-  @Test
-  public void testConstrainTo_Range()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    // SETUP
-    Race race = Race.createRace("Human", new Gender("male"), "brown");
-    MockRace mock = race.new MockRace();
-    TraitList traits = new TraitList();
-
-    int[] lower = {6, 6, 6, 6, 6, 6};
-    int[] upper = {12, 12, 12, 12, 12, 12};
-
-    // RUN
-    traits = mock.constrainTo(traits, lower, upper);
-    int[] values = traits.toArray();
-
-    // VERIFY All traits are set to range
-    for (int k = 0; k < 6; k++) {
-      assertTrue((values[k] >= 6) && (values[k] <= 12));
+    // Weight range for females = 90% of males: [90, 225]
+    int femaleMin = (int) (Math.round(0.90 * maleMin));
+    int femaleMax = (int) (Math.round(0.90 * maleMax));
+    double expFemaleAvg = (femaleMin + femaleMax) / 2.0;
+    MsgCtrl.msg("\t Expected female weight in lb [" + femaleMin + ", " + femaleMax + "];");
+    MsgCtrl.msgln("\t Expected Average = " + expFemaleAvg);
+    for (int k = 0; k < NBR_LOOPS; k++) {
+      // Use male values since females values are automatically adjusted
+      _values[k] = _mockHer.calcWeight(maleMin, expMaleAvg);
+      assertTrue((_values[k] >= femaleMin) && (_values[k] <= femaleMax));
     }
-    MsgCtrl.msgln("\t All traits bounded to [6,12]");
+    results = Utilities.getStats(_values);
+    avg = results[0];
+    min = (int) results[1];
+    max = (int) results[2];
+    MsgCtrl.msgln("\t Actual [Min, Max] = [" + min + ", " + max + "]; Average = " + avg);
+    // Check avg within 1%
+    assertEquals(expFemaleAvg, results[0], expFemaleAvg / 100.0);
+    assertEquals(femaleMin, (int) results[1]);
+    assertEquals(femaleMax, (int) results[2]);
   }
 
-  /**
-   * @Error.Test TraitList constrainTo(TraitList, int[], int[]) -- illegal values are used
-   */
-  @Test
-  public void testConstrainTo_Error()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    // SETUP
-    Race race = Race.createRace("Human", new Gender("male"), "brown");
-    MockRace mock = race.new MockRace();
-    int[] errors = {0, -1, 2, 24, 19, 12};
-
-    TraitList traits = new TraitList(errors);
-    int[] lower = {8, 8, 8, 8, 8, 8};
-    int[] upper = {18, 18, 18, 18, 18, 18};
-    // With these bounds, all traits are out of bounds except the last
-
-    // RUN
-    traits = mock.constrainTo(traits, lower, upper);
-    int[] values = traits.toArray();
-
-    // VERIFY All traits are set to range
-    for (int k = 0; k < 6; k++) {
-      assertTrue((values[k] >= 8) && (values[k] <= 18));
-    }
-    MsgCtrl.msgln("\t All traits bounded to [8,18]");
-  }
-
-
+  
   /**
    * @Normal.Test Race createRace(String raceName, Gender gender, String hairColor) -- create Race
    *              superclass that can be cast to specific subclasses, like Human
@@ -275,19 +320,6 @@ public class TestRace
    */
   @Test
   public void testGetGender()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-    MsgCtrl.msgln(MsgCtrl.NOTEST + MsgCtrl.GETTER);
-  }
-
-
-  /**
-   * @Not.Needed String getHeight() -- simple getter
-   */
-  @Test
-  public void testGetHeight()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
@@ -396,7 +428,6 @@ public class TestRace
     MsgCtrl.where(this);
     MsgCtrl.msgln(MsgCtrl.NOTEST + MsgCtrl.BASECLASS);
   }
-
 
 
 } // end of TestRace class

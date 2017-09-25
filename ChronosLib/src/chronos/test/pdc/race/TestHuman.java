@@ -11,6 +11,7 @@ package chronos.test.pdc.race;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -37,6 +38,9 @@ public class TestHuman
   private MockRace _mockHim;
   private Human _her;
   private MockRace _mockHer;
+
+  // The number of samples to take for verification (not for stats which uses much larger numbers)
+  private int NBR_LOOPS = 100;
 
   /**
    * @throws java.lang.Exception -- general catch-all for exceptions not caught by the tests
@@ -129,8 +133,8 @@ public class TestHuman
   @Test
   public void testAdjustTraitsForRace()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // SETUP Provide some base traits to be adjusted
@@ -162,106 +166,76 @@ public class TestHuman
 
 
   /**
-   * @Normal.Test int calcHeight(int low, String range) -- verify that height is randomly
-   *              distributed across range from the low value. Range must be normal distribution of
-   *              order 2dN-2.
+   * @Normal.Test int calcHeight(double minimum, double average) -- Check that a sample of values
+   *              falls within the expected range. The base method verifies stats of the method for
+   *              all subRaces.
    */
   @Test
   public void testCalcHeight()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    // Height range: male [60, 78]; female [54, 72]
-    // String HT_RANGE_DICE = "2d10-2"; // varying height = 0 - 18 in
-    int[] bin = {60, 66, 72, 78};
+    // MALE TEST
+    // Height range: male [60, 78]
+    int maleMin = 60;
+    int maleMax = 78;
+    double maleAvg = (maleMin + maleMax) / 2.0;
 
     // RUN
-    int nbrLoops = 1000;
-    double avg = _mockHim.calcHeightWithBins(_him, bin, nbrLoops);
+    for (int k = 0; k < NBR_LOOPS; k++) {
+      int height = _mockHim.calcHeight(maleMin, maleAvg);
+      assertTrue((height >= maleMin) && (height <= maleMax));
+    }
 
-    // Verify Average should be midway between all values
-    MsgCtrl.msgln("\t Average male height = " + avg);
-    assertEquals(69.0, avg, 1.0);
+    // FEMALE TEST
+    // Height range: female [54, 72]
+    int femaleMin = (int) (maleMin * 0.90);
+    int femaleMax = (int) (maleMax * 0.90);
+
+    // FEMALE RUN (pass male values because method automatically adjusts for gender)
+    for (int k = 0; k < NBR_LOOPS; k++) {
+      int height = _mockHer.calcHeight(maleMin, maleAvg);
+      assertTrue((height >= femaleMin) && (height <= femaleMax));
+    }
   }
 
 
   /**
-   * @Normal.Test int calcHeight(int low, String range) -- verify that height is randomly
-   *              distributed across range from the low value. Range must be normal distribution of
-   *              order 2dN-2.
-   */
-  @Test
-  public void testCalcHeight_Female()
-  {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
-    MsgCtrl.where(this);
-
-    // Height range: male [60, 78]; female [54, 72]
-    // String HT_RANGE_DICE = "2d10-2"; // varying height = 0 - 18 in
-    int[] bin = {54, 60, 66, 72};
-
-    // RUN
-    int nbrLoops = 1000;
-    double avg = _mockHer.calcHeightWithBins(_her, bin, nbrLoops);
-
-    // Verify Average should be midway between all values
-    MsgCtrl.msgln("\t Average female height = " + avg);
-    assertEquals(63.0, avg, 1.0);
-  }
-
-
-  /**
-   * @Normal.Test int calcWeight(int low, String range) -- verify that height is randomly
-   *              distributed across range from the low value. Range must be normal distribution of
-   *              order 2dN-2.
+   * @Normal.Test int calcWeight(double minimum, double average) -- Check that a sample of values
+   *              falls within the expected range. The base method verifies stats of the method for
+   *              all subRaces.
    */
   @Test
   public void testCalcWeight()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    // Weight range: male [130, 230]; female [117, 217]
-    // String WT_RANGE_DICE = "2d6-2"; // varying weight = 0 - 100 lb
-    int[] bin = {130, 163, 197, 230};
+    // MALE TEST
+    // Weight range: male [130, 230]
+    int maleMin = 130;
+    int maleMax = 230;
+    double maleAvg = (maleMin + maleMax) / 2.0;
 
     // RUN
-    int nbrLoops = 1000;
-    double avg = _mockHim.calcWeightWithBins(_him, bin, nbrLoops);
+    for (int k = 0; k < NBR_LOOPS; k++) {
+      int height = _mockHim.calcWeight(maleMin, maleAvg);
+      assertTrue((height >= maleMin) && (height <= maleMax));
+    }
 
-    // Verify Average should be midway between all values
-    MsgCtrl.msgln("\t Average male weight = " + avg);
-    assertEquals(180.0, avg, 1.0);
-  }
+    // FEMALE TEST
+    // Height range: female [117, 217]
+    int femaleMin = (int) (maleMin * 0.90);
+    int femaleMax = (int) (maleMax * 0.90);
 
-
-  /**
-   * @Normal.Test int calcWeight(int low, String range) -- verify that height is randomly
-   *              distributed across range from the low value. Range must be normal distribution of
-   *              order 2dN-2.
-   */
-  @Test
-  public void testCalcWeight_Female()
-  {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
-    MsgCtrl.where(this);
-
-    // Weight range: male [130, 230]; female [117, 217]
-    // String WT_RANGE_DICE = "2d6-2"; // varying weight = 0 - 100 lb
-    int[] bin = {117, 150, 184, 217};
-
-    // RUN
-    int nbrLoops = 1000;
-    double avg = _mockHer.calcWeightWithBins(_her, bin, nbrLoops);
-
-    // Verify Average should be midway between all values
-    MsgCtrl.msgln("\t Average female weight = " + avg);
-    assertEquals(167.0, avg, 1.0);
+    // FEMALE RUN (pass male values because method automatically adjusts for gender)
+    for (int k = 0; k < NBR_LOOPS; k++) {
+      int weight = _mockHer.calcWeight(maleMin, maleAvg);
+      assertTrue((weight >= femaleMin) && (weight <= femaleMax));
+    }
   }
 
 

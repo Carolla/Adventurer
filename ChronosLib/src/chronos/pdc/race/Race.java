@@ -25,7 +25,6 @@ import chronos.pdc.character.TraitList;
 import chronos.pdc.character.TraitList.PrimeTraits;
 import mylib.MsgCtrl;
 import mylib.pdc.MetaDie;
-import mylib.pdc.Utilities;
 
 /**
  * Defines the common methods and attributes for all Races.
@@ -83,7 +82,6 @@ public abstract class Race implements Serializable
   // ====================================================
 
   /** Modify prime traits in-place for racial specialties */
-  // public abstract TraitList adjustTraitsForRace(TraitList traits);
   public abstract void adjustTraitsForRace(TraitList traits);
 
   /** Calculate the gender- and racial specific weight of the Hero */
@@ -133,17 +131,24 @@ public abstract class Race implements Serializable
     return traits;
   }
 
+  
   /**
    * Calculate the height of the Hero based on deviation from average
    * 
-   * @param low lowest value for a male; female adjustment made
-   * @param variance dice format for normal-curve distribution across average value
+   * @param lowBound   lowest value for a male; female adjustment made
+   * @param average the average height for the normal population
    * @return the randomly-determined height over the average with a normal distribution
    */
-  protected int calcHeight(int low, String variance)
+  protected int calcHeight(double lowBound, double average)
   {
-    int newLow = (int) (_gender.isMale() ? low : low * FEMALE_ADJ);
-    int height = newLow + _md.roll(variance);
+    double low = lowBound;
+    double avg = average;
+    // Adjust for gender
+    if (_gender.isFemale()) {
+      low = low * FEMALE_ADJ;
+      avg = average * FEMALE_ADJ;
+    }
+    int height = Math.round(_md.rollVariance(low, avg));
     return height;
   }
 
@@ -151,17 +156,24 @@ public abstract class Race implements Serializable
   /**
    * Calculate the weight of the Hero based on deviation from average
    * 
-   * @param low lowest value for a male; adjustment made for female
-   * @param variance dice format for normal-curve distribution across average value
+   * @param lowBound   lowest value for a male; female adjustment made
+   * @param average the average weight for the normal population
    * @return the randomly-determined weight over the average with a normal distribution
    */
-  protected int calcWeight(int low, String variance)
+  protected int calcWeight(double lowBound, double average)
   {
-    int newLow = (int) (_gender.isMale() ? low : Math.round(low * FEMALE_ADJ));
-    int weight = newLow + _md.roll(variance) * 10;
-    return weight;
+    double low = lowBound;
+    double avg = average;
+    // Adjust for gender
+    if (_gender.isFemale()) {
+      low = low * FEMALE_ADJ;
+      avg = average * FEMALE_ADJ;
+    }
+    int height = (int) _md.rollVariance(low, avg);
+    return height;
   }
 
+  
   /**
    * Constrain all traits to fall within a given range for the racial subclass. Any value outside
    * those limits are set to the range boundary. NOTE: TraitList is created anew so return value
@@ -171,12 +183,12 @@ public abstract class Race implements Serializable
    * @param lowerLimits the lower bound per trait
    * @param upperLimits the upper bound per trait
    */
-  protected TraitList constrainTo(TraitList traits, int[] lowerLimits, int[] upperLimits)
-  {
-    int[] values = traits.toArray();
-    values = Utilities.constrain(values, lowerLimits, upperLimits);
-    return new TraitList(values);
-  }
+//  protected TraitList constrainTo(TraitList traits, int[] lowerLimits, int[] upperLimits)
+//  {
+//    int[] values = traits.toArray();
+//    values = Utilities.constrain(values, lowerLimits, upperLimits);
+//    return new TraitList(values);
+//  }
 
 
 
@@ -227,6 +239,7 @@ public abstract class Race implements Serializable
     return race;
   }
 
+  
   @Override
   public boolean equals(Object obj)
   {
@@ -351,12 +364,8 @@ public abstract class Race implements Serializable
   private TraitList setRaceTraits()
   {
     TraitList traits = new TraitList(); // default range of [8,18]
-    // traits = adjustTraitsForRace(traits);
-    // traits = _gender.adjustTraitsForGender(traits);
     adjustTraitsForRace(traits);
     _gender.adjustTraitsForGender(traits);
-    // TODO Use test to ensure that ranges is valid; don't clip range to change values
-    // traits = setTraitLimits(traits); // set to race-specific trait ranges
     return traits;
   }
 
@@ -370,9 +379,14 @@ public abstract class Race implements Serializable
     public MockRace()
     {};
 
-    public int calcHeight(int low, String range)
+    public int calcHeight(double low, double average)
     {
-      return Race.this.calcHeight(low, range);
+      return Race.this.calcHeight(low, average);
+    }
+
+    public int calcWeight(double low, double average)
+    {
+      return Race.this.calcWeight(low, average);
     }
 
     /**
@@ -447,10 +461,10 @@ public abstract class Race implements Serializable
     }
 
 
-    public TraitList constrainTo(TraitList tr, int[] low, int[] hi)
-    {
-      return Race.this.constrainTo(tr, low, hi);
-    }
+//    public TraitList constrainTo(TraitList tr, int[] low, int[] hi)
+//    {
+//      return Race.this.constrainTo(tr, low, hi);
+//    }
 
     public String getHairColor()
     {

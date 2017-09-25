@@ -23,9 +23,11 @@ public class HalfElf extends Race
 
   /** Weights and heights are generated in a normal distribution about an average over a Range */
   protected final int WT_LOW = 90;   // range: male [90, 170]; female [81, 161]
+  protected final int WT_AVG = 130;
   protected final int HT_LOW = 60;    // range: male [60, 76]; female [54, 70]
-  protected final String WT_RANGE_DICE = "2d5-2"; // varying weight = (0 - 8) * 10 lb
-  protected final String HT_RANGE_DICE = "2d9-2"; // varying height = (0 - 16) in
+  protected final int HT_AVG = 68; 
+//  protected final String WT_RANGE_DICE = "2d5-2"; // varying weight = (0 - 8) * 10 lb
+//  protected final String HT_RANGE_DICE = "2d9-2"; // varying height = (0 - 16) in
 
   /** Racial limits for a male for the traits SIWCDCh: STR-1, DEX+1 */
   protected final int[] MALE_MINLIMIT = { 7,  8,  8,  8,  9,  8};
@@ -79,14 +81,14 @@ public class HalfElf extends Race
   @Override
   public int calcWeight()
   {
-    return calcWeight(WT_LOW, WT_RANGE_DICE);
+    return calcWeight(WT_LOW, WT_AVG);
   }
 
   
   @Override
   public int calcHeight()
   {
-    return calcHeight(HT_LOW, HT_RANGE_DICE);
+    return calcHeight(HT_LOW, HT_AVG);
   }
 
 

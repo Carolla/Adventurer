@@ -194,12 +194,6 @@ public class MetaDie
   }
 
 
-  public double nextGaussian()
-  {
-    return _generator.nextGaussian();
-  }
-
-
   /**
    * Convert a dice notation string to two numbers, then roll the dice as indicated by the string.
    * This method should only be called if the lowest possible value is positive. In cases where a

@@ -26,9 +26,11 @@ public class Gnome extends Race
 
   /** Weight and height is generated in a normal distribution across the range's average value */
   protected final int WT_LOW = 60;  // male range [60, 100]; female [54, 94]
+  protected final int WT_AVG = 80; 
   protected final int HT_LOW = 33;  // male range [33, 39];  female [30, 36]
-  protected final String WT_RANGE_DICE = "2d3-2"; // times 10: varying weight = 0 - 40 lb
-  protected final String HT_RANGE_DICE = "2d4-2"; // varying height = 0 - 6 in
+  protected final int HT_AVG = 36;  
+//  protected final String WT_RANGE_DICE = "2d3-2"; // times 10: varying weight = 0 - 40 lb
+//  protected final String HT_RANGE_DICE = "2d4-2"; // varying height = 0 - 6 in
 
   /** Racial limits for a male Gnome for the traits SIWCDCh: STR-1, CHR-1 */
   protected final int[] MALE_MINLIMIT = {6, 8, 8, 8, 8, 7};
@@ -72,18 +74,16 @@ public class Gnome extends Race
 
 
   /**
-   * Male Gnome has a few adjustments from the default: STR-2, INT-1
+   * Male Gnome has a few adjustments from the default: STR-2, CHR+1
    * 
    * @param traits the six prime traits of any Hero
-   * @return the adjusted traits
    */
   @Override
 //  public TraitList adjustTraitsForRace(TraitList traits)
   public void adjustTraitsForRace(TraitList traits)
   {
     traits.adjust(PrimeTraits.STR, -2);
-    traits.adjust(PrimeTraits.CHR, -1);
-//    return traits;
+    traits.adjust(PrimeTraits.CHR, +1);
   }
 
 
@@ -96,7 +96,7 @@ public class Gnome extends Race
   public int calcHeight()
   {
     // return calcHeight(HT_LOW, HT_RANGE, HT_RANGE_DICE);
-    return calcHeight(HT_LOW, HT_RANGE_DICE);
+    return calcHeight(HT_LOW, HT_AVG);
   }
 
 
@@ -109,7 +109,7 @@ public class Gnome extends Race
   public int calcWeight()
   {
     // return calcWeight(WT_LOW, WT_RANGE, WT_RANGE_DICE);
-    return calcWeight(WT_LOW, WT_RANGE_DICE);
+    return calcWeight(WT_LOW, WT_AVG);
   }
 
 

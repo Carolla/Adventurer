@@ -111,8 +111,8 @@ public class TestOccupation
   @Test
   public void testCtor_NullParms()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     String LONGNAME = "All names are required to be within "

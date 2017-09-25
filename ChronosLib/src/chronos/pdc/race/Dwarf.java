@@ -17,15 +17,16 @@ import chronos.pdc.character.TraitList.PrimeTraits;
  * @author Al Cline
  * @version Sep 6, 2015 // original <br>
  *          June 27, 2017 // simplified and adjusted for Peasant klass <br>
+ *          Sept 16, 2017 // revised to support QATool tests <br>
  */
 
 public class Dwarf extends Race
 {
   /** Weights and heights are generated in a normal distribution about an average over a Range */
   protected final int WT_LOW = 110;   // range: male [110, 190]; female [99, 179]
+  protected final int WT_AVG = 150;
   protected final int HT_LOW = 49;    // range: male [49, 59]; female [44, 54]
-  protected final String WT_RANGE_DICE = "2d5-2"; // varying weight = (0 - 8) * 10 lb
-  protected final String HT_RANGE_DICE = "2d6-2"; // varying height = (0 - 10) in
+  protected final int HT_AVG = 54; 
 
   private final String RACE_NAME = "Dwarf";
   private final String RACE_LANGUAGE = "Dwarvish";
@@ -73,50 +74,28 @@ public class Dwarf extends Race
   /**
    * Dwarfs are hardier but less likable: CON+1, CHR-1
    * 
-   * @param traits `original unadjusted traits
+   * @param traits  original unadjusted traits; traits revised in place
    */
   @Override
-//  public TraitList adjustTraitsForRace(TraitList traits)
   public void adjustTraitsForRace(TraitList traits)
   {
     traits.adjust(PrimeTraits.CON, 1);
     traits.adjust(PrimeTraits.CHR, -1);
-//    return traits;
   }
 
 
   @Override
   public int calcWeight()
   {
-    return calcWeight(WT_LOW, WT_RANGE_DICE);
+    return calcWeight(WT_LOW, WT_AVG);
   }
   
 
   @Override
   public int calcHeight()
   {
-    return calcHeight(HT_LOW, HT_RANGE_DICE);
+      return calcHeight(HT_LOW, HT_AVG);
   }
-
-
-//  /**
-//   * Ensure that the traits fall within the proper male/female. After the limits are defined for
-//   * this subclass, the base class is called with that data.
-//   * 
-//   * @param traits the six prime traits of any Hero
-//   * @return the adjusted traits
-//   */
-//  @Override
-//  public TraitList setTraitLimits(TraitList traits)
-//  {
-//    if (_gender.isFemale()) {
-//      traits = constrainTo(traits, FEMALE_MINLIMIT, FEMALE_MAXLIMIT);
-//    } else {
-//      traits = constrainTo(traits, MALE_MINLIMIT, MALE_MAXLIMIT);
-//    }
-//    return traits;
-//  }
-
 
 
 }

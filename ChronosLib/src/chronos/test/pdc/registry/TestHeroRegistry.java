@@ -44,13 +44,13 @@ public class TestHeroRegistry
   private static MockHeroRegistry _mock;
 
   // Heroes to add, one with a duplicate race
-//  static private Hero _hero1 = new Hero("Falsoon", "Male", "Brown", "Human");
-//  static private Hero _hero2 = new Hero("Blythe", "Female", "Red", "Elf");
-//  static private Hero _hero3 = new Hero("Balthazar", "Male", "Bald", "Hobbit");
-//  static private Hero _hero4 = new Hero("Borca", "Male", "Black", "Half-Orc");
-//  static private Hero _hero5 = new Hero("Blandershins", "Female", "Red", "Gnome");
-//  static private Hero _hero6 = new Hero("Gromet", "Female", "Red", "Dwarf");
-//  static private Hero _hero7 = new Hero("Cynon", "Male", "Brown", "Human");
+  static private Hero _hero1 = new Hero("Falsoon", "Male", "Brown", "Human");
+  static private Hero _hero2 = new Hero("Blythe", "Female", "Red", "Elf");
+  static private Hero _hero3 = new Hero("Balthazar", "Male", "Bald", "Hobbit");
+  static private Hero _hero4 = new Hero("Borca", "Male", "Black", "Half-Orc");
+  static private Hero _hero5 = new Hero("Blandershins", "Female", "Red", "Gnome");
+  static private Hero _hero6 = new Hero("Gromet", "Female", "Red", "Dwarf");
+  static private Hero _hero7 = new Hero("Cynon", "Male", "Brown", "Human");
 
   // ArrayList of Heros to use for Registry testing
   static private final int NBR_HEROES = 7;
@@ -68,15 +68,13 @@ public class TestHeroRegistry
   @BeforeClass
   public static void setUpBeforeClass()
   {
-    Hero _hero1 = new Hero("Falsoon", "Male", "Brown", "Human");
-
     _heroList.add(_hero1);
-//    _heroList.add(_hero2);
-//    _heroList.add(_hero3);
-//    _heroList.add(_hero4);
-//    _heroList.add(_hero5);
-//    _heroList.add(_hero6);
-//    _heroList.add(_hero7);
+    _heroList.add(_hero2);
+    _heroList.add(_hero3);
+    _heroList.add(_hero4);
+    _heroList.add(_hero5);
+    _heroList.add(_hero6);
+    _heroList.add(_hero7);
     // Reset the registry directory so that it initializes to the test directory
     _tempath = Chronos.HeroRegPath;
     Chronos.HeroRegPath = TESTDIRPATH;
@@ -398,10 +396,13 @@ public class TestHeroRegistry
     MsgCtrl.where(this);
 
     // SETUP Add one Hero to registry and save
-    Hero h = _heroList.get(3);
-    _heroReg.add(h);
-    MsgCtrl.msg("\t Saving...");
-    _heroReg.saveHero(h.getName());
+    Hero aHero = new Hero("Blythe", "Female", "Red", "Elf");
+    String hName = aHero.getName();
+    _heroReg.add(aHero);
+
+    // Save Hero by name
+    MsgCtrl.msg("\t Saving..." + hName);
+    _heroReg.saveHero(hName);
 
     // Get the (only) file in the test directory
     File dir = _mock.getRegFile();

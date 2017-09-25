@@ -26,9 +26,11 @@ public class Hobbit extends Race
 
   /** Weight and height is generated in a normal distribution across the range's average value */
   protected final int WT_LOW = 70; // male range [70, 110]; female [63, 103]
+  protected final int WT_AVG = 90; 
   protected final int HT_LOW = 38; // male range [38, 46]; female [34, 42]
-  protected final String WT_RANGE_DICE = "2d3-2"; // times 10: varying weight = 0 - 40 lb
-  protected final String HT_RANGE_DICE = "2d5-2"; // varying height = 0 - 8 in
+  protected final int HT_AVG = 42; 
+//  protected final String WT_RANGE_DICE = "2d3-2"; // times 10: varying weight = 0 - 40 lb
+//  protected final String HT_RANGE_DICE = "2d5-2"; // varying height = 0 - 8 in
 
   /** Racial limits for a male Gnome for the traits SIWCDCh: STR-1, CON+1, DEX+1 */
   protected final int[] MALE_MINLIMIT = {7, 8, 8, 9, 9, 8};
@@ -91,7 +93,7 @@ public class Hobbit extends Race
   @Override
   public int calcHeight()
   {
-    return calcHeight(HT_LOW, HT_RANGE_DICE);
+    return calcHeight(HT_LOW, HT_AVG);
   }
 
 
@@ -103,7 +105,7 @@ public class Hobbit extends Race
   @Override
   public int calcWeight()
   {
-    return calcWeight(WT_LOW, WT_RANGE_DICE);
+    return calcWeight(WT_LOW, WT_AVG);
   }
 
 

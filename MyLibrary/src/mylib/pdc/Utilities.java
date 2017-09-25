@@ -254,6 +254,33 @@ public class Utilities
     String age = String.format("%2.3f yrs.", total);
     return age;
   }
+  
+  
+  /** Find the average, minimum, and maximum values for a given integer array
+   * @param ary the values to analyze
+   * @return an array of three values, in this order: average, min, max
+   */
+  static public double[] getStats(int[] ary) 
+  {
+    double[] result = new double[3];
+    int AVG = 0;
+    int MIN = 1;
+    int MAX = 2;
+    
+    int min = 9999;
+    int max = -1;
+    int sum = 0;
+
+    for (int k=0; k < ary.length; k++) {
+      min = Math.min(min, ary[k]);
+      max = Math.max(max, ary[k]);
+      sum += ary[k];
+    }
+    result[AVG] = (double) sum / (double) ary.length;
+    result[MIN] = min;
+    result[MAX] = max;
+    return result;
+  }
 
 
   /**

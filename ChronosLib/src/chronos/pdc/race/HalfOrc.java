@@ -12,7 +12,6 @@ package chronos.pdc.race;
 import chronos.pdc.character.Gender;
 import chronos.pdc.character.TraitList;
 import chronos.pdc.character.TraitList.PrimeTraits;
-import mylib.pdc.MetaDie;
 
 /**
  * @author Al Cline
@@ -24,9 +23,11 @@ public class HalfOrc extends Race
 
   /** Weights and heights are generated in a normal distribution about an average over a Range */
   protected final int WT_LOW = 140; // range: male [140, 260]; female [126, 246]
-  protected final String WT_RANGE_DICE = "2d7-2"; // varying weight = [0 - 120] lb
+  protected final int WT_AVG = 200; 
   protected final int HT_LOW = 60; // range: male [60, 80]; female [54, 74]
-  protected final String HT_RANGE_DICE = "2d11-2"; // varying height = [0 - 20] in
+  protected final int HT_AVG = 70; 
+//  protected final String HT_RANGE_DICE = "2d11-2"; // varying height = [0 - 20] in
+//  protected final String WT_RANGE_DICE = "2d7-2"; // varying weight = [0 - 120] lb
 
   /** Racial limits for a male for the traits SIWCDCh: STR+1, CON+1, CHR-2 */
   protected final int[] MALE_MINLIMIT = {9, 8, 8, 9, 8, 6};
@@ -77,14 +78,14 @@ public class HalfOrc extends Race
   @Override
   public int calcHeight()
   {
-    return calcHeight(HT_LOW, HT_RANGE_DICE);
+    return calcHeight(HT_LOW, HT_AVG);
   }
 
 
   @Override
   public int calcWeight()
   {
-    return calcWeight(WT_LOW, WT_RANGE_DICE);
+    return calcWeight(WT_LOW, WT_AVG);
   }
 
 
