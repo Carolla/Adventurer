@@ -2,9 +2,9 @@
  * Mainframe.java Copyright (c) 2010, Carolla Development, Inc. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
- * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
- * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
- * by email: acline@carolla.com
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists,
+ * requires prior specific permission and/or a fee. Request permission to use from Carolla
+ * Development, Inc. by email: acline@carolla.com
  */
 
 package hic;
@@ -28,11 +28,12 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
+import chronos.pdc.Chronos;
+import civ.Adventurer;
+import civ.IMainframe;
 import mylib.Constants;
 import mylib.hic.HelpDialog;
 import net.miginfocom.swing.MigLayout;
-import chronos.pdc.Chronos;
-import civ.Adventurer;
 
 /**
  * Initial frame displays three buttons and Chronos logo.<br>
@@ -45,17 +46,20 @@ import civ.Adventurer;
  *          Aug 3, 2014 // added {@code getWindowSize} to replace public variables <br>
  *          Aug 3, 2014 // added Runic font to the buttons <br>
  *          Aug 6, 2014 // removed innner classes and merged StandardLayout with IOPanel <br>
- *          Aug 18, 2014 // moved {@code ImagePanel} backend methods to {@code MainframeCiv} <br>
- *          Aug 23 2014 // added methods to change titles on either panel, and images in the image
- *          pane <br>
+ *          Aug 18, 2014 // moved {@code ImagePanel} backend methods to {@code MainframeCiv}
+ *          <br>
+ *          Aug 23 2014 // added methods to change titles on either panel, and images in the
+ *          image pane <br>
  *          Oct 19, 2015 // repaired Cancel button on Quit prompt window <br>
  *          Nov 6, 2015 // re-architected Mainframe so that widgets are called by civs <br>
- *          Nov 7, 2015 // re-architected Mainframe so no PDC classes are imported into HIC <br>
+ *          Nov 7, 2015 // re-architected Mainframe so no PDC classes are imported into HIC
+ *          <br>
  *          Nov 14, 2015 // re-architected Mainframe so that MainframeCiv starts first, and has
  *          program control <br>
+ *          March 25, 2018 // refactored to suppot MainframeProxy for testing <br>
  */
 @SuppressWarnings("serial")
-public class Mainframe extends JFrame implements MainframeInterface
+public class Mainframe extends JFrame implements IMainframe
 {
   /** Width of the platform user's window frame */
   private static int USERWIN_WIDTH;
@@ -70,6 +74,10 @@ public class Mainframe extends JFrame implements MainframeInterface
   private ChronosPanel _leftHolder;
   /** Empty right-side panel holder for initial standard panels. */
   private ChronosPanel _rightHolder;
+  // Default image for right-side panel
+  private final String INITIAL_IMAGE = "ChronosLogo.jpg";
+  // Default title for right-side panel
+  private final String INITIAL_IMAGE_TITLE = "Chronos Logo";
 
   /** Keep panel states to return to in case CANCEL is hit */
   private Deque<ChronosPanel> _leftPanelStack = new ArrayDeque<ChronosPanel>(5);
@@ -78,6 +86,7 @@ public class Mainframe extends JFrame implements MainframeInterface
   /** Singleton Help Dialog for all help text */
   private HelpDialog _helpdlg;
   private ImagePanel _imagePanel;
+  private ChronosPanel _actionPanel;
 
   /** Help Title for the mainframe */
   private static final String _helpTitle = "GREETINGS ADVENTURER!";
@@ -104,9 +113,9 @@ public class Mainframe extends JFrame implements MainframeInterface
   // ============================================================
 
   /**
-   * Creates the initial frame layout: left and right panel holders with buttons, and image panel
-   * showing chronos logo on right. Creates the {@code HelpDialog} singleton, ready to receive
-   * context-sensitive help text when requested. Creates the {@code MainframeCiv} which takes
+   * Creates the initial frame layout: left and right panel holders with buttons, and image
+   * panel showing chronos logo on right. Creates the {@code HelpDialog} singleton, ready to
+   * receive context-sensitive help text when requested. Creates the {@code MainframeCiv} which
    * manages program control at the highest level.
    */
   public Mainframe()
@@ -117,6 +126,16 @@ public class Mainframe extends JFrame implements MainframeInterface
 
     // Create the one time help dialog
     prepareHelpDialog();
+
+    // Create the overall image Panels
+    ImagePanel imagePanel = new ImagePanel();
+    setImagePanel(imagePanel);
+    displayImage(INITIAL_IMAGE_TITLE, INITIAL_IMAGE);
+    replaceRightPanel(imagePanel);
+    
+    // Create the MainActionPanel for the three primary action buttons
+    _actionPanel = new MainActionPanel();
+    replaceLeftPanel(_actionPanel);
 
     // Display the Mainframe and panels now
     setVisible(true);
@@ -129,8 +148,8 @@ public class Mainframe extends JFrame implements MainframeInterface
   // ============================================================
 
   /**
-   * Remove the current panel and return to the previous panel. This currently works only for the
-   * left side of the mainframe.
+   * Remove the current panel and return to the previous panel. This currently works only for
+   * the left side of the mainframe.
    */
   public void back()
   {
@@ -164,6 +183,7 @@ public class Mainframe extends JFrame implements MainframeInterface
     }
   }
 
+  
   /**
    * Display an image into the right side panel
    * 
@@ -196,8 +216,8 @@ public class Mainframe extends JFrame implements MainframeInterface
 
 
   /**
-   * Get the size of the main window being displayed, which is used as a standard for laying out
-   * subcomponents and panels.
+   * Get the size of the main window being displayed, which is used as a standard for laying
+   * out subcomponents and panels.
    * 
    * @return {@code Dimension} object; retrieve int values with {@code Dimension.width} and
    *         {@code Dimension.height}
@@ -209,8 +229,8 @@ public class Mainframe extends JFrame implements MainframeInterface
 
 
   /**
-   * Replaces a panel on left side of mainframe with the new one provided and displays the panel's
-   * title. Saves the state in case the user needs to back out.
+   * Replaces a panel on left side of mainframe with the new one provided and displays the
+   * panel's title. Saves the state in case the user needs to back out.
    * 
    * @param newPanel that replaces existing panel on left side of Mainframe
    */
@@ -228,8 +248,8 @@ public class Mainframe extends JFrame implements MainframeInterface
   }
 
   /**
-   * Replaces an image on the right side of mainframe with the new one provided and displays the
-   * panel's title. Saves the state in case the user needs to back out.
+   * Replaces an image on the right side of mainframe with the new one provided and displays
+   * the panel's title. Saves the state in case the user needs to back out.
    * 
    * @param newPanel that replaces existing panel on left side of Mainframe
    */
@@ -309,8 +329,8 @@ public class Mainframe extends JFrame implements MainframeInterface
 
 
   /**
-   * Create a holder for the left or right side of the frame, with all cosmetics. Holders will have
-   * same layout manager, size, border type, and runic font title. <br>
+   * Create a holder for the left or right side of the frame, with all cosmetics. Holders will
+   * have same layout manager, size, border type, and runic font title. <br>
    * 
    * @param borderColor background Color for the border
    * @param title to be positioned top center in Runic font
@@ -364,8 +384,8 @@ public class Mainframe extends JFrame implements MainframeInterface
   }
 
   /**
-   * Display a title onto the border of the right side image panel. Add one space char on either
-   * side for aesthetics
+   * Display a title onto the border of the right side image panel. Add one space char on
+   * either side for aesthetics
    *
    * @param title of the panel to set
    */
@@ -377,8 +397,8 @@ public class Mainframe extends JFrame implements MainframeInterface
 
 
   /**
-   * Display a title onto the border of the left side command panel. Add one space char on either
-   * side for aesthetics
+   * Display a title onto the border of the left side command panel. Add one space char on
+   * either side for aesthetics
    *
    * @param title of the panel to set
    */
@@ -399,7 +419,7 @@ public class Mainframe extends JFrame implements MainframeInterface
     _contentPane.setLayout(new MigLayout("", "[grow, fill]10[grow]", "[grow]"));
   }
 
-  
+
   /** Define the mainframe layout characteristics */
   private void setupSizeAndBoundaries()
   {
@@ -443,4 +463,11 @@ public class Mainframe extends JFrame implements MainframeInterface
 
   } // end of Terminator inner class
 
+
+//  /** Used to audit the mainframe components as they are created */
+//  public class Mock_Mainfrane
+//  {
+//  }
+  
+  
 } // end of Mainframe outer class

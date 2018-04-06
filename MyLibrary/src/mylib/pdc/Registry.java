@@ -2,9 +2,9 @@
  * Registry.java Copyright (c) 2012, Carolla Development, Inc. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
- * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
- * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
- * by email: acline@carolla.com
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists,
+ * requires prior specific permission and/or a fee. Request permission to use from Carolla
+ * Development, Inc. by email: acline@carolla.com
  */
 
 package mylib.pdc;
@@ -19,9 +19,9 @@ import mylib.dmc.IRegistryElement;
 /**
  * The base class for all Registries.
  * <p>
- * WARNING: All Registry elements must implement the interface {@code IRegistryElement}. Do not use
- * the default {@code boolean Object.equals} method because it compares objects independent of the
- * field data within (an instantiation level compare) and will not work as expected.
+ * WARNING: All Registry elements must implement the interface {@code IRegistryElement}. Do not
+ * use the default {@code boolean Object.equals} method because it compares objects independent
+ * of the field data within (an instantiation level compare) and will not work as expected.
  * 
  * @author Alan Cline
  * @version Aug 6, 2012 // original <br>
@@ -42,9 +42,9 @@ public abstract class Registry<E extends IRegistryElement> implements Serializab
   protected ArrayList<E> _list;
 
   /**
-   * Initialize registry with beginning data from static tables, called when the registry file does
-   * not exist. Method abstract because each derived registry has its own type-specific init data
-   * table.
+   * Initialize registry with beginning data from static tables, called when the registry file
+   * does not exist. Method abstract because each derived registry has its own type-specific
+   * init data table.
    */
   protected abstract void initialize();
 
@@ -54,8 +54,8 @@ public abstract class Registry<E extends IRegistryElement> implements Serializab
   // ============================================================
 
   /**
-   * Base constructor for in-memory registries creates a read-only {@code Registry}. Required for
-   * serialization.
+   * Base constructor for in-memory registries creates a read-only {@code Registry}. Required
+   * for serialization.
    */
   public Registry()
   {
@@ -102,7 +102,8 @@ public abstract class Registry<E extends IRegistryElement> implements Serializab
 
 
   /**
-   * Verifies if the given object exists in the registry. The object's equal() method is called.
+   * Verifies if the given object exists in the registry. The object's equal() method is
+   * called.
    * 
    * @param target object to match against for comparison
    * @return true if the registry contains the element, else false
@@ -139,8 +140,8 @@ public abstract class Registry<E extends IRegistryElement> implements Serializab
 
 
   /**
-   * Retrieve one or more objects by key, which is more than the name. The object's {@code getKey()}
-   * method is called.
+   * Retrieve one or more objects by key, which is more than the name. The object's
+   * {@code getKey()} method is called.
    * 
    * @param key of the target object to match against for comparison
    * @return the element object that matches the name
@@ -194,9 +195,9 @@ public abstract class Registry<E extends IRegistryElement> implements Serializab
   }
 
   /**
-   * Update an existing object in the registry. The existing object must already be in the database,
-   * and will be replaced with the first one it finds that matches it. The element's getKey() method
-   * will be called, so the key field cannot be changed (updated). <br>
+   * Update an existing object in the registry. The existing object must already be in the
+   * database, and will be replaced with the first one it finds that matches it. The element's
+   * getKey() method will be called, so the key field cannot be changed (updated). <br>
    * Note: db4o provides a field-replacement based update, but this is a delete-add method.
    * 
    * @param target replacement for modified object

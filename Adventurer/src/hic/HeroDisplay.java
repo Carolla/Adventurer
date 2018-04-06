@@ -247,8 +247,8 @@ public class HeroDisplay extends ChronosPanel
    */
   public void addInventory(Inventory inventory)
   {
-    _invenPanel.add(gridCell("Wielded Weapon:", "None"), "gaptop 10, span 6, growx, wrap 0");
-    _invenPanel.add(gridCell("Armor Worn: ", " None"), "span 6, growx, wrap 0");
+    _invenPanel.add(gridCell("Weapon wielded:", "None"), "gaptop 10, span 6, growx, wrap 0");
+    _invenPanel.add(gridCell("Armor worn: ", " None"), "span 6, growx, wrap 0");
 
     // JPanel blankLine = gridCell("", "");
     // // blankLine.setBackground(Color.DARK_GRAY);

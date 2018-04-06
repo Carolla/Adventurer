@@ -18,6 +18,7 @@ import chronos.pdc.character.TraitList.PrimeTraits;
  * @author Al Cline
  * @version Sep 6, 2015 // original <br>
  *          July 1, 2017 // refactored for Peasant klass and reduce duplication <br>
+ *          Sept 25, 2017 // revised calcWeight() and calcHeight() into base calcVariance() <br>
  */
 public class Hobbit extends Race
 {
@@ -25,12 +26,12 @@ public class Hobbit extends Race
   private final String RACE_LANGUAGE = "Tolkeen";
 
   /** Weight and height is generated in a normal distribution across the range's average value */
-  protected final int WT_LOW = 70; // male range [70, 110]; female [63, 103]
-  protected final int WT_AVG = 90; 
-  protected final int HT_LOW = 38; // male range [38, 46]; female [34, 42]
-  protected final int HT_AVG = 42; 
-//  protected final String WT_RANGE_DICE = "2d3-2"; // times 10: varying weight = 0 - 40 lb
-//  protected final String HT_RANGE_DICE = "2d5-2"; // varying height = 0 - 8 in
+  // male range [70, 110]; female [63, 99]
+  protected final int WT_LOW = 70;
+  protected final int WT_HIGH = 110;
+  // male range [38, 46]; female [34, 42]
+  protected final int HT_LOW = 38;
+  protected final int HT_HIGH = 46;
 
   /** Racial limits for a male Gnome for the traits SIWCDCh: STR-1, CON+1, DEX+1 */
   protected final int[] MALE_MINLIMIT = {7, 8, 8, 9, 9, 8};
@@ -93,7 +94,7 @@ public class Hobbit extends Race
   @Override
   public int calcHeight()
   {
-    return calcHeight(HT_LOW, HT_AVG);
+    return calcVariance(HT_LOW, HT_HIGH);
   }
 
 
@@ -105,9 +106,8 @@ public class Hobbit extends Race
   @Override
   public int calcWeight()
   {
-    return calcWeight(WT_LOW, WT_AVG);
+    return calcVariance(WT_LOW, WT_HIGH);
   }
-
 
 
 } // end of Hobbit subclass

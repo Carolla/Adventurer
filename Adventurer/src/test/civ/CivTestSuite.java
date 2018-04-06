@@ -25,7 +25,7 @@ import org.junit.runners.Suite;
     /* Civ test files */
     TestBuildingDisplayCiv.class,
     TestHeroDisplayCiv.class,
-    TestMainframeCiv.class,
+    // TestMainframeCiv.class,
     TestNewHeroCiv.class,
 })
 

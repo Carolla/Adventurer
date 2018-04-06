@@ -201,6 +201,7 @@ public class NewHeroIPPanel extends ChronosPanel
 
     // Display error message if received from submit button, or new Hero if OK
     submitButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent event)
       {
         // Call the Civ to validate the attributes. If no errors, Hero
@@ -314,10 +315,6 @@ public class NewHeroIPPanel extends ChronosPanel
       showErrorMessage(ERRMSG_NAME_MISSING);
       return null;
     }
-//    input.put(HeroInput.NAME, name);
-//    input.put(HeroInput.GENDER, _genderPanel.getSelectedGender());
-//    input.put(HeroInput.HAIR, String.valueOf(_hairCombo.getSelectedItem()));
-//    input.put(HeroInput.RACE, String.valueOf(_raceCombo.getSelectedItem()));
     input.put(PersonKeys.NAME, name);
     input.put(PersonKeys.GENDER, _genderPanel.getSelectedGender());
     input.put(PersonKeys.HAIR_COLOR, String.valueOf(_hairCombo.getSelectedItem()));

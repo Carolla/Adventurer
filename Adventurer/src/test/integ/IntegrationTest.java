@@ -1,3 +1,11 @@
+/**
+ * IntegrationTest.java Copyright (c) 2018, Alan Cline. All Rights Reserved
+ * 
+ * Permission to make digital or hard copies of all or parts of this work for commercial use is
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists,
+ * requires prior specific permission and/or a fee. Request permission to use by email:
+ * acline@wowway.com.
+ */
 
 package test.integ;
 
@@ -24,6 +32,7 @@ import civ.BuildingDisplayCiv;
 import civ.CommandParser;
 import civ.MainActionCiv;
 import civ.MainframeCiv;
+import hic.MainActionPanel;
 import mylib.MsgCtrl;
 import pdc.command.CommandFactory;
 
@@ -34,7 +43,7 @@ public class IntegrationTest
   protected static final List<String> _bldgs = new ArrayList<String>();
   protected static final Scheduler _skedder = new Scheduler();
   protected static final MainframeCiv _mfCiv = new MainframeCiv(new MainframeProxy());
-  protected static final MainActionCiv _maCiv = new MainActionCiv(_mfCiv);
+  protected static final MainActionCiv _maCiv = new MainActionCiv(new MainActionPanel());
   protected static final RegistryFactory _regFactory = new RegistryFactory();
 
   protected static BuildingDisplayCiv _bldgCiv;

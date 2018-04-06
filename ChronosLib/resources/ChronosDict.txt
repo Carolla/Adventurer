@@ -30,3 +30,4 @@ init
 stats
 int
 autogen
+conjugates

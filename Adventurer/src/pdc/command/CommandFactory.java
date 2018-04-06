@@ -4,9 +4,9 @@
  * Copyright (c) 2007, Carolla Development, Inc. All Rights Reserved.
  *
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
- * prohibited. To republish, post on servers, to reuse, or to redistribute to lists, requires prior
- * specific permission and/or a fee. Request permission to use from Carolla Development, Inc. by
- * email: acline@carolla.com.
+ * prohibited. To republish, post on servers, to reuse, or to redistribute to lists, requires
+ * prior specific permission and/or a fee. Request permission to use from Carolla Development,
+ * Inc. by email: acline@carolla.com.
  */
 
 package pdc.command;
@@ -23,9 +23,9 @@ import civ.MainframeCiv;
 
 
 /**
- * Creates a concrete object that is a subclass of the Abstract Command class. Once the command is
- * created, the command line string is passed for parsing to retrieve the specific data arguments
- * for the command.
+ * Creates a concrete object that is a subclass of the Abstract Command class. Once the command
+ * is created, the command line string is passed for parsing to retrieve the specific data
+ * arguments for the command.
  * 
  * @author Tim Armstrong
  * @version Aug 31, 2006 // original version <br>
@@ -44,7 +44,8 @@ public class CommandFactory
 
   private final BuildingDisplayCiv _bdCiv;
   private final MainframeCiv _mfCiv;
-  private final UserMsgInterface _output;
+  private UserMsgInterface _output;
+
 
   /** Keep a table for command, as lambda functions */
   public CommandFactory(BuildingDisplayCiv bdCiv, MainframeCiv mfCiv)
@@ -55,7 +56,8 @@ public class CommandFactory
   }
 
   /**
-   * Provide initial values for the commandMap. This can be set up differently as needed for test.
+   * Provide initial values for the commandMap. This can be set up differently as needed for
+   * test.
    */
   public void initMap()
   {
@@ -64,7 +66,7 @@ public class CommandFactory
     // Enter the interior of the Building
     _commandMap.put("ENTER", () -> new CmdEnter(_bdCiv));
     // Synonym for Leave and then Quit the program
-     _commandMap.put("EXIT", () -> new CmdExit(_mfCiv));
+    _commandMap.put("EXIT", () -> new CmdExit(_mfCiv));
     // Get near description for NPC
     _commandMap.put("INSPECT", () -> new CmdInspect(_bdCiv));
     // Leave the inside of the Building and go outside
@@ -72,7 +74,7 @@ public class CommandFactory
     // Get Room Description or Get NPC names
     _commandMap.put("LOOK", () -> new CmdLook(_bdCiv));
     // End the program.
-     _commandMap.put("QUIT", () -> new CmdQuit(_mfCiv, _bdCiv));
+    _commandMap.put("QUIT", () -> new CmdQuit(_mfCiv, _bdCiv));
     // Return to town view
     _commandMap.put("RETURN", () -> new CmdReturn(_bdCiv));
     // Just sit there
@@ -103,6 +105,6 @@ public class CommandFactory
       return null;
     }
   }
-  
+
 } // end of CommandFactory class
 

@@ -32,7 +32,7 @@ import org.junit.runners.Suite;
     TestItemRegistry.class,
     TestNPCRegistry.class,
     TestOccupationRegistry.class,
-    // TestRegistryFactory.class, // this doesn't seem to be used
+    TestRegistryFactory.class, // this doesn't seem to be used
     TestSkillRegistry.class,
     TestTownRegistry.class,
 

@@ -27,6 +27,8 @@ import mylib.pdc.Registry;
  */
 public class AdventureRegistry extends Registry<Adventure>
 {
+  private static final long serialVersionUID = 3351378143462164990L;
+  
   /** Default Adventure */
   private final String DEF_ADVENTURE = "The Quest for Rogahn and Zelligar";
   /** Default Town to start AdventureRegistry with */

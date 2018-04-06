@@ -10,8 +10,6 @@
 
 package chronos.pdc.race;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,7 +21,6 @@ import chronos.pdc.character.Description;
 import chronos.pdc.character.Gender;
 import chronos.pdc.character.TraitList;
 import chronos.pdc.character.TraitList.PrimeTraits;
-import mylib.MsgCtrl;
 import mylib.pdc.MetaDie;
 
 /**
@@ -131,49 +128,50 @@ public abstract class Race implements Serializable
     return traits;
   }
 
-  
+
   /**
-   * Calculate the height of the Hero based on deviation from average
+   * Calculate the height of the Hero based on deviation from average. Adjustments are made for
+   * females.
    * 
-   * @param lowBound   lowest value for a male; female adjustment made
-   * @param average the average height for the normal population
-   * @return the randomly-determined height over the average with a normal distribution
+   * @param lowBound lowest value for a male
+   * @param hiBound highest value for a male
+   * @return the randomly-determined value that varies about the average of a normal distribution
    */
-  protected int calcHeight(double lowBound, double average)
+  protected int calcVariance(double lowBound, double hiBound)
   {
     double low = lowBound;
-    double avg = average;
+    double avg = (lowBound + hiBound) / 2.0;
     // Adjust for gender
     if (_gender.isFemale()) {
       low = low * FEMALE_ADJ;
-      avg = average * FEMALE_ADJ;
+      avg = avg * FEMALE_ADJ;
     }
     int height = Math.round(_md.rollVariance(low, avg));
     return height;
   }
 
 
-  /**
-   * Calculate the weight of the Hero based on deviation from average
-   * 
-   * @param lowBound   lowest value for a male; female adjustment made
-   * @param average the average weight for the normal population
-   * @return the randomly-determined weight over the average with a normal distribution
-   */
-  protected int calcWeight(double lowBound, double average)
-  {
-    double low = lowBound;
-    double avg = average;
-    // Adjust for gender
-    if (_gender.isFemale()) {
-      low = low * FEMALE_ADJ;
-      avg = average * FEMALE_ADJ;
-    }
-    int height = (int) _md.rollVariance(low, avg);
-    return height;
-  }
+  // /**
+  // * Calculate the weight of the Hero based on deviation from average
+  // *
+  // * @param lowBound lowest value for a male; female adjustment made
+  // * @param average the average weight for the normal population
+  // * @return the randomly-determined weight over the average with a normal distribution
+  // */
+  // protected int calcWeight(double lowBound, double average)
+  // {
+  // double low = lowBound;
+  // double avg = average;
+  // // Adjust for gender
+  // if (_gender.isFemale()) {
+  // low = low * FEMALE_ADJ;
+  // avg = average * FEMALE_ADJ;
+  // }
+  // int weight = _md.rollVariance(low, avg);
+  // return weight;
+  // }
 
-  
+
   /**
    * Constrain all traits to fall within a given range for the racial subclass. Any value outside
    * those limits are set to the range boundary. NOTE: TraitList is created anew so return value
@@ -183,12 +181,12 @@ public abstract class Race implements Serializable
    * @param lowerLimits the lower bound per trait
    * @param upperLimits the upper bound per trait
    */
-//  protected TraitList constrainTo(TraitList traits, int[] lowerLimits, int[] upperLimits)
-//  {
-//    int[] values = traits.toArray();
-//    values = Utilities.constrain(values, lowerLimits, upperLimits);
-//    return new TraitList(values);
-//  }
+  // protected TraitList constrainTo(TraitList traits, int[] lowerLimits, int[] upperLimits)
+  // {
+  // int[] values = traits.toArray();
+  // values = Utilities.constrain(values, lowerLimits, upperLimits);
+  // return new TraitList(values);
+  // }
 
 
 
@@ -239,7 +237,7 @@ public abstract class Race implements Serializable
     return race;
   }
 
-  
+
   @Override
   public boolean equals(Object obj)
   {
@@ -324,7 +322,7 @@ public abstract class Race implements Serializable
     return result;
   }
 
-
+  
   public void loadRaceKeys(Map<PersonKeys, String> map)
   {
     map.put(PersonKeys.GENDER, _gender.toString());
@@ -379,92 +377,93 @@ public abstract class Race implements Serializable
     public MockRace()
     {};
 
-    public int calcHeight(double low, double average)
+    public int calcVariance(double low, double high)
     {
-      return Race.this.calcHeight(low, average);
+      return Race.this.calcVariance(low, high);
     }
 
-    public int calcWeight(double low, double average)
-    {
-      return Race.this.calcWeight(low, average);
-    }
-
-    /**
-     * Count the number of values with 1/3 of the distribution
-     * 
-     * @param race generic base class of object that contains the method to call
-     * @param bin top range of low, mid, high bins
-     * @param count number of times to execute the method and find the average
-     * @return average of all values calculated by the object's method
-     */
-    public double calcHeightWithBins(Race race, int[] bin, int count)
-    {
-      int sum = 0;
-      int lowCnt = 0;
-      int midCnt = 0;
-      int hiCnt = 0;
-      int cntSum = 0;
-      // Range runs from 1 to 10
-      for (int k = 0; k < count; k++) {
-        int dp = race.calcHeight();
-        lowCnt += ((dp >= bin[0]) && (dp < bin[1])) ? 1 : 0;
-        midCnt += ((dp >= bin[1]) && (dp < bin[2])) ? 1 : 0;
-        hiCnt += ((dp >= bin[2]) && (dp <= bin[3])) ? 1 : 0;
-        assertTrue((dp >= bin[0]) && (dp <= bin[3]));
-        sum += dp;
-        cntSum = lowCnt + midCnt + hiCnt;
-      }
-      // Tally bins
-      MsgCtrl.msgln("\t " + lowCnt + " low count values");
-      MsgCtrl.msgln("\t " + midCnt + " mid count values");
-      MsgCtrl.msgln("\t " + hiCnt + " high count values");
-      MsgCtrl.msgln("\t " + cntSum + " numbers accounted for");
-      // Average should be midway between all values
-      double avg = sum / count;
-      return avg;
-    }
+    // public int calcWeight(double low, double average)
+    // {
+    // return Race.this.calcWeight(low, average);
+    // }
 
 
-    /**
-     * Count the number of values within 1/3 of the distribution
-     * 
-     * @param race generic base class of object that contains the method to call
-     * @param bin top range of low, mid, high bins
-     * @param count number of times to execute the method and find the average
-     * @return average of all values calculated by the object's method
-     */
-    public double calcWeightWithBins(Race race, int[] bin, int count)
-    {
-      int sum = 0;
-      int lowCnt = 0;
-      int midCnt = 0;
-      int hiCnt = 0;
-      int cntSum = 0;
-      // Range runs from 1 to 10
-      for (int k = 0; k < count; k++) {
-        int dp = race.calcWeight();
-        lowCnt += ((dp >= bin[0]) && (dp < bin[1])) ? 1 : 0;
-        midCnt += ((dp >= bin[1]) && (dp < bin[2])) ? 1 : 0;
-        hiCnt += ((dp >= bin[2]) && (dp <= bin[3])) ? 1 : 0;
-        assertTrue((dp >= bin[0]) && (dp <= bin[3]));
-        sum += dp;
-        cntSum = lowCnt + midCnt + hiCnt;
-      }
-      // Tally bins
-      MsgCtrl.msgln("\t " + lowCnt + " low count values");
-      MsgCtrl.msgln("\t " + midCnt + " mid count values");
-      MsgCtrl.msgln("\t " + hiCnt + " high count values");
-      MsgCtrl.msgln("\t " + cntSum + " numbers accounted for");
-      // Average should be midway between all values
-      double avg = sum / count;
-      return avg;
-    }
+    // /**
+    // * Count the number of values with 1/3 of the distribution
+    // *
+    // * @param race generic base class of object that contains the method to call
+    // * @param bin top range of low, mid, high bins
+    // * @param count number of times to execute the method and find the average
+    // * @return average of all values calculated by the object's method
+    // */
+    // public double calcHeightWithBins(Race race, int[] bin, int count)
+    // {
+    // int sum = 0;
+    // int lowCnt = 0;
+    // int midCnt = 0;
+    // int hiCnt = 0;
+    // int cntSum = 0;
+    // // Range runs from 1 to 10
+    // for (int k = 0; k < count; k++) {
+    // int dp = race.calcHeight();
+    // lowCnt += ((dp >= bin[0]) && (dp < bin[1])) ? 1 : 0;
+    // midCnt += ((dp >= bin[1]) && (dp < bin[2])) ? 1 : 0;
+    // hiCnt += ((dp >= bin[2]) && (dp <= bin[3])) ? 1 : 0;
+    // assertTrue((dp >= bin[0]) && (dp <= bin[3]));
+    // sum += dp;
+    // cntSum = lowCnt + midCnt + hiCnt;
+    // }
+    // // Tally bins
+    // MsgCtrl.msgln("\t " + lowCnt + " low count values");
+    // MsgCtrl.msgln("\t " + midCnt + " mid count values");
+    // MsgCtrl.msgln("\t " + hiCnt + " high count values");
+    // MsgCtrl.msgln("\t " + cntSum + " numbers accounted for");
+    // // Average should be midway between all values
+    // double avg = sum / count;
+    // return avg;
+    // }
+    //
+    //
+    // /**
+    // * Count the number of values within 1/3 of the distribution
+    // *
+    // * @param race generic base class of object that contains the method to call
+    // * @param bin top range of low, mid, high bins
+    // * @param count number of times to execute the method and find the average
+    // * @return average of all values calculated by the object's method
+    // */
+    // public double calcWeightWithBins(Race race, int[] bin, int count)
+    // {
+    // int sum = 0;
+    // int lowCnt = 0;
+    // int midCnt = 0;
+    // int hiCnt = 0;
+    // int cntSum = 0;
+    // // Range runs from 1 to 10
+    // for (int k = 0; k < count; k++) {
+    // int dp = race.calcWeight();
+    // lowCnt += ((dp >= bin[0]) && (dp < bin[1])) ? 1 : 0;
+    // midCnt += ((dp >= bin[1]) && (dp < bin[2])) ? 1 : 0;
+    // hiCnt += ((dp >= bin[2]) && (dp <= bin[3])) ? 1 : 0;
+    // assertTrue((dp >= bin[0]) && (dp <= bin[3]));
+    // sum += dp;
+    // cntSum = lowCnt + midCnt + hiCnt;
+    // }
+    // // Tally bins
+    // MsgCtrl.msgln("\t " + lowCnt + " low count values");
+    // MsgCtrl.msgln("\t " + midCnt + " mid count values");
+    // MsgCtrl.msgln("\t " + hiCnt + " high count values");
+    // MsgCtrl.msgln("\t " + cntSum + " numbers accounted for");
+    // // Average should be midway between all values
+    // double avg = sum / count;
+    // return avg;
+    // }
 
 
-//    public TraitList constrainTo(TraitList tr, int[] low, int[] hi)
-//    {
-//      return Race.this.constrainTo(tr, low, hi);
-//    }
+    // public TraitList constrainTo(TraitList tr, int[] low, int[] hi)
+    // {
+    // return Race.this.constrainTo(tr, low, hi);
+    // }
 
     public String getHairColor()
     {

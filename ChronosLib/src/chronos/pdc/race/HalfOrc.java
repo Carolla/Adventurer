@@ -22,12 +22,10 @@ public class HalfOrc extends Race
   private final String RACE_NAME = "Half-Orc";
 
   /** Weights and heights are generated in a normal distribution about an average over a Range */
-  protected final int WT_LOW = 140; // range: male [140, 260]; female [126, 246]
-  protected final int WT_AVG = 200; 
-  protected final int HT_LOW = 60; // range: male [60, 80]; female [54, 74]
-  protected final int HT_AVG = 70; 
-//  protected final String HT_RANGE_DICE = "2d11-2"; // varying height = [0 - 20] in
-//  protected final String WT_RANGE_DICE = "2d7-2"; // varying weight = [0 - 120] lb
+  protected final int WT_LOW = 140; // range: male [140, 260]; female [126, 234]
+  protected final int WT_HIGH = 260;
+  protected final int HT_LOW = 60; // range: male [60, 80]; female [54, 72]
+  protected final int HT_HIGH = 80;
 
   /** Racial limits for a male for the traits SIWCDCh: STR+1, CON+1, CHR-2 */
   protected final int[] MALE_MINLIMIT = {9, 8, 8, 9, 8, 6};
@@ -78,22 +76,26 @@ public class HalfOrc extends Race
   @Override
   public int calcHeight()
   {
-    return calcHeight(HT_LOW, HT_AVG);
+    return calcVariance(HT_LOW, HT_HIGH);
   }
 
 
   @Override
   public int calcWeight()
   {
-    return calcWeight(WT_LOW, WT_AVG);
+    return calcVariance(WT_LOW, WT_HIGH);
   }
 
 
-  /** Half-orc has 50% chance of knowing orcish */
+  /**
+   * Half-orc has 50% chance of knowing orcish
+   * 
+   * @return Orcish as a language or empty string
+   */
   public String getRaceLang()
   {
-    String s = (_md.rollPercent() <= 50) ? "" : "Orcish";
-    return s;
+    // Randomizer is not good with large numbers, so even and odd tests are better for this
+    return ((_md.rollPercent() % 2) == 0) ? "" : "Orcish";
   }
 
 

@@ -1,11 +1,12 @@
 /**
- * SkillRegistry.java Copyright (c) 2009, Carolla Development, Inc. All Rights Reserved
+ * SkillRegistry.java Copyright (c) 2018, Alan Cline. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
- * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
- * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
- * by email: acline@carolla.com
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists,
+ * requires prior specific permission and/or a fee. Request permission to use by email:
+ * acline@wowway.com.
  */
+
 
 package chronos.pdc.registry;
 
@@ -27,6 +28,8 @@ import mylib.pdc.Registry;
  */
 public class SkillRegistry extends Registry<Skill>
 {
+  private static final long serialVersionUID = 1792584411043875724L;
+
   /** 8 Skills that are defined for particular races: Name, Description. */
   @SuppressWarnings("serial")
   private static final List<Skill> _racialSkillTable = new ArrayList<Skill>() {
@@ -172,10 +175,10 @@ public class SkillRegistry extends Registry<Skill>
     super(Chronos.SkillRegPath);
   }
 
-  
+
   /**
-   * Create the Skill Registry with the tables given, converting each element to a Skill object and
-   * saving it in the database.
+   * Create the Skill Registry with the tables given, converting each element to a Skill object
+   * and saving it in the database.
    */
   @Override
   protected void initialize()
@@ -211,6 +214,6 @@ public class SkillRegistry extends Registry<Skill>
     return getAll();
   }
 
-  
+
 } // end of SkillRegistry class
 

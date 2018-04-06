@@ -58,7 +58,7 @@ import chronos.test.pdc.registry.RegistryTestSuite;
     RegistryTestSuite.class,
 
     /* PDC test files */
-    // Chronos.class, // no test: collection of constants and statics
+    // Chronos.class, // no tests: collection of constants and statics
     TestAdventure.class,
     TestGameClock.class,
     TestItem.class,

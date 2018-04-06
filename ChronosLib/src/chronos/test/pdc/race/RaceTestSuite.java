@@ -26,7 +26,7 @@ import org.junit.runners.Suite;
     TestDwarf.class,
     TestElf.class,
     TestGnome.class,
-    // TestHalfElf.class,
+    TestHalfElf.class,
     // TestHalfOrc.class,
     // TestHobbit.class,
     // TestHuman.class,

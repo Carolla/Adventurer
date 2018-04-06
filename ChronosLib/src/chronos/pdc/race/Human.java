@@ -19,16 +19,18 @@ import chronos.pdc.character.TraitList;
  *          May 30, 2017 // revised weight and height algorithm to revised {@code RangedValues} <br>
  *          Jun 27, 2017 // removed getRaceLang() and set base class field instead <br>
  *          Aug 15, 2017 // updated per QATool <br>
+ *          Sept 25, 2017 // revised calcWeight() and calcHeight() to call single calcVariance()
+ *          method <br>
  */
 public class Human extends Race
 {
   /** Weights and heights are generated in a normal distribution about an Average over a Range */
-  // Weight range: male [130, 230]; female [117, 217]
+  // Weight range: male [130, 230]; female [117, 207]
   protected final int WT_LOW = 130;
-  protected final int WT_AVG = 180;
-  // Height range: male [60, 78]; female [54, 72]
+  protected final int WT_HIGH = 230;
+  // Height range: male [60, 78]; female [54, 70]
   protected final int HT_LOW = 60;
-  protected final int HT_AVG = 69;
+  protected final int HT_HIGH = 78;
 
   private final String RACE_NAME = "Human";
   private final String RACE_LANGUAGE = null;
@@ -90,7 +92,7 @@ public class Human extends Race
   @Override
   public int calcHeight()
   {
-    return calcHeight(HT_LOW, HT_AVG);
+    return calcVariance(HT_LOW, HT_HIGH);
   }
 
 
@@ -102,7 +104,7 @@ public class Human extends Race
   @Override
   public int calcWeight()
   {
-    return calcWeight(WT_LOW, WT_AVG);
+    return calcVariance(WT_LOW, WT_HIGH);
   }
 
 
@@ -125,34 +127,6 @@ public class Human extends Race
   // return traits;
   // }
 
-
-
-  // // ===============================================================================
-  // // MockHuman INNER CLASS
-  // // ===============================================================================
-  //
-  // public class MockHuman
-  // {
-  // public MockHuman()
-  // {}
-  //
-  // public String getHairColor()
-  // {
-  // return _hairColor;
-  // }
-  //
-  // public String getRaceLang()
-  // {
-  // return _raceLang;
-  // }
-  //
-  // public String getRaceName()
-  // {
-  // return _raceName;
-  // }
-  //
-  //
-  // } // end of MockHuman inner class
 
 
 } // end of Human subclass

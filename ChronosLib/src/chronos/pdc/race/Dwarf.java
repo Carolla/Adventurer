@@ -24,9 +24,9 @@ public class Dwarf extends Race
 {
   /** Weights and heights are generated in a normal distribution about an average over a Range */
   protected final int WT_LOW = 110;   // range: male [110, 190]; female [99, 179]
-  protected final int WT_AVG = 150;
+  protected final int WT_HIGH = 190;
   protected final int HT_LOW = 49;    // range: male [49, 59]; female [44, 54]
-  protected final int HT_AVG = 54; 
+  protected final int HT_HIGH = 59; 
 
   private final String RACE_NAME = "Dwarf";
   private final String RACE_LANGUAGE = "Dwarvish";
@@ -85,16 +85,16 @@ public class Dwarf extends Race
 
 
   @Override
-  public int calcWeight()
-  {
-    return calcWeight(WT_LOW, WT_AVG);
-  }
-  
-
-  @Override
   public int calcHeight()
   {
-      return calcHeight(HT_LOW, HT_AVG);
+    return calcVariance(HT_LOW, HT_HIGH);
+  }
+
+
+  @Override
+  public int calcWeight()
+  {
+    return calcVariance(WT_LOW, WT_HIGH);
   }
 
 

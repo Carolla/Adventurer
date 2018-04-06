@@ -79,19 +79,11 @@ public class Gender implements Serializable
   @Override
   public String toString()
   {
-    if (isMale()) {
-      return MALE_STRING;
-    } else {
-      return FEMALE_STRING;
-    }
+    return isMale() ? MALE_STRING : FEMALE_STRING;
   }
 
   private Gender_e byName(String name)
   {
-    if (name.equalsIgnoreCase("Male")) {
-      return Gender_e.MALE;
-    } else {
-      return Gender_e.FEMALE;
-    }
+    return (name.equalsIgnoreCase("Male")) ? Gender_e.MALE : Gender_e.FEMALE;
   }
 }

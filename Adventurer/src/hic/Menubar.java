@@ -11,6 +11,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import civ.IMainframe;
+
 /**
  * Contains all the actions available from the menubar. This class uses the AdvMainframeCiv as its
  * Civ.
@@ -22,13 +24,13 @@ import javax.swing.JMenuItem;
 @SuppressWarnings("serial")
 public class Menubar extends JMenuBar
 {
-  private MainframeInterface _mainframe;
+  private IMainframe _mainframe;
 
   // ============================================================
   // Constructor and constructor helpers
   // ============================================================
 
-  public Menubar(MainframeInterface mainframe)
+  public Menubar(IMainframe mainframe)
   {
     _mainframe = mainframe;
     doConstructorWork();

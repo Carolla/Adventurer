@@ -1,10 +1,10 @@
 /**
- * TestRegistryFactory.java Copyright (c) 2014, Carolla Development, Inc. All Rights Reserved
+ * TestRegistryFactory.java Copyright (c) 2018, Alan Cline. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
- * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
- * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
- * by email: acline@carolla.com
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists,
+ * requires prior specific permission and/or a fee. Request permission to use by email:
+ * acline@wowway.com
  */
 
 package chronos.test.pdc.registry;
@@ -19,20 +19,21 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import chronos.pdc.registry.RegistryFactory;
 import mylib.MsgCtrl;
 
-
 /**
- * {@code RegistryFactory} is an non-instantiable static class comprised <i>mostly</i> of static
+ * {@code RegistryFactory} is a non-instantiable static class comprised <i>mostly</i> of static
  * methods.
  * 
  * @author Al Cline
  * @version Jul 19, 2014 // original <br>
- *          Jul 24, 2014 // refactored to allow for registries not residing in the common location
- *          <br>
+ *          Jul 24, 2014 // refactored to allow for registries not residing in the common
+ *          location <br>
  *          Sep 20, 2014 // test removeAllRegistries <br>
  *          July 31, 2017 // update per QATool <br>
  *          July 31, 2017 // autogen: QA Tool added missing test methods <br>
+ *          Mar 19, 2018 // factoring into test suite <br>
  */
 public class TestRegistryFactory
 {
@@ -79,7 +80,6 @@ public class TestRegistryFactory
     MsgCtrl.errorMsgsOn(false);
   }
 
-
   // ============================================================
   // BEGIN TESTS
   // ============================================================
@@ -94,19 +94,14 @@ public class TestRegistryFactory
     MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
-    // Verify 8 registries; check in alphabetical order, except Hero, which represents a file reg
+    // Verify 8 registries; check in alphabetical order, except Hero, which
+    // represents a file reg
     String[] regNames =
         {"Adventure", "Building", "Item", "NPC", "Occupation", "Town", "Skill", "Hero"};
-    int expSize = 8;
+    int expSize = regNames.length;
     int regSize = _rf.size();
     assertEquals(expSize, regSize);
-    
-    
-    
-    
-    
   }
-
 
 
   /**
@@ -133,7 +128,6 @@ public class TestRegistryFactory
     MsgCtrl.errMsgln("\t\t TEST METHOD NOT YET IMPLEMENTED");
   }
 
-
   /**
    * @Not.Implemented void initRegistries()
    */
@@ -147,7 +141,6 @@ public class TestRegistryFactory
     MsgCtrl.errMsgln("\t\t TEST METHOD NOT YET IMPLEMENTED");
   }
 
-
   /**
    * @Not.Implemented int size()
    */
@@ -160,6 +153,5 @@ public class TestRegistryFactory
 
     MsgCtrl.errMsgln("\t\t TEST METHOD NOT YET IMPLEMENTED");
   }
-
 
 } // end of TestRegistryFactory

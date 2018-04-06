@@ -11,7 +11,6 @@ package chronos.pdc.race;
 
 import chronos.pdc.character.Gender;
 import chronos.pdc.character.TraitList;
-import chronos.pdc.character.TraitList.PrimeTraits;
 
 /**
  * @author Al Cline
@@ -23,11 +22,9 @@ public class HalfElf extends Race
 
   /** Weights and heights are generated in a normal distribution about an average over a Range */
   protected final int WT_LOW = 90;   // range: male [90, 170]; female [81, 161]
-  protected final int WT_AVG = 130;
+  protected final int WT_HIGH = 170;
   protected final int HT_LOW = 60;    // range: male [60, 76]; female [54, 70]
-  protected final int HT_AVG = 68; 
-//  protected final String WT_RANGE_DICE = "2d5-2"; // varying weight = (0 - 8) * 10 lb
-//  protected final String HT_RANGE_DICE = "2d9-2"; // varying height = (0 - 16) in
+  protected final int HT_HIGH = 76; 
 
   /** Racial limits for a male for the traits SIWCDCh: STR-1, DEX+1 */
   protected final int[] MALE_MINLIMIT = { 7,  8,  8,  8,  9,  8};
@@ -67,37 +64,40 @@ public class HalfElf extends Race
   }
 
   
-  /** Half-Elves are more agile, but not as strong: STR-1, DEX+1 */
+  /** Half-Elves have no racial adjustments */
   @Override
 //  public TraitList adjustTraitsForRace(TraitList traits)
   public void adjustTraitsForRace(TraitList traits)
   {
-    traits.adjust(PrimeTraits.STR, -1);
-    traits.adjust(PrimeTraits.DEX, 1);
-//    return traits;
+  }
+
+
+  @Override
+  public int calcHeight()
+  {
+    return calcVariance(HT_LOW, HT_HIGH);
   }
 
 
   @Override
   public int calcWeight()
   {
-    return calcWeight(WT_LOW, WT_AVG);
+    return calcVariance(WT_LOW, WT_HIGH);
   }
-
-  
-  @Override
-  public int calcHeight()
-  {
-    return calcHeight(HT_LOW, HT_AVG);
-  }
-
 
   /** Half-elf has 50% chance of knowing elvish */
   public String getRaceLang()
   {
-    String s = (_md.rollPercent() <= 50) ? "" : "Elvish";
-    return s;
+    return (_md.isOdd() ? "" : "Elvish");
   }
+
+
+//  /** Half-elf has 50% chance of knowing elvish */
+//  public String getRaceLang()
+//  {
+//    String s = (_md.rollPercent() <= 50) ? "" : "Elvish";
+//    return s;
+//  }
 
 
 //  /**

@@ -27,11 +27,9 @@ public class Elf extends Race
 
   /** Weights and heights are generated in a normal distribution about an average over a Range */
   protected final int WT_LOW = 80;   // range: male [80, 120]; female [72, 112]
-  protected final int WT_AVG = 100; 
+  protected final int WT_HIGH = 120; 
   protected final int HT_LOW = 60;    // range: male [60, 72]; female [54, 66]
-  protected final int HT_AVG = 66;  
-//  protected final String WT_RANGE_DICE = "2d3-2"; // varying weight = (0 - 8) * 10 lb
-//  protected final String HT_RANGE_DICE = "2d7-2"; // varying height = (0 - 10) in
+  protected final int HT_HIGH = 72;  
 
   /** Racial limits for a male dwarf for the traits SIWCDCh: CON-1, DEX+1 */
   protected final int[] MALE_MINLIMIT = { 8,  8,  8,  7,  9,  8};
@@ -83,21 +81,14 @@ public class Elf extends Race
   @Override
   public int calcHeight()
   {
-    return calcHeight(HT_LOW, HT_AVG);
-//    return calcHeight(HT_LOW, HT_RANGE_DICE);
+    return calcVariance(HT_LOW, HT_HIGH);
   }
 
 
-  /**
-   * Call the base method with these human-specific values
-   * 
-   * @return the gender-adjusted weight of the Hero
-   */
   @Override
   public int calcWeight()
   {
-//    return calcWeight(WT_LOW, WT_RANGE_DICE);
-    return calcWeight(WT_LOW, WT_AVG);
+    return calcVariance(WT_LOW, WT_HIGH);
   }
 
 

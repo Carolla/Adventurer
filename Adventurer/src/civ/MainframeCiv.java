@@ -9,12 +9,17 @@
 
 package civ;
 
-import hic.ChronosPanel;
-import hic.IOPanel;
-import hic.ImagePanel;
-import hic.MainframeInterface;
 import chronos.civ.UserMsgInterface;
 import chronos.civ.UserMsgProxy;
+import chronos.pdc.buildings.Inn;
+import chronos.pdc.command.Scheduler;
+import chronos.pdc.registry.AdventureRegistry;
+import chronos.pdc.registry.BuildingRegistry;
+import chronos.pdc.registry.HeroRegistry;
+import chronos.pdc.registry.RegistryFactory;
+import chronos.pdc.registry.RegistryFactory.RegKey;
+import hic.ChronosPanel;
+import hic.IOPanel;
 
 /**
  * The main civ behind the Adventurer program. It initializes the system and brings up the
@@ -30,31 +35,31 @@ import chronos.civ.UserMsgProxy;
  */
 public class MainframeCiv
 {
-  private MainframeInterface _mf;
-  private ImagePanel _imagePanel;
+  private IMainframe _mf;
+//  private ImagePanel _imagePanel;
 
-  private static final String INITIAL_IMAGE = "ChronosLogo.jpg";
-  private static final String INITIAL_IMAGE_TITLE = "Chronos Logo";
+//  private static final String INITIAL_IMAGE = "ChronosLogo.jpg";
+//  private static final String INITIAL_IMAGE_TITLE = "Chronos Logo";
 
   /** receives user input and command output messages */
   private UserMsgInterface _output = new UserMsgProxy();
 
-  public MainframeCiv(MainframeInterface mf)
+  public MainframeCiv(IMainframe mf)
   {
     _mf = mf;
-    doConstructorWork();
+//    new MainActionCiv(this);
+//    doConstructorWork();
   }
 
-  protected void doConstructorWork()
-  {
-    _imagePanel = new ImagePanel();
-    _mf.setImagePanel(_imagePanel);
-    displayImage(INITIAL_IMAGE_TITLE, INITIAL_IMAGE);
-    _mf.replaceRightPanel(_imagePanel);
-    new MainActionCiv(this);
-  }
+//  protected void doConstructorWork()
+//  {
+//    _imagePanel = new ImagePanel();
+//    _mf.setImagePanel(_imagePanel);
+//    displayImage(INITIAL_IMAGE_TITLE, INITIAL_IMAGE);
+//    _mf.replaceRightPanel(_imagePanel);
+//    new MainActionCiv(this);
+//  }
 
-  
 
 
   // ============================================================
@@ -124,4 +129,5 @@ public class MainframeCiv
   {
     _mf.setLeftTitle(title);
   }
+  
 } // end of MainframeCiv class

@@ -1,12 +1,12 @@
 /**
- * BuidlingDisplayCiv.java
+ * BuildingDisplayCiv.java
  * 
  * Copyright (c) 2014, Carolla Development, Inc. All Rights Reserved.
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
- * prohibited. To republish, post on servers, to reuse, or to redistribute to lists, requires prior
- * specific permission and/or a fee. Request permission to use from Carolla Development, Inc. by
- * email: acline@carolla.com.
+ * prohibited. To republish, post on servers, to reuse, or to redistribute to lists, requires
+ * prior specific permission and/or a fee. Request permission to use from Carolla Development,
+ * Inc. by email: acline@carolla.com.
  */
 
 package civ;
@@ -17,11 +17,10 @@ import chronos.pdc.buildings.Building;
 import chronos.pdc.registry.BuildingRegistry;
 
 /**
- * Manages the town and buildings displays and text descriptions, both interior and exterior.
- * {@code {@ImagePanel} manages the images, and {@code IOPanel} manages the user text
- * input and output.
+ * Manages the town aspects. 
  * 
  * @author Al Cline
+ * 
  * @version Feb 20, 2015 // updated from earlier version by Tim Armstrong <br>
  *          Nov 18 2015 // Moved building stuff from Mainframe into BuildingDisplayCiv <br>
  */
@@ -51,7 +50,7 @@ public class BuildingDisplayCiv
       "You must leave this building before you approach another.";
 
   /** Default Buildings to initialize registry with */
-  public static final String[][] DEFAULT_BUILDINGS = { {"Ugly Ogre Inn", "Bork"},
+  public static final String[][] DEFAULT_BUILDINGS = {{"Ugly Ogre Inn", "Bork"},
       {"Rat's Pack", "Dewey N. Howe"}, {"The Bank", "J. P. Pennypacker"},
       {"Stadium", "Aragon"}, {"Arcaneum", "Pendergast"}, {"Monastery", "Balthazar"},
       {"Rouge's Tavern", "Ripper"}, {"Jail", "The Sheriff"}};
@@ -61,10 +60,10 @@ public class BuildingDisplayCiv
   // ======================================================================
 
   /**
-   * This object takes a MainframeInterface GUI object to receive image and text output. It uses the
-   * command {@code setOutput()} because not all callers of this object have or know which one it
-   * is. In almost all cases, the output GUI is {@code hic.Mainframe}, which implements
-   * {@code MainframeInterface}.
+   * This object takes a MainframeInterface GUI object to receive image and text output. It
+   * uses the command {@code setOutput()} because not all callers of this object have or know
+   * which one it is. In almost all cases, the output GUI is {@code hic.Mainframe}, which
+   * implements {@code MainframeInterface}.
    * 
    * @param mainframeCiv handles things
    * @param breg is needed for building registries for loading the town
@@ -205,7 +204,7 @@ public class BuildingDisplayCiv
       return false;
     } else {
       return _currentBldg.contains(target);
-    }    
+    }
   }
 
   public String getCurrentBuilding()
@@ -290,7 +289,7 @@ public class BuildingDisplayCiv
     if (isInside()) {
       for (NPC npc : _currentBldg.getPatrons()) {
         if (npc.getName().equalsIgnoreCase(target)) {
-          String answer = npc.talk();
+          String answer = npc.talk(12);
           _mfCiv.displayText(answer);
           return true;
         }

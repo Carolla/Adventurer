@@ -1,17 +1,18 @@
 /**
- * RegistryFactory.java Copyright (c) 2014, Carolla Development, Inc. All Rights Reserved
+ * RegistryFactory.java Copyright (c) 2018, Alan Cline. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
- * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
- * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
- * by email: acline@carolla.com
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists,
+ * requires prior specific permission and/or a fee. Request permission to use by email:
+ * acline@wowway.com.
  */
 
 
 package chronos.pdc.registry;
 
-import java.rmi.registry.Registry;
 import java.util.HashMap;
+
+import mylib.pdc.Registry;
 
 
 /**
@@ -23,10 +24,11 @@ import java.util.HashMap;
  *          July 25, 2014 // added collection functionality <br>
  *          July 15, 2017 // slight modifications to support test class <br>
  *          July 31, 2017 // update per QATool <br>
+ *          Marh 19, 2018 // trying to get this working after a long delay <br>
  */
-public class __RegistryFactory
+public class RegistryFactory
 {
-  private HashMap<RegKey, Registry> _regMap = null;
+  private HashMap<RegKey, Registry<?>> _regMap = null;
 
   /** Public list of all possible registries subclasses, in rough dependency order. */
   public enum RegKey {
@@ -59,35 +61,35 @@ public class __RegistryFactory
   // ============================================================
 
   // This map is needed by other classes; do not move
-  public __RegistryFactory()
+  public RegistryFactory()
   {
-    _regMap = new HashMap<RegKey, Registry>();
+    _regMap = new HashMap<RegKey, Registry<?>>();
   }
 
   public void initRegistries()
   {
-    _regMap.put(RegKey.SKILL, (Registry) new SkillRegistry());
+    _regMap.put(RegKey.SKILL, new SkillRegistry());
     System.err.println("\t Registry Skill");
 
-    _regMap.put(RegKey.OCP, (Registry) new OccupationRegistry());
+    _regMap.put(RegKey.OCP, new OccupationRegistry());
     System.err.println("\t Registry Occupation");
 
-    _regMap.put(RegKey.ITEM, (Registry) new ItemRegistry());
+    _regMap.put(RegKey.ITEM, new ItemRegistry());
     System.err.println("\t Registry Item");
 
-    _regMap.put(RegKey.BLDG, (Registry) new BuildingRegistry());
+    _regMap.put(RegKey.BLDG, new BuildingRegistry());
     System.err.println("\t Registry Building");
 
-    _regMap.put(RegKey.TOWN, (Registry) new TownRegistry());
+    _regMap.put(RegKey.TOWN, new TownRegistry());
     System.err.println("\t Registry Town");
 
-    _regMap.put(RegKey.NPC, (Registry) new NPCRegistry());
+    _regMap.put(RegKey.NPC, new NPCRegistry());
     System.err.println("\t Registry NPC");
 
-    _regMap.put(RegKey.ADV, (Registry) new AdventureRegistry());
+    _regMap.put(RegKey.ADV, new AdventureRegistry());
     System.err.println("\t Registry Adventure");
 
-    _regMap.put(RegKey.HERO, (Registry) new HeroRegistry());
+    _regMap.put(RegKey.HERO, new HeroRegistry());
     System.err.println("\t Registry Hero");
   }
 
@@ -110,11 +112,12 @@ public class __RegistryFactory
   /**
    * Return the requested registry, or null if the registry is null or closed
    * 
-   * @param regtype one of the canonical immutable Registries defined in <code>enum RegKey</code>
-   * @return an existing registry of the requested type, or null if it doesn't exist or can't be
-   *         found
+   * @param regtype one of the canonical immutable Registries defined in
+   *        <code>enum RegKey</code>
+   * @return an existing registry of the requested type, or null if it doesn't exist or can't
+   *         be found
    */
-  public Registry getRegistry(RegKey regtype)
+  public Registry<?> getRegistry(RegKey regtype)
   {
     return _regMap.get(regtype);
   }

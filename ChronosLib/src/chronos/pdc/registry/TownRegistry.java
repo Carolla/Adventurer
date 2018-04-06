@@ -26,6 +26,8 @@ import mylib.pdc.Registry;
  */
 public class TownRegistry extends Registry<Town>
 {
+  private static final long serialVersionUID = 3972782103542486585L;
+
   /** Name of default town */
   private final static String TOWN_NAME = "Biljur'Baz";
   /** Description of town when entered in the daytime */

@@ -2,9 +2,9 @@
  * HeroDisplayCiv.java Copyright (c) 2010, Carolla Development, Inc. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
- * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
- * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
- * by email: acline@carolla.com
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists,
+ * requires prior specific permission and/or a fee. Request permission to use from Carolla
+ * Development, Inc. by email: acline@carolla.com
  */
 
 package civ;
@@ -20,8 +20,8 @@ import hic.HeroDisplay;
 
 
 /**
- * Output Civ: Creates the GUI widget <code>HeroDisplay</code>, passing output data to it from a new
- * or existing Hero.
+ * Output Civ: Creates the GUI widget <code>HeroDisplay</code>, passing output data to it from
+ * a new or existing Hero.
  * 
  * @author Alan Cline
  * @version May 31 2010 // original <br>
@@ -123,7 +123,7 @@ public class HeroDisplayCiv
     _heroDisp.addInventory(inventory);
     // Build an inventory list of magical items
     _heroDisp.addMagic(inventory);
-    
+
     // Only clerics and wizards have spell materials
     // if (_hero.canUseMagic()) {
     // _heroDisp.addMaterials(inventory.getNameList(ItemCategory.SPELL_MATERIAL));

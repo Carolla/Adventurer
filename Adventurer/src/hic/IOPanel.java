@@ -228,5 +228,5 @@ public class IOPanel extends ChronosPanel implements UserMsgInterface
   }
 
 
-} // end OutputPanel class
+} // end IOPanel class
 
