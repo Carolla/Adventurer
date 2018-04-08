@@ -17,7 +17,6 @@ package mylib;
  * @version Apr 21, 2010 // original <br>
  *          July 19, 2017 // minor comment changes when examining for bugs elsewhere <br>
  */
-@SuppressWarnings("serial")
 public class ApplicationException extends RuntimeException
 {
   /** Default constructor */

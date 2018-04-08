@@ -128,7 +128,6 @@ public class TestTown
    * @Null.Test Town(String name, String descDay, String descNight) -- Null parms for various inputs
    *            to force an exception or error
    */
-  @SuppressWarnings("unused")
   @Test
   public void testCtor_NullNightDesc()
   {

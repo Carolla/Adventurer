@@ -27,7 +27,6 @@ import net.miginfocom.swing.MigLayout;
  * @author alancline
  * @version Apr 4, 2018
  */
-@SuppressWarnings("serial")
 public class MainActionPanel extends ChronosPanel
 {
   /** Amount of space in pixels around the frame and image of aesthetics */
@@ -45,24 +44,21 @@ public class MainActionPanel extends ChronosPanel
   private final String HALL_IMAGE = "icn_HallOfHeroes.jpg";
   private final String ADV_IMAGE = "icn_Town.jpg";
 
-  // private ChronosPanel _actionPanel;
+//  private ChronosPanel _actionPanel;
   private JButton _summonButton;
-
   private MainActionCiv _actionCiv;
-
 
   /**
    * Create the Adventure, Heroes, and Create-Hero buttons, and button panel for them
    */
-  public MainActionPanel()
+  public MainActionPanel() 
   {
     super(INITIAL_OPENING_TITLE);
-    // _actionPanel = new ChronosPanel(INITIAL_OPENING_TITLE);
-    // Connector to CIV
-    _actionCiv = new MainActionCiv(this);
+    _actionCiv = new MainActionCiv(this);    
     addActionButtons();
   }
 
+  
   private void addActionButtons()
   {
     JButton adventureButton = createAdventureButton();
@@ -70,20 +66,13 @@ public class MainActionPanel extends ChronosPanel
     JButton creationButton = createNewHeroButton();
 
     // Align all buttons in a single column
-    // _actionPanel.setLayout(new MigLayout("wrap 1"));
     setLayout(new MigLayout("wrap 1"));
     Dimension frame = Mainframe.getWindowSize();
-    // _actionPanel.setPreferredSize(new Dimension((frame.width - FRAME_PADDING) / 2,
-    // frame.height - FRAME_PADDING));
-    // _actionPanel.setBackground(Constants.MY_BROWN);
     setPreferredSize(new Dimension((frame.width - FRAME_PADDING) / 2,
         frame.height - FRAME_PADDING));
     setBackground(Constants.MY_BROWN);
 
-    /** Buttons are at 25% to allow space for Command Line later */
-    // _actionPanel.add(adventureButton, "hmax 25%, grow");
-    // _actionPanel.add(_summonButton, "hmax 25%, grow");
-    // _actionPanel.add(creationButton, "hmax 25%, grow");
+    // Buttons are at 25% to allow space for Command Line later
     add(adventureButton, "hmax 25%, grow");
     add(_summonButton, "hmax 25%, grow");
     add(creationButton, "hmax 25%, grow");
@@ -109,7 +98,6 @@ public class MainActionPanel extends ChronosPanel
   {
     JButton button = new JButton(buttonText);
     button.setBackground(Constants.MY_BROWN);
-
     button.setFont(Chronos.STANDARD_FONT);
     button.setIcon(new ImageIcon(Chronos.ADV_IMAGE_PATH + imageFilePath));
     button.setIconTextGap(40);

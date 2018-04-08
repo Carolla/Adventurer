@@ -21,7 +21,6 @@ import mylib.Constants;
  * @author Al Cline
  * @version Nov 9, 2015 // original <br>
  */
-@SuppressWarnings("serial")
 public class ChronosPanel extends JPanel
 {
   /** Default title field for all ChronosPanels, to be overwritten */

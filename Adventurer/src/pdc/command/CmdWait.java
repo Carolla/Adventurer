@@ -137,6 +137,7 @@ public class CmdWait extends Command
    * 
    * @return true always after incrementing the game clock.
    */
+  @Override
   public boolean exec()
   {
     System.out.println("CmdWait.exec(): TimeLog is incremented " + _delay);

@@ -82,6 +82,7 @@ public class CmdExit extends Command
    * 
    * @return false always to break out of the Scheduler loop
    */
+  @Override
   public boolean exec()
   {
     _mfCiv.quit();

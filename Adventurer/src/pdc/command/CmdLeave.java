@@ -78,6 +78,7 @@ public class CmdLeave extends Command
 
 
     /** Enter the designated building, or the current building if displayed */
+    @Override
     public boolean exec()
     {
         if (_bldgCiv.isInside()) {

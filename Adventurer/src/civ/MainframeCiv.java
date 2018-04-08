@@ -11,13 +11,6 @@ package civ;
 
 import chronos.civ.UserMsgInterface;
 import chronos.civ.UserMsgProxy;
-import chronos.pdc.buildings.Inn;
-import chronos.pdc.command.Scheduler;
-import chronos.pdc.registry.AdventureRegistry;
-import chronos.pdc.registry.BuildingRegistry;
-import chronos.pdc.registry.HeroRegistry;
-import chronos.pdc.registry.RegistryFactory;
-import chronos.pdc.registry.RegistryFactory.RegKey;
 import hic.ChronosPanel;
 import hic.IOPanel;
 

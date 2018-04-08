@@ -42,10 +42,14 @@ public class CommandFactory
   /** Use Java 8 supplier interface to avoid reflection */
   private Map<String, Supplier<Command>> _commandMap = new HashMap<String, Supplier<Command>>();
 
-  private final BuildingDisplayCiv _bdCiv;
-  private final MainframeCiv _mfCiv;
+  private BuildingDisplayCiv _bdCiv;
+  private MainframeCiv _mfCiv;
   private UserMsgInterface _output;
 
+
+  /** Keep a table for command, as lambda functions */
+  public CommandFactory()
+  {}
 
   /** Keep a table for command, as lambda functions */
   public CommandFactory(BuildingDisplayCiv bdCiv, MainframeCiv mfCiv)
@@ -61,26 +65,26 @@ public class CommandFactory
    */
   public void initMap()
   {
-    // Display the description and image of Building exterior
-    _commandMap.put("APPROACH", () -> new CmdApproach(_bdCiv));
-    // Enter the interior of the Building
-    _commandMap.put("ENTER", () -> new CmdEnter(_bdCiv));
-    // Synonym for Leave and then Quit the program
-    _commandMap.put("EXIT", () -> new CmdExit(_mfCiv));
-    // Get near description for NPC
-    _commandMap.put("INSPECT", () -> new CmdInspect(_bdCiv));
-    // Leave the inside of the Building and go outside
-    _commandMap.put("LEAVE", () -> new CmdLeave(_bdCiv));
-    // Get Room Description or Get NPC names
-    _commandMap.put("LOOK", () -> new CmdLook(_bdCiv));
-    // End the program.
-    _commandMap.put("QUIT", () -> new CmdQuit(_mfCiv, _bdCiv));
-    // Return to town view
-    _commandMap.put("RETURN", () -> new CmdReturn(_bdCiv));
+    // // Display the description and image of Building exterior
+    // _commandMap.put("APPROACH", () -> new CmdApproach(_bdCiv));
+    // // Enter the interior of the Building
+    // _commandMap.put("ENTER", () -> new CmdEnter(_bdCiv));
+    // // Synonym for Leave and then Quit the program
+    // _commandMap.put("EXIT", () -> new CmdExit(_mfCiv));
+    // // Get near description for NPC
+    // _commandMap.put("INSPECT", () -> new CmdInspect(_bdCiv));
+    // // Leave the inside of the Building and go outside
+    // _commandMap.put("LEAVE", () -> new CmdLeave(_bdCiv));
+    // // Get Room Description or Get NPC names
+    // _commandMap.put("LOOK", () -> new CmdLook(_bdCiv));
+    // // End the program.
+    // _commandMap.put("QUIT", () -> new CmdQuit(_mfCiv, _bdCiv));
+    // // Return to town view
+    // _commandMap.put("RETURN", () -> new CmdReturn(_bdCiv));
     // Just sit there
     _commandMap.put("WAIT", () -> new CmdWait());
-    // Get information from an NPC
-    _commandMap.put("TALK", () -> new CmdTalk(_bdCiv));
+    // // Get information from an NPC
+    // _commandMap.put("TALK", () -> new CmdTalk(_bdCiv));
 
     // Locks the command map as read-only
     _commandMap = Collections.unmodifiableMap(_commandMap);
@@ -105,6 +109,21 @@ public class CommandFactory
       return null;
     }
   }
+
+
+  /** MockCommands inner class for testing */
+  public class MockCommands
+  {
+    public MockCommands()
+    {}
+
+    public Map<String, Supplier<Command>> getCommands()
+    {
+      return _commandMap;
+    }
+
+  } // end of MockCommands inner class
+
 
 } // end of CommandFactory class
 

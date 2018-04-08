@@ -8,7 +8,7 @@ public class FakeMainActionCiv extends MainActionCiv
 
     public FakeMainActionCiv()
     {
-        super(null);
+        super();
     }
 
     

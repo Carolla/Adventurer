@@ -35,7 +35,6 @@ import javax.swing.JPanel;
  *          </DL>
  * 
  */
-@SuppressWarnings("serial")
 public class AboutDialog extends JDialog
 {
   /** Standard copyright notice for About box and Splash screen. */
@@ -111,6 +110,7 @@ public class AboutDialog extends JDialog
     JButton okBtn = new JButton("OK");
     okBtn.addActionListener(new ActionListener()
     {
+      @Override
       public void actionPerformed(ActionEvent event)
       {
         setVisible(false);

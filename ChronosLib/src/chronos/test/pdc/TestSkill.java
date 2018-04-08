@@ -79,7 +79,6 @@ public class TestSkill
    * @Null.Test Skill(String name, String desc) -- null parms to constructor <br>
    * @Error.Test Skill(String name, String desc) -- name or desc overly long
    */
-  @SuppressWarnings("unused")
   @Test
   public void testCtor_nullInputParms()
   {

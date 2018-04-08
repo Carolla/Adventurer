@@ -12,6 +12,7 @@ package civ;
 import java.awt.EventQueue;
 
 import hic.Mainframe;
+import pdc.Initialization;
 
 /**
  * This Launcher class detects command line arguments, takes appropriate loading action,
@@ -62,7 +63,9 @@ public class Adventurer
       public void run()
       {
         try {
-          new MainframeCiv(new Mainframe());
+          // Initializations and primary actions in MainActionCiv
+          new Initialization();
+          new Mainframe();
         } catch (Exception e) {
           e.printStackTrace();
           System.exit(-1);

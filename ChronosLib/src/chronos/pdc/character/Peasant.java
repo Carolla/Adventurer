@@ -18,9 +18,6 @@ import java.io.Serializable;
  */
 public class Peasant extends Klass implements Serializable
 {
-  // Required for serialization
-  static final long serialVersionUID = 20170804445L;
-
 
   /** Starting die and initial free HP for klass */
   // Starting HP is fixed at 10, but string notation is required
