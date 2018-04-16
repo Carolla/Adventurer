@@ -15,14 +15,18 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 import chronos.pdc.Adventure;
+import chronos.pdc.buildings.Inn;
 import chronos.pdc.character.Hero;
+import chronos.pdc.command.Scheduler;
 import chronos.pdc.registry.AdventureRegistry;
 import chronos.pdc.registry.BuildingRegistry;
 import chronos.pdc.registry.HeroRegistry;
+import chronos.pdc.registry.RegistryFactory;
 import chronos.pdc.registry.RegistryFactory.RegKey;
 import hic.IOPanel;
 import hic.MainActionPanel;
 import hic.NewHeroIPPanel;
+import pdc.command.CommandFactory;
 
 /**
  * Creates the MainActionPanel consisting of the primary buttons: Select an Adventure, Summon
@@ -38,9 +42,9 @@ public class MainActionCiv
   private AdventureRegistry _advReg;
   private HeroRegistry _dorm;
   private MainframeCiv _mfCiv;
-//  private HeroDisplayCiv _hdCiv;
-//  private RegistryFactory _rf;
-//  private Scheduler _skedder;
+  private HeroDisplayCiv _hdCiv;
+  private RegistryFactory _rf;
+  private Scheduler _skedder;
 
   // /** Amount of space in pixels around the frame and image of aesthetics */
   // public static final int FRAME_PADDING = 90;
@@ -57,7 +61,7 @@ public class MainActionCiv
   // private final String HALL_IMAGE = "icn_HallOfHeroes.jpg";
   // private final String ADV_IMAGE = "icn_Town.jpg";
   //
-  private MainActionPanel _actionPanel;
+  // protected static MainActionPanel _actionPanel;
   // private JButton _summonButton;
 
   // ============================================================
@@ -69,23 +73,31 @@ public class MainActionCiv
    * 
    * @param mfCiv handler for the mainframe
    */
-  public MainActionCiv(MainActionPanel actionPanel)
+  public MainActionCiv(MainActionPanel actionPanel, MainframeCiv mfc)
   {
-    _actionPanel = actionPanel;
+    _mfCiv = mfc;
+    // _actionPanel = actionPanel;
+    constructCoreMembers();
   }
 
-//  public void constructCoreMembers()
-//  {
-//    // Set up times for the patrons to visit the Inn
-//    ((Inn) ((BuildingRegistry) _rf.getRegistry(RegKey.BLDG)).getBuilding("Ugly Ogre Inn"))
-//        .initPatrons(_skedder);
-//
-//    _dorm = (HeroRegistry) _rf.getRegistry(RegKey.HERO);
-//    _hdCiv = new HeroDisplayCiv(_mfCiv, _dorm);
-//    _advReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
-//  }
+  /** Create the registries required by the three main action buttons */
+  public void constructCoreMembers()
+  {
+    // Create the registries, scheduler, and command parser
+    _rf = new RegistryFactory();
+    _rf.initRegistries();
+    _skedder = new Scheduler();
 
-  
+    // Set up times for the patrons to visit the Inn
+    ((Inn) ((BuildingRegistry) _rf.getRegistry(RegKey.BLDG)).getBuilding("Ugly Ogre Inn"))
+        .initPatrons(_skedder);
+
+    _dorm = (HeroRegistry) _rf.getRegistry(RegKey.HERO);
+    _hdCiv = new HeroDisplayCiv(_mfCiv, _dorm);
+    _advReg = (AdventureRegistry) _rf.getRegistry(RegKey.ADV);
+  }
+
+
   // ============================================================
   // Public methods
   // ============================================================
@@ -99,30 +111,30 @@ public class MainActionCiv
   public void loadSelectedAdventure(String adventureName, MainframeCiv mfCiv)
   {
     _mfCiv = mfCiv;
-    
+
     Adventure adv = _advReg.getAdventure(adventureName);
-    
+
     // Create all the objects used in town
-//    BuildingDisplayCiv bldgCiv = new BuildingDisplayCiv(_mfCiv, adv,
-//        (BuildingRegistry) _rf.getRegistry(RegKey.BLDG));
+    BuildingDisplayCiv bldgCiv = new BuildingDisplayCiv(_mfCiv, adv,
+        (BuildingRegistry) _rf.getRegistry(RegKey.BLDG));
 
-//    CommandFactory cmdFac = new CommandFactory(bldgCiv, _mfCiv);
-//    cmdFac.initMap();
-//
-//    CommandParser parser = new CommandParser(_skedder, cmdFac);
+    CommandFactory cmdFac = new CommandFactory(bldgCiv, _mfCiv);
+    cmdFac.initMap();
 
-//    IOPanel iop = new IOPanel(parser);
-//    _mfCiv.replaceLeftPanel(iop);
-//    iop.requestFocusInWindow();
+    CommandParser parser = new CommandParser(_skedder, cmdFac);
+
+    IOPanel iop = new IOPanel(parser);
+    _mfCiv.replaceLeftPanel(iop);
+    iop.requestFocusInWindow();
 
     // Wait until everything created to finally display the town
-//    bldgCiv.openTown();
+    bldgCiv.openTown();
   }
 
   public void createHero()
   {
     NewHeroCiv nhCiv = new NewHeroCiv();
-//    NewHeroIPPanel ipPanel = new NewHeroIPPanel(nhCiv, _hdCiv);
+    NewHeroIPPanel ipPanel = new NewHeroIPPanel(nhCiv, _hdCiv);
     _mfCiv.replaceLeftPanel(ipPanel);
     ipPanel.setDefaultFocus(); // only works after panel is displayed
   }
@@ -177,7 +189,7 @@ public class MainActionCiv
             JOptionPane.INFORMATION_MESSAGE, null, adventuresArr,
             adventuresArr[0]);
     if (selectedValue != null) {
-      loadSelectedAdventure((String) selectedValue);
+      loadSelectedAdventure((String) selectedValue, _mfCiv);
     }
   }
 
@@ -233,7 +245,7 @@ public class MainActionCiv
 
       if (selectedPlate != null) {
         Hero selectedHero = heroList.get(plateList.indexOf(selectedPlate));
-//        _hdCiv.displayHero(selectedHero, false); 
+        // _hdCiv.displayHero(selectedHero, false);
       }
     } else {
       JOptionPane.showMessageDialog(null, "No heros");

@@ -32,6 +32,8 @@ import civ.BuildingDisplayCiv;
 import civ.CommandParser;
 import civ.MainActionCiv;
 import civ.MainframeCiv;
+import hic.MainActionPanel;
+import hic.Mainframe;
 import mylib.MsgCtrl;
 import pdc.command.CommandFactory;
 
@@ -42,8 +44,9 @@ public class IntegrationTest
   protected static final List<String> _bldgs = new ArrayList<String>();
   protected static final Scheduler _skedder = new Scheduler();
   protected static final MainframeCiv _mfCiv = new MainframeCiv(new MainframeProxy());
-//  protected static final MainActionCiv _maCiv = new MainActionCiv(new MainActionPanel());
-  protected static final MainActionCiv _maCiv = new MainActionCiv();
+//  protected static final MainActionPanel _actionPanel = new MainActionPanel(new Mainframe());
+//  protected static final MainActionCiv _maCiv = new MainActionCiv(_actionPanel);
+//  protected static final MainActionCiv _maCiv = new MainActionCiv();
   protected static final RegistryFactory _regFactory = new RegistryFactory();
 
   protected static BuildingDisplayCiv _bldgCiv;
@@ -60,7 +63,7 @@ public class IntegrationTest
     AdventureRegistry advReg = (AdventureRegistry) _regFactory.getRegistry(RegKey.ADV);
     Adventure adv = advReg.getAll().get(0);
 
-    _maCiv.loadSelectedAdventure(adv.getName());
+//    _maCiv.loadSelectedAdventure(adv.getName(), _mfCiv);
     _bldgCiv = new BuildingDisplayCiv(_mfCiv, adv, bReg);
     _cmdFac = new CommandFactory(_bldgCiv, _mfCiv);
     _cmdFac.initMap();

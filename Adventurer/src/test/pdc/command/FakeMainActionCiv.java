@@ -8,7 +8,8 @@ public class FakeMainActionCiv extends MainActionCiv
 
     public FakeMainActionCiv()
     {
-        super();
+//      super(_actionPanel);
+      super(null, null);
     }
 
     

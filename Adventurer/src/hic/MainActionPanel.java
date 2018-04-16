@@ -17,6 +17,7 @@ import javax.swing.JButton;
 
 import chronos.pdc.Chronos;
 import civ.MainActionCiv;
+import civ.MainframeCiv;
 import mylib.Constants;
 import net.miginfocom.swing.MigLayout;
 
@@ -47,16 +48,20 @@ public class MainActionPanel extends ChronosPanel
 //  private ChronosPanel _actionPanel;
   private JButton _summonButton;
   private MainActionCiv _actionCiv;
+  private MainframeCiv _mfCiv;
 
   /**
    * Create the Adventure, Heroes, and Create-Hero buttons, and button panel for them
    */
-  public MainActionPanel() 
+  public MainActionPanel(Mainframe owner, MainframeCiv mfc) 
   {
     super(INITIAL_OPENING_TITLE);
-    _actionCiv = new MainActionCiv(this);    
     addActionButtons();
-  }
+    
+    // Create connector to Civ, passing along the connector to the backend
+    _mfCiv = mfc;
+    _actionCiv = new MainActionCiv(this, _mfCiv);    
+}
 
   
   private void addActionButtons()

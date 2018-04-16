@@ -9,11 +9,6 @@
 
 package pdc;
 
-import chronos.pdc.command.Scheduler;
-import chronos.pdc.registry.RegistryFactory;
-import civ.CommandParser;
-import pdc.command.CommandFactory;
-
 /**
  * Contains initial non-GUI start-up processes. It creates all dependencies, mostly the
  * registries, registry factory, and command parser needed for <it>Adventurer{\it}. It also
@@ -25,10 +20,10 @@ import pdc.command.CommandFactory;
 
 public class Initialization
 {
-  private final RegistryFactory _rf;
-  private final Scheduler _skedder;
-  private final CommandParser _parser;
-  private final CommandFactory _cmdFac;
+  // private final RegistryFactory _rf;
+  // private final Scheduler _skedder;
+  //  private final CommandParser _parser;
+//  private final CommandFactory _cmdFac;
 
   // private AdventureRegistry _advReg;
   // private HeroRegistry _dorm;
@@ -42,13 +37,14 @@ public class Initialization
    */
   public Initialization()
   {
-    // Create the registries, scheduler, and command parser
-    _rf = new RegistryFactory();
-    _rf.initRegistries();
-    _skedder = new Scheduler();
-    _cmdFac = new CommandFactory();
-    _cmdFac.initMap();
-    _parser = new CommandParser(_skedder, _cmdFac);
+//    // Create the registries, scheduler, and command parser
+//    _rf = new RegistryFactory();
+//    _rf.initRegistries();
+//    _skedder = new Scheduler();
+    
+//    _cmdFac = new CommandFactory();
+//    _cmdFac.initMap();
+//    _parser = new CommandParser(_skedder, _cmdFac);
   }
 
 
@@ -56,31 +52,32 @@ public class Initialization
   // Public methods
   // ============================================================
 
-  public class MockInit
-  {
-    public MockInit()
-    {}
-
-    public RegistryFactory getRegistryFactory()
-    {
-      return _rf;
-    }
-
-    public Scheduler getScheduler()
-    {
-      return _skedder;
-    }
-
-    public CommandFactory getCommandFactory()
-    {
-      return _cmdFac;
-    }
-
-    public CommandParser getCommandParser()
-    {
-      return _parser;
-    }
-  } // end of MockInit inner class
+//  public class MockInit
+//  {
+//    public MockInit()
+//    {}
+//
+//    public RegistryFactory getRegistryFactory()
+//    {
+//      return _rf;
+//    }
+//
+//    public Scheduler getScheduler()
+//    {
+//      return _skedder;
+//    }
+//
+//    public CommandFactory getCommandFactory()
+//    {
+//      return _cmdFac;
+//    }
+//
+//    public CommandParser getCommandParser()
+//    {
+//      return _parser;
+//    }
+//
+//  } // end of MockInit inner class
 
 
 } // end of Initialization class

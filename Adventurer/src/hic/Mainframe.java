@@ -31,6 +31,7 @@ import javax.swing.border.TitledBorder;
 import chronos.pdc.Chronos;
 import civ.Adventurer;
 import civ.IMainframe;
+import civ.MainframeCiv;
 import mylib.Constants;
 import mylib.hic.HelpDialog;
 import net.miginfocom.swing.MigLayout;
@@ -86,7 +87,7 @@ public class Mainframe extends JFrame implements IMainframe
   /** Singleton Help Dialog for all help text */
   private HelpDialog _helpdlg;
   private ImagePanel _imagePanel;
-  private ChronosPanel _actionPanel;
+//  private ChronosPanel _actionPanel;
 
   /** Help Title for the mainframe */
   private static final String _helpTitle = "GREETINGS ADVENTURER!";
@@ -132,17 +133,24 @@ public class Mainframe extends JFrame implements IMainframe
     setImagePanel(imagePanel);
     displayImage(INITIAL_IMAGE_TITLE, INITIAL_IMAGE);
     replaceRightPanel(imagePanel);
-    
-    // Create the MainActionPanel for the three primary action buttons
-    _actionPanel = new MainActionPanel();
-    replaceLeftPanel(_actionPanel);
 
+    // Create the mainframeCiv to handle all top-level actions
+    MainframeCiv mfCiv = new MainframeCiv(this);
+    // Create the MainActionPanel for the three primary action buttons
+    ChronosPanel actionPanel = new MainActionPanel(this, mfCiv);
+    replaceLeftPanel(actionPanel);
+    
     // Display the Mainframe and panels now
     setVisible(true);
     redraw();
   }
 
+  // TODO simplify constructor by using this method
+  private void createGraphicsComponents()
+  {}
 
+
+  
   // ============================================================
   // Public Methods
   // ============================================================
@@ -183,7 +191,8 @@ public class Mainframe extends JFrame implements IMainframe
     }
   }
 
-  
+
+  // TODO Panel can be input as third parm to remove setter setImagePanel(panel)
   /**
    * Display an image into the right side panel
    * 
@@ -464,10 +473,10 @@ public class Mainframe extends JFrame implements IMainframe
   } // end of Terminator inner class
 
 
-//  /** Used to audit the mainframe components as they are created */
-//  public class Mock_Mainfrane
-//  {
-//  }
-  
-  
+  // /** Used to audit the mainframe components as they are created */
+  // public class Mock_Mainfrane
+  // {
+  // }
+
+
 } // end of Mainframe outer class

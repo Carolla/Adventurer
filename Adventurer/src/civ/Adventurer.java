@@ -64,7 +64,7 @@ public class Adventurer
       {
         try {
           // Initializations and primary actions in MainActionCiv
-          new Initialization();
+          // new Initialization();
           new Mainframe();
         } catch (Exception e) {
           e.printStackTrace();

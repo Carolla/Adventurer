@@ -2,9 +2,9 @@
  * Inn.java Copyright (c) 2013, Carolla Development, Inc. All Rights Reserved
  *
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
- * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
- * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
- * by email: acline@carolla.com
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists,
+ * requires prior specific permission and/or a fee. Request permission to use from Carolla
+ * Development, Inc. by email: acline@carolla.com
  */
 
 package chronos.pdc.buildings;
@@ -22,8 +22,9 @@ import mylib.pdc.MetaDie;
 import mylib.pdc.Utilities;
 
 /**
- * Main building in town for rest, food, conversation, and sometimes even a bar brawl. Heroes can be
- * temporarily banned from the Inn for fighting. The default constructor creates "Ugly Ogre Inn".
+ * Main building in town for rest, food, conversation, and sometimes even a bar brawl. Heroes
+ * can be temporarily banned from the Inn for fighting. The default constructor creates "Ugly
+ * Ogre Inn".
  *
  * @author Alan Cline
  * @version Jan 28, 2013 // original <br>
@@ -89,8 +90,8 @@ public class Inn extends Building
    */
   public Inn() throws ApplicationException
   {
-    super(INN_NAME, INNKEEPER, OPENTIME, CLOSETIME, HOVERTEXT, EXTERIOR, INTERIOR, EXTERIOR_IMAGE,
-        INTERIOR_IMAGE);
+    super(INN_NAME, INNKEEPER, OPENTIME, CLOSETIME, HOVERTEXT, EXTERIOR, INTERIOR,
+        EXTERIOR_IMAGE, INTERIOR_IMAGE);
   }
 
 
@@ -100,9 +101,9 @@ public class Inn extends Building
 
   /**
    * Assigns the <code>Patron</code>s' delay and duration, then randomly assigns a few
-   * <code>Patrons</code> (MAX_STARTERS) a zero-delay so they are present when the <code>Hero</code>
-   * enters. The "time-loaded" <code>Patron</code>s are then put on the <code>Scheduler</code> queue
-   * for self-entering during runtime.<br>
+   * <code>Patrons</code> (MAX_STARTERS) a zero-delay so they are present when the
+   * <code>Hero</code> enters. The "time-loaded" <code>Patron</code>s are then put on the
+   * <code>Scheduler</code> queue for self-entering during runtime.<br>
    * 
    * @param skedder <code>Scheduler</code> singleton for scheduling <code>Patron</code>s
    */
@@ -122,35 +123,6 @@ public class Inn extends Building
       skedder.sched(ce);
       skedder.sched(cl);
     }
-  }
-
-  /**
-   * Creates an interim list <code>of intCmdEnter</code> commands with a random delay and duration
-   * for all the <code>Patron</code>s in the <code>PatronRegistry</code>. Each intCmdEnter is
-   * assigned a Patron to enter the Inn when it is their time. <br>
-   * A CommandList is created instead of a Patron list because Events wrap Commands, not Patrons.
-   * 
-   * @param patrons
-   * 
-   * @return List of random non-zero <code>intCmdEnter</code> commands for each <code>Patron</code>
-   */
-  private List<intCmdPatronEnter> createStarterList(List<NPC> patrons)
-  {
-    // Create a list to hold the Enter commands
-    List<intCmdPatronEnter> cmdStarterList = new ArrayList<intCmdPatronEnter>();
-
-    // Walk the PatronRegistry for all Patrons and assign their Enter commands
-    for (NPC npc : patrons) {
-      int delay = _md.getRandom(MIN_DELAY, MAX_DELAY);
-      int duration = _md.getRandom(MIN_DURATION, MAX_DURATION);
-      intCmdPatronEnter cmd = new intCmdPatronEnter(delay, duration, npc, this);
-
-      // Set the arg list into the command; the Scheduler will call Command.exec()
-      cmd.init(new ArrayList<String>());
-      cmdStarterList.add(cmd);
-    }
-
-    return cmdStarterList;
   }
 
   @Override
@@ -176,6 +148,38 @@ public class Inn extends Building
     }
 
     return removed;
+  }
+
+
+  /**
+   * Creates an interim list <code>of intCmdEnter</code> commands with a random delay and
+   * duration for all the <code>Patron</code>s in the <code>PatronRegistry</code>. Each
+   * intCmdEnter is assigned a Patron to enter the Inn when it is their time. <br>
+   * A CommandList is created instead of a Patron list because Events wrap Commands, not
+   * Patrons.
+   * 
+   * @param patrons
+   * 
+   * @return List of random non-zero <code>intCmdEnter</code> commands for each
+   *         <code>Patron</code>
+   */
+  private List<intCmdPatronEnter> createStarterList(List<NPC> patrons)
+  {
+    // Create a list to hold the Enter commands
+    List<intCmdPatronEnter> cmdStarterList = new ArrayList<intCmdPatronEnter>();
+
+    // Walk the PatronRegistry for all Patrons and assign their Enter commands
+    for (NPC npc : patrons) {
+      int delay = _md.getRandom(MIN_DELAY, MAX_DELAY);
+      int duration = _md.getRandom(MIN_DURATION, MAX_DURATION);
+      intCmdPatronEnter cmd = new intCmdPatronEnter(delay, duration, npc, this);
+
+      // Set the arg list into the command; the Scheduler will call Command.exec()
+      cmd.init(new ArrayList<String>());
+      cmdStarterList.add(cmd);
+    }
+
+    return cmdStarterList;
   }
 
 } // end of Inn class

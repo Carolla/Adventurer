@@ -40,7 +40,6 @@ public class MainframeCiv
   public MainframeCiv(IMainframe mf)
   {
     _mf = mf;
-//    new MainActionCiv(this);
 //    doConstructorWork();
   }
 
@@ -54,7 +53,7 @@ public class MainframeCiv
 //  }
 
 
-
+  
   // ============================================================
   // Public methods
   // ============================================================
