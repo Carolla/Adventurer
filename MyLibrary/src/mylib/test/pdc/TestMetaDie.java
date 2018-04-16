@@ -52,6 +52,7 @@ import mylib.pdc.Utilities;
  *          Sept 23, 2017 // added stats to rollVariance() needed with
  *          nextGaussion() <br>
  *          Mar 17, 2018 // moved to Eclipse Oxygen, JUnit 5 <br>
+ *          Apr 16, 2018  // replace Java Random with Apache MersenneTwister class  <br>
  */
 public class TestMetaDie {
 	/** Non-repeating random generator */

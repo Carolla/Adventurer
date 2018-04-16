@@ -5,9 +5,10 @@
 
 package mylib.pdc;
 
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.math3.random.MersenneTwister;
 
 import mylib.ApplicationException;
 
@@ -58,7 +59,7 @@ import mylib.ApplicationException;
 public class MetaDie
 {
   /** Standard random generator class that powers the <code>MetaDie</code> class */
-  private Random _generator;
+  private MersenneTwister _generator;
 
   /** 68% of the population is centered around the mean, within 1 standard deviation */
   public static final double SIGMA = 0.3413; // positive side of the mean
@@ -84,7 +85,7 @@ public class MetaDie
   public MetaDie()
   {
     // _generator = new Random(System.currentTimeMillis());
-    _generator = new Random();
+    _generator = new MersenneTwister();
   }
 
 
@@ -97,7 +98,7 @@ public class MetaDie
    */
   public MetaDie(long seed)
   {
-    _generator = new Random(seed);
+    _generator = new MersenneTwister(seed);
   }
 
 
