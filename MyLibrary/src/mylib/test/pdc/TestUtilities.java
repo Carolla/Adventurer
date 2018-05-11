@@ -420,8 +420,8 @@ public class TestUtilities
   @Test
   public void testGetStats()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     int[] testAry = {1,2,3,4,5,6,7,8,9,10};

@@ -1,10 +1,10 @@
 /**
- * TestHeroRegistry.java Copyright (c) 2015, Carolla Development, Inc. All Rights Reserved
+ * TestHeroRegistry.java Copyright (c) 2015, Alan Cline. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
- * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
- * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
- * by email: acline@carolla.com
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists,
+ * requires prior specific permission and/or a fee. Request permission to use by email:
+ * acline@carolla.com
  */
 
 package chronos.test.pdc.registry;
@@ -230,9 +230,9 @@ public class TestHeroRegistry
 
 
   /**
-   * @Special.Test void initialize(String dirname) -- Ensures that the HeroRegistry loads from all
-   *               Hero files. NOTE: wraps (@code initialize(String path)} which must be tested,
-   *               even though it is a private method.
+   * @Special.Test void initialize(String dirname) -- Ensures that the HeroRegistry loads from
+   *               all Hero files. NOTE: wraps (@code initialize(String path)} which must be
+   *               tested, even though it is a private method.
    */
   @Test
   public void testInitialize_EmptyDir()
@@ -250,9 +250,9 @@ public class TestHeroRegistry
 
 
   /**
-   * @Normal.Test void initialize(String dirname) -- Ensures that the HeroRegistry loads one Hero
-   *              files. NOTE: wraps (@code initialize(String path)} which must be tested, even
-   *              though it is a private method.
+   * @Normal.Test void initialize(String dirname) -- Ensures that the HeroRegistry loads one
+   *              Hero files. NOTE: wraps (@code initialize(String path)} which must be tested,
+   *              even though it is a private method.
    */
   @Test
   public void testInitialize_OneHeroFile()
@@ -269,7 +269,8 @@ public class TestHeroRegistry
     // Confirm the hero was saved in a file
     File[] filelist = _testDir.listFiles();
     assertEquals(1, filelist.length);
-    // Delete the registry and recreate the HeroRegistry, and force the {@code initialize()} call
+    // Delete the registry and recreate the HeroRegistry, and force the {@code initialize()}
+    // call
     _heroReg = null;
 
     // RUN
@@ -285,9 +286,9 @@ public class TestHeroRegistry
 
 
   /**
-   * @Normal.Test void initialize(String dirname) -- Ensures that the HeroRegistry loads one Hero
-   *              files. NOTE: wraps (@code initialize(String path)} which must be tested, even
-   *              though it is a private method.
+   * @Normal.Test void initialize(String dirname) -- Ensures that the HeroRegistry loads one
+   *              Hero files. NOTE: wraps (@code initialize(String path)} which must be tested,
+   *              even though it is a private method.
    */
   @Test
   public void testInitialize_MultipleFiles()
@@ -308,7 +309,8 @@ public class TestHeroRegistry
     // Confirm each hero was saved in a file
     File[] filelist = _testDir.listFiles();
     assertEquals(_heroList.size(), filelist.length);
-    // Delete the registry and recreate the HeroRegistry, and force the {@code initialize()} call
+    // Delete the registry and recreate the HeroRegistry, and force the {@code initialize()}
+    // call
     _heroReg = null;
 
     // RUN
