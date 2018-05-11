@@ -3,7 +3,7 @@
 	<name>ChronosLib</name>
 	<comment></comment>
 	<projects>
-		<project>MyLib</project>
+		<project>MyLibrary</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

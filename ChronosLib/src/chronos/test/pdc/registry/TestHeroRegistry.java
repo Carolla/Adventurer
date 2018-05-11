@@ -37,6 +37,8 @@ import mylib.MsgCtrl;
  *          Aug 1, 2017 // updated per QATool <br>
  *          Aug 4, 2017 // updated to solve serialization problems <br>
  *          Sept 6, 2017 // revised to pass QATool tests <br>
+ *          May 11, 2018 // tried to update to JUnit 5 annotations but JUnit 5 annottions are
+ *          being ignored; went back to JUnit 4. <br>
  */
 public class TestHeroRegistry
 {
@@ -68,6 +70,7 @@ public class TestHeroRegistry
   @BeforeClass
   public static void setUpBeforeClass()
   {
+//    System.out.println("@BeforeClass method called");
     _heroList.add(_hero1);
     _heroList.add(_hero2);
     _heroList.add(_hero3);
@@ -86,6 +89,7 @@ public class TestHeroRegistry
   @AfterClass
   public static void tearDownAfterClass()
   {
+//    System.out.println("@AfterClass method called");
     _heroList = null;
     _testDir = null;
     // Restore the test directory to the original HeroRegistry location
@@ -95,6 +99,7 @@ public class TestHeroRegistry
   @Before
   public void setUp()
   {
+//    System.out.println("\n@Before method called");
     _heroReg = new HeroRegistry();
     assertNotNull(_heroReg);
     _mock = _heroReg.new MockHeroRegistry();
@@ -105,6 +110,7 @@ public class TestHeroRegistry
   @After
   public void tearDown()
   {
+//    System.out.println("@After method called");
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     // clear registry
@@ -418,7 +424,6 @@ public class TestHeroRegistry
     assertEquals(1, heroes.length);
     MsgCtrl.msgln("\t" + heroes[0].getName() + ":\t" + heroes[0].length() + " bytes");
   }
-
 
 
   /**
