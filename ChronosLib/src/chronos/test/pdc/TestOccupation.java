@@ -1,10 +1,10 @@
 /**
- * TestOccupation.java Copyright (c) 2013, Carolla Development, Inc. All Rights Reserved
+ * TestOccupation.java Copyright (c) 2013, Alan Cline. All Rights Reserved
  *
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
- * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
- * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
- * by email: acline@wowway.com
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists,
+ * requires prior specific permission and/or a fee. Request permission to use by email:
+ * acline@wowway.com
  */
 
 
@@ -20,9 +20,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import chronos.pdc.Occupation;
 import chronos.pdc.registry.OccupationRegistry;
@@ -38,6 +38,7 @@ import mylib.MsgCtrl;
  * @version Feb 11, 2013 // original <br>
  *          July 17, 2017 // updated as informed by QATool <br>
  *          July 21, 2017 // per QATool <br>
+ *          May 14, 2018 // updated to JUnit 5 <br>
  */
 public class TestOccupation
 {
@@ -58,7 +59,7 @@ public class TestOccupation
   /**
    * @throws java.lang.Exception for unexpected exception
    */
-  @Before
+  @BeforeEach
   public void setUp() throws Exception
   {
     _skillList.add(SKILLNAME1);
@@ -70,7 +71,7 @@ public class TestOccupation
   /**
    * @throws java.lang.Exception for unexpected exception
    */
-  @After
+  @AfterEach
   public void tearDown() throws Exception
   {
     MsgCtrl.auditMsgsOn(false);
@@ -106,7 +107,8 @@ public class TestOccupation
 
   /**
    * @Error.Test {@code Occupation(String, String, List<String>)} -- null input parms <br>
-   * @Error.Test {@code Occupation(String, String, List<String>)} -- Name parm is overly long <br>
+   * @Error.Test {@code Occupation(String, String, List<String>)} -- Name parm is overly long
+   *             <br>
    */
   @Test
   public void testCtor_NullParms()
@@ -223,14 +225,14 @@ public class TestOccupation
 
 
   /**
-   * @Normal.Test Occupation getRandomOccupation() -- return a unique set of Occupations from the
-   *              OccupationRegistry <br>
+   * @Normal.Test Occupation getRandomOccupation() -- return a unique set of Occupations from
+   *              the OccupationRegistry <br>
    */
   @Test
   public void testGetRandomOccupation()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // SETUP a collection that allows no duplicates
@@ -316,8 +318,8 @@ public class TestOccupation
   // =============================================================================
 
   /**
-   * Randomly count unique occupation names added to a Set. Duplicates will be dropped so the set
-   * will not be full.
+   * Randomly count unique occupation names added to a Set. Duplicates will be dropped so the
+   * set will not be full.
    * 
    * @return the unique set of names
    */

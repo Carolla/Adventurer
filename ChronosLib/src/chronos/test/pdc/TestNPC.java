@@ -1,3 +1,12 @@
+/**
+ * TestNPC.java Copyright (c) 2013, Alan Cline. All Rights Reserved
+ *
+ * Permission to make digital or hard copies of all or parts of this work for commercial use is
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists,
+ * requires prior specific permission and/or a fee. Request permission to use by email:
+ * acline@wowway.com
+ */
+
 
 package chronos.test.pdc;
 
@@ -11,9 +20,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 import chronos.pdc.NPC;
 import chronos.pdc.NPC.MockNPC;
@@ -32,7 +41,7 @@ public class TestNPC
   private final int MIN_MESSAGES = 3;
 
 
-  @Before
+  @BeforeEach
   public void setUp()
   {
     _npc = new NPC("Name", 1, "farDesc", "nearDesc", _rumors, _retorts);
@@ -42,7 +51,7 @@ public class TestNPC
 
   }
 
-  @After
+  @AfterEach
   public void tearDown()
   {
     MsgCtrl.auditMsgsOn(false);
@@ -183,8 +192,8 @@ public class TestNPC
   @Test
   public void testEquals_defaultObjectsEqual()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // Name, peacekeeping, and descriptions are same; messages are different

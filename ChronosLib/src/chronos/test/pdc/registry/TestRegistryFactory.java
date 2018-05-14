@@ -13,11 +13,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import chronos.pdc.registry.RegistryFactory;
 import mylib.MsgCtrl;
@@ -34,6 +34,7 @@ import mylib.MsgCtrl;
  *          July 31, 2017 // update per QATool <br>
  *          July 31, 2017 // autogen: QA Tool added missing test methods <br>
  *          Mar 19, 2018 // factoring into test suite <br>
+ *          May 14, 2018 // updated to JUnit 5 <br>
  */
 public class TestRegistryFactory
 {
@@ -46,7 +47,7 @@ public class TestRegistryFactory
   /**
    * @throws java.lang.Exception -- general catch-all for exceptions not caught by the tests
    */
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() throws Exception
   {
     _rf = new RegistryFactory();
@@ -57,7 +58,7 @@ public class TestRegistryFactory
   /**
    * @throws java.lang.Exception -- general catch-all for exceptions not caught by the tests
    */
-  @AfterClass
+  @AfterAll
   public static void tearDownAfterClass() throws Exception
   {
     _rf = null;
@@ -66,14 +67,14 @@ public class TestRegistryFactory
   /**
    * @throws java.lang.Exception -- general catch-all for exceptions not caught by the tests
    */
-  @Before
+  @BeforeEach
   public void setUp() throws Exception
   {}
 
   /**
    * @throws java.lang.Exception -- general catch-all for exceptions not caught by the tests
    */
-  @After
+  @AfterEach
   public void tearDown() throws Exception
   {
     MsgCtrl.auditMsgsOn(false);
