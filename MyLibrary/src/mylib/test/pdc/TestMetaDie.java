@@ -14,9 +14,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import mylib.ApplicationException;
 import mylib.MsgCtrl;
@@ -66,10 +69,19 @@ public class TestMetaDie
   private final int MIN_TRAIT = 8;
   private final int MAX_TRAIT = 18;
 
+
+  @BeforeAll
+  public static void setUpBeforeClass() throws Exception
+  {}
+
+  @AfterAll
+  public static void tearDownAfterClass() throws Exception
+  {}
+
   /**
    * @throws java.lang.Exception -- general catch-all for exceptions not caught by the tests
    */
-  @Before
+  @BeforeEach
   public void setUp() throws Exception
   {
     _md = new MetaDie();
@@ -80,7 +92,7 @@ public class TestMetaDie
   /**
    * @throws java.lang.Exception -- general catch-all for exceptions not caught by the tests
    */
-  @After
+  @AfterEach
   public void tearDown() throws Exception
   {
     MsgCtrl.auditMsgsOn(false);
@@ -88,6 +100,7 @@ public class TestMetaDie
     _md = null;
     _values = null;
   }
+
 
   // --------------------------------------------------------------------------------------------------------------
   // Let the Testing Begin!
@@ -230,18 +243,25 @@ public class TestMetaDie
   /**
    * @Error.Test roll(int nbrDice, int nbrSides) -- parms required: 1 die, 2 sides minimum
    */
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testRoll_Error()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
     // There must be at least one die
-    _md.roll(0, 6);
-    // Die must have at least 2 sides
-    _md.roll(1, 1);
-    _md.roll(1, -1);
+    Throwable thrown = Assertions.assertThrows(IllegalArgumentException.class, 
+        () -> _md.roll(0, 6));
+    MsgCtrl.msgln(MsgCtrl.EXP_EXCEPTION + thrown.getMessage());
+
+    thrown = Assertions.assertThrows(IllegalArgumentException.class, 
+        () -> _md.roll(1, 1));
+    MsgCtrl.msgln(MsgCtrl.EXP_EXCEPTION + thrown.getMessage());
+    
+    thrown = Assertions.assertThrows(IllegalArgumentException.class, 
+        () -> _md.roll(1, -1));
+    MsgCtrl.msgln(MsgCtrl.EXP_EXCEPTION + thrown.getMessage());
   }
 
 

@@ -95,7 +95,8 @@ public class HalfOrc extends Race
   public String getRaceLang()
   {
     // Randomizer is not good with large numbers, so even and odd tests are better for this
-    return ((_md.rollPercent() % 2) == 0) ? "" : "Orcish";
+//    return ((_md.rollPercent() % 2) == 0) ? "" : "Orcish";
+    return _md.isOdd() ? "" : "Orcish";
   }
 
 
