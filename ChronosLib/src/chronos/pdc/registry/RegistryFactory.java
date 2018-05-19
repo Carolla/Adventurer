@@ -53,6 +53,7 @@ public class RegistryFactory
     {
       return _name;
     }
+
   }
 
 
@@ -69,21 +70,21 @@ public class RegistryFactory
   public void initRegistries()
   {
     _regMap.put(RegKey.SKILL, new SkillRegistry());
-//    System.err.println("\t Registry Skill");
+    // System.err.println("\t Registry Skill");
     _regMap.put(RegKey.OCP, new OccupationRegistry());
-//    System.err.println("\t Registry Occupation");
+    // System.err.println("\t Registry Occupation");
     _regMap.put(RegKey.ITEM, new ItemRegistry());
-//    System.err.println("\t Registry Item");
+    // System.err.println("\t Registry Item");
     _regMap.put(RegKey.BLDG, new BuildingRegistry());
-//    System.err.println("\t Registry Building");
+    // System.err.println("\t Registry Building");
     _regMap.put(RegKey.TOWN, new TownRegistry());
-//    System.err.println("\t Registry Town");
+    // System.err.println("\t Registry Town");
     _regMap.put(RegKey.NPC, new NPCRegistry());
-//    System.err.println("\t Registry NPC");
+    // System.err.println("\t Registry NPC");
     _regMap.put(RegKey.ADV, new AdventureRegistry());
-//    System.err.println("\t Registry Adventure");
+    // System.err.println("\t Registry Adventure");
     _regMap.put(RegKey.HERO, new HeroRegistry());
-//    System.err.println("\t Registry Hero");
+    // System.err.println("\t Registry Hero");
   }
 
 
@@ -113,6 +114,24 @@ public class RegistryFactory
   public Registry<?> getRegistry(RegKey regtype)
   {
     return _regMap.get(regtype);
+  }
+
+  /**
+   * Finds the correct RegKey based on the given name and returns the associated Registry
+   * 
+   * @param name of the registry wanted
+   * @return an existing registry witht he same name; or null if it doesn't exist
+   */
+  public Registry<?> getRegistry(String name)
+  {
+    Registry<?> reg = null;
+    for (RegKey key : RegKey.values()) {
+      if (key.toString().equals(name)) {
+        reg = _regMap.get(key); 
+        break;
+      }
+    }
+    return reg;
   }
 
 

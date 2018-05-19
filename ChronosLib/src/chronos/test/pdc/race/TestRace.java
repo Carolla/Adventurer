@@ -45,7 +45,7 @@ import mylib.pdc.Utilities;
 public class TestRace
 {
   // Generate a bunch of values in a loop for stat calculation
-  private int NBR_LOOPS = 10000;
+  private int NBR_LOOPS = 1000;
   // Storage of generated values
   private int[] _values = new int[NBR_LOOPS];
 

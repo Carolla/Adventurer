@@ -19,6 +19,8 @@ import chronos.test.pdc.TestNPC;
 import chronos.test.pdc.TestOccupation;
 import chronos.test.pdc.TestSkill;
 import chronos.test.pdc.TestTown;
+import chronos.test.pdc.command.CommandTestSuite;
+import chronos.test.pdc.race.RaceTestSuite;
 import chronos.test.pdc.registry.RegistryTestSuite;
 
 
@@ -54,7 +56,7 @@ import chronos.test.pdc.registry.RegistryTestSuite;
     // BuildingsTestSuite.class,
     // CharacterTestSuite.class,
     // CommandTestSuite.class,
-    // RaceTestSuite.class,
+    RaceTestSuite.class,
     RegistryTestSuite.class,
 
     /* PDC test files */

@@ -11,7 +11,9 @@ package chronos.test.pdc.registry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -20,7 +22,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import chronos.pdc.registry.RegistryFactory;
+import chronos.pdc.registry.RegistryFactory.RegKey;
 import mylib.MsgCtrl;
+import mylib.pdc.Registry;
 
 /**
  * {@code RegistryFactory} is a non-instantiable static class comprised <i>mostly</i> of static
@@ -35,9 +39,13 @@ import mylib.MsgCtrl;
  *          July 31, 2017 // autogen: QA Tool added missing test methods <br>
  *          Mar 19, 2018 // factoring into test suite <br>
  *          May 14, 2018 // updated to JUnit 5 <br>
+ *          May 16, 2018 // implemented missing tests <br>
  */
 public class TestRegistryFactory
 {
+  /** All registries should be in the registry factory after initialization */
+  static final private int NBR_REGISTRIES = 8;
+
   static private RegistryFactory _rf;
 
   // ============================================================
@@ -53,6 +61,7 @@ public class TestRegistryFactory
     _rf = new RegistryFactory();
     assertNotNull(_rf);
     _rf.initRegistries();
+    assertEquals(NBR_REGISTRIES, _rf.size());
   }
 
   /**
@@ -91,12 +100,11 @@ public class TestRegistryFactory
   @Test
   public void testCtor()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    // Verify 8 registries; check in alphabetical order, except Hero, which
-    // represents a file reg
+    // Verify 8 registries; check in alphabetical order, except Hero, which represents a file
     String[] regNames =
         {"Adventure", "Building", "Item", "NPC", "Occupation", "Town", "Skill", "Hero"};
     int expSize = regNames.length;
@@ -106,53 +114,83 @@ public class TestRegistryFactory
 
 
   /**
-   * Get a Registry, and if it doesn't exist, create it and add the entry to the factory's map
-   * 
-   * @Null.Test use null to request a null registry returns null
+   * @Normal.Test Registry getRegistry(String name)
    */
   @Test
-  public void testGetRegistry_Errors()
+  public void testGetRegistryByName()
   {
-    assertNull(_rf.getRegistry(null));
-  }
-
-  /**
-   * @Not.Implemented Registry getRegistry(RegistryFactory$RegKey)
-   */
-  @Test
-  public void testGetRegistry()
-  {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    MsgCtrl.errMsgln("\t\t TEST METHOD NOT YET IMPLEMENTED");
+    ArrayList<String> regNames = new ArrayList<String>(Arrays.asList(
+        "Adventure", "Building", "Hero", "Item", "NPC", "Occupation", "Town", "Skill"));
+
+    // RUN & VERIFY
+    for (int k = 0; k < regNames.size(); k++) {
+      Registry<?> r = _rf.getRegistry(regNames.get(k));
+      assertNotNull(r);
+      MsgCtrl.msgln("\t" + r.toString() + " retrieved");
+    }
   }
 
+
   /**
-   * @Not.Implemented void initRegistries()
+   * @Normal.Test Registry getRegistry(RegistryFactory$RegKey)
+   */
+  @Test
+  public void testGetRegistryByRegKey()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    // Ensure that all the Registries are obtainable
+    RegKey[] regs = RegKey.values();
+    for (int k = 0; k < regs.length; k++) {
+      Registry<?> r = _rf.getRegistry(regs[k]);
+      assertNotNull(r);
+      MsgCtrl.msgln("\t Registry " + r.toString());
+    }
+  }
+
+
+  /**
+   * @Not.Needed void initRegistries() -- part of setup, and tested in testGetRegistry()
    */
   @Test
   public void testInitRegistries()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-
-    MsgCtrl.errMsgln("\t\t TEST METHOD NOT YET IMPLEMENTED");
   }
 
+
   /**
-   * @Not.Implemented int size()
+   * @Normal.Test int size() -- get size of all registries
    */
   @Test
   public void testSize()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    MsgCtrl.errMsgln("\t\t TEST METHOD NOT YET IMPLEMENTED");
+    // SETUP
+    // Verify 8 registries; check in alphabetical order
+    ArrayList<String> regNames = new ArrayList<String>(Arrays.asList(
+        "Adventure", "Building", "Hero", "Item", "NPC", "Occupation", "Town", "Skill"));
+    int[] regSize = {1, 9, 0, 46, 17, 31, 1, 63};
+
+    // RUN & VERIFY
+    for (int k = 0; k < regSize.length; k++) {
+      Registry<?> r = _rf.getRegistry(regNames.get(k));
+      assertNotNull(r);
+      MsgCtrl.msgln("\t Registry " + r.toString() + " contains " + r.size() + " elements");
+      assertEquals(regSize[k], r.size());
+    }
   }
+
 
 } // end of TestRegistryFactory

@@ -41,9 +41,12 @@ public abstract class Registry<E extends IRegistryElement> implements Serializab
   /** Registries are in-memory object structures except for HeroRegistry. */
   protected ArrayList<E> _list;
 
+  /** Each Registry has its own name */
+  protected String _name;
+
   /**
    * Initialize registry with beginning data from static tables, called when the registry file
-   * does not exist. Method abstract because each derived registry has its own type-specific
+   * does not exist. Method is abstract because each derived registry has its own type-specific
    * init data table.
    */
   protected abstract void initialize();
@@ -146,7 +149,6 @@ public abstract class Registry<E extends IRegistryElement> implements Serializab
    * @param key of the target object to match against for comparison
    * @return the element object that matches the name
    */
-  // public E get(String name)
   public E get(String key)
   {
     for (E elem : _list) {
@@ -183,6 +185,17 @@ public abstract class Registry<E extends IRegistryElement> implements Serializab
     }
     return selectedElements;
   }
+
+  /**
+   * Gets the name of the registry in question, set by each subclass
+   * 
+   * @return name of current registry
+   */
+  public String getRegistryName()
+  {
+    return _name;
+  }
+
 
   /**
    * Get the number of elements currently in the registry

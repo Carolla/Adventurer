@@ -2,8 +2,9 @@
  * TestHalfOrc.java Copyright (c) 2017, Alan Cline. All Rights Reserved.
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
- * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
- * prior specific permission and/or a fee. Request permission to use from acline@carolla.com.
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists,
+ * requires prior specific permission and/or a fee. Request permission to use from
+ * acline@carolla.com.
  */
 
 package chronos.test.pdc.race;
@@ -34,6 +35,9 @@ import mylib.MsgCtrl;
  */
 public class TestHalfOrc
 {
+  // Generate a bunch of values in a loop for stat calculation
+  private int NBR_LOOPS = 100;
+
   private HalfOrc _him;
   private HalfOrc _her;
   private MockRace _mockHim;
@@ -104,7 +108,8 @@ public class TestHalfOrc
     String raceLang = "Orcish"; // at 50% chance
 
     // VERIFY male Half-Orc
-    // Get fields set during male constructor: race name ("Half-Orc"), race lang ("Orcish 50%"),
+    // Get fields set during male constructor: race name ("Half-Orc"), race lang ("Orcish
+    // 50%"),
     // skills ("Infravision (60')"), gender ("male), and hair color ("black")
     assertEquals("Half-Orc", _mockHim.getRaceName());
     // Half-Orc's have a 50% chance of knowing Orcish
@@ -121,7 +126,8 @@ public class TestHalfOrc
     assertEquals("black", _mockHim.getHairColor());
 
     // VERIFY female Half-Orc
-    // Get fields set during male constructor: race name ("Half-Orc"), race lang ("Orcish 50%"),
+    // Get fields set during male constructor: race name ("Half-Orc"), race lang ("Orcish
+    // 50%"),
     // skills ("Infravision (60')"), gender ("male), and hair color ("black")
     assertEquals("Half-Orc", _mockHim.getRaceName());
     // Half-Orc's have a 50% chance of knowing Orcish
@@ -191,45 +197,40 @@ public class TestHalfOrc
     }
   }
 
-  
+
   /**
    * @Normal.Test String getRaceLang() -- 50% chance to know Orcish
    */
   @Test
   public void testGetRaceLang()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-  
+
     int langCount = 0;
     int maxCnt = 0;
-    int minCnt =0;
-  
+    int minCnt = 0;
+
     // Generate many Half-Orcs and see how many times they know orcish
-    int count = 1000;
     HalfOrc horc = new HalfOrc(new Gender("male"), "black");
     assertNotNull(horc);
-    for (int k=0; k < count; k++) {
+    for (int k = 0; k < NBR_LOOPS; k++) {
       String lang = horc.getRaceLang();
       langCount += (lang.isEmpty()) ? -1 : 1;
-      MsgCtrl.msg("\t " + langCount);
-      // Print out every 20th lang per line
-      if ((k % 20) == 0) {
-        MsgCtrl.msgln("");
-      }
-      maxCnt = Math.max(maxCnt, langCount);
-      minCnt = Math.min(minCnt, langCount);
+      // MsgCtrl.msg("\t " + langCount);
+      // // Print out every 20th lang per line
+      // if ((k % 20) == 0) {
+      // MsgCtrl.msgln("");
     }
-    MsgCtrl.msgln("\n\t Lang count after " + count + " tries = " + langCount);
-    MsgCtrl.msgln("\t Lang max = " + maxCnt + "; Lang min = " + minCnt);
-    assertTrue(Math.abs(langCount) <= 5);    
+    MsgCtrl.msgln("\t Lang count after " + NBR_LOOPS + " tries = " + langCount);
+    assertTrue(Math.abs(langCount) <= (NBR_LOOPS * 0.10));
   }
 
-  
+
   /**
-   * @Normal.Test Call the base test calcHeight(Race race, int min, int max) to allow Race-specific
-   *              values to be entered
+   * @Normal.Test Call the base test calcHeight(Race race, int min, int max) to allow
+   *              Race-specific values to be entered
    */
   @Test
   public void baseTestCalcHeight()
@@ -245,10 +246,10 @@ public class TestHalfOrc
     TestRace.baseTestCalcHeight(_her, 54, 72);
     MsgCtrl.msgln("\t Half-Orc female height verified");
   }
-  
+
   /**
-   * @Normal.Test Call the base test calcWeight(Race race, int min, int max) to allow Race-specific
-   *              values to be entered
+   * @Normal.Test Call the base test calcWeight(Race race, int min, int max) to allow
+   *              Race-specific values to be entered
    */
   @Test
   public void baseTestCalcWeight()

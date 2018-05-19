@@ -30,7 +30,7 @@ import mylib.pdc.Registry;
  * @author Alan Cline
  * @version April 20, 2013 // original <br>
  *          July 15, 2017 // added Stable and Jewelry store to initialization <br>
- *          Aug 9, 2017 // updaed per QATool, and replaced Jewelry store with Stable <br>
+ *          Aug 9, 2017 // updated per QATool, and replaced Jewelry store with Stable <br>
  */
 public class BuildingRegistry extends Registry<Building>
 {

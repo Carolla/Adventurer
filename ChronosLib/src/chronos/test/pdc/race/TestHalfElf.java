@@ -206,7 +206,7 @@ public class TestHalfElf
     MsgCtrl.msgln("  (ideally, should be 0)");
     MsgCtrl.msgln("\t Lang max = " + maxCnt + "; Lang min = " + minCnt);
     // About half of the Half-Elves should know elvish
-    assertTrue(Math.abs(langCount) <= ((double) NBR_LOOPS) * 0.10);    
+    assertTrue(Math.abs(langCount) <= (NBR_LOOPS) * 0.10);    
   }
 
   
