@@ -136,90 +136,96 @@ public class MetaDie
   }
 
 
-//  /***
-//   * Theoretically, an infinite number of values in the input {@code population} should contain
-//   * 68% of its values in the range within one standard deviation (sigma) about the mean. It
-//   * should contains 95% of its values in the range of two standard deviations about the mean,
-//   * which means 27% each on either side and outside the first-sigma range. The remaining
-//   * values (2.5%) are split evenly on either side of the second-sigma range.
-//   * <P>
-//   * For example, for a large set of numbers in the range of [8, 18], the population has a mean
-//   * = 13.0 and sigma = 1.67. Sixty-five percent should fall within [11.3, 14.7]. Another 27%
-//   * should fall within [9.7, 11.3) and 27% within (14.7, 16.3]. The other 5% of the values
-//   * should fall between [8, 9.7) and (16.3, 18].
-//   * <P>
-//   * Practically, this would be difficult to measure or verify for randomly generated numbers,
-//   * especially for small populations. {@code isGaussian()} will verify that the majority of
-//   * values occur within the first-sigma range, and the second most populous values both
-//   * second-sigma ranges. The remaining values from those are split evenly on either side of
-//   * the second-sigma range, should contain the least populous number of values. If the curve
-//   * is not strictly Gaussian, it at least will be triangular, which is good enough for our
-//   * purposes, i.e., game character generation.
-//   * <P>
-//   * <i> Implementation</i>: The mean is found from (max + min)/2.0; one sigma is defined as
-//   * (max-min)/6.0. The population is distributed within three buckets. Bucket 1 contains all
-//   * data within the first-sigma range; bucket 2 contains all value within the second-sigma
-//   * range but outside the first-sigma range, and bucket 3 contains the remaining data. The
-//   * actual percentages may not always occur as they should theoretically, but at least the
-//   * buckets should contain the most in bucket 1, the least in bucket 3, and a medium number in
-//   * bucket 2.
-//   * <P>
-//   * LIMITATION: The population must have at least 25 values in it, else returns false. <br>
-//   * LIMITATION: The population must have at least 300 values before a normallity test can be
-//   * accurate.
-//   *
-//   * @param population of numbers to process
-//   * @param min smallest value in the population to help define the range, average, and sigma
-//   * @param max largest value in the population to help define the range, average, and sigma
-//   * @return true if more number are within 1 sigma, second most numbers within 2 sigma (first
-//   *         sigma numers removed) and the least in bucket 3.
-//   */
-//  public boolean isGaussian(int[] population, int min, int max)
-//  {
-//    // Guard against too-small populations
-//    if (population.length < VALID_STAT_SIZE) {
-//      return false;
-//    }
-//    ArrayList<Double> bucket1 = new ArrayList<Double>();
-//    ArrayList<Double> bucket2 = new ArrayList<Double>();
-//    ArrayList<Double> bucket3 = new ArrayList<Double>();
-//
-//    // Define the bucket boundaries
-//    double sigma = (max - min) / 6.0;
-//    double avg = (max + min) / 2.0;
-//    double minRange1 = avg - sigma;
-//    double maxRange1 = avg + sigma;
-//    double minRange2 = minRange1 - sigma;
-//    double maxRange2 = maxRange1 + sigma;
-//    // Populate the buckets; note that the order of the comparison is important
-//    for (int k = 0; k < population.length; k++) {
-//      double target = population[k];
-//      // Place values close to the mean in bucket 1
-//      if ((target >= minRange1) && (target <= maxRange1)) {
-//        bucket1.add(target);
-//        // System.out.println("\t target = " + target + " => [11.3, 14.7]");
-//      } else {
-//        // Place values in the second-sigma split ranges into bucket 2
-//        boolean upperRange = ((target > maxRange1) && (target <= maxRange2));
-//        boolean lowerRange = ((target >= minRange2) && (target < minRange1));
-//        if (upperRange || lowerRange) {
-//          bucket2.add(target);
-//          // System.out.println("\t target = " + target + " => [9.7, 11.3) || (14.7, 16.3]");
-//        } else {
-//          bucket3.add(target);
-//          // System.out.println("\t target = " + target + " => [8, 9.7) || 16.3, 18]");
-//        }
-//      }
-//    }
-//    // Verify that the proper percentages are in the buckets
-//    int firstSigma = bucket1.size();
-//    int secondSigma = bucket2.size();
-//    int thirdSigma = bucket3.size();
-//    System.out.print("\tbucket 1 = " + firstSigma);
-//    System.out.print("\tbucket 2 = " + secondSigma);
-//    System.out.print("\tbucket 3 = " + thirdSigma);
-//    return ((firstSigma > secondSigma) && (secondSigma > thirdSigma));
-//  }
+  // /***
+  // * Theoretically, an infinite number of values in the input {@code population} should
+  // contain
+  // * 68% of its values in the range within one standard deviation (sigma) about the mean. It
+  // * should contains 95% of its values in the range of two standard deviations about the
+  // mean,
+  // * which means 27% each on either side and outside the first-sigma range. The remaining
+  // * values (2.5%) are split evenly on either side of the second-sigma range.
+  // * <P>
+  // * For example, for a large set of numbers in the range of [8, 18], the population has a
+  // mean
+  // * = 13.0 and sigma = 1.67. Sixty-five percent should fall within [11.3, 14.7]. Another 27%
+  // * should fall within [9.7, 11.3) and 27% within (14.7, 16.3]. The other 5% of the values
+  // * should fall between [8, 9.7) and (16.3, 18].
+  // * <P>
+  // * Practically, this would be difficult to measure or verify for randomly generated
+  // numbers,
+  // * especially for small populations. {@code isGaussian()} will verify that the majority of
+  // * values occur within the first-sigma range, and the second most populous values both
+  // * second-sigma ranges. The remaining values from those are split evenly on either side of
+  // * the second-sigma range, should contain the least populous number of values. If the curve
+  // * is not strictly Gaussian, it at least will be triangular, which is good enough for our
+  // * purposes, i.e., game character generation.
+  // * <P>
+  // * <i> Implementation</i>: The mean is found from (max + min)/2.0; one sigma is defined as
+  // * (max-min)/6.0. The population is distributed within three buckets. Bucket 1 contains all
+  // * data within the first-sigma range; bucket 2 contains all value within the second-sigma
+  // * range but outside the first-sigma range, and bucket 3 contains the remaining data. The
+  // * actual percentages may not always occur as they should theoretically, but at least the
+  // * buckets should contain the most in bucket 1, the least in bucket 3, and a medium number
+  // in
+  // * bucket 2.
+  // * <P>
+  // * LIMITATION: The population must have at least 25 values in it, else returns false. <br>
+  // * LIMITATION: The population must have at least 300 values before a normallity test can be
+  // * accurate.
+  // *
+  // * @param population of numbers to process
+  // * @param min smallest value in the population to help define the range, average, and sigma
+  // * @param max largest value in the population to help define the range, average, and sigma
+  // * @return true if more number are within 1 sigma, second most numbers within 2 sigma
+  // (first
+  // * sigma numers removed) and the least in bucket 3.
+  // */
+  // public boolean isGaussian(int[] population, int min, int max)
+  // {
+  // // Guard against too-small populations
+  // if (population.length < VALID_STAT_SIZE) {
+  // return false;
+  // }
+  // ArrayList<Double> bucket1 = new ArrayList<Double>();
+  // ArrayList<Double> bucket2 = new ArrayList<Double>();
+  // ArrayList<Double> bucket3 = new ArrayList<Double>();
+  //
+  // // Define the bucket boundaries
+  // double sigma = (max - min) / 6.0;
+  // double avg = (max + min) / 2.0;
+  // double minRange1 = avg - sigma;
+  // double maxRange1 = avg + sigma;
+  // double minRange2 = minRange1 - sigma;
+  // double maxRange2 = maxRange1 + sigma;
+  // // Populate the buckets; note that the order of the comparison is important
+  // for (int k = 0; k < population.length; k++) {
+  // double target = population[k];
+  // // Place values close to the mean in bucket 1
+  // if ((target >= minRange1) && (target <= maxRange1)) {
+  // bucket1.add(target);
+  // // System.out.println("\t target = " + target + " => [11.3, 14.7]");
+  // } else {
+  // // Place values in the second-sigma split ranges into bucket 2
+  // boolean upperRange = ((target > maxRange1) && (target <= maxRange2));
+  // boolean lowerRange = ((target >= minRange2) && (target < minRange1));
+  // if (upperRange || lowerRange) {
+  // bucket2.add(target);
+  // // System.out.println("\t target = " + target + " => [9.7, 11.3) || (14.7, 16.3]");
+  // } else {
+  // bucket3.add(target);
+  // // System.out.println("\t target = " + target + " => [8, 9.7) || 16.3, 18]");
+  // }
+  // }
+  // }
+  // // Verify that the proper percentages are in the buckets
+  // int firstSigma = bucket1.size();
+  // int secondSigma = bucket2.size();
+  // int thirdSigma = bucket3.size();
+  // System.out.print("\tbucket 1 = " + firstSigma);
+  // System.out.print("\tbucket 2 = " + secondSigma);
+  // System.out.print("\tbucket 3 = " + thirdSigma);
+  // return ((firstSigma > secondSigma) && (secondSigma > thirdSigma));
+  // }
 
 
   /**
@@ -261,33 +267,68 @@ public class MetaDie
   }
 
 
+//  /**
+//   * Pull a random number from a Gaussian population to add or subtract from the given average.
+//   * The range is calculated from the low and average parms.
+//   * 
+//   * @param low the low end of the range
+//   * @param average the middle of the range
+//   * @return a value within range, centered on the average
+//   */
+//  public int rollVariance(double low, double average) throws IllegalArgumentException
+//  {
+//    // Guards: only positive values are valid, and average must be greater than low
+//    if ((low < 0) || (average < 0)) {
+//      throw new IllegalArgumentException("rollVariance(): Parms must have positive values");
+//    }
+//    if (low >= average) {
+//      throw new IllegalArgumentException(
+//          "rollVariance(): Low parm must be less than average parm");
+//    }
+//
+////    double GAUSSIAN_RANGE = 3.1;
+//    boolean inRange = false;
+//    double halfRange = average - low;
+//    double high = average + halfRange;
+//    double result = -100.0;
+//    while (!inRange) {
+//      result = _generator.nextGaussian() + average;
+//      // result = (_generator.nextGaussian() / GAUSSIAN_RANGE) * halfRange + average;
+//      if ((result <= high) && (result >= low)) {
+//        inRange = true;
+//      }
+//    }
+//    return (int) Math.round(result);
+//  }
+
   /**
    * Pull a random number from a Gaussian population to add or subtract from the given average.
-   * The range is calculated from the low and average parms. this method must transform from a
-   * Gaussian average of 0 and a Gaussian range slightly over 3 to the average and range
-   * signified by the input parms.
+   * The range is calculated from the low and average parms.
    * 
    * @param low the low end of the range
-   * @param average the middle of the range
+   * @param high the high end of the range
    * @return a value within range, centered on the average
    */
-  public int rollVariance(double low, double average) throws IllegalArgumentException
+  public int rollVariance(int low, int high) throws IllegalArgumentException
   {
-    // Guard: only positive values are valid, and average must be greater than low
-    if ((low < 0) || (average < 0)) {
+    // Guards: only positive values are valid, and average must be greater than low
+    if ((low < 0) || (high < 0)) {
       throw new IllegalArgumentException("rollVariance(): Parms must have positive values");
     }
-    if (low >= average) {
-      throw new IllegalArgumentException("rollVariance(): Low parm must be less than average parm");
+    if (low >= high) {
+      throw new IllegalArgumentException(
+          "rollVariance(): Low parm must be less than high parm");
     }
 
-    double GAUSSIAN_RANGE = 3.1;
+//    double GAUSSIAN_RANGE = 3.1;
+    double avg = (high + low)/2.0;
+//    double halfRange = average - low;
+//    double high = average + halfRange;
+    double result = - high; // some invalid value to start
     boolean inRange = false;
-    double halfRange = average - low;
-    double high = average + halfRange;
-    double result = -100.0;
     while (!inRange) {
-      result = (_generator.nextGaussian() / GAUSSIAN_RANGE) * halfRange + average;
+      result = _generator.nextGaussian() + avg;
+      // result = (_generator.nextGaussian() / GAUSSIAN_RANGE) * halfRange + average;
       if ((result <= high) && (result >= low)) {
         inRange = true;
       }
@@ -295,7 +336,7 @@ public class MetaDie
     return (int) Math.round(result);
   }
 
-
+  
   /**
    * Convert a dice notation string to two numbers, then roll the dice as indicated by the
    * string. This method should only be called if the lowest possible value is positive. In

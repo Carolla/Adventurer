@@ -246,20 +246,20 @@ public class TestMetaDie
   @Test
   public void testRoll_Error()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // There must be at least one die
-    Throwable thrown = Assertions.assertThrows(IllegalArgumentException.class, 
+    Throwable thrown = Assertions.assertThrows(IllegalArgumentException.class,
         () -> _md.roll(0, 6));
     MsgCtrl.msgln(MsgCtrl.EXP_EXCEPTION + thrown.getMessage());
 
-    thrown = Assertions.assertThrows(IllegalArgumentException.class, 
+    thrown = Assertions.assertThrows(IllegalArgumentException.class,
         () -> _md.roll(1, 1));
     MsgCtrl.msgln(MsgCtrl.EXP_EXCEPTION + thrown.getMessage());
-    
-    thrown = Assertions.assertThrows(IllegalArgumentException.class, 
+
+    thrown = Assertions.assertThrows(IllegalArgumentException.class,
         () -> _md.roll(1, -1));
     MsgCtrl.msgln(MsgCtrl.EXP_EXCEPTION + thrown.getMessage());
   }
@@ -343,6 +343,45 @@ public class TestMetaDie
   }
 
 
+  // /**
+  // * @Normal.Test int rollVariance(double low, double average) -- Gaussian value about the
+  // * average, within the range defined by low
+  // */
+  // @Test
+  // public void testRollVariance()
+  // {
+  // MsgCtrl.auditMsgsOn(true);
+  // MsgCtrl.errorMsgsOn(true);
+  // MsgCtrl.where(this);
+  //
+  // double[] lows = {2.0, 3.0, 80.0, 10.0};
+  // double[] avgs = {7.0, 10.5, 100.0, 25.0};
+  // int count = LOOP_COUNT;
+  //
+  // // Traverse the input array
+  // int expHigh = -1;
+  // for (int n = 0; n < lows.length; n++) {
+  // expHigh = (int) (2 * avgs[n] - lows[n]);
+  // // Single calls of input arrays
+  // for (int k = 0; k < count; k++) {
+  // _values[k] = _md.rollVariance(lows[n], avgs[n]);
+  // }
+  // double avg = Utilities.average(_values);
+  // double min = Utilities.min(_values);
+  // double max = Utilities.max(_values);
+  // double range = max - min;
+  // MsgCtrl.msg("\t Expected range\t [" + lows[n] + ", " + (double) expHigh + "]");
+  // MsgCtrl.msgln("\t Expected average\t = " + avgs[n]);
+  // MsgCtrl.msg("\t Actual range \t[" + min + ", " + max + "]");
+  // MsgCtrl.msgln("\t Actual average = \t" + pointFmt(avg, 2));
+  // // Values should be within 2%
+  // assertEquals(lows[n], min, range * 0.02);
+  // assertEquals(expHigh, max, range * 0.02);
+  // assertEquals(avgs[n], avg, range * 0.02);
+  // }
+  // }
+
+
   /**
    * @Normal.Test int rollVariance(double low, double average) -- Gaussian value about the
    *              average, within the range defined by low
@@ -354,34 +393,26 @@ public class TestMetaDie
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    double[] lows = {2.0, 3.0, 80.0, 10.0};
-    double[] avgs = {7.0, 10.5, 100.0, 25.0};
+    int[] lows = {2, 3, 80, 10};
+    int[] highs = {12, 18, 100, 25};
     int count = LOOP_COUNT;
 
     // Traverse the input array
-    int expHigh = -1;
+    double expAvg = 0.0;
     for (int n = 0; n < lows.length; n++) {
-      expHigh = (int) (2 * avgs[n] - lows[n]);
+      expAvg = (lows[n] + highs[n]) / 2.0;
       // Single calls of input arrays
       for (int k = 0; k < count; k++) {
-        _values[k] = _md.rollVariance(lows[n], avgs[n]);
+        _values[k] = _md.rollVariance(lows[n], highs[n]);
       }
-      double[] results = Utilities.getStats(_values);
-      double avg = results[0];
-      double min = results[1];
-      double max = results[2];
-      double range = max - min;
-      MsgCtrl.msg("\t Expected range\t [" + lows[n] + ", " + (double) expHigh + "]");
-      MsgCtrl.msgln("\t Expected average\t = " + avgs[n]);
-      MsgCtrl.msg("\t Actual range \t[" + min + ", " + max + "]");
-      MsgCtrl.msgln("\t Actual average = \t" + pointFmt(avg, 2));
+      double avg = Utilities.average(_values);
+      MsgCtrl.msg("\t Expected range: [" + lows[n] + ", " + highs[n] + "]");
+      MsgCtrl.msg("\t Expected average: " + expAvg);
+      MsgCtrl.msgln("\t Actual average = " + pointFmt(avg, 2));
       // Values should be within 2%
-      assertEquals(lows[n], min, range * 0.02);
-      assertEquals(expHigh, max, range * 0.02);
-      assertEquals(avgs[n], avg, range * 0.02);
+      assertEquals(expAvg, avg, avg * 0.02);
     }
   }
-
 
   /**
    * @Normal.Test int rollVariance(double low, double average) -- parm invalid to throw
