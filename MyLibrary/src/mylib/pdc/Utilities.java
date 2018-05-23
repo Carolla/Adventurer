@@ -2,9 +2,9 @@
  * Utilities.java Copyright (c) 2010, Carolla Development, Inc. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
- * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
- * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
- * by email: acline@carolla.com
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists,
+ * requires prior specific permission and/or a fee. Request permission to use from Carolla
+ * Development, Inc. by email: acline@carolla.com
  */
 
 package mylib.pdc;
@@ -23,8 +23,8 @@ import mylib.Constants;
  * @version Dec 28, 2010 // original <br>
  *          Jan 29, 2013 // moved from Chronos to MyLibary <br>
  *          Oct 5, 2014 // cleaned up cropLine and added tests into {@code TestUtilities} <br>
- *          Oct 16, 2014 // renamed {@code sort} to {@code uniqueSort} to emphasize dups are removed
- *          during sort <br>
+ *          Oct 16, 2014 // renamed {@code sort} to {@code uniqueSort} to emphasize dups are
+ *          removed during sort <br>
  *          Jan 22 2016 // added {@code convertToArrayList(String[])} <br>
  */
 public class Utilities
@@ -35,6 +35,52 @@ public class Utilities
   public static final long SECONDS_PER_YEAR = SECONDS_PER_DAY * DAYS_PER_YEAR;
   public static final int OUNCES_PER_POUND = 16;
   public static final int INCHES_PER_FOOT = 12;
+
+
+  /**
+   * Find the average value for a given integer array
+   * 
+   * @param ary the values to analyze
+   * @return the average of all values in the array
+   */
+  static public double average(int[] ary)
+  {
+    int sum = 0;
+  
+    for (int k = 0; k < ary.length; k++) {
+      sum += ary[k];
+    }
+    double average = (double) sum / (double) ary.length;
+    return average;
+  }
+
+
+  /**
+   * Finds the pecentage of values within the population that falls within one standard
+   * deviation (sigma) of the mean. For normal (Guassian) distributions, it should be 68.2% for
+   * a population of infinite values. Sigma is the square root of the variance. The variance is
+   * the sum of the squares of the difference between a single point and the mean.
+   * 
+   * @param ary the values to analyze
+   * @return the percentage of values within one sigma
+   */
+  static public double calcSigma(int[] ary)
+  {
+    double sum = 0.0;
+    double mean = 0.0;
+    double sqdiff = 0.0;
+  
+    for (int k = 0; k < ary.length; k++) {
+      sum += ary[k];
+    }
+    mean = sum / ary.length;
+  
+    for (int k = 0; k < ary.length; k++) {
+      sqdiff += Math.pow((ary[k] - mean), 2);
+    }
+    double sigma = Math.sqrt(sqdiff/ary.length);
+    return sigma;
+  }
 
 
   /**
@@ -51,8 +97,8 @@ public class Utilities
 
 
   /**
-   * Constrain an integer array to fall within a given range for each element of the set by setting
-   * any value to its upper or lower limit
+   * Constrain an integer array to fall within a given range for each element of the set by
+   * setting any value to its upper or lower limit
    * 
    * @param values the original set to check
    * @param lowLimit the lower bound per value
@@ -86,8 +132,8 @@ public class Utilities
   }
 
   /**
-   * Replaces the last white space character with a newline character within the designated limit.
-   * See {@code Utilities.wordWrap} for paragraphs of text
+   * Replaces the last white space character with a newline character within the designated
+   * limit. See {@code Utilities.wordWrap} for paragraphs of text
    * 
    * @param msg the string to insert the newline
    * @param width the limit to crop the string; the remnant is not returned
@@ -243,7 +289,6 @@ public class Utilities
     if (isEmptyString(strSecs)) {
       return null;
     }
-
     // Format line into something presentantable
     // float total = Float.parseFloat(strSecs) / SECS_PER_YEAR;
     double total = Double.parseDouble(strSecs) / SECONDS_PER_YEAR;
@@ -253,33 +298,6 @@ public class Utilities
     }
     String age = String.format("%2.3f yrs.", total);
     return age;
-  }
-  
-  
-  /** Find the average, minimum, and maximum values for a given integer array
-   * @param ary the values to analyze
-   * @return an array of three values, in this order: average, min, max
-   */
-  static public double[] getStats(int[] ary) 
-  {
-    double[] result = new double[3];
-    int AVG = 0;
-    int MIN = 1;
-    int MAX = 2;
-    
-    int min = 9999;
-    int max = -1;
-    int sum = 0;
-
-    for (int k=0; k < ary.length; k++) {
-      min = Math.min(min, ary[k]);
-      max = Math.max(max, ary[k]);
-      sum += ary[k];
-    }
-    result[AVG] = (double) sum / (double) ary.length;
-    result[MIN] = min;
-    result[MAX] = max;
-    return result;
   }
 
 
@@ -342,10 +360,44 @@ public class Utilities
 
 
   /**
-   * Sort an {@code ArrayList<String>} alphabetically, which then can be accessed by the {@code get}
-   * method sequentially. The sort algorithm uses a {@code TreeSet} because it automatically uses an
-   * insert-sort algorithm with no duplicates. Whitespace and control chars, e.g., '\t' are sorted
-   * before punctuation, before lower case, before upper case.
+   * Find the maximum value in a given integer array
+   * 
+   * @param ary the values to analyze
+   * @return the maximum value in the array
+   */
+  static public int max(int[] ary)
+  {
+    int max = Integer.MIN_VALUE;
+    
+    for (int k = 0; k < ary.length; k++) {
+      max = Math.max(max, ary[k]);
+    }
+    return max;
+  }
+
+
+  /**
+   * Find the minimum value in a given integer array
+   * 
+   * @param ary the values to analyze
+   * @return the minimum value in the array
+   */
+  static public int min(int[] ary)
+  {
+    int min = Integer.MAX_VALUE;
+    
+    for (int k = 0; k < ary.length; k++) {
+      min = Math.min(min, ary[k]);
+    }
+    return min;
+  }
+
+
+  /**
+   * Sort an {@code ArrayList<String>} alphabetically, which then can be accessed by the
+   * {@code get} method sequentially. The sort algorithm uses a {@code TreeSet} because it
+   * automatically uses an insert-sort algorithm with no duplicates. Whitespace and control
+   * chars, e.g., '\t' are sorted before punctuation, before lower case, before upper case.
    * 
    * @param target unsorted list
    * @return the arraylist sorted, accessible sequentially by the get() method.
@@ -371,8 +423,8 @@ public class Utilities
 
 
   /**
-   * Break a long line into a series of list items. Each item is broken just before a white space,
-   * and is not longer than the given length
+   * Break a long line into a series of list items. Each item is broken just before a white
+   * space, and is not longer than the given length
    *
    * @param line the long string to wrap
    * @param maxLen the farthest position at which to break the line

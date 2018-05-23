@@ -2,9 +2,9 @@
  * TestUtilities.java Copyright (c) 2013, Carolla Development, Inc. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
- * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
- * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
- * by email: acline@carolla.com
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists,
+ * requires prior specific permission and/or a fee. Request permission to use from Carolla
+ * Development, Inc. by email: acline@carolla.com
  */
 
 
@@ -37,6 +37,7 @@ import mylib.pdc.Utilities;
  *          July 2, 2017 // cleanupped after major refactoring in apps <br>
  *          July 8, 2017 // autogen: QA Tool added missing test methods <br>
  *          July 21, 2017 // revised custom Javadoc tags <br>
+ *          May 22, 2018 // added test for new getStatConfidence() <br>
  */
 public class TestUtilities
 {
@@ -57,29 +58,60 @@ public class TestUtilities
     MsgCtrl.errorMsgsOn(false);
   }
 
-
   // ================================================================================
   // BEGIN TESTS
   // ================================================================================
 
   /**
-   * @Normal.Test String cropLine(String, int) -- A line of text is cropped before the last word
-   *              <br>
-   * @Normal.Test String cropLine(String, int) -- A line of text is cropped after the last word, at
-   *              a white space <br>
+   * @Normal.Test double getSigma(int[] ary) -- find standard deviation of population
+   */
+  @Test
+  public void testCalcSigma()
+  {
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.where(this);
+
+    // For perfect Gaussian distribution, statConfidence should be 68.2%.
+    int[] testAry = new int[36];
+    int k = 0;
+    // Generate normal distribution
+    for (int p = 1; p <= 6; p++) {
+      for (int q = 1; q <= 6; q++) {
+        testAry[k++] = p + q;
+      }
+    }
+    double result = Utilities.calcSigma(testAry);
+    MsgCtrl.msgln("\t result = " + result);
+    assertEquals(2.4, result, 0.02);
+
+    // Wikipedia test
+    int[] testAry2 = {2, 4, 4, 4, 5, 5, 7, 9};
+    result = Utilities.calcSigma(testAry2);
+    MsgCtrl.msgln("\t result = " + result);
+    assertEquals(2.0, result, 0.02);
+  }
+  
+
+  // TODO: This test should be broken into multiple tests
+  /**
+   * @Normal.Test String cropLine(String, int) -- A line of text is cropped before the last
+   *              word <br>
+   * @Normal.Test String cropLine(String, int) -- A line of text is cropped after the last
+   *              word, at a white space <br>
    * @Normal.Test String cropLine(String, int) -- A line of text is cropped after a tab (valid)
    *              character <br>
-   * @Normal.Test String cropLine(String, int) -- A line of text is cropped after a carriage return
-   *              (\r) character <br>
-   * @Normal.Test String cropLine(String, int) -- String contains newline character at crop point.
-   *              <br>
+   * @Normal.Test String cropLine(String, int) -- A line of text is cropped after a carriage
+   *              return (\r) character <br>
+   * @Normal.Test String cropLine(String, int) -- String contains newline character at crop
+   *              point. <br>
    * @Normal.Test String cropLine(String, int) -- String contains backspace character <br>
    * @Normal.Test String cropLine(String, int) -- A backspace character (\b) is not counted as
    *              whitespace <br>
-   * @Normal.Test String cropLine(String, int) -- An escaped double quote (\") is not counted as
-   *              whitespace <br>
-   * @Normal.Test String cropLine(String, int) -- An escaped single quote (\') is not counted as
-   *              whitespace <br>
+   * @Normal.Test String cropLine(String, int) -- An escaped double quote (\") is not counted
+   *              as whitespace <br>
+   * @Normal.Test String cropLine(String, int) -- An escaped single quote (\') is not counted
+   *              as whitespace <br>
    * @Normal.Test String cropLine(String, int) -- An escaped escape char (\\) is not counted as
    *              whitespace <br>
    */
@@ -166,10 +198,10 @@ public class TestUtilities
 
 
   /**
-   * @Special.Test String cropLine(String, int) -- Input line is less than crop width permitted;
-   *               return input string <br>
-   * @Error.Test String cropLine(String, int) -- Input line contains a newline within the width;
-   *             return input string <br>
+   * @Special.Test String cropLine(String, int) -- Input line is less than crop width
+   *               permitted; return input string <br>
+   * @Error.Test String cropLine(String, int) -- Input line contains a newline within the
+   *             width; return input string <br>
    * @Null.Test String cropLine(String, int) -- Null input line <br>
    */
   @Test
@@ -230,8 +262,8 @@ public class TestUtilities
 
 
   /**
-   * @Normal.Test String formatInches(String) -- string value must be integer less than, equal to,
-   *              and greater than one foot <br>
+   * @Normal.Test String formatInches(String) -- string value must be integer less than, equal
+   *              to, and greater than one foot <br>
    * @Normal.Test String formatInches(String) -- string value contains exactly zero inches <br>
    * @Error.Test String formatInches(String) -- string value contains decimal fraction <br>
    * @Error.Test String formatInches(String) -- string value contains negative number <br>
@@ -313,8 +345,8 @@ public class TestUtilities
 
 
   /**
-   * @Normal.Test String formatOunces(String) -- string value must be integer less than, equal to,
-   *              and greater than one pound <br>
+   * @Normal.Test String formatOunces(String) -- string value must be integer less than, equal
+   *              to, and greater than one pound <br>
    * @Normal.Test String formatOunces(String) -- string value contains exactly zero ounces <br>
    * @Error.Test String formatOunces(String) -- string value contains decimal fraction <br>
    * @Error.Test String formatOunces(String) -- string value contains negative number <br>
@@ -364,9 +396,10 @@ public class TestUtilities
 
 
   /**
-   * @Normal.Test String formatSeconds(String) -- string value must be integer less than, equal to,
-   *              and greater than one year <br>
-   * @Normal.Test String formatSeconds(String) -- string value contains exactly zero seconds <br>
+   * @Normal.Test String formatSeconds(String) -- string value must be integer less than, equal
+   *              to, and greater than one year <br>
+   * @Normal.Test String formatSeconds(String) -- string value contains exactly zero seconds
+   *              <br>
    * @Error.Test String formatSeconds(String) -- string value contains decimal fraction <br>
    * @Error.Test String formatSeconds(String) -- string value contains negative number <br>
    * @Error.Test String formatSeconds(String) -- string value contains empty string <br>
@@ -415,49 +448,45 @@ public class TestUtilities
 
 
   /**
-   * @Normal.Test double[] getStats(int[] ary) -- get average, min, max value from integer array
+   * @Normal.Test double getAverage(int[] ary) -- get average value of int array
    */
   @Test
-  public void testGetStats()
+  public void testGetAverage()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    int[] testAry = {1,2,3,4,5,6,7,8,9,10};
-    
-    double[] results = Utilities.getStats(testAry);
-    double avg = results[0];
-    int min = (int) results[1];
-    int max = (int) results[2];
+    int[] testAry = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+    double avg = Utilities.average(testAry);
+    int min = Utilities.min(testAry);
+    int max = Utilities.max(testAry);
     MsgCtrl.msgln("\t [Min, Max] = [" + min + ", " + max + "]; Average = " + avg);
     assertEquals(1, min);
     assertEquals(10, max);
-    assertEquals(5.5, avg, 0.1);
-    
+    assertEquals(5.5, avg, 0.01);
+
     int[] testAry2 = {-1, 0, 1, -2, 0, 2, -3, 3};
-    
-    results = Utilities.getStats(testAry2);
-    avg = results[0];
-    min = (int) results[1];
-    max = (int) results[2];
+
+    avg = Utilities.average(testAry2);
+    min = Utilities.min(testAry2);
+    max = Utilities.max(testAry2);
     MsgCtrl.msgln("\t [Min, Max] = [" + min + ", " + max + "]; Average = " + avg);
     assertEquals(-3, min);
     assertEquals(3, max);
-    assertEquals(0.0, avg, 0.1);
-
+    assertEquals(0.0, avg, 0.01);
   }
-
 
   /**
    * @Normal.Test boolean isTraitsEqual(int[], int[]) -- contain exactly the same elements <br>
    * @Normal.Test boolean isTraitsEqual(int[], int[]) -- contain one value different <br>
    * @Normal.Test boolean isTraitsEqual(int[], int[]) -- contain all values different <br>
    * @Error.Test boolean isTraitsEqual(int[], int[]) -- are of different length <br>
-   * @Error.Test boolean isTraitsEqual(int[], int[]) -- are not totally filled but have 0 values in
-   *             one or more slots <br>
-   * @Special.Test boolean isTraitsEqual(int[], int[]) -- have 0's in all slots; legal but useless
-   *               for comparing prime traits
+   * @Error.Test boolean isTraitsEqual(int[], int[]) -- are not totally filled but have 0
+   *             values in one or more slots <br>
+   * @Special.Test boolean isTraitsEqual(int[], int[]) -- have 0's in all slots; legal but
+   *               useless for comparing prime traits
    * @Null.Test boolean isTraitsEqual(int[], int[]) -- one or both parms are null
    */
   @Test
@@ -514,6 +543,40 @@ public class TestUtilities
 
 
   /**
+   * @Normal.Test int max(int[] ary) -- get maximum value of int array
+   */
+  @Test
+  public void testMax()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    int[] testAry2 = {-1, 0, 1, -2, 0, 2, -3, 3, 3, -1};
+
+    int max = Utilities.max(testAry2);
+    MsgCtrl.msgln("\t Max = " + max);
+    assertEquals(3, max);
+  }
+
+  /**
+   * @Normal.Test int min(int[] ary) -- get minimum value of int array
+   */
+  @Test
+  public void testMin()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    int[] testAry2 = {-1, 0, 1, -2, 0, 2, -3, 3, 3, -1};
+
+    int min = Utilities.min(testAry2);
+    MsgCtrl.msgln("\t Min = " + min);
+    assertEquals(-3, min);
+  }
+
+  /**
    * @Normal.Test {@code ArrayList<String> wordWrap(String, int)} -- A single line, no wrapping
    *              needed
    * @Normal.Test {@code ArrayList<String> wordWrap(String, int)} -- A two-line wrappable
@@ -566,13 +629,14 @@ public class TestUtilities
   /**
    * @Normal.Test {@code ArrayList<String> sort(ArrayList<String>)} -- Sort an unsorted list of
    *              unique elements <br>
-   * @Normal.Test {@code ArrayList<String> sort(ArrayList<String>)} -- Sort an already sorted list
-   *              <br>
-   * @Normal.Test {@code ArrayList<String> sort(ArrayList<String>)} -- Sort an unsorted list with
-   *              duplicate and triplicate elements <br>
-   * @Normal.Test {@code ArrayList<String> sort(ArrayList<String>)} -- Sort an unsorted list with
-   *              empty elements<br>
-   * @Error.Test {@code ArrayList<String> sort(ArrayList<String>)} -- Input parm has no length <br>
+   * @Normal.Test {@code ArrayList<String> sort(ArrayList<String>)} -- Sort an already sorted
+   *              list <br>
+   * @Normal.Test {@code ArrayList<String> sort(ArrayList<String>)} -- Sort an unsorted list
+   *              with duplicate and triplicate elements <br>
+   * @Normal.Test {@code ArrayList<String> sort(ArrayList<String>)} -- Sort an unsorted list
+   *              with empty elements<br>
+   * @Error.Test {@code ArrayList<String> sort(ArrayList<String>)} -- Input parm has no length
+   *             <br>
    * @Null.Test {@code ArrayList<String> sort(ArrayList<String>)} -- input parm is null
    */
   @Test
