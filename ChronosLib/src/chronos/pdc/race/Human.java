@@ -2,9 +2,9 @@
  * Human.java Copyright (c) 2015, Carolla Development, Inc. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
- * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
- * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
- * by email: acline@carolla.com
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists,
+ * requires prior specific permission and/or a fee. Request permission to use from Carolla
+ * Development, Inc. by email: acline@carolla.com
  */
 
 package chronos.pdc.race;
@@ -16,15 +16,19 @@ import chronos.pdc.character.TraitList;
 /**
  * @author Al Cline
  * @version Sep 4, 2015 // original <br>
- *          May 30, 2017 // revised weight and height algorithm to revised {@code RangedValues} <br>
+ *          May 30, 2017 // revised weight and height algorithm to revised {@code RangedValues}
+ *          <br>
  *          Jun 27, 2017 // removed getRaceLang() and set base class field instead <br>
  *          Aug 15, 2017 // updated per QATool <br>
- *          Sept 25, 2017 // revised calcWeight() and calcHeight() to call single calcVariance()
- *          method <br>
+ *          Sept 25, 2017 // revised calcWeight() and calcHeight() to call single
+ *          calcVariance() method <br>
+ *          May 24, 2018 // removed wrapper testing <br>
  */
 public class Human extends Race
 {
-  /** Weights and heights are generated in a normal distribution about an Average over a Range */
+  /**
+   * Weights and heights are generated in a normal distribution about an Average over a Range
+   */
   // Weight range: male [130, 230]; female [117, 207]
   protected final int WT_LOW = 130;
   protected final int WT_HIGH = 230;
@@ -77,7 +81,6 @@ public class Human extends Race
    * @param traits the six prime traits of any Hero
    */
   @Override
-  // public TraitList adjustTraitsForRace(TraitList traits)
   public void adjustTraitsForRace(TraitList traits)
   {
     // Does nothing; original traits are final traits
@@ -106,26 +109,6 @@ public class Human extends Race
   {
     return calcVariance(WT_LOW, WT_HIGH);
   }
-
-
-  // TODO Shouldn't need this method; use a test to ensure the range; don't clip range
-  // /**
-  // * Ensure that the traits fall within the proper male/female. After the limits are defined for
-  // * this subclass, the base class is called with that data.
-  // *
-  // * @param traits the six prime traits of any Hero
-  // * @return the adjusted traits
-  // */
-  // @Override
-  // public TraitList setTraitLimits(TraitList traits)
-  // {
-  // if (_gender.isFemale()) {
-  // traits = constrainTo(traits, FEMALE_MINLIMIT, FEMALE_MAXLIMIT);
-  // } else {
-  // traits = constrainTo(traits, MALE_MINLIMIT, MALE_MAXLIMIT);
-  // }
-  // return traits;
-  // }
 
 
 

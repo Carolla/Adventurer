@@ -2,9 +2,9 @@
  * TestRace.java Copyright (c) 2009, Carolla Development, Inc. All Rights Reserved
  *
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
- * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
- * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
- * by email: acline@wowway.com
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists,
+ * requires prior specific permission and/or a fee. Request permission to use from Carolla
+ * Development, Inc. by email: acline@wowway.com
  */
 
 package chronos.test.pdc.race;
@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import chronos.pdc.Chronos;
 import chronos.pdc.character.Gender;
 import chronos.pdc.race.Human;
 import chronos.pdc.race.Race;
@@ -39,13 +40,14 @@ import mylib.pdc.Utilities;
  *          Jan 18, 2010 // add in non-Human racial tests <br>
  *          August 10, 2017 // updated per QA Tool <br>
  *          August 15, 2017 // protected methods are better tested by subclasses <br>
- *          Sept 24, 2017 // Put statistics into calcHeight() and calcWeight() methods instead of
- *          subclass methods <br>
+ *          Sept 24, 2017 // Put statistics into calcHeight() and calcWeight() methods instead
+ *          of subclass methods <br>
+ *          May 23, 2018 // refactored specific subclass methods into common base class <br>
  */
 public class TestRace
 {
   // Generate a bunch of values in a loop for stat calculation
-  private int NBR_LOOPS = 1000;
+  static private int NBR_LOOPS = 1000;
   // Storage of generated values
   private int[] _values = new int[NBR_LOOPS];
 
@@ -88,10 +90,7 @@ public class TestRace
 
   @Before
   public void setUp()
-  {
-    // Create storage for stats
-    _values = new int[NBR_LOOPS];
-  }
+  {}
 
   @After
   public void tearDown()
@@ -134,122 +133,49 @@ public class TestRace
 
 
   /**
-   * @Normal.Test int calcHeight(double low, double average) -- ensure that proper distribution of
-   *              heights and means are generated for a few sample Heights. MockRace is called to
-   *              bypass the overridden data-driven methods.
+   * @Normal.Test double calcVariance(int min, int max) -- Extract a random number from a
+   *              Gaussian population.
+   * 
+   * @param race a male or female so that the object's method can be called
+   * @param min minimum value allowed
+   * @param max maximum value allowed
    */
   @Test
-  public void testCalcVariance_Stats()
+  public void testCalcVariance()
   {
     MsgCtrl.auditMsgsOn(true);
     MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
-
-    int maleMin = 49;
-    int maleMax = 59;
-    double expMaleAvg = (maleMin + maleMax) / 2.0;
-
-    // Height range for males [49, 59]
-    // Generate a number of weights to check central tendency
-    MsgCtrl.msg("\t Expected male height in inches [" + maleMin + ", " + maleMax + "];");
-    MsgCtrl.msgln("\t Expected Average = " + expMaleAvg);
+    
+    // Test values for the sum of two dice
+    int min = 2;
+    int max = 12;
+    
+    // Create a mock Human object to call the test method in the Race class
+    MockRace mock = _him.new MockRace();
+    assertNotNull(mock);
+  
     for (int k = 0; k < NBR_LOOPS; k++) {
-      _values[k] = _mockHim.calcVariance(maleMin, maleMax);
-      assertTrue((_values[k] >= maleMin) && (_values[k] <= maleMax));
+      _values[k] = mock.calcVariance(min, max); // method adjusts downward for females
+      assertTrue((_values[k] >= min) && (_values[k] <= max));
     }
-    double[] results = Utilities.getStats(_values);
-    double avg = results[0];
-    int min = (int) results[1];
-    int max = (int) results[2];
-    MsgCtrl.msgln("\t Actual [Min, Max] = [" + min + ", " + max + "]; Average = " + avg);
-    assertEquals(expMaleAvg, results[0], 0.5);
-    assertEquals(maleMin, (int) results[1]);
-    assertEquals(maleMax, (int) results[2]);
-
-    // Height range for females = 90% of males: [44, 53]
-    int femaleMin = (int) (Math.round(0.90 * maleMin));
-    int femaleMax = (int) (Math.round(0.90 * maleMax));
-    double expFemaleAvg = (femaleMin + femaleMax) / 2.0;
-    MsgCtrl.msg("\t Expected female height in inches [" + femaleMin + ", " + femaleMax + "];");
-    MsgCtrl.msgln("\t Expected Average = " + expFemaleAvg);
-    for (int k = 0; k < NBR_LOOPS; k++) {
-      // Use male values since females values are automatically adjusted
-      _values[k] = _mockHer.calcVariance(maleMin, maleMax);
-      assertTrue((_values[k] >= femaleMin) && (_values[k] <= femaleMax));
-    }
-    results = Utilities.getStats(_values);
-    avg = results[0];
-    min = (int) results[1];
-    max = (int) results[2];
-    MsgCtrl.msgln("\t Actual [Min, Max] = [" + min + ", " + max + "]; Average = " + avg);
-    assertEquals(expFemaleAvg, results[0], 0.5);
-    assertEquals(femaleMin, (int) results[1]);
-    assertEquals(femaleMax, (int) results[2]);
+    double expAvg = (max + min) / 2.0;
+    double average = Utilities.average(_values);
+    int actualMin = Utilities.min(_values);
+    int actualMax = Utilities.max(_values);
+    MsgCtrl.msg("\t Expected range [" + min + ", " + max + "]");
+    MsgCtrl.msgln("\t Expected average = " + expAvg);
+    // Verify that average is within one standard deviation, or 68.2%
+    MsgCtrl.msg("\t Actual range [" + actualMin + ", " + actualMax + "]");
+    MsgCtrl.msgln("\t Actual average = " + average);
+    assertEquals(expAvg, average, average * .682);
   }
 
-
-//  /**
-//   * @Normal.Test int calcWeight(double low, double average) -- ensure that proper distribution of
-//   *              weights and means are generated for a few sample weights. MockRace is called to
-//   *              bypass the overridden data-driven methods.
-//   */
-//  @Test
-//  public void testCalcWeight()
-//  {
-//    MsgCtrl.auditMsgsOn(false);
-//    MsgCtrl.errorMsgsOn(false);
-//    MsgCtrl.where(this);
-//
-//    int maleMin = 100;
-//    int maleMax = 250;
-//    double expMaleAvg = (maleMin + maleMax) / 2.0;
-//
-//    // Weight range for males [100, 250]
-//    // Generate a number of weights to check central tendency
-//    MsgCtrl.msg("\t Expected male weight in lbs [" + maleMin + ", " + maleMax + "];");
-//    MsgCtrl.msgln("\t Expected Average = " + expMaleAvg);
-//    for (int k = 0; k < NBR_LOOPS; k++) {
-//      _values[k] = _mockHim.calcWeight(maleMin, expMaleAvg);
-//      assertTrue((_values[k] >= maleMin) && (_values[k] <= maleMax));
-//    }
-//    double[] results = Utilities.getStats(_values);
-//    double avg = results[0];
-//    int min = (int) results[1];
-//    int max = (int) results[2];
-//    MsgCtrl.msgln("\t Actual [Min, Max] = [" + min + ", " + max + "]; Average = " + avg);
-//    // Check avg within 1%
-//    assertEquals(expMaleAvg, results[0], expMaleAvg / 100.0);
-//    assertEquals(maleMin, (int) results[1]);
-//    assertEquals(maleMax, (int) results[2]);
-//
-//    // Weight range for females = 90% of males: [90, 225]
-//    int femaleMin = (int) (Math.round(0.90 * maleMin));
-//    int femaleMax = (int) (Math.round(0.90 * maleMax));
-//    double expFemaleAvg = (femaleMin + femaleMax) / 2.0;
-//    MsgCtrl.msg("\t Expected female weight in lb [" + femaleMin + ", " + femaleMax + "];");
-//    MsgCtrl.msgln("\t Expected Average = " + expFemaleAvg);
-//    for (int k = 0; k < NBR_LOOPS; k++) {
-//      // Use male values since females values are automatically adjusted
-//      _values[k] = _mockHer.calcWeight(maleMin, expMaleAvg);
-//      assertTrue((_values[k] >= femaleMin) && (_values[k] <= femaleMax));
-//    }
-//    results = Utilities.getStats(_values);
-//    avg = results[0];
-//    min = (int) results[1];
-//    max = (int) results[2];
-//    MsgCtrl.msgln("\t Actual [Min, Max] = [" + min + ", " + max + "]; Average = " + avg);
-//    // Check avg within 1%
-//    assertEquals(expFemaleAvg, results[0], expFemaleAvg / 100.0);
-//    assertEquals(femaleMin, (int) results[1]);
-//    assertEquals(femaleMax, (int) results[2]);
-//  }
-
-
   /**
-   * @Normal.Test Race createRace(String raceName, Gender gender, String hairColor) -- create Race
-   *              superclass that can be cast to specific subclasses, like Human
-   * @Error.Test Race createRace(String raceName, Gender gender, String hairColor) -- request to
-   *             create an unknown Race subclass; throws NullPointerException
+   * @Normal.Test Race createRace(String raceName, Gender gender, String hairColor) -- create
+   *              Race superclass that can be cast to specific subclasses, like Human
+   * @Error.Test Race createRace(String raceName, Gender gender, String hairColor) -- request
+   *             to create an unknown Race subclass; throws NullPointerException
    */
   @Test
   public void testCreateRace()
@@ -429,78 +355,38 @@ public class TestRace
   }
 
 
-  /**
-   * Check a subrace's height, providing the desired range and checking against the expected range
-   * Tests are run in a loop several times for thoroughness. The parms allow the subrace's protected
-   * methods to be used with test values, instead of the values characteristic of the subrace.
-   * Asserts are used to confirm that the height falls within the proper subrace range.
-   * 
-   * @param race a male or female so that the object's method can be called
-   * @param min minimum value allowed
-   * @param max maximum value allowed
-   */
-  static public void baseTestCalcHeight(Race race, int min, int max)
-  {
-    // Create a mock race to call the test method in the Race class
-    MockRace mock = race.new MockRace();
-    assertNotNull(mock);
-    
-    // Adjust exp values for female races
-    int adjMin = min;
-    int adjMax = max;
-    
-    // Adjust upward to compensate for the gender-adjusting calcHeight() method
-    if (race.getGender().equals(Gender.FEMALE_STRING)) {
-      adjMin =  (int) (min / 0.90);    // int arithmetic puts value on lower side
-      adjMax = (int) Math.round(max / 0.90);  // rounding puts value on higher side
-    }
-    // RUN Call a few times to ensure proper ranges are maintained
-    MsgCtrl.msgln("\t Expected range [" + min + ", " + max + "]");
-    for (int k = 0; k < 10; k++) {
-      int var = mock.calcVariance(adjMin, adjMax);  // method adjusts downward for females
-      MsgCtrl.msg("\t" + var);
-      assertTrue((var >= min) && (var <= max));
-    }
-    MsgCtrl.msgln("");
-  }
+//  /**
+//   * Implementation of a method callable by Race subclass tests
+//   * 
+//   * @param expMin expected minimum for the population array
+//   * @param expMax expected maximum for the population array
+//   * @param values population to verify
+//   */
+//  @Test
+//  public void testMinMaxAverage(int expMin, int expMax, int[] values)
+//  {
+//    MsgCtrl.auditMsgsOn(true);
+//    MsgCtrl.errorMsgsOn(true);
+//    MsgCtrl.where(this);
+//
+//    // Create a mock Human object to call the test method in the Race class
+//    MockRace mock = _him.new MockRace();
+//    assertNotNull(mock);
+//
+//    // Generate a population to check central tendency
+//    for (int k = 0; k < NBR_LOOPS; k++) {
+//      assertTrue((values[k] >= expMin) && (values[k] <= expMax));
+//    }
+//    int min = Utilities.min(values);
+//    int max = Utilities.max(values);
+//    double avg = Utilities.average(values);
+//    double expAvg = (max + min) / 2.0;
+//    MsgCtrl.msgln("\t Actual [Min, Max] = [" + min + ", " + max + "]; Average = " + avg);
+//    assertEquals(expMin, min);
+//    assertEquals(expMax, max);
+//    assertEquals(expAvg, avg, avg * Chronos.TOLERANCE);
+//  }
 
 
-  /**
-   * Check a subrace's height, providing the desired range and checking against the expected range
-   * Tests are run in a loop several times for thoroughness. The parms allow the subrace's protected
-   * methods to be used with test values, instead of the values characteristic of the subrace.
-   * Asserts are used to confirm that the height falls within the proper subrace range.
-   * 
-   * @param race a male or female so that the object's method can be called
-   * @param min minimum value allowed
-   * @param max maximum value allowed
-   */
-  static public void baseTestCalcVariance(Race race, int min, int max)
-  {
-    // Create a mock race to call the test method in the Race class
-    MockRace mock = race.new MockRace();
-    assertNotNull(mock);
-    
-    // Adjust exp values for female races
-    int expMin = min;
-    int expMax = max;
-    
-    // Adjust upward to compensate for the gender-adjusting calcHeight() method
-    if (race.getGender().equals(Gender.FEMALE_STRING)) {
-      expMin =  (int) (min / 0.90);    // int arithmetic puts value on lower side
-      expMax = (int) Math.round(max / 0.90);  // rounding puts value on higher side
-    }
-    // RUN Call a few times to ensure proper ranges are mainained
-    double avg = (expMin + expMax) / 2.0;
-    MsgCtrl.msgln("\t Expected range [" + min + ", " + max + "]");
-    for (int k = 0; k < 10; k++) {
-      int height = mock.calcVariance(expMin, expMax); 
-      MsgCtrl.msg("\t" + height);
-      assertTrue((height >= min) && (height <= max));
-    }
-    MsgCtrl.msgln("");
-  }
 
-  
- 
 } // end of TestRace class

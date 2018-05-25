@@ -155,48 +155,57 @@ public class TestHalfOrc
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    // SETUP Provide some base traits to be adjusted
-    // Dump the prime traits' names for easier processing
-    PrimeTraits[] traitName = PrimeTraits.values();
-
     // Save the original traitlist to another object for later comparison
-    TraitList baseTraits = new TraitList();
-    int[] original = baseTraits.toArray();
+    // STR, INT, WIS, CON, DEX, CHR
+    TraitList traits = new TraitList();
+    int[] original = traits.toArray();
 
-    // Male: VERIFY STR+1, CON+1, CHR-2
-    _him.adjustTraitsForRace(baseTraits);
-    for (int k = 0; k < 6; k++) {
-      int beforeTrait = original[k];
-      int afterTrait = baseTraits.getTrait(traitName[k]);
-      if (traitName[k] == PrimeTraits.STR) {
-        assertEquals(afterTrait, beforeTrait + 1);
-      } else if (traitName[k] == PrimeTraits.CON) {
-        assertEquals(afterTrait, beforeTrait + 1);
-      } else if (traitName[k] == PrimeTraits.CHR) {
-        assertEquals(afterTrait, beforeTrait - 2);
-      } else {
-        assertEquals(beforeTrait, afterTrait);
-      }
-    }
-    // Female: VERIFY STR+1, CON+1, CHR-2
-    baseTraits = new TraitList();
-    original = baseTraits.toArray();
-    _her.adjustTraitsForRace(baseTraits);
-    for (int k = 0; k < 6; k++) {
-      int beforeTrait = original[k];
-      int afterTrait = baseTraits.getTrait(traitName[k]);
-      if (traitName[k] == PrimeTraits.STR) {
-        assertEquals(afterTrait, beforeTrait + 1);
-      } else if (traitName[k] == PrimeTraits.CON) {
-        assertEquals(afterTrait, beforeTrait + 1);
-      } else if (traitName[k] == PrimeTraits.CHR) {
-        assertEquals(afterTrait, beforeTrait - 2);
-      } else {
-        assertEquals(beforeTrait, afterTrait);
-      }
-    }
+    // Adjust traits: male Half-Orc = STR+1, CON+1, CHR-2
+    _him.adjustTraitsForRace(traits);
+    assertEquals(original[0] + 1, traits.getTrait(PrimeTraits.STR));
+    assertEquals(original[1], traits.getTrait(PrimeTraits.INT));
+    assertEquals(original[2], traits.getTrait(PrimeTraits.WIS));
+    assertEquals(original[3] + 1, traits.getTrait(PrimeTraits.CON));
+    assertEquals(original[4], traits.getTrait(PrimeTraits.DEX));
+    assertEquals(original[5] - 2, traits.getTrait(PrimeTraits.CHR));
+
+    // Female: VERIFY CON+2, CHR-1
+    _her.adjustTraitsForRace(traits);
+    assertEquals(original[0], traits.getTrait(PrimeTraits.STR));
+    assertEquals(original[1], traits.getTrait(PrimeTraits.INT));
+    assertEquals(original[2], traits.getTrait(PrimeTraits.WIS));
+    assertEquals(original[3] + 2, traits.getTrait(PrimeTraits.CON));
+    assertEquals(original[4], traits.getTrait(PrimeTraits.DEX));
+    assertEquals(original[5] - 1, traits.getTrait(PrimeTraits.CHR));
   }
 
+
+  /**
+   * @Not.Needed int calcHeight(int min, int avg) -- test given in base class
+   */
+  @Test
+  public void testCalcHeight()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    MsgCtrl.msgln(MsgCtrl.NOTEST + MsgCtrl.WRAPPER);
+  }
+
+
+  /**
+   * @Not.Needed int calcHeight(int min, int avg) -- test given in base class
+   */
+  @Test
+  public void testCalcWeight()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    MsgCtrl.msgln(MsgCtrl.NOTEST + MsgCtrl.WRAPPER);
+  }
 
   /**
    * @Normal.Test String getRaceLang() -- 50% chance to know Orcish
@@ -209,8 +218,6 @@ public class TestHalfOrc
     MsgCtrl.where(this);
 
     int langCount = 0;
-    int maxCnt = 0;
-    int minCnt = 0;
 
     // Generate many Half-Orcs and see how many times they know orcish
     HalfOrc horc = new HalfOrc(new Gender("male"), "black");
@@ -225,45 +232,6 @@ public class TestHalfOrc
     }
     MsgCtrl.msgln("\t Lang count after " + NBR_LOOPS + " tries = " + langCount);
     assertTrue(Math.abs(langCount) <= (NBR_LOOPS * 0.10));
-  }
-
-
-  /**
-   * @Normal.Test Call the base test calcHeight(Race race, int min, int max) to allow
-   *              Race-specific values to be entered
-   */
-  @Test
-  public void baseTestCalcHeight()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    // Check the default values
-    TestRace.baseTestCalcHeight(_him, 60, 80);
-    MsgCtrl.msgln("\t Half-Orc male height verified");
-    // Check the female values
-    TestRace.baseTestCalcHeight(_her, 54, 72);
-    MsgCtrl.msgln("\t Half-Orc female height verified");
-  }
-
-  /**
-   * @Normal.Test Call the base test calcWeight(Race race, int min, int max) to allow
-   *              Race-specific values to be entered
-   */
-  @Test
-  public void baseTestCalcWeight()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    // Check the default values
-    TestRace.baseTestCalcVariance(_him, 140, 260);
-    MsgCtrl.msgln("\t Half-Orc male weight verified");
-    // Check the female values
-    TestRace.baseTestCalcVariance(_her, 126, 234);
-    MsgCtrl.msgln("\t Half-Orc female weight verified");
   }
 
 

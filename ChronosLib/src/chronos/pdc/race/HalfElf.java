@@ -66,7 +66,6 @@ public class HalfElf extends Race
   
   /** Half-Elves have no racial adjustments */
   @Override
-//  public TraitList adjustTraitsForRace(TraitList traits)
   public void adjustTraitsForRace(TraitList traits)
   {
   }
@@ -91,32 +90,6 @@ public class HalfElf extends Race
     return (_md.isOdd() ? "" : "Elvish");
   }
 
-
-//  /** Half-elf has 50% chance of knowing elvish */
-//  public String getRaceLang()
-//  {
-//    String s = (_md.rollPercent() <= 50) ? "" : "Elvish";
-//    return s;
-//  }
-
-
-//  /**
-//   * Ensure that the traits fall within the proper male/female. After the limits are defined for
-//   * this subclass, the base class is called with that data.
-//   * 
-//   * @param traits the six prime traits of any Hero
-//   * @return the adjusted traits
-//   */
-//  @Override
-//  public TraitList setTraitLimits(TraitList traits)
-//  {
-//    if (_gender.isFemale()) {
-//      traits = constrainTo(traits, FEMALE_MINLIMIT, FEMALE_MAXLIMIT);
-//    } else {
-//      traits = constrainTo(traits, MALE_MINLIMIT, MALE_MAXLIMIT);
-//    }
-//    return traits;
-//  };
 
   
 }   // end of HalfElf class

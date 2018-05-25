@@ -2,9 +2,9 @@
  * Race.java Copyright (c) 2009, Carolla Development, Inc. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
- * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
- * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
- * by email: acline@carolla.com
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists,
+ * requires prior specific permission and/or a fee. Request permission to use from Carolla
+ * Development, Inc. by email: acline@carolla.com
  */
 
 
@@ -38,7 +38,7 @@ public abstract class Race implements Serializable
   // Required for serialization
   static final long serialVersionUID = 20170804450L;
 
-  /** Names of Race subclasses, hyphen for Half- races removed */
+  /** Names of Race subclasses */
   public static final String[] RACE_LIST =
       {"Human", "Dwarf", "Elf", "Gnome", "Half-Elf", "Half-Orc", "Hobbit"};
 
@@ -69,7 +69,8 @@ public abstract class Race implements Serializable
   protected int _racialPoisonResist = 0;
 
   /** Weight and height are 10% less for females */
-  private final double FEMALE_ADJ = 0.90;
+  protected final double FEMALE_ADJ = 0.90;
+
   /** All races know the 'Common' language */
   private final String DEFAULT_LANG = "Common";
 
@@ -87,113 +88,15 @@ public abstract class Race implements Serializable
   /** Calculate the gender- and racial specific height of the Hero */
   public abstract int calcHeight();
 
-  // TODO Shouldn't need this method; use a test to ensure the range; don't clip range
-  /** Ensure that all traits are within the proper range after all adjustments are made */
-  // public abstract TraitList setTraitLimits(TraitList traits);
-
 
   // ====================================================
   // CONSTRUCTOR(S) AND RELATED METHODS
   // ====================================================
 
-  /** For subclass constructors */
-  protected Race()
-  {
-    _languages = new ArrayList<String>();
-  }
-
-
   // ====================================================
   // PUBLIC METHODS
   // ====================================================
-
-  /**
-   * Genders have slightly different traits. Once the specific Race is created, then specific
-   * attributes are refined or created: trait adjustment for race and gender, weight and height, and
-   * a physical description.
-   */
-  public TraitList buildRace(String gender, String hairColor)
-  {
-    // Set the race-specific traits
-    TraitList traits = setRaceTraits();
-    _gender = new Gender(gender);
-    _hairColor = hairColor;
-
-    addLanguages();
-    _weight = calcWeight();
-    _height = calcHeight();
-    _hunger = "Full";
-    _description = new Description(traits.getTrait(PrimeTraits.CHR), _descriptor, _hairColor,
-        _gender, _height, _weight);
-    return traits;
-  }
-
-
-  /**
-   * Calculate the height of the Hero based on deviation from average. Adjustments are made for
-   * females.
-   * 
-   * @param lowBound lowest value for a male
-   * @param hiBound highest value for a male
-   * @return the randomly-determined value that varies about the average of a normal distribution
-   */
-  protected int calcVariance(double lowBound, double hiBound)
-  {
-    double low = lowBound;
-    double avg = (lowBound + hiBound) / 2.0;
-    // Adjust for gender
-    if (_gender.isFemale()) {
-      low = low * FEMALE_ADJ;
-      avg = avg * FEMALE_ADJ;
-    }
-    int height = Math.round(_md.rollVariance(low, avg));
-    return height;
-  }
-
-
-  // /**
-  // * Calculate the weight of the Hero based on deviation from average
-  // *
-  // * @param lowBound lowest value for a male; female adjustment made
-  // * @param average the average weight for the normal population
-  // * @return the randomly-determined weight over the average with a normal distribution
-  // */
-  // protected int calcWeight(double lowBound, double average)
-  // {
-  // double low = lowBound;
-  // double avg = average;
-  // // Adjust for gender
-  // if (_gender.isFemale()) {
-  // low = low * FEMALE_ADJ;
-  // avg = average * FEMALE_ADJ;
-  // }
-  // int weight = _md.rollVariance(low, avg);
-  // return weight;
-  // }
-
-
-  /**
-   * Constrain all traits to fall within a given range for the racial subclass. Any value outside
-   * those limits are set to the range boundary. NOTE: TraitList is created anew so return value
-   * must be assigned to the _traits field
-   * 
-   * @param traits the original set to check
-   * @param lowerLimits the lower bound per trait
-   * @param upperLimits the upper bound per trait
-   */
-  // protected TraitList constrainTo(TraitList traits, int[] lowerLimits, int[] upperLimits)
-  // {
-  // int[] values = traits.toArray();
-  // values = Utilities.constrain(values, lowerLimits, upperLimits);
-  // return new TraitList(values);
-  // }
-
-
-
-  // ====================================================
-  // PUBLIC METHODS
-  // ====================================================
-
+  
   /**
    * Create a specific subclass of Race based on the Race name. <br>
    * NOTE: (1) The method must be static because Race works as dispatcher, and itself cannot be
@@ -237,6 +140,68 @@ public abstract class Race implements Serializable
     return race;
   }
 
+  /** For subclass constructors */
+  protected Race()
+  {
+    _languages = new ArrayList<String>();
+  }
+
+
+  // ====================================================
+  // PUBLIC METHODS
+  // ====================================================
+
+  /**
+   * select from a Guassian population to set certain traits, e.g., weight and height. Females
+   * are adjusted so that they are FEMALE_ADJ shorter or lighter.
+   * 
+   * @param lowBound lowest value for a male
+   * @param hiBound highest value for a male
+   * @return the randomly-determined value that varies about the average of a normal
+   *         distribution
+   */
+  protected int calcVariance(int lowBound, int hiBound)
+  {
+    int low = lowBound;
+    int hi = hiBound;
+    // Adjust for gender
+    if (_gender.isFemale()) {
+      low = (int) Math.round(low * FEMALE_ADJ);
+      hi = (int) Math.round(hi * FEMALE_ADJ);
+    }
+    int value = _md.rollVariance(low, hi);
+    return value;
+  }
+
+
+  // ====================================================
+  // PUBLIC METHODS
+  // ====================================================
+
+  // ====================================================
+  // PUBLIC METHODS
+  // ====================================================
+  
+  /**
+   * Genders have slightly different traits. Once the specific Race is created, then specific
+   * attributes are refined or created: trait adjustment for race and gender, weight and
+   * height, and a physical description.
+   */
+  public TraitList buildRace(String gender, String hairColor)
+  {
+    // Set the race-specific traits
+    TraitList traits = setRaceTraits();
+    _gender = new Gender(gender);
+    _hairColor = hairColor;
+  
+    addLanguages();
+    _weight = calcWeight();
+    _height = calcHeight();
+    _hunger = "Full";
+    _description = new Description(traits.getTrait(PrimeTraits.CHR), _descriptor, _hairColor,
+        _gender, _height, _weight);
+    return traits;
+  }
 
   @Override
   public boolean equals(Object obj)
@@ -278,8 +243,8 @@ public abstract class Race implements Serializable
 
 
   /**
-   * Return the language specific to the race, or null. Hybrid races have a 50% chance of knowing
-   * their race language.
+   * Return the language specific to the race, or null. Hybrid races have a 50% chance of
+   * knowing their race language.
    * 
    * @return the race language
    */
@@ -322,7 +287,7 @@ public abstract class Race implements Serializable
     return result;
   }
 
-  
+
   public void loadRaceKeys(Map<PersonKeys, String> map)
   {
     map.put(PersonKeys.GENDER, _gender.toString());
@@ -377,93 +342,10 @@ public abstract class Race implements Serializable
     public MockRace()
     {};
 
-    public int calcVariance(double low, double high)
+    public int calcVariance(int low, int high)
     {
       return Race.this.calcVariance(low, high);
     }
-
-    // public int calcWeight(double low, double average)
-    // {
-    // return Race.this.calcWeight(low, average);
-    // }
-
-
-    // /**
-    // * Count the number of values with 1/3 of the distribution
-    // *
-    // * @param race generic base class of object that contains the method to call
-    // * @param bin top range of low, mid, high bins
-    // * @param count number of times to execute the method and find the average
-    // * @return average of all values calculated by the object's method
-    // */
-    // public double calcHeightWithBins(Race race, int[] bin, int count)
-    // {
-    // int sum = 0;
-    // int lowCnt = 0;
-    // int midCnt = 0;
-    // int hiCnt = 0;
-    // int cntSum = 0;
-    // // Range runs from 1 to 10
-    // for (int k = 0; k < count; k++) {
-    // int dp = race.calcHeight();
-    // lowCnt += ((dp >= bin[0]) && (dp < bin[1])) ? 1 : 0;
-    // midCnt += ((dp >= bin[1]) && (dp < bin[2])) ? 1 : 0;
-    // hiCnt += ((dp >= bin[2]) && (dp <= bin[3])) ? 1 : 0;
-    // assertTrue((dp >= bin[0]) && (dp <= bin[3]));
-    // sum += dp;
-    // cntSum = lowCnt + midCnt + hiCnt;
-    // }
-    // // Tally bins
-    // MsgCtrl.msgln("\t " + lowCnt + " low count values");
-    // MsgCtrl.msgln("\t " + midCnt + " mid count values");
-    // MsgCtrl.msgln("\t " + hiCnt + " high count values");
-    // MsgCtrl.msgln("\t " + cntSum + " numbers accounted for");
-    // // Average should be midway between all values
-    // double avg = sum / count;
-    // return avg;
-    // }
-    //
-    //
-    // /**
-    // * Count the number of values within 1/3 of the distribution
-    // *
-    // * @param race generic base class of object that contains the method to call
-    // * @param bin top range of low, mid, high bins
-    // * @param count number of times to execute the method and find the average
-    // * @return average of all values calculated by the object's method
-    // */
-    // public double calcWeightWithBins(Race race, int[] bin, int count)
-    // {
-    // int sum = 0;
-    // int lowCnt = 0;
-    // int midCnt = 0;
-    // int hiCnt = 0;
-    // int cntSum = 0;
-    // // Range runs from 1 to 10
-    // for (int k = 0; k < count; k++) {
-    // int dp = race.calcWeight();
-    // lowCnt += ((dp >= bin[0]) && (dp < bin[1])) ? 1 : 0;
-    // midCnt += ((dp >= bin[1]) && (dp < bin[2])) ? 1 : 0;
-    // hiCnt += ((dp >= bin[2]) && (dp <= bin[3])) ? 1 : 0;
-    // assertTrue((dp >= bin[0]) && (dp <= bin[3]));
-    // sum += dp;
-    // cntSum = lowCnt + midCnt + hiCnt;
-    // }
-    // // Tally bins
-    // MsgCtrl.msgln("\t " + lowCnt + " low count values");
-    // MsgCtrl.msgln("\t " + midCnt + " mid count values");
-    // MsgCtrl.msgln("\t " + hiCnt + " high count values");
-    // MsgCtrl.msgln("\t " + cntSum + " numbers accounted for");
-    // // Average should be midway between all values
-    // double avg = sum / count;
-    // return avg;
-    // }
-
-
-    // public TraitList constrainTo(TraitList tr, int[] low, int[] hi)
-    // {
-    // return Race.this.constrainTo(tr, low, hi);
-    // }
 
     public String getHairColor()
     {

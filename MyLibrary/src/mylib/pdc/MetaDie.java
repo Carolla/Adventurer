@@ -303,7 +303,7 @@ public class MetaDie
 
   /**
    * Pull a random number from a Gaussian population to add or subtract from the given average.
-   * The range is calculated from the low and average parms.
+   * The range and average are calculated from the low and high parms.
    * 
    * @param low the low end of the range
    * @param high the high end of the range
@@ -320,15 +320,11 @@ public class MetaDie
           "rollVariance(): Low parm must be less than high parm");
     }
 
-//    double GAUSSIAN_RANGE = 3.1;
     double avg = (high + low)/2.0;
-//    double halfRange = average - low;
-//    double high = average + halfRange;
     double result = - high; // some invalid value to start
     boolean inRange = false;
     while (!inRange) {
       result = _generator.nextGaussian() + avg;
-      // result = (_generator.nextGaussian() / GAUSSIAN_RANGE) * halfRange + average;
       if ((result <= high) && (result >= low)) {
         inRange = true;
       }

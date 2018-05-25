@@ -195,44 +195,44 @@ public class TestHobbit
   }
 
 
-  /**
-   * @Normal.Test Call the base test calcHeight(Race race, int min, int max) to allow Race-specific
-   *              values to be entered
-   */
-  @Test
-  public void baseTestCalcHeight()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    // Check the default values
-    TestRace.baseTestCalcHeight(_him, 38, 46);
-    MsgCtrl.msgln("\t Hobbit male height verified");
-    // Check the female values
-    TestRace.baseTestCalcHeight(_her, 34, 42);
-    MsgCtrl.msgln("\t Hobbit female height verified");
-  }
-
-
-  /**
-   * @Normal.Test Call the base test calcWeight(Race race, int min, int max) to allow Race-specific
-   *              values to be entered
-   */
-  @Test
-  public void baseTestCalcWeight()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    // Check the default values
-    TestRace.baseTestCalcVariance(_him, 70, 110);
-    MsgCtrl.msgln("\t Hobbit male weight verified");
-    // Check the female values
-    TestRace.baseTestCalcVariance(_her, 63, 99);
-    MsgCtrl.msgln("\t Hobbit female weight verified");
-  }
+//  /**
+//   * @Normal.Test Call the base test calcHeight(Race race, int min, int max) to allow Race-specific
+//   *              values to be entered
+//   */
+//  @Test
+//  public void baseTestCalcHeight()
+//  {
+//    MsgCtrl.auditMsgsOn(false);
+//    MsgCtrl.errorMsgsOn(false);
+//    MsgCtrl.where(this);
+//
+//    // Check the default values
+//    TestRace.baseTestCalcHeight(_him, 38, 46);
+//    MsgCtrl.msgln("\t Hobbit male height verified");
+//    // Check the female values
+//    TestRace.baseTestCalcHeight(_her, 34, 42);
+//    MsgCtrl.msgln("\t Hobbit female height verified");
+//  }
+//
+//
+//  /**
+//   * @Normal.Test Call the base test calcWeight(Race race, int min, int max) to allow Race-specific
+//   *              values to be entered
+//   */
+//  @Test
+//  public void baseTestCalcWeight()
+//  {
+//    MsgCtrl.auditMsgsOn(false);
+//    MsgCtrl.errorMsgsOn(false);
+//    MsgCtrl.where(this);
+//
+//    // Check the default values
+//    TestRace.baseTestCalcVariance(_him, 70, 110);
+//    MsgCtrl.msgln("\t Hobbit male weight verified");
+//    // Check the female values
+//    TestRace.baseTestCalcVariance(_her, 63, 99);
+//    MsgCtrl.msgln("\t Hobbit female weight verified");
+//  }
 
   
   // ===============================================================================

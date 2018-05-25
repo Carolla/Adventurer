@@ -63,13 +63,11 @@ public class HalfOrc extends Race
 
   /** Half-Orcs are sturdier, stronger, and uglier: STR+1, CON+1, CHR-2 */
   @Override
-  // public TraitList adjustTraitsForRace(TraitList traits)
   public void adjustTraitsForRace(TraitList traits)
   {
     traits.adjust(PrimeTraits.STR, 1);
     traits.adjust(PrimeTraits.CON, 1);
     traits.adjust(PrimeTraits.CHR, -2);
-    // return traits;
   };
 
 
@@ -98,24 +96,6 @@ public class HalfOrc extends Race
     return _md.isOdd() ? "" : "Orcish";
   }
 
-
-  // /**
-  // * Ensure that the traits fall within the proper male/female. After the limits are defined for
-  // * this subclass, the base class is called with that data.
-  // *
-  // * @param traits the six prime traits of any Hero
-  // * @return the adjusted traits
-  // */
-  // @Override
-  // public TraitList setTraitLimits(TraitList traits)
-  // {
-  // if (_gender.isFemale()) {
-  // traits = constrainTo(traits, FEMALE_MINLIMIT, FEMALE_MAXLIMIT);
-  // } else {
-  // traits = constrainTo(traits, MALE_MINLIMIT, MALE_MAXLIMIT);
-  // }
-  // return traits;
-  // };
-
+  
 
 } // end of HalfOrc subclass
