@@ -355,38 +355,5 @@ public class TestRace
   }
 
 
-//  /**
-//   * Implementation of a method callable by Race subclass tests
-//   * 
-//   * @param expMin expected minimum for the population array
-//   * @param expMax expected maximum for the population array
-//   * @param values population to verify
-//   */
-//  @Test
-//  public void testMinMaxAverage(int expMin, int expMax, int[] values)
-//  {
-//    MsgCtrl.auditMsgsOn(true);
-//    MsgCtrl.errorMsgsOn(true);
-//    MsgCtrl.where(this);
-//
-//    // Create a mock Human object to call the test method in the Race class
-//    MockRace mock = _him.new MockRace();
-//    assertNotNull(mock);
-//
-//    // Generate a population to check central tendency
-//    for (int k = 0; k < NBR_LOOPS; k++) {
-//      assertTrue((values[k] >= expMin) && (values[k] <= expMax));
-//    }
-//    int min = Utilities.min(values);
-//    int max = Utilities.max(values);
-//    double avg = Utilities.average(values);
-//    double expAvg = (max + min) / 2.0;
-//    MsgCtrl.msgln("\t Actual [Min, Max] = [" + min + ", " + max + "]; Average = " + avg);
-//    assertEquals(expMin, min);
-//    assertEquals(expMax, max);
-//    assertEquals(expAvg, avg, avg * Chronos.TOLERANCE);
-//  }
-
-
 
 } // end of TestRace class

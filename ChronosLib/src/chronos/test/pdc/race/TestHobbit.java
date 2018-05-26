@@ -2,8 +2,9 @@
  * TestHobbit.java Copyright (c) 2017, Alan Cline. All Rights Reserved.
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
- * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
- * prior specific permission and/or a fee. Request permission to use from acline@carolla.com.
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists,
+ * requires prior specific permission and/or a fee. Request permission to use from
+ * acline@carolla.com.
  */
 
 package chronos.test.pdc.race;
@@ -13,17 +14,16 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import chronos.pdc.character.Gender;
 import chronos.pdc.character.TraitList;
 import chronos.pdc.character.TraitList.PrimeTraits;
 import chronos.pdc.race.Hobbit;
-import chronos.pdc.race.Race.MockRace;
 import mylib.MsgCtrl;
 
 /**
@@ -31,60 +31,51 @@ import mylib.MsgCtrl;
  * @version August 17, 2017 // original <br>
  *          Sept 25, 2017 // moved calcWeight() and calcHeight() into base test class <br>
  *          May 18, 2018 // relaxed detailed stat testing <br>
+ *          May 26, 2018 // Verified gender adj and standardized <br>
  */
 public class TestHobbit
 {
-  // Generate a bunch of values in a loop for stat calculation
-  private int NBR_LOOPS = 100;
-
   private Hobbit _him;
   private Hobbit _her;
-  private MockRace _mockHim;
-  private MockRace _mockHer;
+  /** Female characters also need gender adjustments: STR-1, CON+1, CHR+1 */
+  static private Gender _gender;
 
-  /**
-   * @throws java.lang.Exception -- general catch-all for exceptions not caught by the tests
-   */
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() throws Exception
-  {}
-
-  /**
-   * @throws java.lang.Exception -- general catch-all for exceptions not caught by the tests
-   */
-  @AfterClass
-  public static void tearDownAfterClass() throws Exception
-  {}
-
-  /**
-   * @throws java.lang.Exception -- general catch-all for exceptions not caught by the tests
-   */
-  @Before
-  public void setUp() throws Exception
   {
-    _him = new Hobbit(new Gender("male"), "black");
-    assertNotNull(_him);
-    _mockHim = _him.new MockRace();
-    assertNotNull(_mockHim);
+    _gender = new Gender("Female");
+    assertNotNull(_gender);
+  }
 
-    _her = new Hobbit(new Gender("female"), "brown");
-    assertNotNull(_her);
-    _mockHer = _her.new MockRace();
-    assertNotNull(_mockHer);
+  @AfterAll
+  public static void tearDownAfterClass() throws Exception
+  {
+    _gender = null;
   }
 
   /**
    * @throws java.lang.Exception -- general catch-all for exceptions not caught by the tests
    */
-  @After
+  @BeforeEach
+  public void setUp() throws Exception
+  {
+    _him = new Hobbit(new Gender("male"), "black");
+    assertNotNull(_him);
+
+    _her = new Hobbit(new Gender("female"), "brown");
+    assertNotNull(_her);
+  }
+
+  /**
+   * @throws java.lang.Exception -- general catch-all for exceptions not caught by the tests
+   */
+  @AfterEach
   public void tearDown() throws Exception
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
 
-    _mockHer = null;
     _her = null;
-    _mockHim = null;
     _him = null;
   }
 
@@ -94,56 +85,8 @@ public class TestHobbit
   // ===============================================================================
 
   /**
-   * @Normal.Test Hobbit(Gender gender, String hairColor) -- verify ctor
-   */
-  @Test
-  public void testCtor()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    String[] hobbitSkills = {
-        "Infravision (30')",
-        "Resistance to Poison: Special Save includes HPMod and Magic Attack Mod",
-        "Detect slopes in underground passages (75%)",
-        "Determine direction of underground travel (50%)"
-    };
-
-    // VERIFY male hobbit
-    // Get fields set during male constructor: race name ("Hobbit"), race lang ("Tolkeen"), skills
-    // (listed above), gender ("male), and hair color ("black")
-    assertEquals("Hobbit", _mockHim.getRaceName());
-    assertEquals("Tolkeen", _mockHim.getRaceLang()); // Hobbits have race language Tolkeen
-
-    List<String> skills = _him.getSkills();
-    assertEquals(hobbitSkills.length, skills.size());
-    for (int k = 0; k < skills.size(); k++) {
-      MsgCtrl.msgln("\t Male Hobbit skills: " + skills.get(k));
-      assertEquals(hobbitSkills[k], skills.get(k));
-    }
-    assertEquals("Male", _him.getGender());
-    assertEquals("black", _mockHim.getHairColor());
-
-    // VERIFY female hobbit
-    // Get fields set during male constructor: race name ("Hobbit"), race lang ("Tolkeen"), skills
-    // (listed above), gender ("female), and hair color ("brown")
-    assertEquals("Hobbit", _mockHer.getRaceName());
-    assertEquals("Tolkeen", _mockHer.getRaceLang()); // Hobbits have race language Tolkeen
-
-    skills = _her.getSkills();
-    assertEquals(hobbitSkills.length, skills.size());
-    for (int k = 0; k < skills.size(); k++) {
-      MsgCtrl.msgln("\t Female Hobbit skills: " + skills.get(k));
-      assertEquals(hobbitSkills[k], skills.get(k));
-    }
-    assertEquals("Female", _her.getGender());
-    assertEquals("brown", _mockHer.getHairColor());
-  }
-
-
-  /**
-   * @Normal.Test TraitList adjustTraitsForRace(TraitList traits) -- STR-1, CON+1, DEX+1
+   * @Normal.Test TraitList adjustTraitsForRace(TraitList traits) -- Hobbits are STR-1, CON+1,
+   *              DEX+1
    */
   @Test
   public void testAdjustTraitsForRace()
@@ -152,92 +95,64 @@ public class TestHobbit
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    // SETUP Provide some base traits to be adjusted
-    // Dump the prime traits' names for easier processing
-    PrimeTraits[] traitName = PrimeTraits.values();
+    // Save the original TraitList to an array for later comparison
+    // STR, INT, WIS, CON, DEX, CHR
+    TraitList traits = new TraitList();
+    int[] original = traits.toArray();
+    MsgCtrl.msgln("\t Raw traits:\t\t\t " + traits.toString());
 
-    // Save the original traitlist to another object for later comparison
-    TraitList baseTraits = new TraitList();
-    int[] original = baseTraits.toArray();
+    // Adjust traits: male Hobbits = STR-1, CON+1, DEX+1
+    _him.adjustTraitsForRace(traits);
+    MsgCtrl.msgln("\t STR-1, CON+1, DEX+1 Race adj:\t " + traits.toString());
+    assertEquals(original[0] - 1, traits.getTrait(PrimeTraits.STR));
+    assertEquals(original[1], traits.getTrait(PrimeTraits.INT));
+    assertEquals(original[2], traits.getTrait(PrimeTraits.WIS));
+    assertEquals(original[3] + 1, traits.getTrait(PrimeTraits.CON));
+    assertEquals(original[4] + 1, traits.getTrait(PrimeTraits.DEX));
+    assertEquals(original[5], traits.getTrait(PrimeTraits.CHR));
 
-    // VERIFY STR-1, CON+1, DEX+1
-    _him.adjustTraitsForRace(baseTraits);
-    for (int k = 0; k < 6; k++) {
-      int beforeTrait = original[k];
-      int afterTrait = baseTraits.getTrait(traitName[k]);
-      if (traitName[k] == PrimeTraits.STR) {
-        assertEquals(afterTrait, beforeTrait - 1);
-      } else if (traitName[k] == PrimeTraits.CON) {
-        assertEquals(afterTrait, beforeTrait + 1);
-      } else if (traitName[k] == PrimeTraits.DEX) {
-        assertEquals(afterTrait, beforeTrait + 1);
-      } else {
-        assertEquals(beforeTrait, afterTrait);
-      }
-    }
-    // VERIFY STR-1, CON+1, DEX+1
-    baseTraits = new TraitList();
-    original = baseTraits.toArray();
-    _her.adjustTraitsForRace(baseTraits);
-    for (int k = 0; k < 6; k++) {
-      int beforeTrait = original[k];
-      int afterTrait = baseTraits.getTrait(traitName[k]);
-      if (traitName[k] == PrimeTraits.STR) {
-        assertEquals(afterTrait, beforeTrait - 1);
-      } else if (traitName[k] == PrimeTraits.CON) {
-        assertEquals(afterTrait, beforeTrait + 1);
-      } else if (traitName[k] == PrimeTraits.DEX) {
-        assertEquals(afterTrait, beforeTrait + 1);
-      } else {
-        assertEquals(beforeTrait, afterTrait);
-      }
-    }
+    // Net traits for female Hobbits = STR-2, CON+2, DEX+1, CHR+1
+    MsgCtrl.msgln("\t Gender = " + _gender);
+    traits = _gender.adjustTraitsForGender(traits);
+    MsgCtrl.msgln("\t STR-2, CON+2, DEX+1, CHR+1 net female adj: " + traits.toString());
+    assertEquals(original[0] - 2, traits.getTrait(PrimeTraits.STR));
+    assertEquals(original[1], traits.getTrait(PrimeTraits.INT));
+    assertEquals(original[2], traits.getTrait(PrimeTraits.WIS));
+    assertEquals(original[3] + 2, traits.getTrait(PrimeTraits.CON));
+    assertEquals(original[4] + 1, traits.getTrait(PrimeTraits.DEX));
+    assertEquals(original[5] + 1, traits.getTrait(PrimeTraits.CHR));
+  }
+
+  /**
+   * @Not.Needed int calcHeight() -- tested in base class
+   */
+  @Test
+  public void testCalcHeight()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+    MsgCtrl.msgln(MsgCtrl.NOTEST + MsgCtrl.WRAPPER);
   }
 
 
-//  /**
-//   * @Normal.Test Call the base test calcHeight(Race race, int min, int max) to allow Race-specific
-//   *              values to be entered
-//   */
-//  @Test
-//  public void baseTestCalcHeight()
-//  {
-//    MsgCtrl.auditMsgsOn(false);
-//    MsgCtrl.errorMsgsOn(false);
-//    MsgCtrl.where(this);
-//
-//    // Check the default values
-//    TestRace.baseTestCalcHeight(_him, 38, 46);
-//    MsgCtrl.msgln("\t Hobbit male height verified");
-//    // Check the female values
-//    TestRace.baseTestCalcHeight(_her, 34, 42);
-//    MsgCtrl.msgln("\t Hobbit female height verified");
-//  }
-//
-//
-//  /**
-//   * @Normal.Test Call the base test calcWeight(Race race, int min, int max) to allow Race-specific
-//   *              values to be entered
-//   */
-//  @Test
-//  public void baseTestCalcWeight()
-//  {
-//    MsgCtrl.auditMsgsOn(false);
-//    MsgCtrl.errorMsgsOn(false);
-//    MsgCtrl.where(this);
-//
-//    // Check the default values
-//    TestRace.baseTestCalcVariance(_him, 70, 110);
-//    MsgCtrl.msgln("\t Hobbit male weight verified");
-//    // Check the female values
-//    TestRace.baseTestCalcVariance(_her, 63, 99);
-//    MsgCtrl.msgln("\t Hobbit female weight verified");
-//  }
+  /**
+   * @Not.Needed int calcWeight() -- tested in base class
+   */
+  @Test
+  public void testCalcWeight()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+    MsgCtrl.msgln(MsgCtrl.NOTEST + MsgCtrl.WRAPPER);
+  }
 
-  
+
   // ===============================================================================
   // PRIVATE HELPERS
   // ===============================================================================
+
 
 
 } // end of TestHobbit.java class

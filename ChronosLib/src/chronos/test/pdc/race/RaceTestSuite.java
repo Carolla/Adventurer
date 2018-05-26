@@ -29,7 +29,7 @@ import org.junit.runners.Suite;
     TestHalfElf.class,
     TestHalfOrc.class,
     TestHobbit.class,
-    // TestHuman.class,
+    TestHuman.class,
     TestRace.class,
 
 })

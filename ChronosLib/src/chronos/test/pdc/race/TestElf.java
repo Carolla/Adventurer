@@ -11,13 +11,12 @@ package chronos.test.pdc.race;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import chronos.pdc.character.Gender;
 import chronos.pdc.character.TraitList;
@@ -30,43 +29,46 @@ import mylib.MsgCtrl;
  * @version September 16, 2017 // original <br>
  *          May 12, 2018 // loosen the stat tests since MersenneTwister added <br>
  *          May 24, 2018 // removed dup tests and simplied Override methods <br>
+ *          May 26, 2018 // Verified gender adj and standardized <br>
  */
 public class TestElf
 {
+  /** Traits are different by race and gender */
   private Elf _him;
   private Elf _her;
+  /** Female characters also need gender adjustments: STR-1, CON+1, CHR+1 */
+  static private Gender _gender;
 
-  /**
-   * @throws java.lang.Exception -- general catch-all for exceptions not caught by the tests
-   */
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() throws Exception
-  {}
+  {
+    _gender = new Gender("Female");
+    assertNotNull(_gender);
+  }
 
-  /**
-   * @throws java.lang.Exception -- general catch-all for exceptions not caught by the tests
-   */
-  @AfterClass
+  @AfterAll
   public static void tearDownAfterClass() throws Exception
-  {}
+  {
+    _gender = null;
+  }
 
   /**
    * @throws java.lang.Exception -- general catch-all for exceptions not caught by the tests
    */
-  @Before
+  @BeforeEach
   public void setUp() throws Exception
   {
-    _him = new Elf(new Gender("male"), "black");
+    _him = new Elf(new Gender("Male"), "black");
     assertNotNull(_him);
 
-    _her = new Elf(new Gender("female"), "brown");
+    _her = new Elf(new Gender("Female"), "brown");
     assertNotNull(_her);
   }
 
   /**
    * @throws java.lang.Exception -- general catch-all for exceptions not caught by the tests
    */
-  @After
+  @AfterEach
   public void tearDown() throws Exception
   {
     MsgCtrl.auditMsgsOn(false);
@@ -82,8 +84,7 @@ public class TestElf
   // ===============================================================================
 
   /**
-   * @Normal.Test void adjustTraitsForRace(TraitList) -- Elves are CON-1, DEX+1; adjustments
-   *              for gender are not included
+   * @Normal.Test void adjustTraitsForRace(TraitList) -- Elves are CON-1, DEX+1
    */
   @Test
   public void testAdjustTraitsForRace()
@@ -92,19 +93,32 @@ public class TestElf
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    // Save the original traitlist to another object for later comparison
+    // Save the original TraitList to an array for later comparison
     // STR, INT, WIS, CON, DEX, CHR
     TraitList traits = new TraitList();
     int[] original = traits.toArray();
+    MsgCtrl.msgln("\t Raw traits:\t\t\t " + traits.toString());
 
     // Adjust traits: male Elf = CON-1, DEX+1
     _him.adjustTraitsForRace(traits);
+    MsgCtrl.msgln("\t CON-1, DEX+1 Race adj:\t\t " + traits.toString());
     assertEquals(original[0], traits.getTrait(PrimeTraits.STR));
     assertEquals(original[1], traits.getTrait(PrimeTraits.INT));
     assertEquals(original[2], traits.getTrait(PrimeTraits.WIS));
     assertEquals(original[3] - 1, traits.getTrait(PrimeTraits.CON));
     assertEquals(original[4] + 1, traits.getTrait(PrimeTraits.DEX));
     assertEquals(original[5], traits.getTrait(PrimeTraits.CHR));
+
+    // Net traits for female Elf = STR-1, DEX+1, CHR+1
+    MsgCtrl.msgln("\t Gender = " + _gender);
+    traits = _gender.adjustTraitsForGender(traits);
+    MsgCtrl.msgln("\t STR-1, DEX+1, CHR+1 net female adj: " + traits.toString());
+    assertEquals(original[0] - 1, traits.getTrait(PrimeTraits.STR));
+    assertEquals(original[1], traits.getTrait(PrimeTraits.INT));
+    assertEquals(original[2], traits.getTrait(PrimeTraits.WIS));
+    assertEquals(original[3], traits.getTrait(PrimeTraits.CON));
+    assertEquals(original[4] + 1, traits.getTrait(PrimeTraits.DEX));
+    assertEquals(original[5] + 1, traits.getTrait(PrimeTraits.CHR));
   }
 
 

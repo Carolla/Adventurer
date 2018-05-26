@@ -93,10 +93,6 @@ public abstract class Race implements Serializable
   // CONSTRUCTOR(S) AND RELATED METHODS
   // ====================================================
 
-  // ====================================================
-  // PUBLIC METHODS
-  // ====================================================
-  
   /**
    * Create a specific subclass of Race based on the Race name. <br>
    * NOTE: (1) The method must be static because Race works as dispatcher, and itself cannot be
@@ -140,16 +136,17 @@ public abstract class Race implements Serializable
     return race;
   }
 
+
+  // ====================================================
+  // PROTECTED METHODS
+  // ====================================================
+
   /** For subclass constructors */
   protected Race()
   {
     _languages = new ArrayList<String>();
   }
 
-
-  // ====================================================
-  // PUBLIC METHODS
-  // ====================================================
 
   /**
    * select from a Guassian population to set certain traits, e.g., weight and height. Females
@@ -178,10 +175,6 @@ public abstract class Race implements Serializable
   // PUBLIC METHODS
   // ====================================================
 
-  // ====================================================
-  // PUBLIC METHODS
-  // ====================================================
-  
   /**
    * Genders have slightly different traits. Once the specific Race is created, then specific
    * attributes are refined or created: trait adjustment for race and gender, weight and
@@ -193,7 +186,7 @@ public abstract class Race implements Serializable
     TraitList traits = setRaceTraits();
     _gender = new Gender(gender);
     _hairColor = hairColor;
-  
+
     addLanguages();
     _weight = calcWeight();
     _height = calcHeight();
@@ -202,6 +195,7 @@ public abstract class Race implements Serializable
         _gender, _height, _weight);
     return traits;
   }
+
 
   @Override
   public boolean equals(Object obj)
@@ -299,6 +293,12 @@ public abstract class Race implements Serializable
     map.put(PersonKeys.RMR, "" + _racialPoisonResist);
     map.put(PersonKeys.WEIGHT, Integer.toString(_weight));
   }
+
+
+  // ====================================================
+  // PUBLIC METHODS
+  // ====================================================
+
 
 
   // ====================================================
