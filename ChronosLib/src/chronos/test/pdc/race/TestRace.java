@@ -143,8 +143,8 @@ public class TestRace
   @Test
   public void testCalcVariance()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
     
     // Test values for the sum of two dice

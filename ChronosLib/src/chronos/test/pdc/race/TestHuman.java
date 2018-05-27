@@ -15,17 +15,16 @@ import static org.junit.Assert.assertNull;
 
 import java.util.List;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import chronos.pdc.character.Gender;
 import chronos.pdc.character.TraitList;
 import chronos.pdc.character.TraitList.PrimeTraits;
 import chronos.pdc.race.Human;
-import chronos.pdc.race.Race.MockRace;
 import mylib.MsgCtrl;
 
 /**
@@ -33,52 +32,45 @@ import mylib.MsgCtrl;
  * @version August 15, 2017 // original <br>
  *          Sept 25, 2017 // moved calcWeight() and calcHeight() into base test class <br>
  *          May 24, 2018 // removed dup tests and simplied Override methods <br>
+ *          May 26, 2018 // Verified gender adj and standardized <br>
  */
 public class TestHuman
 {
   private Human _him;
-  private MockRace _mockHim;
   private Human _her;
-  private MockRace _mockHer;
+  /** Female characters also need gender adjustments: STR-1, CON+1, CHR+1 */
+  static private Gender _gender;
 
-
-  /**
-   * @throws java.lang.Exception -- general catch-all for exceptions not caught by the tests
-   */
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() throws Exception
-  {}
+  {
+    _gender = new Gender("Female");
+    assertNotNull(_gender);
+  }
 
-  /**
-   * @throws java.lang.Exception -- general catch-all for exceptions not caught by the tests
-   */
-  @AfterClass
+  @AfterAll
   public static void tearDownAfterClass() throws Exception
-  {}
+  {
+    _gender = null;
+  }
 
-  @Before
+  @BeforeEach
   public void setUp()
   {
     _him = new Human(new Gender("male"), "black");
     assertNotNull(_him);
-    _mockHim = _him.new MockRace();
-    assertNotNull(_mockHim);
 
     _her = new Human(new Gender("female"), "blonde");
     assertNotNull(_her);
-    _mockHer = _her.new MockRace();
-    assertNotNull(_mockHer);
   }
 
-  @After
+  @AfterEach
   public void tearDown()
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
 
-    _mockHer = null;
     _her = null;
-    _mockHim = null;
     _him = null;
   }
 
@@ -87,42 +79,9 @@ public class TestHuman
   // BEGIN TESTING
   // ===============================================================================
 
-  /**
-   * @Normal.Test Human(Gender gender, String hairColor) -- verify ctor
-   */
-  @Test
-  public void testCtor()
-  {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
-
-    // Get fields set during male constructor: race name ("Human"), race lang (null), skills
-    // ("None"), gender ("male), and hair color ("black")
-    assertEquals("Human", _mockHim.getRaceName());
-    assertNull(_mockHim.getRaceLang()); // Humans do not have a race language
-    List<String> skills = _him.getSkills(); // Humans do not have race-specific skills
-    assertEquals(1, skills.size());
-    assertEquals("None", skills.get(0));
-    assertEquals("Male", _him.getGender());
-    assertEquals("black", _mockHim.getHairColor());
-
-    // Get fields set during female constructor: race name ("Human"), race lang (null), skills
-    // ("None"), gender ("female), and hair color ("blonde")
-    assertEquals("Human", _mockHer.getRaceName());
-    assertNull(_mockHer.getRaceLang()); // Humans do not have a race language
-    skills = _her.getSkills(); // Humans do not have race-specific skills
-    assertEquals(1, skills.size());
-    assertEquals("None", skills.get(0));
-    assertEquals("Female", _her.getGender());
-    assertEquals("blonde", _mockHer.getHairColor());
-  }
-
 
   /**
-   * @Normal.Test TraitList adjustTraitsForRace(TraitList traits) -- no adjustments for Race,
-   *              before gender adjustments. Not actually needed except serves as examplar for
-   *              non-human race, where test is needed
+   * @Normal.Test TraitList adjustTraitsForRace(TraitList traits) -- no adjustments for Race
    */
   @Test
   public void testAdjustTraitsForRace()
@@ -131,21 +90,32 @@ public class TestHuman
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
-    // SETUP Provide some base traits to be adjusted
-    // Dump the prime traits' names for easier processing
-    PrimeTraits[] traitName = PrimeTraits.values();
+    // Save the original TraitList to an array for later comparison
+    // STR, INT, WIS, CON, DEX, CHR
+    TraitList traits = new TraitList();
+    int[] original = traits.toArray();
+    MsgCtrl.msgln("\t Raw traits:\t\t " + traits.toString());
 
-    // Save the original traitlist to another object for later comparison
-    TraitList baseTraits = new TraitList();
-    int[] original = baseTraits.toArray();
+    // Adjust traits: male Human: traits as is
+    _him.adjustTraitsForRace(traits);
+    MsgCtrl.msgln("\t No Adj for Race:\t " + traits.toString());
+    assertEquals(original[0], traits.getTrait(PrimeTraits.STR));
+    assertEquals(original[1], traits.getTrait(PrimeTraits.INT));
+    assertEquals(original[2], traits.getTrait(PrimeTraits.WIS));
+    assertEquals(original[3], traits.getTrait(PrimeTraits.CON));
+    assertEquals(original[4], traits.getTrait(PrimeTraits.DEX));
+    assertEquals(original[5], traits.getTrait(PrimeTraits.CHR));
 
-    // VERIFY No trait changes
-    _him.adjustTraitsForRace(baseTraits);
-    for (int k = 0; k < 6; k++) {
-      int beforeTrait = original[k];
-      int afterTrait = baseTraits.getTrait(traitName[k]);
-      assertEquals(beforeTrait, afterTrait);
-    }
+    // Net traits for female Humans = STR-1, CON+1, CHR+1
+    MsgCtrl.msgln("\t Gender = " + _gender);
+    traits = _gender.adjustTraitsForGender(traits);
+    MsgCtrl.msgln("\t STR-1, CON+1, CHR+1 net female adj: " + traits.toString());
+    assertEquals(original[0] - 1, traits.getTrait(PrimeTraits.STR));
+    assertEquals(original[1], traits.getTrait(PrimeTraits.INT));
+    assertEquals(original[2], traits.getTrait(PrimeTraits.WIS));
+    assertEquals(original[3] + 1, traits.getTrait(PrimeTraits.CON));
+    assertEquals(original[4], traits.getTrait(PrimeTraits.DEX));
+    assertEquals(original[5]+1, traits.getTrait(PrimeTraits.CHR));
   }
 
 
@@ -158,7 +128,6 @@ public class TestHuman
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-
     MsgCtrl.msgln(MsgCtrl.NOTEST + MsgCtrl.WRAPPER);
   }
 
@@ -172,7 +141,6 @@ public class TestHuman
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
-
     MsgCtrl.msgln(MsgCtrl.NOTEST + MsgCtrl.WRAPPER);
   }
 
