@@ -19,6 +19,7 @@ import java.io.IOException;
  * @author Alan Cline
  * @version Aug 5, 2012 // original, most taken from Chronos.java <br>
  *          June 21, 2014 // ABC: Added env var CHRONOS_ROOT install dir location <br>
+ *          May 28, 2018 // revised copyright header to remove Carolla <br>
  */
 public class Constants
 {
@@ -66,7 +67,7 @@ public class Constants
           " * Permission to make digital or hard copies of all or parts of this work for \n" +
           " * commercial use is prohibited. To republish, to post on servers, to reuse, \n" +
           " * or to redistribute to lists, requires prior specific permission and/or a fee. \n" +
-          " * Request permission to use from acline@carolla.com. \n */";
+          " * Request permission to use by email: acline@wowway.com. \n */";
 
   /**
    * Current working directory of the user; assumes program is running here. Contains source files

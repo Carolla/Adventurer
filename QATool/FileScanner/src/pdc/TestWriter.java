@@ -2,8 +2,9 @@
  * TestWriter.java Copyright (c) 2016, Alan Cline. All Rights Reserved.
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
- * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
- * prior specific permission and/or a fee. Request permission to use from acline@carolla.com
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists,
+ * requires prior specific permission and/or a fee. Request permission to use from
+ * acline@carolla.com
  */
 
 package pdc;
@@ -23,26 +24,27 @@ import java.util.regex.Pattern;
 import mylib.Constants;
 
 /**
- * Traverses corresponding test root tree to match files and methods with source files provided by
- * the {@code SrcReader}.
+ * Traverses corresponding test root tree to match files and methods with source files provided
+ * by the {@code SrcReader}.
  * 
  * @author Alan Cline
  * @version Jul 5, 2016 // original <br>
  *          April 15, 2016 // refactored for simplification <br>
- *          July 4, 2017 // allowed "anchor" subdir between {@code src} dir root and {@code test}
- *          subdir <br>
+ *          July 4, 2017 // allowed "anchor" subdir between {@code src} dir root and
+ *          {@code test} subdir <br>
  *          July 22, 2017 // bug: didn't recognize missing test file when writing new file <br>
+ *          May 28, 2018 // updated or JUnit 5 imports <br>
  */
 public class TestWriter
 {
   /** Set of JUnit import statements */
   private final String JUNIT_IMPORTS =
       "import static org.junit.Assert.*; \n" +
-          "import org.junit.After; \n" +
-          "import org.junit.AfterClass; \n" +
-          "import org.junit.Before; \n" +
-          "import org.junit.BeforeClass; \n" +
-          "import org.junit.Test; \n\n" +
+          "import org.junit.jupiter.api.AfterAll; \n" +
+          "import org.junit.jupiter.api.AfterEach; \n" +
+          "import org.junit.jupiter.api.BeforeAll; \n" +
+          "import org.junit.jupiter.api.BeforeEach; \n" +
+          "import org.junit.jupiter.api.Test; \n" +
           "import mylib.MsgCtrl;\n";
 
   /** Class header comments, author, and version and definition */
@@ -68,7 +70,8 @@ public class TestWriter
       "//\t\t BEGIN TESTING";
 
   /**
-   * Test method template: @Normal annotation, @Test annotation, declaration, MsgCtrl block private
+   * Test method template: @Normal annotation, @Test annotation, declaration, MsgCtrl block
+   * private
    */
   private final String NIMPL_CMT = "\t/**\n \t * @Not.Implemented %s\n\t */";
   private final String NORMAL_CMT = "\t/**\n \t * @Normal.Test: %s\n\t */";
@@ -110,9 +113,10 @@ public class TestWriter
   // ================================================================================
 
   /**
-   * Copy an existing test file, adding missing test methods from the corresponding source file.
-   * This method renames the originalTestFile (input file) to a temp prefix and writes into an
-   * outputfile original name. Later, the temp file is deleted and the new file returned.
+   * Copy an existing test file, adding missing test methods from the corresponding source
+   * file. This method renames the originalTestFile (input file) to a temp prefix and writes
+   * into an outputfile original name. Later, the temp file is deleted and the new file
+   * returned.
    * 
    * @param originalTestFile existing test file to update
    * @param augMap list of test name (key) and corresponding source signature to write to file
@@ -131,7 +135,8 @@ public class TestWriter
       throw new IllegalArgumentException("Can't find original test file");
     }
 
-    // Rename original file to have temporary suffix. Don't use ".tmp". It is too common and may
+    // Rename original file to have temporary suffix. Don't use ".tmp". It is too common and
+    // may
     // collide elsewhere.
     String origFilename = originalTestFile.getPath();
     File inFile = setAsTmpFile(originalTestFile);
@@ -174,7 +179,8 @@ public class TestWriter
    * @param rootPath full path down to test parent directory
    * @param srcPath relative (to rootPath) of source file
    * @return test file name that corresponds to source file
-   * @throws IllegalArgumentException if "src" dir not found or {@code .java} src file not found
+   * @throws IllegalArgumentException if "src" dir not found or {@code .java} src file not
+   *         found
    */
   public String makeTestFilename(String rootPath, String srcPath)
   {
@@ -274,8 +280,8 @@ public class TestWriter
   // ================================================================================
 
   /**
-   * Add a new version after the last version line in the class comment block if it is not "today's"
-   * date (which could cause many duplicate version lines during testing).
+   * Add a new version after the last version line in the class comment block if it is not
+   * "today's" date (which could cause many duplicate version lines during testing).
    * 
    * @param in scanner for reading original file
    * @param out output file for receiving new version
@@ -288,7 +294,8 @@ public class TestWriter
     // Read until the first version line is found
     String currentLine = copyUntil(in, out, "@version");
 
-    // Read through the version block until the last @version line and end cmt line has been read
+    // Read through the version block until the last @version line and end cmt line has been
+    // read
     String latestDate = "";
     String lineAhead = in.nextLine();
     while (!lineAhead.contains(Constants.END_CMT)) {
@@ -321,8 +328,8 @@ public class TestWriter
   private String buildPrepMethods()
   {
     String staticStr = "static ";
-    String[] arg = {"@BeforeClass", "setUpBeforeClass()", "@AfterClass", "tearDownAfterClass()",
-        "@Before", "setUp()", "@After", "tearDown()"};
+    String[] arg = {"@BeforeAll", "setUpBeforeClass()", "@AfterAll", "tearDownAfterClass()",
+        "@BeforeEach", "setUp()", "@AfterEach", "tearDown()"};
 
     StringBuilder block = new StringBuilder();
     for (int k = 0; k < arg.length; k = k + 2) {
@@ -441,8 +448,8 @@ public class TestWriter
 
 
   /**
-   * Find the closing brace at the end of the class so that new methods can be inserted before it,
-   * within the class.
+   * Find the closing brace at the end of the class so that new methods can be inserted before
+   * it, within the class.
    * 
    * @param in scanner for reading original file
    * @param out output file for receiving new version
