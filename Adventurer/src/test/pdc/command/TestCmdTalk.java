@@ -2,9 +2,9 @@
  * TestCmdLook.java Copyright (c) 2009, Carolla Development, Inc. All Rights Reserved
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
- * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists, requires
- * prior specific permission and/or a fee. Request permission to use from Carolla Development, Inc.
- * by email: acline@carolla.com
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists,
+ * requires prior specific permission and/or a fee. Request permission to use from Carolla
+ * Development, Inc. by email: acline@carolla.com
  */
 
 package test.pdc.command;
@@ -28,7 +28,8 @@ import chronos.test.pdc.buildings.FakeBuilding;
 public class TestCmdTalk
 {
   private static final FakeNPC BOB = new FakeNPC("Bob", "A fat man");
-  private static final FakeBuilding BUILDING = new FakeBuilding("FakeBuilding", "Building Description");
+  private static final FakeBuilding BUILDING =
+      new FakeBuilding("FakeBuilding", "Building Description");
 
   private CmdTalk _cmdTalk;
   private FakeBuildingDisplayCiv _bdciv = new FakeBuildingDisplayCiv();
@@ -76,6 +77,7 @@ public class TestCmdTalk
     _cmdTalk.init(bobList);
 
     _cmdTalk.exec();
-    assertTrue("Saw \"" + _bdciv._displayedText + "\" instead of text", _bdciv._displayedText.length() > 0);
+    assertTrue("Saw \"" + _bdciv._displayedText + "\" instead of text",
+        _bdciv._displayedText.length() > 0);
   }
 }

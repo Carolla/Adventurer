@@ -51,11 +51,9 @@ public class CmdReturn extends Command
         _bdCiv = bdCiv;
     }
 
-
-    /*
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PUBLIC METHODS
-     * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-     */
+    // ============================================================
+    // PUBLIC METHODS
+    // ============================================================
 
     /**
      * 
@@ -74,6 +72,7 @@ public class CmdReturn extends Command
       }
     }
 
+    
     /**
      * Returns hero to the town.
      * 
@@ -86,5 +85,6 @@ public class CmdReturn extends Command
         return true;
     }
 
+    
 } // end CmdReturn class
 

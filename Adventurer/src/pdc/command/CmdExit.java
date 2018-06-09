@@ -4,9 +4,9 @@
  * Copyright (c) 2007, Carolla Development, Inc. All Rights Reserved.
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
- * prohibited. To republish, post on servers, to reuse, or to redistribute to lists, requires prior
- * specific permission and/or a fee. Request permission to use from Carolla Development, Inc. by
- * email: acline@carolla.com.
+ * prohibited. To republish, post on servers, to reuse, or to redistribute to lists, requires
+ * prior specific permission and/or a fee. Request permission to use from Carolla Development,
+ * Inc. by email: acline@carolla.com.
  */
 
 package pdc.command;
@@ -18,8 +18,7 @@ import civ.MainframeCiv;
 
 
 /**
- * Invokes the LEAVE command (to leave the current Building) and then QUIT (to terminate the game).
- * Format: EXIT <br>
+ * Invokes the EXIT command and then QUIT (to terminate the game). Format: EXIT <br>
  * 
  * @author Alan Cline
  * @version Mar 19 2014 // original <br>
@@ -48,8 +47,10 @@ public class CmdExit extends Command
    * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
-  /** Constructor called by the CommandFactory. There is no delay nor duration. 
-   * @param mfCiv needed for a call to quit prompt 
+  /**
+   * Constructor called by the CommandFactory. There is no delay nor duration.
+   * 
+   * @param mfCiv needed for a call to quit prompt
    */
   public CmdExit(MainframeCiv mfCiv)
   {
@@ -63,9 +64,9 @@ public class CmdExit extends Command
   // ============================================================
 
   /**
-   * Enters the current building. There can be 0 or 1 args in the arglist. If an arg is specified,
-   * then checks if it is a Building class, or the name of a particular Building. It then converts
-   * the name into the Building class.
+   * Enters the current building. There can be 0 or 1 args in the arglist. If an arg is
+   * specified, then checks if it is a Building class, or the name of a particular Building. It
+   * then converts the name into the Building class.
    * 
    * @param args if empty, then use current Building; otherwise get Building specified
    * @return true if all worked, else returns false on input error

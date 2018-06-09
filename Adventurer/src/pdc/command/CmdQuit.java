@@ -35,6 +35,8 @@ import civ.MainframeCiv;
 public class CmdQuit extends Command
 {
   // THESE CONSTANTS MUST BE STATIC BECAUSE THEY ARE CALLED IN THE CONSTRUCTOR
+  /** Name of the command */
+  static private final String CMD_NAME = "QUIT";
   /** The description of what the command does, used in the <code>help()</code> method. */
   static final String CMD_DESCRIPTION = "End the program.";
   /** This command starts immediately, requiring no delay. */

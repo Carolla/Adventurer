@@ -1,12 +1,9 @@
 /*
- * CmdWait.java
- *
- * Copyright (c) 2007, Carolla Development, Inc. All Rights Reserved.
- *
- * Permission to make digital or hard copies of all or parts of this work for commercial use is
- * prohibited. To republish, post on servers, to reuse, or to redistribute to lists, requires prior
- * specific permission and/or a fee. Request permission to use from Carolla Development, Inc. by
- * email: acline@carolla.com.
+ * CmdWait.java Copyright (c) 2007, Carolla Development, Inc. All Rights Reserved. Permission
+ * to make digital or hard copies of all or parts of this work for commercial use is
+ * prohibited. To republish, post on servers, to reuse, or to redistribute to lists, requires
+ * prior specific permission and/or a fee. Request permission to use from Carolla Development,
+ * Inc. by email: acline@carolla.com.
  */
 
 package pdc.command;
@@ -16,20 +13,17 @@ import java.util.List;
 import chronos.pdc.command.Command;
 
 /**
- * Allow the Hero to wait for a certain amount of time. The Wait command defaults to 5 minutes if no
- * parms are specified.
+ * Allow the Hero to wait for a certain amount of time. The Wait command defaults to 5 minutes
+ * if no parms are specified.
  * <p>
  * Format: WAIT [N [H[ours] | M[inutes]] <br>
  * The command string is case-insensitive. See <code>init()</code> method.
  * 
  * @author Alan Cline
- * @version
- *          <DL>
- *          <DT>1.0 Jun 21 2007 // original
- *          <DD>
- *          <DT>1.1 Jul 4 2008 // Final commenting for Javadoc compliance
- *          <DD>
- *          </DL>
+ * @version Jun 21 2007 // original <br>
+ *          Jul 4 2008 // Final commenting for Javadoc compliance <br>
+ *          Jun 9, 2018 // clarified parm and no=parm commands <br>
+ * 
  * @see Command
  * @see pdc.GameClock
  */
@@ -48,8 +42,7 @@ public class CmdWait extends Command
 
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND RELATED METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * CONSTRUCTOR(S) AND RELATED METHODS
    */
 
   /**
@@ -62,8 +55,7 @@ public class CmdWait extends Command
 
 
   /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PUBLIC METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   * PUBLIC METHODS
    */
 
   /**
@@ -83,15 +75,15 @@ public class CmdWait extends Command
    * case-insensitive.
    * 
    * @param args <br>
-   *        args[0] = number of units to increment the game clock, 1 <= N <= 24 hours or 1 <= N <=
-   *        60 minutes <br>
+   *        args[0] = number of units to increment the game clock, 1 <= N <= 24 hours or 1 <= N
+   *        <= 60 minutes <br>
    *        args[1] = unit (duration) for amount of time elapsed during the command's execution
    * @return true if parm list ok, else false.
    */
   public boolean init(List<String> args)
   {
-      // true if initialized properly
-      boolean retVal = false;
+    // true if initialized properly
+    boolean retVal = false;
     // Guard against incorrect parmlist
     int nbrParms = args.size();
     // Allow default condition to pass
@@ -109,13 +101,15 @@ public class CmdWait extends Command
 
       // Convert the second _parm to the unit of time
       String unit = args.get(1);
-      if (unit.equalsIgnoreCase("H") || unit.equalsIgnoreCase("Hr") || unit.equalsIgnoreCase("Hours")) {
+      if (unit.equalsIgnoreCase("H") || unit.equalsIgnoreCase("Hr")
+          || unit.equalsIgnoreCase("Hours")) {
         if ((lag >= 0) && (lag < 25)) {
           // Convert hours to seconds and save in Command
           _delay = lag * 3600;
           retVal = true;
         }
-      } else if (unit.equalsIgnoreCase("M") || unit.equalsIgnoreCase("Min") || unit.equalsIgnoreCase("Minutes")) {
+      } else if (unit.equalsIgnoreCase("M") || unit.equalsIgnoreCase("Min")
+          || unit.equalsIgnoreCase("Minutes")) {
         // Convert minutes to seconds
         if ((lag >= 1) && (lag < 60)) {
           _delay = lag * 60;
