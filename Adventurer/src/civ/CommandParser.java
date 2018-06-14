@@ -34,8 +34,8 @@ import chronos.pdc.command.Scheduler;
 
 /**
  * Receives a user input string from the command window and converts it to a command object,
- * which it to the {@code Scheduler} for invocation. {@code Scheduler} calls {@code CmdParser}
- * when it needs a new user command.
+ * which send it to the {@code Scheduler} for invocation. {@code Scheduler} calls
+ * {@code CmdParser} when it needs a new user command.
  * 
  * @author Alan Cline
  * @version Sep 1 2006 // Split application into HIC, PDC, DMC components <br>
@@ -78,36 +78,36 @@ public class CommandParser
   // Public Methods
   // ============================================================
 
-//  /**
-//   * Provide initial values for the commandMap. This can be set up differently as needed for
-//   * test.
-//   */
-//  public void initMap()
-//  {
-//    // Display the description and image of Building exterior
-//    _commandMap.put("APPROACH", () -> new CmdApproach(_bdCiv));
-//    // Enter the interior of the Building
-//    _commandMap.put("ENTER", () -> new CmdEnter(_bdCiv));
-//    // Synonym for Leave and then Quit the program
-//    _commandMap.put("EXIT", () -> new CmdExit(_mfCiv));
-//    // Get near description for NPC
-//    _commandMap.put("INSPECT", () -> new CmdInspect(_bdCiv));
-//    // Leave the inside of the Building and go outside
-//    _commandMap.put("LEAVE", () -> new CmdLeave(_bdCiv));
-//    // Get Room Description or Get NPC names
-//    _commandMap.put("LOOK", () -> new CmdLook(_bdCiv));
-//    // End the program.
-//    _commandMap.put("QUIT", () -> new CmdQuit(_mfCiv, _bdCiv));
-//    // Return to town view
-//    _commandMap.put("RETURN", () -> new CmdReturn(_bdCiv));
-//    // Just sit there
-//    _commandMap.put("WAIT", () -> new CmdWait());
-//    // Get information from an NPC
-//    _commandMap.put("TALK", () -> new CmdTalk(_bdCiv));
-//
-//    // Locks the command map as read-only
-//    _commandMap = Collections.unmodifiableMap(_commandMap);
-//  }
+  // /**
+  // * Provide initial values for the commandMap. This can be set up differently as needed for
+  // * test.
+  // */
+  // public void initMap()
+  // {
+  // // Display the description and image of Building exterior
+  // _commandMap.put("APPROACH", () -> new CmdApproach(_bdCiv));
+  // // Enter the interior of the Building
+  // _commandMap.put("ENTER", () -> new CmdEnter(_bdCiv));
+  // // Synonym for Leave and then Quit the program
+  // _commandMap.put("EXIT", () -> new CmdExit(_mfCiv));
+  // // Get near description for NPC
+  // _commandMap.put("INSPECT", () -> new CmdInspect(_bdCiv));
+  // // Leave the inside of the Building and go outside
+  // _commandMap.put("LEAVE", () -> new CmdLeave(_bdCiv));
+  // // Get Room Description or Get NPC names
+  // _commandMap.put("LOOK", () -> new CmdLook(_bdCiv));
+  // // End the program.
+  // _commandMap.put("QUIT", () -> new CmdQuit(_mfCiv, _bdCiv));
+  // // Return to town view
+  // _commandMap.put("RETURN", () -> new CmdReturn(_bdCiv));
+  // // Just sit there
+  // _commandMap.put("WAIT", () -> new CmdWait());
+  // // Get information from an NPC
+  // _commandMap.put("TALK", () -> new CmdTalk(_bdCiv));
+  //
+  // // Locks the command map as read-only
+  // _commandMap = Collections.unmodifiableMap(_commandMap);
+  // }
 
 
   /**

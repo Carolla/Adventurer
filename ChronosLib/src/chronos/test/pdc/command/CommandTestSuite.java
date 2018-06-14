@@ -27,7 +27,7 @@ import org.junit.runners.Suite;
 
     /* chronos.pdc.registry test files */
     TestCommand.class,
-    TestDeltaCmdList.class,
+    // TestDeltaCmdList.class,
     // TestEvent.class,
     // TestEventTest.class,
     // TestintCmdPatronEnter.class,

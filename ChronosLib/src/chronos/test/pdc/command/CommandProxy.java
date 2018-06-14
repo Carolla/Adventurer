@@ -1,5 +1,5 @@
 /**
- * FakeCommand.java Copyright (c) 2018, Alan Cline. All Rights Reserved.
+ * CommandProxy.java Copyright (c) 2018, Alan Cline. All Rights Reserved.
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
  * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists,
@@ -14,31 +14,41 @@ import java.util.List;
 import chronos.pdc.command.Command;
 
 /** Test command that requires two arguments */
-public class FakeCommand extends Command
+public class CommandProxy extends Command
 {
-  static private final String CMD_NAME = "FAKE_CMD";
-  static private final String CMD_DESCRIPTION =
-      "A simple no-parm command used for testing the Command class";
-  static private final String CMDFMT = CMD_NAME + " [Keyword1] [Keyword2]";
-  static private final int DELAY = 0;
-  static private final int DURATION = 10;
-
   /** Error message if command cannot be found. */
   public static final String ERRMSG_UNKNOWN = "I don't understand what you want to do.";
 
 
-  public FakeCommand()
+  /**
+   * Create a flexible command proxy for testing. 
+   * 
+   * @param name of the command
+   * @param delay interval of time before the command starts
+   * @param duration amount of time the command consumes on the game clock
+   * @parm desc A simple description of what the command does
+   * @param fmt Rhe command format to use in the usage statement if invalid args are received
+   * @throws NullPointerException
+   */
+  public CommandProxy(String name, int delay, int duration, String desc, String fmt)
       throws NullPointerException
   {
-    super(CMD_NAME, DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
+    super(name, delay, duration, desc, fmt);
   }
 
   @Override
   public boolean init(List<String> args)
   {
+    if (args.size() == 0) {
+      return true;
+    }
+    for (String s : args) {
+      _parms.add(s);
+    }
     return true;
   }
 
+  
   @Override
   public boolean exec()
   {

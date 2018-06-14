@@ -4,9 +4,9 @@
  * Copyright (c) 2007, Carolla Development, Inc. All Rights Reserved.
  * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
- * prohibited. To republish, post on servers, to reuse, or to redistribute to lists, requires prior
- * specific permission and/or a fee. Request permission to use from Carolla Development, Inc. by
- * email: acline@carolla.com.
+ * prohibited. To republish, post on servers, to reuse, or to redistribute to lists, requires
+ * prior specific permission and/or a fee. Request permission to use from Carolla Development,
+ * Inc. by email: acline@carolla.com.
  */
 
 package pdc.command;
@@ -24,16 +24,17 @@ import civ.BuildingDisplayCiv;
  * where: <br>
  * Building Name is the actual string name of the Building;
  * <P>
- * The Building name is checked with and without 'the' in the parm list. For example, this command
- * will check for "The Ugly Ogre Inn" and "Ugly Ogre Inn" before trying "Ugly Ogre Inn" as a type.
- * Conversely, if ENTER Inn is entered, it will try try to find a Building with the name "Inn"
- * before trying the type "Inn".
+ * The Building name is checked with and without 'the' in the parm list. For example, this
+ * command will check for "The Ugly Ogre Inn" and "Ugly Ogre Inn" before trying "Ugly Ogre Inn"
+ * as a type. Conversely, if ENTER Inn is entered, it will try try to find a Building with the
+ * name "Inn" before trying the type "Inn".
  * <UL>
- * <LI>If the Hero is at the Town view, a Building must be specified else an error message.</LI>
- * <LI>If the Hero is outside a Building, then no name is needed; the currently displayed building
- * is assumed.</LI>
- * <LI>If the Hero is already in the targeted building, then interior is redisplayed, and nothing
- * different appears to the user.</LI>
+ * <LI>If the Hero is at the Town view, a Building must be specified else an error
+ * message.</LI>
+ * <LI>If the Hero is outside a Building, then no name is needed; the currently displayed
+ * building is assumed.</LI>
+ * <LI>If the Hero is already in the targeted building, then interior is redisplayed, and
+ * nothing different appears to the user.</LI>
  * <LI>If the Hero tries to ENTER from inside one building to inside another, he gets an error
  * message saying he has to LEAVE (or EXIT) one Building before he can enter another. <br>
  * </UL>
@@ -83,12 +84,13 @@ public class CmdEnter extends Command
   // ============================================================
 
   /**
-   * There can be 0 or 1 arg in the arglist. If an arg is not specified, then the current Building
-   * is assumed. If an argument is specified, then all words are combined into a building name.
+   * There can be 0 or 1 arg in the arglist. If an arg is not specified, then the current
+   * Building is assumed. If an argument is specified, then all words are combined into a
+   * building name.
    * <P>
-   * The Building name is checked with and without the word 'the', in case it is part of the name of
-   * the Building. If the Hero specified the building he is already in, then the image is
-   * redisplayed, which appears to the user as if nothing happened.
+   * The Building name is checked with and without the word 'the', in case it is part of the
+   * name of the Building. If the Hero specified the building he is already in, then the image
+   * is redisplayed, which appears to the user as if nothing happened.
    * 
    * @param args if empty, then use current Building; otherwise gets Building specified;
    * @return true if all worked, else returns false on input error

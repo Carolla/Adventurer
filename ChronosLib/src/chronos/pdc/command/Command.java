@@ -58,11 +58,11 @@ import chronos.civ.UserMsgInterface;
  * 
  * @author Alan Cline
  * @version Aug 24 2006 // original <br>
- *          Dec 31 2007 // Add package constant to wrap all command into this Command package
- *          <br>
+ *          Dec 31 2007 // Add package constant to wrap all commands into this Command pkg <br>
  *          Feb 16 2008 // Add base class {@code usage} avoid subcommand overrides <br>
  *          Feb 19 2008 // Moved {@code getTalkee} from subcommands into this base class. <br>
  *          Jul 4 2008 // Final commenting for Javadoc compliance <br>
+ *          Jun 13, 2018 // Revised slightly to pass CommandProxy tests <br>
  */
 public abstract class Command
 {
@@ -81,13 +81,11 @@ public abstract class Command
    * The parameters that the subcommand needs must be wrapped in an ArrayList for the
    * subcommand's {@code init} method.
    */
-//  protected final List<String> _parms = null;
+  protected final List<String> _parms;
   /** A short description of the command, used in the general help method. */
   protected final String _description;
   /** The syntax of the command, used in the {@code usage()} method. */
   protected final String _cmdfmt;
-  /** Whether params are correct */
-
   /** Every command sends user messages to this object */
   protected UserMsgInterface _output;
 
@@ -95,7 +93,7 @@ public abstract class Command
   // ============================================================
   // ABSTRACT METHODS IMPLEMENTED in SubClass
   // ============================================================
-  
+
   /**
    * This abstract method must be implemented by the subcommand to execute whatever specific
    * action the subcommand needs to perform. It is called by the {@code Scheduler}
@@ -127,10 +125,10 @@ public abstract class Command
    * initializes a few common references that most subcommands use.
    * 
    * @param name command string to create (as found in the CommandParser table).
-   * @param delay the length of time before the command fires
-   * @param duration the length of time taken by executing the command
+   * @param delay the length of game time before the command fires
+   * @param duration the length of game time taken by executing the command
    * @param desc a short explanation of the purpose of the command (for help).
-   * @param fmt command syntax for the {@code usage} error message; is null is no parms are
+   * @param fmt command syntax for the {@code usage} error message; is null if no parms are
    *        needed
    * @throws NullPointerException if the name or fmt parms are null
    */
@@ -147,15 +145,15 @@ public abstract class Command
     _description = desc;
     _cmdfmt = fmt;
     // Initialize internal attributes
-//    _parms = new ArrayList<String>();
+    _parms = new ArrayList<String>();
   }
 
   @Override
   public String toString()
   {
-//    return _name + " " + _parms;
     return _name;
   }
+
 
   // ============================================================
   // PUBLIC METHODS
@@ -191,7 +189,7 @@ public abstract class Command
   {
     return _delay;
   }
-  
+
 
   /**
    * Gets short description of the command.
@@ -223,7 +221,17 @@ public abstract class Command
     return _name;
   }
 
+  /**
+   * Gets the command's parms
+   * 
+   * @return the list of parms, even if empty
+   */
+  public List<String> getParms()
+  {
+    return _parms;
+  }
 
+  
   /**
    * By default, assume commands are UserInput.
    * 
@@ -234,7 +242,7 @@ public abstract class Command
     return false;
   }
 
-  
+
   /**
    * By default, assume commands are UserInput.
    * 
@@ -262,8 +270,8 @@ public abstract class Command
   public String usage()
   {
     // Do not increment the game clock for this command
-    _delay = 0;
-    _duration = 0;
+    // _delay = 0;
+    // _duration = 0;
     String msg = "";
     if (_cmdfmt == null) {
       msg = String.format("USAGE: %s (command takes no parms)", _name);
@@ -278,7 +286,7 @@ public abstract class Command
   {
     _output = output;
   }
-  
-  
+
+
 } // end abstract Command class
 

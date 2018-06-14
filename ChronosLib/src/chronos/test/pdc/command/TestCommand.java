@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -22,6 +23,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import chronos.pdc.command.Command;
 import mylib.MsgCtrl;
 
 
@@ -31,17 +33,21 @@ import mylib.MsgCtrl;
  */
 public class TestCommand
 {
-  static private FakeCommand _testCmd;
+  /** Test Command with no parms */
+  private CommandProxy _testCmd;
+  private final String CMD_NAME = "CmdProxy_NoParms";
+  private final int DELAY = 0;
+  private final int DURATION = 10;
+  private final String CMD_DESCRIPTION =
+      "A simple no-parm command used for testing the Command class";
+  private final String CMDFMT = null;
 
   /**
    * @throws java.lang.Exception -- general catch-all for exceptions not caught by the tests
    */
   @BeforeAll
   public static void setUpBeforeClass() throws Exception
-  {
-    _testCmd = new FakeCommand();
-    assertNotNull(_testCmd);
-  }
+  {}
 
   /**
    * @throws java.lang.Exception -- general catch-all for exceptions not caught by the tests
@@ -55,7 +61,11 @@ public class TestCommand
    */
   @BeforeEach
   public void setUp() throws Exception
-  {}
+  {
+    _testCmd = new CommandProxy(CMD_NAME, DELAY, DURATION, CMD_DESCRIPTION, CMDFMT);
+    assertNotNull(_testCmd);
+
+  }
 
   /**
    * @throws java.lang.Exception -- general catch-all for exceptions not caught by the tests
@@ -65,12 +75,78 @@ public class TestCommand
   {
     MsgCtrl.auditMsgsOn(false);
     MsgCtrl.errorMsgsOn(false);
+
+    _testCmd = null;
   }
 
 
   // ===============================================================================
   // BEGIN TESTING
   // ===============================================================================
+
+  /**
+   * @Normal.Test String Command() -- verify that all fields and methods report correctly. This
+   *              test is not actually needed because init() is a wrapper, but this test is
+   *              useful for context processing.
+   */
+  @Test
+  public void testCtor_NoParms()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    String cmdName = "CmdProxy";
+    String desc = "No-parm command description";
+    String fmt = "CommandProxy (no parms)";
+
+    // Verify that base class method prints valid command format
+    Command proxy = new CommandProxy(cmdName, 3, 15, desc, fmt);
+    assertNotNull(proxy);
+    dump(proxy);;
+
+    assertEquals(cmdName, proxy.getName());
+    assertEquals(desc, proxy.getDescription());
+    assertEquals(3, proxy.getDelay());
+    assertEquals(15, proxy.getDuration());
+    assertEquals("USAGE: " + fmt, proxy.usage());
+  }
+
+  /**
+   * @Normal.Test String Command() -- verify that all parms, fields, and methods report
+   *              correctly. This test is not actually needed because init() is a wrapper, but
+   *              this test is useful for context processing.
+   */
+  @Test
+  public void testCtor_TwoParms()
+  {
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.where(this);
+
+    String cmdName = "CmdProxy";
+    String desc = "Two-parm command description";
+    String fmt = "CommandProxy [keyword1] [keyword2]";
+
+    // Verify that base class method prints valid command format
+    Command proxy = new CommandProxy(cmdName, 3, 15, desc, fmt);
+    assertNotNull(proxy);
+
+    // The parms must be put into the command as ArrayList<String>
+    String textIn = "CmdProxy parm1 parm2";
+    ArrayList<String> cmdList = new ArrayList<String>(Arrays.asList(textIn.split(" ")));
+
+    // If parms init'd correctly, init(List<String>) returns true
+    assertTrue(proxy.init(cmdList));
+    dump(proxy);
+
+    assertEquals(cmdName, proxy.getName());
+    assertEquals(desc, proxy.getDescription());
+    assertEquals(3, proxy.getDelay());
+    assertEquals(15, proxy.getDuration());
+    assertEquals("USAGE: " + fmt, proxy.usage());
+  }
+
 
   /**
    * @Normal.Test String convertArgsToString(List)
@@ -224,12 +300,12 @@ public class TestCommand
   @Test
   public void testToString()
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
+    MsgCtrl.auditMsgsOn(true);
+    MsgCtrl.errorMsgsOn(true);
     MsgCtrl.where(this);
 
     // Parse the parms before printing the string
-    String expOut = "FAKE_CMD";
+    String expOut = CMD_NAME;
     String actOut = _testCmd.toString();
     MsgCtrl.msgln("\t" + actOut);
     assertTrue(expOut.equals(actOut));
@@ -250,29 +326,33 @@ public class TestCommand
     String usageFmt = _testCmd.usage();
     MsgCtrl.msgln("\t" + _testCmd.getDescription());
     MsgCtrl.msgln("\t" + usageFmt);
-    assertEquals("USAGE: FAKE_CMD [Keyword1] [Keyword2]", usageFmt);
+    assertEquals("USAGE: CmdProxy_NoParms (command takes no parms)", usageFmt);
   }
 
 
-  /**
-   * @Normal.Test String usage() -- print response for command that takes no parms
-   */
-  @Test
-  public void testUsage_NoParms()
+  // ===============================================================================
+  // PRIVATE HELPERS
+  // ===============================================================================
+
+  private void dump(Command proxy)
   {
-    MsgCtrl.auditMsgsOn(false);
-    MsgCtrl.errorMsgsOn(false);
-    MsgCtrl.where(this);
+    MsgCtrl.msgln("\t Command:\t" + proxy.getName());
+    MsgCtrl.msgln("\t Description:\t" + proxy.getDescription());
+    MsgCtrl.msgln("\t Delay:\t\t " + proxy.getDelay());
+    MsgCtrl.msgln("\t Duration:\t" + proxy.getDuration());
+    MsgCtrl.msgln("\t " + proxy.usage());
 
-    // Verify that base class method prints valid command format
-    FakeCommand2 cmd2 = new FakeCommand2();
-    assertNotNull(cmd2);
-
-    String usageFmt = cmd2.usage();
-    MsgCtrl.msgln("\t" + cmd2.getDescription());
-    MsgCtrl.msgln("\t" + usageFmt);
-    assertEquals("USAGE: ANOTHER_FAKE_CMD (command takes no parms)", usageFmt);
+    List<String> plist = proxy.getParms();
+    if (plist.size() == 0) {
+      MsgCtrl.msgln("\t No command parms");
+    } else {
+      for (String s : plist) {
+        MsgCtrl.msg("\t" + s);
+      }
+      MsgCtrl.msgln("\n");
+    }
   }
+
 
 
 } // end of TestCommand.java class
