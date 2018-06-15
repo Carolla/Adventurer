@@ -8,8 +8,8 @@
 
 package chronos.pdc.command;
 
+import java.util.Arrays;
 import java.util.Comparator;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import chronos.pdc.GameClock;
@@ -46,20 +46,21 @@ import chronos.pdc.GameClock;
  *          Jun 4 2008 // move the game clock out into its own class <br>
  *          Jul 5 2008 // Final commenting for Javadoc compliance <br>
  *          June 10, 2018 // updated Javadoc and for testing <br>
+ *          June 14, 2018 // modified as needed to pass tests <br>
  */
 public class DeltaCmdList
 {
   /** The actual Delta Queue (DQ) */
-  private BlockingQueue<Event> _dlist = null;
+  private PriorityBlockingQueue<Event> _dlist = null;
   /** The game clock tracks game time, not real time */
   private GameClock _clock = null;
-  private int DEFAULT_QUEUE_SIZE = 10;
+  private int DEFAULT_QUEUE_SIZE = 11;
 
   // ------------------------------------------------------------------------------------
   // CONSTRUCTOR
   // ------------------------------------------------------------------------------------
 
-  /** Default constuctor creates the DQ, currently implemented as a BlockingQueue. */
+  /** Default constuctor creates the DQ, currently implemented as a PriorityBlockingQueue. */
   public DeltaCmdList()
   {
     _dlist = new PriorityBlockingQueue<Event>(DEFAULT_QUEUE_SIZE, new Comparator<Event>() {
@@ -72,53 +73,63 @@ public class DeltaCmdList
     _clock = GameClock.getInstance();
   }
 
+
   // ------------------------------------------------------------------------------------
   // PUBLIC METHODS
   // ------------------------------------------------------------------------------------
 
-  /** Dump the delta list. For debugging only. */
-  public void dump()
+  /** Clear the DQ of all elements. Mostly used for testing, has infrequent use */
+  public void clear()
   {
-    int pos = 0;
-    if (_dlist.isEmpty()) {
-      System.out.println("DeltaQueue is empty");
-    } else {
-      for (Event e : _dlist) {
-        Command cmd = e.getCommand();
-        System.err.println(cmd.getName() + "(" + cmd.getDelay() + ", " +
-            cmd.getDuration() + "); delta = " + e.getDelta() + ", pos = " + pos++);
-      }
-      System.err.println("-------------------------\n");
-    }
+    _dlist.clear();
   }
+
+
+  /**
+   * Convert the DQ to an array of elements for special processing
+   * 
+   * @return the array in the order the Commands will be executed
+   */
+  public Object[] toArray()
+  {
+    Object[] ary = new Object[_dlist.size()];
+    ary = _dlist.toArray();
+    Arrays.sort(ary);
+    return ary;
+  }
+
 
   /**
    * Takes the next Event from the DQ (Delta Queue) and increments the timeLog (GameClock) by
    * that delta.
    * 
-   * @return the command to be executed next
+   * @return the command to be executed next, or NullCommand if the DQ is empty
    */
   public Command getNextCmd()
   {
+    if (_dlist.isEmpty()) {
+      return new NullCommand();
+    }
     Event evt;
     try {
       evt = _dlist.take();
       int deltaTime = evt.getDelta();
       Command cmd = evt.getCommand();
-
+      // TODO Removing a command that may not work should not increment the clock. Separate the
+      // clock function from the DQ function
       _clock.increment(deltaTime);
       for (Event e : _dlist) {
         e.setDelta(e.getDelta() - deltaTime);
       }
-
       return cmd;
+
     } catch (InterruptedException e1) {
       e1.printStackTrace();
       return new NullCommand();
     }
   }
 
-  
+
   /**
    * Inserts a Command into the DQ based on its delta. This is the main engine for building the
    * DQ by implementing the algorithm defined in the class description. User commands also
@@ -126,6 +137,7 @@ public class DeltaCmdList
    * to get the next user Command.
    * 
    * @param cmd a command containing the delay to be used for inserting the delta.
+   * @throws NullPointrException if parm is null
    */
   public void insert(Command cmd)
   {
@@ -139,15 +151,27 @@ public class DeltaCmdList
     return _dlist.isEmpty();
   }
 
-  /**
-   * How long until next Command should run. Will block if called on an empty queue.
-   * 
-   * @return how long
-   */
-  public int timeToNextCmd()
+
+  /** Get the number of elements in the DQ */
+  public int size()
   {
-    return _dlist.peek().getDelta();
+    return _dlist.size();
   }
+
+
+//  /**
+//   * How long until next Command should run. Will return -1 if called on an empty queue.
+//   * 
+//   * @return how long
+//   */
+//  public int timeToNextCmd()
+//  {
+//    int timeToNext = -1;
+//    if (_dlist.peek() != null) {
+//      timeToNext = _dlist.peek().getDelta();
+//    }
+//    return timeToNext;
+//  }
 
 
 } // end DeltaCmdList class

@@ -32,10 +32,10 @@ public class Event implements Comparable<Event>
   /** Can be any object, but is most likely a Command */
   private Command _cmd;
 
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ CONSTRUCTOR(S) AND RELATED METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
+
+  // ===============================================================================
+  // CONSTRUCTOR(S) AND RELATED METHODS
+  // ===============================================================================
 
   /**
    * Builds an Event around the command being encapsulated, and the command's delay.
@@ -49,10 +49,16 @@ public class Event implements Comparable<Event>
   }
 
 
-  /*
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++ PUBLIC METHODS
-   * ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   */
+  // ===============================================================================
+  // PUBLIC METHODS
+  // ===============================================================================
+
+  @Override
+  public int compareTo(Event other)
+  {
+    return _delta - other._delta;
+  }
+
 
   /**
    * Gets the Command inside the Event wrapper
@@ -84,13 +90,6 @@ public class Event implements Comparable<Event>
   public void setDelta(int value)
   {
     _delta = value;
-  }
-
-
-  @Override
-  public int compareTo(Event other)
-  {
-    return _delta - other._delta;
   }
 
 
