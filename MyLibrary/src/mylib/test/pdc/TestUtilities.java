@@ -68,8 +68,8 @@ public class TestUtilities
   @Test
   public void testCalcSigma()
   {
-    MsgCtrl.auditMsgsOn(true);
-    MsgCtrl.errorMsgsOn(true);
+    MsgCtrl.auditMsgsOn(false);
+    MsgCtrl.errorMsgsOn(false);
     MsgCtrl.where(this);
 
     // For perfect Gaussian distribution, statConfidence should be 68.2%.
