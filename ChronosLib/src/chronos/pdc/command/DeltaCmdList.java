@@ -1,9 +1,10 @@
-/*
- * DeltaCmdList.java Copyright (c) 2007, Carolla Development, Inc. All Rights Reserved.
+/**
+ * DeltaCmdList.java Copyright (c) 2018, Alan Cline. All Rights Reserved.
+ * 
  * Permission to make digital or hard copies of all or parts of this work for commercial use is
- * prohibited. To republish, post on servers, to reuse, or to redistribute to lists, requires
- * prior specific permission and/or a fee. Request permission to use from Carolla Development,
- * Inc. by email: acline@carolla.com.
+ * prohibited. To republish, to post on servers, to reuse, or to redistribute to lists,
+ * requires prior specific permission and/or a fee. Request permission to use by email:
+ * acline@wowway.com.
  */
 
 package chronos.pdc.command;
@@ -12,7 +13,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.concurrent.PriorityBlockingQueue;
 
-import chronos.pdc.GameClock;
+
 
 /**
  * Puts Events on an insertion list in the order in which the Events should be executed. Events
@@ -47,13 +48,12 @@ import chronos.pdc.GameClock;
  *          Jul 5 2008 // Final commenting for Javadoc compliance <br>
  *          June 10, 2018 // updated Javadoc and for testing <br>
  *          June 14, 2018 // modified as needed to pass tests <br>
+ *          June 16, 2018 // Moved all clock references outside this library routine <br>
  */
 public class DeltaCmdList
 {
   /** The actual Delta Queue (DQ) */
   private PriorityBlockingQueue<Event> _dlist = null;
-  /** The game clock tracks game time, not real time */
-  private GameClock _clock = null;
   private int DEFAULT_QUEUE_SIZE = 11;
 
   // ------------------------------------------------------------------------------------
@@ -70,7 +70,6 @@ public class DeltaCmdList
         return first.getDelta() - second.getDelta();
       }
     });
-    _clock = GameClock.getInstance();
   }
 
 
@@ -100,8 +99,7 @@ public class DeltaCmdList
 
 
   /**
-   * Takes the next Event from the DQ (Delta Queue) and increments the timeLog (GameClock) by
-   * that delta.
+   * Takes the next Event from the DQ (Delta Queue)
    * 
    * @return the command to be executed next, or NullCommand if the DQ is empty
    */
@@ -115,9 +113,6 @@ public class DeltaCmdList
       evt = _dlist.take();
       int deltaTime = evt.getDelta();
       Command cmd = evt.getCommand();
-      // TODO Removing a command that may not work should not increment the clock. Separate the
-      // clock function from the DQ function
-      _clock.increment(deltaTime);
       for (Event e : _dlist) {
         e.setDelta(e.getDelta() - deltaTime);
       }
