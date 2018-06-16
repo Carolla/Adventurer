@@ -22,7 +22,6 @@ public class NullCommand extends Command
     @Override
     public boolean init(List<String> args)
     {
-//        _isInitialized  = true;
         return true;
     }
 
@@ -32,9 +31,5 @@ public class NullCommand extends Command
        return true;
     }
 
-//    public boolean isInitialized()
-//    {
-//        return _isInitialized;
-//    }
 
-}
+}   // end of NullCommand class
