@@ -69,16 +69,22 @@ public class Scheduler
    */
   public void doOneUserCommand()
   {
+    // Link to the game clock singleton
     GameClock clock = GameClock.getInstance();
+
     Command cmdToDo = _dq.getNextCmd();
-    while (cmdToDo.isInternal()) {
-      cmdToDo.exec();
-      clock.increment(cmdToDo.getDuration());
+    // while (cmdToDo.isInternal()) {
+    // Do commands in delta order, regardless of internal or not 
+    while (!_dq.isEmpty()) {
+      if (cmdToDo.exec() == true) {
+        // Don't increment the clock if the commands fail for some reason
+        clock.increment(cmdToDo.getDuration());
+      }
       cmdToDo = _dq.getNextCmd();
     }
-    cmdToDo.exec();
-    clock.increment(cmdToDo.getDuration());
+//    cmdToDo.exec();
+//    clock.increment(cmdToDo.getDuration());
   }
-  
-  
+
+
 } // end Scheduler class

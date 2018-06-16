@@ -154,20 +154,4 @@ public class DeltaCmdList
   }
 
 
-//  /**
-//   * How long until next Command should run. Will return -1 if called on an empty queue.
-//   * 
-//   * @return how long
-//   */
-//  public int timeToNextCmd()
-//  {
-//    int timeToNext = -1;
-//    if (_dlist.peek() != null) {
-//      timeToNext = _dlist.peek().getDelta();
-//    }
-//    return timeToNext;
-//  }
-
-
 } // end DeltaCmdList class
-
