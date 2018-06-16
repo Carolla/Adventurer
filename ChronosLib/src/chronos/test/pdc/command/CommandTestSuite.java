@@ -27,12 +27,10 @@ import org.junit.runners.Suite;
 
     /* chronos.pdc.registry test files */
     TestCommand.class,
-    // TestDeltaCmdList.class,
-    // TestEvent.class,
-    // TestEventTest.class,
+    TestDeltaCmdList.class,
+    TestEvent.class,
     // TestintCmdPatronEnter.class,
     // TestintCmdPatronLeave.class,
-    // TestNullCommand.class,
     // TestScheduler.class,
 
 })

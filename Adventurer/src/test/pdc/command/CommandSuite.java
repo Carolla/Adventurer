@@ -17,7 +17,6 @@ import org.junit.runners.Suite.SuiteClasses;
   TestCmdWait.class,
   TestCommandFactory.class,
   TestCommandParser.class,
-  TestDeltaCmdList.class,
   TestEvent.class,
   TestScheduler.class
 })
